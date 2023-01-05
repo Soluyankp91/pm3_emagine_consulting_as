@@ -1,9 +1,10 @@
-import { EHeaderCells, IHeaderCell } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { Actions } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { EHeaderCells, IHeaderCell } from '../../mat-grid.interfaces';
 
 export const DISPLAYED_COLUMNS: string[] = [
 	'language',
 	'agreementTemplateId',
+	'clientName',
 	'name',
 	'agreementType',
 	'recipientTypeId',
@@ -15,7 +16,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'lastUpdatedByLowerCaseInitials',
 	'isEnabled',
 ];
-export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
+export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
@@ -33,6 +34,10 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	{
 		type: EHeaderCells.SORT,
 		title: 'Template Name',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Client',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -135,7 +140,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
-export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
+export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 	{
 		label: 'Edit',
 		actionType: 'EDIT',

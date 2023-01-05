@@ -12,7 +12,6 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IDropdownItem } from './emagine-menu-multi-select.interfaces';
 import { cloneDeep, isEqual } from 'lodash';
-import { MatMenuTrigger } from '@angular/material/menu';
 @Component({
 	selector: 'emg-multi-select',
 	templateUrl: './emagine-menu-multi-select.component.html',
@@ -33,7 +32,7 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 	@Input() set options(options: any[]) {
 		this._options = cloneDeep(options);
 	}
-	@ContentChild('triggerButton') triggerButton: MatMenuTrigger;
+	@ContentChild('triggerButton') triggerButton: TemplateRef<any>;
 	@ContentChild('optionPrefix') optionPrefix: TemplateRef<any>;
 
 	get options() {
@@ -79,20 +78,22 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 	}
 
 	onMenuClosed() {
-        this.onChange([...this.selectedItems]);
+		this.onChange([...this.selectedItems]);
 	}
 
 	writeValue(preselectedItems: ({ id: number | string } & { [key: string]: any })[]): void {
 		let optionsToPreselect: (string | number)[] = preselectedItems.map((item) => item.id);
-        this.selectedItems = [];
-		this.unselectAll();
+		this.selectedItems = [];
 		if (!preselectedItems || !preselectedItems.length) {
 			return;
 		}
+		this.unselectAll();
 		optionsToPreselect.forEach((preselectedItem) => {
 			let foundedOption = this.options.find((option) => option.id === preselectedItem) as IDropdownItem;
 			if (foundedOption) {
 				foundedOption.selected = true;
+                const { selected, ...baseItem } = foundedOption;
+				this.selectedItems.push(baseItem);
 			}
 		});
 	}

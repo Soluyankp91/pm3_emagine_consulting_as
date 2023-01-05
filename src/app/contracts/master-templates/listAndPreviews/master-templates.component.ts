@@ -10,7 +10,6 @@ import {
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
-import { TableFiltersEnum } from '../../shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -18,7 +17,11 @@ import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 
 import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
-import { MappedAgreementTemplatesListItemDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
+import {
+	BaseMappedAgreementTemplatesListItemDto,
+	MappedTableCells,
+	TableFiltersEnum,
+} from '../../shared/entities/contracts.interfaces';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -32,9 +35,10 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 
 	displayedColumns = DISPLAYED_COLUMNS;
 	actions = MASTER_TEMPLATE_ACTIONS;
-	table$: Observable<any>;
 
-    trackById: TrackByFunction<number>;
+	table$: Observable<ITableConfig>;
+
+	trackById: TrackByFunction<number>;
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -44,11 +48,10 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _injetor: Injector,
+		private readonly _injetor: Injector
 	) {
 		super(_injetor);
-        this.trackById = this.createTrackByFn('id');
-
+		this.trackById = this.createTrackByFn('id');
 	}
 
 	ngOnInit(): void {
@@ -117,9 +120,9 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	private _mapTableItems(
 		items: AgreementTemplatesListItemDto[],
 		maps: MappedTableCells
-	): MappedAgreementTemplatesListItemDto[] {
+	): BaseMappedAgreementTemplatesListItemDto[] {
 		return items.map((item: AgreementTemplatesListItemDto) => {
-			return <MappedAgreementTemplatesListItemDto>{
+			return <BaseMappedAgreementTemplatesListItemDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
@@ -139,7 +142,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	}
 
 	private _subscribeOnDataLoading() {
-		this._masterTemplatesService.contractsLoading$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
+		this._masterTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;
