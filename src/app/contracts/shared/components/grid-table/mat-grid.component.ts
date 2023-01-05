@@ -46,11 +46,12 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() selection: boolean = true;
 	@Input() actions: boolean = true;
 	@Input() actionsList: Actions[] = [];
+	@Input() selectedRowId: number | null;
 
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
 	@Output() formControlChange = new EventEmitter();
-	@Output() tableRow = new EventEmitter<{ [key: string]: any }>();
+	@Output() tableRow = new EventEmitter();
 	@Output() selectionChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
 
@@ -85,10 +86,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(
-		private readonly _injector: Injector,
-		private _componentFactoryResolver: ComponentFactoryResolver,
-	) {
+	constructor(private readonly _injector: Injector, private _componentFactoryResolver: ComponentFactoryResolver) {
 		super(_injector);
 		this.trackByAction = this.createTrackByFn('actionType');
 		this.trackByFormControlName = this.createTrackByFn('formControl');
@@ -101,6 +99,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	ngOnChanges(changes: SimpleChanges): void {
 		const displayedColumns = changes['displayedColumns'];
 		const displayedColumnsCopy = [...this.displayedColumns];
+		const tableConfig = changes['tableConfig'];
+		if (tableConfig) {
+			this.tableRow.emit(null);
+		}
 		if (displayedColumns && this.selection) {
 			displayedColumnsCopy.unshift('select');
 		}
@@ -114,7 +116,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		this.cellArr = this.customCells.toArray();
 		await this.loadFilters();
 
-        //await for filters to be inited then subscribe to formControls:
+		//await for filters to be inited then subscribe to formControls:
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();

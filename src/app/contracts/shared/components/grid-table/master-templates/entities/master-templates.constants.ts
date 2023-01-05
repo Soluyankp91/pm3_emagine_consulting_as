@@ -131,6 +131,25 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	isEnabled: 'Status',
 	lastUpdatedByLowerCaseInitials: 'By',
 };
+export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
+	name: 'Name',
+	definition: 'Definition',
+	agreementType: 'Document type',
+	recipientTypeId: 'Recipient type',
+	legalEntityIds: 'Legal entities',
+	salesTypeIds: 'Sales types',
+	deliveryTypeIds: 'Delivery types',
+	contractTypeIds: 'Contract types',
+	language: 'Language',
+	note: 'Notes',
+	isEnabled: 'Status',
+	agreementTemplateId: 'ID',
+	createdDateUtc: 'Created',
+	createdBy: 'by',
+	lastUpdateDateUtc: 'Last updated',
+	lastUpdatedBy: 'by',
+	duplicationSourceAgreementTemplateId: 'Duplicated from',
+};
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;

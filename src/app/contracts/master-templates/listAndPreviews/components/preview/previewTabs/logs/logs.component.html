@@ -1,0 +1,36 @@
+<div class="logs-container">
+    <ng-container *ngIf="mappedLogs.length">
+        <div (click)="emitFilter()">Filter</div>
+        <ng-container *ngFor="let log of mappedLogs; else noLogs">
+            <div class="log-item">
+                <img class="profile-picture" [src]="log.profilePictureUrl" />
+                <ng-container *ngIf="log.operationType">
+                    <div class="info-part">
+                        <p class="action-description">
+                            {{ log.employee?.name }} {{ operationsTypeMap[log.operationType] }} {{ log.propertyName }}
+                        </p>
+                        <div [ngSwitch]="log.operationType">
+                            <div *ngSwitchCase="1">
+                                <p class="additional-info">{{ log.newValue }}</p>
+                            </div>
+                            <div *ngSwitchCase="2">
+                                <p class="additional-info">From {{ log.oldValue }} to {{ log.newValue }}</p>
+                            </div>
+                            <div *ngSwitchCase="3">
+                                <p class="additional-info">{{ log.oldValue }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="date-part">
+                        <span class="date">{{log.date}}, </span>
+                        <span class="day-time">{{log.dayTime}}</span>
+                    </div>
+                </ng-container>
+            </div>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </ng-container>
+    <ng-template #noLogs>
+        No Logs yet
+    </ng-template>
+</div>

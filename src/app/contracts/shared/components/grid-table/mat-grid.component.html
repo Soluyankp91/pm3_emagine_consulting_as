@@ -1,6 +1,6 @@
 <div class="container">
 	<mat-chip-list>
-		<mat-chip *ngFor="let chip of matChips;trackBy:trackByFormControlName" (click)="closeFilter(chip.formControl)">
+		<mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName" (click)="closeFilter(chip.formControl)">
 			<mat-icon svgIcon="close-button-icon"> </mat-icon>
 			<span>{{ chip.label }}</span>
 		</mat-chip>
@@ -58,12 +58,12 @@
 			<ng-container matColumnDef="actions">
 				<mat-header-cell *matHeaderCellDef=""></mat-header-cell>
 				<mat-cell *matCellDef="let actionRow">
-					<button mat-icon-button [matMenuTriggerFor]="menu">
+					<button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
 						<mat-icon svgIcon="three-hor-dots"></mat-icon>
 					</button>
 					<mat-menu #menu="matMenu">
 						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
-							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow);">
 								<span> {{ action.label }}</span>
 							</button>
 						</ng-container>
@@ -73,7 +73,10 @@
 		</ng-container>
 
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row *matRowDef="let row; columns: displayedColumns" (click)="getTableRow(row)"></mat-row>
+		<mat-row
+			*matRowDef="let row; columns: displayedColumns"
+			[ngClass]="{ highlight: selectedRowId === row.agreementTemplateId }"
+			(click)="getTableRow(row);$event.stopPropagation()"></mat-row>
 	</mat-table>
 </div>
 <mat-paginator

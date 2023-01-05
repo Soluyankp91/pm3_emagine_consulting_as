@@ -48,22 +48,32 @@ export interface MappedTableCells {
 
 export interface BaseMappedAgreementTemplatesListItemDto {
 	agreementTemplateId: number;
+	definition: string;
 	name: string;
+	note: string;
 	agreementType: string;
 	recipientTypeId: string;
 	language: string;
+	countryCode: string;
 	legalEntityIds: string[];
 	contractTypeIds: string[];
 	salesTypeIds: string[];
 	deliveryTypeIds: string[];
 	createdByLowerCaseInitials?: string;
 	createdDateUtc: string;
+	createdBy: string;
+	lastUpdatedBy: string;
 	lastUpdatedByLowerCaseInitials?: string;
 	lastUpdateDateUtc?: string;
 	isEnabled: boolean;
 	linkState?: AgreementTemplateParentChildLinkState;
 	linkStateAccepted?: boolean | undefined;
+	duplicationSourceAgreementTemplateId?: number;
 }
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
+	clientName: string;
+}
+export interface MasterTemplatePreview {
+	name: string;
 	clientName: string;
 }

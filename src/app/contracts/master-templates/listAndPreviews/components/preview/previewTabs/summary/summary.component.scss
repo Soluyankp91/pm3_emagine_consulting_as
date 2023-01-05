@@ -1,0 +1,39 @@
+.summary-container {
+	padding: 24px 32px;
+}
+.row-item {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 15px;
+}
+.label {
+	font-weight: 700;
+	color: #898785;
+}
+.fw-700 {
+	font-weight: 700;
+}
+.fw-600 {
+	font-weight: 600;
+}
+.flex-b-60 {
+	flex-basis: 60%;
+}
+.icon {
+	width: 8px;
+}
+.status-item,
+.language-item {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+}
+.mat-divider {
+	margin: 15px 0;
+}
+.country-icon {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background-size: cover;
+}

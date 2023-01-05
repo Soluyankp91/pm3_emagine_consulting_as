@@ -49,6 +49,12 @@ import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
+import { PreviewTabsComponent } from './master-templates/listAndPreviews/components/preview/preview.component';
+import { SummaryComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/summary/summary.component';
+import { EmptyStringHandlePipe } from './shared/pipes/empty-string-handle.pipe';
+import { FormatArrayPipe } from './shared/pipes/format-array.pipe';
+import { AttachmentsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/attachments/attachments.component';
+import { LogsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/logs/logs.component';
 
 @NgModule({
 	declarations: [
@@ -84,6 +90,12 @@ import { ClientTemplatesService } from './client-specific-templates/listAndPrevi
 		TenantsComponent,
 		IsEnabledComponent,
 		TruncateTextCustomPipe,
+		PreviewTabsComponent,
+		SummaryComponent,
+		EmptyStringHandlePipe,
+		FormatArrayPipe,
+		AttachmentsComponent,
+  LogsComponent,
 	],
 	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, FuseScrollbarModule, MaterialModule],
 	providers: [
@@ -135,6 +147,18 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'dropdown-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/dropdown-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'templates-links',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/templates-links.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-links',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-links.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-icon.svg')
 		);
 	}
 }

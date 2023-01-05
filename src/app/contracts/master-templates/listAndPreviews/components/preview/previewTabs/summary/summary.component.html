@@ -1,0 +1,82 @@
+<div class="summary-container">
+	<div class="row-item">
+		<div class="label">{{ previewMap['name'] }}</div>
+		<div class="fw-700 flex-b-60">{{ summaryItem.name }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['definition'] }}</div>
+		<div class="fw-700 flex-b-60">{{ summaryItem.definition | emptyStringHandle }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['agreementType'] }}</div>
+		<div class="fw-700 flex-b-60">{{ summaryItem.agreementType }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['recipientTypeId'] }}</div>
+		<div class="fw-700 flex-b-60">{{ summaryItem.recipientTypeId }}</div>
+	</div>
+
+	<mat-divider></mat-divider>
+
+	<div class="row-item">
+		<div class="label">{{ previewMap['legalEntityIds'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.legalEntityIds | formatArray }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['salesTypeIds'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.salesTypeIds | formatArray }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['deliveryTypeIds'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.deliveryTypeIds | formatArray }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['contractTypeIds'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.contractTypeIds | formatArray }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['language'] }}</div>
+		<div class="fw-600 flex-b-60">
+			<div class="language-item">
+				<span class="fi fi-{{ summaryItem.countryCode | lowercase }} country-icon"></span>
+				<div class="fw-600 flex-b-60">{{ summaryItem.language }}</div>
+			</div>
+		</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['note'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.note | emptyStringHandle }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['isEnabled'] }}</div>
+		<div class="fw-600 flex-b-60">
+			<ng-container *ngIf="summaryItem.isEnabled; else notEnabled">
+				<div class="status-item">
+					<mat-icon svgIcon="enabled" class="icon enable-icon"> </mat-icon>
+					<span class="fw-600"> Enabled</span>
+				</div>
+			</ng-container>
+			<ng-template #notEnabled>
+				<div class="status-item">
+					<mat-icon svgIcon="disabled" class="icon disable-icon"></mat-icon>
+					<span class="fw-600"> Disabled</span>
+				</div>
+			</ng-template>
+		</div>
+	</div>
+
+	<mat-divider></mat-divider>
+
+	<div class="row-item">
+		<div class="label">{{ previewMap['agreementTemplateId'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.agreementTemplateId }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['createdDateUtc'] }}, {{ previewMap['createdBy'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.createdDateUtc }}, by {{ summaryItem.createdBy }}</div>
+	</div>
+	<div class="row-item">
+		<div class="label">{{ previewMap['lastUpdateDateUtc'] }}, {{ previewMap['lastUpdatedBy'] }}</div>
+		<div class="fw-600 flex-b-60">{{ summaryItem.lastUpdateDateUtc }}, by {{ summaryItem.lastUpdatedBy }}</div>
+	</div>
+</div>
