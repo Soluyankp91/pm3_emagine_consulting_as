@@ -28,9 +28,9 @@ import { FormGroup } from '@angular/forms';
 import { EHeaderCells, ETableCells, IColumn, IFilter, ITableConfig } from './mat-grid.interfaces';
 import { FILTER_LABEL_MAP, PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Actions } from './master-templates/entities/master-templates.interfaces';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
+import { Actions } from '../../entities/contracts.interfaces';
 
 @Component({
 	selector: 'emg-mat-grid',
@@ -81,14 +81,17 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	selectionModel = new SelectionModel<any>(this.allowMultiSelect, this.initialSelection);
 
 	trackByAction: TrackByFunction<Actions>;
-    trackByFormControlName: TrackByFunction<string>;
+	trackByFormControlName: TrackByFunction<string>;
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(private readonly injector: Injector, private _componentFactoryResolver: ComponentFactoryResolver) {
-		super(injector);
+	constructor(
+		private readonly _injector: Injector,
+		private _componentFactoryResolver: ComponentFactoryResolver,
+	) {
+		super(_injector);
 		this.trackByAction = this.createTrackByFn('actionType');
-        this.trackByFormControlName = this.createTrackByFn('formControl')
+		this.trackByFormControlName = this.createTrackByFn('formControl');
 	}
 
 	ngOnInit(): void {
@@ -107,9 +110,11 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		this.displayedColumns = displayedColumnsCopy;
 	}
 
-	ngAfterViewInit(): void {
+	async ngAfterViewInit() {
 		this.cellArr = this.customCells.toArray();
-		this.loadFilters();
+		await this.loadFilters();
+
+        //await for filters to be inited then subscribe to formControls:
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();
@@ -136,21 +141,23 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		return item.matColumnDef;
 	}
 
-	loadFilters() {
-		this.cells
-			.filter((cell) => cell.headerCell.type !== 'sort')
-			.forEach((cell, index) => {
-				if (cell.headerCell.filter) {
-					const factory = this._componentFactoryResolver.resolveComponentFactory<IFilter>(
-						cell.headerCell.filter.component
-					);
-					const component = this.children.get(index)?.createComponent(factory);
-					this.formGroup.addControl(
-						cell.headerCell.filter.formControlName,
-						(component as ComponentRef<IFilter>).instance.filterFormControl
-					);
-				}
-			});
+	async loadFilters() {
+		await Promise.all(
+			this.cells
+				.filter((cell) => cell.headerCell.type !== 'sort')
+				.map(async (cell, index) => {
+					if (cell.headerCell.filter) {
+						const componentInstance = await cell.headerCell.filter.component();
+						const factory = this._componentFactoryResolver.resolveComponentFactory<IFilter>(componentInstance);
+						const component = this.children.get(index)?.createComponent(factory, 0);
+						this.formGroup.addControl(
+							cell.headerCell.filter.formControlName,
+							(component as ComponentRef<IFilter>).instance.filterFormControl,
+							{ emitEvent: false }
+						);
+					}
+				})
+		);
 	}
 
 	closeFilter(chip: string) {

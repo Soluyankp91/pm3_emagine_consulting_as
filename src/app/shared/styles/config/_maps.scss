@@ -1,0 +1,15 @@
+$sizes: (
+    150: 150px,
+    180: 180px,
+    235: 235px,
+    300: 300px,
+    312: 312px,
+    397: 397px,
+    559: 559px
+);
+
+@each $name, $value in $sizes {
+  .form-width-#{$name} {
+    width: $value;
+  }
+}

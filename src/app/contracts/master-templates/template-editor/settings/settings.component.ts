@@ -369,7 +369,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				this._apiServiceProxy.simpleList2(false, undefined, parentTemplate.name, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT).pipe(
 					finalize(() => {
 						setTimeout(() => {
-							this.duplicateTemplateControl.setValue(parentTemplate.agreementTemplateId, { emitEvent: false });
+							this.duplicateTemplateControl.setValue(parentTemplate.agreementTemplateId as number, { emitEvent: false });
 							this._onDuplicateChanges(parentTemplate);
 							this.hideMainSpinner();
 						});

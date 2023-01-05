@@ -41,7 +41,7 @@ export class ContractsService {
 		this.initBaseEnums$().subscribe();
 	}
 
-	getTenats$() {
+	getTenants$() {
 		return this.tenants$$.asObservable();
 	}
 

@@ -5,10 +5,11 @@ import { TableFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/enti
 import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
-export class MasterTemplatesService extends BaseContract {
+export class ClientTemplatesService extends BaseContract {
 	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
+
 	override tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
 		language: [],
 		agreementType: [],
@@ -23,7 +24,7 @@ export class MasterTemplatesService extends BaseContract {
 
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
 		return this._agreementTemplateServiceProxy.list2(
-			false, //isClientTemplate
+			true, //isClientTemplate
 			search, //search
 			tenantIds.map((item) => item.id as number), // tenantId []
 			tableFilters.legalEntityIds.map((item) => item.id as number), //legalEntities []
@@ -37,8 +38,8 @@ export class MasterTemplatesService extends BaseContract {
 			tableFilters.deliveryTypeIds.map((item) => item.id as number),
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
 			this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)), //isEnabled,
-			undefined,
-			undefined,
+			undefined, //linkState
+			undefined, //linkStateAccepted
 			page.pageIndex + 1, //pageIndex
 			page.pageSize, //pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''

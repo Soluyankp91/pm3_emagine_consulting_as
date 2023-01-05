@@ -1,12 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { take, pluck } from 'rxjs/operators';
-import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
+import {
+	ITemplatesService,
+	TEMPLATE_SERVICE_PROVIDER,
+	TEMPLATE_SERVICE_TOKEN,
+} from 'src/app/contracts/shared/services/template-service-factory';
 import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 
 @Component({
 	selector: 'app-is-enabled',
 	templateUrl: './is-enabled.component.html',
+	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class IsEnabledComponent {
 	options = [
@@ -23,10 +28,10 @@ export class IsEnabledComponent {
 	filterFormControl = new FormControl();
 	tableFilter = 'isEnabled';
 
-    labelMap = FILTER_LABEL_MAP;
+	labelMap = FILTER_LABEL_MAP;
 
-	constructor(private masterTemplateService: MasterTemplatesService) {
-		this.masterTemplateService
+	constructor(@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService) {
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((enabled) => {

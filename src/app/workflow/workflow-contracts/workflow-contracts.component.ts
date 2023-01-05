@@ -21,6 +21,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { BigDialogConfig } from 'src/shared/dialog.configs';
+import { BigDialogConfig } from 'src/shared/dialog.configs';
 import {
     ClientPeriodContractsDataCommandDto,
     WorkflowProcessType,
