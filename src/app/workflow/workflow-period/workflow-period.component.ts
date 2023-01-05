@@ -58,7 +58,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
-        private scrollToService: ScrollToService
+        private _scrollToService: ScrollToService
     ) {
         super(injector);
         this._workflowDataService.consultantsAddedToStep
@@ -410,6 +410,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
             target: section!,
             offset: -120
         };
-        this.scrollToService.scrollTo(config);
+        this._scrollToService.scrollTo(config);
     }
 }
