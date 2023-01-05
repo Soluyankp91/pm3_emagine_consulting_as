@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -44,6 +44,10 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
+import { ContractsClientDataComponent } from './contracts-client-data/contracts-client-data.component';
+import { ContractsConsultantDataComponent } from './contracts-consultant-data/contracts-consultant-data.component';
+import { ContractsMainDataComponent } from './contracts-main-data/contracts-main-data.component';
+import { ContractsSyncDataComponent } from './contracts-sync-data/contracts-sync-data.component';
 import {
 	ClientTimeReportingCaps,
 	DeliveryTypes,
@@ -70,14 +74,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	@Input() isCompleted: boolean;
 	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
 
-
+    @ViewChild('mainDataComponent', { static: false }) mainDataComponent: ContractsMainDataComponent;
+    @ViewChild('clientDataComponent', { static: false }) clientDataComponent: ContractsClientDataComponent;
+    @ViewChild('consultantDataComponent', { static: false }) consultantDataComponent: ContractsConsultantDataComponent;
+    @ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
 
 	workflowSideSections = WorkflowProcessType;
 
 	// contractsMainForm: WorkflowContractsMainForm;
-	contractClientForm: WorkflowContractsClientDataForm;
-	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
-	contractsSyncDataForm: WorkflowContractsSyncForm;
+	// contractClientForm: WorkflowContractsClientDataForm;
+	// contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
+	// contractsSyncDataForm: WorkflowContractsSyncForm;
 	consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
 
 	currencies: EnumEntityTypeDto[] = [];
@@ -99,27 +106,27 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
 
-	consultantRateToEdit: PeriodConsultantSpecialRateDto;
-	isConsultantRateEditing = false;
-	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
-	isConsultantFeeEditing = false;
+	// consultantRateToEdit: PeriodConsultantSpecialRateDto;
+	// isConsultantRateEditing = false;
+	// consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
+	// isConsultantFeeEditing = false;
 	clientSpecialRateList: ClientSpecialRateDto[];
 	clientSpecialFeeList: ClientSpecialFeeDto[];
-	filteredConsultantSpecialRates: ClientSpecialRateDto[];
-	filteredConsultantSpecialFees: ClientSpecialFeeDto[];
+	// filteredConsultantSpecialRates: ClientSpecialRateDto[];
+	// filteredConsultantSpecialFees: ClientSpecialFeeDto[];
 
-	clientSpecialRateFilter = new UntypedFormControl('');
-	clientRateToEdit: PeriodClientSpecialRateDto;
-	isClientRateEditing = false;
-	clientSpecialFeeFilter = new UntypedFormControl('');
-	clientFeeToEdit: PeriodClientSpecialFeeDto;
-	isClientFeeEditing = false;
+	// clientSpecialRateFilter = new UntypedFormControl('');
+	// clientRateToEdit: PeriodClientSpecialRateDto;
+	// isClientRateEditing = false;
+	// clientSpecialFeeFilter = new UntypedFormControl('');
+	// clientFeeToEdit: PeriodClientSpecialFeeDto;
+	// isClientFeeEditing = false;
 
 	editEnabledForcefuly = false;
-	syncNotPossible = false;
-	statusAfterSync = false;
-	syncMessage = '';
-	legalContractModuleStatuses = LegalContractStatus;
+	// syncNotPossible = false;
+	// statusAfterSync = false;
+	// syncMessage = '';
+	// legalContractModuleStatuses = LegalContractStatus;
 	bypassLegalValidation = false;
 	validationTriggered = false;
 
@@ -146,9 +153,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	) {
 		super(injector);
 		// this.contractsMainForm = new WorkflowContractsMainForm();
-		this.contractClientForm = new WorkflowContractsClientDataForm();
-		this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
-		this.contractsSyncDataForm = new WorkflowContractsSyncForm();
+		// this.contractClientForm = new WorkflowContractsClientDataForm();
+		// this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
+		// this.contractsSyncDataForm = new WorkflowContractsSyncForm();
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
 	}
@@ -253,10 +260,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	validateContractForm() {
-		this.contractsMainForm.markAllAsTouched();
-		this.contractClientForm.markAllAsTouched();
-		this.contractsSyncDataForm.markAllAsTouched();
-		this.contractsConsultantsDataForm.markAllAsTouched();
+		this.mainDataComponent?.contractsMainForm.markAllAsTouched();
+		this.clientDataComponent?.contractClientForm.markAllAsTouched();
+		this.syncDataComponent?.contractsSyncDataForm.markAllAsTouched();
+		this.consultantDataComponent?.contractsConsultantsDataForm.markAllAsTouched();
 		this.contractsTerminationConsultantForm.markAllAsTouched();
 		this.validationTriggered = true;
 		switch (this.activeSideSection.typeId) {
@@ -267,16 +274,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			case WorkflowProcessType.ChangeConsultantPeriod:
 			case WorkflowProcessType.ExtendConsultantPeriod:
 				return (
-					this.contractsMainForm.valid &&
-					this.contractClientForm.valid &&
-					this.contractsSyncDataForm.valid &&
-					this.contractsConsultantsDataForm.valid &&
-					(this.statusAfterSync ||
-						(this.contractsSyncDataForm.showManualOption?.value &&
-							this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value) ||
-						(!this.contractsSyncDataForm.value.isNewSyncNeeded &&
-							this.contractsSyncDataForm.value.lastSyncedDate !== null &&
-							this.contractsSyncDataForm.value.lastSyncedDate !== undefined))
+					this.mainDataComponent?.contractsMainForm.valid &&
+					this.clientDataComponent?.contractClientForm.valid &&
+					this.syncDataComponent?.contractsSyncDataForm.valid &&
+					this.consultantDataComponent?.contractsConsultantsDataForm.valid &&
+					(this.syncDataComponent?.statusAfterSync ||
+						(this.syncDataComponent?.contractsSyncDataForm.showManualOption?.value &&
+							this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value) ||
+						(!this.syncDataComponent?.contractsSyncDataForm.value.isNewSyncNeeded &&
+							this.syncDataComponent?.contractsSyncDataForm.value.lastSyncedDate !== null &&
+							this.syncDataComponent?.contractsSyncDataForm.value.lastSyncedDate !== undefined))
 				);
 			case WorkflowProcessType.TerminateWorkflow:
 			case WorkflowProcessType.TerminateConsultant:
@@ -498,7 +505,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	updateConsultantStepAnchors() {
-		let consultantNames = this.contractsConsultantsDataForm.consultants.value.map((item: any) => {
+		let consultantNames = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value.map((item: any) => {
 			if (item.consultantType?.id === 10 || item.consultantType?.id === 11) {
 				return item.nameOnly;
 			} else {
@@ -512,225 +519,76 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		});
 	}
 
-	selectClientRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
-		const clientRate = new PeriodClientSpecialRateDto();
-		clientRate.id = undefined;
-		clientRate.clientSpecialRateId = rate.id;
-		clientRate.rateName = rate.internalName;
-		clientRate.reportingUnit = rate.specialRateReportingUnit;
-		clientRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
-		if (clientRate.rateSpecifiedAs?.id === 1) {
-			clientRate.clientRate = +((this.contractClientForm.clientRate?.value?.normalRate * rate.clientRate!) / 100).toFixed(
-				2
-			);
-			clientRate.clientRateCurrencyId = this.contractClientForm.currency?.value?.id;
-		} else {
-			clientRate.clientRate = rate.clientRate;
-			clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
-		}
-		clientRateMenuTrigger.closeMenu();
-		this.addSpecialRate(clientRate);
-	}
 
-	addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientRate?.id ?? null),
-			clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
-			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
-			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
-			clientRateValue: new UntypedFormControl(clientRate?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(clientRate ? false : true),
-		});
-		this.contractClientForm.clientRates.push(form);
-	}
+	// addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+	// 	const form = this._fb.group({
+	// 		consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
+	// 		consultantId: new UntypedFormControl(consultant?.consultantId),
+	// 		consultant: new UntypedFormControl(consultant?.consultant),
+	// 		nameOnly: new UntypedFormControl(consultant?.nameOnly),
+	// 		startDate: new UntypedFormControl(consultant?.startDate),
+	// 		endDate: new UntypedFormControl(consultant?.endDate),
+	// 		noEndDate: new UntypedFormControl(consultant?.noEndDate),
+	// 		consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
+	// 		consultantCapOnTimeReporting: new UntypedFormControl(
+	// 			this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId)
+	// 		),
+	// 		consultantCapOnTimeReportingValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue),
+	// 		consultantCapOnTimeReportingCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultant?.consultantTimeReportingCapCurrencyId)
+	// 		),
+	// 		consultantRateUnitType: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultant?.consultantRate?.rateUnitTypeId)
+	// 		),
+	// 		consultantRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultant?.consultantRate?.currencyId)
+	// 		),
+	// 		consultantRate: new UntypedFormControl(consultant.consultantRate),
+	// 		noSpecialContractTerms: new UntypedFormControl(consultant?.noSpecialContractTerms),
+	// 		specialContractTerms: new UntypedFormControl(
+	// 			{
+	// 				value: consultant?.specialContractTerms,
+	// 				disabled: consultant?.noSpecialContractTerms,
+	// 			},
+	// 			Validators.required
+	// 		),
+	// 		pdcPaymentEntityId: new UntypedFormControl(consultant?.pdcPaymentEntityId),
+	// 		specialRates: new UntypedFormArray([]),
+	// 		consultantSpecialRateFilter: new UntypedFormControl(''),
+	// 		clientFees: new UntypedFormArray([]),
+	// 		consultantSpecialFeeFilter: new UntypedFormControl(''),
+	// 		projectLines: new UntypedFormArray([], Validators.minLength(1)),
+	// 	});
+	// 	this.contractsConsultantsDataForm.consultants.push(form);
+	// 	consultant.projectLines?.forEach((project: any) => {
+	// 		this.addProjectLinesToConsultantData(consultantIndex, project);
+	// 	});
+	// 	consultant.periodConsultantSpecialFees?.forEach((fee: any) => {
+	// 		this.addClientFeesToConsultantData(consultantIndex, fee);
+	// 	});
+	// 	consultant.periodConsultantSpecialRates?.forEach((rate: any) => {
+	// 		this.addSpecialRateToConsultantData(consultantIndex, rate);
+	// 	});
+	// 	this.filteredConsultants.push(consultant.consultant!);
+	// }
 
-	get clientRates(): UntypedFormArray {
-		return this.contractClientForm.get('clientRates') as UntypedFormArray;
-	}
+	// get consultants(): UntypedFormArray {
+	// 	return this.contractsConsultantsDataForm.get('consultants') as UntypedFormArray;
+	// }
 
-	removeClientRate(index: number) {
-		this.clientRates.removeAt(index);
-	}
-
-	editOrSaveSpecialRate(isEditable: boolean, index: number) {
-		if (isEditable) {
-			// save
-			this.clientRateToEdit = new PeriodClientSpecialRateDto();
-			this.isClientRateEditing = false;
-		} else {
-			// make editable
-			const clientFeeValue = this.clientRates.at(index).value;
-			this.clientRateToEdit = new PeriodClientSpecialRateDto({
-				id: clientFeeValue.id,
-				clientSpecialRateId: clientFeeValue.clientSpecialRateId,
-				rateName: clientFeeValue.rateName,
-				reportingUnit: clientFeeValue.reportingUnit,
-				clientRate: clientFeeValue.clientRateValue,
-				clientRateCurrencyId: clientFeeValue.clientRateCurrency?.id,
-			});
-			this.isClientRateEditing = true;
-		}
-		this.clientRates.at(index).get('editable')?.setValue(!isEditable, { emitEvent: false });
-	}
-
-	cancelEditClientRate(index: number) {
-		const rateRow = this.clientFees.at(index);
-		rateRow?.get('clientRateValue')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
-		rateRow
-			?.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), { emitEvent: false });
-		this.clientRateToEdit = new PeriodConsultantSpecialRateDto();
-		this.isClientRateEditing = false;
-		this.clientRates.at(index).get('editable')?.setValue(false, { emitEvent: false });
-	}
-
-	selectClientFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
-		const clientFee = new PeriodClientSpecialFeeDto();
-		clientFee.id = undefined;
-		clientFee.clientSpecialFeeId = fee.id;
-		clientFee.feeName = fee.internalName;
-		clientFee.frequency = fee.clientSpecialFeeFrequency;
-		clientFee.clientRate = fee.clientRate;
-		clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
-		clientFeeMenuTrigger.closeMenu();
-		this.addClientFee(clientFee);
-	}
-
-	addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientFee?.id ?? null),
-			clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
-			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
-			feeFrequency: new UntypedFormControl(clientFee?.frequency ?? null),
-			clientRateValue: new UntypedFormControl(clientFee?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null
-			),
-
-			editable: new UntypedFormControl(clientFee ? false : true),
-		});
-		this.contractClientForm.clientFees.push(form);
-	}
-
-	get clientFees(): UntypedFormArray {
-		return this.contractClientForm.get('clientFees') as UntypedFormArray;
-	}
-
-	removeClientFee(index: number) {
-		this.clientFees.removeAt(index);
-	}
-
-	editOrSaveClientFee(isEditable: boolean, index: number) {
-		if (isEditable) {
-			// save
-			this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
-			this.isClientFeeEditing = false;
-		} else {
-			// make editable
-			const clientFeeValue = this.clientFees.at(index).value;
-			this.clientFeeToEdit = new PeriodClientSpecialFeeDto({
-				id: clientFeeValue.id,
-				clientSpecialFeeId: clientFeeValue.clientSpecialFeeId,
-				feeName: clientFeeValue.feeName,
-				frequency: clientFeeValue.feeFrequency,
-				clientRate: clientFeeValue.clientRateValue,
-				clientRateCurrencyId: clientFeeValue.clientRateCurrency?.id,
-			});
-			this.isClientFeeEditing = true;
-		}
-		this.clientFees.at(index).get('editable')?.setValue(!isEditable, { emitEvent: false });
-	}
-
-	cancelEditClientFee(index: number) {
-		const feeRow = this.clientFees.at(index);
-		feeRow?.get('clientRateValue')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
-		feeRow
-			?.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), { emitEvent: false });
-		this.clientFeeToEdit = new PeriodConsultantSpecialFeeDto();
-		this.isClientFeeEditing = false;
-		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
-	}
-
-	addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
-		const form = this._fb.group({
-			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
-			consultantId: new UntypedFormControl(consultant?.consultantId),
-			consultant: new UntypedFormControl(consultant?.consultant),
-			nameOnly: new UntypedFormControl(consultant?.nameOnly),
-			startDate: new UntypedFormControl(consultant?.startDate),
-			endDate: new UntypedFormControl(consultant?.endDate),
-			noEndDate: new UntypedFormControl(consultant?.noEndDate),
-			consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
-			consultantCapOnTimeReporting: new UntypedFormControl(
-				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId)
-			),
-			consultantCapOnTimeReportingValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue),
-			consultantCapOnTimeReportingCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantTimeReportingCapCurrencyId)
-			),
-			consultantRateUnitType: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.rateUnitTypeId)
-			),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.currencyId)
-			),
-			consultantRate: new UntypedFormControl(consultant.consultantRate),
-			noSpecialContractTerms: new UntypedFormControl(consultant?.noSpecialContractTerms),
-			specialContractTerms: new UntypedFormControl(
-				{
-					value: consultant?.specialContractTerms,
-					disabled: consultant?.noSpecialContractTerms,
-				},
-				Validators.required
-			),
-			pdcPaymentEntityId: new UntypedFormControl(consultant?.pdcPaymentEntityId),
-			specialRates: new UntypedFormArray([]),
-			consultantSpecialRateFilter: new UntypedFormControl(''),
-			clientFees: new UntypedFormArray([]),
-			consultantSpecialFeeFilter: new UntypedFormControl(''),
-			projectLines: new UntypedFormArray([], Validators.minLength(1)),
-		});
-		this.contractsConsultantsDataForm.consultants.push(form);
-		consultant.projectLines?.forEach((project: any) => {
-			this.addProjectLinesToConsultantData(consultantIndex, project);
-		});
-		consultant.periodConsultantSpecialFees?.forEach((fee: any) => {
-			this.addClientFeesToConsultantData(consultantIndex, fee);
-		});
-		consultant.periodConsultantSpecialRates?.forEach((rate: any) => {
-			this.addSpecialRateToConsultantData(consultantIndex, rate);
-		});
-		this.filteredConsultants.push(consultant.consultant!);
-
-		this.manageConsultantRateAutocomplete(consultantIndex);
-		this.manageConsultantFeeAutocomplete(consultantIndex);
-	}
-
-	get consultants(): UntypedFormArray {
-		return this.contractsConsultantsDataForm.get('consultants') as UntypedFormArray;
-	}
-
-	addConsultantLegalContract(consultant: ConsultantContractsDataQueryDto) {
-		const form = this._fb.group({
-			consultantId: new UntypedFormControl(consultant.consultantId),
-			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
-			consultant: new UntypedFormControl(consultant.consultant),
-			consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
-			nameOnly: new UntypedFormControl(consultant.nameOnly),
-			internalLegalContractDoneStatusId: new UntypedFormControl(consultant.internalLegalContractDoneStatusId),
-			consultantLegalContractDoneStatusId: new UntypedFormControl(consultant.consultantLegalContractDoneStatusId),
-			pdcPaymentEntityId: new UntypedFormControl(consultant.pdcPaymentEntityId),
-		});
-		this.contractsSyncDataForm.consultants.push(form);
-	}
-
-	displayConsultantEmploymentType(employmentTypeId: number) {
-		return this.employmentTypes.find((x) => x.id === employmentTypeId)?.name!;
-	}
+	// addConsultantLegalContract(consultant: ConsultantContractsDataQueryDto) {
+	// 	const form = this._fb.group({
+	// 		consultantId: new UntypedFormControl(consultant.consultantId),
+	// 		consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
+	// 		consultant: new UntypedFormControl(consultant.consultant),
+	// 		consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
+	// 		nameOnly: new UntypedFormControl(consultant.nameOnly),
+	// 		internalLegalContractDoneStatusId: new UntypedFormControl(consultant.internalLegalContractDoneStatusId),
+	// 		consultantLegalContractDoneStatusId: new UntypedFormControl(consultant.consultantLegalContractDoneStatusId),
+	// 		pdcPaymentEntityId: new UntypedFormControl(consultant.pdcPaymentEntityId),
+	// 	});
+	// 	this.contractsSyncDataForm.consultants.push(form);
+	// }
 
 	getRatesAndFees(clientId: number) {
 		this._clientService
@@ -747,419 +605,419 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 	}
 
-	selectConsultantSpecialRate(
-		event: any,
-		consultantIndex: number,
-		rate: ClientSpecialRateDto,
-		consultantRateMenuTrigger: MatMenuTrigger
-	) {
-		const consultantRate = new PeriodConsultantSpecialRateDto();
-		consultantRate.id = undefined;
-		consultantRate.clientSpecialRateId = rate.id;
-		consultantRate.rateName = rate.internalName;
-		consultantRate.reportingUnit = rate.specialRateReportingUnit;
-		consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
-		consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
-		consultantRate.consultantRate = rate.consultantRate;
-		consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
-		consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
-		if (consultantRate.rateSpecifiedAs?.id === 1) {
-			consultantRate.prodataToProdataRate = +(
-				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
-					rate.proDataToProDataRate!) /
-				100
-			).toFixed(2);
-			consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants
-				.at(consultantIndex)!
-				.get('consultantRateCurrency')!.value?.id;
-			consultantRate.consultantRate = +(
-				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
-					rate.consultantRate!) /
-				100
-			).toFixed(2);
-			consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants
-				.at(consultantIndex)!
-				.get('consultantRateCurrency')!.value?.id;
-		} else {
-			consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
-			consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
-			consultantRate.consultantRate = rate.consultantRate;
-			consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
-		}
-		consultantRateMenuTrigger.closeMenu();
-		this.addSpecialRateToConsultantData(consultantIndex, consultantRate);
-	}
+	// selectConsultantSpecialRate(
+	// 	event: any,
+	// 	consultantIndex: number,
+	// 	rate: ClientSpecialRateDto,
+	// 	consultantRateMenuTrigger: MatMenuTrigger
+	// ) {
+	// 	const consultantRate = new PeriodConsultantSpecialRateDto();
+	// 	consultantRate.id = undefined;
+	// 	consultantRate.clientSpecialRateId = rate.id;
+	// 	consultantRate.rateName = rate.internalName;
+	// 	consultantRate.reportingUnit = rate.specialRateReportingUnit;
+	// 	consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+	// 	consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+	// 	consultantRate.consultantRate = rate.consultantRate;
+	// 	consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+	// 	consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+	// 	if (consultantRate.rateSpecifiedAs?.id === 1) {
+	// 		consultantRate.prodataToProdataRate = +(
+	// 			(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
+	// 				rate.proDataToProDataRate!) /
+	// 			100
+	// 		).toFixed(2);
+	// 		consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants
+	// 			.at(consultantIndex)!
+	// 			.get('consultantRateCurrency')!.value?.id;
+	// 		consultantRate.consultantRate = +(
+	// 			(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
+	// 				rate.consultantRate!) /
+	// 			100
+	// 		).toFixed(2);
+	// 		consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants
+	// 			.at(consultantIndex)!
+	// 			.get('consultantRateCurrency')!.value?.id;
+	// 	} else {
+	// 		consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+	// 		consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+	// 		consultantRate.consultantRate = rate.consultantRate;
+	// 		consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+	// 	}
+	// 	consultantRateMenuTrigger.closeMenu();
+	// 	this.addSpecialRateToConsultantData(consultantIndex, consultantRate);
+	// }
 
-	addSpecialRateToConsultantData(index: number, clientRate?: PeriodConsultantSpecialRateDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientRate?.id ?? null),
-			clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
-			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
-			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
-			proDataRateValue: new UntypedFormControl(clientRate?.prodataToProdataRate ?? null),
-			proDataRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.prodataToProdataRateCurrencyId) ?? null
-			),
-			consultantRateValue: new UntypedFormControl(clientRate?.consultantRate ?? null),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.consultantRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(clientRate ? false : true),
-		});
+	// addSpecialRateToConsultantData(index: number, clientRate?: PeriodConsultantSpecialRateDto) {
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(clientRate?.id ?? null),
+	// 		clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
+	// 		rateName: new UntypedFormControl(clientRate?.rateName ?? null),
+	// 		reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
+	// 		proDataRateValue: new UntypedFormControl(clientRate?.prodataToProdataRate ?? null),
+	// 		proDataRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, clientRate?.prodataToProdataRateCurrencyId) ?? null
+	// 		),
+	// 		consultantRateValue: new UntypedFormControl(clientRate?.consultantRate ?? null),
+	// 		consultantRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, clientRate?.consultantRateCurrencyId) ?? null
+	// 		),
+	// 		editable: new UntypedFormControl(clientRate ? false : true),
+	// 	});
 
-		(this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).push(form);
-	}
+	// 	(this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).push(form);
+	// }
 
-	removeConsultantDataSpecialRate(consultantIndex: number, rateIndex: number) {
-		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).removeAt(
-			rateIndex
-		);
-	}
+	// removeConsultantDataSpecialRate(consultantIndex: number, rateIndex: number) {
+	// 	(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).removeAt(
+	// 		rateIndex
+	// 	);
+	// }
 
-	editOrSaveConsultantSpecialRate(isEditable: boolean, consultantIndex: number, rateIndex: number) {
-		if (isEditable) {
-			this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
-			this.isConsultantRateEditing = false;
-		} else {
-			const consultantRateValue = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(
-				rateIndex
-			).value;
-			this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
-				id: consultantRateValue.id,
-				clientSpecialRateId: consultantRateValue.clientSpecialRateId,
-				rateName: consultantRateValue.rateName,
-				reportingUnit: consultantRateValue.reportingUnit,
-				prodataToProdataRate: consultantRateValue.proDataRateValue,
-				prodataToProdataRateCurrencyId: consultantRateValue.proDataRateCurrency?.id,
-				consultantRate: consultantRateValue.consultantRateValue,
-				consultantRateCurrencyId: consultantRateValue.consultantRateCurrency?.id,
-			});
-			this.isConsultantRateEditing = true;
-		}
-		(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
-			.at(rateIndex)
-			.get('editable')
-			?.setValue(!isEditable, { emitEvent: false });
-	}
+	// editOrSaveConsultantSpecialRate(isEditable: boolean, consultantIndex: number, rateIndex: number) {
+	// 	if (isEditable) {
+	// 		this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
+	// 		this.isConsultantRateEditing = false;
+	// 	} else {
+	// 		const consultantRateValue = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(
+	// 			rateIndex
+	// 		).value;
+	// 		this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
+	// 			id: consultantRateValue.id,
+	// 			clientSpecialRateId: consultantRateValue.clientSpecialRateId,
+	// 			rateName: consultantRateValue.rateName,
+	// 			reportingUnit: consultantRateValue.reportingUnit,
+	// 			prodataToProdataRate: consultantRateValue.proDataRateValue,
+	// 			prodataToProdataRateCurrencyId: consultantRateValue.proDataRateCurrency?.id,
+	// 			consultantRate: consultantRateValue.consultantRateValue,
+	// 			consultantRateCurrencyId: consultantRateValue.consultantRateCurrency?.id,
+	// 		});
+	// 		this.isConsultantRateEditing = true;
+	// 	}
+	// 	(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
+	// 		.at(rateIndex)
+	// 		.get('editable')
+	// 		?.setValue(!isEditable, { emitEvent: false });
+	// }
 
-	cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
-		const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
-		rateRow?.get('proDataRateValue')?.setValue(this.consultantRateToEdit.prodataToProdataRate, { emitEvent: false });
-		rateRow
-			?.get('proDataRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {
-				emitEvent: false,
-			});
-		rateRow?.get('consultantRateValue')?.setValue(this.consultantRateToEdit.consultantRate, { emitEvent: false });
-		rateRow
-			?.get('consultantRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {
-				emitEvent: false,
-			});
-		this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
-		this.isConsultantRateEditing = false;
-		(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
-			.at(specialRateIndex)
-			.get('editable')
-			?.setValue(false, { emitEvent: false });
-	}
+	// cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
+	// 	const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
+	// 	rateRow?.get('proDataRateValue')?.setValue(this.consultantRateToEdit.prodataToProdataRate, { emitEvent: false });
+	// 	rateRow
+	// 		?.get('proDataRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	rateRow?.get('consultantRateValue')?.setValue(this.consultantRateToEdit.consultantRate, { emitEvent: false });
+	// 	rateRow
+	// 		?.get('consultantRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
+	// 	this.isConsultantRateEditing = false;
+	// 	(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
+	// 		.at(specialRateIndex)
+	// 		.get('editable')
+	// 		?.setValue(false, { emitEvent: false });
+	// }
 
-	getConsultantSpecialRateControls(index: number): AbstractControl[] | null {
-		return (this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).controls;
-	}
+	// getConsultantSpecialRateControls(index: number): AbstractControl[] | null {
+	// 	return (this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).controls;
+	// }
 
 	// #endregion Consultant data Special Rates
 
 	// Consultant data Client fees START REGION
 
-	selectConsultantSpecialFee(
-		event: any,
-		consultantIndex: number,
-		fee: ClientSpecialFeeDto,
-		consultantFeeMenuTrigger: MatMenuTrigger
-	) {
-		const consultantFee = new PeriodConsultantSpecialFeeDto();
-		consultantFee.id = undefined;
-		consultantFee.clientSpecialFeeId = fee.id;
-		consultantFee.feeName = fee.internalName;
-		consultantFee.frequency = fee.clientSpecialFeeFrequency;
-		consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
-		consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
-		consultantFee.consultantRate = fee.consultantRate;
-		consultantFee.consultantRateCurrencyId = fee.consultantCurrency?.id;
-		consultantFeeMenuTrigger.closeMenu();
-		this.addClientFeesToConsultantData(consultantIndex, consultantFee);
-	}
+	// selectConsultantSpecialFee(
+	// 	event: any,
+	// 	consultantIndex: number,
+	// 	fee: ClientSpecialFeeDto,
+	// 	consultantFeeMenuTrigger: MatMenuTrigger
+	// ) {
+	// 	const consultantFee = new PeriodConsultantSpecialFeeDto();
+	// 	consultantFee.id = undefined;
+	// 	consultantFee.clientSpecialFeeId = fee.id;
+	// 	consultantFee.feeName = fee.internalName;
+	// 	consultantFee.frequency = fee.clientSpecialFeeFrequency;
+	// 	consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
+	// 	consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
+	// 	consultantFee.consultantRate = fee.consultantRate;
+	// 	consultantFee.consultantRateCurrencyId = fee.consultantCurrency?.id;
+	// 	consultantFeeMenuTrigger.closeMenu();
+	// 	this.addClientFeesToConsultantData(consultantIndex, consultantFee);
+	// }
 
-	addClientFeesToConsultantData(index: number, clientFee?: PeriodConsultantSpecialFeeDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientFee?.id ?? null),
-			clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
-			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
-			feeFrequency: new UntypedFormControl(clientFee?.frequency ?? null),
-			proDataRateValue: new UntypedFormControl(clientFee?.prodataToProdataRate ?? null),
-			proDataRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.prodataToProdataRateCurrencyId) ?? null
-			),
-			consultantRateValue: new UntypedFormControl(clientFee?.consultantRate ?? null),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.consultantRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(false),
-		});
-		(this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as UntypedFormArray).push(form);
-	}
+	// addClientFeesToConsultantData(index: number, clientFee?: PeriodConsultantSpecialFeeDto) {
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(clientFee?.id ?? null),
+	// 		clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
+	// 		feeName: new UntypedFormControl(clientFee?.feeName ?? null),
+	// 		feeFrequency: new UntypedFormControl(clientFee?.frequency ?? null),
+	// 		proDataRateValue: new UntypedFormControl(clientFee?.prodataToProdataRate ?? null),
+	// 		proDataRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, clientFee?.prodataToProdataRateCurrencyId) ?? null
+	// 		),
+	// 		consultantRateValue: new UntypedFormControl(clientFee?.consultantRate ?? null),
+	// 		consultantRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, clientFee?.consultantRateCurrencyId) ?? null
+	// 		),
+	// 		editable: new UntypedFormControl(false),
+	// 	});
+	// 	(this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as UntypedFormArray).push(form);
+	// }
 
-	removeConsultantDataClientFees(consultantIndex: number, feeIndex: number) {
-		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).removeAt(
-			feeIndex
-		);
-	}
+	// removeConsultantDataClientFees(consultantIndex: number, feeIndex: number) {
+	// 	(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).removeAt(
+	// 		feeIndex
+	// 	);
+	// }
 
-	editOrSaveConsultantSpecialFee(isEditable: boolean, consultantIndex: number, feeIndex: number) {
-		if (isEditable) {
-			this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
-			this.isConsultantFeeEditing = false;
-		} else {
-			const consultantFeeValue = (this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).at(
-				feeIndex
-			).value;
-			this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
-				id: consultantFeeValue.id,
-				clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
-				feeName: consultantFeeValue.feeName,
-				frequency: consultantFeeValue.feeFrequency,
-				prodataToProdataRate: consultantFeeValue.proDataRateValue,
-				prodataToProdataRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
-				consultantRate: consultantFeeValue.consultantRateValue,
-				consultantRateCurrencyId: consultantFeeValue.consultantRateCurrency?.id,
-			});
-			this.isConsultantFeeEditing = true;
-		}
-		(this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray)
-			.at(feeIndex)
-			.get('editable')
-			?.setValue(!isEditable, { emitEvent: false });
-	}
+	// editOrSaveConsultantSpecialFee(isEditable: boolean, consultantIndex: number, feeIndex: number) {
+	// 	if (isEditable) {
+	// 		this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
+	// 		this.isConsultantFeeEditing = false;
+	// 	} else {
+	// 		const consultantFeeValue = (this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).at(
+	// 			feeIndex
+	// 		).value;
+	// 		this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
+	// 			id: consultantFeeValue.id,
+	// 			clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
+	// 			feeName: consultantFeeValue.feeName,
+	// 			frequency: consultantFeeValue.feeFrequency,
+	// 			prodataToProdataRate: consultantFeeValue.proDataRateValue,
+	// 			prodataToProdataRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
+	// 			consultantRate: consultantFeeValue.consultantRateValue,
+	// 			consultantRateCurrencyId: consultantFeeValue.consultantRateCurrency?.id,
+	// 		});
+	// 		this.isConsultantFeeEditing = true;
+	// 	}
+	// 	(this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray)
+	// 		.at(feeIndex)
+	// 		.get('editable')
+	// 		?.setValue(!isEditable, { emitEvent: false });
+	// }
 
-	cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
-		const feeRow = (this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).at(specialFeeIndex);
-		feeRow?.get('proDataRateValue')?.setValue(this.consultantFeeToEdit?.prodataToProdataRate, { emitEvent: false });
-		feeRow
-			?.get('proDataRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.prodataToProdataRateCurrencyId), {
-				emitEvent: false,
-			});
-		feeRow?.get('consultantRateValue')?.setValue(this.consultantFeeToEdit?.consultantRate, { emitEvent: false });
-		feeRow
-			?.get('consultantRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.consultantRateCurrencyId), {
-				emitEvent: false,
-			});
-		this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
-		this.isConsultantFeeEditing = false;
-		(this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray)
-			.at(specialFeeIndex)
-			.get('editable')
-			?.setValue(false, { emitEvent: false });
-	}
+	// cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
+	// 	const feeRow = (this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).at(specialFeeIndex);
+	// 	feeRow?.get('proDataRateValue')?.setValue(this.consultantFeeToEdit?.prodataToProdataRate, { emitEvent: false });
+	// 	feeRow
+	// 		?.get('proDataRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.prodataToProdataRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	feeRow?.get('consultantRateValue')?.setValue(this.consultantFeeToEdit?.consultantRate, { emitEvent: false });
+	// 	feeRow
+	// 		?.get('consultantRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.consultantRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
+	// 	this.isConsultantFeeEditing = false;
+	// 	(this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray)
+	// 		.at(specialFeeIndex)
+	// 		.get('editable')
+	// 		?.setValue(false, { emitEvent: false });
+	// }
 
-	getConsultantClientFeesControls(index: number): AbstractControl[] | null {
-		return (this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as UntypedFormArray).controls;
-	}
+	// getConsultantClientFeesControls(index: number): AbstractControl[] | null {
+	// 	return (this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as UntypedFormArray).controls;
+	// }
 	// Consultant data Client fees END REGION
 
 	// Consultant data Project Lines START REGION
 
-	createOrEditProjectLine(index: number, projectLinesMenuTrigger?: MatMenuTrigger, projectLinesIndex?: number) {
-		if (projectLinesMenuTrigger) {
-			projectLinesMenuTrigger.closeMenu();
-		}
-		const scrollStrategy = this.overlay.scrollStrategies.reposition();
-		let projectLine = {
-			projectName: this.contractsMainForm.projectName!.value,
-			startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
-			endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value,
-			noEndDate: this.contractsConsultantsDataForm.consultants.at(index).get('noEndDate')?.value,
-			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
-			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
-			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
-			invoicingReferencePerson: this.contractClientForm.invoicingReferencePerson?.value,
-		};
-		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
-			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(
-				projectLinesIndex!
-			).value;
-		}
-		const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
-			width: '760px',
-			minHeight: '180px',
-			height: 'auto',
-			scrollStrategy,
-			backdropClass: 'backdrop-modal--wrapper',
-			autoFocus: false,
-			panelClass: 'confirmation-modal',
-			data: {
-				dialogType:
-					projectLinesIndex !== null && projectLinesIndex !== undefined
-						? ProjectLineDiallogMode.Edit
-						: ProjectLineDiallogMode.Create,
-				projectLineData: projectLine,
-				clientId: this.contractClientForm.directClientId?.value,
-			},
-		});
+	// createOrEditProjectLine(index: number, projectLinesMenuTrigger?: MatMenuTrigger, projectLinesIndex?: number) {
+	// 	if (projectLinesMenuTrigger) {
+	// 		projectLinesMenuTrigger.closeMenu();
+	// 	}
+	// 	const scrollStrategy = this.overlay.scrollStrategies.reposition();
+	// 	let projectLine = {
+	// 		projectName: this.mainDataComponent?.contractsMainForm.projectName!.value,
+	// 		startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
+	// 		endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value,
+	// 		noEndDate: this.contractsConsultantsDataForm.consultants.at(index).get('noEndDate')?.value,
+	// 		debtorNumber: this.mainDataComponent?.contractsMainForm!.customDebtorNumber?.value,
+	// 		invoicingReferenceNumber: this.clientDataComponent?.contractClientForm.invoicingReferenceNumber?.value,
+	// 		invoiceRecipient: this.clientDataComponent?.contractClientForm.clientInvoicingRecipient?.value,
+	// 		invoicingReferencePerson: this.clientDataComponent?.contractClientForm.invoicingReferencePerson?.value,
+	// 	};
+	// 	if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
+	// 		projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(
+	// 			projectLinesIndex!
+	// 		).value;
+	// 	}
+	// 	const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
+	// 		width: '760px',
+	// 		minHeight: '180px',
+	// 		height: 'auto',
+	// 		scrollStrategy,
+	// 		backdropClass: 'backdrop-modal--wrapper',
+	// 		autoFocus: false,
+	// 		panelClass: 'confirmation-modal',
+	// 		data: {
+	// 			dialogType:
+	// 				projectLinesIndex !== null && projectLinesIndex !== undefined
+	// 					? ProjectLineDiallogMode.Edit
+	// 					: ProjectLineDiallogMode.Create,
+	// 			projectLineData: projectLine,
+	// 			clientId: this.clientDataComponent?.contractClientForm.directClientId?.value,
+	// 		},
+	// 	});
 
-		dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
-			if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
-				this.editProjectLineValue(index, projectLinesIndex, projectLine);
-			} else {
-				this.addProjectLinesToConsultantData(index, projectLine);
-			}
-		});
-	}
+	// 	dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
+	// 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
+	// 			this.editProjectLineValue(index, projectLinesIndex, projectLine);
+	// 		} else {
+	// 			this.addProjectLinesToConsultantData(index, projectLine);
+	// 		}
+	// 	});
+	// }
 
-	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
-		if (projectLine) {
-			if (!projectLine?.differentDebtorNumber) {
-				projectLine!.debtorNumber = this.contractsMainForm!.customDebtorNumber?.value;
-			}
-			if (!projectLine?.differentInvoiceRecipient) {
-				projectLine!.invoiceRecipient = this.contractClientForm.clientInvoicingRecipient?.value;
-			}
-			if (!projectLine?.differentInvoicingReferenceNumber) {
-				projectLine!.invoicingReferenceNumber = this.contractClientForm.invoicingReferenceNumber?.value;
-			}
-			if (!projectLine?.differentInvoicingReferencePerson) {
-				projectLine!.invoicingReferencePerson = this.contractClientForm.invoicingReferencePerson?.value;
-			}
-		}
-		const form = this._fb.group({
-			id: new UntypedFormControl(projectLine?.id ?? null),
-			projectName: new UntypedFormControl(projectLine?.projectName ?? null),
-			startDate: new UntypedFormControl(projectLine?.startDate ?? null),
-			endDate: new UntypedFormControl(projectLine?.endDate ?? null),
-			noEndDate: new UntypedFormControl(projectLine?.noEndDate ?? false),
-			invoicingReferenceNumber: new UntypedFormControl(projectLine?.invoicingReferenceNumber ?? null),
-			differentInvoicingReferenceNumber: new UntypedFormControl(projectLine?.differentInvoicingReferenceNumber ?? null),
-			invoicingReferencePersonId: new UntypedFormControl(
-				projectLine?.invoicingReferencePersonId ?? projectLine?.invoicingReferenceString
-			),
-			invoicingReferencePerson: new UntypedFormControl(
-				projectLine?.invoicingReferencePerson?.id
-					? projectLine?.invoicingReferencePerson
-					: projectLine?.invoicingReferenceString
-			),
-			differentInvoicingReferencePerson: new UntypedFormControl(projectLine?.differentInvoicingReferencePerson ?? false),
-			optionalInvoicingInfo: new UntypedFormControl(projectLine?.optionalInvoicingInfo ?? null),
-			differentDebtorNumber: new UntypedFormControl(projectLine?.differentDebtorNumber ?? false),
-			debtorNumber: new UntypedFormControl(projectLine?.debtorNumber ?? null),
-			differentInvoiceRecipient: new UntypedFormControl(projectLine?.differentInvoiceRecipient ?? false),
-			invoiceRecipientId: new UntypedFormControl(projectLine?.invoiceRecipientId ?? null),
-			invoiceRecipient: new UntypedFormControl(projectLine?.invoiceRecipient ?? null),
-			modifiedById: new UntypedFormControl(projectLine?.modifiedById ?? null),
-			modifiedBy: new UntypedFormControl(projectLine?.modifiedBy ?? null),
-			modificationDate: new UntypedFormControl(projectLine?.modificationDate ?? null),
-			consultantInsuranceOptionId: new UntypedFormControl(projectLine?.consultantInsuranceOptionId),
-			markedForLegacyDeletion: new UntypedFormControl(projectLine?.markedForLegacyDeletion),
-			wasSynced: new UntypedFormControl(projectLine?.wasSynced),
-			isLineForFees: new UntypedFormControl(projectLine?.isLineForFees),
-		});
-		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
-	}
+	// addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
+	// 	if (projectLine) {
+	// 		if (!projectLine?.differentDebtorNumber) {
+	// 			projectLine!.debtorNumber = this.mainDataComponent?.contractsMainForm!.customDebtorNumber?.value;
+	// 		}
+	// 		if (!projectLine?.differentInvoiceRecipient) {
+	// 			projectLine!.invoiceRecipient = this.clientDataComponent?.contractClientForm.clientInvoicingRecipient?.value;
+	// 		}
+	// 		if (!projectLine?.differentInvoicingReferenceNumber) {
+	// 			projectLine!.invoicingReferenceNumber = this.clientDataComponent?.contractClientForm.invoicingReferenceNumber?.value;
+	// 		}
+	// 		if (!projectLine?.differentInvoicingReferencePerson) {
+	// 			projectLine!.invoicingReferencePerson = this.clientDataComponent?.contractClientForm.invoicingReferencePerson?.value;
+	// 		}
+	// 	}
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(projectLine?.id ?? null),
+	// 		projectName: new UntypedFormControl(projectLine?.projectName ?? null),
+	// 		startDate: new UntypedFormControl(projectLine?.startDate ?? null),
+	// 		endDate: new UntypedFormControl(projectLine?.endDate ?? null),
+	// 		noEndDate: new UntypedFormControl(projectLine?.noEndDate ?? false),
+	// 		invoicingReferenceNumber: new UntypedFormControl(projectLine?.invoicingReferenceNumber ?? null),
+	// 		differentInvoicingReferenceNumber: new UntypedFormControl(projectLine?.differentInvoicingReferenceNumber ?? null),
+	// 		invoicingReferencePersonId: new UntypedFormControl(
+	// 			projectLine?.invoicingReferencePersonId ?? projectLine?.invoicingReferenceString
+	// 		),
+	// 		invoicingReferencePerson: new UntypedFormControl(
+	// 			projectLine?.invoicingReferencePerson?.id
+	// 				? projectLine?.invoicingReferencePerson
+	// 				: projectLine?.invoicingReferenceString
+	// 		),
+	// 		differentInvoicingReferencePerson: new UntypedFormControl(projectLine?.differentInvoicingReferencePerson ?? false),
+	// 		optionalInvoicingInfo: new UntypedFormControl(projectLine?.optionalInvoicingInfo ?? null),
+	// 		differentDebtorNumber: new UntypedFormControl(projectLine?.differentDebtorNumber ?? false),
+	// 		debtorNumber: new UntypedFormControl(projectLine?.debtorNumber ?? null),
+	// 		differentInvoiceRecipient: new UntypedFormControl(projectLine?.differentInvoiceRecipient ?? false),
+	// 		invoiceRecipientId: new UntypedFormControl(projectLine?.invoiceRecipientId ?? null),
+	// 		invoiceRecipient: new UntypedFormControl(projectLine?.invoiceRecipient ?? null),
+	// 		modifiedById: new UntypedFormControl(projectLine?.modifiedById ?? null),
+	// 		modifiedBy: new UntypedFormControl(projectLine?.modifiedBy ?? null),
+	// 		modificationDate: new UntypedFormControl(projectLine?.modificationDate ?? null),
+	// 		consultantInsuranceOptionId: new UntypedFormControl(projectLine?.consultantInsuranceOptionId),
+	// 		markedForLegacyDeletion: new UntypedFormControl(projectLine?.markedForLegacyDeletion),
+	// 		wasSynced: new UntypedFormControl(projectLine?.wasSynced),
+	// 		isLineForFees: new UntypedFormControl(projectLine?.isLineForFees),
+	// 	});
+	// 	(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
+	// }
 
-	editProjectLineValue(consultantIndex: number, projectLinesIndex: number, projectLineData: any) {
-		const projectLineRow = (
-			this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray
-		).at(projectLinesIndex);
-		projectLineRow.get('id')?.setValue(projectLineData.id, { emitEvent: false });
-		projectLineRow.get('projectName')?.setValue(projectLineData.projectName, { emitEvent: false });
-		projectLineRow.get('startDate')?.setValue(projectLineData.startDate, { emitEvent: false });
-		projectLineRow.get('endDate')?.setValue(projectLineData.endDate, { emitEvent: false });
-		projectLineRow.get('noEndDate')?.setValue(projectLineData.noEndDate, { emitEvent: false });
-		projectLineRow.get('invoicingReferenceNumber')?.setValue(projectLineData.invoicingReferenceNumber, {
-			emitEvent: false,
-		});
-		projectLineRow.get('differentInvoicingReferenceNumber')?.setValue(projectLineData.differentInvoicingReferenceNumber, {
-			emitEvent: false,
-		});
-		projectLineRow
-			.get('invoicingReferencePersonId')
-			?.setValue(projectLineData.invoicingReferencePersonId ?? projectLineData.invoicingReferenceString, {
-				emitEvent: false,
-			});
-		projectLineRow
-			.get('invoicingReferencePerson')
-			?.setValue(
-				projectLineData.invoicingReferencePerson?.id
-					? projectLineData.invoicingReferencePerson
-					: projectLineData.invoicingReferenceString,
-				{ emitEvent: false }
-			);
-		projectLineRow.get('differentInvoicingReferencePerson')?.setValue(projectLineData.differentInvoicingReferencePerson, {
-			emitEvent: false,
-		});
-		projectLineRow.get('optionalInvoicingInfo')?.setValue(projectLineData.optionalInvoicingInfo, {
-			emitEvent: false,
-		});
-		projectLineRow.get('differentDebtorNumber')?.setValue(projectLineData.differentDebtorNumber, {
-			emitEvent: false,
-		});
-		projectLineRow.get('debtorNumber')?.setValue(projectLineData.debtorNumber, { emitEvent: false });
-		projectLineRow.get('differentInvoiceRecipient')?.setValue(projectLineData.differentInvoiceRecipient, {
-			emitEvent: false,
-		});
-		projectLineRow.get('invoiceRecipientId')?.setValue(projectLineData.invoiceRecipientId, {
-			emitEvent: false,
-		});
-		projectLineRow.get('invoiceRecipient')?.setValue(projectLineData.invoiceRecipient, { emitEvent: false });
-		projectLineRow.get('modifiedById')?.setValue(projectLineData.modifiedById, { emitEvent: false });
-		projectLineRow.get('modifiedBy')?.setValue(projectLineData.modifiedBy, { emitEvent: false });
-		projectLineRow.get('modificationDate')?.setValue(projectLineData.modificationDate, { emitEvent: false });
-		projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {
-			emitEvent: false,
-		});
-		projectLineRow.get('markedForLegacyDeletion')?.setValue(projectLineData.markedForLegacyDeletion, {
-			emitEvent: false,
-		});
-		projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, { emitEvent: false });
-		projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
-	}
+	// editProjectLineValue(consultantIndex: number, projectLinesIndex: number, projectLineData: any) {
+	// 	const projectLineRow = (
+	// 		this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray
+	// 	).at(projectLinesIndex);
+	// 	projectLineRow.get('id')?.setValue(projectLineData.id, { emitEvent: false });
+	// 	projectLineRow.get('projectName')?.setValue(projectLineData.projectName, { emitEvent: false });
+	// 	projectLineRow.get('startDate')?.setValue(projectLineData.startDate, { emitEvent: false });
+	// 	projectLineRow.get('endDate')?.setValue(projectLineData.endDate, { emitEvent: false });
+	// 	projectLineRow.get('noEndDate')?.setValue(projectLineData.noEndDate, { emitEvent: false });
+	// 	projectLineRow.get('invoicingReferenceNumber')?.setValue(projectLineData.invoicingReferenceNumber, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('differentInvoicingReferenceNumber')?.setValue(projectLineData.differentInvoicingReferenceNumber, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow
+	// 		.get('invoicingReferencePersonId')
+	// 		?.setValue(projectLineData.invoicingReferencePersonId ?? projectLineData.invoicingReferenceString, {
+	// 			emitEvent: false,
+	// 		});
+	// 	projectLineRow
+	// 		.get('invoicingReferencePerson')
+	// 		?.setValue(
+	// 			projectLineData.invoicingReferencePerson?.id
+	// 				? projectLineData.invoicingReferencePerson
+	// 				: projectLineData.invoicingReferenceString,
+	// 			{ emitEvent: false }
+	// 		);
+	// 	projectLineRow.get('differentInvoicingReferencePerson')?.setValue(projectLineData.differentInvoicingReferencePerson, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('optionalInvoicingInfo')?.setValue(projectLineData.optionalInvoicingInfo, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('differentDebtorNumber')?.setValue(projectLineData.differentDebtorNumber, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('debtorNumber')?.setValue(projectLineData.debtorNumber, { emitEvent: false });
+	// 	projectLineRow.get('differentInvoiceRecipient')?.setValue(projectLineData.differentInvoiceRecipient, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('invoiceRecipientId')?.setValue(projectLineData.invoiceRecipientId, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('invoiceRecipient')?.setValue(projectLineData.invoiceRecipient, { emitEvent: false });
+	// 	projectLineRow.get('modifiedById')?.setValue(projectLineData.modifiedById, { emitEvent: false });
+	// 	projectLineRow.get('modifiedBy')?.setValue(projectLineData.modifiedBy, { emitEvent: false });
+	// 	projectLineRow.get('modificationDate')?.setValue(projectLineData.modificationDate, { emitEvent: false });
+	// 	projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('markedForLegacyDeletion')?.setValue(projectLineData.markedForLegacyDeletion, {
+	// 		emitEvent: false,
+	// 	});
+	// 	projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, { emitEvent: false });
+	// 	projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
+	// }
 
-	duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
-		const projectLineRowValue: ProjectLineDto = new ProjectLineDto(
-			(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray).at(
-				projectLinesIndex
-			).value
-		);
-		projectLineRowValue.id = undefined; // to create a new instance of project line
-		projectLineRowValue.wasSynced = false;
-		projectLineRowValue.isLineForFees = false;
-		this.addProjectLinesToConsultantData(consultantIndex, projectLineRowValue);
-	}
+	// duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
+	// 	const projectLineRowValue: ProjectLineDto = new ProjectLineDto(
+	// 		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray).at(
+	// 			projectLinesIndex
+	// 		).value
+	// 	);
+	// 	projectLineRowValue.id = undefined; // to create a new instance of project line
+	// 	projectLineRowValue.wasSynced = false;
+	// 	projectLineRowValue.isLineForFees = false;
+	// 	this.addProjectLinesToConsultantData(consultantIndex, projectLineRowValue);
+	// }
 
-	removeConsultantDataProjectLines(consultantIndex: number, projectLineIndex: number) {
-		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray).removeAt(
-			projectLineIndex
-		);
-	}
+	// removeConsultantDataProjectLines(consultantIndex: number, projectLineIndex: number) {
+	// 	(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray).removeAt(
+	// 		projectLineIndex
+	// 	);
+	// }
 
-	editOrSaveConsultantProjectLine(isEditMode: boolean, consultantIndex: number, projectLineIndex: number) {
-		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray)
-			.at(projectLineIndex)
-			.get('editable')
-			?.setValue(!isEditMode, { emitEvent: false });
-	}
+	// editOrSaveConsultantProjectLine(isEditMode: boolean, consultantIndex: number, projectLineIndex: number) {
+	// 	(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray)
+	// 		.at(projectLineIndex)
+	// 		.get('editable')
+	// 		?.setValue(!isEditMode, { emitEvent: false });
+	// }
 
-	getConsultantProjectLinesControls(index: number): AbstractControl[] | null {
-		return (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).controls;
-	}
+	// getConsultantProjectLinesControls(index: number): AbstractControl[] | null {
+	// 	return (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).controls;
+	// }
 
-	toggleMarkProjectLineForDeletion(previousValue: boolean, consultantIndex: number, projectLineIndex: number) {
-		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray)
-			.at(projectLineIndex)
-			.get('markedForLegacyDeletion')
-			?.setValue(!previousValue, { emitEvent: false });
-	}
+	// toggleMarkProjectLineForDeletion(previousValue: boolean, consultantIndex: number, projectLineIndex: number) {
+	// 	(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray)
+	// 		.at(projectLineIndex)
+	// 		.get('markedForLegacyDeletion')
+	// 		?.setValue(!previousValue, { emitEvent: false });
+	// }
 	// Consultant data Project Lines END REGION
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
@@ -1171,14 +1029,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	resetForms() {
-		this.statusAfterSync = false;
-		this.contractsMainForm.reset('', { emitEvent: false });
-		this.contractClientForm.reset('', { emitEvent: false });
-		this.contractClientForm.clientRates.controls = [];
-		this.contractClientForm.clientFees.controls = [];
-		this.contractsConsultantsDataForm.consultants.controls = [];
+		this.syncDataComponent.statusAfterSync = false;
+		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
+		this.clientDataComponent?.contractClientForm.reset('', { emitEvent: false });
+		this.clientDataComponent.contractClientForm.clientRates.controls = [];
+		this.clientDataComponent.contractClientForm.clientFees.controls = [];
+		this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
-		this.contractsSyncDataForm.consultants.controls = [];
+		this.syncDataComponent.contractsSyncDataForm.consultants.controls = [];
 		this.filteredConsultants = [];
 	}
 
@@ -1198,41 +1056,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 	}
 
-	manageConsultantRateAutocomplete(consultantIndex: number) {
-		let arrayControl = this.consultants.at(consultantIndex);
-		arrayControl!
-			.get('consultantSpecialRateFilter')!
-			.valueChanges.pipe(takeUntil(this._unsubscribe))
-			.subscribe((value) => {
-				if (typeof value === 'string') {
-					this.filteredConsultantSpecialRates = this._filterConsultantRates(value, consultantIndex);
-				}
-			});
-	}
-
-	private _filterConsultantRates(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
-		const filterValue = value.toLowerCase();
-		const result = this.clientSpecialRateList.filter((option) => option.internalName!.toLowerCase().includes(filterValue));
-		return result;
-	}
-
-	manageConsultantFeeAutocomplete(consultantIndex: number) {
-		let arrayControl = this.consultants.at(consultantIndex);
-		arrayControl!
-			.get('consultantSpecialFeeFilter')!
-			.valueChanges.pipe(takeUntil(this._unsubscribe))
-			.subscribe((value) => {
-				if (typeof value === 'string') {
-					this.filteredConsultantSpecialFees = this._filterConsultantFees(value, consultantIndex);
-				}
-			});
-	}
-
-	private _filterConsultantFees(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
-		const filterValue = value.toLowerCase();
-		const result = this.clientSpecialFeeList.filter((option) => option.internalName!.toLowerCase().includes(filterValue));
-		return result;
-	}
 
 	saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean) {
 		let input = this._packClientPeriodData();
@@ -1547,13 +1370,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			return;
 		}
 		this.showMainSpinner();
-		this.statusAfterSync = true;
-		this.syncNotPossible = !result.success!;
-		this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
-		this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, { emitEvent: false });
-		this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+		this.syncDataComponent.statusAfterSync = true;
+		this.syncDataComponent.syncNotPossible = !result.success!;
+		this.syncDataComponent.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+		this.syncDataComponent.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, { emitEvent: false });
+		this.syncDataComponent.syncMessage = result.success ? 'Sync successfull' : result.message!;
 		if (result.success) {
-			this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+			this.consultantDataComponent?.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
 				consultant.controls.projectLines.controls.forEach((x: any) => {
 					x.controls.wasSynced.setValue(true, { emitEvent: false });
 				});
@@ -1562,99 +1385,99 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.hideMainSpinner();
 	}
 
-	openContractModule(
-		periodId: string,
-		legalContractStatus: number,
-		isInternal: boolean,
-		tenantId: number,
-		consultant?: ConsultantResultDto
-	) {
-		let isFrameworkAgreement = false;
-		window.open(
-			`pmpapercontractpm3:${periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${
-				isFrameworkAgreement ? 'True' : 'False'
-			}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`
-		);
-	}
+	// openContractModule(
+	// 	periodId: string,
+	// 	legalContractStatus: number,
+	// 	isInternal: boolean,
+	// 	tenantId: number,
+	// 	consultant?: ConsultantResultDto
+	// ) {
+	// 	let isFrameworkAgreement = false;
+	// 	window.open(
+	// 		`pmpapercontractpm3:${periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${
+	// 			isFrameworkAgreement ? 'True' : 'False'
+	// 		}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`
+	// 	);
+	// }
 
-	detectContractModuleIcon(legalContractStatus: number | string): string {
-		switch (legalContractStatus) {
-			case LegalContractStatus.NotAcceessible:
-				return 'cancel-fill';
-			case LegalContractStatus.NotYetCreated:
-				return 'in-progress-icon';
-			case LegalContractStatus.SavedButNotGenerated:
-				return 'completed-icon';
-			case LegalContractStatus.Done:
-				return 'completed-icon';
-			default:
-				return '';
-		}
-	}
+	// detectContractModuleIcon(legalContractStatus: number | string): string {
+	// 	switch (legalContractStatus) {
+	// 		case LegalContractStatus.NotAcceessible:
+	// 			return 'cancel-fill';
+	// 		case LegalContractStatus.NotYetCreated:
+	// 			return 'in-progress-icon';
+	// 		case LegalContractStatus.SavedButNotGenerated:
+	// 			return 'completed-icon';
+	// 		case LegalContractStatus.Done:
+	// 			return 'completed-icon';
+	// 		default:
+	// 			return '';
+	// 	}
+	// }
 
 	fillClientPeriodForm(data: ClientPeriodContractsDataQueryDto) {
 		this.resetForms();
 		if (data?.mainData !== undefined) {
-			this.contractsMainForm.patchValue(data?.mainData, { emitEvent: false });
-			this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data.mainData.salesTypeId), {
+			this.mainDataComponent?.contractsMainForm.patchValue(data?.mainData, { emitEvent: false });
+			this.mainDataComponent?.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data.mainData.salesTypeId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId), {
+			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data.mainData.discountId), {
+			this.mainDataComponent?.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data.mainData.discountId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data.mainData.projectTypeId), {
+			this.mainDataComponent?.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data.mainData.projectTypeId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data.mainData.marginId), {
+			this.mainDataComponent?.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data.mainData.marginId), {
 				emitEvent: false,
 			});
 			if (data.mainData.noRemarks) {
-				this.contractsMainForm.remarks?.disable();
+				this.mainDataComponent?.contractsMainForm.remarks?.disable();
 			}
 		}
 		if (data?.clientData !== undefined) {
-			this.contractClientForm.patchValue(data.clientData, { emitEvent: false });
-			this.contractClientForm.clientTimeReportingCapId?.setValue(
+			this.clientDataComponent?.contractClientForm.patchValue(data.clientData, { emitEvent: false });
+			this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.setValue(
 				this.findItemById(this.clientTimeReportingCap, data.clientData.clientTimeReportingCapId),
 				{ emitEvent: false }
 			);
-			this.contractClientForm.rateUnitType?.setValue(
+			this.clientDataComponent?.contractClientForm.rateUnitType?.setValue(
 				this.findItemById(this.rateUnitTypes, data.clientData.clientRate?.rateUnitTypeId),
 				{ emitEvent: false }
 			);
-			this.contractClientForm.currency?.setValue(
+			this.clientDataComponent?.contractClientForm.currency?.setValue(
 				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
 				{ emitEvent: false }
 			);
-			this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(
+			this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(
 				this.findItemById(this.currencies, data.clientData.clientTimeReportingCapCurrencyId),
 				{ emitEvent: false }
 			);
 			if (data.clientData.noSpecialContractTerms) {
-				this.contractClientForm.specialContractTerms?.disable();
+				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
 			}
 			if (data.clientData.directClientId) {
 				this.getRatesAndFees(data.clientData.directClientId);
 			}
 		}
-		this.contractsSyncDataForm.patchValue(data, { emitEvent: false });
+		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		if (data?.clientData?.periodClientSpecialRates?.length) {
 			data.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
-				this.addSpecialRate(rate);
+				this.clientDataComponent?.addSpecialRate(rate);
 			});
 		}
 		if (data?.clientData?.periodClientSpecialFees?.length) {
 			data.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
-				this.addClientFee(fee);
+				this.clientDataComponent?.addClientFee(fee);
 			});
 		}
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
-				this.addConsultantDataToForm(consultant, index);
-				this.addConsultantLegalContract(consultant);
+				this.consultantDataComponent?.addConsultantDataToForm(consultant, index);
+				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();
 		}
@@ -1664,16 +1487,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		let input = new ClientPeriodContractsDataCommandDto();
 		input.bypassLegalValidation = this.bypassLegalValidation;
 		input.clientData = new ContractsClientDataDto();
-		input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
-		input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;
-		input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
-		input.clientData.clientTimeReportingCapMaxValue = this.contractClientForm.clientTimeReportingCapMaxValue?.value;
-		input.clientData.clientTimeReportingCapCurrencyId = this.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
-		input.clientData.clientRate = this.contractClientForm.clientRate?.value;
-		input.clientData.pdcInvoicingEntityId = this.contractClientForm.pdcInvoicingEntityId?.value;
+		input.clientData.specialContractTerms = this.clientDataComponent?.contractClientForm.specialContractTerms?.value;
+		input.clientData.noSpecialContractTerms = this.clientDataComponent?.contractClientForm.noSpecialContractTerms?.value;
+		input.clientData.clientTimeReportingCapId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value?.id;
+		input.clientData.clientTimeReportingCapMaxValue = this.clientDataComponent?.contractClientForm.clientTimeReportingCapMaxValue?.value;
+		input.clientData.clientTimeReportingCapCurrencyId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
+		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.clientRate?.value;
+		input.clientData.pdcInvoicingEntityId = this.clientDataComponent?.contractClientForm.pdcInvoicingEntityId?.value;
 		input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
-		if (this.contractClientForm.clientRates.value?.length) {
-			for (let specialRate of this.contractClientForm.clientRates.value) {
+		if (this.clientDataComponent?.contractClientForm.clientRates.value?.length) {
+			for (let specialRate of this.clientDataComponent?.contractClientForm.clientRates.value) {
 				const clientSpecialRate = new PeriodClientSpecialRateDto();
 				clientSpecialRate.id = specialRate.id;
 				clientSpecialRate.clientSpecialRateId = specialRate.clientSpecialRateId;
@@ -1684,10 +1507,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				input.clientData.periodClientSpecialRates.push(clientSpecialRate);
 			}
 		}
-		input.clientData.noSpecialRate = this.contractClientForm.clientRates.value?.length === 0;
+		input.clientData.noSpecialRate = this.clientDataComponent?.contractClientForm.clientRates.value?.length === 0;
 		input.clientData.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
-		if (this.contractClientForm.clientFees.value?.length) {
-			for (let specialFee of this.contractClientForm.clientFees.value) {
+		if (this.clientDataComponent?.contractClientForm.clientFees.value?.length) {
+			for (let specialFee of this.clientDataComponent?.contractClientForm.clientFees.value) {
 				const clientSpecialFee = new PeriodClientSpecialFeeDto();
 				clientSpecialFee.id = specialFee.id;
 				clientSpecialFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
@@ -1698,23 +1521,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				input.clientData.periodClientSpecialFees.push(clientSpecialFee);
 			}
 		}
-		input.clientData.noSpecialFee = this.contractClientForm.clientFees.value?.length === 0;
-		input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
+		input.clientData.noSpecialFee = this.clientDataComponent?.contractClientForm.clientFees.value?.length === 0;
+		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
 
 		input.mainData = new ContractsMainDataDto();
-		input.mainData.projectDescription = this.contractsMainForm.projectDescription?.value;
-		input.mainData.projectName = this.contractsMainForm.projectName?.value;
-		input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;
-		input.mainData.salesTypeId = this.contractsMainForm.salesType?.value?.id;
-		input.mainData.deliveryTypeId = this.contractsMainForm.deliveryType?.value?.id;
-		input.mainData.marginId = this.contractsMainForm.margin?.value?.id;
-		input.mainData.discountId = this.contractsMainForm.discounts?.value?.id;
-		input.mainData.remarks = this.contractsMainForm.remarks?.value;
-		input.mainData.noRemarks = this.contractsMainForm.noRemarks?.value;
+		input.mainData.projectDescription = this.mainDataComponent?.contractsMainForm.projectDescription?.value;
+		input.mainData.projectName = this.mainDataComponent?.contractsMainForm.projectName?.value;
+		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectType?.value?.id;
+		input.mainData.salesTypeId = this.mainDataComponent?.contractsMainForm.salesType?.value?.id;
+		input.mainData.deliveryTypeId = this.mainDataComponent?.contractsMainForm.deliveryType?.value?.id;
+		input.mainData.marginId = this.mainDataComponent?.contractsMainForm.margin?.value?.id;
+		input.mainData.discountId = this.mainDataComponent?.contractsMainForm.discounts?.value?.id;
+		input.mainData.remarks = this.mainDataComponent?.contractsMainForm.remarks?.value;
+		input.mainData.noRemarks = this.mainDataComponent?.contractsMainForm.noRemarks?.value;
 
 		input.consultantData = new Array<ConsultantContractsDataCommandDto>();
-		if (this.contractsConsultantsDataForm?.consultants?.value?.length) {
-			for (let consultantInput of this.contractsConsultantsDataForm.consultants.value) {
+		if (this.consultantDataComponent?.contractsConsultantsDataForm?.consultants?.value?.length) {
+			for (let consultantInput of this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value) {
 				input.consultantData.push(this._packConsultantFormData(consultantInput));
 			}
 		}
@@ -1724,59 +1547,59 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	fillConsultantPeriodForm(data: ConsultantPeriodContractsDataQueryDto) {
 		this.resetForms();
 		if (data?.mainData !== undefined) {
-			this.contractsMainForm.patchValue(data, { emitEvent: false });
-			this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {
+			this.mainDataComponent?.contractsMainForm.patchValue(data, { emitEvent: false });
+			this.mainDataComponent?.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {
+			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {
+			this.mainDataComponent?.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {
+			this.mainDataComponent?.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {
 				emitEvent: false,
 			});
-			this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {
+			this.mainDataComponent?.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {
 				emitEvent: false,
 			});
 			if (data?.noRemarks) {
-				this.contractsMainForm.remarks?.disable();
+				this.mainDataComponent?.contractsMainForm.remarks?.disable();
 			}
 		}
 		if (data?.clientData !== undefined) {
-			this.contractClientForm.patchValue(data.clientData, { emitEvent: false });
+			this.clientDataComponent?.contractClientForm.patchValue(data.clientData, { emitEvent: false });
 		}
-		this.contractsSyncDataForm.patchValue(data, { emitEvent: false });
-		this.addConsultantDataToForm(data?.consultantData!, 0);
-		this.addConsultantLegalContract(data.consultantData!);
+		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
+		this.consultantDataComponent?.addConsultantDataToForm(data?.consultantData!, 0);
+		this.syncDataComponent?.addConsultantLegalContract(data.consultantData!);
 		this.updateConsultantStepAnchors();
 	}
 
 	private _packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
 		let input = new ConsultantPeriodContractsDataCommandDto();
 		input.bypassLegalValidation = this.bypassLegalValidation;
-		input = this.contractsMainForm.value;
+		input = this.mainDataComponent?.contractsMainForm.value;
 		input.mainData = new ContractsMainDataDto();
-		input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;
-		input.mainData.salesTypeId = this.contractsMainForm.salesType?.value?.id;
-		input.mainData.deliveryTypeId = this.contractsMainForm.deliveryType?.value?.id;
-		input.mainData.marginId = this.contractsMainForm.margin?.value?.id;
-		input.mainData.discountId = this.contractsMainForm.discounts?.value?.id;
+		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectType?.value?.id;
+		input.mainData.salesTypeId = this.mainDataComponent?.contractsMainForm.salesType?.value?.id;
+		input.mainData.deliveryTypeId = this.mainDataComponent?.contractsMainForm.deliveryType?.value?.id;
+		input.mainData.marginId = this.mainDataComponent?.contractsMainForm.margin?.value?.id;
+		input.mainData.discountId = this.mainDataComponent?.contractsMainForm.discounts?.value?.id;
 
 		input.consultantData = new ConsultantContractsDataCommandDto();
-		const consultantInput = this.contractsConsultantsDataForm.consultants.at(0).value;
+		const consultantInput = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.at(0).value;
 		if (consultantInput) {
 			input.consultantData = this._packConsultantFormData(consultantInput);
 		}
-		input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
-		input.newLegalContractRequired = this.contractsSyncDataForm.newLegalContract?.value;
+		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+		input.newLegalContractRequired = this.syncDataComponent?.contractsSyncDataForm.newLegalContract?.value;
 		return input;
 	}
 
 	fillWorkflowTerminationForm(data: WorkflowTerminationContractDataQueryDto) {
 		this.resetForms();
-		this.contractsSyncDataForm.patchValue(data, { emitEvent: false });
+		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		data.consultantTerminationContractData?.forEach((consultant) => {
 			this.addConsultantDataToTerminationForm(consultant);
 		});
@@ -1784,7 +1607,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
 		let input = new WorkflowTerminationContractDataCommandDto();
-		input = this.contractsSyncDataForm.value;
+		input = this.syncDataComponent?.contractsSyncDataForm.value;
 		input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataCommandDto>();
 		if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
 			this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
@@ -1798,7 +1621,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	fillConsultantTerminationForm(data: ConsultantTerminationContractDataQueryDto) {
 		this.resetForms();
-		this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
+		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
 			emitEvent: false,
 		});
 		this.addConsultantDataToTerminationForm(data);
@@ -1807,7 +1630,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	private _packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
 		let input = new ConsultantTerminationContractDataCommandDto();
 		input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-		input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+		input.contractLinesDoneManuallyInOldPM = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
 		input.removedConsultantFromAnyManualChecklists =
 			this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
 		input.deletedAnySensitiveDocumentsForGDPR =

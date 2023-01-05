@@ -25,6 +25,7 @@ import { ConsultantDataComponent } from './workflow-sales/consultant-data/consul
 import { ContractsConsultantDataComponent } from './workflow-contracts/contracts-consultant-data/contracts-consultant-data.component';
 import { ContractsMainDataComponent } from './workflow-contracts/contracts-main-data/contracts-main-data.component';
 import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-data/contracts-sync-data.component';
+import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 
 @NgModule({
     declarations: [
@@ -48,7 +49,8 @@ import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-
         ConsultantDataComponent,
         ContractsConsultantDataComponent,
         ContractsMainDataComponent,
-        ContractsSyncDataComponent
+        ContractsSyncDataComponent,
+        ContractsClientDataComponent
     ],
     imports: [
         CommonModule,
