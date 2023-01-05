@@ -1198,14 +1198,14 @@ export class WorkflowContractsComponent
         }
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         BigDialogConfig.scrollStrategy = scrollStrategy;
-        BigDialogConfig.data = {
-            dialogType: projectLinesIndex !== null &&
-                        projectLinesIndex !== undefined
-                            ? ProjectLineDiallogMode.Edit
-                            : ProjectLineDiallogMode.Create,
-            projectLineData: projectLine,
-            clientId: this.contractClientForm.directClientId?.value,
-        }
+		BigDialogConfig.data = {
+			dialogType:
+				projectLinesIndex !== null && projectLinesIndex !== undefined
+					? ProjectLineDiallogMode.Edit
+					: ProjectLineDiallogMode.Create,
+			projectLineData: projectLine,
+			clientId: this.contractClientForm.directClientId?.value,
+		};
         const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, BigDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {

@@ -17,7 +17,9 @@
     &--actions{
         justify-content: space-between;
         border-top: 1px solid $sand-color;
-        padding: 16px 32px;
+        &-cancel {
+            padding: 0 !important;
+        }
     }
 }
 
