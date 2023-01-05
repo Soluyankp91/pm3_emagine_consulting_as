@@ -56,7 +56,7 @@
                                 </div>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="salesMainProject">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Project</h2>
                         </div>
@@ -161,7 +161,7 @@
                             </div>
                         </div>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesMainInvoicing">
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">2</span>
                             <h2 class="workflow-section--header">Invoicing</h2>
@@ -436,7 +436,7 @@
                         </div>
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" id="salesMainAccountManager">
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">3</span>
                             <h2 class="workflow-section--header">Account manager</h2>
@@ -563,7 +563,7 @@
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
             <form [formGroup]="salesClientDataForm" id="clientData" class="workflow-form workflow-form--client u-w--100" id="salesClientDataAnchor">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientRelation">
                         <h1 class="workflow-section--header-main">Client data</h1>
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">1</span>
@@ -646,7 +646,7 @@
                             </div>
                         </div>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientProjectDuration">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">2</span>
                             <h2 class="workflow-section--header">Client project duration</h2>
@@ -747,7 +747,7 @@
                         </div>
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicing">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">3</span>
                             <h2 class="workflow-section--header">Client invoicing</h2>
@@ -927,7 +927,7 @@
 
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicingNumber">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">4</span>
                             <h2 class="workflow-section--header">Invoicing number</h2>
@@ -1014,7 +1014,7 @@
                         </div>
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientRatesFees">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">5</span>
                             <h2 class="workflow-section--header">Client rates and fees</h2>
@@ -1275,7 +1275,7 @@
                             </div>
                         </div>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientEvaluation">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">6</span>
                             <h2 class="workflow-section--header">Client evaluation</h2>
@@ -1328,7 +1328,7 @@
                             </div>
                         </div>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientContract">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                             <span class="workflow-section--number">7</span>
                             <h2 class="workflow-section--header">Client contract</h2>

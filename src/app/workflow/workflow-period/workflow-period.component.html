@@ -22,7 +22,6 @@
                                     {{item.periodStartDate | momentFormat}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat) : '...'}}
                                 </span>
                             </div>
-                            <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
                             <ng-container *ngIf="item.typeId !== workflowProcessTypes.StartClientPeriod">
                                 <button mat-icon-button #menuDeleteTrigger="matMenuTrigger"
                                     [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick
@@ -62,20 +61,31 @@
                                         {{step.name}}
                                     </span>
                                 </div>
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55"
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--35"
                                     *ngIf="step.name === selectedStep.name">
-                                    <div *ngFor="let item of step.menuAnchors"
-                                        class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
-                                        (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
-                                        [ngxScrollTo]="item.anchor!"
-                                        [ngxScrollToOffset]="-120"
-                                        [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
-                                        {{item.name}}
-                                        <span *ngIf="item?.consultantName"
-                                            class="workflow-navigation--step__anchor-consultant-name">
-                                            {{item.consultantName}}
-                                        </span>
-                                    </div>
+                                    <ng-container *ngFor="let item of step.menuAnchors">
+                                        <div class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
+                                            (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
+                                            [ngxScrollTo]="item.anchor!"
+                                            [ngxScrollToOffset]="-120"
+                                            [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
+                                            {{item.name}}
+                                            <ng-container *ngIf="item?.consultantName">
+                                                <span class="workflow-navigation--step__anchor-consultant-name">
+                                                    {{item.consultantName}}
+                                                </span>
+                                            </ng-container>
+                                            <ng-container *ngIf="item.subItems?.length && item.anchor === selectedAnchor">
+                                                <div class="u-ml--12 u-mt--12">
+                                                    <ng-container *ngFor="let section of item.subItems; index as i">
+                                                        <div class="workflow-navigation--step__anchor-section u-mb--10" (click)="$event.stopPropagation(); scrollToSection(section.anchor!)" [ngxScrollTo]="section.anchor!" [ngxScrollToOffset]="-120">
+                                                            {{i + 1}} • {{section.name}}
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
                                 </div>
                             </div>
                         </div>
