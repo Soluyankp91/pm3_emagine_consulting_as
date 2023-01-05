@@ -10,19 +10,20 @@ import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { forkJoin, of, Subject } from 'rxjs';
-import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { finalize, takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
+import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
-import { ClientRateTypes, WorkflowSalesConsultantsForm } from '../workflow-sales.model';
+import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesConsultantsForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-consultant-data',
@@ -78,7 +79,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         private localHttpService: LocalHttpService,
         private _workflowDataService: WorkflowDataService,
         private _lookupService: LookupServiceProxy,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private _consultantPeriodSerivce: ConsultantPeriodServiceProxy
         ) {
 		super(injector);
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
@@ -685,5 +687,68 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					});
 			});
 		}
+	}
+
+    changeConsultantData(index: number) {
+		const consultantData = this.consultants.at(index).value;
+		const scrollStrategy = this.overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			dialogType: ConsultantDiallogAction.Change,
+			consultantData: {
+				externalId: consultantData.consultantName.consultant.externalId,
+				name: consultantData.consultantName.consultant.name,
+			},
+			dialogTitle: `Change consultant`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Create',
+			isNegative: false,
+		};
+		const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+			let input = new ChangeConsultantPeriodDto();
+			input.cutoverDate = result.newCutoverDate;
+			input.newLegalContractRequired = result.newLegalContractRequired;
+			this._consultantPeriodSerivce
+				.change(consultantData.consultantPeriodId, input)
+				.pipe(finalize(() => {}))
+				.subscribe(() => {
+					this._workflowDataService.workflowSideSectionAdded.emit(true);
+					this._workflowDataService.workflowOverviewUpdated.emit(true);
+				});
+		});
+	}
+
+	extendConsultant(index: number) {
+		const consultantData = this.consultants.at(index).value;
+		const scrollStrategy = this.overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			dialogType: ConsultantDiallogAction.Extend,
+			consultantData: {
+				externalId: consultantData.consultantName.consultant.externalId,
+				name: consultantData.consultantName.consultant.name,
+			},
+			dialogTitle: `Extend consultant`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Create',
+			isNegative: false,
+		};
+		const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+			let input = new ExtendConsultantPeriodDto();
+			input.startDate = result.startDate;
+			input.endDate = result.endDate;
+			input.noEndDate = result.noEndDate;
+			this._consultantPeriodSerivce
+				.extend(consultantData.consultantPeriodId, input)
+				.pipe(finalize(() => {}))
+				.subscribe(() => {
+					this._workflowDataService.workflowSideSectionAdded.emit(true);
+					this._workflowDataService.workflowOverviewUpdated.emit(true);
+				});
+		});
 	}
 }

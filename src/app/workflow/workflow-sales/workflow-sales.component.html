@@ -4,7 +4,7 @@
             [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
             [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()"></app-main-data>
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
-            <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode" (clientPeriodDatesChanged)="clientPeriodDatesChanged()">
+            <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
             </app-client-data>
         </ng-container>
         <app-consultant-data #consutlantDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection"
@@ -159,7 +159,7 @@
     </form>
 </ng-template>
 
-<ng-template #clientAdditionalInfo let-client="client">
+<!-- <ng-template #clientAdditionalInfo let-client="client">
     <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100">
         <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
@@ -199,4 +199,4 @@
             </button>
         </ng-container>
     </div>
-</ng-template>
+</ng-template> -->

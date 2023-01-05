@@ -465,6 +465,13 @@
                                                 </ng-container>
                                             </div>
                                         </ng-container>
+                                        <ng-container *ngIf="consultant.value.specialRates?.length === 0 && readOnlyMode">
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                                <span>
+                                                    No consultant rates
+                                                </span>
+                                            </div>
+                                        </ng-container>
                                     </ng-container>
                                 </div>
 
@@ -612,6 +619,13 @@
                                                         </div>
                                                     </ng-template>
                                                 </ng-container>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="consultant.value.specialFees?.length === 0 && readOnlyMode">
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                                <span>
+                                                    No consultant fees
+                                                </span>
                                             </div>
                                         </ng-container>
                                     </ng-container>

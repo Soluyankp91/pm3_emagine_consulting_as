@@ -22,7 +22,7 @@ import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() readOnlyMode: boolean;
-	// @Output() clientPeriodDatesChanged: EventEmitter<{startDate: moment.Moment, endDate: moment.Moment, noEndDate: moment.Moment}> = new EventEmitter<{ startDate: moment.Moment, endDate: moment.Moment, noEndDate: moment.Moment }>();
+	@Output() onDirectClientSelected: EventEmitter<MatAutocompleteSelectedEvent> = new EventEmitter<MatAutocompleteSelectedEvent>();
 	@Output() clientPeriodDatesChanged: EventEmitter<any> = new EventEmitter<any>();
 	salesClientDataForm: WorkflowSalesClientDataForm;
 	filteredDirectClients: ClientResultDto[];
@@ -267,9 +267,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
-		this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, { emitEvent: false });
-		this.getRatesAndFees(event.option.value?.clientId);
-		this.focusOutMethod();
+		this.onDirectClientSelected.emit(event);
 	}
 
 	getRatesAndFees(clientId: number) {

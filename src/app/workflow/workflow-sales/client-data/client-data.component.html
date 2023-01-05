@@ -347,7 +347,7 @@
                             </mat-error>
                         </mat-form-field>
                         <!-- id: 2 - manual date -->
-                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2 && salesClientDataForm.clientInvoiceTime?.value?.name !== 'Manual date'" appearance="outline" fxFlex="22%" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2 || salesClientDataForm.clientInvoiceTime?.value?.name !== 'Manual date'" appearance="outline" fxFlex="22%" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Date</mat-label>
                             <input [disabled]="readOnlyMode" [required]="salesClientDataForm.clientInvoiceTime?.value?.id === 2" autocomplete="off" matInput
                                     [matDatepicker]="clientInvoicingDateDatePicker"

@@ -30,14 +30,9 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	salesMainDataForm: WorkflowSalesMainForm;
 
     currencies: EnumEntityTypeDto[];
-    // rateUnitTypes: EnumEntityTypeDto[];
     deliveryTypes: EnumEntityTypeDto[];
     saleTypes: EnumEntityTypeDto[];
     projectTypes: EnumEntityTypeDto[];
-    // invoicingTimes: EnumEntityTypeDto[];
-    // invoiceFrequencies: EnumEntityTypeDto[];
-    // signerRoles: EnumEntityTypeDto[];
-    // emagineOffices: EnumEntityTypeDto[];
     margins: EnumEntityTypeDto[];
     discounts: EnumEntityTypeDto[];
     projectCategories: EnumEntityTypeDto[];
@@ -190,13 +185,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     toggleEditMode() {
         this.editModeToggled.emit();
-		// this.isCompleted = !this.isCompleted;
-		// this.editEnabledForcefuly = !this.editEnabledForcefuly;
-		// this._workflowDataService.updateWorkflowProgressStatus({
-		// 	currentStepIsCompleted: this.isCompleted,
-		// 	currentStepIsForcefullyEditing: this.editEnabledForcefuly,
-		// });
-		// this.getSalesStepData();
 	}
 
     returnToSales() {
