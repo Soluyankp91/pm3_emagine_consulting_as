@@ -1933,6 +1933,10 @@ export class WorkflowContractsComponent
         this.resetForms();
         if (data?.mainData !== undefined) {
             this.contractsMainForm.patchValue(data?.mainData, {emitEvent: false});
+            this.contractsMainForm.primaryCategoryArea?.setValue(data?.mainData?.primaryCategoryArea);
+            this.contractsMainForm.primaryCategoryType?.setValue(data?.mainData?.primaryCategoryType);
+            this.contractsMainForm.primaryCategoryRole?.setValue(data?.mainData?.primaryCategoryRole);
+            this.contractsMainForm.projectCategory?.setValue(data?.mainData?.projectCategoryId, {emitEvent: false});
             this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data.mainData.salesTypeId), {emitEvent: false});
             this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId), {emitEvent: false});
             this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data.mainData.discountId), {emitEvent: false});
@@ -1973,6 +1977,7 @@ export class WorkflowContractsComponent
             });
             this.updateConsultantStepAnchors();
         }
+        this.getPrimaryCategoryTree();
     }
 
     private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {

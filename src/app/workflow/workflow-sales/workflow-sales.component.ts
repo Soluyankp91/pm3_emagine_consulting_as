@@ -553,7 +553,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 takeUntil(this._unsubscribe),
                 map(
                     (value) =>
-                        this.primaryCategoryAreas?.find((x) => x.id === value)
+                        this.primaryCategoryAreas?.find((x) => x.id === value?.id)
                             ?.areas
                 )
             )
@@ -572,7 +572,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 takeUntil(this._unsubscribe),
                 map(
                     (value) =>
-                        this.primaryCategoryTypes.find((x) => x.id === value)
+                        this.primaryCategoryTypes?.find((x) => x.id === value?.id)
                             ?.roles
                 )
             )
@@ -644,7 +644,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this.getExpectedWorkloadUnit();
         this.getCountries();
         this.getConsultantTimeReportingCap();
-        this.getPrimaryCategoryTree();
 
         this.getLegalEntities();
 
@@ -2512,9 +2511,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             .subscribe(result => {
                 this.resetForms();
                 // Project
-                this.salesMainDataForm.primaryCategoryArea?.setValue(result.salesMainData?.primaryCategoryArea, {emitEvent: false});
-                this.salesMainDataForm.primaryCategoryType?.setValue(result.salesMainData?.primaryCategoryType, {emitEvent: false});
-                this.salesMainDataForm.primaryCategoryRole?.setValue(result.salesMainData?.primaryCategoryRole, {emitEvent: false});
+                this.salesMainDataForm.primaryCategoryArea?.setValue(result.salesMainData?.primaryCategoryArea);
+                this.salesMainDataForm.primaryCategoryType?.setValue(result.salesMainData?.primaryCategoryType);
+                this.salesMainDataForm.primaryCategoryRole?.setValue(result.salesMainData?.primaryCategoryRole);
                 this.salesMainDataForm.projectType?.setValue(
                     this.findItemById(
                         this.projectTypes,
@@ -2839,6 +2838,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     this.updateConsultantStepAnchors();
                 }
             });
+            this.getPrimaryCategoryTree();
     }
 
     clientRateTypeChange(value: EnumEntityTypeDto) {
