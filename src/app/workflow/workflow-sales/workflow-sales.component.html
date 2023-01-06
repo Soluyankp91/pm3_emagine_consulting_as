@@ -1085,8 +1085,7 @@
                                                         </button>
                                                         <mat-menu #clientRateMenu>
                                                             <button
-                                                                class="menu-item"
-                                                                [ngClass]="salesClientDataForm.clientRates.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                                                class="menu-item green-color"
                                                                 mat-menu-item
                                                                 [disabled]="isClientRateEditing"
                                                                 appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
@@ -1210,7 +1209,7 @@
                                                         </button>
                                                         <mat-menu #clientFeeMenu>
                                                             <button
-                                                                class="menu-item menu-item--edit"
+                                                                class="menu-item green-color"
                                                                 mat-menu-item
                                                                 [disabled]="isClientFeeEditing"
                                                                 appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)">
@@ -1868,7 +1867,7 @@
                                                                     </button>
                                                                     <mat-menu #consutlantRateMenu>
                                                                         <button
-                                                                            class="menu-item menu-item--edit"
+                                                                            class="menu-item green-color"
                                                                             mat-menu-item
                                                                             [disabled]="isConsultantRateEditing"
                                                                             appPreventDoubleClick (throttledClick)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)">
@@ -2023,7 +2022,7 @@
                                                                     </button>
                                                                     <mat-menu #consultantFeeMenu>
                                                                         <button
-                                                                            class="menu-item menu-item--edit"
+                                                                            class="menu-item green-color"
                                                                             mat-menu-item
                                                                             appPreventDoubleClick (throttledClick)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)">
                                                                             <mat-icon svgIcon="edit-icon-green"></mat-icon>
