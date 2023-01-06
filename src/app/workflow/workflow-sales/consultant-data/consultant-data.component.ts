@@ -237,6 +237,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
 			specialFees: new UntypedFormArray([]),
+            noSpecialPaymentTerms: new UntypedFormControl(consultant?.noSpecialPaymentTerms ?? false),
+            specialPaymentTerms: new UntypedFormControl({value: consultant?.specialPaymentTerms ?? null, disabled: consultant?.noSpecialPaymentTerms}),
 			consultantSpecialContractTermsNone: new UntypedFormControl(consultant?.noSpecialContractTerms ?? false),
 			consultantSpecialContractTerms: new UntypedFormControl({
 				value: consultant?.specialContractTerms ?? null,

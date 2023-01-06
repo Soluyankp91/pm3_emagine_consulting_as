@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { debounceTime, finalize,  switchMap, takeUntil} from 'rxjs/operators';
+import { debounceTime, finalize,  startWith,  switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -44,6 +44,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     filteredSalesAccountManagers: EmployeeDto[] = [];
 	filteredCommisionAccountManagers: EmployeeDto[] = [];
+    filteredEmployees: EmployeeDto[] = [];
 
     filteredRecipients: any[] = [];
     isCommissionInitialAdd = false;
@@ -449,4 +450,53 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		this.isCommissionInitialAdd = false;
 		this.commissions.at(index).get('editable')?.setValue(false);
 	}
+
+
+    //#region commissionedUsers form array
+    addCommissionedUser(employee?: EmployeeDto) {
+        const form = this._fb.group({
+           commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
+        });
+        this.salesMainDataForm.commissionedUsers.push(form);
+        this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
+    }
+
+    manageCommissionedUserAutocomplete(index: number) {
+        let arrayControl = this.commissionedUsers.at(index);
+        arrayControl!.get('commissionedUser')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        showAll: true,
+                        idsToExclude: this.commissionedUsers.value.map((x: any) => x?.commissionedUser?.id).filter((item: number) => item !== null && item !== undefined)
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName
+                            : value;
+                    }
+                    return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
+                }),
+            ).subscribe((list: EmployeeDto[]) => {
+                if (list.length) {
+                    this.filteredEmployees = list;
+                } else {
+                    this.filteredEmployees = [new EmployeeDto({ name: 'No records found', externalId: '', id: undefined })];
+                }
+            });
+    }
+
+    removeCommissionedUser(index: number) {
+        this.commissionedUsers.removeAt(index);
+    }
+
+    get commissionedUsers() {
+        return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
+    }
+    //#endregion commissionedUsers form array
+
 }

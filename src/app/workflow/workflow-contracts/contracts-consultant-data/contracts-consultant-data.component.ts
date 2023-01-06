@@ -104,6 +104,16 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				Validators.required
 			),
 			pdcPaymentEntityId: new UntypedFormControl(consultant?.pdcPaymentEntityId),
+            specialPaymentTerms: new UntypedFormControl(
+                {
+                    value: consultant?.specialPaymentTerms,
+                    disabled: consultant?.noSpecialPaymentTerms,
+                },
+                Validators.required
+            ),
+            noSpecialPaymentTerms: new UntypedFormControl(
+                consultant?.noSpecialPaymentTerms ?? false
+            ),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			clientFees: new UntypedFormArray([]),

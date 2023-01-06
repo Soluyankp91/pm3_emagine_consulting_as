@@ -1072,6 +1072,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			} else {
 				consultantInput.noSpecialFee = true;
 			}
+            consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
+            consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
