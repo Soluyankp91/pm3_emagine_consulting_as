@@ -45,7 +45,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.contractClientForm = new WorkflowContractsClientDataForm();
 	}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+        this._getEnums();
+    }
+
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();

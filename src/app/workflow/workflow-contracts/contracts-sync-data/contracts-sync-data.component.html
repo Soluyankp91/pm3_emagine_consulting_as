@@ -235,8 +235,7 @@
     </div>
 </form>
 
-<ng-container
-    *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+<ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
     <h2 class="workflow-section--header u-mb--20">Finish contract in PM</h2>
     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
         <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
@@ -261,6 +260,9 @@
                 Sync to legacy system
             </button>
         </ng-template>
+        <span class="workflow-darkblue--text">
+            <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+        </span>
         <ng-container *ngIf="statusAfterSync">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
                 <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}"

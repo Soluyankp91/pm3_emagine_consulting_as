@@ -1031,14 +1031,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	resetForms() {
-		this.syncDataComponent.statusAfterSync = false;
+        if (this.syncDataComponent) {
+            this.syncDataComponent.statusAfterSync = false;
+            this.syncDataComponent.contractsSyncDataForm.consultants.controls = [];
+        }
+        if (this.clientDataComponent) {
+            this.clientDataComponent.contractClientForm.clientRates.controls = [];
+            this.clientDataComponent.contractClientForm.clientFees.controls = [];
+        }
+        if (this.consultantDataComponent) {
+            this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
+        }
+		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
 		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
 		this.clientDataComponent?.contractClientForm.reset('', { emitEvent: false });
-		this.clientDataComponent.contractClientForm.clientRates.controls = [];
-		this.clientDataComponent.contractClientForm.clientFees.controls = [];
-		this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
-		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
-		this.syncDataComponent.contractsSyncDataForm.consultants.controls = [];
 		this.filteredConsultants = [];
 	}
 

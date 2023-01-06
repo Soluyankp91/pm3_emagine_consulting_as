@@ -1,51 +1,57 @@
 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
-    <ng-container *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
-        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="salesMainDataAnchor">
+    <ng-container
+        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
+        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
+            id="salesMainDataAnchor">
             <h1 class="workflow-section--header-main">Main data</h1>
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
-                <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding  form-width-559"
+                    [ngClass]="{'disabled-input': readOnlyMode}">
                     <mat-label>Remarks</mat-label>
-                    <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" [disabled]="readOnlyMode">
+                    <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks"
+                        [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" [disabled]="readOnlyMode">
                     </textarea>
                     <mat-error>
                         <app-validator [control]="salesMainDataForm.remarks"></app-validator>
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" [fxHide]="readOnlyMode && !salesMainDataForm.noRemarks?.value">
-                <mat-checkbox color="accent" [disabled]="readOnlyMode" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20"
+                [fxHide]="readOnlyMode && !salesMainDataForm.noRemarks?.value">
+                <mat-checkbox color="accent" [disabled]="readOnlyMode" formControlName="noRemarks" name="noRemarks"
+                    class="black-checkbox"
+                    (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
                     None
                 </mat-checkbox>
             </div>
         </div>
     </ng-container>
     <ng-template #startClientPeriodTemplate>
-        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="salesMainDataAnchor">
+        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
+            id="salesMainDataAnchor">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                     <h1 class="workflow-section--header-main">Main data</h1>
                     <ng-container *ngIf="readOnlyMode">
                         <div fxLayout="row" fxLayoutAlign="start start">
                             <ng-container *ngIf="canToggleEditMode">
-                                <button
-                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
-                                    mat-icon-button
+                                <button class="absolute-edit-toggle contract-manager-action u-mr--8" mat-icon-button
                                     appPreventDoubleClick (throttledClick)="toggleEditMode()">
                                     <mat-icon svgIcon="edit-icon"></mat-icon>
                                 </button>
                             </ng-container>
-                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
+                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
+                                type="button" [matMenuTriggerFor]="returnToSalesMenu"
+                                class="three-dots-actions-btn contract-manager-action">
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
                             <mat-menu #returnToSalesMenu>
                                 <div class="u-w--100 u-h--100"
                                     [matTooltip]="permissionsForCurrentUser!['Reopen'] ? '' : 'Not available after the Contracts step has been completed'"
                                     matTooltipClass="white-tooltip">
-                                    <button
-                                        class="menu-item menu-item--edit contract-manager-action"
-                                        mat-menu-item
-                                        [disabled]="!permissionsForCurrentUser!['Reopen']"
-                                        appPreventDoubleClick (throttledClick)="returnToSales()">
+                                    <button class="menu-item menu-item--edit contract-manager-action" mat-menu-item
+                                        [disabled]="!permissionsForCurrentUser!['Reopen']" appPreventDoubleClick
+                                        (throttledClick)="returnToSales()">
                                         <mat-icon svgIcon="return-icon"></mat-icon>
                                         Return to Sales
                                     </button>
@@ -54,16 +60,20 @@
                         </div>
                     </ng-container>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="salesMainProject">
                     <span class="workflow-section--number">1</span>
                     <h2 class="workflow-section--header">Project</h2>
                 </div>
                 <div class="workflow-section--content">
-                    <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
+                    <ng-container
+                        *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                            <mat-form-field appearance="outline"
+                                class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                 <mat-label>Project Type (Legacy)</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="projectTypeId" [disableOptionCentering]="true" (selectionChange)="getDataBasedOnProjectType($event)">
+                                <mat-select required [disabled]="readOnlyMode" formControlName="projectTypeId"
+                                    [disableOptionCentering]="true"
+                                    (selectionChange)="getDataBasedOnProjectType($event)">
                                     <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
                                         <mat-option [value]="item.id">
                                             {{ item.name }}
@@ -74,9 +84,12 @@
                                     <app-validator [control]="salesMainDataForm.projectTypeId"></app-validator>
                                 </mat-error>
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="22%">
+                            <mat-form-field appearance="outline"
+                                class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                 <mat-label>Sales Type</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="salesTypeId" [disableOptionCentering]="true" (selectionChange)="salesTypeChange($event.value)">
+                                <mat-select required [disabled]="readOnlyMode" formControlName="salesTypeId"
+                                    [disableOptionCentering]="true"
+                                    (selectionChange)="salesTypeChange($event.value)">
                                     <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
                                         <mat-option [value]="item.id">
                                             {{ item.name }}
@@ -87,11 +100,14 @@
                                     <app-validator [control]="salesMainDataForm.salesTypeId"></app-validator>
                                 </mat-error>
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="22%">
+                            <mat-form-field appearance="outline"
+                                class="formFieldNoMarginPadding filter-select form-width-150">
                                 <mat-label>Delivery Type</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="deliveryTypeId" [disableOptionCentering]="true">
+                                <mat-select required [disabled]="readOnlyMode" formControlName="deliveryTypeId"
+                                    [disableOptionCentering]="true">
                                     <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                        <ng-container *ngIf="(item.id === 1 && salesMainDataForm.salesTypeId?.value === 3) || (item.id !== 1 && salesMainDataForm.salesTypeId?.value !== 3)">
+                                        <ng-container
+                                            *ngIf="(item?.id === 1 && salesMainDataForm.salesTypeId?.value === 3) || (item?.id !== 1 && salesMainDataForm.salesTypeId?.value !== 3)">
                                             <mat-option [value]="item.id">
                                                 {{ item.name }}
                                             </mat-option>
@@ -103,10 +119,12 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                            <mat-form-field appearance="outline"
+                                class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                 <mat-label>Project Category</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="projectCategoryId" [disableOptionCentering]="true" [disabled]="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod || readOnlyMode">
+                                <mat-select required formControlName="projectCategoryId" [disableOptionCentering]="true"
+                                    [disabled]="readOnlyMode">
                                     <ng-container *ngFor="let item of projectCategories; trackBy: trackById">
                                         <mat-option [value]="item.id">
                                             {{ item.name }}
@@ -117,9 +135,11 @@
                                     <app-validator [control]="salesMainDataForm.projectCategoryId"></app-validator>
                                 </mat-error>
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="22%">
+                            <mat-form-field appearance="outline"
+                                class="formFieldNoMarginPadding filter-select form-width-150">
                                 <mat-label>Margin</mat-label>
-                                <mat-select [disabled]="readOnlyMode" formControlName="marginId" [disableOptionCentering]="true" required>
+                                <mat-select [disabled]="readOnlyMode" formControlName="marginId"
+                                    [disableOptionCentering]="true" required>
                                     <mat-option class="mat-select-clear-option">
                                         Clear
                                     </mat-option>
@@ -136,10 +156,14 @@
                         </div>
                     </ng-container>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding textarea-input form-width-559"
+                            [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Project Name</mat-label>
-                            <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName" required formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                            <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName"
+                                required formControlName="projectName" [cdkTextareaAutosize]="true"
+                                [cdkAutosizeMinRows]="2">
                             </textarea>
                             <mat-error>
                                 <app-validator [control]="salesMainDataForm.projectName"></app-validator>
@@ -148,9 +172,13 @@
                     </div>
 
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding textarea-input form-width-559"
+                            [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Project Description</mat-label>
-                            <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                            <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password"
+                                name="projectDescription" required formControlName="projectDescription"
+                                [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
                             <mat-error>
                                 <app-validator [control]="salesMainDataForm.projectDescription"></app-validator>
@@ -159,16 +187,18 @@
                     </div>
                 </div>
             </div>
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesMainInvoicing">
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--16 u-mb--16">
                     <span class="workflow-section--number">2</span>
                     <h2 class="workflow-section--header">Invoicing</h2>
                 </div>
                 <div class="workflow-section--content">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="22%">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select form-width-150">
                             <mat-label>Discounts</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="discountId" [disableOptionCentering]="true" required>
+                            <mat-select [disabled]="readOnlyMode" formControlName="discountId"
+                                [disableOptionCentering]="true" required>
                                 <mat-option class="mat-select-clear-option">
                                     Clear
                                 </mat-option>
@@ -183,11 +213,10 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-
-                    <h3 class="workflow-gray--header">Commission</h3>
                     <div class="inline-edit-form u-w--100">
                         <ng-container *ngIf="salesMainDataForm.commissions?.controls?.length">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
+                                class="workflow-sales-inline--form__header-container u-w--100">
                                 <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
                                     Type
                                 </span>
@@ -206,17 +235,22 @@
                                 <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
                                     Frequency
                                 </span>
-                                <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100" [fxHide]="readOnlyMode">
+                                <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100"
+                                    [fxHide]="readOnlyMode">
 
                                 </span>
                             </div>
                         </ng-container>
                         <ng-container formArrayName="commissions" class="u-w--100">
-                            <ng-container *ngFor="let commission of salesMainDataForm.commissions.controls; index as i" [formArrayName]="i">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                            <ng-container *ngFor="let commission of salesMainDataForm.commissions.controls; index as i"
+                                [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                    class="workflow-sales-inline--form__row u-w--100">
                                     <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('editable')?.value">
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                            <mat-select required formControlName="type" placeholder="Type" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-form-field appearance="fill"
+                                            class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                            <mat-select required formControlName="type" placeholder="Type"
+                                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <ng-container *ngFor="let item of commissionTypes; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -224,11 +258,15 @@
                                                 </ng-container>
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                            <input required matInput type="number" formControlName="amount" placeholder="Value" />
+                                        <mat-form-field appearance="fill"
+                                            class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                            <input required matInput type="number" formControlName="amount"
+                                                placeholder="Value" />
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                            <mat-select required formControlName="currency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-form-field appearance="fill"
+                                            class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                            <mat-select required formControlName="currency" placeholder="Currency"
+                                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -236,20 +274,30 @@
                                                 </ng-container>
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                            <mat-select formControlName="recipientType" placeholder="Recipient type" [disableOptionCentering]="true" (selectionChange)="commissionRecipientTypeChanged($event, i)" [compareWith]="compareWithFn">
-                                                <ng-container *ngFor="let item of commissionRecipientTypeList; trackBy: trackById">
+                                        <mat-form-field appearance="fill"
+                                            class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                            <mat-select formControlName="recipientType" placeholder="Recipient type"
+                                                [disableOptionCentering]="true"
+                                                (selectionChange)="commissionRecipientTypeChanged($event, i)"
+                                                [compareWith]="compareWithFn">
+                                                <ng-container
+                                                    *ngFor="let item of commissionRecipientTypeList; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="30%" [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
+                                        <mat-form-field appearance="fill"
+                                            class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="30%"
+                                            [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
                                             <!-- recipientType?.id === 4 - PDC entity -->
-                                            <ng-container *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
-                                                <mat-select formControlName="recipient" placeholder="Recipient" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <ng-container *ngFor="let item of legalEntities; trackBy: trackById">
+                                            <ng-container
+                                                *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
+                                                <mat-select formControlName="recipient" placeholder="Recipient"
+                                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <ng-container
+                                                        *ngFor="let item of legalEntities; trackBy: trackById">
                                                         <mat-option [value]="item">
                                                             <b>{{ item.tenantName + ' ' + '(' + item.name + ')' }}</b>
                                                         </mat-option>
@@ -257,39 +305,65 @@
                                                 </mat-select>
                                             </ng-container>
                                             <ng-template #commissionRecipientAutocomplete>
-                                                <input #recipientFilterInput type="text" matInput [matAutocomplete]="recipientAutocomplete" formControlName="recipient" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Recipient">
-                                                <mat-autocomplete #recipientAutocomplete="matAutocomplete" [displayWith]="displayRecipientFn"
-                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                <input #recipientFilterInput type="text" matInput
+                                                    [matAutocomplete]="recipientAutocomplete"
+                                                    formControlName="recipient" appPreventDoubleClick
+                                                    (throttledClick)="$event.stopPropagation()" placeholder="Recipient">
+                                                <mat-autocomplete #recipientAutocomplete="matAutocomplete"
+                                                    [displayWith]="displayRecipientFn"
+                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()"
+                                                    (closed)="focusOutMethod()">
                                                     <ng-container>
-                                                        <ng-container *ngFor="let recipient of filteredRecipients; trackBy: trackById">
-                                                            <mat-option [value]="recipient" [ngClass]="{ 'no-data': recipient.id === 'no-data' }">
-                                                                <ng-container [ngSwitch]="commission.value.recipientType?.id">
+                                                        <ng-container
+                                                            *ngFor="let recipient of filteredRecipients; trackBy: trackById">
+                                                            <mat-option [value]="recipient"
+                                                                [ngClass]="{ 'no-data': recipient.id === 'no-data' }">
+                                                                <ng-container
+                                                                    [ngSwitch]="commission.value.recipientType?.id">
                                                                     <!-- 'Client' -->
                                                                     <span *ngSwitchCase="3">
                                                                         <div class="multilineDropdown-option--column">
-                                                                            <span class="multilineDropdown-option--column-client-name">{{ recipient.clientName }}</span>
-                                                                            <ng-container *ngIf="recipient.id !== 'no-data'">
-                                                                                <span class="multilineDropdown-option--column-client-info">
-                                                                                    #{{recipient.clientId}} | {{recipient.city ?? ''}} {{recipient.countryName ? ', ' + recipient.countryName : ''}}
+                                                                            <span
+                                                                                class="multilineDropdown-option--column-client-name">{{
+                                                                                recipient.clientName }}</span>
+                                                                            <ng-container
+                                                                                *ngIf="recipient.id !== 'no-data'">
+                                                                                <span
+                                                                                    class="multilineDropdown-option--column-client-info">
+                                                                                    #{{recipient.clientId}} |
+                                                                                    {{recipient.city ?? ''}}
+                                                                                    {{recipient.countryName ? ', ' +
+                                                                                    recipient.countryName : ''}}
                                                                                 </span>
                                                                             </ng-container>
                                                                         </div>
                                                                     </span>
                                                                     <!-- 'Supplier' -->
                                                                     <span *ngSwitchCase="1">
-                                                                        <span class="autocopmlete-option-name">{{ recipient.supplierName }}</span>
+                                                                        <span class="autocopmlete-option-name">{{
+                                                                            recipient.supplierName }}</span>
                                                                     </span>
                                                                     <!-- 'Consultant' -->
                                                                     <span *ngSwitchCase="2">
                                                                         <div class="multilineDropdown-option--row">
-                                                                            <ng-container *ngIf="recipient.id !== 'no-data'">
-                                                                                <img class="image-settings u-mr--16" [src]="consultantProfileUrl(recipient.externalId!)" />
+                                                                            <ng-container
+                                                                                *ngIf="recipient.id !== 'no-data'">
+                                                                                <img class="image-settings u-mr--16"
+                                                                                    [src]="consultantProfileUrl(recipient.externalId!)" />
                                                                             </ng-container>
-                                                                            <div class="multilineDropdown-option--column">
-                                                                                <span class="multilineDropdown-option--column-client-name">{{ recipient.name }}</span>
-                                                                                <ng-container *ngIf="recipient.id !== 'no-data'">
-                                                                                    <span class="multilineDropdown-option--column-client-info">
-                                                                                        {{recipient.companyName}} | {{recipient.city}} | #{{recipient.id}} / {{recipient.legacyId}}
+                                                                            <div
+                                                                                class="multilineDropdown-option--column">
+                                                                                <span
+                                                                                    class="multilineDropdown-option--column-client-name">{{
+                                                                                    recipient.name }}</span>
+                                                                                <ng-container
+                                                                                    *ngIf="recipient.id !== 'no-data'">
+                                                                                    <span
+                                                                                        class="multilineDropdown-option--column-client-info">
+                                                                                        {{recipient.companyName}} |
+                                                                                        {{recipient.city}} |
+                                                                                        #{{recipient.id}} /
+                                                                                        {{recipient.legacyId}}
                                                                                     </span>
                                                                                 </ng-container>
                                                                             </div>
@@ -303,9 +377,13 @@
                                             </ng-template>
                                         </mat-form-field>
                                         <div fxFlex="20%">
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="1 0 40%">
-                                                <mat-select formControlName="frequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <ng-container *ngFor="let item of commissionFrequencies; trackBy: trackById">
+                                            <mat-form-field appearance="fill"
+                                                class="u-w--100 formFieldNoMarginPadding filter-select"
+                                                fxFlex="1 0 40%">
+                                                <mat-select formControlName="frequency" placeholder="Frequency"
+                                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <ng-container
+                                                        *ngFor="let item of commissionFrequencies; trackBy: trackById">
                                                         <mat-option [value]="item">
                                                             {{ item.name }}
                                                         </mat-option>
@@ -313,41 +391,58 @@
                                                 </mat-select>
                                             </mat-form-field>
                                             <!--id = 2 == 'One time' -->
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="0 0 60%" [fxHide]="commission.value.frequency?.id !== 2">
+                                            <mat-form-field appearance="fill"
+                                                class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker"
+                                                fxFlex="0 0 60%" [fxHide]="commission.value.frequency?.id !== 2">
                                                 <input autocomplete="off" matInput
-                                                        [required]="commission.value.frequency?.id === 2"
-                                                        [matDatepicker]="oneTimeDatePicker"
-                                                        placeholder="Date"
-                                                        name="oneTimeDate" formControlName="oneTimeDate"
-                                                        (focus)="oneTimeDatePicker.open()"
-                                                        appPreventDoubleClick (throttledClick)="oneTimeDatePicker.open()" readonly>
+                                                    [required]="commission.value.frequency?.id === 2"
+                                                    [matDatepicker]="oneTimeDatePicker" placeholder="Date"
+                                                    name="oneTimeDate" formControlName="oneTimeDate"
+                                                    (focus)="oneTimeDatePicker.open()" appPreventDoubleClick
+                                                    (throttledClick)="oneTimeDatePicker.open()" readonly>
                                                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                                                 <mat-datepicker #oneTimeDatePicker></mat-datepicker>
                                             </mat-form-field>
                                         </div>
-                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                            <button [disabled]="!salesMainDataForm.commissions.at(i).valid" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis"
+                                            fxLayoutAlign="end center">
+                                            <button [disabled]="!salesMainDataForm.commissions.at(i).valid"
+                                                mat-icon-button type="button" appPreventDoubleClick
+                                                (throttledClick)="editOrSaveCommissionRow(i)"
+                                                class="rates-and-fees--inline-edit-form--btn__save">
                                                 <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                             </button>
-                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                            <button mat-icon-button type="button" appPreventDoubleClick
+                                                (throttledClick)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)"
+                                                class="rates-and-fees--inline-edit-form--btn__cancel">
                                                 <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                             </button>
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="!commission.value.editable">
-                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis"
+                                            [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name"
+                                            matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{commission.value.type?.name}}
                                         </span>
-                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('amount')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis"
+                                            [matTooltip]="salesMainDataForm.commissions.at(i).get('amount')?.value"
+                                            matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{commission.value.amount}}
                                         </span>
-                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis"
+                                            [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name"
+                                            matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{commission.value.currency?.name}}
                                         </span>
-                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis"
+                                            [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name"
+                                            matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{commission.value.recipientType?.name}}
                                         </span>
-                                        <span fxFlex="1 0 30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="1 0 30%" class="u-w--100 text-truncate-ellipsis"
+                                            [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name"
+                                            matTooltipClass="white-tooltip" appShowIfTruncated>
                                             <ng-container [ngSwitch]="commission.value.recipientType?.name">
                                                 <ng-container *ngSwitchCase="'Client'">
                                                     <div fxLayout="row" fxLayoutAlign="start center">
@@ -356,10 +451,14 @@
                                                                 {{commission.value.recipient?.clientName}}
                                                             </span>
                                                             <span>
-                                                                {{commission.value.recipient?.clientId ? '#' + commission.value.recipient?.clientId + ' | ' : ''}}
-                                                                {{commission.value.recipient?.city ? commission.value.recipient?.city + ' | ' : ''}}
-                                                                {{commission.value.recipient?.address ? commission.value.recipient?.address + ' | ' : ''}}
-                                                                {{commission.value.recipient?.address2 ? commission.value.recipient?.address2 + ' | ' : ''}}
+                                                                {{commission.value.recipient?.clientId ? '#' +
+                                                                commission.value.recipient?.clientId + ' | ' : ''}}
+                                                                {{commission.value.recipient?.city ?
+                                                                commission.value.recipient?.city + ' | ' : ''}}
+                                                                {{commission.value.recipient?.address ?
+                                                                commission.value.recipient?.address + ' | ' : ''}}
+                                                                {{commission.value.recipient?.address2 ?
+                                                                commission.value.recipient?.address2 + ' | ' : ''}}
                                                                 {{commission.value.recipient?.postCode}}
                                                             </span>
                                                         </div>
@@ -373,9 +472,13 @@
                                                                 {{commission.value.recipient?.name}}
                                                             </span>
                                                             <span>
-                                                                {{commission.value.recipient?.companyName ? commission.value.recipient?.companyName + ' | ' : ''}}
-                                                                {{commission.value.recipient?.city ? commission.value.recipient?.city + ' | ' : ''}}
-                                                                #{{commission.value.recipient?.id}} / {{getTenantCodeFromId(commission.value.recipient?.tenantId) + '-' +commission.value.recipient?.legacyId}}
+                                                                {{commission.value.recipient?.companyName ?
+                                                                commission.value.recipient?.companyName + ' | ' : ''}}
+                                                                {{commission.value.recipient?.city ?
+                                                                commission.value.recipient?.city + ' | ' : ''}}
+                                                                #{{commission.value.recipient?.id}} /
+                                                                {{getTenantCodeFromId(commission.value.recipient?.tenantId)
+                                                                + '-' +commission.value.recipient?.legacyId}}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -384,35 +487,40 @@
                                                     {{commission.value.recipient?.supplierName}}
                                                 </ng-container>
                                                 <ng-container *ngSwitchCase="'PDC entity'">
-                                                    {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}}
+                                                    {{commission.value.recipient?.tenantName + ' ' + '(' +
+                                                    commission.value.recipient?.name + ')'}}
                                                 </ng-container>
                                             </ng-container>
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis"
+                                            [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name"
+                                            matTooltipClass="white-tooltip" appShowIfTruncated>
                                             <!-- frequency id === 2 -- 'One time' -->
-                                            <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
-                                                {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat}}
+                                            <ng-container
+                                                *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
+                                                {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
+                                                {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value |
+                                                momentFormat}}
                                             </ng-container>
                                             <ng-template #commissionFrequency>
                                                 {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
                                             </ng-template>
                                         </span>
-                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" [fxHide]="readOnlyMode">
-                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
+                                        <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100"
+                                            [fxHide]="readOnlyMode">
+                                            <button mat-icon-button type="button" appPreventDoubleClick
+                                                (throttledClick)="$event.stopPropagation();"
+                                                [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
                                                 <mat-icon svgIcon="3-dots"></mat-icon>
                                             </button>
                                             <mat-menu #commissionMenu>
-                                                <button
-                                                    class="menu-item green-color"
-                                                    mat-menu-item
-                                                    [disabled]="isCommissionEditing"
-                                                    appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)">
+                                                <button class="menu-item green-color" mat-menu-item
+                                                    [disabled]="isCommissionEditing" appPreventDoubleClick
+                                                    (throttledClick)="editOrSaveCommissionRow(i)">
                                                     <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                     Edit
                                                 </button>
-                                                <button
-                                                    class="menu-item menu-item--cancel"
-                                                    mat-menu-item
+                                                <button class="menu-item menu-item--cancel" mat-menu-item
                                                     appPreventDoubleClick (throttledClick)="removeCommission(i)">
                                                     <mat-icon svgIcon="close-icon"></mat-icon>
                                                     Remove
@@ -425,25 +533,36 @@
                         </ng-container>
                         <ng-container *ngIf="!readOnlyMode">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <button color="primary" class="u-mt--10 button-outlined" mat-flat-button type="button" [disabled]="isCommissionEditing" appPreventDoubleClick (throttledClick)="addCommission(true)">Add commission</button>
+                                <button class="button-add" mat-flat-button type="button"
+                                    [disabled]="isCommissionEditing" appPreventDoubleClick
+                                    (throttledClick)="addCommission(true)">
+                                    <mat-icon>add</mat-icon>
+                                    Add commission
+                                </button>
                             </div>
                         </ng-container>
                     </div>
                 </div>
             </div>
 
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" id="salesMainAccountManager">
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--16 u-mb--16">
                     <span class="workflow-section--number">3</span>
                     <h2 class="workflow-section--header">Account manager</h2>
                 </div>
                 <div class="workflow-section--content">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235"
+                            [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Sales Account Manager</mat-label>
-                            <input required [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text" matInput [matAutocomplete]="salesManagerAutocomplete" formControlName="salesAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            <input required [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
+                                matInput [matAutocomplete]="salesManagerAutocomplete"
+                                formControlName="salesAccountManagerIdValue" appPreventDoubleClick
+                                (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             <mat-autocomplete #salesManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
-                                (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                (optionSelected)="focusOutMethod()" (opened)="focusInMethod()"
+                                (closed)="focusOutMethod()">
                                 <ng-container *ngFor="let manager of filteredSalesAccountManagers; trackBy: trackById">
                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
@@ -455,23 +574,32 @@
                             </mat-error>
                         </mat-form-field>
 
-                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select form-width-235"
+                            [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Commission Account Manager</mat-label>
-                            <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput [matAutocomplete]="commissionManagerAutocomplete" formControlName="commissionAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
-                                <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
-                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
-                                    <ng-container *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
-                                        <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-autocomplete>
+                            <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput
+                                [matAutocomplete]="commissionManagerAutocomplete"
+                                formControlName="commissionAccountManagerIdValue" appPreventDoubleClick
+                                (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete"
+                                [displayWith]="displayNameFn" (optionSelected)="focusOutMethod()"
+                                (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                <ng-container
+                                    *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
+                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
+                                        <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
                         </mat-form-field>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
-                            <mat-label>Contract expiration notification</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                            <mat-label>Expiration notification</mat-label>
+                            <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification"
+                                [disableOptionCentering]="true" [multiple]="true">
                                 <mat-option [value]="999">
                                     Manual date
                                 </mat-option>
@@ -483,35 +611,94 @@
                             </mat-select>
                         </mat-form-field>
                         <ng-container *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)">
-                            <mat-form-field appearance="outline" fxFlex="35%" class="formFieldNoMarginPadding" [ngClass]="{'disabled-input': readOnlyMode}">
-                                <mat-label>Contract expiration notification date</mat-label>
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-180"
+                                [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-label>Expiration notification date</mat-label>
                                 <input [disabled]="readOnlyMode" autocomplete="off" matInput
-                                        [matDatepicker]="customContractExpirationNotificationDatePicker"
-                                        name="customContractExpirationNotificationDate" formControlName="customContractExpirationNotificationDate"
-                                        (focus)="customContractExpirationNotificationDatePicker.open()"
-                                        appPreventDoubleClick (throttledClick)="customContractExpirationNotificationDatePicker.open()" readonly>
+                                    [matDatepicker]="customContractExpirationNotificationDatePicker"
+                                    name="customContractExpirationNotificationDate"
+                                    formControlName="customContractExpirationNotificationDate"
+                                    (focus)="customContractExpirationNotificationDatePicker.open()"
+                                    appPreventDoubleClick
+                                    (throttledClick)="customContractExpirationNotificationDatePicker.open()" readonly>
                                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                                 <mat-datepicker #customContractExpirationNotificationDatePicker></mat-datepicker>
                             </mat-form-field>
                         </ng-container>
                     </div>
-
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
-                                <mat-label>Remarks</mat-label>
-                                <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
-                                </textarea>
-                                <mat-error>
-                                    <app-validator [control]="salesMainDataForm.remarks"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                            <ng-container *ngIf="!readOnlyMode || salesMainDataForm.noRemarks?.value">
-                                <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
-                                    None
-                                </mat-checkbox>
+                        <ng-container formArrayName="commissionedUsers" class="u-w--100">
+                            <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i"
+                                [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline"
+                                        class="formFieldNoMarginPadding filter-select form-width-235"
+                                        [ngClass]="{'disabled-input': readOnlyMode}">
+                                        <mat-label>Commissioned employee</mat-label>
+                                        <input required [disabled]="readOnlyMode" #commissionedUserInput type="text"
+                                            matInput [matAutocomplete]="commissionedUserAutocomplete"
+                                            formControlName="commissionedUser" appPreventDoubleClick
+                                            (throttledClick)="$event.stopPropagation()" placeholder="Type something">
+                                        <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete"
+                                            [displayWith]="displayNameFn" (optionSelected)="focusOutMethod()"
+                                            (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                            <ng-container
+                                                *ngFor="let employee of filteredEmployees; trackBy: trackById">
+                                                <mat-option [value]="employee"
+                                                    [ngClass]="{ 'no-data': employee.id === undefined }">
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                        <ng-container *ngIf="employee.id !== undefined">
+                                                            <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                                                [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                        </ng-container>
+                                                        <span class="autocopmlete-option-name">{{ employee.name
+                                                            }}</span>
+                                                    </div>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            <app-validator [control]="user.get('commissionedUser')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <ng-container *ngIf="!readOnlyMode">
+                                        <button mat-icon-button type="button" appPreventDoubleClick
+                                            (throttledClick)="removeCommissionedUser(i)"
+                                            class="small-icon-button u-mt--8">
+                                            <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                        </button>
+                                    </ng-container>
+                                </div>
                             </ng-container>
-                        </div>
+                        </ng-container>
+                        <ng-container *ngIf="!readOnlyMode">
+                            <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick
+                                (throttledClick)="addCommissionedUser()">
+                                <mat-icon>add</mat-icon>
+                                Add commissioned employee
+                            </button>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559"
+                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            <mat-label>Remarks</mat-label>
+                            <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password"
+                                name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true"
+                                [cdkAutosizeMinRows]="2">
+                            </textarea>
+                            <mat-error>
+                                <app-validator [control]="salesMainDataForm.remarks"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <ng-container *ngIf="!readOnlyMode || salesMainDataForm.noRemarks?.value">
+                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noRemarks"
+                                name="noRemarks" class="black-checkbox u-mt--8"
+                                (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
+                                None
+                            </mat-checkbox>
+                        </ng-container>
                     </div>
                 </div>
             </div>

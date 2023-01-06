@@ -33,7 +33,9 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
 		this.contractsMainForm = new WorkflowContractsMainForm();
 	}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+        this._getEnums();
+    }
 
     ngOnDestroy(): void {
         this._unsubscribe.next();
