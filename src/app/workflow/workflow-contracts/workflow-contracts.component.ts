@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { finalize, map, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { BigDialogConfig } from 'src/shared/dialog.configs';
@@ -50,7 +50,11 @@ import {
     ContractSyncResultDto,
     ClientPeriodContractsDataQueryDto,
     ConsultantPeriodContractsDataQueryDto,
-    WorkflowTerminationContractDataQueryDto
+    WorkflowTerminationContractDataQueryDto,
+    LookupServiceProxy,
+    BranchRoleNodeDto,
+    AreaRoleNodeDto,
+    RoleNodeDto
 } from 'src/shared/service-proxies/service-proxies';
 import {  } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -108,6 +112,10 @@ export class WorkflowContractsComponent
     projectCategories: EnumEntityTypeDto[] = [];
     filteredConsultants: ConsultantResultDto[] = [];
 
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
+
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
@@ -153,7 +161,8 @@ export class WorkflowContractsComponent
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _contractSyncService: ContractSyncServiceProxy,
-        private _scrollToService: ScrollToService
+        private _scrollToService: ScrollToService,
+        private _lookupService: LookupServiceProxy
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -488,6 +497,33 @@ export class WorkflowContractsComponent
 
     private _getProjectCategory() {
         this._internalLookupService.getProjectCategory().subscribe(result => this.projectCategories = result);
+    }
+
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.contractsMainForm?.primaryCategoryArea?.value) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.contractsMainForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.contractsMainForm?.primaryCategoryType?.value) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.contractsMainForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
     }
 
     toggleEditMode(isToggledFromUi?: boolean) {

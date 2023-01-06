@@ -5,7 +5,7 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="salesMainDataAnchor">
                     <h1 class="workflow-section--header-main">Main data</h1>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
-                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding  form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding  form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Remarks</mat-label>
                             <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" [disabled]="readOnlyMode">
                             </textarea>
@@ -14,7 +14,7 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" [fxHide]="readOnlyMode && !salesMainDataForm.noRemarks?.value">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--8" [fxHide]="readOnlyMode && !salesMainDataForm.noRemarks?.value">
                         <mat-checkbox color="accent" [disabled]="readOnlyMode" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
                             None
                         </mat-checkbox>
@@ -63,6 +63,114 @@
                         <div class="workflow-section--content">
                             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-372">
+                                        <mat-label>Project Type (Legacy)</mat-label>
+                                        <mat-select required [disabled]="readOnlyMode" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
+                                            <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
+                                                <mat-option [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesMainDataForm.projectType"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                        <mat-label>Sales Type</mat-label>
+                                        <mat-select required [disabled]="readOnlyMode" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="salesTypeChange($event.value)">
+                                            <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
+                                                <mat-option [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesMainDataForm.salesType"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                        <mat-label>Delivery Type</mat-label>
+                                        <mat-select required [disabled]="readOnlyMode" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
+                                                <ng-container *ngIf="(item?.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item?.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
+                                                    <mat-option [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesMainDataForm.deliveryType"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
+                                        <mat-label>Margin</mat-label>
+                                        <mat-select [disabled]="readOnlyMode" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                            <mat-option class="mat-select-clear-option">
+                                                Clear
+                                            </mat-option>
+                                            <ng-container *ngFor="let item of margins; trackBy: trackById">
+                                                <mat-option [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesMainDataForm.margin"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                    <h3 class="workflow-gray--header u-mb--10">Project category</h3>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                            <mat-label>Area</mat-label>
+                                            <mat-select required [disabled]="readOnlyMode" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <ng-container *ngFor="let item of primaryCategoryAreas; trackBy: trackById">
+                                                    <mat-option [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.primaryCategoryArea"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                            <mat-label>Type</mat-label>
+                                            <mat-select required [disabled]="readOnlyMode" formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <ng-container *ngFor="let item of primaryCategoryTypes; trackBy: trackById">
+                                                    <mat-option [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.primaryCategoryType"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
+                                            <mat-label>Role</mat-label>
+                                            <mat-select required [disabled]="readOnlyMode" formControlName="primaryCategoryRole" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <ng-container *ngFor="let item of primaryCategoryRoles; trackBy: trackById">
+                                                    <mat-option [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.primaryCategoryRole"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                //
+                                //
+
+                                <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                         <mat-label>Project Type (Legacy)</mat-label>
                                         <mat-select required [disabled]="readOnlyMode" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
@@ -135,13 +243,13 @@
                                             <app-validator [control]="salesMainDataForm.margin"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                </div>
+                                </div> -->
                             </ng-container>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Name</mat-label>
-                                    <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName" required formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                    <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName" required formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="salesMainDataForm.projectName"></app-validator>
@@ -150,7 +258,7 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Description</mat-label>
                                     <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
@@ -540,7 +648,7 @@
                                 </ng-container>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Remarks</mat-label>
                                     <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
@@ -1316,7 +1424,7 @@
                                 </mat-form-field>
 
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!salesClientDataForm.value?.evaluationsDisabled">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Disable Evaluations Reason</mat-label>
                                         <textarea [disabled]="readOnlyMode" [required]="salesClientDataForm.value?.evaluationsDisabled" matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                         </textarea>
@@ -1335,7 +1443,7 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Special Contract Terms</mat-label>
                                     <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
@@ -2392,7 +2500,7 @@
                                             </div>
                                         </ng-container>
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="form-width-559 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="form-width-564 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Special Payment Terms</mat-label>
                                                 <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                 </textarea>
@@ -2416,7 +2524,7 @@
                                     </div>
                                     <div class="workflow-section--content">
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Special Contract Terms</mat-label>
                                                 <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                 </textarea>
@@ -2561,7 +2669,7 @@
                     </ng-container>
 
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
-                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Cause</mat-label>
                             <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.terminationTime?.value === 2 || salesTerminateConsultantForm.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
@@ -2572,7 +2680,7 @@
                     </div>
 
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
-                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Additional comments</mat-label>
                             <textarea [disabled]="readOnlyMode" [readonly]="readOnlyMode" matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
@@ -2613,7 +2721,7 @@
                         </div>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Cause</mat-label>
                                     <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>

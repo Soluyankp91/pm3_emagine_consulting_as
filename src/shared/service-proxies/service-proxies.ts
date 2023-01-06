@@ -953,6 +953,53 @@ export class AdminServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    synchronizeUserManagementData(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/synchronize-user-management-data";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSynchronizeUserManagementData(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSynchronizeUserManagementData(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSynchronizeUserManagementData(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -21996,10 +22043,68 @@ export interface IContractsMainDataDto {
     noRemarks?: boolean;
 }
 
+export class Country implements ICountry {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    readonly id?: number;
+    readonly name?: string | undefined;
+    readonly code?: string | undefined;
+
+    constructor(data?: ICountry) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            (<any>this).id = _data["id"];
+            (<any>this).name = _data["name"];
+            (<any>this).code = _data["code"];
+        }
+    }
+
+    static fromJS(data: any): Country {
+        data = typeof data === 'object' ? data : {};
+        let result = new Country();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["code"] = this.code;
+        return data;
+    }
+}
+
+export interface ICountry {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: number;
+    name?: string | undefined;
+    code?: string | undefined;
+}
+
 export class CountryDto implements ICountryDto {
     id?: number;
     code?: string | undefined;
     name?: string | undefined;
+    hasTenant?: boolean;
+    isUnknownCountry?: boolean;
 
     constructor(data?: ICountryDto) {
         if (data) {
@@ -22015,6 +22120,8 @@ export class CountryDto implements ICountryDto {
             this.id = _data["id"];
             this.code = _data["code"];
             this.name = _data["name"];
+            this.hasTenant = _data["hasTenant"];
+            this.isUnknownCountry = _data["isUnknownCountry"];
         }
     }
 
@@ -22030,6 +22137,8 @@ export class CountryDto implements ICountryDto {
         data["id"] = this.id;
         data["code"] = this.code;
         data["name"] = this.name;
+        data["hasTenant"] = this.hasTenant;
+        data["isUnknownCountry"] = this.isUnknownCountry;
         return data;
     }
 }
@@ -22038,6 +22147,8 @@ export interface ICountryDto {
     id?: number;
     code?: string | undefined;
     name?: string | undefined;
+    hasTenant?: boolean;
+    isUnknownCountry?: boolean;
 }
 
 export class CrmClientId implements ICrmClientId {
@@ -26528,6 +26639,7 @@ export class Tenant implements ITenant {
     readonly name?: string | undefined;
     timeZone?: string | undefined;
     culture?: string | undefined;
+    country?: Country;
 
     constructor(data?: ITenant) {
         if (data) {
@@ -26549,6 +26661,7 @@ export class Tenant implements ITenant {
             (<any>this).name = _data["name"];
             this.timeZone = _data["timeZone"];
             this.culture = _data["culture"];
+            this.country = _data["country"] ? Country.fromJS(_data["country"]) : <any>undefined;
         }
     }
 
@@ -26570,6 +26683,7 @@ export class Tenant implements ITenant {
         data["name"] = this.name;
         data["timeZone"] = this.timeZone;
         data["culture"] = this.culture;
+        data["country"] = this.country ? this.country.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -26580,6 +26694,7 @@ export interface ITenant {
     name?: string | undefined;
     timeZone?: string | undefined;
     culture?: string | undefined;
+    country?: Country;
 }
 
 export class TenantConfigDto implements ITenantConfigDto {
@@ -26637,6 +26752,7 @@ export interface ITenantConfigDto {
 export enum TerminationReason {
     RequestedByClient = 1,
     RequestedByConsultant = 2,
+    AdminTermination = 3,
 }
 
 export enum TerminationTime {
