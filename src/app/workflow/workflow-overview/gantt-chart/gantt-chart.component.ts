@@ -86,14 +86,14 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
 
     employeeProfileUrl(fileToken: string): string {
         if (!fileToken) {
-            return 'assets/common/images/no-img.svg';
+            return 'assets/common/images/no-img.jpg';
         }
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
     consultantProfileUrl(fileToken: string): string {
         if (!fileToken) {
-            return 'assets/common/images/no-img.svg';
+            return 'assets/common/images/no-img.jpg';
         }
         return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
     }

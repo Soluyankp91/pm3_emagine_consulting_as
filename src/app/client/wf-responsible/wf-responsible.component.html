@@ -20,9 +20,11 @@
                     #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                            <img class="border-rounded-50 image-settings--dropdown"
-                                [src]="employeeProfileUrl(manager?.externalId!)" />
-                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                    [src]="employeeProfileUrl(manager?.externalId!)" />
+                                <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            </div>
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -45,9 +47,11 @@
                     #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                            <img class="border-rounded-50 image-settings--dropdown"
-                                [src]="employeeProfileUrl(manager?.externalId!)" />
-                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                    [src]="employeeProfileUrl(manager?.externalId!)" />
+                                <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            </div>
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -73,16 +77,22 @@
                 <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Contracts step responsible </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="470px">
                     <img class="border-rounded-50 image-settings--dropdown u-mr--10"
+                        [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
                         [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
-                    {{row.contractStepResponsible?.name ?? 'Contract manager'}}
+                        <span [matTooltip]="row.contractStepResponsible?.name ?? 'User not assigner'" matTooltipClass="white-tooltip">
+                            {{row.contractStepResponsible?.name ?? '-'}}
+                        </span>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="financeStep">
                 <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Finance step responsible </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="470px">
                     <img class="border-rounded-50 image-settings--dropdown u-mr--10"
+                        [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
                         [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
-                    {{row.financeStepResponsible?.name ?? 'Finance manager'}}
+                        <span [matTooltip]="row.contractStepResponsible?.name ?? 'User not assigned'" matTooltipClass="white-tooltip">
+                            {{row.financeStepResponsible?.name ?? '-'}}
+                        </span>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

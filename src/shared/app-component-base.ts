@@ -72,6 +72,31 @@ export abstract class AppComponentBase {
 		}
 	}
 
+    getCountryCodeByTenantName(name: string) {
+		switch (name) {
+			case 'Denmark':
+				return 'DK';
+			case 'Netherlands':
+				return 'NL';
+			case 'United Kingdom':
+				return 'GB';
+			case 'France':
+				return 'FR';
+            case 'Germany':
+                return 'DE';
+            case 'India':
+                return 'IN';
+            case 'Norway':
+                return 'NO';
+            case 'Poland':
+                return 'PL';
+			case 'Sweden':
+				return 'SE';
+			default:
+				break;
+		}
+	}
+
 	findItemById(list: EnumEntityTypeDto[] | IdNameDto[] | CountryDto[], id?: number | null) {
 		if (id) {
 			return list.find((x: any) => x.id === id);
@@ -98,14 +123,14 @@ export abstract class AppComponentBase {
 
 	consultantProfileUrl(fileToken: string): string {
 		if (!fileToken) {
-			return 'assets/common/images/no-img.svg';
+			return 'assets/common/images/no-img.jpg';
 		}
 		return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
 	}
 
 	employeeProfileUrl(fileToken: string): string {
 		if (!fileToken) {
-			return 'assets/common/images/no-img.svg';
+			return 'assets/common/images/no-img.jpg';
 		}
 		return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
 	}
@@ -147,6 +172,10 @@ export abstract class AppComponentBase {
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
 		return item.documentStorageGuid;
 	}
+
+    trackByItem(index: number, item: any) {
+        return item;
+    }
 
 	displayConsultantNameFn(option: any) {
 		return option?.consultant?.name;

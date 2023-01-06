@@ -2,18 +2,20 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ClientPeriodServiceProxy, ConsultantPeriodServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contracts.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
+import { ClientDataSections, MainDataSections, StepAnchorDto, StepWithAnchorsDto, SubItemDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
     selector: 'app-workflow-period',
@@ -28,22 +30,19 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
+    @Input() topToolbarVisible: boolean;
 
     sideMenuItems: WorkflowProcessWithAnchorsDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
     workflowPeriodStepTypes: { [key: string]: string };
-    // selectedStep: StepDto;
     selectedStep: StepWithAnchorsDto;
     selectedAnchor: string;
 
     workflowSteps = StepType;
     selectedStepEnum: StepType;
-    // selectedSideSection: WorkflowProcessDto;
     selectedSideSection: WorkflowProcessWithAnchorsDto;
     sectionIndex = 0;
     consultant: ConsultantResultDto;
-
-    // hardcoded status
     managerStatus = ManagerStatus;
 
     workflowStatuses = WorkflowStepStatus;
@@ -58,7 +57,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _consultantPeriodService: ConsultantPeriodServiceProxy
+        private _consultantPeriodService: ConsultantPeriodServiceProxy,
+        private _scrollToService: ScrollToService
     ) {
         super(injector);
         this._workflowDataService.consultantsAddedToStep
@@ -170,11 +170,13 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                         SalesAnchors = [
                             {
                                 name: 'Main Data',
-                                anchor: 'salesMainDataAnchor'
+                                anchor: 'salesMainDataAnchor',
+                                subItems: new Array<SubItemDto>(...MainDataSections)
                             },
                             {
                                 name: 'Client Data',
-                                anchor: 'salesClientDataAnchor'
+                                anchor: 'salesClientDataAnchor',
+                                subItems: new Array<SubItemDto>(...ClientDataSections)
                             }
                         ];
                         break;
@@ -315,24 +317,16 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     deleteSideSection(item: WorkflowProcessWithAnchorsDto) {
         this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Delete ${this.detectNameOfSideSection(item.typeId)}`,
-                confirmationMessage: `Are you sure you want to delete ${item.name}? \n
-                    The data, which has been filled until now - will be removed.`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Yes',
-                isNegative: true
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            confirmationMessageTitle: `Delete ${this.detectNameOfSideSection(item.typeId)}`,
+            confirmationMessage: `Are you sure you want to delete ${item.name}? \n
+                The data, which has been filled until now - will be removed.`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Yes',
+            isNegative: true
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             switch (item.typeId) {
@@ -349,10 +343,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                     return this.deleteWorkflowTermination();
             }
         });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
     }
 
     changeAnchorSelection(anchorName: string) {
@@ -363,7 +353,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.showMainSpinner();
         this._workflowService.terminationDelete(this.workflowId)
         .pipe(finalize(() => this.hideMainSpinner()))
-        .subscribe(result => {
+        .subscribe(() => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
@@ -373,7 +363,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.showMainSpinner();
         this._workflowService.terminationConsultantDelete(this.workflowId, consultantId)
         .pipe(finalize(() => this.hideMainSpinner()))
-        .subscribe(result => {
+        .subscribe(() => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         })
@@ -383,7 +373,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.showMainSpinner();
         this._clientPeriodService.clientPeriod(clientPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
+            .subscribe(() => {
                 this._workflowDataService.workflowTopSectionUpdated.emit(true);
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
@@ -393,7 +383,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.showMainSpinner();
         this._consultantPeriodService.consultantPeriod(consultantPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
+            .subscribe(() => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
@@ -413,5 +403,13 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
             case WorkflowProcessType.TerminateWorkflow:
                 return 'workflow termination';
         }
+    }
+
+    scrollToSection(section?: string) {
+        const config: ScrollToConfigOptions = {
+            target: section!,
+            offset: -120
+        };
+        this._scrollToService.scrollTo(config);
     }
 }

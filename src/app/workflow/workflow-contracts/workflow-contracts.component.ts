@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { BigDialogConfig } from 'src/shared/dialog.configs';
 import {
 	ClientPeriodContractsDataCommandDto,
 	WorkflowProcessType,
@@ -66,6 +67,7 @@ import {
 	templateUrl: './workflow-contracts.component.html',
 	styleUrls: ['./workflow-contracts.component.scss'],
 })
+
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
@@ -1647,8 +1649,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.consultantTimeReportingCapId = consultantInput.consultantCapOnTimeReporting?.id;
 		consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
 		consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
-		consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
+		consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
+		consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 		consultantData.specialContractTerms = consultantInput.specialContractTerms;
+		consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
 
 		consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 		if (consultantInput.clientFees?.length) {

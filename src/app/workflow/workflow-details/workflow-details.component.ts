@@ -98,7 +98,7 @@ export class WorkflowDetailsComponent
     sectionIndex: number;
 
     workflowResponse: WorkflowDto;
-    clientPeriods: ClientPeriodDto[] | undefined = [];
+    clientPeriods: ClientPeriodDto[] | undefined;
     workflowDirectClient: string | undefined;
     workflowEndClient: string | undefined;
     workflowDirectClientId: number | undefined;
@@ -318,6 +318,8 @@ export class WorkflowDetailsComponent
                 this.workflowEndClient = result.endClientName;
                 this.workflowDirectClientId = result.directClientId;
                 this.workflowEndClientId = result.endClientId;
+                this.endClientCrmId = result.endClientCrmId;
+                this.directClientCrmId = result.directClientCrmId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
                 this.workflowConsultantsList = result.consultantNamesWithRequestUrls?.map(x => {

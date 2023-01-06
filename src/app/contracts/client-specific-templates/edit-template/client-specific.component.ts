@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CREATIONS_TABS } from 'src/app/contracts/shared/entities/contracts.constants';
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 
@@ -6,9 +6,7 @@ import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
     selector: 'app-client-specific',
     templateUrl: './client-specific.component.html',
 })
-export class ClientSpecificComponent implements OnInit {
+export class ClientSpecificComponent {
     tabs: Tab[] = CREATIONS_TABS;
     constructor() {}
-
-    ngOnInit(): void {}
 }

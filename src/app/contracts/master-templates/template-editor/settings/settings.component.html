@@ -1,288 +1,156 @@
-<ng-container
-    *ngIf="options$ | async as options"
-    [formGroup]="masterTemplateFormGroup"
->
-    <div class="page-container">
-        <div class="template-settings-section">
-            <h3 class="template-settings-header">Template settings</h3>
-            <ng-container *ngIf="!editMode">
-                <mat-radio-group
-                    [formControl]="agreementCreationMode"
-                    class="radio-button-group"
-                >
-                    <mat-radio-button
-                        class="option"
-                        [value]="creationModes.Duplicated"
-                        (click)="modeControl$.next(creationModes.Duplicated)"
-                        >Duplicate from master template</mat-radio-button
-                    >
-                    <mat-radio-button
-                        class="option"
-                        [value]="creationModes.FromScratch"
-                        (click)="modeControl$.next(creationModes.FromScratch)"
-                        >Create from scratch</mat-radio-button
-                    >
-                </mat-radio-group>
-            </ng-container>
-            <mat-divider></mat-divider>
-            <mat-form-field
-                class="dropdown"
-                appearance="outline"
-                floatLabel="never"
-            >
-                <mat-label>Document type</mat-label>
-                <mat-select
-                    formControlName="agreementType"
-                    placeholder="Document type"
-                    [panelClass]="'myFilter'"
-                >
-                    <mat-option
-                        *ngFor="let agreementType of options.agreementTypes"
-                        [value]="agreementType.id"
-                    >
-                        {{ agreementType.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error
-                    ><app-validator
-                        [control]="
-                            masterTemplateFormGroup.controls['agreementType']
-                        "
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <mat-form-field
-                class="dropdown"
-                appearance="outline"
-                floatLabel="never"
-            >
-                <mat-label> Recipient type</mat-label>
-                <mat-select
-                    formControlName="recipientTypeId"
-                    placeholder="Recipient type"
-                >
-                    <mat-option
-                        *ngFor="let recipientType of options.recipientTypes"
-                        [value]="recipientType.id"
-                    >
-                        {{ recipientType.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error
-                    ><app-validator
-                        [control]="
-                            masterTemplateFormGroup.controls['recipientTypeId']
-                        "
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
+<ng-container *ngIf="options$ | async as options" [formGroup]="masterTemplateFormGroup">
+	<div class="page-container">
+		<div class="template-settings-section">
+			<h3 class="template-settings-header">Template settings</h3>
+			<ng-container *ngIf="!editMode">
+				<mat-radio-group [formControl]="agreementCreationMode" class="radio-button-group">
+					<mat-radio-button
+						class="option"
+						[value]="creationModes.Duplicated"
+						(click)="modeControl$.next(creationModes.Duplicated)"
+						>Duplicate from master template</mat-radio-button
+					>
+					<mat-radio-button
+						class="option"
+						[value]="creationModes.FromScratch"
+						(click)="modeControl$.next(creationModes.FromScratch)"
+						>Create from scratch</mat-radio-button
+					>
+				</mat-radio-group>
+			</ng-container>
+			<mat-divider></mat-divider>
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label>Document type</mat-label>
+				<mat-select formControlName="agreementType" placeholder="Document type" [panelClass]="'myFilter'">
+					<mat-option *ngFor="let agreementType of options[0].agreementTypes" [value]="agreementType.id">
+						{{ agreementType.name }}
+					</mat-option>
+				</mat-select>
+				<mat-error
+					><app-validator [control]="masterTemplateFormGroup.controls['agreementType']"></app-validator
+				></mat-error>
+			</mat-form-field>
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label> Recipient type</mat-label>
+				<mat-select formControlName="recipientTypeId" placeholder="Recipient type">
+					<mat-option *ngFor="let recipientType of options[0].recipientTypes" [value]="recipientType.id">
+						{{ recipientType.name }}
+					</mat-option>
+				</mat-select>
+				<mat-error
+					><app-validator [control]="masterTemplateFormGroup.controls['recipientTypeId']"></app-validator
+				></mat-error>
+			</mat-form-field>
 
-            <ng-container
-                *ngIf="masterTemplateOptions$ | async as masterTemplateOptions"
-            >
-                <emg-dropdown-autocomplete-single-select
-                    [options]="masterTemplateOptions"
-                    [labelKey]="'name'"
-                    [outputProperty]="'agreementTemplateId'"
-                    [label]="'Master Template'"
-                    [formControl]="duplicateTemplateControl"
-                    (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
-                >
-                    <ng-template let-cell="option" #optionTemplate>
-                        <span>{{ cell.name }}</span>
-                    </ng-template>
-                </emg-dropdown-autocomplete-single-select>
-            </ng-container>
-            <mat-divider></mat-divider>
-            <mat-form-field appearance="outline" floatLabel="never">
-                <mat-label> Master template name</mat-label>
-                <input
-                    matInput
-                    type="text"
-                    formControlName="name"
-                    placeholder="Master template name"
-                />
-                <mat-error
-                    ><app-validator
-                        [control]="masterTemplateFormGroup.controls['name']"
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <div></div>
-            <emg-auto-name
-                formControlName="agreementNameTemplate"
-            ></emg-auto-name>
-            <div></div>
-            <mat-form-field appearance="outline" floatLabel="never">
-                <mat-label> Definition </mat-label>
-                <input
-                    matInput
-                    type="text"
-                    formControlName="definition"
-                    placeholder="Definition"
-                />
-            </mat-form-field>
-            <div></div>
-            <mat-form-field appearance="outline" floatLabel="never">
-                <mat-label>Internal legal entity</mat-label>
-                <mat-select
-                    formControlName="legalEntities"
-                    multiple
-                    placeholder="Internal legal entity"
-                >
-                    <mat-option
-                        *ngFor="let legalEntity of options.legalEntities"
-                        [value]="legalEntity.id"
-                    >
-                        {{ legalEntity.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error
-                    ><app-validator
-                        [control]="
-                            masterTemplateFormGroup.controls['legalEntities']
-                        "
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <div></div>
-            <mat-form-field
-                class="dropdown"
-                appearance="outline"
-                floatLabel="never"
-            >
-                <mat-label>Sales types</mat-label>
-                <mat-select
-                    formControlName="salesTypes"
-                    multiple
-                    placeholder="Sales types"
-                >
-                    <mat-option
-                        *ngFor="let salesType of options.salesTypes"
-                        [value]="salesType.id"
-                    >
-                        {{ salesType.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error
-                    ><app-validator
-                        [control]="
-                            masterTemplateFormGroup.controls['salesTypes']
-                        "
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <mat-form-field
-                class="dropdown"
-                appearance="outline"
-                floatLabel="never"
-            >
-                <mat-label>Delivery type</mat-label>
-                <mat-select
-                    formControlName="deliveryTypes"
-                    multiple
-                    placeholder="Delivery type"
-                >
-                    <mat-option
-                        *ngFor="let deliveryType of options.deliveryTypes"
-                        [value]="deliveryType.id"
-                    >
-                        {{ deliveryType.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error
-                    ><app-validator
-                        [control]="
-                            masterTemplateFormGroup.controls['deliveryTypes']
-                        "
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <div></div>
-            <mat-form-field
-                class="dropdown"
-                appearance="outline"
-                floatLabel="never"
-            >
-                <mat-label>Contract type</mat-label>
-                <mat-select
-                    formControlName="contractTypes"
-                    multiple
-                    placeholder="Contract type"
-                >
-                    <mat-option
-                        *ngFor="let contractType of options.contractTypes"
-                        [value]="contractType.id"
-                    >
-                        {{ contractType.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error
-                    ><app-validator
-                        [control]="
-                            masterTemplateFormGroup.controls['contractTypes']
-                        "
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <mat-form-field
-                class="dropdown"
-                appearance="outline"
-                floatLabel="never"
-            >
-                <mat-label>Language of text</mat-label>
-                <mat-select
-                    formControlName="language"
-                    placeholder="Language of text"
-                >
-                    <mat-option
-                        *ngFor="let language of options.languages"
-                        [value]="language.id"
-                    >
-                        {{ language.name }}
-                    </mat-option></mat-select
-                >
-                <mat-error
-                    ><app-validator
-                        [control]="masterTemplateFormGroup.controls['language']"
-                    ></app-validator
-                ></mat-error>
-            </mat-form-field>
-            <mat-form-field
-                [style.width.px]="564"
-                appearance="outline"
-                class="text-area"
-            >
-                <mat-label>Notes</mat-label>
-                <textarea
-                    matInput
-                    formControlName="note"
-                    rows="7"
-                    [style.resize]="'none'"
-                ></textarea>
-            </mat-form-field>
-            <div></div>
-            <mat-checkbox formControlName="isSignatureRequired"
-                >Signature required</mat-checkbox
-            >
-            <div></div>
-            <mat-checkbox
-                >Default template for contracts of this type</mat-checkbox
-            >
-            <mat-divider></mat-divider>
-            <h4>Status</h4>
-            <mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
-        </div>
-        <div class="attachments-section">
-            <emg-file-selector
-                [inheritedFiles]="preselectedFiles"
-                formControlName="selectedInheritedFiles"
-            ></emg-file-selector>
-            <emg-file-uploader
-                formControlName="uploadedFiles"
-            ></emg-file-uploader>
-        </div>
-    </div>
-    <button mat-button (click)="onSave()">Save</button>
-    <button mat-button (click)="onCancel()">Cancel</button>
+			<ng-container *ngIf="masterTemplateOptions$ | async as masterTemplateOptions">
+				<emg-dropdown-autocomplete-single-select
+					[options]="masterTemplateOptions"
+					[labelKey]="'name'"
+					[outputProperty]="'agreementTemplateId'"
+					[label]="'Master Template'"
+					[formControl]="duplicateTemplateControl"
+					(inputEmitter)="masterTemplateOptionsChanged$.next($event)">
+					<ng-template let-cell="option" #optionTemplate>
+						<div>
+							<div class="autocomplete-first-row">
+								<span> {{ cell.name }} </span>
+							</div>
+							<div class="autocomplete-second-row">
+								<span>{{ options[1].agreementType[cell.agreementType] }} </span>
+								<span>{{ cell.clientName }} </span>
+								<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
+								<span>{{ cell.createdDateUtc | date : 'dd.MM.yyyy' }}</span>
+							</div>
+						</div>
+					</ng-template>
+				</emg-dropdown-autocomplete-single-select>
+			</ng-container>
+			<mat-divider></mat-divider>
+			<mat-form-field appearance="outline" floatLabel="never">
+				<mat-label> Master template name</mat-label>
+				<input matInput type="text" formControlName="name" placeholder="Master template name" />
+				<mat-error><app-validator [control]="masterTemplateFormGroup.controls['name']"></app-validator></mat-error>
+			</mat-form-field>
+			<div></div>
+			<emg-auto-name formControlName="agreementNameTemplate"></emg-auto-name>
+			<div></div>
+			<mat-form-field appearance="outline" floatLabel="never">
+				<mat-label> Definition </mat-label>
+				<input matInput type="text" formControlName="definition" placeholder="Definition" />
+			</mat-form-field>
+			<div></div>
+			<mat-form-field appearance="outline" floatLabel="never">
+				<mat-label>Internal legal entity</mat-label>
+				<mat-select formControlName="legalEntities" multiple placeholder="Internal legal entity">
+					<mat-option *ngFor="let legalEntity of options[0].legalEntities" [value]="legalEntity.id">
+						<ng-container *ngIf="legalEntity.id">
+							{{ options[1].legalEntityIds[legalEntity.id] }}
+						</ng-container>
+					</mat-option>
+				</mat-select>
+				<mat-error
+					><app-validator [control]="masterTemplateFormGroup.controls['legalEntities']"></app-validator
+				></mat-error>
+			</mat-form-field>
+			<div></div>
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label>Sales types</mat-label>
+				<mat-select formControlName="salesTypes" multiple placeholder="Sales types">
+					<mat-option *ngFor="let salesType of options[0].salesTypes" [value]="salesType.id">
+						{{ salesType.name }}
+					</mat-option>
+				</mat-select>
+				<mat-error><app-validator [control]="masterTemplateFormGroup.controls['salesTypes']"></app-validator></mat-error>
+			</mat-form-field>
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label>Delivery type</mat-label>
+				<mat-select formControlName="deliveryTypes" multiple placeholder="Delivery type">
+					<mat-option *ngFor="let deliveryType of options[0].deliveryTypes" [value]="deliveryType.id">
+						{{ deliveryType.name }}
+					</mat-option>
+				</mat-select>
+				<mat-error
+					><app-validator [control]="masterTemplateFormGroup.controls['deliveryTypes']"></app-validator
+				></mat-error>
+			</mat-form-field>
+			<div></div>
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label>Contract type</mat-label>
+				<mat-select formControlName="contractTypes" multiple placeholder="Contract type">
+					<mat-option *ngFor="let contractType of options[0].contractTypes" [value]="contractType.id">
+						{{ contractType.name }}
+					</mat-option>
+				</mat-select>
+				<mat-error
+					><app-validator [control]="masterTemplateFormGroup.controls['contractTypes']"></app-validator
+				></mat-error>
+			</mat-form-field>
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label>Language of text</mat-label>
+				<mat-select formControlName="language" placeholder="Language of text">
+					<mat-option *ngFor="let language of options[0].languages" [value]="language.id">
+						{{ language.name }}
+					</mat-option></mat-select
+				>
+				<mat-error><app-validator [control]="masterTemplateFormGroup.controls['language']"></app-validator></mat-error>
+			</mat-form-field>
+			<mat-form-field [style.width.px]="564" appearance="outline" class="text-area">
+				<mat-label>Notes</mat-label>
+				<textarea matInput formControlName="note" rows="7" [style.resize]="'none'"></textarea>
+			</mat-form-field>
+			<div></div>
+			<mat-checkbox formControlName="isSignatureRequired">Signature required</mat-checkbox>
+			<div></div>
+			<mat-checkbox>Default template for contracts of this type</mat-checkbox>
+			<mat-divider></mat-divider>
+			<h4>Status</h4>
+			<mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
+		</div>
+		<div class="attachments-section">
+			<emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
+			<emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
+		</div>
+	</div>
+	<button mat-button (click)="onSave()">Save</button>
+	<button mat-button (click)="onCancel()">Cancel</button>
 </ng-container>

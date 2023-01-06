@@ -1,7 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,6 +44,7 @@ import {
 	ConsultantPeriodSalesDataDto,
 	CountryDto,
 	LegalEntityDto,
+    EmployeeDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -832,6 +832,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
 		this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
 		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
+        this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
 		this.consutlantDataComponent.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
@@ -914,6 +915,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				input.salesMainData!.commissions?.push(commissionInput);
 			});
 		}
+        input.salesMainData!.commissionedEmployeesIdValues = [];
+        input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
+        if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
+            this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
+                const user: EmployeeDto = form.commissionedUser;
+                if (user.id) {
+                    input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+                    input.salesMainData!.commissionedEmployeesData?.push(user);
+                }
+            })
+        }
 		input.salesClientData = new SalesClientDataDto(this.clientDataComponent?.salesClientDataForm.value);
 		input.startDate = this.clientDataComponent?.salesClientDataForm.startDate?.value;
 		input.noEndDate = this.clientDataComponent?.salesClientDataForm.noEndDate?.value;

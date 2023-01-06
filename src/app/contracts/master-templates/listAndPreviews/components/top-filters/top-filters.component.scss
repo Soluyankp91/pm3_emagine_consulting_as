@@ -26,3 +26,38 @@
 .right-panel {
     display: flex;
 }
+.flag {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-size: cover;
+}
+.circle-counter {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 32px;
+	height: 32px;
+	background-color: #4a4e60;
+	border-radius: 50%;
+	color: rgb(255, 255, 255);
+    position: relative;
+    z-index: 2;
+}
+.icons-container {
+    display: flex;
+}
+.icon-container {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    background-color: #E7E3E8;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    right: 6px;
+}
+.displayed-countries {
+    display: flex;
+    gap: 7px;
+}
