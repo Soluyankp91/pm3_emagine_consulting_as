@@ -1,14 +1,19 @@
 import { take, pluck } from 'rxjs/operators';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
-import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
+import {
+	ITemplatesService,
+	TEMPLATE_SERVICE_PROVIDER,
+	TEMPLATE_SERVICE_TOKEN,
+} from 'src/app/contracts/shared/services/template-service-factory';
 
 @Component({
 	selector: 'app-delivery-types-filter',
 	templateUrl: './delivery-types-filter.component.html',
+	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class DeliveryTypesFilterComponent implements IFilter {
 	deliveryTypes$ = this.contractService.getDeliveryTypes$();
@@ -18,8 +23,11 @@ export class DeliveryTypesFilterComponent implements IFilter {
 
 	tableFilter = 'deliveryTypeIds';
 
-	constructor(private contractService: ContractsService, private masterTemplateService: MasterTemplatesService) {
-		this.masterTemplateService
+	constructor(
+		private contractService: ContractsService,
+		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
+	) {
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((deliveryTypes) => {

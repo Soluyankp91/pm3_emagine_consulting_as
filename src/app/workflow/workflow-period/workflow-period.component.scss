@@ -9,10 +9,13 @@
     padding-left: 25px;
 
     &--wrapper {
-        height: 65vh;
+        height: calc(100vh - 215px);
         position: sticky;
         top: 115px;
         border-right: 1px solid #E7E3E8;
+        &.topToolbarVisible {
+            height: calc(100vh - 115px);
+        }
     }
     &--step {
         display: flex;
@@ -23,14 +26,22 @@
         &__anchor {
             display: flex;
             flex-direction: column;
-            @include fontOpenSans(14px, 700);
+            @include fontOpenSans(12px, 700);
             font-style: normal;
             line-height: 140%;
-            color: $green-color;
+            color: $dark-grey-color;
             text-transform: uppercase;
             &-consultant-name {
                 text-transform: none;
                 color: $dark-grey-color;
+            }
+            &-section {
+                @include fontOpenSans(12px, 700);
+                line-height: 12px;
+                color: $medium-grey-color;
+                &:hover {
+                    color: $dark-grey-color;
+                }
             }
         }
         &__number {
@@ -84,8 +95,7 @@
 }
 
 .active-anchor {
-    color: rgba(56, 72, 83, 0.87);
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .workflow-period--delete {

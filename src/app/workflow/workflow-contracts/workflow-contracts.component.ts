@@ -20,6 +20,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { BigDialogConfig } from 'src/shared/dialog.configs';
 import {
     ClientPeriodContractsDataCommandDto,
     WorkflowProcessType,
@@ -1169,7 +1170,6 @@ export class WorkflowContractsComponent
         if (projectLinesMenuTrigger) {
             projectLinesMenuTrigger.closeMenu();
         }
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectName!.value,
             startDate: this.contractsConsultantsDataForm.consultants
@@ -1196,27 +1196,17 @@ export class WorkflowContractsComponent
                     .get('projectLines') as UntypedFormArray
             ).at(projectLinesIndex!).value;
         }
-        const dialogRef = this.dialog.open(
-            AddOrEditProjectLineDialogComponent,
-            {
-                width: '760px',
-                minHeight: '180px',
-                height: 'auto',
-                scrollStrategy,
-                backdropClass: 'backdrop-modal--wrapper',
-                autoFocus: false,
-                panelClass: 'confirmation-modal',
-                data: {
-                    dialogType:
-                        projectLinesIndex !== null &&
-                        projectLinesIndex !== undefined
-                            ? ProjectLineDiallogMode.Edit
-                            : ProjectLineDiallogMode.Create,
-                    projectLineData: projectLine,
-                    clientId: this.contractClientForm.directClientId?.value,
-                },
-            }
-        );
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        BigDialogConfig.scrollStrategy = scrollStrategy;
+		BigDialogConfig.data = {
+			dialogType:
+				projectLinesIndex !== null && projectLinesIndex !== undefined
+					? ProjectLineDiallogMode.Edit
+					: ProjectLineDiallogMode.Create,
+			projectLineData: projectLine,
+			clientId: this.contractClientForm.directClientId?.value,
+		};
+        const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, BigDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
             if (projectLinesIndex !== null && projectLinesIndex !== undefined) {

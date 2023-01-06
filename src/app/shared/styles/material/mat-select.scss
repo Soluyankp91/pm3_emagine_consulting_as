@@ -1,10 +1,14 @@
 @import "/src/app/shared/styles/config/_colors";
 
+.mat-form-field-appearance-outline .mat-select-arrow-wrapper {
+    transform: translateY(-35%) !important;
+}
 .filter-select,
 .client-documents--contract-filter__select {
     .mat-select-value {
         color: rgba(56, 72, 83, 0.87);
         font-weight: 700;
+        line-height: 1.2rem;
     }
 
     .mat-option.mat-selected:not(.mat-option-disabled) {
@@ -17,9 +21,9 @@
         display: inline-block;
         padding: 5px;
         transform: rotate(45deg) !important;
-        width: 14px;
-        height: 14px;
-        margin-top: 2px;
+        width: 8px;
+        height: 8px;
+        margin-top: 4px;
         transition: all .3s ease-in-out;
     }
     &.mat-form-field-invalid {
@@ -44,7 +48,7 @@
         &:focus:not(.mat-option-disabled),
         &.mat-active,
         &.mat-selected:not(.mat-option-disabled) {
-            background: #FAF9FB !important;
+            background: #f9f9f9 !important;
         }
         &.mat-select-clear-option {
             color: rgba(0, 0, 0, 0.47) !important;
@@ -172,7 +176,7 @@
     .mat-option:focus:not(.mat-option-disabled),
     .mat-option.mat-active,
     .mat-option.mat-selected:not(.mat-option-disabled) {
-        background: #FAF9FB !important;
+        background: #f9f9f9 !important;
     }
 }
 
@@ -193,7 +197,7 @@
             background: unset !important;
         }
         &.selected-option {
-            background: #FAF9FB !important;
+            background: #f9f9f9 !important;
         }
         .mat-option-text {
             display: flex;
@@ -275,6 +279,7 @@
     .mat-select-value-text {
         font-weight: 600;
         color: #000;
+        line-height: 1;
     }
 
     .mat-select-arrow {

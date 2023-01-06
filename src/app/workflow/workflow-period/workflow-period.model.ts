@@ -30,10 +30,12 @@ export class StepAnchorDto implements IStepAnchorDto {
     name?: string;
     anchor?: string;
     consultantName?: string;
+    subItems?: SubItemDto[];
     constructor(data?: IStepAnchorDto) {
         this.name = data?.name;
         this.anchor = data?.anchor;
         this.consultantName = data?.consultantName;
+        this.subItems = data?.subItems;
     }
 }
 
@@ -41,6 +43,21 @@ export interface IStepAnchorDto {
     name?: string;
     anchor?: string;
     consultantName?: string;
+    subItems?: SubItemDto[];
+}
+
+export class SubItemDto implements ISubItemDto {
+    name?: string;
+    anchor?: string;
+    constructor(data?: IStepAnchorDto) {
+        this.name = data?.name;
+        this.anchor = data?.anchor;
+    }
+}
+
+export interface ISubItemDto {
+    name?: string;
+    anchor?: string;
 }
 
 export class WorkflowProcessWithAnchorsDto implements IWorkflowProcessWithAnchorsDto {
@@ -74,3 +91,49 @@ export interface IWorkflowProcessWithAnchorsDto {
     terminationEndDate?: moment.Moment | undefined;
     steps?: StepWithAnchorsDto[] | undefined;
 }
+
+export const MainDataSections: SubItemDto[] = [
+    {
+        name: 'Project',
+        anchor: 'salesMainProject'
+    },
+    {
+        name: 'Invoicing',
+        anchor: 'salesMainInvoicing'
+    },
+    {
+        name: 'Account manager',
+        anchor: 'salesMainAccountManager'
+    }
+];
+
+export const ClientDataSections: SubItemDto[] = [
+    {
+        name: 'Client relation',
+        anchor: 'salesClientRelation'
+    },
+    {
+        name: 'Project duration',
+        anchor: 'salesClientProjectDuration'
+    },
+    {
+        name: 'Client invoicing',
+        anchor: 'salesClientInvoicing'
+    },
+    {
+        name: 'InvoicingNumber',
+        anchor: 'salesClientInvoicingNumber'
+    },
+    {
+        name: 'Rates and fees',
+        anchor: 'salesClientRatesFees'
+    },
+    {
+        name: 'Client evaluation',
+        anchor: 'salesClientEvaluation'
+    },
+    {
+        name: 'Client contract',
+        anchor: 'salesClientContract'
+    }
+];
