@@ -6,116 +6,118 @@
         <ng-container
             *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
-                <h2 class="workflow-section--header u-mb--20">Finish contract in PM</h2>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                    <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
-                        <h2 class="workflow-section--header u-mt--20">Sync</h2>
-                        <span class="workflow-darkblue--text">
-                            <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
-                        </span>
-                        <ng-container *ngIf="statusAfterSync">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
-                                <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
-                                <span class="workflow-darkblue--text">
-                                    {{syncMessage}}
-                                </span>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-                    <ng-template #contractLinesDoneManuallyInOldPMInput>
-                        <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
-                            (throttledClick)="processSyncToLegacySystem()">
-                            Sync to legacy system
-                        </button>
-                    </ng-template>
-                    <span class="workflow-darkblue--text">
-                        <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
-                        </span>
-                    <ng-container *ngIf="statusAfterSync">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                            <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
-                            <span class="sync-hint-text">
-                                {{syncMessage}}
-                            </span>
-                        </div>
-                    </ng-container>
-                </div>
-
-                <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
-                            <ng-container *ngIf="!contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
-                                <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'"
-                                    [ngClass]="{'icon-cancel': !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value}"></mat-icon>
-                            </ng-container>
-                            <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
-                                <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"></mat-icon>
-                            </ng-container>
-                            <span class="workflow-step-readonly--blue-text">
-                                Contract lines done manually in old PM
-                            </span>
-                        </ng-container>
-                        <ng-template #contractLinesDoneManuallyInOldPMInput>
-                            <form [formGroup]="contractsSyncDataForm">
-                                <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" formControlName="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
-                                    Contract lines done manually in old PM
-                                </mat-checkbox>
-                            </form>
-                        </ng-template>
+                    <h1 class="workflow-section--header-main">Finish contract in PM</h1>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <span class="workflow-section--number">1</span>
+                        <h2 class="workflow-section--header">Sync</h2>
                     </div>
-                </ng-container>
-                <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
-                    <ng-container formArrayName="consultantTerminationContractData">
-                        <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i">
-                            <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
-                                <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <ng-container *ngIf="!readOnlyMode || consultant.get('removedConsultantFromAnyManualChecklists')?.value">
-                                        <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists"
-                                            formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10"
-                                            [ngClass]="{'mat-form-field-invalid': consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid}">
-                                            Removed Consultant from any manual checklists
-                                        </mat-checkbox>
-                                        <mat-error>
-                                            <ng-container *ngIf="consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid">
-                                                <app-validator [withoutFormField]="true" [control]="consultant.get('removedConsultantFromAnyManualChecklists')"></app-validator>
-                                            </ng-container>
-                                        </mat-error>
+                    <div class="workflow-section--content">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <ng-container *ngIf="readOnlyMode; else syncToLegacyControl">
+                                <span class="workflow-darkblue--text">
+                                    <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+                                </span>
+                                <ng-container *ngIf="statusAfterSync">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
+                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+                                        <span class="workflow-darkblue--text">
+                                            {{syncMessage}}
+                                        </span>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #syncToLegacyControl>
+                                <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
+                                    (throttledClick)="processSyncToLegacySystem()">
+                                    Sync to legacy system
+                                </button>
+                            </ng-template>
+                            <ng-container *ngIf="!readOnlyMode">
+                                <span class="workflow-darkblue--text">
+                                    <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+                                </span>
+                                <ng-container *ngIf="statusAfterSync">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+                                        <span class="sync-hint-text">
+                                            {{syncMessage}}
+                                        </span>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                        <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
+                                    <ng-container *ngIf="!contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
+                                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'"
+                                            [ngClass]="{'icon-cancel': !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value}"></mat-icon>
                                     </ng-container>
-                                    <mat-error>
-                                        <ng-container
-                                            *ngIf="consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid">
-                                            <app-validator [withoutFormField]="true"
-                                                [control]="consultant.get('removedConsultantFromAnyManualChecklists')"></app-validator>
-                                        </ng-container>
-                                    </mat-error>
-                                </div>
-
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <ng-container *ngIf="!readOnlyMode || consultant.get('deletedAnySensitiveDocumentsForGDPR')?.value">
-                                        <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="deletedAnySensitiveDocumentsForGDPR"
-                                            formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10"
-                                            [ngClass]="{'mat-form-field-invalid': consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid}">
-                                            Deleted any sensitive documents (GDPR)
-                                        </mat-checkbox>
-                                        <mat-error>
-                                            <ng-container *ngIf="consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid">
-                                                <app-validator [withoutFormField]="true" [control]="consultant.get('deletedAnySensitiveDocumentsForGDPR')"></app-validator>
-                                            </ng-container>
-                                        </mat-error>
+                                    <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
+                                        <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"></mat-icon>
                                     </ng-container>
-                                    <mat-error>
-                                        <ng-container
-                                            *ngIf="consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid">
-                                            <app-validator [withoutFormField]="true"
-                                                [control]="consultant.get('deletedAnySensitiveDocumentsForGDPR')"></app-validator>
-                                        </ng-container>
-                                    </mat-error>
-                                </div>
+                                    <span class="workflow-step-readonly--blue-text">
+                                        Contract lines done manually in old PM
+                                    </span>
+                                </ng-container>
+                                <ng-template #contractLinesDoneManuallyInOldPMInput>
+                                    <form [formGroup]="contractsSyncDataForm">
+                                        <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" formControlName="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
+                                            Contract lines done manually in old PM
+                                        </mat-checkbox>
+                                    </form>
+                                </ng-template>
                             </div>
                         </ng-container>
-                    </ng-container>
-                </form>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <span class="workflow-section--number">2</span>
+                        <h2 class="workflow-section--header">Consultants</h2>
+                    </div>
+                    <div class="workflow-section--content">
+                        <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
+                            <ng-container formArrayName="consultantTerminationContractData">
+                                <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i">
+                                    <div class="workflow-contracts--block-consultants" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
+                                        <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <ng-container *ngIf="!readOnlyMode || consultant.get('removedConsultantFromAnyManualChecklists')?.value">
+                                                <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists"
+                                                    formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10"
+                                                    [ngClass]="{'mat-form-field-invalid': consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid}">
+                                                    Removed Consultant from any manual checklists
+                                                </mat-checkbox>
+                                                <mat-error>
+                                                    <ng-container *ngIf="consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid">
+                                                        <app-validator [withoutFormField]="true" [control]="consultant.get('removedConsultantFromAnyManualChecklists')"></app-validator>
+                                                    </ng-container>
+                                                </mat-error>
+                                            </ng-container>
+                                        </div>
+
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <ng-container *ngIf="!readOnlyMode || consultant.get('deletedAnySensitiveDocumentsForGDPR')?.value">
+                                                <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="deletedAnySensitiveDocumentsForGDPR"
+                                                    formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10"
+                                                    [ngClass]="{'mat-form-field-invalid': consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid}">
+                                                    Deleted any sensitive documents (GDPR)
+                                                </mat-checkbox>
+                                                <mat-error>
+                                                    <ng-container *ngIf="consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid">
+                                                        <app-validator [withoutFormField]="true" [control]="consultant.get('deletedAnySensitiveDocumentsForGDPR')"></app-validator>
+                                                    </ng-container>
+                                                </mat-error>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </form>
+                    </div>
+                </div>
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
@@ -129,7 +131,7 @@
                             <h2 class="workflow-section--header">Project</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                     <mat-label>Project Type (Legacy)</mat-label>
                                     <mat-select [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -445,8 +447,8 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="contractClientForm.clientRates?.controls?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                <span>
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset">
+                                                <span class="light-grey-color text-600">
                                                     No special rates
                                                 </span>
                                             </div>
@@ -584,8 +586,8 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="contractClientForm.clientFees?.controls?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                <span>
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset">
+                                                <span class="light-grey-color text-600">
                                                     No special fees
                                                 </span>
                                             </div>
@@ -863,8 +865,8 @@
                                                             </div>
                                                         </ng-container>
                                                         <ng-container *ngIf="consultant.value.specialRates?.length === 0 && readOnlyMode">
-                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                                <span>
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset">
+                                                                <span class="light-grey-color text-600">
                                                                     No special rates
                                                                 </span>
                                                             </div>
@@ -1071,8 +1073,8 @@
                                                             </div>
                                                         </ng-container>
                                                         <ng-container *ngIf="consultant.value.clientFees?.length === 0 && readOnlyMode">
-                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                                <span>
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset">
+                                                                <span class="light-grey-color text-600">
                                                                     No special fees
                                                                 </span>
                                                             </div>
@@ -1194,7 +1196,7 @@
                                                         </ng-container>
                                                     </ng-container>
                                                 </div>
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                                                <div fxLayout="row" fxLayoutAlign="start start">
                                                     <button
                                                         class="rates-and-fees--btn button-add"
                                                         mat-flat-button
@@ -1425,15 +1427,15 @@
                                                     </mat-accordion>
                                                 </ng-container>
                                                 <ng-container *ngIf="consultant.value.projectLines?.length === 0 && readOnlyMode">
-                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                        <span>
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset">
+                                                        <span class="light-grey-color text-600">
                                                             No project lines
                                                         </span>
                                                     </div>
                                                 </ng-container>
                                             </div>
                                             <ng-container *ngIf="!readOnlyMode">
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                                                <div fxLayout="row" fxLayoutAlign="start start">
                                                     <button class="rates-and-fees--btn button-add" mat-flat-button appPreventDoubleClick (throttledClick)="createOrEditProjectLine(consultantIndex)">
                                                         <mat-icon>add</mat-icon>
                                                         Add project line
@@ -1471,7 +1473,7 @@
                                     <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
 
                                     <ng-container *ngIf="statusAfterSync">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
+                                        <div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
                                             <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
                                             <span class="sync-hint-text">
                                                 {{syncMessage}}
@@ -1479,7 +1481,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                                             <mat-checkbox color="accent" formControlName="contractLinesDoneManuallyInOldPm" name="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
                                                 Contract lines done manually in old PM
                                             </mat-checkbox>
@@ -1499,7 +1501,7 @@
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="readOnlyMode; else legalContractsInput">
                                     <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
                                         <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}" [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
                                         <div fxLayout="column" fxLayoutAlign="start start">
                                             <span class="workflow-darkblue--text">Contract module for client</span>
@@ -1512,7 +1514,7 @@
                                     </div>
                                 </ng-container>
                                 <ng-template #legalContractsInput>
-                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                                    <div fxLayout="column" fxLayoutAlign="start start">
                                         <span [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client legal contracts</span>
                                         <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
                                             <button class="button-accept u-mr--20" appPreventDoubleClick (throttledClick)="openContractModule(periodId!, contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)" mat-flat-button [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value">
@@ -1559,7 +1561,7 @@
                                                 </p>
                                             </ng-template>
                                             <ng-container *ngIf="readOnlyMode">
-                                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                                                     <ng-container *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
                                                             <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
@@ -1587,7 +1589,7 @@
                                                 </div>
                                             </ng-container>
                                             <ng-container *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                                                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
                                                     <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value" appPreventDoubleClick (throttledClick)="openContractModule(consultant.value?.consultantPeriodId!, consultant.value?.internalLegalContractDoneStatusId, true, contractClientForm.pdcInvoicingEntityId?.value, consultant.value.consultant)">
                                                         Open contract module for internal contract
                                                     </button>

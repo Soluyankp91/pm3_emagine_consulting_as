@@ -58,7 +58,7 @@
         &--content {
             border-left: 2px solid $sand-color;
             margin-left: 12px;
-            padding-left: 35px;
+            padding: 20px 0 20px 35px;
             width: 100%;
         }
     }
@@ -97,7 +97,7 @@
             padding: 30px 24px;
         }
         &--additional-address-hint {
-            @include fontOpenSans(14px, 800);
+            @include fontOpenSans(14px, 700);
             color: rgba(56, 72, 83, 0.87);
             &-label {
                 @include fontOpenSans(14px, 700);

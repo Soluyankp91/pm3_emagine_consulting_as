@@ -53,6 +53,11 @@
             }
         }
     }
+    &.mat-checkbox-disabled {
+        .mat-checkbox-inner-container {
+            opacity: 0.5;
+        }
+    }
 }
 
 .mat-checkbox-ripple {

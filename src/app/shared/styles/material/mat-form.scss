@@ -145,38 +145,42 @@
 .mat-form-field-appearance-outline {
     .mat-form-field-flex:not(.textarea-input) {
         background-color: transparent !important;
-        height: 40px;
-        margin-top: 0.25em !important;
+        // margin-top: 0.25em !important;
         .mat-input-element {
             color: rgba(56, 72, 83, 0.87);
             font-weight: 700
+        }
+        .mat-form-field-outline {
+            height: 38px;
         }
     }
     &.textarea-input {
         .mat-form-field-flex {
-            min-height: 40px;
-            height: unset !important;
+            .mat-form-field-outline {
+                height: unset !important;
+                min-height: 38px;
+            }
         }
         .mat-input-element {
             color: rgba(56, 72, 83, 0.87);
             font-weight: 700
         }
     }
+    .mat-form-field-wrapper {
+        margin: 0.5em 0 !important;
+    }
     &.mat-form-field-invalid {
         .mat-form-field-wrapper {
-            margin: 0 !important;
             padding-bottom: 8px !important;
         }
         &:not(.formFieldNoMarginPadding) {
             .mat-form-field-wrapper {
-                margin: 0 !important;
                 padding-bottom: 0.5em !important;
             }
         }
     }
     &:not(.formFieldNoMarginPadding) {
         .mat-form-field-wrapper {
-            margin: 0 !important;
             padding-bottom: 0.3em !important;
         }
     }
@@ -211,7 +215,7 @@
         }
     }
     .mat-form-field-label {
-        color: $medium-grey-color !important;
+        color: rgba(182, 180, 178, 0.77) !important;
     }
     &.mat-focused:not(.mat-form-field-invalid) {
         .mat-form-field-outline-thick {
@@ -253,8 +257,7 @@
 
     &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
         transform: translateY(-1em) scale(.75) !important;
-        color: rgba($color: #384853, $alpha: .87) !important;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     &.mat-focused {
@@ -276,13 +279,9 @@
         }
     }
     .mat-form-field-suffix {
-        top: 0.4em !important;
-        @media screen and (max-width: 1440px) {
-            .mat-icon {
-                height: 18px;
-                width: 18px;
-                line-height: 18px;
-            }
+        top: 0.2em !important;
+        mat-icon {
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
         }
     }
 }
