@@ -13425,6 +13425,60 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
+    getCategoryForMigrate(workflowId: string): Observable<CategoryForMigrateDto> {
+        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/get-category-for-migrate";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCategoryForMigrate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCategoryForMigrate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CategoryForMigrateDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CategoryForMigrateDto>;
+        }));
+    }
+
+    protected processGetCategoryForMigrate(response: HttpResponseBase): Observable<CategoryForMigrateDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CategoryForMigrateDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CategoryForMigrateDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     terminationSalesGET(workflowId: string): Observable<WorkflowTerminationSalesDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-sales";
         if (workflowId === undefined || workflowId === null)
@@ -17348,10 +17402,53 @@ export interface IBranchRoleNodeDto {
     areas?: AreaRoleNodeDto[] | undefined;
 }
 
+export class CategoryForMigrateDto implements ICategoryForMigrateDto {
+    isMigrationNeeded?: boolean;
+    projectCategoryId?: number | undefined;
+
+    constructor(data?: ICategoryForMigrateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isMigrationNeeded = _data["isMigrationNeeded"];
+            this.projectCategoryId = _data["projectCategoryId"];
+        }
+    }
+
+    static fromJS(data: any): CategoryForMigrateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CategoryForMigrateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isMigrationNeeded"] = this.isMigrationNeeded;
+        data["projectCategoryId"] = this.projectCategoryId;
+        return data;
+    }
+}
+
+export interface ICategoryForMigrateDto {
+    isMigrationNeeded?: boolean;
+    projectCategoryId?: number | undefined;
+}
+
 export class ChangeClientPeriodDto implements IChangeClientPeriodDto {
     cutoverDate?: moment.Moment;
     clientNewLegalContractRequired?: boolean;
     consultantPeriods?: NewContractRequiredConsultantPeriodDto[] | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
 
     constructor(data?: IChangeClientPeriodDto) {
         if (data) {
@@ -17371,6 +17468,9 @@ export class ChangeClientPeriodDto implements IChangeClientPeriodDto {
                 for (let item of _data["consultantPeriods"])
                     this.consultantPeriods!.push(NewContractRequiredConsultantPeriodDto.fromJS(item));
             }
+            this.primaryCategoryArea = _data["primaryCategoryArea"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryArea"]) : <any>undefined;
+            this.primaryCategoryType = _data["primaryCategoryType"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryType"]) : <any>undefined;
+            this.primaryCategoryRole = _data["primaryCategoryRole"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryRole"]) : <any>undefined;
         }
     }
 
@@ -17390,6 +17490,9 @@ export class ChangeClientPeriodDto implements IChangeClientPeriodDto {
             for (let item of this.consultantPeriods)
                 data["consultantPeriods"].push(item.toJSON());
         }
+        data["primaryCategoryArea"] = this.primaryCategoryArea ? this.primaryCategoryArea.toJSON() : <any>undefined;
+        data["primaryCategoryType"] = this.primaryCategoryType ? this.primaryCategoryType.toJSON() : <any>undefined;
+        data["primaryCategoryRole"] = this.primaryCategoryRole ? this.primaryCategoryRole.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -17398,6 +17501,9 @@ export interface IChangeClientPeriodDto {
     cutoverDate?: moment.Moment;
     clientNewLegalContractRequired?: boolean;
     consultantPeriods?: NewContractRequiredConsultantPeriodDto[] | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
 }
 
 export class ChangeClientPeriodResultDto implements IChangeClientPeriodResultDto {
@@ -22807,6 +22913,9 @@ export class ExtendClientPeriodDto implements IExtendClientPeriodDto {
     noEndDate?: boolean;
     endDate?: moment.Moment | undefined;
     extendConsultantIds?: number[] | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
 
     constructor(data?: IExtendClientPeriodDto) {
         if (data) {
@@ -22827,6 +22936,9 @@ export class ExtendClientPeriodDto implements IExtendClientPeriodDto {
                 for (let item of _data["extendConsultantIds"])
                     this.extendConsultantIds!.push(item);
             }
+            this.primaryCategoryArea = _data["primaryCategoryArea"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryArea"]) : <any>undefined;
+            this.primaryCategoryType = _data["primaryCategoryType"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryType"]) : <any>undefined;
+            this.primaryCategoryRole = _data["primaryCategoryRole"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryRole"]) : <any>undefined;
         }
     }
 
@@ -22847,6 +22959,9 @@ export class ExtendClientPeriodDto implements IExtendClientPeriodDto {
             for (let item of this.extendConsultantIds)
                 data["extendConsultantIds"].push(item);
         }
+        data["primaryCategoryArea"] = this.primaryCategoryArea ? this.primaryCategoryArea.toJSON() : <any>undefined;
+        data["primaryCategoryType"] = this.primaryCategoryType ? this.primaryCategoryType.toJSON() : <any>undefined;
+        data["primaryCategoryRole"] = this.primaryCategoryRole ? this.primaryCategoryRole.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -22856,6 +22971,9 @@ export interface IExtendClientPeriodDto {
     noEndDate?: boolean;
     endDate?: moment.Moment | undefined;
     extendConsultantIds?: number[] | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
 }
 
 export class ExtendClientPeriodResultDto implements IExtendClientPeriodResultDto {

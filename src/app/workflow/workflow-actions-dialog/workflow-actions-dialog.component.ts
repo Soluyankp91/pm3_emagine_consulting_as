@@ -3,11 +3,11 @@ import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AvailableConsultantDto, ChangeClientPeriodDto, ConsultantPeriodAddDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
+import { AreaRoleNodeDto, AvailableConsultantDto, BranchRoleNodeDto, ChangeClientPeriodDto, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, LookupServiceProxy, NewContractRequiredConsultantPeriodDto, RoleNodeDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDiallogAction } from '../workflow.model';
-import { ChangeWorkflowForm, ExtendWorkflowForm } from './workflow-actions-dialog.model';
+import { ChangeWorkflowForm, ExtendWorkflowForm, ProjectCategoryForm } from './workflow-actions-dialog.model';
 
 @Component({
   selector: 'app-workflow-actions-dialog',
@@ -26,13 +26,18 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     endDate = new UntypedFormControl(null);
     noEndDate = new UntypedFormControl(false);
     minEndDate: Date;
-    // Terminate workflow
-    // TBD
+
+    projectCategoryForm: ProjectCategoryForm;
     changeWorkflowForm: ChangeWorkflowForm;
     extendWorkflowForm: ExtendWorkflowForm;
     // Dialog data
     dialogTypes = WorkflowDiallogAction;
     consultants: AvailableConsultantDto[];
+
+    projectCategory: EnumEntityTypeDto | undefined;
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
 
     private _unsubscribe = new Subject();
     constructor(
@@ -44,14 +49,18 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             dialogTitle: string,
             rejectButtonText: string,
             confirmButtonText: string,
-            isNegative: boolean
+            isNegative: boolean,
+            isMigrationNeeded: boolean,
+            projectCategory: EnumEntityTypeDto | undefined
         },
         private dialogRef: MatDialogRef<WorkflowActionsDialogComponent>,
-        private _fb: UntypedFormBuilder
+        private _fb: UntypedFormBuilder,
+        private _lookupService: LookupServiceProxy
         ) {
             super(injector);
             this.changeWorkflowForm = new ChangeWorkflowForm();
             this.extendWorkflowForm = new ExtendWorkflowForm();
+            this.projectCategoryForm = new ProjectCategoryForm();
             this.consultants = data.consultantData;
             this.extendWorkflowForm?.startDate?.valueChanges.pipe(
                 takeUntil(this._unsubscribe),
@@ -60,6 +69,42 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 let startDate = this.extendWorkflowForm?.startDate?.value as moment.Moment;
                 this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
             });
+            if (this.data.isMigrationNeeded) {
+                this.projectCategoryForm?.primaryCategoryArea?.valueChanges
+                    .pipe(
+                        takeUntil(this._unsubscribe),
+                        map(
+                            (value) =>
+                                this.primaryCategoryAreas?.find((x) => x.id === value?.id)
+                                    ?.areas
+                        )
+                    )
+                    .subscribe((list) => {
+                        this.primaryCategoryTypes = list!;
+                        this.projectCategoryForm?.primaryCategoryType?.setValue(
+                            null
+                        );
+                        this.projectCategoryForm?.primaryCategoryRole?.setValue(
+                            null
+                        );
+                    });
+
+                this.projectCategoryForm?.primaryCategoryType?.valueChanges
+                    .pipe(
+                        takeUntil(this._unsubscribe),
+                        map(
+                            (value) =>
+                                this.primaryCategoryTypes?.find((x) => x.id === value?.id)
+                                    ?.roles
+                        )
+                    )
+                    .subscribe((list) => {
+                        this.primaryCategoryRoles = list!;
+                        this.projectCategoryForm?.primaryCategoryRole?.setValue(
+                            null
+                        );
+                    });
+            }
         }
 
     ngOnInit(): void {
@@ -77,6 +122,10 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 });
                 break;
         }
+        if (this.data.isMigrationNeeded) {
+            this.getPrimaryCategoryTree();
+            this.projectCategory = this.data.projectCategory;
+        }
     }
 
     ngOnDestroy(): void {
@@ -84,12 +133,40 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
         this._unsubscribe.complete();
     }
 
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.projectCategoryForm?.primaryCategoryArea?.value?.id) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.projectCategoryForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.projectCategoryForm?.primaryCategoryType?.value?.id) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.projectCategoryForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
+    }
+
     addConsutlantToChangeForm(consultant: AvailableConsultantDto) {
         const form = this._fb.group({
             consulantName: new UntypedFormControl(consultant.consultantName),
             consultantId: new UntypedFormControl(consultant.consultantId),
             externalId: new UntypedFormControl(consultant.externalId),
-            newLegalContractRequired: new UntypedFormControl(false)
+            newLegalContractRequired: new UntypedFormControl(false),
+            changeConsultant: new UntypedFormControl(false)
         });
         this.changeWorkflowForm.consultants.push(form);
     }
@@ -125,11 +202,16 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 changeWorkflowOutput.cutoverDate = this.changeWorkflowForm.cutoverDate?.value;
                 changeWorkflowOutput.consultantPeriods = new Array<NewContractRequiredConsultantPeriodDto>();
                 consultants.forEach((consultant: any) => {
-                    let consultantInput = new NewContractRequiredConsultantPeriodDto();
-                    consultantInput.consultantNewLegalContractRequired = consultant.newLegalContractRequired,
-                    consultantInput.consultantId = consultant.consultantId;
-                    changeWorkflowOutput.consultantPeriods?.push(consultantInput);
+                    if (consultant.changeConsultant) {
+                        let consultantInput = new NewContractRequiredConsultantPeriodDto();
+                        consultantInput.consultantNewLegalContractRequired = consultant.newLegalContractRequired,
+                        consultantInput.consultantId = consultant.consultantId;
+                        changeWorkflowOutput.consultantPeriods?.push(consultantInput);
+                    }
                 });
+                changeWorkflowOutput.primaryCategoryArea = this.projectCategoryForm.primaryCategoryArea?.value;
+                changeWorkflowOutput.primaryCategoryType = this.projectCategoryForm.primaryCategoryType?.value;
+                changeWorkflowOutput.primaryCategoryRole = this.projectCategoryForm.primaryCategoryRole?.value;
                 this.onConfirmed.emit(changeWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Extend:
@@ -139,13 +221,15 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
                 extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value ?? false,
                 extendWorkflowOutput.extendConsultantIds = consultantsToExtend.filter((x: any) => x.extendConsultant).map((y: any) => y.consultantId);
+                extendWorkflowOutput.primaryCategoryArea = this.projectCategoryForm.primaryCategoryArea?.value;
+                extendWorkflowOutput.primaryCategoryType = this.projectCategoryForm.primaryCategoryType?.value;
+                extendWorkflowOutput.primaryCategoryRole = this.projectCategoryForm.primaryCategoryRole?.value;
                 this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:
 
                 break;
         }
-        // this.onConfirmed.emit(outputData);
         this.closeInternal();
     }
 
