@@ -1,10 +1,10 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { WorkflowDataService } from '../../workflow-data.service';
 import { DeliveryTypes, SalesTypes, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { forkJoin, Subject } from 'rxjs';
-import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
+import { takeUntil } from 'rxjs/operators';
+import { AreaRoleNodeDto, BranchRoleNodeDto, EnumEntityTypeDto, LookupServiceProxy, RoleNodeDto } from 'src/shared/service-proxies/service-proxies';
 
 
 @Component({
@@ -23,10 +23,13 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
     projectTypes: EnumEntityTypeDto[];
     margins: EnumEntityTypeDto[];
     discounts: EnumEntityTypeDto[];
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
     private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
-		private _workflowDataService: WorkflowDataService,
+		private _lookupService: LookupServiceProxy,
 		private _internalLookupService: InternalLookupService
 	) {
 		super(injector);
@@ -59,5 +62,32 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
             this.margins = result.margins;
             this.discounts = result.discounts;
         });
+    }
+
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.contractsMainForm?.primaryCategoryArea?.value) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.contractsMainForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.contractsMainForm?.primaryCategoryType?.value) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.contractsMainForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
     }
 }

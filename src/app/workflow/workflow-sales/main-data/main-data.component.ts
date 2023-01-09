@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { debounceTime, finalize,  startWith,  switchMap, takeUntil} from 'rxjs/operators';
+import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodServiceProxy, CommissionDto, ConsultantPeriodServiceProxy, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, ConsultantPeriodServiceProxy, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { WorkflowSalesMainForm } from '../workflow-sales.model';
@@ -41,6 +41,9 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     commissionFrequencies: EnumEntityTypeDto[];
     legalEntities: LegalEntityDto[];
     contractExpirationNotificationDuration: { [key: string]: string };
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
 
     filteredSalesAccountManagers: EmployeeDto[] = [];
 	filteredCommisionAccountManagers: EmployeeDto[] = [];
@@ -141,6 +144,41 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 					];
 				}
 			});
+
+        this.salesMainDataForm?.primaryCategoryArea?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                map(
+                    (value) =>
+                        this.primaryCategoryAreas?.find((x) => x.id === value?.id)
+                            ?.areas
+                )
+            )
+            .subscribe((list) => {
+                this.primaryCategoryTypes = list!;
+                this.salesMainDataForm?.primaryCategoryType?.setValue(
+                    null
+                );
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
+            });
+
+        this.salesMainDataForm?.primaryCategoryType?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                map(
+                    (value) =>
+                        this.primaryCategoryTypes?.find((x) => x.id === value?.id)
+                            ?.roles
+                )
+            )
+            .subscribe((list) => {
+                this.primaryCategoryRoles = list!;
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
+            });
     }
 
 	ngOnInit(): void {
@@ -182,6 +220,33 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             this.projectCategories = result.projectCategories;
             this.discounts = result.discounts;
         });
+    }
+
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.salesMainDataForm?.primaryCategoryArea?.value?.id) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.salesMainDataForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.salesMainDataForm?.primaryCategoryType?.value?.id) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.salesMainDataForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
     }
 
     toggleEditMode() {
