@@ -1,6 +1,5 @@
 <div class="workflow-sales">
     <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
-
         <app-main-data #mainDataComponent [periodId]="periodId" [readOnlyMode]="readOnlyMode" [editEnabledForcefuly]="editEnabledForcefuly"
             [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
             [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()"></app-main-data>
@@ -12,7 +11,6 @@
             [isCompleted]="isCompleted" [editEnabledForcefuly]="editEnabledForcefuly"
             [clientDataForm]="clientDataComponent?.salesClientDataForm" [mainDataForm]="mainDataComponent?.salesMainDataForm"
             [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]=clientSpecialFeeList></app-consultant-data>
-
     </ng-container>
 </div>
 <ng-template #terminationTemplate>
@@ -92,7 +90,7 @@
                     </ng-container>
 
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
-                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Cause</mat-label>
                             <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.terminationTime?.value === 2 || salesTerminateConsultantForm.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
@@ -102,8 +100,8 @@
                         </mat-form-field>
                     </div>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
+                        <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Additional comments</mat-label>
                             <textarea [disabled]="readOnlyMode" [readonly]="readOnlyMode" matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
@@ -144,7 +142,7 @@
                         </div>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Cause</mat-label>
                                     <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>

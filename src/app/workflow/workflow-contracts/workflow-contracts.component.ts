@@ -930,6 +930,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 			this.updateConsultantStepAnchors();
 		}
+        this.mainDataComponent.getPrimaryCategoryTree();
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {

@@ -44,7 +44,7 @@ import {
 	ConsultantPeriodSalesDataDto,
 	CountryDto,
 	LegalEntityDto,
-    EmployeeDto,
+	EmployeeDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -78,8 +78,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	currencies: EnumEntityTypeDto[] = [];
 	invoicingTimes: EnumEntityTypeDto[] = [];
 	invoiceFrequencies: EnumEntityTypeDto[] = [];
-    nonStandartTerminationTimes: {[key: string]: string;};
-    terminationReasons: {[key: string]: string;};
+	nonStandartTerminationTimes: { [key: string]: string };
+	terminationReasons: { [key: string]: string };
 
 	clientRateTypes = ClientRateTypes;
 	filteredFinalEvaluationReferencePersons: any[] = [];
@@ -362,8 +362,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			currencies: this._internalLookupService.getCurrencies(),
 			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
 			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-            nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
-            terminationReasons: this._internalLookupService.getTerminationReasons()
+			nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
+			terminationReasons: this._internalLookupService.getTerminationReasons(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.invoicingTimes = result.invoicingTimes;
@@ -578,6 +578,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.consutlantDataComponent?.updateConsultantStepAnchors();
 				}
 			});
+            this.mainDataComponent?.getPrimaryCategoryTree();
 	}
 
 	//#region termination
@@ -832,7 +833,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
 		this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
 		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
-        this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
+		this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
 		this.consutlantDataComponent.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
@@ -915,17 +916,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				input.salesMainData!.commissions?.push(commissionInput);
 			});
 		}
-        input.salesMainData!.commissionedEmployeesIdValues = [];
-        input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
-        if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
-            this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
-                const user: EmployeeDto = form.commissionedUser;
-                if (user.id) {
-                    input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
-                    input.salesMainData!.commissionedEmployeesData?.push(user);
-                }
-            })
-        }
+		input.salesMainData!.commissionedEmployeesIdValues = [];
+		input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
+		if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
+			this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
+				const user: EmployeeDto = form.commissionedUser;
+				if (user.id) {
+					input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+					input.salesMainData!.commissionedEmployeesData?.push(user);
+				}
+			});
+		}
 		input.salesClientData = new SalesClientDataDto(this.clientDataComponent?.salesClientDataForm.value);
 		input.startDate = this.clientDataComponent?.salesClientDataForm.startDate?.value;
 		input.noEndDate = this.clientDataComponent?.salesClientDataForm.noEndDate?.value;
@@ -1072,8 +1073,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			} else {
 				consultantInput.noSpecialFee = true;
 			}
-            consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
-            consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
+			consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
+			consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;

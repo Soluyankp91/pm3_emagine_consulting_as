@@ -10,6 +10,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             projectTypeId: new UntypedFormControl(null, Validators.required),
             marginId: new UntypedFormControl(null, Validators.required),
             projectCategoryId: new UntypedFormControl(null, Validators.required),
+            primaryCategoryArea: new UntypedFormControl(null, Validators.required),
+            primaryCategoryType: new UntypedFormControl(null, Validators.required),
+            primaryCategoryRole: new UntypedFormControl(null, Validators.required),
             projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
             projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
             discountId: new UntypedFormControl(null),
@@ -41,6 +44,15 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     }
     get projectCategoryId() {
         return this.get('projectCategoryId');
+    }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
     }
     get projectDescription() {
         return this.get('projectDescription');
