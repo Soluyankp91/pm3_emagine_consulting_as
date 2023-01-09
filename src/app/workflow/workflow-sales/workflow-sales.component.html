@@ -20,7 +20,7 @@
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                 <h1 class="workflow-section--header-main">Termination data</h1>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                     <span class="workflow-section--number">1</span>
                     <h2 class="workflow-section--header">
                         <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
@@ -32,7 +32,7 @@
                     </h2>
                 </div>
                 <div class="workflow-section--content">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                             <mat-label>
                                 <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
@@ -102,7 +102,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Additional comments</mat-label>
                             <textarea [disabled]="readOnlyMode" [readonly]="readOnlyMode" matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
@@ -118,7 +118,7 @@
                         <h2 class="workflow-section--header">Final evaluation</h2>
                     </div>
                     <div class="workflow-section--content">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value || readOnlyMode}">
                                 <mat-label>Final Evaluation Reference Person</mat-label>
                                 <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
@@ -135,14 +135,14 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <ng-container *ngIf="!readOnlyMode || salesTerminateConsultantForm.noEvaluation?.value">
                                 <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(salesTerminateConsultantForm.noEvaluation?.value, salesTerminateConsultantForm.finalEvaluationReferencePerson)">
                                     No evaluation
                                 </mat-checkbox>
                             </ng-container>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Cause</mat-label>
@@ -160,45 +160,3 @@
         </div>
     </form>
 </ng-template>
-
-<!-- <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100">
-        <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                Address:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{client?.address ? client?.address + ', ' : ''}}
-                {{client?.address2 ? client?.address2 + ', ' : ''}}
-                {{client?.city ? client?.city + ', ' : ''}}
-                {{client?.countryName ? client?.countryName + ', ' : ''}}
-                {{client?.postCode ? client?.postCode : ''}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="client?.clientId">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                | Client ID:
-            </span>
-            <span class="workflow-sales--additional-address-hint">
-                {{client?.clientId ? '#' + client?.clientId : ''}}
-            </span>
-        </ng-container>
-
-        <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon u-ml--10" mat-icon-button
-                (click)="openClientInNewTab(client?.clientId)"
-                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
-                <mat-icon svgIcon="link-to-client-icon"></mat-icon>
-            </button>
-        </ng-container>
-
-        <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon" mat-icon-button
-                (click)="openInHubspot(client)"
-                [disabled]="client.crmClientId === null || client.crmClientId === undefined"
-                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
-                <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
-            </button>
-        </ng-container>
-    </div>
-</ng-template> -->
