@@ -643,8 +643,7 @@
                                                 <mat-icon svgIcon="3-dots"></mat-icon>
                                             </button>
                                             <mat-menu #clientRateMenu>
-                                                <button class="menu-item"
-                                                    [ngClass]="salesClientDataForm.clientRates.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                                <button class="menu-item green-color"
                                                     mat-menu-item [disabled]="isClientRateEditing" appPreventDoubleClick
                                                     (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
                                                     <mat-icon svgIcon="edit-icon-green"></mat-icon>
@@ -793,7 +792,7 @@
                                                 <mat-icon svgIcon="3-dots"></mat-icon>
                                             </button>
                                             <mat-menu #clientFeeMenu>
-                                                <button class="menu-item menu-item--edit" mat-menu-item
+                                                <button class="menu-item green-color" mat-menu-item
                                                     [disabled]="isClientFeeEditing" appPreventDoubleClick
                                                     (throttledClick)="editOrSaveClientFee(fee.value.editable, i)">
                                                     <mat-icon svgIcon="edit-icon-green"></mat-icon>
