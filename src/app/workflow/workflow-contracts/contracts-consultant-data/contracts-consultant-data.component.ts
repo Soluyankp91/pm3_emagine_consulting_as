@@ -28,7 +28,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	consultantTimeReportingCapList: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
     consultantInsuranceOptions: { [key: string]: string };
-	filteredConsultants: ConsultantResultDto[]; //FIXME:
+	filteredConsultants: ConsultantResultDto[] = [];
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
 	isConsultantRateEditing = false;

@@ -593,7 +593,7 @@
                                                 class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10"
                                                 fxFlex="30%">
                                                 <input required matInput type="number" placeholder="Rate"
-                                                    formControlName="clientRateValue">
+                                                    formControlName="clientRate">
                                             </mat-form-field>
                                             <mat-form-field appearance="fill"
                                                 class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
@@ -611,10 +611,10 @@
                                     </ng-container>
                                     <ng-template #clientRateCurrencyDisplay>
                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis"
-                                            [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name"
+                                            [matTooltip]="rate.value.clientRate + ' ' + rate.value.clientRateCurrency?.name"
                                             matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ?
-                                            rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name :
+                                            {{rate.value.clientRate || rate.value.clientRateCurrency?.name ?
+                                            rate.value.clientRate + ' ' + rate.value.clientRateCurrency?.name :
                                             '-'}}
                                         </span>
                                     </ng-template>
@@ -743,7 +743,7 @@
                                                 class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10"
                                                 fxFlex="30%">
                                                 <input required matInput type="number" placeholder="Rate"
-                                                    formControlName="clientRateValue">
+                                                    formControlName="clientRate">
                                             </mat-form-field>
                                             <mat-form-field appearance="fill"
                                                 class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
@@ -761,10 +761,10 @@
                                     </ng-container>
                                     <ng-template #clientFeeCurrencyDisplay>
                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis"
-                                            [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name"
+                                            [matTooltip]="fee.value.clientRate + ' ' + fee.value.clientRateCurrency?.name"
                                             matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ?
-                                            fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
+                                            {{fee.value.clientRate || fee.value.clientRateCurrency?.name ?
+                                            fee.value.clientRate + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
 
