@@ -70,6 +70,9 @@ import {
     CountryDto,
     StepType,
     LegalEntityDto,
+    BranchRoleNodeDto,
+    AreaRoleNodeDto,
+    RoleNodeDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
@@ -139,6 +142,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
 
     employmentTypesEnum = EmploymentTypes;
 
@@ -540,6 +547,41 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     }
                 }
             });
+
+        this.salesMainDataForm?.primaryCategoryArea?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                map(
+                    (value) =>
+                        this.primaryCategoryAreas?.find((x) => x.id === value?.id)
+                            ?.areas
+                )
+            )
+            .subscribe((list) => {
+                this.primaryCategoryTypes = list!;
+                this.salesMainDataForm?.primaryCategoryType?.setValue(
+                    null
+                );
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
+            });
+
+        this.salesMainDataForm?.primaryCategoryType?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                map(
+                    (value) =>
+                        this.primaryCategoryTypes?.find((x) => x.id === value?.id)
+                            ?.roles
+                )
+            )
+            .subscribe((list) => {
+                this.primaryCategoryRoles = list!;
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
+            });
     }
 
     ngOnInit(): void {
@@ -809,6 +851,33 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     //#region dataFetch
+
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.salesMainDataForm?.primaryCategoryArea?.value?.id) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.salesMainDataForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.salesMainDataForm?.primaryCategoryType?.value?.id) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.salesMainDataForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
+    }
 
     getCurrencies() {
         this._internalLookupService
@@ -2056,6 +2125,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         input.salesClientData = new SalesClientDataDto();
         input.consultantSalesData = new Array<ConsultantSalesDataDto>();
 
+        input.salesMainData.primaryCategoryArea = this.salesMainDataForm.primaryCategoryArea?.value;
+        input.salesMainData.primaryCategoryType = this.salesMainDataForm.primaryCategoryType?.value;
+        input.salesMainData.primaryCategoryRole = this.salesMainDataForm.primaryCategoryRole?.value;
         input.salesMainData.projectTypeId =
             this.salesMainDataForm.projectType?.value?.id;
         input.salesMainData.salesTypeId =
@@ -2439,6 +2511,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             .subscribe(result => {
                 this.resetForms();
                 // Project
+                this.salesMainDataForm.primaryCategoryArea?.setValue(result.salesMainData?.primaryCategoryArea);
+                this.salesMainDataForm.primaryCategoryType?.setValue(result.salesMainData?.primaryCategoryType);
+                this.salesMainDataForm.primaryCategoryRole?.setValue(result.salesMainData?.primaryCategoryRole);
                 this.salesMainDataForm.projectType?.setValue(
                     this.findItemById(
                         this.projectTypes,
@@ -2763,6 +2838,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     this.updateConsultantStepAnchors();
                 }
             });
+            this.getPrimaryCategoryTree();
     }
 
     clientRateTypeChange(value: EnumEntityTypeDto) {
