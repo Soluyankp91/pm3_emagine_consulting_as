@@ -163,7 +163,7 @@
                                                 <ng-container *ngIf="frame.documents?.length">
                                                     <div class="column u-ml--32">
                                                         <ng-container *ngFor="let file of frame.documents; trackBy: documentsTrackBy; last as last">
-                                                            <div class="flex-items-center cursor-pointer" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                            <div class="flex-items-center cursor-pointer" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
                                                                 <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                 <span class="text-bold">
                                                                     {{ file.name }}
@@ -234,7 +234,7 @@
                                                                                 <div class="column u-ml--32">
                                                                                     <ng-container *ngFor="let file of clientContract.documents; trackBy: documentsTrackBy; last as last">
                                                                                         <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                            <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                                                            <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
                                                                                                 <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                                                 <span class="text-bold">
                                                                                                     {{ file.name }}
@@ -283,7 +283,7 @@
                                                                                 <div class="column u-ml--32">
                                                                                     <ng-container *ngFor="let file of consultantContract.documents; trackBy: documentsTrackBy; last as last">
                                                                                         <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                            <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                                                            <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
                                                                                                 <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                                                 <span class="text-bold">
                                                                                                     {{ file.name }}
@@ -331,7 +331,7 @@
                                                                             </mat-expansion-panel-header>
                                                                             <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
                                                                                 <div *ngFor="let file of internalContract.documents; trackBy: documentsTrackBy; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                    <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                                                    <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
                                                                                         <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                                         <span class="text-bold">
                                                                                             {{ file.name }}
