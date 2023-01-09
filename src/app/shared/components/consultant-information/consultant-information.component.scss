@@ -3,7 +3,7 @@
 
 .consultant {
     &--name {
-        @include fontOpenSans(14px, 800);
+        @include fontOpenSans(14px,700);
         color: $dark-grey-color;
     }
     &--information {
@@ -15,7 +15,7 @@
             color: #898785;
         }
         &-value {
-            @include fontOpenSans(14px, 800);
+            @include fontOpenSans(14px, 700);
             color: rgba(56, 72, 83, 0.87);
         }
     }
