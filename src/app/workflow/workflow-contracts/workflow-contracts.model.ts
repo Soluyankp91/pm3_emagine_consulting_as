@@ -9,6 +9,9 @@ export class WorkflowContractsMainForm extends UntypedFormGroup {
             margin: new UntypedFormControl(null),
             projectDescription: new UntypedFormControl(null, Validators.required),
             projectCategory: new UntypedFormControl(null),
+            primaryCategoryArea: new UntypedFormControl(null),
+            primaryCategoryType: new UntypedFormControl(null),
+            primaryCategoryRole: new UntypedFormControl(null),
             projectName: new UntypedFormControl(null, Validators.required),
             discounts: new UntypedFormControl(null),
             remarks: new UntypedFormControl(null, Validators.required),
@@ -34,6 +37,15 @@ export class WorkflowContractsMainForm extends UntypedFormGroup {
     }
     get projectCategory() {
         return this.get('projectCategory');
+    }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
     }
     get projectName() {
         return this.get('projectName');

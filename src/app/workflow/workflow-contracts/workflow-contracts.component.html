@@ -131,13 +131,13 @@
                             <h2 class="workflow-section--header">Project</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-372">
                                     <mat-label>Project Type (Legacy)</mat-label>
-                                    <mat-select [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select required [disabled]="readOnlyMode" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item?.name }}
+                                                {{ item.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -145,12 +145,14 @@
                                         <app-validator [control]="contractsMainForm.projectType"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Sales Type</mat-label>
-                                    <mat-select [disabled]="true" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select required [disabled]="readOnlyMode" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item?.name }}
+                                                {{ item.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -158,7 +160,7 @@
                                         <app-validator [control]="contractsMainForm.salesType"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Delivery Type</mat-label>
                                     <mat-select [disabled]="true" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
@@ -173,30 +175,15 @@
                                         <app-validator [control]="contractsMainForm.deliveryType"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
-                                    <mat-label>Project Category</mat-label>
-                                    <mat-select [disabled]="true" formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <ng-container *ngFor="let item of projectCategories; trackBy: trackById">
-                                            <mat-option [value]="item">
-                                                {{ item?.name }}
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="contractsMainForm.projectCategory"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                                     <mat-label>Margin</mat-label>
-                                    <mat-select [disabled]="true" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="readOnlyMode" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                                         <mat-option class="mat-select-clear-option">
                                             Clear
                                         </mat-option>
                                         <ng-container *ngFor="let item of margins; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item?.name }}
+                                                {{ item.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -205,10 +192,55 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                <h3 class="workflow-darkblue--text u-mb--10">Project category</h3>
+                                {{contractsMainForm.projectCategory?.value}}
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                        <mat-label>Area</mat-label>
+                                        <mat-select required [disabled]="true" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <ng-container *ngFor="let item of primaryCategoryAreas; trackBy: trackById">
+                                                <mat-option [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.primaryCategoryArea"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                        <mat-label>Type</mat-label>
+                                        <mat-select required [disabled]="true" formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <ng-container *ngFor="let item of primaryCategoryTypes; trackBy: trackById">
+                                                <mat-option [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.primaryCategoryType"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
+                                        <mat-label>Role</mat-label>
+                                        <mat-select required [disabled]="true" formControlName="primaryCategoryRole" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <ng-container *ngFor="let item of primaryCategoryRoles; trackBy: trackById">
+                                                <mat-option [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.primaryCategoryRole"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Name</mat-label>
-                                    <textarea [disabled]="readOnlyMode" matInput autocomplete="new-password" name="projectName" formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                    <textarea [disabled]="readOnlyMode" matInput autocomplete="new-password" name="projectName" formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="1">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="contractsMainForm.projectName"></app-validator>
@@ -216,7 +248,7 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Description</mat-label>
                                     <textarea [disabled]="readOnlyMode" matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
@@ -252,7 +284,7 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding disabled-input u-mr--12 form-width-559">
+                                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding disabled-input u-mr--12 form-width-564">
                                     <mat-label>Remarks</mat-label>
                                     <textarea [disabled]="true" matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
@@ -338,7 +370,7 @@
                             </div>
                             <div class="workflow-section--content">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Special Contract Terms</mat-label>
                                         <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                         </textarea>
@@ -767,7 +799,7 @@
                                         </div>
                                         <div class="workflow-section--content">
                                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Special Contract Terms</mat-label>
                                                     <textarea [disabled]="true" required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                     </textarea>
@@ -798,7 +830,7 @@
                                         </div>
                                         <div class="workflow-section--content">
                                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                                <mat-form-field appearance="outline" class="form-width-559 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-form-field appearance="outline" class="form-width-564 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Special Payment Terms</mat-label>
                                                     <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                     </textarea>
@@ -1500,7 +1532,7 @@
                             </div>
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="readOnlyMode; else legalContractsInput">
-                                    <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
+                                    <h3 class=" workflow-darkblue--text u-mb--10">Client legal contracts</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
                                         <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}" [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
                                         <div fxLayout="column" fxLayoutAlign="start start">
@@ -1514,8 +1546,8 @@
                                     </div>
                                 </ng-container>
                                 <ng-template #legalContractsInput>
-                                    <div fxLayout="column" fxLayoutAlign="start start">
-                                        <span [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client legal contracts</span>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                                        <span class="workflow-darkblue--text">Client legal contracts</span>
                                         <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
                                             <button class="button-accept u-mr--20" appPreventDoubleClick (throttledClick)="openContractModule(periodId!, contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)" mat-flat-button [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value">
                                                 Open contract module for client
@@ -1553,7 +1585,7 @@
                                 <ng-container formArrayName="consultants">
                                     <ng-container *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" >
                                         <div class="workflow-form--consultants u-w--100">
-                                            <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
+                                            <span class="u-mt--20 workflow-darkblue--text">Consultant legal contracts</span>
                                             <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                             <ng-template #consultantNameOnly>
                                                 <p class="workflow-contracts--consultant-name">

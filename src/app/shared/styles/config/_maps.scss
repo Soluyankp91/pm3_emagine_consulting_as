@@ -4,8 +4,10 @@ $sizes: (
     235: 235px,
     300: 300px,
     312: 312px,
+    372: 372px,
     397: 397px,
-    559: 559px
+    559: 559px,
+    564: 564px
 );
 
 @each $name, $value in $sizes {
