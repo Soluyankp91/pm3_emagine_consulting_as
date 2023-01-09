@@ -228,6 +228,26 @@
 
 .step-filter--menu + * .cdk-overlay-pane {
     .mat-menu-panel {
+        min-height: 30px !important;
+        min-width: 120px !important;
+        padding: 5px 0;
+        .mat-menu-content:not(:empty) {
+            padding: 0px !important;
+            .mat-menu-item {
+                display: flex;
+                align-items: center;
+                height: 35px !important;
+                line-height: 35px !important;
+                padding: 0 18px !important;
+                &:hover:not([disabled]) {
+                    background: #f9f9f9 !important;
+                }
+                &.workflow-list--filter-type-dropdown__reset {
+                    height: 40px !important;
+                    line-height: 40px !important;
+                }
+            }
+        }
         .mat-menu-content:not(:empty) {
             .mat-menu-item:hover:not([disabled]) {
                 background: #f9f9f9 !important;

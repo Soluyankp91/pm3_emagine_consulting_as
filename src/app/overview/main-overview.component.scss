@@ -43,7 +43,7 @@
         &-type {
             @include flexCentered;
             height: 32px;
-            padding: 8px 12px 8px 12px;
+            padding: 8px 12px 8px 10px;
             border-radius: 40px;
             line-height: 16px;
             border: 1px solid $light-grey-color;
@@ -51,7 +51,8 @@
             &__name {
                 font-weight: 700;
                 color: #384853;
-                font-size: 11px;
+                font-size: 12px;
+                margin-left: 3px;
             }
             &__quantity {
                 font-weight: 800;
@@ -165,11 +166,9 @@
 }
 
 .reset-button {
-    min-width: 50px;
-    @media screen and (max-width: 1366px) {
-        line-height: 30px !important;
-        padding: 0 0 0 15px !important;
-    }
+    min-width: 30px;
+    line-height: 30px !important;
+    padding: 0 0 0 10px !important;
 }
 
 .manager-search--photo {

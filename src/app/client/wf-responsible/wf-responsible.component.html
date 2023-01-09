@@ -76,23 +76,27 @@
             <ng-container matColumnDef="contractStep">
                 <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Contracts step responsible </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="470px">
-                    <img class="border-rounded-50 image-settings--dropdown u-mr--10"
-                        [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
-                        [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
-                        <span [matTooltip]="row.contractStepResponsible?.name ?? 'User not assigner'" matTooltipClass="white-tooltip">
+                    <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.contractStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
+                        <img class="border-rounded-50 image-settings--dropdown u-mr--10"
+                            [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
+                            [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
+                        <span>
                             {{row.contractStepResponsible?.name ?? '-'}}
                         </span>
+                    </div>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="financeStep">
                 <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Finance step responsible </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="470px">
-                    <img class="border-rounded-50 image-settings--dropdown u-mr--10"
-                        [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
-                        [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
-                        <span [matTooltip]="row.contractStepResponsible?.name ?? 'User not assigned'" matTooltipClass="white-tooltip">
+                    <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.financeStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
+                        <img class="border-rounded-50 image-settings--dropdown u-mr--10"
+                            [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
+                            [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
+                        <span>
                             {{row.financeStepResponsible?.name ?? '-'}}
                         </span>
+                    </div>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
