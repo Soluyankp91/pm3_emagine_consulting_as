@@ -103,7 +103,7 @@
                                 <h2 class="workflow-section--header">Consultant contract duration</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                         <mat-label>Project Duration</mat-label>
                                         <mat-select [disabled]="readOnlyMode" required formControlName="consultantProjectDurationSameAsClient" [disableOptionCentering]="true" (selectionChange)="updateConsultantDates($event, consultantIndex)">
@@ -120,7 +120,7 @@
                                     </mat-form-field>
                                 </div>
                                 <ng-container *ngIf="!consultant.value?.consultantProjectDurationSameAsClient">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                             <mat-label>Start date</mat-label>
                                             <input [disabled]="readOnlyMode" required autocomplete="off" matInput
@@ -149,7 +149,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                         <ng-container *ngIf="!readOnlyMode || consultant.get('consultantProjectNoEndDate')?.value">
-                                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="consultantProjectNoEndDate" name="consultantProjectNoEndDate" class="black-checkbox u-mt--8"
+                                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="consultantProjectNoEndDate" name="consultantProjectNoEndDate" class="black-checkbox"
                                                         (change)="disableOrEnableInput(consultantsForm.consultants.at(consultantIndex).get('consultantProjectNoEndDate')?.value, consultantsForm.consultants.at(consultantIndex).get('consultantProjectEndDate'))">
                                                 No end date
                                             </mat-checkbox>
@@ -165,8 +165,8 @@
                             </div>
                             <div class="workflow-section--content">
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--12 u-mt--8" fxFlex="20%">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
+                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--12" fxFlex="20%">
                                             Onsite
                                         </mat-checkbox>
                                         <ng-container *ngIf="consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
@@ -214,8 +214,8 @@
                                             </div>
                                         </div>
                                     </ng-container>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--12 u-mt--8" fxFlex="20%">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
+                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--12" fxFlex="20%">
                                             emagine Office
                                         </mat-checkbox>
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [fxHide]="!consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
@@ -233,7 +233,7 @@
                                         </mat-form-field>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--12 u-mt--8" fxFlex="20%">
+                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--12" fxFlex="20%">
                                             Remote
                                         </mat-checkbox>
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-312" [fxHide]="!consultantsForm.consultants.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value" [ngClass]="{'disabled-input': readOnlyMode}">
@@ -263,7 +263,7 @@
                                     </ng-container>
                                 </div>
                                 <h3 class="workflow-gray--header u-mb--10 u-mt--20">Expected Workload</h3>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Hours</mat-label>
                                         <input [disabled]="readOnlyMode" required autocomplete="off" matInput formControlName="expectedWorkloadHours" type="number">
@@ -288,8 +288,8 @@
 
                                 <!-- 'Individual cap' Id = 3 -->
                                 <div [fxHide]="clientDataForm.capOnTimeReporting?.value?.id !== 3" class="u-w--100">
-                                    <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                             <mat-label>Cap type</mat-label>
                                             <mat-select [disabled]="readOnlyMode" required formControlName="consultantCapOnTimeReporting" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -312,7 +312,7 @@
                                                         <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
-                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text u-mt--8">
+                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text u-mt--5">
                                                     <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
                                                         <ng-container *ngSwitchCase="1"> <!-- Per hour -->
                                                             hours
@@ -334,7 +334,7 @@
                                                         <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
-                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text u-mt--8">
+                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text u-mt--5">
                                                     {{consultant.value.consultantRateCurrency?.name}}
                                                 </div>
                                             </ng-container>
@@ -445,7 +445,7 @@
                                                             </button>
                                                             <mat-menu #consutlantRateMenu>
                                                                 <button
-                                                                    class="menu-item green-color"
+                                                                    class="menu-item menu-item--edit"
                                                                     mat-menu-item
                                                                     [disabled]="isConsultantRateEditing"
                                                                     appPreventDoubleClick (throttledClick)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)">
@@ -466,8 +466,8 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="consultant.value.specialRates?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
-                                                <span>
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                                <span class="light-grey-color text-600">
                                                     No consultant rates
                                                 </span>
                                             </div>
@@ -600,7 +600,7 @@
                                                             </button>
                                                             <mat-menu #consultantFeeMenu>
                                                                 <button
-                                                                    class="menu-item green-color"
+                                                                    class="menu-item menu-item--edit"
                                                                     mat-menu-item
                                                                     appPreventDoubleClick (throttledClick)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)">
                                                                     <mat-icon svgIcon="edit-icon-green"></mat-icon>
@@ -620,8 +620,8 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="consultant.value.specialFees?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
-                                                <span>
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                                <span class="light-grey-color text-600">
                                                     No consultant fees
                                                 </span>
                                             </div>
@@ -629,7 +629,8 @@
                                     </ng-container>
                                 </div>
 
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20" [fxHide]="readOnlyMode">
+                                <div fxLayout="row" fxLayoutAlign="start start"
+                                [fxHide]="readOnlyMode">
                                     <button class="rates-and-fees--btn button-add" mat-flat-button
                                         [matMenuTriggerFor]="consultantSpecialFeeMenu"
                                         [disabled]="isConsultantFeeEditing"
@@ -895,7 +896,7 @@
                                         <ng-container *ngSwitchDefault>
                                         </ng-container>
                                     </ng-container>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="consultant.value.consultantPaymentType?.id !== 1"> <!-- id: 1 - Time based -->
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="consultant.value.consultantPaymentType?.id !== 1"> <!-- id: 1 - Time based -->
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [ngClass]="{'u-mr--12': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}" [fxHide]="clientDataForm.clientRateAndInvoicing?.value?.id !== 2">
                                             <mat-label>Invoicing frequency</mat-label>
                                             <mat-select [disabled]="readOnlyMode" [required]="consultant.value.consultantPaymentType?.id === 1 && clientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -978,7 +979,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('noSpecialPaymentTerms')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialPaymentTerms" name="noSpecialPaymentTerms" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(consultant?.value?.noSpecialPaymentTerms, consultant?.get('specialPaymentTerms'))">
+                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialPaymentTerms" name="noSpecialPaymentTerms" class="black-checkbox u-mt--5" (change)="disableOrEnableInput(consultant?.value?.noSpecialPaymentTerms, consultant?.get('specialPaymentTerms'))">
                                             None
                                         </mat-checkbox>
                                     </ng-container>
@@ -1002,7 +1003,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('consultantSpecialContractTermsNone')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(consultant?.value?.consultantSpecialContractTermsNone, consultant?.get('consultantSpecialContractTerms'))">
+                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mt--5" (change)="disableOrEnableInput(consultant?.value?.consultantSpecialContractTermsNone, consultant?.get('consultantSpecialContractTerms'))">
                                             None
                                         </mat-checkbox>
                                     </ng-container>
@@ -1023,7 +1024,7 @@
                                             <mat-autocomplete #deliveryManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                                 (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                                 <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
-                                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
+                                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
                                                     </mat-option>
                                                 </ng-container>
@@ -1033,7 +1034,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                         <ng-container *ngIf="!readOnlyMode || consultant.get('deliveryManagerSameAsAccountManager')?.value">
-                                            <mat-checkbox color="accent" formControlName="deliveryManagerSameAsAccountManager" name="deliveryManagerSameAsAccountManager" class="black-checkbox u-mt--8"
+                                            <mat-checkbox color="accent" formControlName="deliveryManagerSameAsAccountManager" name="deliveryManagerSameAsAccountManager" class="black-checkbox"
                                                 [disabled]="readOnlyMode"
                                                 (change)="setValueAndToggleDisalbeState(consultant?.value?.deliveryManagerSameAsAccountManager, consultant?.get('deliveryAccountManager'), mainDataForm.salesAccountManagerIdValue?.value)">
                                                 Same as account manager
@@ -1060,9 +1061,8 @@
     </ng-container>
 </form>
 
-
 <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 u-mt--10__reverse">
         <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
                 Address:

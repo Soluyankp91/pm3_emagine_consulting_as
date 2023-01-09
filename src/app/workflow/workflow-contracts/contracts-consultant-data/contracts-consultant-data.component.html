@@ -308,7 +308,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
                                                     class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                    <span>
+                                                    <span class="light-grey-color text-600">
                                                         No special rates
                                                     </span>
                                                 </div>
@@ -608,7 +608,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
                                                     class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                                    <span>
+                                                    <span class="light-grey-color text-600">
                                                         No special fees
                                                     </span>
                                                 </div>
@@ -1127,14 +1127,14 @@
                                     <ng-container *ngIf="consultant.value.projectLines?.length === 0 && readOnlyMode">
                                         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                             class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                            <span>
+                                            <span class="light-grey-color text-600">
                                                 No project lines
                                             </span>
                                         </div>
                                     </ng-container>
                                 </div>
                                 <ng-container *ngIf="!readOnlyMode">
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start start">
                                         <button class="rates-and-fees--btn button-add" mat-flat-button
                                             appPreventDoubleClick
                                             (throttledClick)="createOrEditProjectLine(consultantIndex)">

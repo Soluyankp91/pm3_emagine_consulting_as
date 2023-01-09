@@ -145,8 +145,7 @@
                         </mat-checkbox>
                     </ng-container>
                 </div>
-
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline"
                         class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                         <mat-label>Option to extend</mat-label>
@@ -451,7 +450,7 @@
                 <h2 class="workflow-section--header">Invoicing number</h2>
             </div>
             <div class="workflow-section--content">
-                <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId">
+                <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId?.id">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-312"
                             [ngClass]="{'disabled-input': readOnlyMode}">
@@ -475,9 +474,8 @@
                                 (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                 <ng-container *ngFor="let contact of filteredReferencePersons; trackBy: trackById">
                                     <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
-                                        <span class="autocopmlete-option-name">
-                                            {{ contact.firstName + ' ' + contact.lastName }}
-                                        </span>
+                                        <span class="autocopmlete-option-name">{{ contact.firstName + ' ' +
+                                            contact.lastName }}</span>
                                     </mat-option>
                                 </ng-container>
                             </mat-autocomplete>
@@ -665,8 +663,8 @@
                         </ng-container>
                         <ng-container *ngIf="salesClientDataForm.clientRates.controls?.length === 0 && readOnlyMode">
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
-                                class="workflow-sales-inline--form__row u-w--100">
-                                <span>
+                                class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                <span class="light-grey-color text-600">
                                     No client rates
                                 </span>
                             </div>
@@ -814,15 +812,15 @@
                         </ng-container>
                         <ng-container *ngIf="salesClientDataForm.clientFees.controls?.length === 0 && readOnlyMode">
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
-                                class="workflow-sales-inline--form__row u-w--100">
-                                <span>
+                                class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                <span class="light-grey-color text-600">
                                     No client fees
                                 </span>
                             </div>
                         </ng-container>
                     </ng-container>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20" [fxHide]="readOnlyMode">
+                <div fxLayout="row" fxLayoutAlign="start start" [fxHide]="readOnlyMode">
                     <button class="rates-and-fees--btn button-add" mat-flat-button type="button"
                         [disabled]="isClientFeeEditing" [matMenuTriggerFor]="clientSpecialFeeMenu"
                         (menuOpened)="clientSpecialFeeFilter.setValue(''); clientSpecialFeeSelect.open()"
@@ -880,7 +878,7 @@
                     </mat-form-field>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300"
                         [fxHide]="salesClientDataForm.value?.evaluationsDisabled"
                         [ngClass]="{'disabled-input': readOnlyMode}">
@@ -934,7 +932,7 @@
                 <h2 class="workflow-section--header">Client contract</h2>
             </div>
             <div class="workflow-section--content">
-                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
+                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--20">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-559"
                         [ngClass]="{'disabled-input': readOnlyMode}">
                         <mat-label>Special Contract Terms</mat-label>
@@ -948,16 +946,16 @@
                     </mat-form-field>
                     <ng-container *ngIf="!readOnlyMode || salesClientDataForm.noSpecialContractTerms?.value">
                         <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialContractTerms"
-                            name="noSpecialContractTerms" class="black-checkbox u-mt--8"
+                            name="noSpecialContractTerms" class="black-checkbox u-mt--5"
                             (change)="disableOrEnableInput(salesClientDataForm.noSpecialContractTerms?.value, salesClientDataForm.specialContractTerms)">
                             None
                         </mat-checkbox>
                     </ng-container>
                 </div>
-                <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
-                <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
+                <h3 class="workflow-gray--header u-mb--10">Contract Signers</h3>
+                <div formArrayName="contractSigners" class="u-w--100">
                     <ng-container *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                             <mat-form-field appearance="outline"
                                 class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%"
                                 [ngClass]="{'disabled-input': readOnlyMode}">
@@ -1024,8 +1022,8 @@
                     </ng-container>
                     <ng-container *ngIf="contractSigners.controls?.length === 0 && readOnlyMode">
                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
-                            class="workflow-sales-inline--form__row u-w--100">
-                            <span>
+                            class="workflow-sales-inline--form__row u-w--100 border-unset">
+                            <span class="light-grey-color text-600">
                                 No contract signers
                             </span>
                         </div>
@@ -1039,14 +1037,14 @@
                     </ng-container>
                 </div>
             </div>
-
         </div>
     </div>
 </form>
 
 <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100">
-        <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 u-mt--10__reverse">
+        <ng-container
+            *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
                 Address:
             </span>
@@ -1068,16 +1066,14 @@
         </ng-container>
 
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon u-ml--10" mat-icon-button
-                (click)="openClientInNewTab(client?.clientId)"
+            <button class="link-to-client-icon u-ml--10" mat-icon-button (click)="openClientInNewTab(client?.clientId)"
                 [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
             </button>
         </ng-container>
 
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon" mat-icon-button
-                (click)="openInHubspot(client)"
+            <button class="link-to-client-icon" mat-icon-button (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
                 [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>

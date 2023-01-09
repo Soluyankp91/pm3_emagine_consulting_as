@@ -19,7 +19,7 @@
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20"
                 [fxHide]="readOnlyMode && !salesMainDataForm.noRemarks?.value">
                 <mat-checkbox color="accent" [disabled]="readOnlyMode" formControlName="noRemarks" name="noRemarks"
-                    class="black-checkbox"
+                    class="black-checkbox u-mt--5"
                     (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
                     None
                 </mat-checkbox>
@@ -67,7 +67,7 @@
                 <div class="workflow-section--content">
                     <ng-container
                         *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <mat-form-field appearance="outline"
                                 class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                 <mat-label>Project Type (Legacy)</mat-label>
@@ -108,7 +108,7 @@
                                     <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
                                         <ng-container
                                             *ngIf="(item?.id === 1 && salesMainDataForm.salesTypeId?.value === 3) || (item?.id !== 1 && salesMainDataForm.salesTypeId?.value !== 3)">
-                                            <mat-option [value]="item.id">
+                                            <mat-option [value]="item">
                                                 {{ item.name }}
                                             </mat-option>
                                         </ng-container>
@@ -564,7 +564,7 @@
                                 (optionSelected)="focusOutMethod()" (opened)="focusInMethod()"
                                 (closed)="focusOutMethod()">
                                 <ng-container *ngFor="let manager of filteredSalesAccountManagers; trackBy: trackById">
-                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
+                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
                                     </mat-option>
                                 </ng-container>
@@ -587,14 +587,14 @@
                                 (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                 <ng-container
                                     *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
-                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
+                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
                                     </mat-option>
                                 </ng-container>
                             </mat-autocomplete>
                         </mat-form-field>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                             <mat-label>Expiration notification</mat-label>
@@ -626,11 +626,11 @@
                             </mat-form-field>
                         </ng-container>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                         <ng-container formArrayName="commissionedUsers" class="u-w--100">
                             <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i"
                                 [formArrayName]="i">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline"
                                         class="formFieldNoMarginPadding filter-select form-width-235"
                                         [ngClass]="{'disabled-input': readOnlyMode}">
@@ -664,7 +664,7 @@
                                     <ng-container *ngIf="!readOnlyMode">
                                         <button mat-icon-button type="button" appPreventDoubleClick
                                             (throttledClick)="removeCommissionedUser(i)"
-                                            class="small-icon-button u-mt--8">
+                                            class="small-icon-button u-mt--5">
                                             <mat-icon svgIcon="dialog-close-icon"></mat-icon>
                                         </button>
                                     </ng-container>
@@ -672,7 +672,7 @@
                             </ng-container>
                         </ng-container>
                         <ng-container *ngIf="!readOnlyMode">
-                            <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick
+                            <button class="button-add u-mb--10" mat-flat-button type="button" appPreventDoubleClick
                                 (throttledClick)="addCommissionedUser()">
                                 <mat-icon>add</mat-icon>
                                 Add commissioned employee
@@ -694,7 +694,7 @@
                         </mat-form-field>
                         <ng-container *ngIf="!readOnlyMode || salesMainDataForm.noRemarks?.value">
                             <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noRemarks"
-                                name="noRemarks" class="black-checkbox u-mt--8"
+                                name="noRemarks" class="black-checkbox u-mt--5"
                                 (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
                                 None
                             </mat-checkbox>

@@ -7,45 +7,15 @@
         <ng-container
             *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
-
-                <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode"
-                (onSyncToLegacySystem)="processSyncToLegacySystem()" [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-sync-data>
-
-                <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm"
-                    class="workflow-form u-w--100" id="consultantData">
-                    <ng-container formArrayName="consultantTerminationContractData">
-                        <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i">
-                            <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
-                                <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <ng-container *ngIf="!readOnlyMode || consultant.get('removedConsultantFromAnyManualChecklists')?.value">
-                                        <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists"
-                                            formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10"
-                                            [ngClass]="{'mat-form-field-invalid': consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid}">
-                                            Removed Consultant from any manual checklists
-                                        </mat-checkbox>
-                                        <mat-error>
-                                            <ng-container *ngIf="consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid">
-                                                <app-validator [withoutFormField]="true" [control]="consultant.get('removedConsultantFromAnyManualChecklists')"></app-validator>
-                                            </ng-container>
-                                        </mat-error>
-                                    </ng-container>
-                                    <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
-                                        <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"></mat-icon>
-                                    </ng-container>
-                                    <span class="workflow-step-readonly--blue-text">
-                                        Contract lines done manually in old PM
-                                    </span>
-                                </ng-container>
-                                <ng-template #contractLinesDoneManuallyInOldPMInput>
-                                    <form [formGroup]="contractsSyncDataForm">
-                                        <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" formControlName="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
-                                            Contract lines done manually in old PM
-                                        </mat-checkbox>
-                                    </form>
-                                </ng-template>
-                            </div>
-                        </ng-container>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <h1 class="workflow-section--header-main">Finish contract in PM</h1>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <span class="workflow-section--number">1</span>
+                        <h2 class="workflow-section--header">Sync</h2>
+                    </div>
+                    <div class="workflow-section--content">
+                        <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode"
+                        (onSyncToLegacySystem)="processSyncToLegacySystem()" [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-sync-data>
                     </div>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">

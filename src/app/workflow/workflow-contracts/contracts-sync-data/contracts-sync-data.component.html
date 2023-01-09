@@ -21,7 +21,7 @@
                         <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
 
                         <ng-container *ngIf="statusAfterSync">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10"
+                            <div fxLayout="row" fxLayoutAlign="start center"
                                 [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
                                 <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}"
                                     [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
@@ -31,7 +31,7 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                                 <mat-checkbox color="accent" formControlName="contractLinesDoneManuallyInOldPm"
                                     name="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
                                     Contract lines done manually in old PM
@@ -52,7 +52,7 @@
                 <div class="workflow-section--content">
                     <ng-container *ngIf="readOnlyMode; else legalContractsInput">
                         <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
                             <mat-icon class="u-mr--5"
                                 [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}"
                                 [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
@@ -68,7 +68,7 @@
                         </div>
                     </ng-container>
                     <ng-template #legalContractsInput>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                        <div fxLayout="column" fxLayoutAlign="start start">
                             <span
                                 [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client
                                 legal contracts</span>
@@ -130,7 +130,7 @@
                                     </p>
                                 </ng-template>
                                 <ng-container *ngIf="readOnlyMode">
-                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                                         <ng-container
                                             *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
                                             <div fxLayout="row" fxLayoutAlign="start center">
@@ -168,7 +168,7 @@
                                 </ng-container>
                                 <ng-container
                                     *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
                                         <button class="button-outlined  u-mr--20" mat-flat-button
                                             [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value"
                                             appPreventDoubleClick
@@ -235,11 +235,10 @@
     </div>
 </form>
 
-<ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
-    <h2 class="workflow-section--header u-mb--20">Finish contract in PM</h2>
+<ng-container
+    *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-        <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
-            <h2 class="workflow-section--header u-mt--20">Sync</h2>
+        <ng-container *ngIf="readOnlyMode; else syncToLegacyControl">
             <span class="workflow-darkblue--text">
                 <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
             </span>
@@ -254,26 +253,27 @@
                 </div>
             </ng-container>
         </ng-container>
-        <ng-template #contractLinesDoneManuallyInOldPMInput>
+        <ng-template #syncToLegacyControl>
             <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
                 (throttledClick)="processSyncToLegacySystem()">
                 Sync to legacy system
             </button>
         </ng-template>
-        <span class="workflow-darkblue--text">
-            <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
-        </span>
-        <ng-container *ngIf="statusAfterSync">
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}"
-                    [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
-                <span class="sync-hint-text">
-                    {{syncMessage}}
-                </span>
-            </div>
+        <ng-container *ngIf="!readOnlyMode">
+            <span class="workflow-darkblue--text">
+                <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+            </span>
+            <ng-container *ngIf="statusAfterSync">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                    <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}"
+                        [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+                    <span class="sync-hint-text">
+                        {{syncMessage}}
+                    </span>
+                </div>
+            </ng-container>
         </ng-container>
     </div>
-
     <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
             <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">

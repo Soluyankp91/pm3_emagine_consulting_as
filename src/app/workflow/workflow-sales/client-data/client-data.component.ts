@@ -215,13 +215,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		)
 			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
 			.subscribe(() => {
-				this.clientPeriodDatesChanged.emit(
-                    // {
-                    //     startDate: this.salesClientDataForm.startDate?.value,
-                    //     endDate: this.salesClientDataForm.endDate?.value,
-                    //     noEndDate: this.salesClientDataForm.noEndDate?.value,
-				    // }
-                );
+				this.clientPeriodDatesChanged.emit();
 			});
 	}
 
