@@ -239,6 +239,10 @@ html {
     border-radius: 50%;
 }
 
+.border-unset {
+    border: 0 !important;
+}
+
 .hidden-option {
     display: none !important;
 }
