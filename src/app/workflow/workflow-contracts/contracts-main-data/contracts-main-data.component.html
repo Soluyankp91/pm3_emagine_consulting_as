@@ -10,7 +10,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-372">
                         <mat-label>Project Type (Legacy)</mat-label>
-                        <mat-select required [disabled]="readOnlyMode" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                        <mat-select required [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                             <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
                                 <mat-option [value]="item">
                                     {{ item.name }}
@@ -25,7 +25,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                         <mat-label>Sales Type</mat-label>
-                        <mat-select required [disabled]="readOnlyMode" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                        <mat-select required [disabled]="true" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                             <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
                                 <mat-option [value]="item">
                                     {{ item.name }}
@@ -53,7 +53,7 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                         <mat-label>Margin</mat-label>
-                        <mat-select [disabled]="readOnlyMode" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                        <mat-select [disabled]="true" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                             <mat-option class="mat-select-clear-option">
                                 Clear
                             </mat-option>
