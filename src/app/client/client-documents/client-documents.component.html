@@ -94,14 +94,14 @@
                                             <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
                                             <mat-menu #generalDocumentMenu>
                                                 <button
-                                                    class="menu-item menu-item--edit"
+                                                    class="menu-item green-color"
                                                     mat-menu-item
                                                     [disabled]="isGeneralDocumentEditing"
                                                     appPreventDoubleClick (throttledClick)="editOrSaveGeneralDocument(document.value.editable, i)">
                                                     Edit
                                                 </button>
                                                 <button
-                                                    class="menu-item menu-item--edit"
+                                                    class="menu-item green-color"
                                                     mat-menu-item
                                                     appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.documentStorageGuid)">
                                                     Download
