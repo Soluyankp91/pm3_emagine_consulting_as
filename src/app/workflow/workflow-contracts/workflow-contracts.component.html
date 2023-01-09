@@ -131,10 +131,10 @@
                             <h2 class="workflow-section--header">Project</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-372">
                                     <mat-label>Project Type (Legacy)</mat-label>
-                                    <mat-select required [disabled]="readOnlyMode" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select required [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -146,10 +146,10 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Sales Type</mat-label>
-                                    <mat-select required [disabled]="readOnlyMode" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select required [disabled]="true" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -177,7 +177,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                                     <mat-label>Margin</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                    <mat-select [disabled]="true" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                                         <mat-option class="mat-select-clear-option">
                                             Clear
                                         </mat-option>
@@ -192,10 +192,9 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                                <h3 class="workflow-darkblue--text u-mb--10">Project category</h3>
-                                {{contractsMainForm.projectCategory?.value}}
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h3 class="workflow-darkblue--text u-mb--10 u-mt--10">Project category</h3>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                         <mat-label>Area</mat-label>
                                         <mat-select required [disabled]="true" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
