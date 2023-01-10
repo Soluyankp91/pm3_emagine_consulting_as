@@ -215,7 +215,7 @@
         }
     }
     .mat-form-field-label {
-        color: rgba(182, 180, 178, 0.77) !important;
+        color: rgba($color: $medium-grey-color, $alpha: .66) !important;
     }
     &.mat-focused:not(.mat-form-field-invalid) {
         .mat-form-field-outline-thick {
@@ -248,6 +248,7 @@
         font-weight: 600;
         margin-top: -0.6em;
         line-height: 20px;
+        color: rgba($color: $medium-grey-color, $alpha: .66);
     }
 
     .mat-form-field-label-wrapper {
@@ -258,6 +259,7 @@
     &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
         transform: translateY(-1em) scale(.75) !important;
         font-weight: 600;
+        color: rgba($color: $medium-grey-color, $alpha: .77);
     }
 
     &.mat-focused {
