@@ -725,3 +725,8 @@ input[type=number] {
         transform: translateY(-1.35em) scale(0.75) !important;
     }
 }
+
+
+.add-rates-button--dropdown.mat-form-field-appearance-fill .mat-form-field-flex > .mat-form-field-infix {
+    padding: 0 10px !important;
+}

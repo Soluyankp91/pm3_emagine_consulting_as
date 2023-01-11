@@ -241,7 +241,7 @@
     }
     .mat-select-panel-wrap {
         padding-left: 2px;
-        padding-top: 8px;
+        padding-top: 0;
     }
 
     .mat-checkbox-layout .mat-checkbox-label {
@@ -252,11 +252,15 @@
 
 .add-rates-button--menu + * .cdk-overlay-pane {
     .mat-menu-panel, .mat-select-panel {
-        min-height: 48px !important;
+        min-height: 40px !important;
         border-radius: unset !important;
         min-width: 300px !important;
         .mat-menu-content {
             padding: 0 !important;
+            .mat-menu-item {
+                height: 40px !important;
+                line-height: 40px !important;
+            }
 
         }
     }
