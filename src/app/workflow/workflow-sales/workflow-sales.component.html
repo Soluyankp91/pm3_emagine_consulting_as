@@ -77,36 +77,45 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
-                                        <mat-label>Sales Type</mat-label>
-                                        <mat-select required [disabled]="readOnlyMode" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="salesTypeChange($event.value)">
-                                            <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
-                                                <mat-option [value]="item">
-                                                    {{ item.name }}
-                                                </mat-option>
+                                <div fxLayout="column" fxLayoutAlign="start start">
+                                    <h3 class="workflow-gray--header u-mt--15 u-mb--10">Sales type</h3>
+                                    <mat-button-toggle-group [disabled]="readOnlyMode"
+                                        [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.salesType?.valid}" class="workflow-toggle-buttons"
+                                        formControlName="salesType" required (change)="salesTypeChange($event.value)">
+                                        <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
+                                            <ng-container *ngIf="(readOnlyMode && item.id === salesMainDataForm.salesType?.value?.id) || !readOnlyMode">
+                                                <mat-button-toggle [value]="item">{{item.name}}</mat-button-toggle>
                                             </ng-container>
-                                        </mat-select>
-                                        <mat-error>
-                                            <app-validator [control]="salesMainDataForm.salesType"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
-                                        <mat-label>Delivery Type</mat-label>
-                                        <mat-select required [disabled]="readOnlyMode" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                            <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                                <ng-container *ngIf="(item?.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item?.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
-                                                    <mat-option [value]="item">
+                                        </ng-container>
+                                    </mat-button-toggle-group>
+                                    <mat-error>
+                                        <app-validator [withoutFormField]="true" *ngIf="salesMainDataForm.salesType?.touched"
+                                            [control]="salesMainDataForm.salesType"></app-validator>
+                                    </mat-error>
+                                </div>
+                                <div fxLayout="column" fxLayoutAlign="start start">
+                                    <h3 class="workflow-gray--header u-mt--20 u-mb--10">Delivery type</h3>
+                                    <mat-button-toggle-group [disabled]="readOnlyMode"
+                                        [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.deliveryType?.valid}" class="workflow-toggle-buttons"
+                                        formControlName="deliveryType" required>
+                                        <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
+                                            <ng-container *ngIf="(item?.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item?.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
+                                                <ng-container *ngIf="(readOnlyMode && item.id === salesMainDataForm.deliveryType?.value?.id) || !readOnlyMode">
+                                                    <mat-button-toggle [value]="item">
                                                         {{ item.name }}
-                                                    </mat-option>
+                                                    </mat-button-toggle>
                                                 </ng-container>
                                             </ng-container>
-                                        </mat-select>
-                                        <mat-error>
-                                            <app-validator [control]="salesMainDataForm.deliveryType"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
+                                        </ng-container>
+                                    </mat-button-toggle-group>
+                                    <mat-error>
+                                        <ng-container *ngIf="salesMainDataForm.deliveryType?.touched">
+                                            <app-validator [withoutFormField]="true" [control]="salesMainDataForm.deliveryType"></app-validator>
+                                        </ng-container>
+                                    </mat-error>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180 u-mt--15">
                                         <mat-label>Margin</mat-label>
                                         <mat-select [disabled]="readOnlyMode" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                                             <mat-option class="mat-select-clear-option">
@@ -123,8 +132,8 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <h3 class="workflow-gray--header u-mt--10 u-mb--10">Project category</h3>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--15">
+                                    <h3 class="workflow-gray--header u-mb--5">Project category</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                             <mat-label>Area</mat-label>
@@ -474,7 +483,7 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-276" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Sales Account Manager</mat-label>
                                     <input required [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text" matInput [matAutocomplete]="salesManagerAutocomplete" formControlName="salesAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                                     <mat-autocomplete #salesManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
@@ -490,7 +499,7 @@
                                     </mat-error>
                                 </mat-form-field>
 
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-276" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Commission Account Manager</mat-label>
                                     <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput [matAutocomplete]="commissionManagerAutocomplete" formControlName="commissionAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                                         <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
@@ -504,7 +513,7 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-276">
                                     <mat-label>Expiration notification</mat-label>
                                     <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
                                         <mat-option [value]="999">
@@ -534,7 +543,7 @@
                                 <ng-container formArrayName="commissionedUsers" class="u-w--100">
                                     <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i" [formArrayName]="i">
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-276" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Commissioned employee</mat-label>
                                                 <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                                 <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
@@ -601,21 +610,26 @@
                             <h2 class="workflow-section--header">Client relation</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                                    <mat-label>Client relation</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" formControlName="differentEndClient" [disableOptionCentering]="true" required>
-                                        <mat-option [value]="false">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <mat-button-toggle-group [disabled]="readOnlyMode"
+                                    [ngClass]="{'mat-form-field-invalid': !salesClientDataForm.differentEndClient?.valid}"
+                                    class="workflow-toggle-buttons u-mb--10" formControlName="differentEndClient" required>
+                                    <ng-container *ngIf="(readOnlyMode && !salesClientDataForm.differentEndClient?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="false">
                                             Direct client
-                                        </mat-option>
-                                        <mat-option [value]="true">
+                                        </mat-button-toggle>
+                                    </ng-container>
+                                    <ng-container *ngIf="(readOnlyMode && salesClientDataForm.differentEndClient?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="true">
                                             Different end-client
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="salesClientDataForm.differentEndClient"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                        </mat-button-toggle>
+                                    </ng-container>
+                                </mat-button-toggle-group>
+                                <mat-error>
+                                    <ng-container *ngIf="salesClientDataForm.differentEndClient?.touched">
+                                        <app-validator [withoutFormField]="true" [control]="salesClientDataForm.differentEndClient"></app-validator>
+                                    </ng-container>
+                                </mat-error>
                             </div>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -1310,21 +1324,26 @@
                             <h2 class="workflow-section--header">Client evaluation</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
-                                    <mat-label>Evaluations</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" required formControlName="evaluationsDisabled" [disableOptionCentering]="true">
-                                        <mat-option [value]="false">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <mat-button-toggle-group [disabled]="readOnlyMode"
+                                    [ngClass]="{'mat-form-field-invalid': !salesClientDataForm.evaluationsDisabled?.valid}"
+                                    class="workflow-toggle-buttons u-mb--10" formControlName="evaluationsDisabled" required>
+                                    <ng-container *ngIf="(readOnlyMode && !salesClientDataForm.evaluationsDisabled?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="false">
                                             Enable
-                                        </mat-option>
-                                        <mat-option [value]="true">
+                                        </mat-button-toggle>
+                                    </ng-container>
+                                    <ng-container *ngIf="(readOnlyMode && salesClientDataForm.evaluationsDisabled?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="true">
                                             Disable
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="salesClientDataForm.evaluationsDisabled"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                        </mat-button-toggle>
+                                    </ng-container>
+                                </mat-button-toggle-group>
+                                <mat-error>
+                                    <ng-container *ngIf="salesClientDataForm.evaluationsDisabled?.touched">
+                                        <app-validator [withoutFormField]="true" [control]="salesClientDataForm.evaluationsDisabled"></app-validator>
+                                    </ng-container>
+                                </mat-error>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -1554,21 +1573,26 @@
                                         <h2 class="workflow-section--header">Consultant contract duration</h2>
                                     </div>
                                     <div class="workflow-section--content">
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                                                <mat-label>Project Duration</mat-label>
-                                                <mat-select [disabled]="readOnlyMode" required formControlName="consultantProjectDurationSameAsClient" [disableOptionCentering]="true" (selectionChange)="updateConsultantDates($event, consultantIndex)">
-                                                    <mat-option [value]="true">
-                                                        Same as client
-                                                    </mat-option>
-                                                    <mat-option [value]="false">
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                                [ngClass]="{'mat-form-field-invalid': !consultant.get('consultantProjectDurationSameAsClient')?.valid}"
+                                                class="workflow-toggle-buttons u-mb--10" formControlName="consultantProjectDurationSameAsClient" required>
+                                                <ng-container *ngIf="(readOnlyMode && !consultant.get('consultantProjectDurationSameAsClient')?.value) || !readOnlyMode">
+                                                    <mat-button-toggle [value]="false">
                                                         Different from client
-                                                    </mat-option>
-                                                </mat-select>
-                                                <mat-error>
-                                                    <app-validator [control]="consultant.get('consultantProjectDurationSameAsClient')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
+                                                    </mat-button-toggle>
+                                                </ng-container>
+                                                <ng-container *ngIf="(readOnlyMode && consultant.get('consultantProjectDurationSameAsClient')?.value) || !readOnlyMode">
+                                                    <mat-button-toggle [value]="true">
+                                                        Same as client
+                                                    </mat-button-toggle>
+                                                </ng-container>
+                                            </mat-button-toggle-group>
+                                            <mat-error>
+                                                <ng-container *ngIf="consultant.get('consultantProjectDurationSameAsClient')?.touched">
+                                                    <app-validator [withoutFormField]="true" [control]="consultant.get('consultantProjectDurationSameAsClient')"></app-validator>
+                                                </ng-container>
+                                            </mat-error>
                                         </div>
                                         <ng-container *ngIf="!consultant.value?.consultantProjectDurationSameAsClient">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
@@ -2530,27 +2554,31 @@
                     </h2>
                 </div>
                 <div class="workflow-section--content">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                            <mat-label>
-                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
-                                    End of Consultant Contract
-                                </ng-container>
-                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
-                                    End of Client Contract
-                                </ng-container>
-                            </mat-label>
-                            <mat-select [disabled]="readOnlyMode" required formControlName="terminationTime" [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
-                                    <mat-option [value]="+item.key">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <h3 class="workflow-gray--header u-mb--5">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+                                End of Consultant Contract
+                            </ng-container>
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
+                                End of Client Contract
+                            </ng-container>
+                        </h3>
+                        <mat-button-toggle-group [disabled]="readOnlyMode"
+                            [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}"
+                            class="workflow-toggle-buttons u-mb--10" formControlName="terminationTime" required>
+                            <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
+                                <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationTime?.value) || !readOnlyMode">
+                                    <mat-button-toggle [value]="+item.key">
                                         {{ item.value }}
-                                    </mat-option>
+                                    </mat-button-toggle>
                                 </ng-container>
-                            </mat-select>
-                            <mat-error>
-                                <app-validator [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
-                            </mat-error>
-                        </mat-form-field>
+                            </ng-container>
+                        </mat-button-toggle-group>
+                        <mat-error>
+                            <ng-container *ngIf="salesTerminateConsultantForm.terminationTime?.touched">
+                                <app-validator [withoutFormField]="true" [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
+                            </ng-container>
+                        </mat-error>
                     </div>
 
                     <ng-container *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
@@ -2572,20 +2600,24 @@
                     </ng-container>
 
                     <ng-container *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                                <mat-label>Termination reason</mat-label>
-                                <mat-select [disabled]="readOnlyMode" required formControlName="terminationReason" [disableOptionCentering]="true">
-                                    <ng-container *ngFor="let item of terminationReasons | keyvalue">
-                                        <mat-option [value]="+item.key">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <h3 class="workflow-gray--header u-mb--5">Reason for termination</h3>
+                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationReason?.value}"
+                                class="workflow-toggle-buttons u-mb--10" formControlName="terminationReason" required>
+                                <ng-container *ngFor="let item of terminationReasons | keyvalue">
+                                    <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationReason?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="+item.key">
                                             {{ item.value }}
-                                        </mat-option>
+                                        </mat-button-toggle>
                                     </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
+                                </ng-container>
+                            </mat-button-toggle-group>
+                            <mat-error>
+                                <ng-container *ngIf="salesTerminateConsultantForm.terminationReason?.touched">
+                                    <app-validator [withoutFormField]="true" [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
+                                </ng-container>
+                            </mat-error>
                         </div>
                     </ng-container>
 

@@ -146,35 +146,44 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
-                                    <mat-label>Sales Type</mat-label>
-                                    <mat-select required [disabled]="true" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
-                                            <mat-option [value]="item">
-                                                {{ item.name }}
-                                            </mat-option>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <h3 class="workflow-darkblue--text u-mt--15 u-mb--10">Sales type</h3>
+                                <mat-button-toggle-group [disabled]="true"
+                                    [ngClass]="{'mat-form-field-invalid': !contractsMainForm.salesType?.valid}" class="workflow-toggle-buttons"
+                                    formControlName="salesType" required>
+                                    <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
+                                        <ng-container *ngIf="(readOnlyMode && item.id === contractsMainForm.salesType?.value?.id) || !readOnlyMode">
+                                            <mat-button-toggle [value]="item">{{item.name}}</mat-button-toggle>
                                         </ng-container>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="contractsMainForm.salesType"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
-                                    <mat-label>Delivery Type</mat-label>
-                                    <mat-select [disabled]="true" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                            <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id !== salesTypesEnum.ManagedService)">
-                                                <mat-option [value]="item">
-                                                    {{ item?.name }}
-                                                </mat-option>
+                                    </ng-container>
+                                </mat-button-toggle-group>
+                                <mat-error>
+                                    <app-validator [withoutFormField]="true" *ngIf="contractsMainForm.salesType?.touched"
+                                        [control]="contractsMainForm.salesType"></app-validator>
+                                </mat-error>
+                            </div>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <h3 class="workflow-darkblue--text u-mt--20 u-mb--10">Delivery type</h3>
+                                <mat-button-toggle-group [disabled]="true"
+                                    [ngClass]="{'mat-form-field-invalid': !contractsMainForm.deliveryType?.valid}" class="workflow-toggle-buttons"
+                                    formControlName="deliveryType" required>
+                                    <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
+                                        <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id !== salesTypesEnum.ManagedService)">
+                                            <ng-container *ngIf="(readOnlyMode && item.id === contractsMainForm.deliveryType?.value?.id) || !readOnlyMode">
+                                                <mat-button-toggle [value]="item">
+                                                    {{ item.name }}
+                                                </mat-button-toggle>
                                             </ng-container>
                                         </ng-container>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="contractsMainForm.deliveryType"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                    </ng-container>
+                                </mat-button-toggle-group>
+                                <mat-error>
+                                    <ng-container *ngIf="contractsMainForm.deliveryType?.touched">
+                                        <app-validator [withoutFormField]="true" [control]="contractsMainForm.deliveryType"></app-validator>
+                                    </ng-container>
+                                </mat-error>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--15">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                                     <mat-label>Margin</mat-label>
                                     <mat-select [disabled]="true" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
@@ -192,8 +201,8 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                <h3 class="workflow-darkblue--text u-mb--10 u-mt--10">Project category</h3>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--15">
+                                <h3 class="workflow-darkblue--text u-mb--5">Project category</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                         <mat-label>Area</mat-label>
