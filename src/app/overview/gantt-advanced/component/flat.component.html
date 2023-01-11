@@ -71,7 +71,7 @@
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="35%" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip" appShowIfTruncated>
                     <span class="text-bold-800">
-                        {{group!.origin!.origin!.clientDisplayName}}
+                        {{group!.origin!.origin!.clientDisplayName ?? '-'}}
                     </span>
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
@@ -83,12 +83,14 @@
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
                         </ng-container>
                         <ng-template #singleConsultantDisplay>
-                            {{group?.origin?.origin?.consultants![0]?.name}}
+                            {{group?.origin?.origin?.consultants![0]?.name?.length ? group?.origin?.origin?.consultants![0]?.name : '-'}}
                         </ng-template>
                     </span>
-                    <span class="text-truncate-ellipsis" *ngIf="isConsultants">
-                        {{group?.origin?.origin?.consultant?.name}}
-                    </span>
+                    <ng-container *ngIf="isConsultants">
+                        <span class="text-truncate-ellipsis">
+                            {{group?.origin?.origin?.consultant?.name ?? '-'}}
+                        </span>
+                    </ng-container>
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="14%" fxLayoutAlign="start center">
                     <span>

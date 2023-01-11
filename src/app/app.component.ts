@@ -6,7 +6,6 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { EmployeeServiceProxy, CurrentEmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
-    // selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })

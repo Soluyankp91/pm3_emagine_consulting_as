@@ -30,8 +30,9 @@
       margin: 0 10px 0 0;
     }
     .mat-checkbox-layout .mat-checkbox-label {
-      line-height: 30px;
-      height: 30px;
+      line-height: 35px;
+      height: 35px;
+      gap: 7px;
     }
     .mat-checkbox-inner-container .mat-checkbox-frame {
       border-color: #b6b4b2;
@@ -46,7 +47,8 @@
       align-items: center;
     }
     .mat-menu-panel {
-      max-width: 200px !important;
+      max-width: 335px;
+      min-width: 153px !important;
     }
     .mat-menu-content {
       padding: 0;
@@ -54,4 +56,6 @@
   }
 .scrollbar-container {
     max-height: 300px;
+    display: flex;
+    flex-direction: column;
 }

@@ -1,8 +1,9 @@
 <emg-multi-select
-    *ngIf="legalEntities$ | async as legalEntities"
-    [options]="legalEntities"
-    [displayedProperty]="'name'"
-    [formControl]="filterFormControl"
->
-    <div #triggerButton>Legal Entities</div></emg-multi-select
->
+	*ngIf="legalEntities$ | async as legalEntities"
+	[options]="legalEntities"
+	[displayedProperty]="'name'"
+	[formControl]="filterFormControl">
+	<ng-template #triggerButton>
+		<div>{{ labelMap[tableFilter] }}</div>
+	</ng-template>
+</emg-multi-select>

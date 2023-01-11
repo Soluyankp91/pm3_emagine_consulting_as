@@ -42,3 +42,29 @@ export const DocumentSideNavigation: DocumentSideNavDto[] = [
         enumValue: DocumentSideNavItem.Evaluations
     }
 ];
+
+export enum EvaluationFromDateOption {
+    LastMonth = 1,
+    Last6Months = 2,
+    Last12Months = 3,
+    AllPeriods = 4
+}
+
+export const EvaluationFromDateList = [
+    {
+        id: EvaluationFromDateOption.LastMonth,
+        name: 'Last month'
+    },
+    {
+        id: EvaluationFromDateOption.Last6Months,
+        name: 'Last 6 months'
+    },
+    {
+        id: EvaluationFromDateOption.Last12Months,
+        name: 'Last 12 months'
+    },
+    {
+        id: EvaluationFromDateOption.AllPeriods,
+        name: 'All periods'
+    }
+]

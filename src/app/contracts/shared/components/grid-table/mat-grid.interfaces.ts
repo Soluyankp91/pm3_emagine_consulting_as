@@ -11,20 +11,14 @@ export interface IHeaderCell {
     title?: string;
     filter?: {
         formControlName: string;
-        component: ComponentType<any>;
+        component: () => Promise<ComponentType<any>>
     };
-}
-
-export interface ICell {
-    type: ETableCells;
-    index?: number,
-    component?: ComponentType<any>;
+    width?: number;
 }
 
 export interface IColumn {
     matColumnDef: string;
     headerCell: IHeaderCell;
-    cell: ICell;
 }
 
 export interface ITableConfig {
@@ -32,8 +26,8 @@ export interface ITableConfig {
     pageSize: number;
     totalCount: number;
     pageIndex: number;
-    sortDirection: SortDirection;
-    sortActive: string;
+    direction: SortDirection;
+    active: string;
 }
 
 export enum EHeaderCells {

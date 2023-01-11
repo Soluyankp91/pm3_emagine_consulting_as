@@ -12,7 +12,7 @@
             line-height: 27px;
             padding: 0 8px;
             &:hover:not([disabled]) {
-                background: transparent !important;
+                background: #f9f9f9 !important;
             }
         }
     }
@@ -28,15 +28,29 @@
             transform: scale(1.25);
         }
     }
+    &.menu-item--big-icon {
+        mat-icon {
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+        }
+    }
     mat-icon {
         margin-right: 8px !important;
-        border-radius: 50%;
         @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
     }
     &--cancel {
         color: $dark-red-color;
         mat-icon {
             color: $dark-red-color !important;
+        }
+    }
+    &[disabled] {
+        color: $light-grey-color !important;
+        mat-icon {
+            color: $light-grey-color !important;
+            path {
+                fill: $light-grey-color !important;
+                stroke: $light-grey-color !important;
+            }
         }
     }
     &--edit {
@@ -52,6 +66,7 @@
                 color: $light-grey-color !important;
                 path {
                     fill: $light-grey-color !important;
+                    stroke: $light-grey-color !important;
                 }
             }
         }
@@ -110,7 +125,7 @@
     .mat-menu-panel, .mat-select-panel {
         min-height: 35px !important;
         border-radius: unset !important;
-        transform: translateX(-12px);
+        transform: translateX(-8px);
         .mat-menu-content {
             padding: 0 !important;
             .mat-menu-item {
@@ -122,7 +137,7 @@
                     margin-right: 12px !important;
                 }
                 &.workflow-status--menu-item-selected {
-                    background: #e5e5e5;
+                    background: #f9f9f9;
                 }
             }
         }
@@ -175,7 +190,7 @@
                 }
             }
             &:hover {
-                background: #FAF9FB !important;
+                background: #f9f9f9 !important;
             }
         }
     }
@@ -205,7 +220,7 @@
                 color: #4A4E60;
             }
             .menu-item.main-overview--user-status-selected {
-                background: #e5e5e5;
+                background: #f9f9f9 !important;
             }
         }
     }
@@ -213,9 +228,29 @@
 
 .step-filter--menu + * .cdk-overlay-pane {
     .mat-menu-panel {
+        min-height: 30px !important;
+        min-width: 120px !important;
+        padding: 5px 0;
+        .mat-menu-content:not(:empty) {
+            padding: 0px !important;
+            .mat-menu-item {
+                display: flex;
+                align-items: center;
+                height: 35px !important;
+                line-height: 35px !important;
+                padding: 0 18px !important;
+                &:hover:not([disabled]) {
+                    background: #f9f9f9 !important;
+                }
+                &.workflow-list--filter-type-dropdown__reset {
+                    height: 40px !important;
+                    line-height: 40px !important;
+                }
+            }
+        }
         .mat-menu-content:not(:empty) {
             .mat-menu-item:hover:not([disabled]) {
-                background: #FAF9FB !important;
+                background: #f9f9f9 !important;
             }
         }
     }

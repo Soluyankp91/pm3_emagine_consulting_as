@@ -1,13 +1,13 @@
 <div class="main-overview" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
         <h2 class="page-main-header u-mb--20">Overview</h2>
-        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-            <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="6px" class="u-w--100" fxFlex="82%" class="main-overview--filter-leftside">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+            <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px" class="u-w--100" class="main-overview--filter-leftside">
                 <button
                     mat-icon-button
                     [matTooltip]="invoicingEntityControl.value?.name ?? 'Select invoicing entity'"
                     matTooltipClass="white-tooltip"
-                    appPreventDoubleClick (throttledClick)=select.open()
+                    appPreventDoubleClick (throttledClick)="select.open()"
                     type="button"
                     class="select-button main-overview--filter-country">
                     <span class="country-flag--big fi fi-{{invoicingEntityControl.value?.code | lowercase }} fis border-rounded-50" *ngIf="invoicingEntityControl.value; else iconCountry"></span>
@@ -18,7 +18,7 @@
                     <mat-select #select [compareWith]="compareWithFn" [disableOptionCentering]="true"
                         panelClass="main-overview-dropdowns country-filter-dropdown"
                         [formControl]="invoicingEntityControl">
-                        <mat-option *ngIf="invoicingEntityControl.value">
+                        <mat-option *ngIf="invoicingEntityControl.value" class="selected-option">
                             <div class="u-w--100">
                                 <span class="country-flag fi fi-{{invoicingEntityControl.value.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="invoicingEntityControl.value.id !== 0"></span>
                                 <span class="tenant-name">{{invoicingEntityControl.value.tenantName}}</span>
@@ -37,7 +37,7 @@
                 </button>
                 <div class="main-overview--filter-manager cursor-pointer" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Selected account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'"  width="35" height="35" appImageFallback />
-                    <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
+                    <img *ngIf="selectedAccountManagers.length === 0" class="border-rounded-50" src="../../../assets/common/images/no-img.jpg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
@@ -102,13 +102,15 @@
                         </div>
                     </mat-menu>
                 </div>
-                <div class="main-overview--filter-type cursor-pointer" [ngClass]="detectSelectedStatusColor(status)" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
-                    appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
-                    <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
-                    <span class="main-overview--filter-type__name">
-                        {{status.name}}
-                    </span>
-                </div>
+                <ng-container *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy">
+                    <div class="main-overview--filter-type cursor-pointer" [ngClass]="detectSelectedStatusColor(status)"
+                        appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
+                        <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
+                        <span class="main-overview--filter-type__name">
+                            {{status.name}}
+                        </span>
+                    </div>
+                </ng-container>
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <mat-divider [vertical]="true" class="divider-height"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()" class="reset-button">
@@ -118,7 +120,7 @@
                     </button>
                 </div>
             </div>
-            <div fxLayout="column" fxLayoutAlign="space-between end" class="u-w--100" fxFlex>
+            <div fxLayout="column" fxLayoutAlign="space-between end" class="u-w--100" fxFlex="200px">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
                     <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
                     <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>

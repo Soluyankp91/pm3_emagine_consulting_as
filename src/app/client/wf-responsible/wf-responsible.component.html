@@ -1,22 +1,30 @@
-<div class="client-workflow-track">
-    <div fxLayout="column" fxLayoutAlign="start start" class="client-workflow--content u-w--100" fxFlexFill>
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+<div class="workflow-responsible">
+    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-responsible--content u-w--100" fxFlexFill>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+            <span class="workflow-responsible--header u-mt--8 u-mr--20" fxFlex="200px">
+                Client-specific overrides:
+            </span>
             <mat-form-field appearance="outline"
-                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete"
+                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete u-mr--20"
                 [ngClass]="{'selected-person': contractStepResponsible.value?.id}">
                 <mat-label>Contract step responsible</mat-label>
-                <ng-container *ngIf="contractStepResponsible.value?.id">
-                    <img matPrefix class="border-rounded-50 image-thumbnail-small"
+                <ng-container *ngIf="contractStepResponsible.value?.id" matPrefix>
+                    <img class="border-rounded-50 image-settings--dropdown"
                         [ngSrc]="employeePhotoUrl + contractStepResponsible.value.externalId + '.jpg'"  width="35" height="35" appImageFallback />
                 </ng-container>
                 <input #contractResponsibleInput type="text" matInput
                     [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                     placeholder="Select contract responsible">
-                <mat-autocomplete #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
+                <mat-autocomplete (optionSelected)="setResponsiblePerson()"
+                    #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                    [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                                <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            </div>
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -24,23 +32,27 @@
                     <app-validator [control]="contractStepResponsible"></app-validator>
                 </mat-error>
             </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <mat-form-field appearance="outline"
                 class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete"
                 [ngClass]="{'selected-person': financeStepResponsible.value?.id}">
                 <mat-label>Finance step responsible</mat-label>
-                <ng-container *ngIf="financeStepResponsible.value?.id">
-                    <img matPrefix class="border-rounded-50 image-thumbnail-small"
-                        [ngSrc]="employeePhotoUrl + financeStepResponsible.value.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+
+                <ng-container *ngIf="financeStepResponsible.value?.id" matPrefix>
+                    <img class="border-rounded-50 image-settings--dropdown"
+                    [ngSrc]="employeePhotoUrl + financeStepResponsible.value.externalId + '.jpg'"  width="35" height="35" appImageFallback />
                 </ng-container>
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
                     [formControl]="financeStepResponsible" appPreventDoubleClick
                     (throttledClick)="$event.stopPropagation()" placeholder="Select finance responsible">
-                <mat-autocomplete #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
+                <mat-autocomplete (optionSelected)="setResponsiblePerson()"
+                    #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                                <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            </div>
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -49,5 +61,47 @@
                 </mat-error>
             </mat-form-field>
         </div>
+        <mat-table class="u-w--100 white-table" #table [dataSource]="stepEmployeesDataSource">
+            <ng-container matColumnDef="tenantFlag">
+                <mat-header-cell *matHeaderCellDef fxFlex="60px"> </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="60px">
+                    <span class="tenant-flag fi fi-{{row?.tenantFlag | lowercase }} fis border-rounded-50"></span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="tenant">
+                <mat-header-cell *matHeaderCellDef fxFlex="160px"> Tenant </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="160px">
+                    {{row.tenantName}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="contractStep">
+                <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Contracts step responsible </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="470px">
+                    <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.contractStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
+                        <img class="border-rounded-50 image-settings--dropdown u-mr--10"
+                            [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
+                            [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
+                        <span>
+                            {{row.contractStepResponsible?.name ?? '-'}}
+                        </span>
+                    </div>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="financeStep">
+                <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Finance step responsible </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="470px">
+                    <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.financeStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
+                        <img class="border-rounded-50 image-settings--dropdown u-mr--10"
+                            [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
+                            [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
+                        <span>
+                            {{row.financeStepResponsible?.name ?? '-'}}
+                        </span>
+                    </div>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
     </div>
 </div>

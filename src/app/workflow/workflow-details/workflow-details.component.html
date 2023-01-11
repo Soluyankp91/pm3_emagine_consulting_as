@@ -20,65 +20,102 @@
                 <ng-template #readOnlyWorkflowStatusTemplate>
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
-                <span [matTooltip]="workflowId" matTooltipClass="white-tooltip">
+                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap">
                     Workflow ID: {{workflowId | slice: 0:4}}...
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
-                    / Request ID: {{workflowConsultants[0].requestId}}
-                </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
-                    / {{workflowConsultants[0].consultantName}}
-                </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1" [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')" matTooltipClass="white-tooltip">
-                    / {{workflowConsultants.length + ' Consultants'}}
-                </span>
-                <span *ngIf="workflowConsultants.length === 0">
-                    / No consultants
-                </span>
+                <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
+                    <span class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                        / Request ID: {{workflowConsultants[0].requestId}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
+                    <span matTooltip="Consultant name" matTooltipClass="white-tooltip">
+                        / {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
+                    <span [matTooltip]="workflowConsultantsList ?? ''" matTooltipClass="white-tooltip pre-wrap--tooltip">
+                        / {{workflowConsultants.length + ' Consultants'}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length === 0">
+                    <span>
+                        / No consultants
+                    </span>
+                </ng-container>
             </h2>
-            <p class="page-main-header">{{workflowDirectClient?.length ? workflowDirectClient : 'New workflow'}}</p>
-            <p *ngIf="workflowEndClient?.length" class="page-main-subheader">via {{workflowEndClient}}</p>
-            <h2 class="workflow-header--title u-mb--20">
+            <p class="page-main-header">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</p>
+            <ng-container *ngIf="workflowEndClient?.length">
+                <p class="page-main-subheader">[via {{workflowDirectClient}}]</p>
+            </ng-container>
+            <h2 class="workflow-header--title u-mb--20" [ngClass]="{'u-mt--10': !workflowEndClient?.length}">
                 <span matTooltipClass="white-tooltip">
-                    Client ID: {{workflowDirectClientId}} {{workflowEndClientId ? '| via ' + workflowEndClientId : ''}}
+                    <ng-container *ngIf="workflowDirectClientId">
+                        Client ID:
+                        <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowEndClientId ? workflowEndClientId : workflowDirectClientId, clientCrmId: endClientCrmId ? endClientCrmId : directClientCrmId}">
+                            {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}}
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="workflowEndClientId && workflowDirectClientId">
+                        | via
+                        <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowDirectClientId, clientCrmId: directClientCrmId}">
+                            {{workflowDirectClientId}}
+                        </span>
+                    </ng-container>
                 </span>
             </h2>
+            <mat-menu #clientLink>
+                <ng-template matMenuContent let-clientId="clientId" let-clientCrmId="clientCrmId">
+                    <button mat-menu-item class="menu-item menu-item--big-icon green-color" (click)="openClientProfile(clientId)">
+                        <mat-icon svgIcon="link-to-client-icon"></mat-icon>
+                        Client profile
+                    </button>
+                    <button mat-menu-item class="menu-item menu-item--big-icon orange-color" (click)="openInHubspot(clientCrmId)">
+                        <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
+                        Hubspot
+                    </button>
+            </ng-template>
+            </mat-menu>
         </div>
-
-        <div fxFlex="50%" fxLayout="row" *ngIf="isProgressTrackVisible">
-            <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
-                <span>
-                    Started: {{_workflowDataService.getWorkflowProgress.started}}
-                </span>
-                <span>
-                    currentlyActiveSection:
-                    {{mapSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSection)}}
-                </span>
-                <span>
-                    currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress.currentlyActiveStep)}}
-                </span>
-                <span>
-                    currentlyActiveSideSection:
-                    {{mapSideSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSideSection)}}
-                </span>
-                <span>
-                    periodId: {{_workflowDataService.getWorkflowProgress.currentlyActivePeriodId}}
-                </span>
+        <ng-container *ngIf="isProgressTrackVisible">
+            <div fxFlex="50%" fxLayout="row">
+                <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
+                    <span>
+                        Started: {{_workflowDataService.getWorkflowProgress.started}}
+                    </span>
+                    <span>
+                        currentlyActiveSection:
+                        {{mapSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSection)}}
+                    </span>
+                    <span>
+                        currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress.currentlyActiveStep)}}
+                    </span>
+                    <span>
+                        currentlyActiveSideSection:
+                        {{mapSideSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSideSection)}}
+                    </span>
+                    <span>
+                        periodId: {{_workflowDataService.getWorkflowProgress.currentlyActivePeriodId}}
+                    </span>
+                </div>
             </div>
-        </div>
+        </ng-container>
         <div fxFlex="10%" fxLayoutAlign="end center">
-            <button *ngIf="selectedTabName === 'Overview'" mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
+            <ng-container *ngIf="selectedTabName === 'Overview'">
+                <button mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
+            </ng-container>
             <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
             <mat-menu #workflowMenu>
-                <button
-                    *ngIf="individualConsultantActionsAvailable"
-                    class="menu-item green-color"
-                    mat-menu-item
-                    [disabled]="false"
-                    appPreventDoubleClick (throttledClick)="addConsultant()">
-                    <mat-icon svgIcon="add-icon-green"></mat-icon>
-                    Add consultant
-                </button>
+                <ng-container *ngIf="individualConsultantActionsAvailable">
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        [disabled]="false"
+                        appPreventDoubleClick (throttledClick)="addConsultant()">
+                        <mat-icon svgIcon="add-icon-green"></mat-icon>
+                        Add consultant
+                    </button>
+                </ng-container>
                 <button
                     class="menu-item green-color"
                     mat-menu-item
@@ -105,26 +142,42 @@
         </div>
     </div>
 
-    <div *ngIf="topToolbarVisible" fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
-        <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
-            <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
-                #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
-            <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
-                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
-                    <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
-                    <span>Pending workflow</span>
-                </button>
-                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
-                    <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
-                    <span>Pending - data missing</span>
-                </button>
-            </mat-menu>
-        </ng-container>
-        <ng-template #readOnlyWorkflowStatusTemplate>
-            <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
-        </ng-template>
-        <p class="workflow-toolbar--client u-mr--20">{{workflowDirectClient?.length ? workflowDirectClient + (workflowDirectClientId ? ' | Client ID: ' + workflowDirectClientId : '') + (workflowEndClientId ? ' | via ' + workflowEndClientId : '') : 'New workflow'}}</p>
-    </div>
+    <ng-container *ngIf="topToolbarVisible">
+        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
+            <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+                <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
+                    #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
+                <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
+                    <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
+                        <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
+                        <span>Pending workflow</span>
+                    </button>
+                    <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
+                        <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
+                        <span>Pending - data missing</span>
+                    </button>
+                </mat-menu>
+            </ng-container>
+            <ng-template #readOnlyWorkflowStatusTemplate>
+                <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
+            </ng-template>
+            <span class="workflow-toolbar--client">
+                <span class="text-bold-800 u-mr--10">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</span>
+                <ng-container *ngIf="workflowDirectClientId">
+                    Client ID:
+                    <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowEndClientId ? workflowEndClientId : workflowDirectClientId, clientCrmId: endClientCrmId ? endClientCrmId : directClientCrmId}">
+                        {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowEndClientId && workflowDirectClientId">
+                    | via
+                    <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowDirectClientId, clientCrmId: directClientCrmId}">
+                        {{workflowDirectClientId}}
+                    </span>
+                </ng-container>
+            </span>
+        </div>
+    </ng-container>
 
     <div class="workflow-content pos-relative u-w--100" id="workflowDetails">
         <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
@@ -141,48 +194,60 @@
                     <ng-container *ngIf="clientPeriods?.length">
                         <app-workflow-overview [periodId]="clientPeriods![0].id"></app-workflow-overview>
                     </ng-container>
-                    <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
-                        <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
-                    </div>
+                        <ng-container *ngIf="isNoteVisible">
+                            <div class="workflow-notes-wrapper wrapper-overlay">
+                                <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+                            </div>
+                        </ng-container>
+                    </ng-container>
                 </div>
             </mat-tab>
-            <mat-tab *ngFor="let tab of clientPeriods; let i = index;" [label]="tab.name!">
-                <ng-template mat-tab-label>
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <span class="tab-header">{{tab.name}}</span>
+            <ng-container *ngFor="let tab of clientPeriods; let i = index;">
+                <mat-tab [label]="tab.name!">
+                    <ng-template mat-tab-label>
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <span class="tab-header">{{tab.name}}</span>
+                        </div>
+                        <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
+                    </ng-template>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
+                        <div fxFlex="80%">
+                            <ng-container *ngIf="selectedIndex === i + 1">
+                                <app-workflow-period #workflowPeriod [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                            </ng-container>
+                        </div>
                     </div>
-                    <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
-                </ng-template>
-                <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
-                    <div fxFlex="80%">
-                        <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id"
-                            [workflowId]="workflowId"></app-workflow-period>
-                    </div>
-                </div>
-            </mat-tab>
+                </mat-tab>
+            </ng-container>
         </mat-tab-group>
         <div class="workflow-notes-wrapper">
-            <app-workflow-notes *ngIf="selectedTabName !== 'Overview'" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
+            <ng-container *ngIf="selectedTabName !== 'Overview'">
+                <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
+            </ng-container>
         </div>
         <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls" *ngIf="bottomToolbarVisible">
-            <button mat-flat-button
-                    class="button-cancel mat-elevation-z0 u-mr--16"
-                    *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing"
-                    appPreventDoubleClick (throttledClick)="cancelForceEdit()">
-                Cancel
-            </button>
-            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16"
-                *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']" appPreventDoubleClick
-                (throttledClick)="saveOrCompleteStep(true)">
-                {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
-            </button>
-            <button color="primary"
-                    class="button-accept mat-elevation-z0"
-                    mat-flat-button
-                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
-                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false, $event)">
-                    Complete step
-            </button>
+            <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing">
+                <button mat-flat-button
+                        class="button-cancel mat-elevation-z0 u-mr--16"
+                        appPreventDoubleClick (throttledClick)="cancelForceEdit()">
+                    Cancel
+                </button>
+            </ng-container>
+            <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']">
+                <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16"
+                    appPreventDoubleClick
+                    (throttledClick)="saveOrCompleteStep(true)">
+                    {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
+                </button>
+            </ng-container>
+            <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']">
+                <button color="primary"
+                        class="button-accept mat-elevation-z0"
+                        mat-flat-button
+                        appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false, $event)">
+                        Complete step
+                </button>
+            </ng-container>
         </div>
     </div>
 </div>
