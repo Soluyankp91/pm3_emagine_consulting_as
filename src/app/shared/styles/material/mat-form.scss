@@ -70,7 +70,7 @@
                     font-weight: 600;
                     font-size: 14px;
                     color: rgba(137,135,133,0.77);
-                 }
+                }
             }
         }
 
@@ -145,7 +145,6 @@
 .mat-form-field-appearance-outline {
     .mat-form-field-flex:not(.textarea-input) {
         background-color: transparent !important;
-        // margin-top: 0.25em !important;
         .mat-input-element {
             color: rgba(56, 72, 83, 0.87);
             font-weight: 700
@@ -163,7 +162,11 @@
         }
         .mat-input-element {
             color: rgba(56, 72, 83, 0.87);
-            font-weight: 700
+            font-weight: 700;
+            &::placeholder{
+                @include fontOpenSans(14px, 600);
+                color: rgba($color: $medium-grey-color, $alpha: .66) !important;
+            }
         }
     }
     .mat-form-field-wrapper {
@@ -692,13 +695,21 @@ input[type=number] {
 
 .wf-responsible-person-autocomplete.mat-form-field-appearance-outline {
     width: 450px;
-    .mat-form-field-outline {
+    .mat-form-field-flex:not(.textarea-input) .mat-form-field-outline {
         height: 48px;
     }
     .mat-form-field-infix {
         border-top-width: 1.2em !important;
         .mat-input-element {
             line-height: 120%;
+        }
+    }
+    &.mat-form-field-can-float.mat-form-field-should-float.empty-input {
+        .mat-form-field-infix {
+            .mat-input-element {
+                @include fontOpenSans(14px, 600);
+                color: rgba($color: $medium-grey-color, $alpha: .66) !important;
+            }
         }
     }
     .mat-form-field-flex {
@@ -716,6 +727,9 @@ input[type=number] {
     .mat-form-field-prefix {
         top: 1.2em;
         position: absolute;
+    }
+    .mat-form-field-suffix {
+        top: 0.25em !important;
     }
     .mat-form-field-label-wrapper {
         top: -1.3em !important;
