@@ -1,7 +1,7 @@
 <form [formGroup]="contractsConsultantsDataForm" class="u-w--100">
     <ng-container formArrayName="consultants">
         <ng-container
-            *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; let consultantIndex = index"
+            *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; trackBy: trackByItem; let consultantIndex = index"
             [formGroupName]="consultantIndex">
             <div class="workflow-form--consultants u-w--100" [id]="'consultantDataAnchor' + consultantIndex">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
@@ -516,7 +516,7 @@
                                                     <mat-select #consultantSpecialRateSelect
                                                         formControlName="consultantSpecialRateFilter"
                                                         [disableOptionCentering]="true">
-                                                        <ng-container *ngIf="clientSpecialRateList?.length == 0">
+                                                        <ng-container *ngIf="clientSpecialRateList?.length === 0">
                                                             <mat-option (click)="$event.stopPropagation();">
                                                                 No results
                                                             </mat-option>
@@ -813,7 +813,7 @@
                                                     <mat-select #consultantSpecialFeeSelect
                                                         formControlName="consultantSpecialFeeFilter"
                                                         [disableOptionCentering]="true">
-                                                        <ng-container *ngIf="clientSpecialFeeList?.length == 0">
+                                                        <ng-container *ngIf="clientSpecialFeeList?.length === 0">
                                                             <mat-option (click)="$event.stopPropagation();">
                                                                 No results
                                                             </mat-option>

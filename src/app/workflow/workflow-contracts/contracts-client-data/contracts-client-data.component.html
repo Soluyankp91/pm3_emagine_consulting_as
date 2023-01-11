@@ -122,7 +122,7 @@
                         </div>
                     </ng-container>
                     <ng-container formArrayName="clientRates" class="u-w--100">
-                        <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i"
+                        <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; trackBy: trackByItem; index as i"
                             [formArrayName]="i">
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                 class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
@@ -236,7 +236,7 @@
                                     <mat-label>Choose special rate</mat-label>
                                     <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter"
                                         [disableOptionCentering]="true">
-                                        <ng-container *ngIf="clientSpecialRateList?.length == 0">
+                                        <ng-container *ngIf="clientSpecialRateList?.length === 0">
                                             <mat-option (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
@@ -277,7 +277,7 @@
                         </div>
                     </ng-container>
                     <ng-container formArrayName="clientFees" class="u-w--100">
-                        <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i"
+                        <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; trackBy: trackByItem; index as i"
                             [formArrayName]="i">
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                 class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
@@ -400,7 +400,7 @@
                                     <mat-label>Choose special fee</mat-label>
                                     <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter"
                                         [disableOptionCentering]="true">
-                                        <ng-container *ngIf="clientSpecialFeeList?.length == 0">
+                                        <ng-container *ngIf="clientSpecialFeeList?.length === 0">
                                             <mat-option (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>

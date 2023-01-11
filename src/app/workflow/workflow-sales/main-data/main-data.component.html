@@ -69,7 +69,7 @@
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-372">
                                 <mat-label>Project Type (Legacy)</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="projectType" [disableOptionCentering]="true" (selectionChange)="getDataBasedOnProjectType($event)">
+                                <mat-select required [disabled]="readOnlyMode" formControlName="projectTypeId" [disableOptionCentering]="true" (selectionChange)="getDataBasedOnProjectType($event)">
                                     <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
                                         <mat-option [value]="item.id">
                                             {{ item.name }}
@@ -259,7 +259,7 @@
                             </div>
                         </ng-container>
                         <ng-container formArrayName="commissions" class="u-w--100">
-                            <ng-container *ngFor="let commission of salesMainDataForm.commissions.controls; index as i"
+                            <ng-container *ngFor="let commission of salesMainDataForm.commissions.controls; trackBy: trackByItem; index as i"
                                 [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                     class="workflow-sales-inline--form__row u-w--100">
@@ -328,8 +328,8 @@
                                                     (throttledClick)="$event.stopPropagation()" placeholder="Recipient">
                                                 <mat-autocomplete #recipientAutocomplete="matAutocomplete"
                                                     [displayWith]="displayRecipientFn"
-                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()"
-                                                    (closed)="focusOutMethod()">
+                                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                                                    (closed)="focusToggleMethod('auto')">
                                                     <ng-container>
                                                         <ng-container
                                                             *ngFor="let recipient of filteredRecipients; trackBy: trackById">
@@ -578,8 +578,8 @@
                                 formControlName="salesAccountManagerIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             <mat-autocomplete #salesManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
-                                (optionSelected)="focusOutMethod()" (opened)="focusInMethod()"
-                                (closed)="focusOutMethod()">
+                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                                (closed)="focusToggleMethod('auto')">
                                 <ng-container *ngFor="let manager of filteredSalesAccountManagers; trackBy: trackById">
                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
@@ -600,8 +600,8 @@
                                 formControlName="commissionAccountManagerIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete"
-                                [displayWith]="displayNameFn" (optionSelected)="focusOutMethod()"
-                                (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                 <ng-container
                                     *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
@@ -645,7 +645,7 @@
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                         <ng-container formArrayName="commissionedUsers" class="u-w--100">
-                            <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i"
+                            <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByItem; index as i"
                                 [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline"
@@ -657,8 +657,8 @@
                                             formControlName="commissionedUser" appPreventDoubleClick
                                             (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                         <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete"
-                                            [displayWith]="displayNameFn" (optionSelected)="focusOutMethod()"
-                                            (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                            [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                             <ng-container
                                                 *ngFor="let employee of filteredEmployees; trackBy: trackById">
                                                 <mat-option [value]="employee"

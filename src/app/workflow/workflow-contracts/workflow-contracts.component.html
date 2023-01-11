@@ -26,7 +26,7 @@
                     <div class="workflow-section--content">
                         <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                             <ng-container formArrayName="consultantTerminationContractData">
-                                <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i">
+                                <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; trackBy: trackByItem; index as i; last as last" [formGroupName]="i">
                                     <div class="workflow-contracts--block-consultants" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                                         <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">

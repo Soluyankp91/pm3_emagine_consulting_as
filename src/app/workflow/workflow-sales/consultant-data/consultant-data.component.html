@@ -1,7 +1,7 @@
 <form [formGroup]="consultantsForm" id="consultantData" class="workflow-form--consultants u-w--100">
     <ng-container formArrayName="consultants" class="u-mb--20">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
-            <ng-container *ngFor="let consultant of consultantsForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex">
+            <ng-container *ngFor="let consultant of consultantsForm.consultants.controls; trackBy: trackByItem; let consultantIndex = index" [formGroupName]="consultantIndex">
                 <div class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100" [id]="'salesConsultantDataAnchor' + consultantIndex">
                         <h1 class="workflow-section--header-main text-nowrap">Consultant data</h1>
@@ -60,7 +60,7 @@
                                         <mat-label>Consultant Name</mat-label>
                                         <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
                                         <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn"
-                                            (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                            (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                             <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
                                                 <mat-option [value]="item" [ngClass]="{ 'no-data': item?.consultant?.id === undefined }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                     <div class="multilineDropdown-option--row">
@@ -174,7 +174,7 @@
                                                 <mat-label>Client</mat-label>
                                                 <input [disabled]="readOnlyMode" required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
                                                 <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn"
-                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                     <ng-container *ngFor="let client of filteredConsultantClientAddresses; trackBy: trackById">
                                                         <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
                                                             <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -240,7 +240,7 @@
                                             <mat-label>Remote country</mat-label>
                                             <input [disabled]="readOnlyMode" [required]="consultantsForm.consultants.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value" type="text" matInput [matAutocomplete]="consultantCountryAuto" formControlName="consultantWorkplaceRemote" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search country">
                                             <mat-autocomplete #consultantCountryAuto="matAutocomplete" [displayWith]="displayNameFn"
-                                                (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                 <ng-container *ngFor="let option of filteredConsultantCountries; trackBy: trackById">
                                                     <mat-option [value]="option">
                                                         <span class="autocopmlete-option-name">
@@ -490,7 +490,7 @@
                                             <mat-form-field appearance="fill" class="add-rates-button--dropdown formFieldNoMarginPadding filter-select u-w--100">
                                                 <mat-label>Choose special rate</mat-label>
                                                 <mat-select #consultantSpecialRateSelect formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
-                                                    <ng-container *ngIf="clientSpecialRateList.length == 0">
+                                                    <ng-container *ngIf="clientSpecialRateList.length === 0">
                                                         <mat-option (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
@@ -645,7 +645,7 @@
                                             <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                 <mat-label>Choose special fee</mat-label>
                                                 <mat-select #consultantSpecialFeeSelect formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
-                                                    <ng-container *ngIf="clientSpecialFeeList.length == 0">
+                                                    <ng-container *ngIf="clientSpecialFeeList.length === 0">
                                                         <mat-option (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
@@ -1022,7 +1022,7 @@
                                             <mat-label>Delivery Account manager</mat-label>
                                             <input [disabled]="readOnlyMode" required #deliveryManagerFilterInput type="text" matInput [matAutocomplete]="deliveryManagerAutocomplete" formControlName="deliveryAccountManager" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                                             <mat-autocomplete #deliveryManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
-                                                (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                 <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>

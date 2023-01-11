@@ -120,7 +120,7 @@
                                 <mat-label>Final Evaluation Reference Person</mat-label>
                                 <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
                                 <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn"
-                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                     <ng-container *ngFor="let contact of filteredFinalEvaluationReferencePersons; trackBy: trackById">
                                         <mat-option [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
                                                 <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>

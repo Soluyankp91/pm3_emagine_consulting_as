@@ -37,7 +37,7 @@
                                 placeholder="Direct client name + address">
                             <mat-autocomplete #directClientAutocomplete="matAutocomplete"
                                 [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)"
-                                (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                 <ng-container *ngFor="let client of filteredDirectClients; trackBy: trackById">
                                     <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
                                         <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -75,8 +75,8 @@
                                 formControlName="endClientIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="End client name + address">
                             <mat-autocomplete #endClientAutocomplete="matAutocomplete"
-                                [displayWith]="displayClientNameFn" (optionSelected)="focusOutMethod()"
-                                (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                [displayWith]="displayClientNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                 <ng-container *ngFor="let client of filteredEndClients; trackBy: trackById">
                                     <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
                                         <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -252,8 +252,8 @@
                                     (throttledClick)="$event.stopPropagation()"
                                     placeholder="Client invoicing recipient">
                                 <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete"
-                                    [displayWith]="displayClientNameFn" (optionSelected)="focusOutMethod()"
-                                    (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                    [displayWith]="displayClientNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                    (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                     <ng-container
                                         *ngFor="let client of filteredClientInvoicingRecipients; trackBy: trackById">
                                         <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
@@ -470,8 +470,8 @@
                                 formControlName="invoicePaperworkContactIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="Invoice / Paperwork Contact">
                             <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
-                                [displayWith]="displayFullNameFn" (optionSelected)="focusOutMethod()"
-                                (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                 <ng-container *ngFor="let contact of filteredReferencePersons; trackBy: trackById">
                                     <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ contact.firstName + ' ' +
@@ -571,7 +571,7 @@
                         </div>
                     </ng-container>
                     <ng-container formArrayName="clientRates" class="u-w--100">
-                        <ng-container *ngFor="let rate of salesClientDataForm.clientRates.controls; index as i"
+                        <ng-container *ngFor="let rate of salesClientDataForm.clientRates.controls; trackBy: trackByItem; index as i"
                             [formArrayName]="i">
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                 class="workflow-sales-inline--form__row u-w--100">
@@ -684,7 +684,7 @@
                                 <mat-label>Choose special rate</mat-label>
                                 <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter"
                                     [disableOptionCentering]="true">
-                                    <ng-container *ngIf="clientSpecialRateList.length == 0">
+                                    <ng-container *ngIf="clientSpecialRateList.length === 0">
                                         <mat-option (click)="$event.stopPropagation();">
                                             No results
                                         </mat-option>
@@ -720,7 +720,7 @@
                         </div>
                     </ng-container>
                     <ng-container formArrayName="clientFees" class="u-w--100">
-                        <ng-container *ngFor="let fee of salesClientDataForm.clientFees.controls; index as i"
+                        <ng-container *ngFor="let fee of salesClientDataForm.clientFees.controls; trackBy: trackByItem; index as i"
                             [formArrayName]="i">
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                 class="workflow-sales-inline--form__row u-w--100">
@@ -834,7 +834,7 @@
                                 <mat-label>Choose special fee</mat-label>
                                 <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter"
                                     [disableOptionCentering]="true">
-                                    <ng-container *ngIf="clientSpecialFeeList.length == 0">
+                                    <ng-container *ngIf="clientSpecialFeeList.length === 0">
                                         <mat-option (click)="$event.stopPropagation();">
                                             No results
                                         </mat-option>
@@ -888,8 +888,8 @@
                             appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                             placeholder="Final Evaluation Reference Person">
                         <mat-autocomplete #evaluationReferencePersonAutocomplete="matAutocomplete"
-                            [displayWith]="displayFullNameFn" (optionSelected)="focusOutMethod()"
-                            (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                            [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                             <ng-container
                                 *ngFor="let contact of filteredEvaluationReferencePersons; trackBy: trackById">
                                 <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
@@ -953,7 +953,7 @@
                 </div>
                 <h3 class="workflow-gray--header u-mb--10">Contract Signers</h3>
                 <div formArrayName="contractSigners" class="u-w--100">
-                    <ng-container *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
+                    <ng-container *ngFor="let signer of contractSigners.controls; trackBy: trackByItem; let i = index" [formGroupName]="i">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                             <mat-form-field appearance="outline"
                                 class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%"
@@ -964,8 +964,8 @@
                                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                     placeholder="Name">
                                 <mat-autocomplete #contactSignerAutocomplete="matAutocomplete"
-                                    [displayWith]="displayFullNameFn" (optionSelected)="focusOutMethod()"
-                                    (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                    [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                    (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                     <ng-container *ngFor="let contact of filteredContractSigners; trackBy: trackById">
                                         <mat-option [value]="contact"
                                             [ngClass]="{ 'no-data': contact?.id === undefined }">

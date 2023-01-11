@@ -344,7 +344,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			emitEvent: false,
 		});
 		this.getRatesAndFees(event.option.value?.clientId);
-		this.focusOutMethod();
+		this.focusToggleMethod('auto');
 	}
 
 	getRatesAndFees(clientId: number) {

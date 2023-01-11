@@ -99,7 +99,7 @@ export abstract class AppComponentBase {
 
 	findItemById(list: EnumEntityTypeDto[] | IdNameDto[] | CountryDto[], id?: number | null) {
 		if (id) {
-			return list.find((x: any) => x.id === id);
+			return list?.find((x: any) => x.id === id);
 		} else {
 			return null;
 		}
@@ -107,7 +107,7 @@ export abstract class AppComponentBase {
 
 	findItemByName(list: EnumEntityTypeDto[], name?: string) {
 		if (name) {
-			return list.find((x: any) => x.name === name);
+			return list?.find((x: any) => x.name === name);
 		} else {
 			return null;
 		}
@@ -207,13 +207,8 @@ export abstract class AppComponentBase {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
 	}
 
-    focusInMethod() {
+    focusToggleMethod(overflowStyle: string) {
 		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
-		b.style.overflow = 'hidden';
-	}
-
-	focusOutMethod() {
-		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
-		b.style.overflow = 'auto';
+		b.style.overflow = overflowStyle;
 	}
 }

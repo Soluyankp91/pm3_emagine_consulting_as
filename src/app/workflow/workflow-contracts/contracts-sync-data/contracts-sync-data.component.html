@@ -116,7 +116,7 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
                     <ng-container formArrayName="consultants">
                         <ng-container
-                            *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index"
+                            *ngFor="let consultant of contractsSyncDataForm.consultants.controls; trackBy: trackByItem; let consultantIndex = index"
                             [formGroupName]="consultantIndex">
                             <div class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20"
