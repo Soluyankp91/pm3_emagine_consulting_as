@@ -1274,7 +1274,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="salesClientDataForm.clientFees.controls?.length === 0 && readOnlyMode">
-                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset u-mt--15">
                                             <span class="light-grey-color text-600">
                                                 No client fees
                                             </span>
@@ -2095,7 +2095,7 @@
                                                     </div>
                                                 </ng-container>
                                                 <ng-container *ngIf="consultant.value.specialFees?.length === 0 && readOnlyMode">
-                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset u-mt--15">
                                                         <span class="light-grey-color text-600">
                                                             No consultant fees
                                                         </span>
@@ -2104,8 +2104,7 @@
                                             </ng-container>
                                         </div>
 
-                                        <div fxLayout="row" fxLayoutAlign="start start"
-                                        [fxHide]="readOnlyMode">
+                                        <div fxLayout="row" fxLayoutAlign="start start" [fxHide]="readOnlyMode">
                                             <button class="rates-and-fees--btn button-add" mat-flat-button
                                                 [matMenuTriggerFor]="consultantSpecialFeeMenu"
                                                 [disabled]="isConsultantFeeEditing"

@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { IConsultantAnchor } from './workflow-period/workflow-period.model';
 import { WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
@@ -35,7 +36,7 @@ export class WorkflowDataService {
 
     workflowOverviewUpdated = new EventEmitter<boolean>();
 
-    consultantsAddedToStep = new EventEmitter<{stepType: number, processTypeId: number, consultantNames: string[]}>();
+    consultantsAddedToStep = new EventEmitter<{stepType: number, processTypeId: number, consultantNames: IConsultantAnchor[]}>();
 
     cancelForceEdit =  new EventEmitter<any>();
     constructor() { }
