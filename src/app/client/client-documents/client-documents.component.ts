@@ -133,10 +133,9 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 	}
 
 	ngOnInit(): void {
-		this.activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
-			this.clientId = +params.get('id')!;
-			this.getGeneralFileTypes();
-			this.getGeneralDocuments();
+        this.activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
+            this.clientId = +params.get('id')!;
+            this.getGeneralFileTypes();
 			this.getContracts();
 			this.getEvaluations();
 		});
@@ -154,6 +153,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 			.pipe(finalize(() => {}))
 			.subscribe((result) => {
 				this.generalFileTypes = result;
+                this.getGeneralDocuments();
 			});
 	}
 

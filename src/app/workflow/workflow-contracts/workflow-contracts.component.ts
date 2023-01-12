@@ -551,12 +551,12 @@ export class WorkflowContractsComponent
             this.contractsConsultantsDataForm.consultants.value.map(
                 (item: any) => {
                     if (
-                        item.consultantType?.id === 10 ||
-                        item.consultantType?.id === 11
+                        item.consultantType?.id === EmploymentTypes.FeeOnly ||
+                        item.consultantType?.id === EmploymentTypes.Recruitment
                     ) {
-                        return item.nameOnly;
+                        return {employmentType: item.employmentType?.id, name: item.nameOnly};
                     } else {
-                        return item.consultant?.name;
+                        return {employmentType: item.employmentType?.id, name: item.consultant?.name};
                     }
                 }
             );
