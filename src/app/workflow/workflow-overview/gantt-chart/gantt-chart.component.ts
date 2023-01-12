@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, NgZone, 
 import { Router } from '@angular/router';
 import { GanttGlobalConfig, GanttItemInternal, GanttUpper, GANTT_GLOBAL_CONFIG, GANTT_UPPER_TOKEN } from '@worktile/gantt';
 import { GanttGroupInternal } from 'src/app/overview/gantt-advanced/mocks';
-import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
 
 @Component({
@@ -92,6 +91,10 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
         this.menuTopLeftPosition.y = event.clientY + 10;
         this.tooltipStartDate = (item?.origin?.origin.startDate !== undefined && item?.origin?.origin.startDate !== null) ? new Date(item?.origin?.start*1000) : undefined;
         this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
+    }
+
+    setDefaultImage(target: EventTarget | null) {
+        (target as HTMLImageElement).src = '../../../../assets/common/images/no-img.jpg';
     }
 
 }

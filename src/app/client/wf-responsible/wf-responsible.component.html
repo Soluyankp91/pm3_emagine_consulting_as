@@ -10,7 +10,7 @@
                 <mat-label>Contract step responsible</mat-label>
                 <ng-container *ngIf="contractStepResponsible.value?.id" matPrefix>
                     <img class="border-rounded-50 image-settings--dropdown"
-                        [ngSrc]="employeePhotoUrl + contractStepResponsible.value.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                        [ngSrc]="employeePhotoUrl + contractStepResponsible.value.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                 </ng-container>
                 <input #contractResponsibleInput type="text" matInput
                     [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
@@ -22,7 +22,7 @@
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                    [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                                    [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 <span class="autocopmlete-option-name">{{ manager.name }}</span>
                             </div>
                         </mat-option>
@@ -39,7 +39,7 @@
 
                 <ng-container *ngIf="financeStepResponsible.value?.id" matPrefix>
                     <img class="border-rounded-50 image-settings--dropdown"
-                    [ngSrc]="employeePhotoUrl + financeStepResponsible.value.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                    [ngSrc]="employeePhotoUrl + financeStepResponsible.value.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                 </ng-container>
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
                     [formControl]="financeStepResponsible" appPreventDoubleClick
@@ -50,7 +50,7 @@
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                                [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 <span class="autocopmlete-option-name">{{ manager.name }}</span>
                             </div>
                         </mat-option>
@@ -80,7 +80,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.contractStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
                         <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                             [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
-                            [ngSrc]="employeePhotoUrl + row?.contractStepResponsible?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                            [ngSrc]="employeePhotoUrl + row?.contractStepResponsible?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                         <span>
                             {{row.contractStepResponsible?.name ?? '-'}}
                         </span>
@@ -93,7 +93,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.financeStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
                         <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                             [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
-                            [ngSrc]="employeePhotoUrl + row?.financeStepResponsible?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
+                            [ngSrc]="employeePhotoUrl + row?.financeStepResponsible?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                         <span>
                             {{row.financeStepResponsible?.name ?? '-'}}
                         </span>

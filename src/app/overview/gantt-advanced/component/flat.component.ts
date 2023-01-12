@@ -1,7 +1,6 @@
 import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, Inject, Output, EventEmitter, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
-import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
 import { SortDirections } from 'src/shared/entities/shared-enums';
 import { OverviewFlag, OverviewFlagNames, OverviewProcessColors, OverviewProcessIcons } from '../../main-overview.model';
@@ -189,6 +188,10 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         this.sortName = this.sortDirection === SortDirections.None ? '' : sortName;
         this.sorting = this.sortDirection && this.sortDirection.length ? sortName.concat(' ', this.sortDirection) : '';
         this.sortUpdated.emit(this.sorting);
+    }
+
+    setDefaultImage(target: EventTarget | null) {
+        (target as HTMLImageElement).src = '../../../../assets/common/images/no-img.jpg';
     }
 
 }

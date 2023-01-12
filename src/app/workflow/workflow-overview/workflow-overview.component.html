@@ -171,7 +171,7 @@
                     <span class="workflow-overview--history-grey-text" fxFlex="20%">
                         {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY HH:mm'}}
                     </span>
-                    <img class="workflow-overview--history-img u-mr--16" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" appImageFallback />
+                    <img class="workflow-overview--history-img u-mr--16" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                     <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" matTooltipClass="white-tooltip" fxFlex="40%" appShowIfTruncated>
                         {{item.eventName}}
                     </span>

@@ -1,7 +1,7 @@
 import { Directive, Input } from '@angular/core';
 
 @Directive({
-    selector: '[appImageFallback]',
+    selector: '[src (error)="setDefaultImage($event.target)"]',
     host: {
         '(error)': 'updateImageOnError()',
         '[ngSrc]': 'ngSrc'

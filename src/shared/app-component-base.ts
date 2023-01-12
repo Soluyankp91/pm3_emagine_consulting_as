@@ -206,4 +206,8 @@ export abstract class AppComponentBase {
 	displayNameFn(option: any) {
 		return option?.name;
 	}
+
+    setDefaultImage(target: EventTarget | null) {
+        (target as HTMLImageElement).src = '../assets/common/images/no-img.jpg';
+    }
 }

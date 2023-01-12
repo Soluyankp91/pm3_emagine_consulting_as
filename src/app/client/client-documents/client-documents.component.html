@@ -398,7 +398,7 @@
                             <ng-container matColumnDef="consultantName">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <img class="image-settings u-mr--12" [ngSrc]="consultantPhotoUrl + row?.externalId! + '.jpg'" width="32" height="32" appImageFallback />
+                                    <img class="image-settings u-mr--12" [ngSrc]="consultantPhotoUrl + row?.externalId! + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
                                     <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantName" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{row?.consultantName}}
                                     </span>

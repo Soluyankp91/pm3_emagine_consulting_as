@@ -674,7 +674,7 @@
                                         <h1 class="workflow-section--header-main">Consultant data</h1>
                                         <ng-container *ngIf="consultant.value?.consultant?.id || consultant.value?.consultantNameOnly">
                                             <ng-container *ngIf="consultant.value?.consultant?.id">
-                                                <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16" [ngSrc]="consultantPhotoUrl + consultant.value?.consultant?.externalId + '.jpg'" width="35" height="35" appImageFallback />
+                                                <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16" [ngSrc]="consultantPhotoUrl + consultant.value?.consultant?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                             </ng-container>
                                             <span class="workflow-form--consultants__name">
                                                 {{consultant.value?.consultant?.name}}
@@ -710,7 +710,7 @@
                                                         <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                             <div class="multilineDropdown-option--row">
                                                                 <ng-container *ngIf="item?.id !== undefined">
-                                                                    <img class="image-thumbnail-small border-rounded-50 u-mr--10" [ngSrc]="consultantPhotoUrl + item.externalId! + '.jpg'" width="35" height="35" appImageFallback />
+                                                                    <img class="image-thumbnail-small border-rounded-50 u-mr--10" [ngSrc]="consultantPhotoUrl + item.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                                                 </ng-container>
                                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                     <span class="multilineDropdown-option--column-client-name">{{ item?.name }}</span>
