@@ -15,8 +15,8 @@
                 <input #contractResponsibleInput type="text" matInput
                     [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something..">
-                <ng-container *ngIf="contractStepResponsible.value?.id" matSuffix>
-                    <button (click)="contractStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
+                <ng-container *ngIf="contractStepResponsible.value?.id">
+                    <button matSuffix (click)="contractStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
                 </ng-container>
                 <mat-autocomplete (optionSelected)="setResponsiblePerson()"
                     #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
@@ -47,8 +47,8 @@
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
                     [formControl]="financeStepResponsible" appPreventDoubleClick
                     (throttledClick)="$event.stopPropagation()" placeholder="Type something..">
-                <ng-container *ngIf="financeStepResponsible.value?.id" matSuffix>
-                    <button (click)="financeStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
+                <ng-container *ngIf="financeStepResponsible.value?.id">
+                    <button matSuffix (click)="financeStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
                 </ng-container>
                 <mat-autocomplete (optionSelected)="setResponsiblePerson()"
                     #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">

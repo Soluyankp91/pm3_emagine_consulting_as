@@ -89,7 +89,6 @@
         display: flex;
         flex-flow: wrap;
         gap: 10px 0;
-        // padding: 5px 0;
         .mat-button-toggle {
             margin-right: 10px;
             color: #384853;
@@ -98,7 +97,6 @@
             border: 1.5px solid rgba($color: $light-grey-color, $alpha: 0.77);
             border-radius: 5px;
             height: 35px;
-            // min-width: 125px;
             &:not(.mat-button-toggle-checked):hover {
                 border: 1.5px solid $light-grey-color;
             }
