@@ -136,7 +136,6 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     getPrimaryCategoryTree(): void {
         this._lookupService
             .tree()
-            .pipe(takeUntil(this._unsubscribe))
             .subscribe((result) => {
                 this.primaryCategoryAreas = result.branches!;
                 this.setPrimaryCategoryTypeAndRole();
