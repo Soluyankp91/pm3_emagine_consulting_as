@@ -544,7 +544,7 @@
                                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                                 <ng-container *ngIf="employee.id !== undefined">
                                                                     <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                                                        [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                        [ngSrc]="employeePhotoUrl + employee?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
                                                                 </ng-container>
                                                                 <span class="autocopmlete-option-name">{{ employee.name }}</span>
                                                             </div>

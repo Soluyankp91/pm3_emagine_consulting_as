@@ -80,7 +80,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.contractStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
                         <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                             [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
-                            [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
+                            [ngSrc]="employeePhotoUrl + row?.contractStepResponsible?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
                         <span>
                             {{row.contractStepResponsible?.name ?? '-'}}
                         </span>
@@ -93,7 +93,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.financeStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
                         <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                             [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
-                            [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
+                            [ngSrc]="employeePhotoUrl + row?.financeStepResponsible?.externalId + '.jpg'"  width="35" height="35" appImageFallback />
                         <span>
                             {{row.financeStepResponsible?.name ?? '-'}}
                         </span>
