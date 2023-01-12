@@ -135,14 +135,6 @@
     line-height: 21px !important;
 }
 
-.termination-cancel-icon {
-    height: 21px !important;
-    width: 21px !important;
-    font-size: 21px !important;
-    line-height: 21px !important;
-    margin-left: 1px;
-}
-
 // END remove after we will have correct icons
 
 .project-line--expansion-additional {
@@ -172,4 +164,8 @@
     margin-bottom: 8px !important;
     line-height: 14px;
     color: #B6B4B2
+}
+
+.icon-cancel {
+    @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
 }
