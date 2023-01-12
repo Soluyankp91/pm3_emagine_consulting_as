@@ -9,7 +9,7 @@ import { Directive, Input } from '@angular/core';
 })
 export class ImageFallbackDirective {
     @Input() ngSrc: string;
-    defaultSrc = 'https://web-sourcing-qa.prodataconsult.com/api/shared-assets/EmployeePicture/da71d494-6678-4e1d-9002-5fb50e7050e1.jpg';
+    defaultSrc = '../../../assets/common/images/no-img.jpg';
     internalSrc: string;
     constructor() { }
 

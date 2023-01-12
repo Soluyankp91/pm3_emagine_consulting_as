@@ -9,7 +9,7 @@
             <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy" [style.height.px]="group.mergedItems.length! * (styles.lineHeight + 10) - 10">
                 <div class="gantt-group-content text-truncate-ellipsis">
                     <ng-container *ngIf="group?.origin?.origin?.consultantExternalId!">
-                        <img class="border-rounded-50 image-settings--dropdown u-mr--10" [ngSrc]="consultantPhotoUrl + group?.origin?.origin?.consultantExternalId! + '.jpg'"  appImageFallback />
+                        <img class="border-rounded-50 image-settings--dropdown u-mr--10" [ngSrc]="consultantPhotoUrl + group?.origin?.origin?.consultantExternalId! + '.jpg'" width="24" height="24" appImageFallback />
                     </ng-container>
                     <span class="text-truncate-ellipsis" [matTooltip]="group?.origin?.title!" matTooltipClass="white-tooltip" appShowIfTruncated>
                         {{group!.origin!.title!}}
