@@ -20,6 +20,7 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
 import { ImageFallbackDirective } from 'src/shared/common/directives/image-fallback.directive';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { environment } from 'src/environments/environment';
+import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { environment } from 'src/environments/environment';
         ReplacePipe,
         ConsultantInformationComponent,
         ExcludeIdsPipe,
-        ImageFallbackDirective
+        ImageFallbackDirective,
+        ImgUrlPipe
     ],
     imports: [
         CommonModule,
@@ -64,7 +66,8 @@ import { environment } from 'src/environments/environment';
         ExcludeIdsPipe,
         ImageFallbackDirective,
         ScrollToModule,
-        NgOptimizedImage
+        NgOptimizedImage,
+        ImgUrlPipe
     ],
     providers: [
         ErrorDialogService,

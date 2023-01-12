@@ -6,6 +6,7 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
+import { EProfileImageLinkTypes } from "./AppEnums";
 import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
 export enum NotifySeverity {
@@ -22,6 +23,8 @@ export abstract class AppComponentBase {
     momentFormatType = AppConsts.momentFormatType;
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
+
+    imageType = EProfileImageLinkTypes;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
