@@ -15,8 +15,7 @@ import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contr
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { EmploymentTypes } from '../workflow.model';
-import { ContractClientDataSections, ContractConsultantDataSections, ContractMainDataSections, ContractSyncSections, FinanceSections, IConsultantAnchor, SalesClientDataSections, SalesConsultantDataSections, SalesMainDataSections, StepAnchorDto, StepWithAnchorsDto, SubItemDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
+import { IConsultantAnchor, StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
     selector: 'app-workflow-period',
@@ -172,12 +171,12 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                             {
                                 name: 'Main Data',
                                 anchor: 'salesMainDataAnchor',
-                                subItems: new Array<SubItemDto>(...SalesMainDataSections)
+                                // subItems: new Array<SubItemDto>(...SalesMainDataSections) //FIXME: commented out till next release
                             },
                             {
                                 name: 'Client Data',
                                 anchor: 'salesClientDataAnchor',
-                                subItems: new Array<SubItemDto>(...SalesClientDataSections)
+                                // subItems: new Array<SubItemDto>(...SalesClientDataSections) //FIXME: commented out till next release
                             }
                         ];
                         break;
@@ -202,11 +201,11 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 							name: 'Consultant Data',
 							anchor: `salesConsultantDataAnchor${index}`,
 							consultantName: item.name,
-							subItems:
-								item.employmentType === EmploymentTypes.FeeOnly ||
-								item.employmentType === EmploymentTypes.Recruitment
-									? []
-									: new Array<SubItemDto>(...SalesConsultantDataSections),
+							// subItems:
+							// 	item.employmentType === EmploymentTypes.FeeOnly ||
+							// 	item.employmentType === EmploymentTypes.Recruitment
+							// 		? []
+							// 		: new Array<SubItemDto>(...SalesConsultantDataSections), //FIXME: commented out till next release
 						});
                     })
                 }
@@ -221,17 +220,17 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                             {
                                 name: 'Main Data',
                                 anchor: 'mainDataAnchor',
-                                subItems: new Array<SubItemDto>(...ContractMainDataSections)
+                                // subItems: new Array<SubItemDto>(...ContractMainDataSections) //FIXME: commented out till next release
                             },
                             {
                                 name: 'Client Data',
                                 anchor: 'clientDataAnchor',
-                                subItems: new Array<SubItemDto>(...ContractClientDataSections)
+                                // subItems: new Array<SubItemDto>(...ContractClientDataSections) //FIXME: commented out till next release
                             },
                             {
                                 name: 'Sync & Legal',
                                 anchor: 'syncLegalContractAnchor',
-                                subItems: new Array<SubItemDto>(...ContractSyncSections)
+                                // subItems: new Array<SubItemDto>(...ContractSyncSections) //FIXME: commented out till next release
                             }
                         ];
                         if (consultantNames?.length) {
@@ -240,11 +239,11 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 									name: 'Consultant Data',
 									anchor: `consultantDataAnchor${index}`,
 									consultantName: item.name,
-									subItems:
-										item.employmentType === EmploymentTypes.FeeOnly ||
-										item.employmentType === EmploymentTypes.Recruitment
-											? []
-											: new Array<SubItemDto>(...ContractConsultantDataSections),
+									// subItems:
+									// 	item.employmentType === EmploymentTypes.FeeOnly ||
+									// 	item.employmentType === EmploymentTypes.Recruitment
+									// 		? []
+									// 		: new Array<SubItemDto>(...ContractConsultantDataSections), //FIXME: commented out till next release
 								};
                             });
                             ContractAnchors.splice(2, 0, ...consultantAnchors);
@@ -284,7 +283,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                     {
                         name: 'Finance Data',
                         anchor: 'financeDataAnchor',
-                        subItems: new Array<SubItemDto>(...FinanceSections)
+                        // subItems: new Array<SubItemDto>(...FinanceSections) //FIXME: commented out till next release
                     }
                 ];
                 return FinanceAnchors;
