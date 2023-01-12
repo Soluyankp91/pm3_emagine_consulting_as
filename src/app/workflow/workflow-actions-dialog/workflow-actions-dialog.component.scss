@@ -20,11 +20,18 @@
             line-height: 120%;
         }
     }
-    h3 {
-        @include fontOpenSans(14px, 600);
+    &--label {
+        @include fontOpenSans(12px, 600);
         line-height: 160%;
-        color: #4A4E60;
+        color: $medium-grey-color;
         margin-bottom: 8px;
+    }
+    &--category {
+        @include fontOpenSans(14px, 800);
+        color: #4A4E60;
+        mat-icon {
+            @include fontLineHeightAndSize(16px, 16px, 16px, 14px);
+        }
     }
 }
 

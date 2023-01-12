@@ -215,4 +215,8 @@ export abstract class AppComponentBase {
 	displayNameFn(option: any) {
 		return option?.name;
 	}
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+    }
 }
