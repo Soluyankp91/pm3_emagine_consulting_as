@@ -152,7 +152,7 @@
                                     [ngClass]="{'mat-form-field-invalid': !contractsMainForm.salesType?.valid}" class="workflow-toggle-buttons"
                                     formControlName="salesType" required>
                                     <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
-                                        <ng-container *ngIf="(readOnlyMode && item.id === contractsMainForm.salesType?.value?.id) || !readOnlyMode">
+                                        <ng-container *ngIf="item.id === contractsMainForm.salesType?.value?.id">
                                             <mat-button-toggle [value]="item">{{item.name}}</mat-button-toggle>
                                         </ng-container>
                                     </ng-container>
@@ -169,7 +169,7 @@
                                     formControlName="deliveryType" required>
                                     <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
                                         <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id !== salesTypesEnum.ManagedService)">
-                                            <ng-container *ngIf="(readOnlyMode && item.id === contractsMainForm.deliveryType?.value?.id) || !readOnlyMode">
+                                            <ng-container *ngIf="item.id === contractsMainForm.deliveryType?.value?.id">
                                                 <mat-button-toggle [value]="item">
                                                     {{ item.name }}
                                                 </mat-button-toggle>
