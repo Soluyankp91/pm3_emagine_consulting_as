@@ -103,21 +103,26 @@
                                 <h2 class="workflow-section--header">Consultant contract duration</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                                        <mat-label>Project Duration</mat-label>
-                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantProjectDurationSameAsClient" [disableOptionCentering]="true" (selectionChange)="updateConsultantDates($event, consultantIndex)">
-                                            <mat-option [value]="true">
-                                                Same as client
-                                            </mat-option>
-                                            <mat-option [value]="false">
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-button-toggle-group [disabled]="readOnlyMode"
+                                        [ngClass]="{'mat-form-field-invalid': !consultant.get('consultantProjectDurationSameAsClient')?.valid}"
+                                        class="workflow-toggle-buttons u-mb--10" formControlName="consultantProjectDurationSameAsClient" required>
+                                        <ng-container *ngIf="(readOnlyMode && !consultant.get('consultantProjectDurationSameAsClient')?.value) || !readOnlyMode">
+                                            <mat-button-toggle [value]="false">
                                                 Different from client
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error>
-                                            <app-validator [control]="consultant.get('consultantProjectDurationSameAsClient')"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
+                                            </mat-button-toggle>
+                                        </ng-container>
+                                        <ng-container *ngIf="(readOnlyMode && consultant.get('consultantProjectDurationSameAsClient')?.value) || !readOnlyMode">
+                                            <mat-button-toggle [value]="true">
+                                                Same as client
+                                            </mat-button-toggle>
+                                        </ng-container>
+                                    </mat-button-toggle-group>
+                                    <mat-error>
+                                        <ng-container *ngIf="consultant.get('consultantProjectDurationSameAsClient')?.touched">
+                                            <app-validator [withoutFormField]="true" [control]="consultant.get('consultantProjectDurationSameAsClient')"></app-validator>
+                                        </ng-container>
+                                    </mat-error>
                                 </div>
                                 <ng-container *ngIf="!consultant.value?.consultantProjectDurationSameAsClient">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
@@ -496,7 +501,7 @@
                                                         </mat-option>
                                                     </ng-container>
                                                     <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'; trackBy: trackById">
-                                                        <mat-option [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
+                                                        <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger) : ''">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </ng-container>
@@ -508,7 +513,7 @@
 
                                 <div class="inline-edit-form u-w--100">
                                     <ng-container *ngIf="consultant.value.specialFees?.length">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-pt--10 u-w--100">
                                             <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
                                                 Fee name
                                             </span>
@@ -620,7 +625,7 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="consultant.value.specialFees?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset u-mt--15">
                                                 <span class="light-grey-color text-600">
                                                     No consultant fees
                                                 </span>
@@ -651,7 +656,7 @@
                                                         </mat-option>
                                                     </ng-container>
                                                     <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.specialFees : 'clientSpecialFeeId'; trackBy: trackById">
-                                                        <mat-option [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
+                                                        <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger) : ''">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </ng-container>
@@ -1062,7 +1067,7 @@
 </form>
 
 <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 u-mt--10__reverse">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100" [ngClass]="{'u-mt--10__reverse': client?.clientId}">
         <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
                 Address:

@@ -21,7 +21,7 @@ import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantS
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
+import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
 import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesConsultantsForm } from '../workflow-sales.model';
 
@@ -271,13 +271,13 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
 	updateConsultantStepAnchors() {
-		let consultantNames = this.consultants.value.map((item: any) => {
-			if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
-				return item.consultantNameOnly;
-			} else {
-				return item.consultantName?.consultant?.name;
-			}
-		});
+		let consultantNames: IConsultantAnchor[] = this.consultants.value.map((item: any) => {
+            if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
+                return {employmentType: item.employmentType?.id, name: item.consultantNameOnly};
+            } else {
+                return {employmentType: item.employmentType?.id, name: item.consultantName?.consultant?.name};
+            }
+        });
 		this._workflowDataService.consultantsAddedToStep.emit({
 			stepType: StepType.Sales,
 			processTypeId: this.activeSideSection.typeId!,

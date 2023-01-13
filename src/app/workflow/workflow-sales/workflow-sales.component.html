@@ -2,7 +2,7 @@
     <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
         <app-main-data #mainDataComponent [periodId]="periodId" [readOnlyMode]="readOnlyMode" [editEnabledForcefuly]="editEnabledForcefuly"
             [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
-            [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()"></app-main-data>
+            [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></app-main-data>
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
             <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
             </app-client-data>
@@ -17,7 +17,38 @@
     <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                <h1 class="workflow-section--header-main">Termination data</h1>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                    <h1 class="workflow-section--header-main">Termination data</h1>
+                    <ng-container *ngIf="readOnlyMode">
+                        <div fxLayout="row" fxLayoutAlign="start start">
+                            <ng-container *ngIf="canToggleEditMode">
+                                <button
+                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
+                                    mat-icon-button
+                                    appPreventDoubleClick (throttledClick)="toggleEditMode()">
+                                    <mat-icon svgIcon="edit-icon"></mat-icon>
+                                </button>
+                            </ng-container>
+                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
+                                <mat-icon svgIcon="3-dots"></mat-icon>
+                            </button>
+                            <mat-menu #returnToSalesMenu>
+                                <div class="u-w--100 u-h--100"
+                                    [matTooltip]="permissionsForCurrentUser!['Reopen'] ? '' : 'Not available after the Contracts step has been completed'"
+                                    matTooltipClass="white-tooltip">
+                                    <button
+                                        class="menu-item menu-item--edit contract-manager-action"
+                                        mat-menu-item
+                                        [disabled]="!permissionsForCurrentUser!['Reopen']"
+                                        appPreventDoubleClick (throttledClick)="returnToSales()">
+                                        <mat-icon svgIcon="return-icon"></mat-icon>
+                                        Return to Sales
+                                    </button>
+                                </div>
+                            </mat-menu>
+                        </div>
+                    </ng-container>
+                </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                     <span class="workflow-section--number">1</span>
                     <h2 class="workflow-section--header">
@@ -30,27 +61,31 @@
                     </h2>
                 </div>
                 <div class="workflow-section--content">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                            <mat-label>
-                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
-                                    End of Consultant Contract
-                                </ng-container>
-                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
-                                    End of Client Contract
-                                </ng-container>
-                            </mat-label>
-                            <mat-select [disabled]="readOnlyMode" required formControlName="terminationTime" [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
-                                    <mat-option [value]="+item.key">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <h3 class="workflow-gray--header u-mb--5">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+                                End of Consultant Contract
+                            </ng-container>
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
+                                End of Client Contract
+                            </ng-container>
+                        </h3>
+                        <mat-button-toggle-group [disabled]="readOnlyMode"
+                            [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}"
+                            class="workflow-toggle-buttons u-mb--10" formControlName="terminationTime" required>
+                            <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
+                                <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationTime?.value) || !readOnlyMode">
+                                    <mat-button-toggle [value]="+item.key">
                                         {{ item.value }}
-                                    </mat-option>
+                                    </mat-button-toggle>
                                 </ng-container>
-                            </mat-select>
-                            <mat-error>
-                                <app-validator [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
-                            </mat-error>
-                        </mat-form-field>
+                            </ng-container>
+                        </mat-button-toggle-group>
+                        <mat-error>
+                            <ng-container *ngIf="salesTerminateConsultantForm.terminationTime?.touched">
+                                <app-validator [withoutFormField]="true" [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
+                            </ng-container>
+                        </mat-error>
                     </div>
 
                     <ng-container *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
@@ -59,7 +94,7 @@
                                 <mat-label>End date</mat-label>
                                 <input [disabled]="readOnlyMode" required autocomplete="off" matInput
                                         [matDatepicker]="endClientContractEndDatePicker"
-                                        name="consultantEndDate" formControlName="endDate"
+                                        name="clientContractEndDate" formControlName="endDate"
                                         (focus)="endClientContractEndDatePicker.open()"
                                         appPreventDoubleClick (throttledClick)="endClientContractEndDatePicker.open()" readonly>
                                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
@@ -72,22 +107,27 @@
                     </ng-container>
 
                     <ng-container *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                                <mat-label>Termination reason</mat-label>
-                                <mat-select [disabled]="readOnlyMode" required formControlName="terminationReason" [disableOptionCentering]="true">
-                                    <ng-container *ngFor="let item of terminationReasons | keyvalue">
-                                        <mat-option [value]="+item.key">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <h3 class="workflow-gray--header u-mb--5">Reason for termination</h3>
+                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationReason?.value}"
+                                class="workflow-toggle-buttons u-mb--10" formControlName="terminationReason" required>
+                                <ng-container *ngFor="let item of terminationReasons | keyvalue">
+                                    <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationReason?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="+item.key">
                                             {{ item.value }}
-                                        </mat-option>
+                                        </mat-button-toggle>
                                     </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
+                                </ng-container>
+                            </mat-button-toggle-group>
+                            <mat-error>
+                                <ng-container *ngIf="salesTerminateConsultantForm.terminationReason?.touched">
+                                    <app-validator [withoutFormField]="true" [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
+                                </ng-container>
+                            </mat-error>
                         </div>
                     </ng-container>
+
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
                         <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Cause</mat-label>

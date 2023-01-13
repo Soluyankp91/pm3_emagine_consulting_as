@@ -1099,4 +1099,60 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			: null;
 		return input;
 	}
+
+    returnToSales() {
+		switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+			case WorkflowProcessType.StartClientPeriod:
+			case WorkflowProcessType.ChangeClientPeriod:
+			case WorkflowProcessType.ExtendClientPeriod:
+				this.showMainSpinner();
+				this._clientPeriodService
+					.reopen(this.periodId!)
+					.pipe(
+						finalize(() => {
+							this.hideMainSpinner();
+						})
+					)
+					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
+				break;
+
+			case WorkflowProcessType.TerminateWorkflow:
+				this.showMainSpinner();
+				this._workflowServiceProxy
+					.terminationSalesReopen(this.periodId!)
+					.pipe(
+						finalize(() => {
+							this.hideMainSpinner();
+						})
+					)
+					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
+				break;
+
+			case WorkflowProcessType.TerminateConsultant:
+				this.showMainSpinner();
+				this._workflowServiceProxy
+					.terminationConsultantSalesReopen(this.periodId!)
+					.pipe(
+						finalize(() => {
+							this.hideMainSpinner();
+						})
+					)
+					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
+				break;
+
+			case WorkflowProcessType.StartConsultantPeriod:
+			case WorkflowProcessType.ChangeConsultantPeriod:
+			case WorkflowProcessType.ExtendConsultantPeriod:
+				this.showMainSpinner();
+				this._consultantPeriodSerivce
+					.reopen2(this.periodId!)
+					.pipe(
+						finalize(() => {
+							this.hideMainSpinner();
+						})
+					)
+					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
+				break;
+		}
+	}
 }

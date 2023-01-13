@@ -235,7 +235,7 @@
                             </div>
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="readOnlyMode; else specialRatesInput">
-                                    <div class="inline-edit-form u-w--100 u-mb--10">
+                                    <div class="inline-edit-form u-w--100">
                                         <ng-container *ngIf="consultant.value.specialRates?.length">
                                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
                                                 class="u-w--100 u-pl--16 u-pr--16 u-pb--10">
@@ -320,7 +320,7 @@
                                     <div class="inline-edit-form u-w--100">
                                         <ng-container *ngIf="consultant.value.specialRates?.length">
                                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
-                                                class="u-w--100 u-pl--16 u-pr--16 u-pb--10">
+                                                class="u-w--100 u-pl--16 u-pr--16 u-pb--5">
                                                 <span fxFlex="1 0 20%"
                                                     class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                     Rate name
@@ -521,10 +521,8 @@
                                                                 No results
                                                             </mat-option>
                                                         </ng-container>
-                                                        <ng-container
-                                                            *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'; trackBy: trackById">
-                                                            <mat-option [value]="item.id" appPreventDoubleClick
-                                                                (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
+                                                        <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'; trackBy: trackById">
+                                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger) : ''">
                                                                 {{ item.internalName }}
                                                             </mat-option>
                                                         </ng-container>
@@ -536,10 +534,10 @@
                                 </ng-template>
 
                                 <ng-container *ngIf="readOnlyMode; else clientFeesInput">
-                                    <div class="inline-edit-form u-w--100 u-mb--20">
+                                    <div class="inline-edit-form u-w--100">
                                         <ng-container *ngIf="consultant.value.clientFees?.length">
                                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
-                                                class="u-w--100 u-pl--16 u-pr--16 u-pb--10">
+                                                class="u-w--100 u-pl--16 u-pr--16 u-pb--5 u-pt--10">
                                                 <span fxFlex="1 0 20%"
                                                     class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                     Fee name
@@ -607,7 +605,7 @@
                                                 *ngIf="consultant.value.clientFees?.length === 0 && readOnlyMode">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 u-mt--15">
                                                     <span class="light-grey-color text-600">
                                                         No special fees
                                                     </span>
@@ -818,10 +816,8 @@
                                                                 No results
                                                             </mat-option>
                                                         </ng-container>
-                                                        <ng-container
-                                                            *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.clientFees : 'clientSpecialFeeId'; trackBy: trackById">
-                                                            <mat-option [value]="item.id" appPreventDoubleClick
-                                                                (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
+                                                        <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.clientFees : 'clientSpecialFeeId'; trackBy: trackById">
+                                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger) : ''">
                                                                 {{ item.internalName }}
                                                             </mat-option>
                                                         </ng-container>

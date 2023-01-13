@@ -81,43 +81,52 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
-                                <mat-label>Sales Type</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="salesTypeId" [disableOptionCentering]="true" (selectionChange)="salesTypeChange($event.value)">
-                                    <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
-                                        <mat-option [value]="item.id">
-                                            {{ item.name }}
-                                        </mat-option>
+                        <div fxLayout="column" fxLayoutAlign="start start">
+                            <h3 class="workflow-gray--header u-mt--15 u-mb--10">Sales type</h3>
+                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.salesTypeId?.valid}" class="workflow-toggle-buttons"
+                                formControlName="salesTypeId" required (change)="salesTypeChange($event.value)">
+                                <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
+                                    <ng-container *ngIf="(readOnlyMode && item.id === salesMainDataForm.salesTypeId?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="item">{{item.name}}</mat-button-toggle>
                                     </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="salesMainDataForm.salesTypeId"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
-                                <mat-label>Delivery Type</mat-label>
-                                <mat-select required [disabled]="readOnlyMode" formControlName="deliveryTypeId" [disableOptionCentering]="true">
-                                    <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                        <ng-container *ngIf="(item?.id === 1 && salesMainDataForm.salesTypeId?.value === 3) || (item?.id !== 1 && salesMainDataForm.salesTypeId?.value !== 3)">
-                                            <mat-option [value]="item.id">
+                                </ng-container>
+                            </mat-button-toggle-group>
+                            <mat-error>
+                                <app-validator [withoutFormField]="true" *ngIf="salesMainDataForm.salesTypeId?.touched"
+                                    [control]="salesMainDataForm.salesTypeId"></app-validator>
+                            </mat-error>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start">
+                            <h3 class="workflow-gray--header u-mt--20 u-mb--10">Delivery type</h3>
+                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.deliveryTypeId?.valid}" class="workflow-toggle-buttons"
+                                formControlName="deliveryTypeId" required>
+                                <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
+                                    <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && salesMainDataForm.salesTypeId?.value === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && salesMainDataForm.salesTypeId?.value !== salesTypesEnum.ManagedService)">
+                                        <ng-container *ngIf="(readOnlyMode && item.id === salesMainDataForm.deliveryTypeId?.value) || !readOnlyMode">
+                                            <mat-button-toggle [value]="item">
                                                 {{ item.name }}
-                                            </mat-option>
+                                            </mat-button-toggle>
                                         </ng-container>
                                     </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="salesMainDataForm.deliveryTypeId"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
+                                </ng-container>
+                            </mat-button-toggle-group>
+                            <mat-error>
+                                <ng-container *ngIf="salesMainDataForm.deliveryTypeId?.touched">
+                                    <app-validator [withoutFormField]="true" [control]="salesMainDataForm.deliveryTypeId"></app-validator>
+                                </ng-container>
+                            </mat-error>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180 u-mt--15">
                                 <mat-label>Margin</mat-label>
-                                <mat-select [disabled]="readOnlyMode" formControlName="marginId" [disableOptionCentering]="true" required>
+                                <mat-select [disabled]="readOnlyMode" formControlName="marginId" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                                     <mat-option class="mat-select-clear-option">
                                         Clear
                                     </mat-option>
                                     <ng-container *ngFor="let item of margins; trackBy: trackById">
-                                        <mat-option [value]="item.id">
+                                        <mat-option [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </ng-container>
@@ -127,8 +136,8 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                            <h3 class="workflow-gray--header u-mt--10 u-mb--10">Project category</h3>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--15">
+                            <h3 class="workflow-gray--header u-mb--5">Project category</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Area</mat-label>
@@ -570,7 +579,7 @@
                 <div class="workflow-section--content">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235"
+                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-276"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Sales Account Manager</mat-label>
                             <input required [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
@@ -592,7 +601,7 @@
                         </mat-form-field>
 
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select form-width-235"
+                            class="formFieldNoMarginPadding filter-select form-width-276"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Commission Account Manager</mat-label>
                             <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput
@@ -613,7 +622,7 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-276">
                             <mat-label>Expiration notification</mat-label>
                             <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification"
                                 [disableOptionCentering]="true" [multiple]="true">
@@ -649,7 +658,7 @@
                                 [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline"
-                                        class="formFieldNoMarginPadding filter-select form-width-235"
+                                        class="formFieldNoMarginPadding filter-select form-width-276"
                                         [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Commissioned employee</mat-label>
                                         <input required [disabled]="readOnlyMode" #commissionedUserInput type="text"

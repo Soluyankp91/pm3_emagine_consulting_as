@@ -10,6 +10,7 @@ import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-pe
 import { WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
+import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
 
 @Component({
 	selector: 'app-main-data',
@@ -25,9 +26,12 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
     @Output() editModeToggled = new EventEmitter<any>();
+    @Output() onReturnToSales = new EventEmitter<any>();
 
     workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
+    deliveryTypesEnum = DeliveryTypes;
+	salesTypesEnum = SalesTypes;
 
     currencies: EnumEntityTypeDto[];
     deliveryTypes: EnumEntityTypeDto[];
@@ -254,59 +258,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
     returnToSales() {
-		switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.ChangeClientPeriod:
-			case WorkflowProcessType.ExtendClientPeriod:
-				this.showMainSpinner();
-				this._clientPeriodService
-					.reopen(this.periodId!)
-					.pipe(
-						finalize(() => {
-							this.hideMainSpinner();
-						})
-					)
-					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-				break;
-
-			case WorkflowProcessType.TerminateWorkflow:
-				this.showMainSpinner();
-				this._workflowServiceProxy
-					.terminationSalesReopen(this.periodId!)
-					.pipe(
-						finalize(() => {
-							this.hideMainSpinner();
-						})
-					)
-					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-				break;
-
-			case WorkflowProcessType.TerminateConsultant:
-				this.showMainSpinner();
-				this._workflowServiceProxy
-					.terminationConsultantSalesReopen(this.periodId!)
-					.pipe(
-						finalize(() => {
-							this.hideMainSpinner();
-						})
-					)
-					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-				break;
-
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				this.showMainSpinner();
-				this._consultantPeriodSerivce
-					.reopen2(this.periodId!)
-					.pipe(
-						finalize(() => {
-							this.hideMainSpinner();
-						})
-					)
-					.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-				break;
-		}
+        this.onReturnToSales.emit();
 	}
 
     getDataBasedOnProjectType(event: MatSelectChange) {
