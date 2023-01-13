@@ -13,6 +13,7 @@ export const CREATIONS_TABS: Tab[] = [
 
 export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	language: 'Language',
+	id: 'ID',
 	agreementType: 'Type',
 	recipientTypeId: 'Recipients',
 	legalEntityIds: 'Legal entities',
