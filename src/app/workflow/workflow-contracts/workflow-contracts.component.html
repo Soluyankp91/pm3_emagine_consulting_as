@@ -19,8 +19,8 @@
                                     <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
                                 </span>
                                 <ng-container *ngIf="statusAfterSync">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
-                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
+                                        <mat-icon fxFlex="25px" class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
                                         <span class="workflow-darkblue--text">
                                             {{syncMessage}}
                                         </span>
@@ -38,9 +38,9 @@
                                     <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
                                 </span>
                                 <ng-container *ngIf="statusAfterSync">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
-                                        <span class="sync-hint-text">
+                                        <span class="workflow-darkblue--text">
                                             {{syncMessage}}
                                         </span>
                                     </div>
@@ -1469,15 +1469,15 @@
                                     <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
 
                                     <ng-container *ngIf="statusAfterSync">
-                                        <div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
-                                            <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
-                                            <span class="sync-hint-text">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
+                                            <mat-icon fxFlex="25px" class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
+                                            <span class="workflow-darkblue--text">
                                                 {{syncMessage}}
                                             </span>
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-checkbox color="accent" formControlName="contractLinesDoneManuallyInOldPm" name="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
                                                 Contract lines done manually in old PM
                                             </mat-checkbox>
