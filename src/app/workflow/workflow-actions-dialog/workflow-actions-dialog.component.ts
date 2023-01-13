@@ -39,6 +39,10 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     primaryCategoryTypes: AreaRoleNodeDto[] = [];
     primaryCategoryRoles: RoleNodeDto[] = [];
 
+    validationTriggered = false
+    changeConsultantsValid = true;
+    extendConsultantsValid = true;
+
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -195,6 +199,9 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 this.onConfirmed.emit(addConsultantOutput);
                 break;
             case WorkflowDiallogAction.Change:
+                if (!this.validateChangeForm()) {
+                    return;
+                }
                 const consultants = this.changeWorkflowForm.value.consultants;
                 let changeWorkflowOutput = new ChangeClientPeriodDto();
                 changeWorkflowOutput.clientNewLegalContractRequired = this.changeWorkflowForm.newLegalContractRequired?.value;
@@ -214,6 +221,9 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 this.onConfirmed.emit(changeWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Extend:
+                if (!this.validateExtendForm()) {
+                    return;
+                }
                 const consultantsToExtend = this.extendWorkflowForm.value.consultants;
                 let extendWorkflowOutput = new ExtendClientPeriodDto();
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
@@ -232,12 +242,32 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
         this.closeInternal();
     }
 
+    validateChangeForm() {
+        this.validationTriggered = true;
+        this.changeWorkflowForm.markAllAsTouched();
+        this.projectCategoryForm.markAllAsTouched();
+        this.changeConsultantsValid = this.changeWorkflowForm.consultants.value.some((item: any) => item.changeConsultant);
+        return this.changeWorkflowForm.valid && this.projectCategoryForm.valid && this.changeConsultantsValid;
+    }
+
+    validateExtendForm() {
+        this.validationTriggered = true;
+        this.extendWorkflowForm.markAllAsTouched();
+        this.projectCategoryForm.markAllAsTouched();
+        this.extendConsultantsValid = this.extendWorkflowForm.consultants.value.some((item: any) => item.extendConsultant);
+        return this.extendWorkflowForm.valid && this.projectCategoryForm.valid && this.extendConsultantsValid;
+    }
+
+
     reject(): void {
         this.onRejected.emit();
         this.closeInternal();
     }
 
     private closeInternal(): void {
+        this.validationTriggered = false;
+        this.changeConsultantsValid = true;
+        this.extendConsultantsValid = true;
         this.dialogRef.close();
     }
 
