@@ -43,16 +43,16 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-				startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
-				switchMap(({nameFilter, showAll, idsToExclude}) => {
+				startWith(''),
+				switchMap((value: any) => {
 					let toSend = {
-						name: nameFilter,
+						name: value,
 						maxRecordsCount: 1000,
-                        showAll: showAll,
-                        idsToExclude: idsToExclude
+                        showAll: true,
+                        idsToExclude: []
 					};
-					if (nameFilter?.id) {
-						toSend.name = nameFilter.id ? nameFilter.name : nameFilter;
+					if (value?.id) {
+						toSend.name = value.id ? value.name : value;
 					}
 					return this._lookupService.employees(toSend.name);
 				})
