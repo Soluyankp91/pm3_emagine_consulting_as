@@ -239,6 +239,10 @@ html {
     border-radius: 50%;
 }
 
+.border-unset {
+    border: 0 !important;
+}
+
 .hidden-option {
     display: none !important;
 }
@@ -293,7 +297,7 @@ html {
 .page-main-header {
     @include fontOpenSans(36px, 800);
     color: $dark-grey-color;
-    line-height: 36px;
+    line-height: 30px;
 }
 
 .page-main-subheader {
@@ -323,4 +327,8 @@ html {
 
 .pos-relative {
     position: relative;
+}
+
+.width-fit-content {
+    width: fit-content;
 }

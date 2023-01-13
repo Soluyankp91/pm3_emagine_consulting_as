@@ -18,11 +18,19 @@ export const MediumDialogConfig: MatDialogConfig = {
     panelClass: 'confirmation-modal'
 }
 
+export const DialogConfig600: MatDialogConfig = {
+    minHeight: '180px',
+    width: '600px',
+    height: 'auto',
+    backdropClass: 'backdrop-modal--wrapper',
+    autoFocus: false,
+    panelClass: 'confirmation-modal'
+}
+
 export const BigDialogConfig: MatDialogConfig = {
     minHeight: '180px',
     width: '800px',
     height: 'auto',
-    maxHeight: '560px',
     backdropClass: 'backdrop-modal--wrapper',
     autoFocus: false,
     panelClass: 'confirmation-modal'

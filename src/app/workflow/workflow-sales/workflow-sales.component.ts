@@ -22,6 +22,7 @@ import {
     debounceTime,
     finalize,
     map,
+    startWith,
     switchMap,
     takeUntil,
 } from 'rxjs/operators';
@@ -69,11 +70,14 @@ import {
     CountryDto,
     StepType,
     LegalEntityDto,
+    BranchRoleNodeDto,
+    AreaRoleNodeDto,
+    RoleNodeDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
+import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import {
     ConsultantDiallogAction,
@@ -139,6 +143,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
 
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
+
     employmentTypesEnum = EmploymentTypes;
 
     // new UI
@@ -152,7 +160,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             name: 'Fixed',
         })
     );
-
+    filteredEmployees: EmployeeDto[] = []
     filteredAccountManagers: any[] = [];
     filteredSalesAccountManagers: any[] = [];
     filteredCommisionAccountManagers: any[] = [];
@@ -539,6 +547,41 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     }
                 }
             });
+
+        this.salesMainDataForm?.primaryCategoryArea?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                map(
+                    (value) =>
+                        this.primaryCategoryAreas?.find((x) => x.id === value?.id)
+                            ?.areas
+                )
+            )
+            .subscribe((list) => {
+                this.primaryCategoryTypes = list!;
+                this.salesMainDataForm?.primaryCategoryType?.setValue(
+                    null
+                );
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
+            });
+
+        this.salesMainDataForm?.primaryCategoryType?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                map(
+                    (value) =>
+                        this.primaryCategoryTypes?.find((x) => x.id === value?.id)
+                            ?.roles
+                )
+            )
+            .subscribe((list) => {
+                this.primaryCategoryRoles = list!;
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
+            });
     }
 
     ngOnInit(): void {
@@ -808,6 +851,33 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     //#region dataFetch
+
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.salesMainDataForm?.primaryCategoryArea?.value?.id) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.salesMainDataForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.salesMainDataForm?.primaryCategoryType?.value?.id) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.salesMainDataForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
+    }
 
     getCurrencies() {
         this._internalLookupService
@@ -1393,7 +1463,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             specialRates: new UntypedFormArray([]),
             consultantSpecialFeeFilter: new UntypedFormControl(''),
             specialFees: new UntypedFormArray([]),
-
+            noSpecialPaymentTerms: new UntypedFormControl(consultant?.noSpecialPaymentTerms ?? false),
+            specialPaymentTerms: new UntypedFormControl({value: consultant?.specialPaymentTerms ?? null, disabled: consultant?.noSpecialPaymentTerms}),
             consultantSpecialContractTermsNone: new UntypedFormControl(consultant?.noSpecialContractTerms ?? false),
             consultantSpecialContractTerms: new UntypedFormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}),
 
@@ -1446,11 +1517,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     updateConsultantStepAnchors() {
-        let consultantNames = this.consultantData.value.map((item: any) => {
+        let consultantNames: IConsultantAnchor[] = this.consultantData.value.map((item: any) => {
             if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
-                return item.consultantNameOnly;
+                return {employmentType: item.employmentType?.id, name: item.consultantNameOnly};
             } else {
-                return item.consultantName?.consultant?.name;
+                return {employmentType: item.employmentType?.id, name: item.consultantName?.consultant?.name};
             }
         });
         this._workflowDataService.consultantsAddedToStep.emit({
@@ -2054,6 +2125,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         input.salesClientData = new SalesClientDataDto();
         input.consultantSalesData = new Array<ConsultantSalesDataDto>();
 
+        input.salesMainData.primaryCategoryArea = this.salesMainDataForm.primaryCategoryArea?.value;
+        input.salesMainData.primaryCategoryType = this.salesMainDataForm.primaryCategoryType?.value;
+        input.salesMainData.primaryCategoryRole = this.salesMainDataForm.primaryCategoryRole?.value;
         input.salesMainData.projectTypeId =
             this.salesMainDataForm.projectType?.value?.id;
         input.salesMainData.salesTypeId =
@@ -2121,6 +2195,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     input.salesMainData!.commissions?.push(commissionInput);
                 }
             );
+        }
+        input.salesMainData!.commissionedEmployeesIdValues = [];
+        input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
+        if (this.salesMainDataForm.commissionedUsers.value?.length) {
+            this.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
+                const user: EmployeeDto = form.commissionedUser;
+                if (user.id) {
+                    input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+                    input.salesMainData!.commissionedEmployeesData?.push(user);
+                }
+            })
         }
 
         input.salesClientData.differentEndClient =
@@ -2257,47 +2342,47 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
 
-                        consultantInput.requestId =
-                            consultant.consultantName?.consultant?.sourcingRequestId;
+                    consultantInput.requestId =
+                        consultant.consultantName?.consultant?.sourcingRequestId;
 
-                        consultantInput.durationSameAsClientPeriod =
-                            consultant.consultantProjectDurationSameAsClient;
-                        consultantInput.startDate =
-                            consultant.consultantProjectStartDate;
-                        consultantInput.noEndDate =
-                            consultant.consultantProjectNoEndDate;
-                        consultantInput.endDate =
-                            consultant.consultantProjectEndDate;
+                    consultantInput.durationSameAsClientPeriod =
+                        consultant.consultantProjectDurationSameAsClient;
+                    consultantInput.startDate =
+                        consultant.consultantProjectStartDate;
+                    consultantInput.noEndDate =
+                        consultant.consultantProjectNoEndDate;
+                    consultantInput.endDate =
+                        consultant.consultantProjectEndDate;
 
-                        consultantInput.isOnsiteWorkplace =
-                            consultant.consultantIsOnsiteWorkplace;
-                        consultantInput.onsiteClientId =
-                            consultant.consultantWorkplaceClientAddress?.clientId;
-                        consultantInput.percentageOnSite =
-                            consultant.consultantWorkplacePercentageOnSite;
+                    consultantInput.isOnsiteWorkplace =
+                        consultant.consultantIsOnsiteWorkplace;
+                    consultantInput.onsiteClientId =
+                        consultant.consultantWorkplaceClientAddress?.clientId;
+                    consultantInput.percentageOnSite =
+                        consultant.consultantWorkplacePercentageOnSite;
 
-                        consultantInput.isEmagineOfficeWorkplace =
-                            consultant.consultantIsEmagineOfficeWorkplace;
-                        consultantInput.emagineOfficeId =
-                            consultant.consultantWorkplaceEmagineOffice?.id;
+                    consultantInput.isEmagineOfficeWorkplace =
+                        consultant.consultantIsEmagineOfficeWorkplace;
+                    consultantInput.emagineOfficeId =
+                        consultant.consultantWorkplaceEmagineOffice?.id;
 
-                        consultantInput.isRemoteWorkplace =
-                            consultant.consultantIsRemoteWorkplace;
-                        consultantInput.remoteAddressCountryId =
-                            consultant.consultantWorkplaceRemote?.id;
+                    consultantInput.isRemoteWorkplace =
+                        consultant.consultantIsRemoteWorkplace;
+                    consultantInput.remoteAddressCountryId =
+                        consultant.consultantWorkplaceRemote?.id;
 
-                        consultantInput.noExpectedWorkload =
-                            consultant.noExpectedWorkload;
-                        consultantInput.expectedWorkloadHours =
-                            consultant.expectedWorkloadHours;
-                        consultantInput.expectedWorkloadUnitId =
-                            consultant.expectedWorkloadUnitId?.id;
-                        consultantInput.consultantTimeReportingCapId =
-                            consultant.consultantCapOnTimeReporting?.id;
-                        consultantInput.consultantTimeReportingCapMaxValue =
-                            consultant.consultantTimeReportingCapMaxValue;
-                        consultantInput.pdcPaymentEntityId =
-                            consultant.consultantProdataEntity?.id;
+                    consultantInput.noExpectedWorkload =
+                        consultant.noExpectedWorkload;
+                    consultantInput.expectedWorkloadHours =
+                        consultant.expectedWorkloadHours;
+                    consultantInput.expectedWorkloadUnitId =
+                        consultant.expectedWorkloadUnitId?.id;
+                    consultantInput.consultantTimeReportingCapId =
+                        consultant.consultantCapOnTimeReporting?.id;
+                    consultantInput.consultantTimeReportingCapMaxValue =
+                        consultant.consultantTimeReportingCapMaxValue;
+                    consultantInput.pdcPaymentEntityId =
+                        consultant.consultantProdataEntity?.id;
 
                     consultantInput.consultantRate = new ConsultantRateDto();
                     consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
@@ -2372,7 +2457,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         } else {
                             consultantInput.noSpecialFee = true;
                         }
-
+                        consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
+                        consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
                         consultantInput.noSpecialContractTerms =
                             consultant.consultantSpecialContractTermsNone;
                         consultantInput.specialContractTerms =
@@ -2425,6 +2511,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             .subscribe(result => {
                 this.resetForms();
                 // Project
+                this.salesMainDataForm.primaryCategoryArea?.setValue(result.salesMainData?.primaryCategoryArea);
+                this.salesMainDataForm.primaryCategoryType?.setValue(result.salesMainData?.primaryCategoryType);
+                this.salesMainDataForm.primaryCategoryRole?.setValue(result.salesMainData?.primaryCategoryRole);
                 this.salesMainDataForm.projectType?.setValue(
                     this.findItemById(
                         this.projectTypes,
@@ -2475,6 +2564,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         this.addCommission(false, commission);
                     }
                 );
+                result.salesMainData?.commissionedEmployeesData?.forEach(
+                    (employee: EmployeeDto) => {
+                        this.addCommissionedUser(employee);
+                    }
+                )
                 this.salesMainDataForm.discounts?.setValue(
                     this.findItemById(
                         this.discounts,
@@ -2744,6 +2838,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     this.updateConsultantStepAnchors();
                 }
             });
+            this.getPrimaryCategoryTree();
     }
 
     clientRateTypeChange(value: EnumEntityTypeDto) {
@@ -3090,6 +3185,53 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     //#endregion commissions form array
+
+    //#region commissionedUsers form array
+    addCommissionedUser(employee?: EmployeeDto) {
+        const form = this._fb.group({
+           commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
+        });
+        this.salesMainDataForm.commissionedUsers.push(form);
+        this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
+    }
+
+    manageCommissionedUserAutocomplete(index: number) {
+        let arrayControl = this.commissionedUsers.at(index);
+        arrayControl!.get('commissionedUser')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        showAll: true,
+                        idsToExclude: this.commissionedUsers.value.map((x: any) => x?.commissionedUser?.id).filter((item: number) => item !== null && item !== undefined)
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName
+                            : value;
+                    }
+                    return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
+                }),
+            ).subscribe((list: EmployeeDto[]) => {
+                if (list.length) {
+                    this.filteredEmployees = list;
+                } else {
+                    this.filteredEmployees = [new EmployeeDto({ name: 'No records found', externalId: '', id: undefined })];
+                }
+            });
+    }
+
+    removeCommissionedUser(index: number) {
+        this.commissionedUsers.removeAt(index);
+    }
+
+    get commissionedUsers() {
+        return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
+    }
+    //#endregion commissionedUsers form array
 
     //#region termination
 
@@ -3560,7 +3702,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             } else {
                 consultantInput.noSpecialFee = true;
             }
-
+            consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
+            consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
             consultantInput.noSpecialContractTerms =
                 consultant.consultantSpecialContractTermsNone;
             consultantInput.specialContractTerms =
@@ -3600,6 +3743,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
     resetForms() {
         this.salesMainDataForm.reset('', { emitEvent: false });
+        this.salesMainDataForm.commissionedUsers.controls = [];
         this.salesClientDataForm.clientRates.controls = [];
         this.salesClientDataForm.clientFees.controls = [];
         this.salesClientDataForm.contractSigners.controls = [];

@@ -19,7 +19,7 @@ export class AgreementLanguagesFilterComponent implements IFilter {
 	agreementLanguages$ = this.contractsService.getAgreementLanguages$();
 	filterFormControl: FormControl;
 
-	private tableFilter = 'language';
+	private _tableFilter = 'language';
 
 	constructor(
 		private readonly contractsService: ContractsService,
@@ -27,7 +27,7 @@ export class AgreementLanguagesFilterComponent implements IFilter {
 	) {
 		masterTemplateService
 			.getTableFilters$()
-			.pipe(take(1), pluck(this.tableFilter))
+			.pipe(take(1), pluck(this._tableFilter))
 			.subscribe((agreementLanguages) => {
 				this.filterFormControl = new FormControl(agreementLanguages);
 			});

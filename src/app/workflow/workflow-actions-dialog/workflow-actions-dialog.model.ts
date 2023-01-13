@@ -41,3 +41,22 @@ export class ExtendWorkflowForm extends UntypedFormGroup {
         return this.get('consultants') as UntypedFormArray;
     }
 }
+
+export class ProjectCategoryForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            primaryCategoryArea: new UntypedFormControl(null),
+            primaryCategoryType: new UntypedFormControl(null),
+            primaryCategoryRole: new UntypedFormControl(null)
+        })
+    }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
+    }
+}

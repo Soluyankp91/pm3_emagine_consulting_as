@@ -3,30 +3,32 @@
 		<div class="country-filter" *ngIf="tenantFilter$ | async as tenants">
 			<emg-multi-select [options]="tenants" formControlName="tenantIds">
 				<ng-template #triggerButton let-selectedItems>
-					<mat-icon *ngIf="!selectedItems.length;else itemsPresent"
-						svgIcon="euro-union-icon"
-						class="country-filter-icon"
-						[style.width]="'32px !important'"
-						[style.height]="'32px !important'">
-					</mat-icon>
-                    <ng-template #itemsPresent>
-                        <div class="icons-container">
-                            <div class="circle-counter">
-                                <span>{{ selectedItems.length }}</span>
-                            </div>
-                            <div class="icon-container" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-                                <mat-icon svgIcon="dropdown-icon"></mat-icon>
-                            </div>
-                            <mat-menu #menu="matMenu">
-                                <ng-container *ngFor="let tenant of selectedItems">
-                                    <div mat-menu-item class="displayed-countries">
-                                        <span class="fi fi-{{ tenant.code | lowercase }} flag"></span>
-                                        <span class>{{ tenant.name}}</span>
-                                    </div>
-                                </ng-container>
-                            </mat-menu>
-                        </div>
-                    </ng-template>
+					<ng-container *ngIf="!selectedItems.length; else itemsPresent">
+						<mat-icon
+							svgIcon="euro-union-icon"
+							class="country-filter-icon"
+							[style.width]="'32px !important'"
+							[style.height]="'32px !important'">
+						</mat-icon
+					></ng-container>
+					<ng-template #itemsPresent>
+						<div class="icons-container">
+							<div class="circle-counter">
+								<span>{{ selectedItems.length }}</span>
+							</div>
+							<div class="icon-container" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+								<mat-icon svgIcon="dropdown-icon"></mat-icon>
+							</div>
+							<mat-menu #menu="matMenu">
+								<ng-container *ngFor="let tenant of selectedItems">
+									<div mat-menu-item class="displayed-countries">
+										<span class="fi fi-{{ tenant.code | lowercase }} flag"></span>
+										<span class>{{ tenant.name }}</span>
+									</div>
+								</ng-container>
+							</mat-menu>
+						</div>
+					</ng-template>
 				</ng-template>
 				<ng-template #optionPrefix let-option>
 					<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>

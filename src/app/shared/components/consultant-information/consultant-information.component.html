@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+<div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mt--10__reverse': onlyAdditionalInfo}">
     <img class="border-rounded-50 image-thumbnail-responsive u-mr--16"
         [src]="consultantProfileUrl(consultantData?.externalId)" *ngIf="!onlyAdditionalInfo">
     <div fxLayout="column">

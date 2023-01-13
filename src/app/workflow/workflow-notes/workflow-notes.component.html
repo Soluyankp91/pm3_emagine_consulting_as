@@ -10,7 +10,7 @@
     </div>
     <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'" class="workflow-notes--content u-mt--10" [ngStyle]="{'height': 'calc(100vh - ' + (height + 135) + 'px)'}">
         <ng-container *ngIf="notesEditable; else notesReadonly">
-            <mat-form-field appearance="outline" class="u-w--100 u-h--100 autosize-textarea" fxFlex="100%"
+            <mat-form-field appearance="outline" class="u-w--100 u-h--100 textarea-input autosize-textarea" fxFlex="100%"
                 [ngClass]="{'top-toolbar-shown': topToolbarVisible}">
                 <mat-label>Workflow notes</mat-label>
                 <textarea matInput autocomplete="new-password" maxlength="4000" cdkTextareaAutosize

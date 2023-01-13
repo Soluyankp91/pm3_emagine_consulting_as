@@ -115,7 +115,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	}
 
 	private _subscribeOnDataLoading() {
-		this._clientTemplatesService.contractsLoading$$.subscribe((isLoading) => {
+		this._clientTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;

@@ -35,7 +35,7 @@ export class LegalEntitiesFilterComponent implements IFilter {
 				legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] })
 			)
 		);
-		_templatesService
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((legalEntities) => {

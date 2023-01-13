@@ -4,7 +4,7 @@
 
 .workflow-list {
     &--filter {
-        padding: 32px 50px;
+        padding: 32px 50px 18px;
         background-color: $white-color;
         height: 200px;
         &__badge {
@@ -152,7 +152,7 @@
     }
     &--workflow-status {
         &--menu-item-selected {
-            background-color: rgba($color: $sand-color, $alpha: 0.5);
+            background-color: #f9f9f9 !important;
         }
     }
 }

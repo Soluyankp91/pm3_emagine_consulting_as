@@ -6,7 +6,7 @@ import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/servic
 
 @Injectable()
 export class ClientTemplatesService extends BaseContract {
-	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
+	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
 

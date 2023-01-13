@@ -110,7 +110,7 @@ export abstract class AppComponentBase {
             case 'Norway':
                 return 'NO';
             case 'Poland':
-                return 'PL';            
+                return 'PL';
 			case 'Sweden':
 				return 'SE';
 			default:
@@ -154,14 +154,14 @@ export abstract class AppComponentBase {
 
 	consultantProfileUrl(fileToken: string): string {
 		if (!fileToken) {
-			return 'assets/common/images/no-img.svg';
+			return 'assets/common/images/no-img.jpg';
 		}
 		return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
 	}
 
 	employeeProfileUrl(fileToken: string): string {
 		if (!fileToken) {
-			return 'assets/common/images/no-img.svg';
+			return 'assets/common/images/no-img.jpg';
 		}
 		return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
 	}
@@ -197,12 +197,16 @@ export abstract class AppComponentBase {
 
 	// TODO: move all others trackBy methods here
 	trackById(index: number, item: any) {
-		return item.id;
+		return item?.id;
 	}
 
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
-		return item.documentStorageGuid;
+		return item?.documentStorageGuid;
 	}
+
+    trackByItem(index: number, item: any) {
+        return item;
+    }
 
 	displayConsultantNameFn(option: any) {
 		return option?.consultant?.name;
@@ -211,4 +215,8 @@ export abstract class AppComponentBase {
 	displayNameFn(option: any) {
 		return option?.name;
 	}
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+    }
 }

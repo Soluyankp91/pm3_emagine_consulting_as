@@ -33,7 +33,7 @@ export class EmployeesFilterComponent {
 		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
 		this._initEmployees();
-		_templatesService
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((employees) => {

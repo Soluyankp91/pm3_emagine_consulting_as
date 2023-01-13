@@ -9,12 +9,16 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             projectType: new UntypedFormControl(null, Validators.required),
             margin: new UntypedFormControl(null, Validators.required),
             projectCategory: new UntypedFormControl(null, Validators.required),
+            primaryCategoryArea: new UntypedFormControl(null, Validators.required),
+            primaryCategoryType: new UntypedFormControl(null, Validators.required),
+            primaryCategoryRole: new UntypedFormControl(null, Validators.required),
             projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
             projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
 
             discounts: new UntypedFormControl(null),
 
             commissions: new UntypedFormArray([]),
+            commissionedUsers: new UntypedFormArray([]),
 
             salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new UntypedFormControl(null),
@@ -41,6 +45,15 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     get projectCategory() {
         return this.get('projectCategory');
     }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
+    }
     get projectDescription() {
         return this.get('projectDescription');
     }
@@ -52,6 +65,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     }
     get commissions() {
         return this.get('commissions') as UntypedFormArray;
+    }
+    get commissionedUsers() {
+        return this.get('commissionedUsers') as UntypedFormArray;
     }
     get salesAccountManagerIdValue () {
         return this.get('salesAccountManagerIdValue');

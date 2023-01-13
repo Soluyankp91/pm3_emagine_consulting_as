@@ -20,6 +20,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { BigDialogConfig } from 'src/shared/dialog.configs';
 import {
     ClientPeriodContractsDataCommandDto,
     WorkflowProcessType,
@@ -49,7 +50,11 @@ import {
     ContractSyncResultDto,
     ClientPeriodContractsDataQueryDto,
     ConsultantPeriodContractsDataQueryDto,
-    WorkflowTerminationContractDataQueryDto
+    WorkflowTerminationContractDataQueryDto,
+    LookupServiceProxy,
+    BranchRoleNodeDto,
+    AreaRoleNodeDto,
+    RoleNodeDto
 } from 'src/shared/service-proxies/service-proxies';
 import {  } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -107,6 +112,10 @@ export class WorkflowContractsComponent
     projectCategories: EnumEntityTypeDto[] = [];
     filteredConsultants: ConsultantResultDto[] = [];
 
+    primaryCategoryAreas: BranchRoleNodeDto[] = [];
+    primaryCategoryTypes: AreaRoleNodeDto[] = [];
+    primaryCategoryRoles: RoleNodeDto[] = [];
+
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
@@ -152,7 +161,8 @@ export class WorkflowContractsComponent
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _contractSyncService: ContractSyncServiceProxy,
-        private _scrollToService: ScrollToService
+        private _scrollToService: ScrollToService,
+        private _lookupService: LookupServiceProxy
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -489,6 +499,33 @@ export class WorkflowContractsComponent
         this._internalLookupService.getProjectCategory().subscribe(result => this.projectCategories = result);
     }
 
+    getPrimaryCategoryTree(): void {
+        this._lookupService
+            .tree()
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((result) => {
+                this.primaryCategoryAreas = result.branches!;
+                this.setPrimaryCategoryTypeAndRole();
+            });
+    }
+
+    setPrimaryCategoryTypeAndRole(): void {
+        if (this.contractsMainForm?.primaryCategoryArea?.value) {
+            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+                (x) =>
+                    x.id ===
+                    this.contractsMainForm?.primaryCategoryArea?.value?.id
+            )?.areas!;
+        }
+        if (this.contractsMainForm?.primaryCategoryType?.value) {
+            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+                (x) =>
+                    x.id ===
+                    this.contractsMainForm?.primaryCategoryType?.value.id
+            )?.roles!;
+        }
+    }
+
     toggleEditMode(isToggledFromUi?: boolean) {
         this.isCompleted = !this.isCompleted;
         this.editEnabledForcefuly = !this.editEnabledForcefuly;
@@ -514,12 +551,12 @@ export class WorkflowContractsComponent
             this.contractsConsultantsDataForm.consultants.value.map(
                 (item: any) => {
                     if (
-                        item.consultantType?.id === 10 ||
-                        item.consultantType?.id === 11
+                        item.consultantType?.id === EmploymentTypes.FeeOnly ||
+                        item.consultantType?.id === EmploymentTypes.Recruitment
                     ) {
-                        return item.nameOnly;
+                        return {employmentType: item.employmentType?.id, name: item.nameOnly};
                     } else {
-                        return item.consultant?.name;
+                        return {employmentType: item.employmentType?.id, name: item.consultant?.name};
                     }
                 }
             );
@@ -768,6 +805,16 @@ export class WorkflowContractsComponent
             ),
             pdcPaymentEntityId: new UntypedFormControl(
                 consultant?.pdcPaymentEntityId
+            ),
+            specialPaymentTerms: new UntypedFormControl(
+                {
+                    value: consultant?.specialPaymentTerms,
+                    disabled: consultant?.noSpecialPaymentTerms,
+                },
+                Validators.required
+            ),
+            noSpecialPaymentTerms: new UntypedFormControl(
+                consultant?.noSpecialPaymentTerms ?? false
             ),
             specialRates: new UntypedFormArray([]),
             consultantSpecialRateFilter: new UntypedFormControl(''),
@@ -1159,7 +1206,6 @@ export class WorkflowContractsComponent
         if (projectLinesMenuTrigger) {
             projectLinesMenuTrigger.closeMenu();
         }
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectName!.value,
             startDate: this.contractsConsultantsDataForm.consultants
@@ -1186,27 +1232,17 @@ export class WorkflowContractsComponent
                     .get('projectLines') as UntypedFormArray
             ).at(projectLinesIndex!).value;
         }
-        const dialogRef = this.dialog.open(
-            AddOrEditProjectLineDialogComponent,
-            {
-                width: '760px',
-                minHeight: '180px',
-                height: 'auto',
-                scrollStrategy,
-                backdropClass: 'backdrop-modal--wrapper',
-                autoFocus: false,
-                panelClass: 'confirmation-modal',
-                data: {
-                    dialogType:
-                        projectLinesIndex !== null &&
-                        projectLinesIndex !== undefined
-                            ? ProjectLineDiallogMode.Edit
-                            : ProjectLineDiallogMode.Create,
-                    projectLineData: projectLine,
-                    clientId: this.contractClientForm.directClientId?.value,
-                },
-            }
-        );
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        BigDialogConfig.scrollStrategy = scrollStrategy;
+		BigDialogConfig.data = {
+			dialogType:
+				projectLinesIndex !== null && projectLinesIndex !== undefined
+					? ProjectLineDiallogMode.Edit
+					: ProjectLineDiallogMode.Create,
+			projectLineData: projectLine,
+			clientId: this.contractClientForm.directClientId?.value,
+		};
+        const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, BigDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
             if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
@@ -1897,6 +1933,10 @@ export class WorkflowContractsComponent
         this.resetForms();
         if (data?.mainData !== undefined) {
             this.contractsMainForm.patchValue(data?.mainData, {emitEvent: false});
+            this.contractsMainForm.primaryCategoryArea?.setValue(data?.mainData?.primaryCategoryArea);
+            this.contractsMainForm.primaryCategoryType?.setValue(data?.mainData?.primaryCategoryType);
+            this.contractsMainForm.primaryCategoryRole?.setValue(data?.mainData?.primaryCategoryRole);
+            this.contractsMainForm.projectCategory?.setValue(data?.mainData?.projectCategoryId, {emitEvent: false});
             this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data.mainData.salesTypeId), {emitEvent: false});
             this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId), {emitEvent: false});
             this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data.mainData.discountId), {emitEvent: false});
@@ -1937,6 +1977,7 @@ export class WorkflowContractsComponent
             });
             this.updateConsultantStepAnchors();
         }
+        this.getPrimaryCategoryTree();
     }
 
     private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
@@ -1945,8 +1986,8 @@ export class WorkflowContractsComponent
         input.clientData = new ContractsClientDataDto();
         input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
         input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;
-        input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
         input.clientData.clientTimeReportingCapMaxValue = this.contractClientForm.clientTimeReportingCapMaxValue?.value;
+        input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
         input.clientData.clientTimeReportingCapCurrencyId = this.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
         input.clientData.clientRate = this.contractClientForm.clientRate?.value;
         input.clientData.pdcInvoicingEntityId = this.contractClientForm.pdcInvoicingEntityId?.value;
@@ -2092,6 +2133,8 @@ export class WorkflowContractsComponent
         consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
         consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
         consultantData.specialContractTerms = consultantInput.specialContractTerms;
+        consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
+        consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 
         consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
         if (consultantInput.clientFees?.length) {
