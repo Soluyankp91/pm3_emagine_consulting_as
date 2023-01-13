@@ -133,12 +133,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this.filteredConsultants.push(consultant.consultant!);
 	}
 
-    get consultants(): UntypedFormArray {
-		return this.contractsConsultantsDataForm.get('consultants') as UntypedFormArray;
-	}
-
     selectConsultantSpecialRate(
-		event: any,
 		consultantIndex: number,
 		rate: ClientSpecialRateDto,
 		consultantRateMenuTrigger: MatMenuTrigger
@@ -259,7 +254,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	}
 
     selectConsultantSpecialFee(
-		event: any,
 		consultantIndex: number,
 		fee: ClientSpecialFeeDto,
 		consultantFeeMenuTrigger: MatMenuTrigger
@@ -544,4 +538,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			?.setValue(!previousValue, { emitEvent: false });
 	}
 
+    get consultants(): UntypedFormArray {
+		return this.contractsConsultantsDataForm.get('consultants') as UntypedFormArray;
+	}
 }

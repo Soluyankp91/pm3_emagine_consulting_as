@@ -522,7 +522,7 @@
                                                             </mat-option>
                                                         </ng-container>
                                                         <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'; trackBy: trackById">
-                                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger) : ''">
+                                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialRate(consultantIndex, item, consultantRateMenuTrigger) : ''">
                                                                 {{ item.internalName }}
                                                             </mat-option>
                                                         </ng-container>
@@ -817,7 +817,7 @@
                                                             </mat-option>
                                                         </ng-container>
                                                         <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.clientFees : 'clientSpecialFeeId'; trackBy: trackById">
-                                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger) : ''">
+                                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialFee(consultantIndex, item, consultantFeeMenuTrigger) : ''">
                                                                 {{ item.internalName }}
                                                             </mat-option>
                                                         </ng-container>

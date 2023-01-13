@@ -1,14 +1,10 @@
-import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { forkJoin, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { BigDialogConfig } from 'src/shared/dialog.configs';
 import {
 	ClientPeriodContractsDataCommandDto,
 	WorkflowProcessType,
@@ -43,8 +39,7 @@ import {
 import {} from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
-import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
+import { EmploymentTypes } from '../workflow.model';
 import { ContractsClientDataComponent } from './contracts-client-data/contracts-client-data.component';
 import { ContractsConsultantDataComponent } from './contracts-consultant-data/contracts-consultant-data.component';
 import { ContractsMainDataComponent } from './contracts-main-data/contracts-main-data.component';
@@ -52,13 +47,8 @@ import { ContractsSyncDataComponent } from './contracts-sync-data/contracts-sync
 import {
 	ClientTimeReportingCaps,
 	DeliveryTypes,
-	LegalContractStatus,
 	SalesTypes,
 	WorkflowConsultantsLegalContractForm,
-	WorkflowContractsClientDataForm,
-	WorkflowContractsConsultantsDataForm,
-	WorkflowContractsMainForm,
-	WorkflowContractsSyncForm,
 	WorkflowContractsTerminationConsultantsDataForm,
 } from './workflow-contracts.model';
 
@@ -82,11 +72,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     @ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
 
 	workflowSideSections = WorkflowProcessType;
-
-	// contractsMainForm: WorkflowContractsMainForm;
-	// contractClientForm: WorkflowContractsClientDataForm;
-	// contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
-	// contractsSyncDataForm: WorkflowContractsSyncForm;
 	consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
 
 	currencies: EnumEntityTypeDto[] = [];
@@ -107,28 +92,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	filteredConsultants: ConsultantResultDto[] = [];
 
 	contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
-
-	// consultantRateToEdit: PeriodConsultantSpecialRateDto;
-	// isConsultantRateEditing = false;
-	// consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
-	// isConsultantFeeEditing = false;
 	clientSpecialRateList: ClientSpecialRateDto[];
 	clientSpecialFeeList: ClientSpecialFeeDto[];
-	// filteredConsultantSpecialRates: ClientSpecialRateDto[];
-	// filteredConsultantSpecialFees: ClientSpecialFeeDto[];
-
-	// clientSpecialRateFilter = new UntypedFormControl('');
-	// clientRateToEdit: PeriodClientSpecialRateDto;
-	// isClientRateEditing = false;
-	// clientSpecialFeeFilter = new UntypedFormControl('');
-	// clientFeeToEdit: PeriodClientSpecialFeeDto;
-	// isClientFeeEditing = false;
-
 	editEnabledForcefuly = false;
-	// syncNotPossible = false;
-	// statusAfterSync = false;
-	// syncMessage = '';
-	// legalContractModuleStatuses = LegalContractStatus;
 	bypassLegalValidation = false;
 	validationTriggered = false;
 
@@ -142,8 +108,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	constructor(
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
-		private overlay: Overlay,
-		private dialog: MatDialog,
 		private _clientPeriodService: ClientPeriodServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _internalLookupService: InternalLookupService,
@@ -154,10 +118,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _scrollToService: ScrollToService
 	) {
 		super(injector);
-		// this.contractsMainForm = new WorkflowContractsMainForm();
-		// this.contractClientForm = new WorkflowContractsClientDataForm();
-		// this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
-		// this.contractsSyncDataForm = new WorkflowContractsSyncForm();
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
 	}
@@ -455,14 +415,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 	}
 
-	get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
-	}
-
-	get readOnlyMode() {
-		return this.isCompleted;
-	}
-
 	updateConsultantStepAnchors() {
 		let consultantNames = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value.map(
             (item: any) => {
@@ -649,10 +601,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			),
 		});
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.push(form);
-	}
-
-	get consultantTerminationContractData(): UntypedFormArray {
-		return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as UntypedFormArray;
 	}
 
 	getWorkflowContractsStepConsultantTermination() {
@@ -1183,5 +1131,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		return consultantData;
+	}
+
+    get canToggleEditMode() {
+		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
+	}
+
+	get readOnlyMode() {
+		return this.isCompleted;
+	}
+
+    get consultantTerminationContractData(): UntypedFormArray {
+		return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as UntypedFormArray;
 	}
 }

@@ -100,10 +100,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
         console.log(this.contractClientForm.clientRates.controls);
 	}
 
-	get clientRates(): UntypedFormArray {
-		return this.contractClientForm.get('clientRates') as UntypedFormArray;
-	}
-
 	removeClientRate(index: number) {
 		this.clientRates.removeAt(index);
 	}
@@ -168,10 +164,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.contractClientForm.clientFees.push(form);
 	}
 
-	get clientFees(): UntypedFormArray {
-		return this.contractClientForm.get('clientFees') as UntypedFormArray;
-	}
-
 	removeClientFee(index: number) {
 		this.clientFees.removeAt(index);
 	}
@@ -206,5 +198,13 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.clientFeeToEdit = new PeriodConsultantSpecialFeeDto();
 		this.isClientFeeEditing = false;
 		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
+	}
+
+    get clientRates(): UntypedFormArray {
+		return this.contractClientForm.get('clientRates') as UntypedFormArray;
+	}
+
+    get clientFees(): UntypedFormArray {
+		return this.contractClientForm.get('clientFees') as UntypedFormArray;
 	}
 }

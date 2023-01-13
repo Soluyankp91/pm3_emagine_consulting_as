@@ -5,7 +5,6 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import * as moment from 'moment';
 import { forkJoin, merge, of, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -64,7 +63,44 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
-		this.salesClientDataForm.directClientIdValue?.valueChanges
+	}
+
+	ngOnInit(): void {
+		this._getEnums();
+        this._subscriptions$();
+	}
+
+	ngOnDestroy(): void {
+		this._unsubscribe.next();
+		this._unsubscribe.complete();
+	}
+
+	private _getEnums() {
+		forkJoin({
+			currencies: this._internalLookupService.getCurrencies(),
+			legalEntities: this._internalLookupService.getLegalEntities(),
+			signerRoles: this._internalLookupService.getSignerRoles(),
+			clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
+			clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
+			rateUnitTypes: this._internalLookupService.getUnitTypes(),
+			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
+			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
+			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+		}).subscribe((result) => {
+			this.currencies = result.currencies;
+			this.legalEntities = result.legalEntities;
+			this.signerRoles = result.signerRoles;
+			this.clientExtensionDurations = result.clientExtensionDurations;
+			this.clientExtensionDeadlines = result.clientExtensionDeadlines;
+			this.rateUnitTypes = result.rateUnitTypes;
+			this.invoiceFrequencies = result.invoiceFrequencies;
+			this.invoicingTimes = result.invoicingTimes;
+			this.clientTimeReportingCap = result.clientTimeReportingCap;
+		});
+	}
+
+    private _subscriptions$() {
+        this.salesClientDataForm.directClientIdValue?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
@@ -217,40 +253,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.subscribe(() => {
 				this.clientPeriodDatesChanged.emit();
 			});
-	}
-
-	ngOnInit(): void {
-		this._getEnums();
-	}
-
-	ngOnDestroy(): void {
-		this._unsubscribe.next();
-		this._unsubscribe.complete();
-	}
-
-	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			legalEntities: this._internalLookupService.getLegalEntities(),
-			signerRoles: this._internalLookupService.getSignerRoles(),
-			clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
-			clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-			rateUnitTypes: this._internalLookupService.getUnitTypes(),
-			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.legalEntities = result.legalEntities;
-			this.signerRoles = result.signerRoles;
-			this.clientExtensionDurations = result.clientExtensionDurations;
-			this.clientExtensionDeadlines = result.clientExtensionDeadlines;
-			this.rateUnitTypes = result.rateUnitTypes;
-			this.invoiceFrequencies = result.invoiceFrequencies;
-			this.invoicingTimes = result.invoicingTimes;
-			this.clientTimeReportingCap = result.clientTimeReportingCap;
-		});
-	}
+    }
 
 	clientRateTypeChange(value: EnumEntityTypeDto) {
 		if (value.id) {
@@ -303,10 +306,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
 		this.salesClientDataForm.clientRates.push(form);
-	}
-
-	get clientRates(): UntypedFormArray {
-		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
 	}
 
 	removeClientRate(index: number) {
@@ -370,10 +369,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			editable: new UntypedFormControl(clientFee ? false : true),
 		});
 		this.salesClientDataForm.clientFees.push(form);
-	}
-
-	get clientFees(): UntypedFormArray {
-		return this.salesClientDataForm.get('clientFees') as UntypedFormArray;
 	}
 
 	removeClientFee(index: number) {
@@ -451,10 +446,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			});
 	}
 
-	get contractSigners(): UntypedFormArray {
-		return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
-	}
-
 	removeSigner(index: number) {
 		this.contractSigners.removeAt(index);
 	}
@@ -490,4 +481,17 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			});
 		}
 	}
+
+    get clientRates(): UntypedFormArray {
+		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
+	}
+
+    get clientFees(): UntypedFormArray {
+		return this.salesClientDataForm.get('clientFees') as UntypedFormArray;
+	}
+
+    get contractSigners(): UntypedFormArray {
+		return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
+	}
+
 }

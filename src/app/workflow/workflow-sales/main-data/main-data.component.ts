@@ -4,8 +4,7 @@ import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxj
 import { forkJoin, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, ConsultantPeriodServiceProxy, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { WorkflowDataService } from '../../workflow-data.service';
+import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
@@ -69,16 +68,57 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	constructor(
         injector: Injector,
         private _fb: UntypedFormBuilder,
-        private _workflowDataService: WorkflowDataService,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _workflowServiceProxy: WorkflowServiceProxy,
-        private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
         private _lookupService: LookupServiceProxy
     ) {
         super(injector);
         this.salesMainDataForm = new WorkflowSalesMainForm();
+    }
 
+	ngOnInit(): void {
+        this._getEnums();
+        this._subscriptions$();
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
+    }
+
+    private _getEnums() {
+        forkJoin({
+            currencies: this._internalLookupService.getCurrencies(),
+            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
+            saleTypes: this._internalLookupService.getSaleTypes(),
+            projectTypes: this._internalLookupService.getProjectTypes(),
+            margins: this._internalLookupService.getMargins(),
+            contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
+            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+            commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
+            commissionTypes: this._internalLookupService.getCommissionTypes(),
+            commissionRecipientTypeList: this._internalLookupService.getCommissionRecipientTypes(),
+            legalEntities: this._internalLookupService.getLegalEntities(),
+            projectCategories: this._internalLookupService.getProjectCategory(),
+            discounts: this._internalLookupService.getDiscounts(),
+        })
+        .subscribe(result => {
+            this.currencies = result.currencies;
+            this.deliveryTypes = result.deliveryTypes;
+            this.saleTypes = result.saleTypes;
+            this.projectTypes = result.projectTypes;
+            this.margins = result.margins;
+            this.contractExpirationNotificationDuration = result.contractExpirationNotificationDuration;
+            this.commissionFrequencies = result.commissionFrequencies;
+            this.commissionTypes = result.commissionTypes;
+            this.commissionRecipientTypeList = result.commissionRecipientTypeList;
+            this.legalEntities = result.legalEntities;
+            this.projectCategories = result.projectCategories;
+            this.discounts = result.discounts;
+        });
+    }
+
+    private _subscriptions$() {
         this.salesMainDataForm.salesAccountManagerIdValue?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
@@ -185,51 +225,9 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             });
     }
 
-	ngOnInit(): void {
-        this._getEnums();
-    }
-
-    ngOnDestroy(): void {
-        this._unsubscribe.next();
-        this._unsubscribe.complete();
-    }
-
-    private _getEnums() {
-        forkJoin({
-            currencies: this._internalLookupService.getCurrencies(),
-            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-            saleTypes: this._internalLookupService.getSaleTypes(),
-            projectTypes: this._internalLookupService.getProjectTypes(),
-            margins: this._internalLookupService.getMargins(),
-            contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
-            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
-            commissionTypes: this._internalLookupService.getCommissionTypes(),
-            commissionRecipientTypeList: this._internalLookupService.getCommissionRecipientTypes(),
-            legalEntities: this._internalLookupService.getLegalEntities(),
-            projectCategories: this._internalLookupService.getProjectCategory(),
-            discounts: this._internalLookupService.getDiscounts(),
-        })
-        .subscribe(result => {
-            this.currencies = result.currencies;
-            this.deliveryTypes = result.deliveryTypes;
-            this.saleTypes = result.saleTypes;
-            this.projectTypes = result.projectTypes;
-            this.margins = result.margins;
-            this.contractExpirationNotificationDuration = result.contractExpirationNotificationDuration;
-            this.commissionFrequencies = result.commissionFrequencies;
-            this.commissionTypes = result.commissionTypes;
-            this.commissionRecipientTypeList = result.commissionRecipientTypeList;
-            this.legalEntities = result.legalEntities;
-            this.projectCategories = result.projectCategories;
-            this.discounts = result.discounts;
-        });
-    }
-
     getPrimaryCategoryTree(): void {
         this._lookupService
             .tree()
-            .pipe(takeUntil(this._unsubscribe))
             .subscribe((result) => {
                 this.primaryCategoryAreas = result.branches!;
                 this.setPrimaryCategoryTypeAndRole();
