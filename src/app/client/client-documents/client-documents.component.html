@@ -163,8 +163,8 @@
                                                 <ng-container *ngIf="frame.documents?.length">
                                                     <div class="u-ml--32">
                                                         <ng-container *ngFor="let file of frame.documents; trackBy: documentsTrackBy; last as last">
-                                                            <div class="flex-items-center cursor-pointer width-fit-content" [ngClass]="{'u-mb--20': !last}"(click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
-                                                                <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                            <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
                                                                 <span class="text-bold">
                                                                     {{ file.name }}
                                                                 </span>
@@ -233,8 +233,8 @@
                                                                             <ng-container *ngIf="clientContract.documents?.length; else noFilesTemplate">
                                                                                 <div class="u-ml--32">
                                                                                     <ng-container *ngFor="let file of clientContract.documents; trackBy: documentsTrackBy; last as last">
-                                                                                        <div class="flex-items-center cursor-pointer width-fit-content" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
-                                                                                            <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                                                        <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
                                                                                             <span class="text-bold">
                                                                                                 {{ file.name }}
                                                                                             </span>
@@ -280,8 +280,8 @@
                                                                             <ng-container *ngIf="consultantContract.documents?.length; else noFilesTemplate">
                                                                                 <div class="u-ml--32">
                                                                                     <ng-container *ngFor="let file of consultantContract.documents; trackBy: documentsTrackBy; last as last">
-                                                                                        <div class="flex-items-center cursor-pointer width-fit-content" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
-                                                                                            <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                                                        <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
                                                                                             <span class="text-bold">
                                                                                                 {{ file.name }}
                                                                                             </span>
@@ -327,8 +327,8 @@
                                                                             </mat-expansion-panel-header>
                                                                             <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="u-ml--32">
                                                                                 <div *ngFor="let file of internalContract.documents; trackBy: documentsTrackBy; last as last" >
-                                                                                    <div class="flex-items-center cursor-pointer width-fit-content" [ngClass]="{'u-mb--20': !last}" matTooltip="Download" matTooltipClass="white-tooltip" (click)="downloadDocument(file.documentStorageGuid!)">
-                                                                                        <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                                                    <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                                        <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" matTooltip="Download" matTooltipClass="white-tooltip" (click)="downloadDocument(file.documentStorageGuid!)"></mat-icon>
                                                                                         <span class="text-bold">
                                                                                             {{ file.name }}
                                                                                         </span>
