@@ -4,9 +4,9 @@ import {
 	TEMPLATE_SERVICE_PROVIDER,
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
-import { FILTER_LABEL_MAP } from '../../client-template.constants';
 import { take, pluck } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 
 @Component({
 	selector: 'app-mode-filter',

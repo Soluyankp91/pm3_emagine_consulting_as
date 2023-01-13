@@ -4,12 +4,12 @@ import { startWith, switchMap, tap, take, pluck } from 'rxjs/operators';
 import { Component, EventEmitter, Output, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmployeeDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { FILTER_LABEL_MAP } from '../../entities/master-templates.constants';
 import {
 	ITemplatesService,
 	TEMPLATE_SERVICE_PROVIDER,
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
+import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 
 @Component({
 	selector: 'app-employees-filter',

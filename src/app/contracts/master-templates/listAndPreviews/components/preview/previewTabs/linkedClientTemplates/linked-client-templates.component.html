@@ -24,12 +24,7 @@
 								<mat-icon svgIcon="three-lines" class="isEnabled-icon"></mat-icon>
 							</mat-header-cell>
 							<mat-cell *matCellDef="let template">
-								<ng-container *ngIf="template.isEnabled; else notEnabled">
-									<mat-icon svgIcon="enabled" class="icon"> </mat-icon>
-								</ng-container>
-								<ng-template #notEnabled>
-									<mat-icon svgIcon="disabled" class="icon"></mat-icon>
-								</ng-template>
+                                <emg-enabled [isEnabled]="template.isEnabled"></emg-enabled>
 							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="linkState">

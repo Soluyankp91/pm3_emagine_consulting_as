@@ -25,12 +25,7 @@ import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {
-	AgreementLanguage,
-	AgreementTemplateServiceProxy,
-	AgreementTemplatesListItemDto,
-	AgreementType,
-} from 'src/shared/service-proxies/service-proxies';
+import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
@@ -75,7 +70,6 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _masterTemplatesService: MasterTemplatesService,
 		private readonly _contractService: ContractsService,
 		private readonly _gridHelpService: GridHelpService,
-		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
 		private readonly _injetor: Injector,

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TrackByFunction, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { PreviewService } from '../../../../services/preview.service';
 
@@ -10,20 +11,26 @@ import { PreviewService } from '../../../../services/preview.service';
 	templateUrl: './attachments.component.html',
 	styleUrls: ['./attachments.component.scss'],
 })
-export class AttachmentsComponent implements OnInit {
+export class AttachmentsComponent extends AppComponentBase implements OnInit {
 	attachments$: Observable<MappedAgreementTemplateDetailsAttachmentDto[]>;
 	loading$: Observable<boolean>;
 
 	mappedAttachments: MappedAgreementTemplateDetailsAttachmentDto[];
 
+	trackById: TrackByFunction<string>;
+
 	constructor(
 		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
-		private readonly _previewService: PreviewService
-	) {}
+		private readonly _previewService: PreviewService,
+		private readonly _injector: Injector
+	) {
+		super(_injector);
+	}
 
 	ngOnInit(): void {
 		this._setAttachmentObservable();
 		this._setLoadingObservable();
+		this.trackById = this.createTrackByFn('agreementTemplateAttachmentId');
 	}
 
 	downloadAttachment(file: MappedAgreementTemplateDetailsAttachmentDto): void {

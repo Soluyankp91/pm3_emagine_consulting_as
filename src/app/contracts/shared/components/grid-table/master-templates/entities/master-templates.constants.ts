@@ -120,19 +120,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		},
 	},
 ];
-export const FILTER_LABEL_MAP: { [key: string]: string } = {
-	language: 'Language',
-	id: 'ID',
-	agreementType: 'Type',
-	recipientTypeId: 'Recipients',
-	legalEntityIds: 'Legal entities',
-	salesTypeIds: 'Sales type',
-	deliveryTypeIds: 'Delivery type',
-	contractTypeIds: 'Contract type',
-	isEnabled: 'Status',
-	linkState: 'Mode',
-	lastUpdatedByLowerCaseInitials: 'By',
-};
 export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	name: 'Name',
 	definition: 'Definition',

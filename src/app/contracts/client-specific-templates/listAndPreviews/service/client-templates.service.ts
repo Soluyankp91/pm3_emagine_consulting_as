@@ -25,7 +25,7 @@ export class ClientTemplatesService extends BaseContract {
 	});
 
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
-		return this.agreementTemplateServiceProxy.list2(
+		return this._agreementTemplateServiceProxy.list2(
 			true, //isClientTemplate,
 			undefined,
 			search, //search

@@ -26,11 +26,12 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { FormControl, FormGroup } from '@angular/forms';
 import { EHeaderCells, ETableCells, IColumn, IFilter, ITableConfig } from './mat-grid.interfaces';
-import { FILTER_LABEL_MAP, PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
+import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
 import { Actions } from '../../entities/contracts.interfaces';
+import { FILTER_LABEL_MAP } from '../../entities/contracts.constants';
 
 @Component({
 	selector: 'emg-mat-grid',

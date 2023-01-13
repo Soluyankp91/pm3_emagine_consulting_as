@@ -20,6 +20,7 @@ export class LinkedAgreementsComponent implements OnInit {
 	searchControl = new FormControl<string>('');
 
 	displayedColumns = ['agreementStatus', 'mode', 'agreementId', 'recipientName', 'agreementName'];
+
 	constructor(private readonly _previewService: PreviewService) {}
 
 	ngOnInit(): void {

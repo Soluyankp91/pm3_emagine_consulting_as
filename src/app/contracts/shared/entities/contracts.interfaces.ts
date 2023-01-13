@@ -1,10 +1,12 @@
 import { SortDirection } from '@angular/material/sort';
 import {
+	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
 	LegalEntityDto,
+	LogOperationType,
 } from 'src/shared/service-proxies/service-proxies';
 import { IFilterEnum } from '../base/base-contract';
 
@@ -91,3 +93,14 @@ export interface MasterTemplatePreview {
 	name: string;
 	clientName: string;
 }
+
+export type MappedLog = AgreementTemplateMetadataLogListItemDto & {
+	profilePictureUrl: string;
+	date: string;
+	dayTime: string;
+};
+export const OperationsTypeMap = {
+	[LogOperationType.Create]: 'added',
+	[LogOperationType.Update]: 'changed',
+	[LogOperationType.Delete]: 'deleted',
+};

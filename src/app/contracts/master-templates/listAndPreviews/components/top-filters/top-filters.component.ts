@@ -22,7 +22,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	preselectedTenants$ = this._templatesService.getTenants$();
 	topFiltersFormGroup: FormGroup;
 
-	label: string;
+	pageHeader: string;
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -37,7 +37,8 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 		this.initFilters();
 		this._subscribeOnTenantChanged();
 		this._subscribeOnTextChanged();
-		this.label = this._templatesService instanceof MasterTemplatesService ? 'Master Templates' : 'Client Specific Templates';
+		this.pageHeader =
+			this._templatesService instanceof MasterTemplatesService ? 'Master Templates' : 'Client Specific Templates';
 	}
 
 	ngOnDestroy(): void {

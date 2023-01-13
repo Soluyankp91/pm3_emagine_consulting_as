@@ -2,20 +2,10 @@ import { Component, OnInit, Injector } from '@angular/core';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MappedLog, OperationsTypeMap } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementTemplateMetadataLogListItemDto, LogOperationType } from 'src/shared/service-proxies/service-proxies';
 import { PreviewService } from '../../../../services/preview.service';
 
-export type MappedLog = AgreementTemplateMetadataLogListItemDto & {
-	profilePictureUrl: string;
-	date: string;
-	dayTime: string;
-};
-export const OperationsTypeMap = {
-	[LogOperationType.Create]: 'added',
-	[LogOperationType.Update]: 'changed',
-	[LogOperationType.Delete]: 'deleted',
-};
 @Component({
 	selector: 'app-logs',
 	templateUrl: './logs.component.html',

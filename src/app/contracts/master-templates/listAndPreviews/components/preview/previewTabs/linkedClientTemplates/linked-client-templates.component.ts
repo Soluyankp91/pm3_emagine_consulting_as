@@ -5,7 +5,6 @@ import { debounceTime } from 'rxjs/operators';
 import { AgreementTemplateChildTemplateDto } from 'src/shared/service-proxies/service-proxies';
 import { FormControl } from '@angular/forms';
 import { SortDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
-import { tapOnce } from 'src/app/contracts/shared/operators/tapOnceOperator';
 
 @Component({
 	selector: 'app-linked-client-templates',
@@ -22,6 +21,7 @@ export class LinkedClientTemplatesComponent implements OnInit {
 	searchControl = new FormControl<string>('');
 
 	displayedColumns = ['isEnabled', 'linkState', 'agreementTemplateId', 'clientName', 'name'];
+
 	constructor(private readonly _previewService: PreviewService) {}
 
 	ngOnInit(): void {
