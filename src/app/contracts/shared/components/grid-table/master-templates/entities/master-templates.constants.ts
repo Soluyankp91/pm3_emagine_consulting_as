@@ -122,6 +122,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 ];
 export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	language: 'Language',
+	id: 'ID',
 	agreementType: 'Type',
 	recipientTypeId: 'Recipients',
 	legalEntityIds: 'Legal entities',
@@ -129,6 +130,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	deliveryTypeIds: 'Delivery type',
 	contractTypeIds: 'Contract type',
 	isEnabled: 'Status',
+	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
 };
 export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
@@ -162,6 +164,10 @@ export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
 	{
 		label: 'Duplicate',
 		actionType: 'DUPLICATE',
+	},
+	{
+		label: 'Copy link',
+		actionType: 'COPY',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;

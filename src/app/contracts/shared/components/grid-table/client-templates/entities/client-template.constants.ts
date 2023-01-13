@@ -14,6 +14,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'contractTypeIds',
 	'lastUpdateDateUtc',
 	'lastUpdatedByLowerCaseInitials',
+	'linkState',
 	'isEnabled',
 ];
 export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
@@ -115,6 +116,16 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	},
 	{
 		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'linkState',
+			component: () =>
+				import('../../client-templates/entities/filters/mode-filter/mode-filter.component').then(
+					(it) => it.ModeFilterComponent
+				),
+		},
+	},
+	{
+		type: EHeaderCells.FILTER,
 		title: 'Status',
 		filter: {
 			formControlName: 'isEnabled',
@@ -134,6 +145,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	deliveryTypeIds: 'Delivery type',
 	contractTypeIds: 'Contract type',
 	isEnabled: 'Status',
+	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
 };
 

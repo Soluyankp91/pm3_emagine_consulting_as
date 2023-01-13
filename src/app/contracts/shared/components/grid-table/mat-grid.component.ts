@@ -24,7 +24,7 @@ import {
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { EHeaderCells, ETableCells, IColumn, IFilter, ITableConfig } from './mat-grid.interfaces';
 import { FILTER_LABEL_MAP, PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -51,7 +51,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
 	@Output() formControlChange = new EventEmitter();
-	@Output() tableRow = new EventEmitter();
+	@Output() selectedRowIdChange = new EventEmitter();
 	@Output() selectionChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
 
@@ -99,10 +99,6 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	ngOnChanges(changes: SimpleChanges): void {
 		const displayedColumns = changes['displayedColumns'];
 		const displayedColumnsCopy = [...this.displayedColumns];
-		const tableConfig = changes['tableConfig'];
-		if (tableConfig) {
-			this.tableRow.emit(null);
-		}
 		if (displayedColumns && this.selection) {
 			displayedColumnsCopy.unshift('select');
 		}
@@ -159,7 +155,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 						);
 					}
 				})
-		);
+		).then(() => {
+			const initialValue = this.selectedRowId ? [this.selectedRowId] : [];
+			this.formGroup.addControl('id', new FormControl(initialValue), { emitEvent: false });
+		});
 	}
 
 	closeFilter(chip: string) {
@@ -176,7 +175,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	}
 
 	getTableRow(row: { [key: string]: any }) {
-		this.tableRow.emit(row);
+		this.selectedRowIdChange.emit(row.agreementTemplateId);
 	}
 
 	chooseAction(actionType: string, row: any) {
@@ -206,9 +205,9 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 			)
 				.pipe(pairwise())
 				.subscribe(([previousValue, currentValue]: [[], []]) => {
-					if (previousValue.length === 0 && currentValue.length > 0) {
+					if (!previousValue.length && currentValue.length) {
 						this.matChips.push({ formControl: controlName, label: FILTER_LABEL_MAP[controlName] });
-					} else if (previousValue.length > 0 && currentValue.length === 0) {
+					} else if (previousValue.length && !currentValue.length) {
 						this.matChips = this.matChips.filter((matChip) => matChip.formControl !== controlName);
 					}
 				});

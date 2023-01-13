@@ -11,8 +11,10 @@ import {
 	ViewChildren,
 	ElementRef,
 	QueryList,
+	Inject,
 } from '@angular/core';
-import { map, takeUntil, withLatestFrom, tap, switchMap, startWith, take } from 'rxjs/operators';
+import { Observable, Subject, combineLatest, Subscription, BehaviorSubject, ReplaySubject, fromEvent } from 'rxjs';
+import { map, takeUntil, pairwise, startWith } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
 	MASTER_TEMPLATE_ACTIONS,
@@ -22,13 +24,9 @@ import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { Observable, Subject, combineLatest, ReplaySubject, of, fromEvent, Subscription, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
 	AgreementLanguage,
-	AgreementTemplateDetailsAttachmentDto,
-	AgreementTemplateDetailsDto,
-	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateServiceProxy,
 	AgreementTemplatesListItemDto,
 	AgreementType,
@@ -39,9 +37,11 @@ import * as moment from 'moment';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,
-	TableFiltersEnum,
+	MasterFiltersEnum,
 } from '../../shared/entities/contracts.interfaces';
 import { PreviewTabsComponent } from './components/preview/preview.component';
+import { tapOnce } from '../../shared/operators/tapOnceOperator';
+import { DOCUMENT } from '@angular/common';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -60,13 +60,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 
 	table$: Observable<ITableConfig>;
 
-	selectedRowId: number | null;
-	currentRowChange$ = new ReplaySubject<BaseMappedAgreementTemplatesListItemDto | null>();
-	currentRow$: Observable<{
-		summary: BaseMappedAgreementTemplatesListItemDto;
-		attachments: AgreementTemplateDetailsAttachmentDto[];
-		logs: AgreementTemplateMetadataLogListItemDto[];
-	} | null>;
+	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
+	currentRowId: number | null;
 
 	trackById: TrackByFunction<number>;
 
@@ -84,16 +79,17 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
 		private readonly _injetor: Injector,
-		private readonly _cdr: ChangeDetectorRef
+		private readonly _cdr: ChangeDetectorRef,
+		@Inject(DOCUMENT) private document: Document
 	) {
 		super(_injetor);
 		this.trackById = this.createTrackByFn('id');
 	}
 
 	ngOnInit(): void {
+		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();
-		this._setCurrentRowChangeObservable();
 	}
 
 	ngOnDestroy() {
@@ -105,7 +101,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._masterTemplatesService.updateSort($event);
 	}
 
-	onFormControlChange($event: TableFiltersEnum) {
+	onFormControlChange($event: MasterFiltersEnum) {
 		this._masterTemplatesService.updateTableFilters($event);
 	}
 
@@ -129,47 +125,10 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				});
 				break;
 			}
-		}
-	}
-
-	private _subscribeOnPreviewOutClicks() {
-		this.outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
-			if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
-				this.currentRowChange$.next(null);
+			case 'COPY': {
+				navigator.clipboard.writeText(this.document.location.href + `?templateId=${$event.row.agreementTemplateId}`);
 			}
-		});
-	}
-
-	private _setCurrentRowChangeObservable() {
-		this.currentRow$ = this.currentRowChange$.pipe(
-			startWith(null),
-			tap((row) => {
-				this.selectedRowId = row?.agreementTemplateId as number | null;
-			}),
-			switchMap((row) => {
-				if (row) {
-					return combineLatest([
-						this._agreementTemplateServiceProxy.agreementTemplateGET(row.agreementTemplateId),
-						this.logFilterChange$.pipe(
-							switchMap((newState) => {
-								return this._agreementTemplateServiceProxy.metadataLog(row.agreementTemplateId, newState);
-							})
-						),
-						this._contractService.getEnumMap$().pipe(take(1)),
-					]).pipe(
-						map(([row, logs, maps]) => this._mapTemplatePreview(row, logs, maps)),
-						tap(() => this._subscribeOnPreviewOutClicks())
-					);
-				}
-				return of(null).pipe(
-					tap(() => {
-						if (this.outsideClicksSub) {
-							this.outsideClicksSub.unsubscribe();
-						}
-					})
-				);
-			})
-		);
+		}
 	}
 
 	private _initTable$() {
@@ -189,6 +148,9 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 					active: sort.active,
 				};
 				return tableConfig;
+			}),
+			tapOnce(() => {
+				this._subscribeOnOuterClicks();
 			})
 		);
 	}
@@ -217,53 +179,44 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		});
 	}
 
-	private _mapTemplatePreview(
-		row: AgreementTemplateDetailsDto,
-		logs: AgreementTemplateMetadataLogListItemDto[],
-		maps: MappedTableCells
-	) {
-		return <
-			{
-				summary: BaseMappedAgreementTemplatesListItemDto;
-				attachments: AgreementTemplateDetailsAttachmentDto[];
-				logs: AgreementTemplateMetadataLogListItemDto[];
-			}
-		>{
-			summary: {
-				name: row.name,
-				definition: row.definition,
-				agreementType: maps.agreementType[row.agreementType as AgreementType],
-				recipientTypeId: maps.recipientTypeId[row.recipientTypeId as number],
-
-				legalEntityIds: row.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
-				salesTypeIds: row.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
-				deliveryTypeIds: row.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-				contractTypeIds: row.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
-				language: AgreementLanguage[row.language as AgreementLanguage],
-				countryCode: GetCountryCodeByLanguage(AgreementLanguage[row.language as AgreementLanguage]),
-				note: row.note,
-				isEnabled: row.isEnabled,
-
-				agreementTemplateId: row.agreementTemplateId,
-				createdDateUtc: moment(row.createdDateUtc).format('DD.MM.YYYY'),
-				createdBy: row.createdBy?.name,
-				lastUpdateDateUtc: moment(row.lastUpdateDateUtc).format('DD.MM.YYYY'),
-				lastUpdatedBy: row.lastUpdatedBy?.name,
-				duplicationSourceAgreementTemplateId: row.duplicationSourceAgreementTemplateId,
-			},
-			attachments: row.attachments,
-			logs,
-		};
-	}
-
 	private _subscribeOnDataLoading() {
 		this._masterTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
+				this._cdr.detectChanges();
 				return;
 			}
 			this.hideMainSpinner();
 			this._cdr.detectChanges();
 		});
+	}
+
+	private _subscribeOnOuterClicks() {
+		this.currentRowId$
+			.pipe(
+				startWith(null),
+				pairwise(),
+				map(([previous, current]) => {
+					if (!previous && current) {
+						this.outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
+							if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
+								this.currentRowId$.next(null);
+							}
+						});
+					} else if (previous && !current) {
+						this.outsideClicksSub.unsubscribe();
+					}
+				})
+			)
+			.subscribe();
+	}
+
+	private _initPreselectedFilters() {
+		const templateId = this._route.snapshot.queryParams['templateId'];
+		if (templateId) {
+			this.currentRowId$.next(parseInt(templateId));
+			return this._masterTemplatesService.setIdFilter([templateId]);
+		}
+		this._masterTemplatesService.setIdFilter([]);
 	}
 }

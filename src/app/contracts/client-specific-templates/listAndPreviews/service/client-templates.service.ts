@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
-import { TableFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { BaseContract, IFilterEnum } from 'src/app/contracts/shared/base/base-contract';
+import { ClientFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
@@ -10,8 +10,9 @@ export class ClientTemplatesService extends BaseContract {
 		super();
 	}
 
-	override tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
+	override tableFilters$ = new BehaviorSubject<IFilterEnum>({
 		language: [],
+		id: [],
 		agreementType: [],
 		recipientTypeId: [],
 		legalEntityIds: [],
@@ -19,12 +20,14 @@ export class ClientTemplatesService extends BaseContract {
 		deliveryTypeIds: [],
 		contractTypeIds: [],
 		lastUpdatedByLowerCaseInitials: [],
+		linkState: [],
 		isEnabled: [],
 	});
 
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
 		return this.agreementTemplateServiceProxy.list2(
-			true, //isClientTemplate
+			true, //isClientTemplate,
+			undefined,
 			search, //search
 			tenantIds.map((item) => item.id as number), // tenantId []
 			tableFilters.legalEntityIds.map((item) => item.id as number), //legalEntities []
@@ -37,8 +40,8 @@ export class ClientTemplatesService extends BaseContract {
 			tableFilters.salesTypeIds.map((item) => item.id as number),
 			tableFilters.deliveryTypeIds.map((item) => item.id as number),
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
-			this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)), //isEnabled,
-			undefined, //linkState
+			this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)),
+			(tableFilters as ClientFiltersEnum).linkState.map((item) => item.id as number), //linkState
 			undefined, //linkStateAccepted
 			page.pageIndex + 1, //pageIndex
 			page.pageSize, //pageSize,

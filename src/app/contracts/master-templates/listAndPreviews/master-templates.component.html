@@ -6,36 +6,28 @@
 				[displayedColumns]="displayedColumns"
 				[actionsList]="actions"
 				[tableConfig]="table"
-				[selectedRowId]="selectedRowId"
+				[selectedRowId]="currentRowId$ | async"
 				[cells]="cells"
 				[selection]="false"
 				(sortChange)="onSortChange($event)"
 				(formControlChange)="onFormControlChange($event)"
 				(pageChange)="onPageChange($event)"
-				(tableRow)="currentRowChange$.next($event)"
+				(selectedRowIdChange)="currentRowId$.next($event)"
 				(onAction)="onAction($event)">
 				<ng-template let-cell="element" #customCells>
 					<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
-					<p [customTooltip]="agreementTemplateIdTooltip">
+					<p [customTooltip]="cell.agreementTemplateId.toString()">
 						{{ cell.agreementTemplateId | truncateTextCustom : 7 }}
 					</p>
-					<ng-template #agreementTemplateIdTooltip>
-						<div class="tooltip-container">
-							{{ cell.agreementTemplateId }}
-						</div>
-					</ng-template>
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
-					<p [customTooltip]="nameTooltip">
+					<p [customTooltip]="cell.name">
 						{{ cell.name | truncateTextCustom : 30 }}
 					</p>
-					<ng-template #nameTooltip>
-						<div class="tooltip-container">{{ cell.name }}</div>
-					</ng-template>
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
@@ -53,7 +45,7 @@
 				<ng-template let-cell="element" #customCells
 					><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : 10 }}</p>
 					<ng-template #legalEntityIdsTooltip>
-						<div class="tooltip-container">
+						<div>
 							<ng-container *ngFor="let legalEntity of cell.legalEntityIds; trackBy: trackById">
 								<div class="tooltip-menu">
 									<span>{{ legalEntity }}</span>
@@ -66,7 +58,7 @@
 				<ng-template let-cell="element" #customCells
 					><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : 10 }}</p>
 					<ng-template #salesTypeIdsTooltip>
-						<div class="tooltip-container">
+						<div>
 							<ng-container *ngFor="let saleType of cell.salesTypeIds; trackBy: trackById">
 								<div class="tooltip-menu">
 									<span>{{ saleType }}</span>
@@ -78,7 +70,7 @@
 				<ng-template let-cell="element" #customCells
 					><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : 10 }}</p>
 					<ng-template #deliveryTypeIdsTooltip>
-						<div class="tooltip-container">
+						<div>
 							<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds; trackBy: trackById">
 								<div class="tooltip-menu">
 									<span>{{ deliveryType }}</span>
@@ -91,7 +83,7 @@
 				<ng-template let-cell="element" #customCells
 					><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : 10 }}</p>
 					<ng-template #contractTypeIdsTooltip>
-						<div class="tooltip-container">
+						<div>
 							<ng-container *ngFor="let contractType of cell.contractTypeIds; trackBy: trackById">
 								<div class="tooltip-menu">
 									<span>{{ contractType }}</span>
@@ -104,7 +96,7 @@
 				<ng-template let-cell="element" #customCells
 					><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc }}</p>
 					<ng-template #lastUpdateDateUtcTooltip>
-						<div class="tooltip-container">
+						<div>
 							<div class="date-row">
 								<div>Created</div>
 								<div>{{ cell.createdDateUtc }}</div>
@@ -126,28 +118,20 @@
 				>
 
 				<ng-template let-cell="element" #customCells>
-					<ng-container *ngIf="cell.isEnabled; else notEnabled">
-						<mat-icon [customTooltip]="enabledTooltip" svgIcon="enabled" class="icon enable-icon"> </mat-icon>
-					</ng-container>
+					<emg-enabled
+						[isEnabled]="cell.isEnabled"
+						[customTooltip]="cell.isEnabled ? enabledTooltip : disabledTooltip"></emg-enabled>
 					<ng-template #enabledTooltip>
-						<div class="tooltip-container">Enabled</div>
+						<div>Enabled</div>
 					</ng-template>
-					<ng-template #notEnabled [customTooltip]="notEnabledTooltip">
-						<mat-icon svgIcon="disabled" class="icon disable-icon"></mat-icon>
-					</ng-template>
-					<ng-template #notEnabledTooltip>
-						<div class="tooltip-container">Disabled</div>
+					<ng-template #disabledTooltip>
+						<div>Disabled</div>
 					</ng-template>
 				</ng-template>
 			</emg-mat-grid>
 		</ng-container>
 	</section>
-	<ng-container *ngIf="currentRow$ | async as currentRow">
-		<app-preview-tabs
-			[summaryItem]="currentRow.summary"
-			[attachments]="currentRow.attachments"
-            [logs]="currentRow.logs"
-            (logFilterEmitter)="logFilterChange$.next($event)"
-			(closePanel)="currentRowChange$.next(null)"></app-preview-tabs>
+	<ng-container *ngIf="currentRowId$ | async as currentRowId">
+		<app-preview-tabs [currentId]="currentRowId" (currentIdChange)="currentRowId$.next($event)"></app-preview-tabs>
 	</ng-container>
 </main>

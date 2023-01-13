@@ -1,0 +1,88 @@
+<ng-container *ngIf="clientTemplateLinks$ | async as clientTemplateLinks; else loading">
+	<ng-container *ngIf="clientTemplateLinks.length || searchControl.value ">
+		<mat-form-field class="form-field">
+			<mat-label class="input-label">Search</mat-label>
+			<input matInput class="input" placeholder="Search" [formControl]="searchControl" />
+		</mat-form-field>
+	</ng-container>
+	<ng-container *ngIf="!(loading$ | async); else loading">
+		<div class="linked-templates-container">
+			<ng-container *ngIf="clientTemplateLinks.length; else noItems">
+				<ng-container *ngIf="sort$ | async as sort">
+					<mat-table
+						matSort
+						[dataSource]="clientTemplateLinks"
+						[matSortActive]="sort.active"
+						[matSortDirection]="sort.direction"
+						(matSortChange)="onSortChanges($event)">
+						<ng-container matColumnDef="isEnabled">
+							<mat-header-cell
+								class="header-cell"
+								*matHeaderCellDef
+								mat-sort-header
+								(click)="$event.stopPropagation()">
+								<mat-icon svgIcon="three-lines" class="isEnabled-icon"></mat-icon>
+							</mat-header-cell>
+							<mat-cell *matCellDef="let template">
+								<ng-container *ngIf="template.isEnabled; else notEnabled">
+									<mat-icon svgIcon="enabled" class="icon"> </mat-icon>
+								</ng-container>
+								<ng-template #notEnabled>
+									<mat-icon svgIcon="disabled" class="icon"></mat-icon>
+								</ng-template>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="linkState">
+							<mat-header-cell class="header-cell" *matHeaderCellDef>Mode</mat-header-cell>
+							<mat-cell *matCellDef="let template">
+								<emg-mode [linkState]="template.linkState" [iconWidth]="20" [iconHeight]="16"></emg-mode>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="agreementTemplateId">
+							<mat-header-cell
+								class="header-cell"
+								*matHeaderCellDef
+								mat-sort-header
+								(click)="$event.stopPropagation()"
+								>ID</mat-header-cell
+							>
+							<mat-cell *matCellDef="let template">{{ template.agreementTemplateId }}</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="clientName">
+							<mat-header-cell
+								class="header-cell"
+								*matHeaderCellDef
+								mat-sort-header
+								(click)="$event.stopPropagation()"
+								>Client name</mat-header-cell
+							>
+							<mat-cell *matCellDef="let template">{{ template.clientName }}</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="name">
+							<mat-header-cell
+								class="header-cell"
+								*matHeaderCellDef
+								mat-sort-header
+								(click)="$event.stopPropagation()">
+								Client specific template</mat-header-cell
+							>
+							<mat-cell *matCellDef="let template">{{ template.name }}</mat-cell>
+						</ng-container>
+						<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+					</mat-table>
+				</ng-container>
+			</ng-container>
+			<ng-template #noItems>             <div class="no-items">
+                <div>
+                    <mat-icon svgIcon="no-items-icon"></mat-icon>
+                </div>
+                <div>There are no linked
+                    client templates for this template</div>
+            </div></ng-template>
+		</div>
+	</ng-container>
+</ng-container>
+<ng-template #loading>
+	<div class="spinner-container"><mat-spinner [diameter]="32"></mat-spinner></div>
+</ng-template>

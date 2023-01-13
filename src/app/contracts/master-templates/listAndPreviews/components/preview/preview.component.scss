@@ -23,4 +23,7 @@ app-preview-tabs {
 	.mat-tab-group {
 		height: calc(100vh - 152px);
 	}
+	.mat-tab-body-wrapper {
+		height: 100%;
+	}
 }

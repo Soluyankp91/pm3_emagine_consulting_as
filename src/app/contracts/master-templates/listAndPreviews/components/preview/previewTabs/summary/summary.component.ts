@@ -1,6 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { PREVIEW_LABEL_MAP } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { BaseMappedAgreementTemplatesListItemDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { PreviewService } from '../../../../services/preview.service';
 
 @Component({
 	selector: 'app-summary',
@@ -8,11 +11,21 @@ import { BaseMappedAgreementTemplatesListItemDto } from 'src/app/contracts/share
 	styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-	@Input() summaryItem: BaseMappedAgreementTemplatesListItemDto;
-
+	summary$: Observable<BaseMappedAgreementTemplatesListItemDto>;
+	loading$: Observable<boolean>;
 	previewMap = PREVIEW_LABEL_MAP;
 
-	constructor() {}
+	constructor(private readonly _previewService: PreviewService, private readonly _router: Router) {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		this.summary$ = this._previewService.summary$;
+		this.loading$ = this._previewService.contentLoading$;
+	}
+
+	navigateToTemplate(templateId: number) {
+		const url = this._router.serializeUrl(
+			this._router.createUrlTree(['/app/contracts/master-templates'], { queryParams: { templateId } })
+		);
+		window.open(url, '_blank');
+	}
 }

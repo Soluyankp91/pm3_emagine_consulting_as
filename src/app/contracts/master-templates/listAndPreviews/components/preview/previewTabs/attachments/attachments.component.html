@@ -1,21 +1,34 @@
-<div class="attachments-container">
-	<ng-container *ngIf="mappedAttachments.length; else noItems">
-		<h2 class="current-template-header">Current template</h2>
-		<ng-container *ngFor="let attachment of mappedAttachments">
-			<div class="attachment-container">
-				<mat-icon [svgIcon]="attachment.icon | lowercase"></mat-icon>
-				<p class="name">{{ attachment.name }}</p>
-				<div class="justify-self-end">
-					<mat-icon
-						class="justify-self-end cursor"
-						svgIcon="download-icon"
-						(click)="downloadAttachment(attachment)"></mat-icon>
-				</div>
-			</div>
-			<mat-divider></mat-divider>
-		</ng-container>
-	</ng-container>
-	<ng-template #noItems>
-		<div>No Attachments</div>
-	</ng-template>
-</div>
+<ng-container *ngIf="attachments$ | async as attachments; else loading">
+    <ng-container *ngIf="!(loading$ | async);else loading">
+        <div class="attachments-container">
+            <ng-container *ngIf="attachments.length; else noItems">
+                <h2 class="current-template-header">Current template</h2>
+                <ng-container *ngFor="let attachment of attachments">
+                    <div class="attachment-container">
+                        <mat-icon [svgIcon]="attachment.icon | lowercase"></mat-icon>
+                        <p class="name">{{ attachment.name }}</p>
+                        <div class="justify-self-end">
+                            <mat-icon
+                                class="justify-self-end cursor"
+                                svgIcon="download-icon"
+                                (click)="downloadAttachment(attachment)"></mat-icon>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </ng-container>
+            <ng-template #noItems>
+                <div class="no-items">
+                    <div>
+                        <mat-icon svgIcon="no-items-icon"></mat-icon>
+                    </div>
+                    <div>There are no attachments
+                        added for this template</div>
+                </div>
+            </ng-template>
+        </div>
+    </ng-container>
+</ng-container>
+<ng-template #loading>
+    <div class="spinner-container"><mat-spinner [diameter]="32"></mat-spinner></div>
+</ng-template>

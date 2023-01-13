@@ -2,16 +2,12 @@ import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementTemplatesListItemDtoPaginatedList, AgreementType } from 'src/shared/service-proxies/service-proxies';
+import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import {
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
-import {
-	ClientMappedTemplatesListDto,
-	MappedTableCells,
-    TableFiltersEnum,
-} from '../../shared/entities/contracts.interfaces';
+import { ClientMappedTemplatesListDto, MappedTableCells, ClientFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -65,7 +61,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		this._clientTemplatesService.updateSort($event);
 	}
 
-	onFormControlChange($event: TableFiltersEnum) {
+	onFormControlChange($event: ClientFiltersEnum) {
 		this._clientTemplatesService.updateTableFilters($event);
 	}
 
@@ -111,6 +107,8 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
 				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
 				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
+				linkState: item.linkState,
+				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
 			};
 		});

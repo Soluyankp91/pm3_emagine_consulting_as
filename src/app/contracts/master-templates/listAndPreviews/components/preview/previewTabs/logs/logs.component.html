@@ -1,36 +1,66 @@
 <div class="logs-container">
-    <ng-container *ngIf="mappedLogs.length">
-        <div (click)="emitFilter()">Filter</div>
-        <ng-container *ngFor="let log of mappedLogs; else noLogs">
-            <div class="log-item">
-                <img class="profile-picture" [src]="log.profilePictureUrl" />
-                <ng-container *ngIf="log.operationType">
-                    <div class="info-part">
-                        <p class="action-description">
-                            {{ log.employee?.name }} {{ operationsTypeMap[log.operationType] }} {{ log.propertyName }}
-                        </p>
-                        <div [ngSwitch]="log.operationType">
-                            <div *ngSwitchCase="1">
-                                <p class="additional-info">{{ log.newValue }}</p>
-                            </div>
-                            <div *ngSwitchCase="2">
-                                <p class="additional-info">From {{ log.oldValue }} to {{ log.newValue }}</p>
-                            </div>
-                            <div *ngSwitchCase="3">
-                                <p class="additional-info">{{ log.oldValue }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="date-part">
-                        <span class="date">{{log.date}}, </span>
-                        <span class="day-time">{{log.dayTime}}</span>
-                    </div>
-                </ng-container>
-            </div>
-            <mat-divider></mat-divider>
-        </ng-container>
-    </ng-container>
-    <ng-template #noLogs>
-        No Logs yet
-    </ng-template>
+	<ng-container *ngIf="logs$ | async as logs; else loading">
+		<ng-container *ngIf="logs.length">
+			<div class="filter" (click)="emitFilter(); $event.stopPropagation()">
+				<mat-icon [svgIcon]="newestFirst ? 'desc-arrow' : 'asc-arrow'" class="sort-icon"></mat-icon>
+				<p class="filter-label">{{ newestFirst ? 'Newest first' : 'Oldest first' }}</p>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="!(loading$ | async); else loading">
+			<ng-container *ngIf="logs.length; else noLogs">
+				<div class="log-items">
+					<ng-container *ngFor="let log of logs">
+						<div class="log-item">
+							<img class="profile-picture" [src]="log.profilePictureUrl" />
+							<ng-container *ngIf="log.operationType">
+								<div class="info-part">
+									<p class="action-description">
+										{{ log.employee?.name }} {{ operationsTypeMap[log.operationType] }} {{ log.propertyName }}
+									</p>
+									<ng-container [ngSwitch]="log.operationType">
+										<ng-container *ngSwitchCase="1">
+											<ng-container *ngIf="log.newValue"
+												><p class="additional-info">
+													{{ log.newValue | truncateTextCustom : 20 }}
+												</p></ng-container
+											>
+										</ng-container>
+										<ng-container *ngSwitchCase="2">
+											<ng-container *ngIf="log.oldValue && log.newValue">
+												<p class="additional-info">
+													From {{ log.oldValue | truncateTextCustom : 20 }} to
+													{{ log.newValue | truncateTextCustom : 20 }}
+												</p>
+											</ng-container>
+										</ng-container>
+										<ng-container *ngSwitchCase="3">
+											<ng-container *ngIf="log.oldValue"
+												><p class="additional-info">{{ log.oldValue }}</p></ng-container
+											>
+										</ng-container>
+									</ng-container>
+								</div>
+								<div class="date-part">
+									<span class="date">{{ log.date }}, </span>
+									<span class="day-time">{{ log.dayTime }}</span>
+								</div>
+							</ng-container>
+						</div>
+						<mat-divider></mat-divider>
+					</ng-container>
+				</div>
+			</ng-container>
+			<ng-template #noLogs>
+				<div class="no-items">
+					<div>
+						<mat-icon svgIcon="no-items-icon"></mat-icon>
+					</div>
+					<div>There are no logs yet for this template</div>
+				</div>
+			</ng-template>
+		</ng-container>
+	</ng-container>
+	<ng-template #loading>
+		<div class="spinner-container"><mat-spinner [diameter]="32"></mat-spinner></div>
+	</ng-template>
 </div>

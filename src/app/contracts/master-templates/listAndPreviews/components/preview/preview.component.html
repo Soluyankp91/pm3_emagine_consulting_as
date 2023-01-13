@@ -1,35 +1,43 @@
 <div class="wrapper">
 	<mat-tab-group>
 		<mat-tab label="Summary">
-			<app-summary [summaryItem]="summaryItem"></app-summary>
+			<ng-template matTabContent>
+				<app-summary></app-summary>
+			</ng-template>
 		</mat-tab>
 		<mat-tab label="Preview"></mat-tab>
 		<mat-tab label="Attachments">
-            <app-attachments [attachments]="attachments"></app-attachments>
-        </mat-tab>
+			<ng-template matTabContent><app-attachments></app-attachments></ng-template>
+		</mat-tab>
 		<mat-tab label="Log">
-            <app-logs [logs]="logs" (filterEmitter)="logFilterEmitter.emit($event)"></app-logs>
-        </mat-tab>
-        <mat-tab disabled>
-            <ng-template mat-tab-label>
-                <button mat-icon-button>
-                    <mat-icon svgIcon="templates-links"></mat-icon>
-                </button>
+			<ng-template matTabContent><app-logs></app-logs></ng-template>
+		</mat-tab>
+		<mat-tab>
+			<ng-template mat-tab-label>
+				<button mat-icon-button>
+					<mat-icon svgIcon="templates-links"> </mat-icon>
+				</button>
+			</ng-template>
+			<ng-template matTabContent>
+				<app-linked-client-templates></app-linked-client-templates>
+			</ng-template>
+		</mat-tab>
+		<mat-tab>
+			<ng-template mat-tab-label>
+				<button mat-icon-button>
+					<mat-icon svgIcon="agreement-links"></mat-icon>
+				</button>
+			</ng-template>
+            <ng-template matTabContent>
+                <app-linked-agreements></app-linked-agreements>
             </ng-template>
-        </mat-tab>
-        <mat-tab disabled>
-            <ng-template mat-tab-label>
-                <button mat-icon-button>
-                    <mat-icon svgIcon="agreement-links"></mat-icon>
-                </button>
-            </ng-template>
-        </mat-tab>
-        <mat-tab disabled>
-            <ng-template mat-tab-label>
-                <button mat-icon-button (click)="closePanel.emit()">
-                    <mat-icon svgIcon="close-button-icon"></mat-icon>
-                </button>
-            </ng-template>
-        </mat-tab>
+		</mat-tab>
+		<mat-tab disabled>
+			<ng-template mat-tab-label>
+				<button mat-icon-button (click)="closePanel()">
+					<mat-icon svgIcon="close-button-icon"></mat-icon>
+				</button>
+			</ng-template>
+		</mat-tab>
 	</mat-tab-group>
 </div>

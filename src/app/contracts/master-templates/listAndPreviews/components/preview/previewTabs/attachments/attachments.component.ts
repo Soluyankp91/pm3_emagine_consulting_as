@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
-import {
-	AgreementTemplateAttachmentServiceProxy,
-	AgreementTemplateDetailsAttachmentDto,
-} from 'src/shared/service-proxies/service-proxies';
+import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { PreviewService } from '../../../../services/preview.service';
 
 @Component({
 	selector: 'app-attachments',
@@ -11,20 +11,20 @@ import {
 	styleUrls: ['./attachments.component.scss'],
 })
 export class AttachmentsComponent implements OnInit {
-	@Input() set attachments(attachments: AgreementTemplateDetailsAttachmentDto[]) {
-		this.mappedAttachments = attachments.map((attachment) => {
-			return <MappedAgreementTemplateDetailsAttachmentDto>{
-				...attachment,
-				icon: this._getIconName(attachment.name as string),
-			};
-		});
-	}
+	attachments$: Observable<MappedAgreementTemplateDetailsAttachmentDto[]>;
+	loading$: Observable<boolean>;
 
 	mappedAttachments: MappedAgreementTemplateDetailsAttachmentDto[];
 
-	constructor(private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy) {}
+	constructor(
+		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
+		private readonly _previewService: PreviewService
+	) {}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+		this._setAttachmentObservable();
+		this._setLoadingObservable();
+	}
 
 	downloadAttachment(file: MappedAgreementTemplateDetailsAttachmentDto): void {
 		this._agreementTemplateAttachmentServiceProxy
@@ -43,5 +43,23 @@ export class AttachmentsComponent implements OnInit {
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
 		return splittetFileName[splittetFileName.length - 1];
+	}
+
+	private _setAttachmentObservable() {
+		this.attachments$ = this._previewService.attachments$.pipe(
+			map((attachments) => {
+				return attachments?.map(
+					(attachment) =>
+						<MappedAgreementTemplateDetailsAttachmentDto>{
+							...attachment,
+							icon: this._getIconName(attachment.name as string),
+						}
+				) as MappedAgreementTemplateDetailsAttachmentDto[];
+			})
+		);
+	}
+
+	private _setLoadingObservable() {
+		this.loading$ = this._previewService.contentLoading$;
 	}
 }
