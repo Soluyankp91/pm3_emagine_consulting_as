@@ -3,7 +3,7 @@ import { OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { merge, Subject } from 'rxjs';
-import { takeUntil, debounceTime, switchMap, finalize } from 'rxjs/operators';
+import { takeUntil, debounceTime, startWith, switchMap, finalize } from 'rxjs/operators';
 import {
 	ClientsServiceProxy,
 	EmployeeDto,
@@ -43,17 +43,17 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
 						maxRecordsCount: 1000,
+                        showAll: true,
+                        idsToExclude: []
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.name : value;
 					}
-                    if (!value || value?.length === 0) {
-                        this.setResponsiblePerson();
-                    }
 					return this._lookupService.employees(toSend.name);
 				})
 			)

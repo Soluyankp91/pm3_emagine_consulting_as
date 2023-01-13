@@ -133,10 +133,9 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 	}
 
 	ngOnInit(): void {
-		this.activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
-			this.clientId = +params.get('id')!;
-			this.getGeneralFileTypes();
-			this.getGeneralDocuments();
+        this.activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
+            this.clientId = +params.get('id')!;
+            this.getGeneralFileTypes();
 			this.getContracts();
 			this.getEvaluations();
 		});
@@ -154,6 +153,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 			.pipe(finalize(() => {}))
 			.subscribe((result) => {
 				this.generalFileTypes = result;
+                this.getGeneralDocuments();
 			});
 	}
 
@@ -333,35 +333,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         if (!clientAttachmentGuid || clientAttachmentGuid?.length === 0) {
             return;
         }
-		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-			const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
-			this.httpClient
-				.get(fileUrl, {
-					headers: new HttpHeaders({
-						Authorization: `Bearer ${response.accessToken}`,
-					}),
-					responseType: 'blob',
-					observe: 'response',
-				})
-				.subscribe((data: HttpResponse<Blob>) => {
-					const blob = new Blob([data.body!], { type: data.body!.type });
-					const contentDispositionHeader = data.headers.get('Content-Disposition');
-					if (contentDispositionHeader !== null) {
-						const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
-						const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
-						const downloadlink = document.createElement('a');
-						downloadlink.href = window.URL.createObjectURL(blob);
-						downloadlink.download = contentDispositionFileName;
-						const nav = window.navigator as any;
-
-						if (nav.msSaveOrOpenBlob) {
-							nav.msSaveBlob(blob, contentDispositionFileName);
-						} else {
-							downloadlink.click();
-						}
-					}
-				});
-		});
+        const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
+        this._processDownloadDocument(fileUrl);
 	}
 
 	editGeneralDocument(isEditMode: boolean, index: number) {
@@ -429,9 +402,38 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 	}
 
 	downloadEvaluationDocument(row: ClientEvaluationOutputDto, useLocalLanguage: boolean, forcePdf: boolean) {
-		this._clientDocumentsService
-			.evaluation(row.legacyConsultantId!, row.evaluationTenantId!, row.evaluationGuid!, useLocalLanguage, forcePdf)
-			.pipe(finalize(() => {}))
-			.subscribe();
+        const fileUrl = `${this.apiUrl}/api/ClientDocuments/${row.legacyConsultantId}/Evaluation/${row.evaluationTenantId}/${row.evaluationGuid}/${useLocalLanguage}/${forcePdf}`;
+        this._processDownloadDocument(fileUrl);
 	}
+
+    private _processDownloadDocument(fileUrl: string) {
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+			this.httpClient
+				.get(fileUrl, {
+					headers: new HttpHeaders({
+						Authorization: `Bearer ${response.accessToken}`,
+					}),
+					responseType: 'blob',
+					observe: 'response',
+				})
+				.subscribe((data: HttpResponse<Blob>) => {
+					const blob = new Blob([data.body!], { type: data.body!.type });
+					const contentDispositionHeader = data.headers.get('Content-Disposition');
+					if (contentDispositionHeader !== null) {
+						const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+						const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+						const downloadlink = document.createElement('a');
+						downloadlink.href = window.URL.createObjectURL(blob);
+						downloadlink.download = contentDispositionFileName;
+						const nav = window.navigator as any;
+
+						if (nav.msSaveOrOpenBlob) {
+							nav.msSaveBlob(blob, contentDispositionFileName);
+						} else {
+							downloadlink.click();
+						}
+					}
+				});
+		});
+    }
 }

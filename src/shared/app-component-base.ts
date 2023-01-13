@@ -211,4 +211,5 @@ export abstract class AppComponentBase {
 		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
 		b.style.overflow = overflowStyle;
 	}
+
 }

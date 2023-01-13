@@ -36,7 +36,7 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                                             message = response?.error?.message;
                                         } else {
                                             for (let key of Object.keys(response)) {
-                                                message += `${key}: ${response[key].join(', ')} \n`;
+                                                message += `${key}: ${response[key]?.join(', ')} \n`;
                                             }
                                             message = message?.length ? message : 'Invalid input';
                                         }
