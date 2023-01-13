@@ -20,7 +20,7 @@
                                 </span>
                                 <ng-container *ngIf="statusAfterSync">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
-                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
                                         <span class="workflow-darkblue--text">
                                             {{syncMessage}}
                                         </span>
@@ -39,7 +39,7 @@
                                 </span>
                                 <ng-container *ngIf="statusAfterSync">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
                                         <span class="sync-hint-text">
                                             {{syncMessage}}
                                         </span>
@@ -51,7 +51,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                 <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
                                     <ng-container *ngIf="!contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
-                                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'"
+                                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-termination'"
                                             [ngClass]="{'icon-cancel': !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value}"></mat-icon>
                                     </ng-container>
                                     <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
@@ -1470,7 +1470,7 @@
 
                                     <ng-container *ngIf="statusAfterSync">
                                         <div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
-                                            <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+                                            <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
                                             <span class="sync-hint-text">
                                                 {{syncMessage}}
                                             </span>
@@ -1643,7 +1643,7 @@
     <ng-container *ngIf="!statusAfterSync">
         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-w--100"
             [ngClass]="{'mat-form-field-invalid': validationTriggered && contractsSyncDataForm.value.isNewSyncNeeded}">
-            <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.value?.isNewSyncNeeded}" [svgIcon]="contractsSyncDataForm.value.isNewSyncNeeded ? 'cancel-fill' : 'completed-icon'"></mat-icon>
+            <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.value?.isNewSyncNeeded}" [svgIcon]="contractsSyncDataForm.value.isNewSyncNeeded ? 'cancel-termination' : 'completed-icon'"></mat-icon>
             <span class="workflow-darkblue--text">
                 {{contractsSyncDataForm.value.isNewSyncNeeded ? "New sync needed. " : ""}} {{contractsSyncDataForm.value.lastSyncedDate !== null && contractsSyncDataForm.value.lastSyncedDate !== undefined ? ("Last synced at " + (contractsSyncDataForm.value.lastSyncedDate | momentFormat: 'DD.MM.YYYY HH:mm')) : ""}}
             </span>

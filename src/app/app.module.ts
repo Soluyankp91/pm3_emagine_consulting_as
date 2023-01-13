@@ -600,6 +600,12 @@ export class AppModule {
             )
         );
         iconRegistry.addSvgIcon(
+            'cancel-termination',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cancel-termination.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
             'schedule',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/schedule.svg'
