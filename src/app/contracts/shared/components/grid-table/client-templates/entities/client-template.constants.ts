@@ -14,6 +14,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'contractTypeIds',
 	'lastUpdateDateUtc',
 	'lastUpdatedByLowerCaseInitials',
+	'linkState',
 	'isEnabled',
 ];
 export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
@@ -115,6 +116,16 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	},
 	{
 		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'linkState',
+			component: () =>
+				import('../../client-templates/entities/filters/mode-filter/mode-filter.component').then(
+					(it) => it.ModeFilterComponent
+				),
+		},
+	},
+	{
+		type: EHeaderCells.FILTER,
 		title: 'Status',
 		filter: {
 			formControlName: 'isEnabled',
@@ -125,17 +136,6 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		},
 	},
 ];
-export const FILTER_LABEL_MAP: { [key: string]: string } = {
-	language: 'Language',
-	agreementType: 'Type',
-	recipientTypeId: 'Recipients',
-	legalEntityIds: 'Legal entities',
-	salesTypeIds: 'Sales type',
-	deliveryTypeIds: 'Delivery type',
-	contractTypeIds: 'Contract type',
-	isEnabled: 'Status',
-	lastUpdatedByLowerCaseInitials: 'By',
-};
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
@@ -151,3 +151,25 @@ export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;
+export const MODE_FILTER_OPTIONS = [
+	{
+		id: 7,
+		name: 'Fully linked',
+	},
+	{
+		id: 5,
+		name: 'Summary unlinked',
+	},
+	{
+		id: 3,
+		name: 'Document unlinked',
+	},
+	{
+		id: 1,
+		name: 'Fully unlinked',
+	},
+	{
+		id: 0,
+		name: 'Not applicable',
+	},
+];

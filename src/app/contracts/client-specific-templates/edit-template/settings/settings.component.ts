@@ -196,6 +196,7 @@ export class CreationComponent
                 return this._apiServiceProxy.simpleList2(
                     isClientTemplate,
                     undefined,
+                    undefined,
                     searchInput,
                     1,
                     20

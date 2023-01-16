@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { take, pluck } from 'rxjs/operators';
+import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 import {
 	ITemplatesService,
 	TEMPLATE_SERVICE_PROVIDER,
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
-import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 
 @Component({
 	selector: 'app-is-enabled',

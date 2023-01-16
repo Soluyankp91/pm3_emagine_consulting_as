@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
-import { TableFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { MasterFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
@@ -9,8 +9,9 @@ export class MasterTemplatesService extends BaseContract {
 	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
-	override tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
+	override tableFilters$ = new BehaviorSubject<MasterFiltersEnum>({
 		language: [],
+		id: [],
 		agreementType: [],
 		recipientTypeId: [],
 		legalEntityIds: [],
@@ -24,6 +25,7 @@ export class MasterTemplatesService extends BaseContract {
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
 		return this._agreementTemplateServiceProxy.list2(
 			false, //isClientTemplate
+			tableFilters.id ? tableFilters.id[0] : undefined,
 			search, //search
 			tenantIds.map((item) => item.id as number), // tenantId []
 			tableFilters.legalEntityIds.map((item) => item.id as number), //legalEntities []

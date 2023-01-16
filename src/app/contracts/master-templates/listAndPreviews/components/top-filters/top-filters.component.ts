@@ -9,6 +9,7 @@ import {
 	TEMPLATE_SERVICE_PROVIDER,
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
+import { MasterTemplatesService } from '../../services/master-templates.service';
 
 @Component({
 	selector: 'app-template-filter-header',
@@ -20,6 +21,8 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	tenantFilter$ = this._contractsService.getTenants$();
 	preselectedTenants$ = this._templatesService.getTenants$();
 	topFiltersFormGroup: FormGroup;
+
+	pageHeader: string;
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -34,6 +37,8 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 		this.initFilters();
 		this._subscribeOnTenantChanged();
 		this._subscribeOnTextChanged();
+		this.pageHeader =
+			this._templatesService instanceof MasterTemplatesService ? 'Master Templates' : 'Client Specific Templates';
 	}
 
 	ngOnDestroy(): void {
