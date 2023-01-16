@@ -49,8 +49,8 @@
                             matTooltipClass="white-tooltip">
                             <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="consultantsMenu"
                                 [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!}"
-                                svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)}}"
-                                [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)">
+                                [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]"
+                                [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]">
                             </mat-icon>
                             <mat-menu #consultantsMenu backdropClass="main-overview--user-status-menu">
                                 <ng-template matMenuContent let-selectedStatus="selectedStatus">
