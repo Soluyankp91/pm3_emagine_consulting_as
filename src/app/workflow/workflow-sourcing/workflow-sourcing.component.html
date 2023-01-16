@@ -3,7 +3,7 @@
         <button class="absolute-edit-toggle" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon svgIcon="edit-icon"></mat-icon></button>
     </ng-container>
     <ng-container formArrayName="consultantTerminationSourcingData">
-        <ng-container *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; let i = index; last as last" [formGroupName]="i">
+        <ng-container *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; trackBy: trackByItem; let i = index; last as last" [formGroupName]="i">
             <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                     <ng-container *ngIf="consultant.value?.consultantData?.id">

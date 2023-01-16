@@ -68,23 +68,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
             });
     }
 
-    get formValid() {
-        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-            case StepType.Sales:
-                if (this._workflowDataService.workflowProgress.currentlyActiveSideSection === WorkflowProcessType.TerminateConsultant || this._workflowDataService.workflowProgress.currentlyActiveSideSection === WorkflowProcessType.TerminateWorkflow) {
-                    return this.workflowSales.salesTerminateConsultantForm.valid;
-                } else {
-                    return this.workflowSales.salesClientDataForm.valid && this.workflowSales.consultantsForm.valid && this.workflowSales.salesMainDataForm.valid;
-                }
-            case StepType.Contract:
-                return this.workflowContracts.contractClientForm.valid && this.workflowContracts.contractsMainForm.valid;
-            case StepType.Finance:
-                return this.workflowFinances.financesClientForm.valid;
-            case StepType.Sourcing:
-                return true;
-        }
-    }
-
     ngOnInit(): void {
         this.getPeriodStepTypes();
         this.getSideMenu();
