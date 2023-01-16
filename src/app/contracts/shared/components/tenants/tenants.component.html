@@ -8,12 +8,12 @@
 		</div>
 	</ng-container>
 	<ng-template #beyondLimit>
-		<div [customTooltip]="tooltip">
-			<div class="circle-counter">
-				<span>{{ tenants.length }}</span>
+		<div>
+			<div [customTooltip]="tooltip" class="circle-counter flex">
+				{{ tenants.length }}
 			</div>
 			<ng-template #tooltip>
-				<div class="tooltip-container">
+				<div>
 					<ng-container *ngFor="let tenant of tenants; let i = index; trackBy: trackByLegalEntity">
 						<div class="tenant-menu">
 							<span>{{ tenant.name }}</span>

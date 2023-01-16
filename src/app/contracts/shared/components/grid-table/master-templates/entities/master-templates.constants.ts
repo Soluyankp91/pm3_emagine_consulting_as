@@ -120,16 +120,24 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		},
 	},
 ];
-export const FILTER_LABEL_MAP: { [key: string]: string } = {
-	language: 'Language',
-	agreementType: 'Type',
-	recipientTypeId: 'Recipients',
+export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
+	name: 'Name',
+	definition: 'Definition',
+	agreementType: 'Document type',
+	recipientTypeId: 'Recipient type',
 	legalEntityIds: 'Legal entities',
-	salesTypeIds: 'Sales type',
-	deliveryTypeIds: 'Delivery type',
-	contractTypeIds: 'Contract type',
+	salesTypeIds: 'Sales types',
+	deliveryTypeIds: 'Delivery types',
+	contractTypeIds: 'Contract types',
+	language: 'Language',
+	note: 'Notes',
 	isEnabled: 'Status',
-	lastUpdatedByLowerCaseInitials: 'By',
+	agreementTemplateId: 'ID',
+	createdDateUtc: 'Created',
+	createdBy: 'by',
+	lastUpdateDateUtc: 'Last updated',
+	lastUpdatedBy: 'by',
+	duplicationSourceAgreementTemplateId: 'Duplicated from',
 };
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
@@ -143,6 +151,10 @@ export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
 	{
 		label: 'Duplicate',
 		actionType: 'DUPLICATE',
+	},
+	{
+		label: 'Copy link',
+		actionType: 'COPY',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;

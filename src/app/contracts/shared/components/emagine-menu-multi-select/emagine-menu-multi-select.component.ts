@@ -84,15 +84,15 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 	writeValue(preselectedItems: ({ id: number | string } & { [key: string]: any })[]): void {
 		let optionsToPreselect: (string | number)[] = preselectedItems.map((item) => item.id);
 		this.selectedItems = [];
+		this.unselectAll();
 		if (!preselectedItems || !preselectedItems.length) {
 			return;
 		}
-		this.unselectAll();
 		optionsToPreselect.forEach((preselectedItem) => {
 			let foundedOption = this.options.find((option) => option.id === preselectedItem) as IDropdownItem;
 			if (foundedOption) {
 				foundedOption.selected = true;
-                const { selected, ...baseItem } = foundedOption;
+				const { selected, ...baseItem } = foundedOption;
 				this.selectedItems.push(baseItem);
 			}
 		});

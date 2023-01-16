@@ -45,10 +45,24 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
 import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
 import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
-import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
+import { PreviewTabsComponent } from './master-templates/listAndPreviews/components/preview/preview.component';
+import { SummaryComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/summary/summary.component';
+import { EmptyStringHandlePipe } from './shared/pipes/empty-string-handle.pipe';
+import { FormatArrayPipe } from './shared/pipes/format-array.pipe';
+import { AttachmentsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/attachments/attachments.component';
+import { LogsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/logs/logs.component';
+import { LinkedClientTemplatesComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedClientTemplates/linked-client-templates.component';
+import { ModeComponent } from './shared/components/mode/mode.component';
+import { CustomTooltipComponent } from './shared/directives/customTooltip/custom-tooltip.component';
+import { LinkedAgreementsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedAgreements/linked-agreements.component';
+import { AgreementStatusComponent } from './shared/components/agreement-status/agreement-status.component';
+import { ApprovalComponent } from './shared/components/approval/approval.component';
+import { EnabledComponent } from './shared/components/enabled/enabled.component';
+import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
+import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
 
 @NgModule({
 	declarations: [
@@ -84,8 +98,23 @@ import { ClientTemplatesService } from './client-specific-templates/listAndPrevi
 		TenantsComponent,
 		IsEnabledComponent,
 		TruncateTextCustomPipe,
+		PreviewTabsComponent,
+		SummaryComponent,
+		EmptyStringHandlePipe,
+		FormatArrayPipe,
+		AttachmentsComponent,
+		LogsComponent,
+		LinkedClientTemplatesComponent,
+		ModeComponent,
+		CustomTooltipComponent,
+		LinkedAgreementsComponent,
+		AgreementStatusComponent,
+		ApprovalComponent,
+		EnabledComponent,
+		ApprovalFilterComponent,
+		ModeFilterComponent,
 	],
-	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, FuseScrollbarModule, MaterialModule],
+	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, MaterialModule],
 	providers: [
 		ContractsService,
 		MasterTemplatesService,
@@ -136,5 +165,52 @@ export class ContractsModule {
 			'dropdown-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/dropdown-icon.svg')
 		);
+		iconRegistry.addSvgIcon(
+			'templates-links',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/templates-links.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-links',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-links.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'fully-linked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/fully-linked.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'summary-unlinked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/summary-unlinked.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'document-unlinked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/document-unlinked.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'fully-unlinked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/fully-unlinked.svg')
+		);
+		iconRegistry.addSvgIcon('right-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/right-arrow.svg'));
+		iconRegistry.addSvgIcon(
+			'approved-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approved-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'toApprove-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/toApprove-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'not-applicable-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/not-applicable.icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'no-items-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-items-icon.svg')
+		);
+		iconRegistry.addSvgIcon('asc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/asc-arrow.svg'));
+		iconRegistry.addSvgIcon('desc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/desc-arrow.svg'));
 	}
 }

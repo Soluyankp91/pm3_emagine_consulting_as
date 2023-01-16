@@ -7,11 +7,10 @@ import {
 	INITIAL_PAGE_INDEX,
 } from '../components/grid-table/master-templates/entities/master-templates.constants';
 import { isEqual } from 'lodash';
-import { PageDto, SortDto, TableFiltersEnum, TemplatePayload } from '../entities/contracts.interfaces';
-
+import { PageDto, SortDto, MasterFiltersEnum, TemplatePayload, ClientFiltersEnum } from '../entities/contracts.interfaces';
+export type IFilterEnum = MasterFiltersEnum | ClientFiltersEnum;
 export abstract class BaseContract {
-
-    abstract tableFilters$: BehaviorSubject<TableFiltersEnum>;
+	abstract tableFilters$: BehaviorSubject<IFilterEnum>;
 	abstract sendPayload$(templatePayload: TemplatePayload): Observable<AgreementTemplatesListItemDtoPaginatedList>;
 
 	contractsLoading$$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
@@ -34,7 +33,6 @@ export abstract class BaseContract {
 			this.getTenants$(),
 			this.getSearch$(),
 		]).pipe(
-			debounceTime(300),
 			distinctUntilChanged((previous, current) => isEqual(previous, current)),
 			tap(() => this.contractsLoading$$.next(true)),
 			switchMap((combined) => {
@@ -64,7 +62,7 @@ export abstract class BaseContract {
 		return this._searchFilter$$.asObservable();
 	}
 
-	updateTableFilters(data: TableFiltersEnum) {
+	updateTableFilters(data: IFilterEnum) {
 		this.tableFilters$.next(data);
 	}
 
@@ -82,6 +80,13 @@ export abstract class BaseContract {
 
 	updatePage(page: { pageIndex: number; pageSize: number }) {
 		this._page$$.next(page);
+	}
+
+	setIdFilter(id: number[]) {
+		this.tableFilters$.next({
+			...this.tableFilters$.value,
+			id,
+		});
 	}
 
 	enabledToSend(enabled: number[]) {

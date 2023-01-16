@@ -3,7 +3,6 @@ import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
-import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 import {
 	ITemplatesService,
@@ -11,6 +10,7 @@ import {
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
 import { Observable } from 'rxjs';
+import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 
 @Component({
 	selector: 'app-legal-entities-filter',
