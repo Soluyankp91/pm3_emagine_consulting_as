@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { SortDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementTemplateChildAgreementDto } from 'src/shared/service-proxies/service-proxies';
 import { PreviewService } from '../../../../services/preview.service';
@@ -12,7 +12,7 @@ import { PreviewService } from '../../../../services/preview.service';
 	styleUrls: ['./linked-agreements.component.scss'],
 	encapsulation: ViewEncapsulation.None,
 })
-export class LinkedAgreementsComponent implements OnInit {
+export class LinkedAgreementsComponent implements OnInit, OnDestroy {
 	agreementLinks$: Observable<AgreementTemplateChildAgreementDto[]>;
 	loading$: Observable<boolean>;
 	sort$: Observable<SortDto>;
@@ -21,6 +21,8 @@ export class LinkedAgreementsComponent implements OnInit {
 
 	displayedColumns = ['agreementStatus', 'mode', 'agreementId', 'recipientName', 'agreementName'];
 
+	private _unSubscribe$ = new Subject<void>();
+
 	constructor(private readonly _previewService: PreviewService) {}
 
 	ngOnInit(): void {
@@ -28,6 +30,11 @@ export class LinkedAgreementsComponent implements OnInit {
 		this._setLoadingObservable();
 		this._setSortObservable();
 		this._subscribeOnSearchChanges();
+	}
+
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	onSortChanges(sort: SortDto) {
@@ -47,7 +54,7 @@ export class LinkedAgreementsComponent implements OnInit {
 	}
 
 	private _subscribeOnSearchChanges() {
-		this.searchControl.valueChanges.pipe(debounceTime(300)).subscribe((search) => {
+		this.searchControl.valueChanges.pipe(takeUntil(this._unSubscribe$), debounceTime(300)).subscribe((search) => {
 			this._previewService.updateAgreementsSearch(search ? search : undefined);
 		});
 	}

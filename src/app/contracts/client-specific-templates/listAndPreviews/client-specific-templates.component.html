@@ -1,146 +1,147 @@
 <app-template-filter-header> </app-template-filter-header>
-<emg-mat-grid
-	#table
-	*ngIf="table$ | async as table"
-	[displayedColumns]="displayedColumns"
-	[actionsList]="actions"
-	[tableConfig]="table"
-	[cells]="cells"
-	[selection]="false"
-	(sortChange)="onSortChange($event)"
-	(formControlChange)="onFormControlChange($event)"
-	(pageChange)="onPageChange($event)">
-	<ng-template let-cell="element" #customCells>
-		<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
-	</ng-template>
-
-	<ng-template let-cell="element" #customCells>
-		<p [customTooltip]="agreementTemplateIdTooltip">
-			{{ cell.agreementTemplateId | truncateTextCustom : 7 }}
-		</p>
-		<ng-template #agreementTemplateIdTooltip>
-			<div>
-				{{ cell.agreementTemplateId }}
-			</div>
+<ng-container *ngIf="table$ | async as table">
+	<emg-mat-grid
+		#table
+		[displayedColumns]="displayedColumns"
+		[actionsList]="actions"
+		[tableConfig]="table"
+		[cells]="cells"
+		[selection]="false"
+		(sortChange)="onSortChange($event)"
+		(formControlChange)="onFormControlChange($event)"
+		(pageChange)="onPageChange($event)">
+		<ng-template let-cell="element" #customCells>
+			<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
 		</ng-template>
-	</ng-template>
 
-	<ng-template let-cell="element" #customCells>
-		<p [customTooltip]="nameTooltip">
-			{{ cell.name | truncateTextCustom : 20 }}
-		</p>
-		<ng-template #nameTooltip>
-			<div>{{ cell.name }}</div>
-		</ng-template>
-	</ng-template>
-
-	<ng-template let-cell="element" #customCells>
-		<p [customTooltip]="nameTooltip">
-			{{ cell.clientName | truncateTextCustom : 10 }}
-		</p>
-		<ng-template #nameTooltip>
-			<div>{{ cell.clientName }}</div>
-		</ng-template>
-	</ng-template>
-
-	<ng-template let-cell="element" #customCells>
-		<p>
-			{{ cell.agreementType }}
-		</p></ng-template
-	>
-
-	<ng-template let-cell="element" #customCells>
-		<p>
-			{{ cell.recipientTypeId }}
-		</p></ng-template
-	>
-
-	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : 10 }}</p>
-		<ng-template #legalEntityIdsTooltip>
-			<div>
-				<ng-container *ngFor="let legalEntity of cell.legalEntityIds">
-					<div class="tooltip-menu">
-						<span>{{ legalEntity }}</span>
-					</div>
-				</ng-container>
-			</div>
-		</ng-template>
-	</ng-template>
-
-	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : 10 }}</p>
-		<ng-template #salesTypeIdsTooltip>
-			<div>
-				<ng-container *ngFor="let saleType of cell.salesTypeIds">
-					<div class="tooltip-menu">
-						<span>{{ saleType }}</span>
-					</div>
-				</ng-container>
-			</div>
-		</ng-template></ng-template
-	>
-	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : 10 }}</p>
-		<ng-template #deliveryTypeIdsTooltip>
-			<div>
-				<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds">
-					<div class="tooltip-menu">
-						<span>{{ deliveryType }}</span>
-					</div>
-				</ng-container>
-			</div>
-		</ng-template>
-	</ng-template>
-
-	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : 10 }}</p>
-		<ng-template #contractTypeIdsTooltip>
-			<div>
-				<ng-container *ngFor="let contractType of cell.contractTypeIds">
-					<div class="tooltip-menu">
-						<span>{{ contractType }}</span>
-					</div>
-				</ng-container>
-			</div>
-		</ng-template></ng-template
-	>
-
-	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc }}</p>
-		<ng-template #lastUpdateDateUtcTooltip>
-			<div>
-				<div class="date-row">
-					<div>Created</div>
-					<div>{{ cell.createdDateUtc }}</div>
+		<ng-template let-cell="element" #customCells>
+			<p [customTooltip]="agreementTemplateIdTooltip">
+				{{ cell.agreementTemplateId | truncateTextCustom : 7 }}
+			</p>
+			<ng-template #agreementTemplateIdTooltip>
+				<div>
+					{{ cell.agreementTemplateId }}
 				</div>
-				<div class="date-row">
-					<div>Last updated</div>
-					<div>
-						{{ cell.lastUpdateDateUtc }}
+			</ng-template>
+		</ng-template>
+
+		<ng-template let-cell="element" #customCells>
+			<p [customTooltip]="nameTooltip">
+				{{ cell.name | truncateTextCustom : 20 }}
+			</p>
+			<ng-template #nameTooltip>
+				<div>{{ cell.name }}</div>
+			</ng-template>
+		</ng-template>
+
+		<ng-template let-cell="element" #customCells>
+			<p [customTooltip]="nameTooltip">
+				{{ cell.clientName | truncateTextCustom : 10 }}
+			</p>
+			<ng-template #nameTooltip>
+				<div>{{ cell.clientName }}</div>
+			</ng-template>
+		</ng-template>
+
+		<ng-template let-cell="element" #customCells>
+			<p>
+				{{ cell.agreementType }}
+			</p></ng-template
+		>
+
+		<ng-template let-cell="element" #customCells>
+			<p>
+				{{ cell.recipientTypeId }}
+			</p></ng-template
+		>
+
+		<ng-template let-cell="element" #customCells
+			><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : 10 }}</p>
+			<ng-template #legalEntityIdsTooltip>
+				<div>
+					<ng-container *ngFor="let legalEntity of cell.legalEntityIds">
+						<div class="tooltip-menu">
+							<span>{{ legalEntity }}</span>
+						</div>
+					</ng-container>
+				</div>
+			</ng-template>
+		</ng-template>
+
+		<ng-template let-cell="element" #customCells
+			><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : 10 }}</p>
+			<ng-template #salesTypeIdsTooltip>
+				<div>
+					<ng-container *ngFor="let saleType of cell.salesTypeIds">
+						<div class="tooltip-menu">
+							<span>{{ saleType }}</span>
+						</div>
+					</ng-container>
+				</div>
+			</ng-template></ng-template
+		>
+		<ng-template let-cell="element" #customCells
+			><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : 10 }}</p>
+			<ng-template #deliveryTypeIdsTooltip>
+				<div>
+					<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds">
+						<div class="tooltip-menu">
+							<span>{{ deliveryType }}</span>
+						</div>
+					</ng-container>
+				</div>
+			</ng-template>
+		</ng-template>
+
+		<ng-template let-cell="element" #customCells
+			><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : 10 }}</p>
+			<ng-template #contractTypeIdsTooltip>
+				<div>
+					<ng-container *ngFor="let contractType of cell.contractTypeIds">
+						<div class="tooltip-menu">
+							<span>{{ contractType }}</span>
+						</div>
+					</ng-container>
+				</div>
+			</ng-template></ng-template
+		>
+
+		<ng-template let-cell="element" #customCells
+			><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc }}</p>
+			<ng-template #lastUpdateDateUtcTooltip>
+				<div>
+					<div class="date-row">
+						<div>Created</div>
+						<div>{{ cell.createdDateUtc }}</div>
+					</div>
+					<div class="date-row">
+						<div>Last updated</div>
+						<div>
+							{{ cell.lastUpdateDateUtc }}
+						</div>
 					</div>
 				</div>
-			</div>
+			</ng-template>
 		</ng-template>
-	</ng-template>
-	<ng-template let-cell="element" #customCells>
-		<p>
-			{{ cell.lastUpdatedByLowerCaseInitials }}
-		</p></ng-template
-	>
-	<ng-template let-cell="element" #customCells>
-		<emg-mode [linkState]="cell.linkState" [iconWidth]="23" [iconHeight]="16"></emg-mode>
-	</ng-template>
+		<ng-template let-cell="element" #customCells>
+			<p>
+				{{ cell.lastUpdatedByLowerCaseInitials }}
+			</p></ng-template
+		>
+		<ng-template let-cell="element" #customCells>
+			<emg-mode [linkState]="cell.linkState" [iconWidth]="23" [iconHeight]="16"></emg-mode>
+		</ng-template>
 
-	<ng-template let-cell="element" #customCells>
-		<emg-enabled
-			[isEnabled]="cell.isEnabled"
-			[customTooltip]="cell.isEnabled ? enabledTooltip : disabledTooltip"></emg-enabled>
-		<ng-template #enabledTooltip>
-			<div>Enabled</div>
+		<ng-template let-cell="element" #customCells>
+			<emg-enabled
+				[isEnabled]="cell.isEnabled"
+				[customTooltip]="cell.isEnabled ? enabledTooltip : disabledTooltip"></emg-enabled>
+			<ng-template #enabledTooltip>
+				<div>Enabled</div>
+			</ng-template>
+			<ng-template #disabledTooltip>
+				<div>Disabled</div>
+			</ng-template>
 		</ng-template>
-		<ng-template #disabledTooltip>
-			<div>Disabled</div>
-		</ng-template>
-	</ng-template>
-</emg-mat-grid>
+	</emg-mat-grid>
+</ng-container>

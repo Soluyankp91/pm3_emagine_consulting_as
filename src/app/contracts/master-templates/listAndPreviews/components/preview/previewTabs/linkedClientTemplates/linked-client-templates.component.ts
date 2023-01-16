@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { PreviewService } from '../../../../services/preview.service';
-import { Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AgreementTemplateChildTemplateDto } from 'src/shared/service-proxies/service-proxies';
 import { FormControl } from '@angular/forms';
 import { SortDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
@@ -12,15 +12,16 @@ import { SortDto } from 'src/app/contracts/shared/entities/contracts.interfaces'
 	styleUrls: ['./linked-client-templates.component.scss'],
 	encapsulation: ViewEncapsulation.None,
 })
-export class LinkedClientTemplatesComponent implements OnInit {
+export class LinkedClientTemplatesComponent implements OnInit, OnDestroy {
 	clientTemplateLinks$: Observable<AgreementTemplateChildTemplateDto[]>;
 	loading$: Observable<boolean>;
 	sort$: Observable<SortDto>;
-	isItemsExist: boolean;
 
 	searchControl = new FormControl<string>('');
 
 	displayedColumns = ['isEnabled', 'linkState', 'agreementTemplateId', 'clientName', 'name'];
+
+	private _unSubscribe$ = new Subject<void>();
 
 	constructor(private readonly _previewService: PreviewService) {}
 
@@ -29,6 +30,11 @@ export class LinkedClientTemplatesComponent implements OnInit {
 		this._setLoadingObservable();
 		this._subscribeOnSearchChanges();
 		this._setSort();
+	}
+
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	onSortChanges(sort: SortDto) {
@@ -48,7 +54,7 @@ export class LinkedClientTemplatesComponent implements OnInit {
 	}
 
 	private _subscribeOnSearchChanges() {
-		this.searchControl.valueChanges.pipe(debounceTime(300)).subscribe((search) => {
+		this.searchControl.valueChanges.pipe(takeUntil(this._unSubscribe$), debounceTime(300)).subscribe((search) => {
 			this._previewService.updateClientTemplatesSearch(search ? search : undefined);
 		});
 	}

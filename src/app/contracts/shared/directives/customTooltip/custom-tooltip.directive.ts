@@ -33,7 +33,7 @@ export class CustomTooltipDirective implements OnDestroy {
 
 	private _overlayRef: OverlayRef;
 
-	constructor(private overlay: Overlay, private elementRef: ElementRef, private viewContainerRef: ViewContainerRef) {}
+	constructor(private _overlay: Overlay, private elementRef: ElementRef, private viewContainerRef: ViewContainerRef) {}
 
 	ngOnDestroy() {
 		if (this._overlayRef) {
@@ -42,7 +42,7 @@ export class CustomTooltipDirective implements OnDestroy {
 	}
 
 	private _createOverlay() {
-		const position = this.overlay
+		const position = this._overlay
 			.position()
 			.flexibleConnectedTo(this.elementRef)
 			.withPositions([
@@ -56,7 +56,7 @@ export class CustomTooltipDirective implements OnDestroy {
 				},
 			]);
 
-		this._overlayRef = this.overlay.create({
+		this._overlayRef = this._overlay.create({
 			positionStrategy: position,
 		});
 	}

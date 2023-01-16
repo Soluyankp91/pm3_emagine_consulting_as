@@ -1,4 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, Input, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
+import {
+	Component,
+	ViewEncapsulation,
+	Input,
+	Output,
+	EventEmitter,
+	ChangeDetectionStrategy,
+	OnChanges,
+	SimpleChanges,
+} from '@angular/core';
 import { PreviewService } from '../../services/preview.service';
 
 @Component({
@@ -6,14 +15,13 @@ import { PreviewService } from '../../services/preview.service';
 	templateUrl: './preview.component.html',
 	styleUrls: ['./preview.component.scss'],
 	encapsulation: ViewEncapsulation.None,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [PreviewService],
 })
-export class PreviewTabsComponent implements OnInit, OnChanges {
+export class PreviewTabsComponent implements OnChanges {
 	@Input() currentId: number | null;
 	@Output() currentIdChange = new EventEmitter();
 	constructor(private readonly _previewService: PreviewService) {}
-
-	ngOnInit(): void {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		let currentIdChange = changes['currentId'];

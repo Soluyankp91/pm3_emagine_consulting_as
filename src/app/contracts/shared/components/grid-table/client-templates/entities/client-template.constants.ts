@@ -151,3 +151,25 @@ export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;
+export const MODE_FILTER_OPTIONS = [
+	{
+		id: 7,
+		name: 'Fully linked',
+	},
+	{
+		id: 5,
+		name: 'Summary unlinked',
+	},
+	{
+		id: 3,
+		name: 'Document unlinked',
+	},
+	{
+		id: 1,
+		name: 'Fully unlinked',
+	},
+	{
+		id: 0,
+		name: 'Not applicable',
+	},
+];

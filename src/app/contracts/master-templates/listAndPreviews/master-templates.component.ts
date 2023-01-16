@@ -188,6 +188,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	private _subscribeOnOuterClicks() {
 		this.currentRowId$
 			.pipe(
+				takeUntil(this._unSubscribe$),
 				startWith(null),
 				pairwise(),
 				map(([previous, current]) => {

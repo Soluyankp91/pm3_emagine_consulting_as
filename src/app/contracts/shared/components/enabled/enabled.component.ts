@@ -1,14 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
 	selector: 'emg-enabled',
 	templateUrl: './enabled.component.html',
-	styleUrls: ['./enabled.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EnabledComponent implements OnInit {
+export class EnabledComponent {
 	@Input() isEnabled: boolean;
 
 	constructor() {}
-
-	ngOnInit(): void {}
 }

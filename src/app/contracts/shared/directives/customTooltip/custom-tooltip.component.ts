@@ -1,10 +1,11 @@
-import { Component, TemplateRef, Inject, InjectionToken } from '@angular/core';
+import { Component, TemplateRef, Inject, InjectionToken, ChangeDetectionStrategy } from '@angular/core';
 
 export type TooltipData = string | TemplateRef<void>;
 export const TOOLTIP_DATA = new InjectionToken<TooltipData>('');
 @Component({
 	selector: 'app-custom-tooltip',
 	templateUrl: './custom-tooltip.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	styleUrls: ['./custom-tooltip.component.scss'],
 })
 export class CustomTooltipComponent {

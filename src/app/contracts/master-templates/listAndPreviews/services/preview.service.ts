@@ -36,8 +36,6 @@ export class PreviewService {
 		active: '',
 	});
 
-	private isItemsExist$ = new ReplaySubject<boolean>();
-
 	get currentRowId$() {
 		return this._rowId$.asObservable();
 	}
