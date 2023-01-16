@@ -1,7 +1,7 @@
 <form [formGroup]="consultantsForm" id="consultantData" class="workflow-form--consultants u-w--100">
     <ng-container formArrayName="consultants" class="u-mb--20">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
-            <ng-container *ngFor="let consultant of consultantsForm.consultants.controls; trackBy: trackByItem; let consultantIndex = index" [formGroupName]="consultantIndex">
+            <ng-container *ngFor="let consultant of consultantsForm.consultants?.controls; trackBy: trackByItem; let consultantIndex = index" [formGroupName]="consultantIndex">
                 <div class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100" [id]="'salesConsultantDataAnchor' + consultantIndex">
                         <h1 class="workflow-section--header-main text-nowrap">Consultant data</h1>
