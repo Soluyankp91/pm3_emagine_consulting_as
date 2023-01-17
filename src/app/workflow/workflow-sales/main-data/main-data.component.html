@@ -375,7 +375,7 @@
                                                                             <ng-container
                                                                                 *ngIf="recipient.id !== 'no-data'">
                                                                                 <img class="image-settings u-mr--16"
-                                                                                    [src]="consultantProfileUrl(recipient.externalId!)" />
+                                                                                    [ngSrc]="consultantPhotoUrl + recipient.externalId! + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
                                                                             </ng-container>
                                                                             <div
                                                                                 class="multilineDropdown-option--column">
@@ -675,7 +675,7 @@
                                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                         <ng-container *ngIf="employee.id !== undefined">
                                                             <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                                                [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                [ngSrc]="employeePhotoUrl + employee?.externalId + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                                                         </ng-container>
                                                         <span class="autocopmlete-option-name">{{ employee.name
                                                             }}</span>
