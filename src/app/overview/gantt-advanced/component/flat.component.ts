@@ -99,14 +99,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         });
     }
 
-    mapListByProperty(list: any[], prop: string) {
-        if (list?.length) {
-            return list.map(x =>  x[prop]).join(', ');
-        } else {
-            return '-';
-        }
-    }
-
     redirectToWorkflow(id: string) {
         this.router.navigate(['app/workflow', id]);
     }

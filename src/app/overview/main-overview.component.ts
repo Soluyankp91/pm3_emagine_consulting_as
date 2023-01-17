@@ -269,14 +269,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         return new Date(year, month, day);
     }
 
-    mapListByProperty(list: any[], prop: string) {
-        if (list?.length) {
-            return list.map(x =>  x[prop]).join(', ');
-        } else {
-            return '-';
-        }
-    }
-
     formatItems(length: number, parent: MainOverviewItemPeriodDto[], group: string, workflowStatus: MainOverviewStatus) {
         const items = [];
         for (let i = 0; i < length; i++) {

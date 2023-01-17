@@ -18,6 +18,7 @@ import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,8 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
         ValidatorComponent,
         ReplacePipe,
         ConsultantInformationComponent,
-        ExcludeIdsPipe
+        ExcludeIdsPipe,
+        DisplayListPipe
     ],
     imports: [
         CommonModule,
@@ -58,7 +60,8 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
         ReplacePipe,
         ConsultantInformationComponent,
         ExcludeIdsPipe,
-        ScrollToModule
+        ScrollToModule,
+        DisplayListPipe
     ],
     providers: [ErrorDialogService, InternalLookupService],
 })
