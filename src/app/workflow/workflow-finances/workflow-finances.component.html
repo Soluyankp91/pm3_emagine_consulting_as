@@ -7,11 +7,42 @@
             <div class="workflow-finances--block">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h1 class="workflow-section--header-main">Finance data</h1>
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="financeClientDebitor">
                         <span class="workflow-section--number">1</span>
                         <h2 class="workflow-section--header">Client (debitor)</h2>
                     </div>
                     <div class="workflow-section--content">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <h3 class="workflow-gray--header u-mb--5">Client (debitor) number for invoicing</h3>
+                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                [ngClass]="{'mat-form-field-invalid': !financesClientForm.differentDebtorNumberForInvoicing?.valid}"
+                                class="workflow-toggle-buttons u-mb--10" formControlName="differentDebtorNumberForInvoicing" required>
+                                <ng-container *ngIf="(readOnlyMode && !financesClientForm.differentDebtorNumberForInvoicing?.value) || !readOnlyMode">
+                                    <mat-button-toggle [value]="false">
+                                        Same as client
+                                    </mat-button-toggle>
+                                </ng-container>
+                                <ng-container *ngIf="(readOnlyMode && financesClientForm.differentDebtorNumberForInvoicing?.value) || !readOnlyMode">
+                                    <mat-button-toggle [value]="true">
+                                        Custom
+                                    </mat-button-toggle>
+                                </ng-container>
+                            </mat-button-toggle-group>
+                            <mat-error>
+                                <ng-container *ngIf="financesClientForm.differentDebtorNumberForInvoicing?.touched">
+                                    <app-validator [withoutFormField]="true" [control]="financesClientForm.differentDebtorNumberForInvoicing"></app-validator>
+                                </ng-container>
+                            </mat-error>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!financesClientForm.differentDebtorNumberForInvoicing?.value">
+                            <mat-form-field appearance="outline" class="form-width-272 u-mr--16" [ngClass]="{'disabled-input': readOnlyMode}">
+                                <mat-label>Debitor number</mat-label>
+                                <input [disabled]="readOnlyMode" [required]="financesClientForm.differentDebtorNumberForInvoicing?.value" autocomplete="off" matInput formControlName="customDebtorNumber" type="text">
+                                <mat-error>
+                                    <app-validator [control]="financesClientForm.customDebtorNumber"></app-validator>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
                         <ng-container *ngIf="!readOnlyMode || financesClientForm.clientCreatedInNavision">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <mat-checkbox [disabled]="readOnlyMode" required color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
@@ -24,31 +55,6 @@
                                 </mat-error>
                             </div>
                         </ng-container>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="form-width-272 formFieldNoMarginPadding filter-select u-mr--12">
-                                <mat-label>Project Type (Legacy)</mat-label>
-                                <mat-select [disabled]="readOnlyMode" formControlName="differentDebtorNumberForInvoicing" [disableOptionCentering]="true">
-                                    <mat-option [value]="false">
-                                        Same as client
-                                    </mat-option>
-                                    <mat-option [value]="true">
-                                        Custom
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="financesClientForm.differentDebtorNumberForInvoicing"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!financesClientForm.differentDebtorNumberForInvoicing?.value">
-                            <mat-form-field appearance="outline" class="form-width-272 u-mr--16" [ngClass]="{'disabled-input': readOnlyMode}">
-                                <mat-label>Debitor number</mat-label>
-                                <input [disabled]="readOnlyMode" [required]="financesClientForm.differentDebtorNumberForInvoicing?.value" autocomplete="off" matInput formControlName="customDebtorNumber" type="text">
-                                <mat-error>
-                                    <app-validator [control]="financesClientForm.customDebtorNumber"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -60,12 +66,12 @@
             <ng-container *ngIf="financesConsultantsForm.consultants.controls?.length">
                 <div class="workflow-finances--block">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="financeConsultants">
                             <span class="workflow-section--number">2</span>
                             <h2 class="workflow-section--header">Consultants</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <ng-container *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i">
+                            <ng-container *ngFor="let consultant of financesConsultantsForm.consultants.controls; trackBy: trackByItem; let i = index; last as last" [formGroupName]="i">
                                 <div class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
                                     <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('checkInvoicingSettingsOnConsultant')?.value">

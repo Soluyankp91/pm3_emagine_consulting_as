@@ -337,7 +337,14 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			distinctUntilChanged(),
 			debounceTime(500),
 			switchMap((freeText: string) => {
-				return this._apiServiceProxy.simpleList2(false, undefined, freeText, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT);
+				return this._apiServiceProxy.simpleList2(
+					false,
+					undefined,
+					undefined,
+					freeText,
+					1,
+					AUTOCOMPLETE_SEARCH_ITEMS_COUNT
+				);
 			})
 		);
 		const routeParams$: Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> = this._route.queryParams.pipe(
@@ -366,15 +373,19 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				return EMPTY;
 			}),
 			switchMap((parentTemplate) =>
-				this._apiServiceProxy.simpleList2(false, undefined, parentTemplate.name, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT).pipe(
-					finalize(() => {
-						setTimeout(() => {
-							this.duplicateTemplateControl.setValue(parentTemplate.agreementTemplateId as number, { emitEvent: false });
-							this._onDuplicateChanges(parentTemplate);
-							this.hideMainSpinner();
-						});
-					})
-				)
+				this._apiServiceProxy
+					.simpleList2(false, undefined, undefined, parentTemplate.name, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT)
+					.pipe(
+						finalize(() => {
+							setTimeout(() => {
+								this.duplicateTemplateControl.setValue(parentTemplate.agreementTemplateId as number, {
+									emitEvent: false,
+								});
+								this._onDuplicateChanges(parentTemplate);
+								this.hideMainSpinner();
+							});
+						})
+					)
 			)
 		);
 		const nullOptions$: Observable<null> = this.nullOptions$.pipe(
@@ -391,7 +402,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					this.nullOptions$.next(null);
 					return EMPTY;
 				}
-				return this._apiServiceProxy.simpleList2(false, undefined, val, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT);
+				return this._apiServiceProxy.simpleList2(false, undefined, undefined, val, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT);
 			})
 		);
 		this.masterTemplateOptions$ = merge(freeText$, routeParams$, nullOptions$, creationChange$).pipe(

@@ -6,7 +6,7 @@ emg-mat-grid {
 	}
 	.container {
 		max-height: calc(100vh - 225px);
-		overflow-y: scroll !important;
+		overflow-y: auto;
 		display: block;
 		background-color: #faf9fb;
 	}
@@ -22,5 +22,8 @@ emg-mat-grid {
 	}
 	.mat-table {
 		background-color: #faf9fb;
+	}
+	.highlight {
+		background-color: #c5e8e5;
 	}
 }

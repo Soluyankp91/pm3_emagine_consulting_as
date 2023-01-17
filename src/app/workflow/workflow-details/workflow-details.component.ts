@@ -17,6 +17,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import {
     AvailableConsultantDto,
+    CategoryForMigrateDto,
     ChangeClientPeriodDto,
     ClientPeriodDto,
     ClientPeriodServiceProxy,
@@ -55,7 +56,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
-import { BigDialogConfig, MediumDialogConfig } from 'src/shared/dialog.configs';
+import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
 
 @Component({
     selector: 'app-workflow-details',
@@ -117,6 +118,8 @@ export class WorkflowDetailsComponent
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: { [key: string]: string };
     individualConsultantActionsAvailable: boolean;
+
+    projectCategories: EnumEntityTypeDto[];
 
     isNoteVisible = false;
     workflowNote = new UntypedFormControl('', Validators.maxLength(4000));
@@ -182,6 +185,7 @@ export class WorkflowDetailsComponent
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
         this.getNotes();
+        this._getProjectCategories();
 
         this._workflowDataService.workflowTopSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
@@ -189,6 +193,10 @@ export class WorkflowDetailsComponent
                 this.getTopLevelMenu(value);
             });
         this.individualConsultantActionsAvailable = environment.dev;
+    }
+
+    private _getProjectCategories() {
+        this._internalLookupService.getProjectCategory().subscribe(result => this.projectCategories = result);
     }
 
     showOrHideNotes() {
@@ -227,9 +235,7 @@ export class WorkflowDetailsComponent
         this._workflowServiceProxy
             .notesPUT(this.workflowId, this.workflowNote.value)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(
-                () => (this.workflowNoteOldValue = this.workflowNote.value)
-            );
+            .subscribe(() => this.workflowNoteOldValue = this.workflowNote.value);
     }
 
     resetWorkflowProgress() {
@@ -589,14 +595,7 @@ export class WorkflowDetailsComponent
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe((result) => {
                 if (result.length) {
-                    switch (workflowAction) {
-                        case WorkflowDiallogAction.Change:
-                            this.changeWorkflow(result);
-                            break;
-                        case WorkflowDiallogAction.Extend:
-                            this.addExtension(result);
-                            break;
-                    }
+                    this.getCategoryForMigrate(workflowAction, result);
                 } else {
                     this.showNotify(
                         NotifySeverity.Error,
@@ -607,21 +606,34 @@ export class WorkflowDetailsComponent
             });
     }
 
-    addExtension(availableConsultants: AvailableConsultantDto[]) {
+    getCategoryForMigrate(workflowAction: number, availableConsultants: AvailableConsultantDto[]) {
+        this._workflowServiceProxy.getCategoryForMigrate(this.workflowId)
+            .subscribe(result => {
+                switch (workflowAction) {
+                    case WorkflowDiallogAction.Change:
+                        this.changeWorkflow(availableConsultants, result);
+                        break;
+                    case WorkflowDiallogAction.Extend:
+                        this.addExtension(availableConsultants, result);
+                        break;
+                }
+            });
+    }
+
+    addExtension(availableConsultants: AvailableConsultantDto[], migrationResult: CategoryForMigrateDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        MediumDialogConfig.scrollStrategy = scrollStrategy;
-        MediumDialogConfig.data = {
+        DialogConfig600.scrollStrategy = scrollStrategy;
+        DialogConfig600.data = {
             dialogType: WorkflowDiallogAction.Extend,
             dialogTitle: 'Extend Workflow',
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
             isNegative: false,
             consultantData: availableConsultants,
+            isMigrationNeeded: migrationResult.isMigrationNeeded,
+            projectCategory: this.findItemById(this.projectCategories, migrationResult.projectCategoryId)
         };
-        const dialogRef = this.dialog.open(
-            WorkflowActionsDialogComponent,
-            MediumDialogConfig
-        );
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig600);
 
         dialogRef.componentInstance.onConfirmed.subscribe(
             (result: ExtendClientPeriodDto) => {
@@ -656,21 +668,20 @@ export class WorkflowDetailsComponent
         );
     }
 
-    changeWorkflow(availableConsultants: AvailableConsultantDto[]) {
+    changeWorkflow(availableConsultants: AvailableConsultantDto[], migrationResult: CategoryForMigrateDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        MediumDialogConfig.scrollStrategy = scrollStrategy;
-        MediumDialogConfig.data = {
+        DialogConfig600.scrollStrategy = scrollStrategy;
+        DialogConfig600.data = {
             dialogType: WorkflowDiallogAction.Change,
             dialogTitle: 'Change Workflow data',
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
             isNegative: false,
             consultantData: availableConsultants,
+            isMigrationNeeded: migrationResult.isMigrationNeeded,
+            projectCategory: this.findItemById(this.projectCategories, migrationResult.projectCategoryId)
         };
-        const dialogRef = this.dialog.open(
-            WorkflowActionsDialogComponent,
-            MediumDialogConfig
-        );
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig600);
 
         dialogRef.componentInstance.onConfirmed.subscribe(
             (result: ChangeClientPeriodDto) => {

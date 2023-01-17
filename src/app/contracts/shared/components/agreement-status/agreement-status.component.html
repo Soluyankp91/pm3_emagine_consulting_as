@@ -1,0 +1,42 @@
+
+
+<ng-container [ngSwitch]="agreementStatus">
+    <ng-container *ngSwitchCase="1">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#50BEE8'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="2">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="3">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#9747FF'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="4">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="5">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="6">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#17A297;'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="7">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="8">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="9">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#17A297'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="10">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#F3AB20'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="11">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+</ng-container>
+<ng-template #dot let-color="color">
+<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<rect width="8" height="8" rx="4" [attr.fill]="color" />
+</svg>
+</ng-template>

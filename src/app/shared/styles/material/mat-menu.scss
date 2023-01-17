@@ -4,13 +4,20 @@
     min-height: 27px !important;
     min-width: unset !important;
     .mat-menu-content:not(:empty) {
-        padding: 8px;
+        padding: 0;
         .mat-menu-item {
             display: flex;
             align-items: center;
-            height: 27px;
+            height: unset;
+            min-height: 27px;
             line-height: 27px;
-            padding: 0 8px;
+            padding: 0 16px;
+            &:first-of-type {
+                padding-top: 8px;
+            }
+            &:last-of-type {
+                padding-bottom: 8px;
+            }
             &:hover:not([disabled]) {
                 background: #f9f9f9 !important;
             }

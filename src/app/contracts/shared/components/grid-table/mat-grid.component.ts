@@ -24,13 +24,14 @@ import {
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { EHeaderCells, ETableCells, IColumn, IFilter, ITableConfig } from './mat-grid.interfaces';
-import { FILTER_LABEL_MAP, PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
+import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
 import { Actions } from '../../entities/contracts.interfaces';
+import { FILTER_LABEL_MAP } from '../../entities/contracts.constants';
 
 @Component({
 	selector: 'emg-mat-grid',
@@ -46,11 +47,12 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() selection: boolean = true;
 	@Input() actions: boolean = true;
 	@Input() actionsList: Actions[] = [];
+	@Input() selectedRowId: number | null;
 
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
 	@Output() formControlChange = new EventEmitter();
-	@Output() tableRow = new EventEmitter<{ [key: string]: any }>();
+	@Output() selectedRowIdChange = new EventEmitter();
 	@Output() selectionChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
 
@@ -85,10 +87,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(
-		private readonly _injector: Injector,
-		private _componentFactoryResolver: ComponentFactoryResolver,
-	) {
+	constructor(private readonly _injector: Injector, private _componentFactoryResolver: ComponentFactoryResolver) {
 		super(_injector);
 		this.trackByAction = this.createTrackByFn('actionType');
 		this.trackByFormControlName = this.createTrackByFn('formControl');
@@ -114,7 +113,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		this.cellArr = this.customCells.toArray();
 		await this.loadFilters();
 
-        //await for filters to be inited then subscribe to formControls:
+		//await for filters to be inited then subscribe to formControls:
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();
@@ -157,7 +156,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 						);
 					}
 				})
-		);
+		).then(() => {
+			const initialValue = this.selectedRowId ? [this.selectedRowId] : [];
+			this.formGroup.addControl('id', new FormControl(initialValue), { emitEvent: false });
+		});
 	}
 
 	closeFilter(chip: string) {
@@ -174,7 +176,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	}
 
 	getTableRow(row: { [key: string]: any }) {
-		this.tableRow.emit(row);
+		this.selectedRowIdChange.emit(row.agreementTemplateId);
 	}
 
 	chooseAction(actionType: string, row: any) {
@@ -204,9 +206,9 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 			)
 				.pipe(pairwise())
 				.subscribe(([previousValue, currentValue]: [[], []]) => {
-					if (previousValue.length === 0 && currentValue.length > 0) {
+					if (!previousValue.length && currentValue.length) {
 						this.matChips.push({ formControl: controlName, label: FILTER_LABEL_MAP[controlName] });
-					} else if (previousValue.length > 0 && currentValue.length === 0) {
+					} else if (previousValue.length && !currentValue.length) {
 						this.matChips = this.matChips.filter((matChip) => matChip.formControl !== controlName);
 					}
 				});

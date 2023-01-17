@@ -62,7 +62,7 @@
                                     </span>
                                 </div>
                                 <ng-container *ngIf="step.name === selectedStep.name">
-                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--35">
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--35 u-mt--8">
                                         <ng-container *ngFor="let item of step.menuAnchors; trackBy: trackByItem">
                                             <div class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
                                                 (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"

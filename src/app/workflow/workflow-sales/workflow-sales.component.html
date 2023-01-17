@@ -314,7 +314,7 @@
                                                                             <span *ngSwitchCase="2">
                                                                                 <div class="multilineDropdown-option--row">
                                                                                     <ng-container *ngIf="recipient.id !== 'no-data'">
-                                                                                        <img class="image-settings u-mr--16" [ngSrc]="consultantPhotoUrl + recipient.externalId! + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
+                                                                                        <img class="image-settings u-mr--16" [src]="consultantProfileUrl(recipient.externalId!)" />
                                                                                     </ng-container>
                                                                                     <div class="multilineDropdown-option--column">
                                                                                         <span class="multilineDropdown-option--column-client-name">{{ recipient.name }}</span>
@@ -544,7 +544,7 @@
                                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                                 <ng-container *ngIf="employee.id !== undefined">
                                                                     <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                                                        [ngSrc]="employeePhotoUrl + employee?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                                        [src]="employeeProfileUrl(employee?.externalId!)" />
                                                                 </ng-container>
                                                                 <span class="autocopmlete-option-name">{{ employee.name }}</span>
                                                             </div>
@@ -1460,7 +1460,7 @@
                                     <span fxFlex="auto" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <ng-container  *ngIf="consultant.value?.consultantName?.consultant?.id || consultant.value?.consultantNameOnly">
                                             <ng-container *ngIf="consultant.value?.consultantName?.consultant?.id">
-                                                <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16" [ngSrc]="consultantPhotoUrl + consultant.value?.consultantName?.consultant?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                <img class="image-thumbnail-responsive border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.consultant?.externalId)" />
                                             </ng-container>
                                             <span class="workflow-form--consultants__name">
                                                 {{consultant.value?.consultantName?.consultant?.name}}
@@ -1515,8 +1515,8 @@
                                                     <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
                                                         <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                             <div class="multilineDropdown-option--row">
-                                                                <ng-container *ngIf="item.id !== 'no-data'">
-                                                                    <img class="image-thumbnail-small border-rounded-50 u-mr--10" [ngSrc]="consultantPhotoUrl + item.consultant.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                                <ng-container *ngIf="item?.id !== 'no-data'">
+                                                                    <img class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.consultant.externalId)" />
                                                                 </ng-container>
                                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                     <span class="multilineDropdown-option--column-client-name">{{ item.consultant.name }}</span>
@@ -2530,27 +2530,31 @@
                     </h2>
                 </div>
                 <div class="workflow-section--content">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                            <mat-label>
-                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
-                                    End of Consultant Contract
-                                </ng-container>
-                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
-                                    End of Client Contract
-                                </ng-container>
-                            </mat-label>
-                            <mat-select [disabled]="readOnlyMode" required formControlName="terminationTime" [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
-                                    <mat-option [value]="+item.key">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <h3 class="workflow-gray--header u-mb--5">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+                                End of Consultant Contract
+                            </ng-container>
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
+                                End of Client Contract
+                            </ng-container>
+                        </h3>
+                        <mat-button-toggle-group [disabled]="readOnlyMode"
+                            [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}"
+                            class="workflow-toggle-buttons u-mb--10" formControlName="terminationTime" required>
+                            <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
+                                <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationTime?.value) || !readOnlyMode">
+                                    <mat-button-toggle [value]="+item.key">
                                         {{ item.value }}
-                                    </mat-option>
+                                    </mat-button-toggle>
                                 </ng-container>
-                            </mat-select>
-                            <mat-error>
-                                <app-validator [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
-                            </mat-error>
-                        </mat-form-field>
+                            </ng-container>
+                        </mat-button-toggle-group>
+                        <mat-error>
+                            <ng-container *ngIf="salesTerminateConsultantForm.terminationTime?.touched">
+                                <app-validator [withoutFormField]="true" [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
+                            </ng-container>
+                        </mat-error>
                     </div>
 
                     <ng-container *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
@@ -2572,20 +2576,24 @@
                     </ng-container>
 
                     <ng-container *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
-                                <mat-label>Termination reason</mat-label>
-                                <mat-select [disabled]="readOnlyMode" required formControlName="terminationReason" [disableOptionCentering]="true">
-                                    <ng-container *ngFor="let item of terminationReasons | keyvalue">
-                                        <mat-option [value]="+item.key">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <h3 class="workflow-gray--header u-mb--5">Reason for termination</h3>
+                            <mat-button-toggle-group [disabled]="readOnlyMode"
+                                [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationReason?.value}"
+                                class="workflow-toggle-buttons u-mb--10" formControlName="terminationReason" required>
+                                <ng-container *ngFor="let item of terminationReasons | keyvalue">
+                                    <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationReason?.value) || !readOnlyMode">
+                                        <mat-button-toggle [value]="+item.key">
                                             {{ item.value }}
-                                        </mat-option>
+                                        </mat-button-toggle>
                                     </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
+                                </ng-container>
+                            </mat-button-toggle-group>
+                            <mat-error>
+                                <ng-container *ngIf="salesTerminateConsultantForm.terminationReason?.touched">
+                                    <app-validator [withoutFormField]="true" [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
+                                </ng-container>
+                            </mat-error>
                         </div>
                     </ng-container>
 
@@ -2621,7 +2629,7 @@
                                 <mat-label>Final Evaluation Reference Person</mat-label>
                                 <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
                                 <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn"
-                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                     <ng-container *ngFor="let contact of filteredFinalEvaluationReferencePersons; trackBy: trackById">
                                         <mat-option [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
                                                 <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
@@ -2657,46 +2665,4 @@
             </ng-container>
         </div>
     </form>
-</ng-template>
-
-<ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 u-mt--10__reverse">
-        <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                Address:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{client?.address ? client?.address + ', ' : ''}}
-                {{client?.address2 ? client?.address2 + ', ' : ''}}
-                {{client?.city ? client?.city + ', ' : ''}}
-                {{client?.countryName ? client?.countryName + ', ' : ''}}
-                {{client?.postCode ? client?.postCode : ''}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="client?.clientId">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                | Client ID:
-            </span>
-            <span class="workflow-sales--additional-address-hint">
-                {{client?.clientId ? '#' + client?.clientId : ''}}
-            </span>
-        </ng-container>
-
-        <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon u-ml--10" mat-icon-button
-                (click)="openInNewTab(client?.clientId)"
-                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
-                <mat-icon svgIcon="link-to-client-icon"></mat-icon>
-            </button>
-        </ng-container>
-
-        <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon" mat-icon-button
-                (click)="openInHubspot(client)"
-                [disabled]="client.crmClientId === null || client.crmClientId === undefined"
-                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
-                <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
-            </button>
-        </ng-container>
-    </div>
 </ng-template>
