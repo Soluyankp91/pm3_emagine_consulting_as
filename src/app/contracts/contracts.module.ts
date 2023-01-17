@@ -50,6 +50,7 @@ import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
 
+import { DxButtonModule } from 'devextreme-angular';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -85,7 +86,7 @@ import { ClientTemplatesService } from './client-specific-templates/listAndPrevi
 		IsEnabledComponent,
 		TruncateTextCustomPipe,
 	],
-	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, FuseScrollbarModule, MaterialModule],
+	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, FuseScrollbarModule, MaterialModule, DxButtonModule],
 	providers: [
 		ContractsService,
 		MasterTemplatesService,
