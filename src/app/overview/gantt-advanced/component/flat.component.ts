@@ -118,44 +118,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
-    detectProcessColor(process: number | undefined) {
-        switch (process) {
-            case OverviewFlag.ExtensionExpected:
-            case OverviewFlag.Extended:
-            case OverviewFlag.Started:
-                return 'overview-extensions-icon';
-            case OverviewFlag.Terminated:
-            case OverviewFlag.ExpectedToTerminate:
-                return 'overview-termination-icon';
-            case OverviewFlag.ExtensionInNegotiation:
-                return 'overview-negotiation-icon';
-            case OverviewFlag.RequiresAttention:
-                return 'overview-attention-icon';
-            default:
-                return '';
-        }
-    }
-
-    detectIcon(process: number | undefined) {
-        switch (process) {
-            case OverviewFlag.ExtensionExpected:
-                return 'check-circle';
-            case OverviewFlag.Extended:
-            case OverviewFlag.Started:
-                return 'check-circle-fill';
-            case OverviewFlag.ExpectedToTerminate:
-                return 'cancel';
-            case OverviewFlag.Terminated:
-                return 'cancel-fill';
-            case OverviewFlag.ExtensionInNegotiation:
-                return 'schedule';
-            case OverviewFlag.RequiresAttention:
-                return 'warning';
-            default:
-                return '';
-        }
-    }
-
     setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {
         let ids = {workflowId: workflowId, userSelectedStatus: userSelectedStatus}
         this.userSelectedStatusForWorflow.emit(ids);

@@ -250,12 +250,20 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
         return this.changeWorkflowForm.valid && this.projectCategoryForm.valid && this.changeConsultantsValid;
     }
 
+    toggleChangeConsultants() {
+        this.changeConsultantsValid = this.changeWorkflowForm.consultants.value.some((item: any) => item.changeConsultant);
+    }
+
     validateExtendForm() {
         this.validationTriggered = true;
         this.extendWorkflowForm.markAllAsTouched();
         this.projectCategoryForm.markAllAsTouched();
         this.extendConsultantsValid = this.extendWorkflowForm.consultants.value.some((item: any) => item.extendConsultant);
         return this.extendWorkflowForm.valid && this.projectCategoryForm.valid && this.extendConsultantsValid;
+    }
+
+    toggleExtendConsultants() {
+        this.extendConsultantsValid = this.extendWorkflowForm.consultants.value.some((item: any) => item.extendConsultant);
     }
 
 

@@ -71,7 +71,7 @@
                             <h2 class="workflow-section--header">Consultants</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <ng-container *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i">
+                            <ng-container *ngFor="let consultant of financesConsultantsForm.consultants.controls; trackBy: trackByItem; let i = index; last as last" [formGroupName]="i">
                                 <div class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
                                     <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('checkInvoicingSettingsOnConsultant')?.value">

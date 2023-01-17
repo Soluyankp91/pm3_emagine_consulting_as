@@ -1,0 +1,36 @@
+.attachments-container {
+	padding: 32px;
+}
+.attachment-container {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	max-height: 48px;
+	min-height: 48px;
+	padding: 14px 0;
+}
+.current-template-header {
+	margin-bottom: 12px;
+}
+.justify-self-end {
+	margin-left: auto;
+}
+.name {
+	font-weight: 700;
+	font-size: 14px;
+}
+.cursor {
+	cursor: pointer;
+}
+.spinner-container {
+	background-color: unset;
+}
+.no-items {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	max-width: 176px;
+	color: #b6b4b2;
+}

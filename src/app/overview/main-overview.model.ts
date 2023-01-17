@@ -24,7 +24,7 @@ export const OverviewProcessColors: {[key: number]: string} = {
   11: 'overview-extensions-icon',
   3: 'overview-termination-icon',
   12: 'overview-termination-icon',
-  2: 'overview-termination-icon',
+  2: 'overview-negotiation-icon',
   20: 'overview-attention-icon'
 }
 
