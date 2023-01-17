@@ -79,6 +79,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	ngOnInit(): void {
         this._getEnums();
         this._subscriptions$();
+        this.getPrimaryCategoryTree();
     }
 
     ngOnDestroy(): void {
@@ -226,6 +227,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     getPrimaryCategoryTree(): void {
+        console.log('ss');
         this._lookupService
             .tree()
             .subscribe((result) => {
