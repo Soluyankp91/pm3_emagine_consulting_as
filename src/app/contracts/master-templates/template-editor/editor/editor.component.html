@@ -1,2 +1,15 @@
-<p>editor works!</p>
-<dx-button text="Click me">Hey</dx-button>
+<div id="tabs">
+  <dx-tabs
+    #apiTabs
+    [dataSource]="tabs"
+    [selectedIndex]="0"
+    (onItemClick)="selectTab($event)"
+  ></dx-tabs>
+  <div class="content dx-fieldset">
+    <div class="dx-field">
+    <div class="dx-field">
+      {{ tabContent }}
+    </div>
+  </div>
+</div>
+  

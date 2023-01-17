@@ -50,7 +50,6 @@ import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
 
-import { DxButtonModule } from 'devextreme-angular';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -68,7 +67,6 @@ import { DxButtonModule } from 'devextreme-angular';
 		SalesTypesFilterComponent,
 		MasterTemplateFilterHeaderComponent,
 		CreateMasterTemplateComponent,
-		EditorComponent,
 		MasterTemplateCreationComponent,
 		AutoNameComponent,
 		MatMenuSingleSelectComponent,
@@ -86,7 +84,17 @@ import { DxButtonModule } from 'devextreme-angular';
 		IsEnabledComponent,
 		TruncateTextCustomPipe,
 	],
-	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, FuseScrollbarModule, MaterialModule, DxButtonModule],
+	imports: [
+		CommonModule, 
+		ContractsRoutingModule, 
+		ServiceProxyModule, 
+		AppCommonModule, 
+		FuseScrollbarModule, 
+		MaterialModule, 
+		
+		// Standalone
+		EditorComponent
+	],
 	providers: [
 		ContractsService,
 		MasterTemplatesService,
