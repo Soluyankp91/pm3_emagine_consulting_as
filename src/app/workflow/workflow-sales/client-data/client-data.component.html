@@ -454,7 +454,7 @@
                 <h2 class="workflow-section--header">Invoicing number</h2>
             </div>
             <div class="workflow-section--content">
-                <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId?.id">
+                <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-312"
                             [ngClass]="{'disabled-input': readOnlyMode}">
