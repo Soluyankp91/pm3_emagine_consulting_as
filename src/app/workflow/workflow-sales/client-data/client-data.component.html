@@ -329,7 +329,7 @@
                                 formControlName="rateUnitTypeId" [disableOptionCentering]="true"
                                 [compareWith]="compareWithFn">
                                 <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
                                 </ng-container>
@@ -524,7 +524,7 @@
                         <ng-container [ngSwitch]="salesClientDataForm.clientTimeReportingCapId?.value">
                             <ng-container *ngSwitchCase="1">
                                 <!-- Cap on units -->
-                                <ng-container [ngSwitch]="salesClientDataForm.rateUnitTypeId?.value?.id">
+                                <ng-container [ngSwitch]="salesClientDataForm.rateUnitTypeId?.value">
                                     <ng-container *ngSwitchCase="1">
                                         <!-- Per hour -->
                                         hours
@@ -910,7 +910,7 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"
                         [fxHide]="!salesClientDataForm.value?.evaluationsDisabled">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding textarea-input form-width-559"
+                            class="formFieldNoMarginPadding textarea-input form-width-564"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Disable Evaluations Reason</mat-label>
                             <textarea [disabled]="readOnlyMode"
@@ -935,7 +935,7 @@
             </div>
             <div class="workflow-section--content">
                 <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-559"
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-564"
                         [ngClass]="{'disabled-input': readOnlyMode}">
                         <mat-label>Special Contract Terms</mat-label>
                         <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password"

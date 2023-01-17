@@ -577,8 +577,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					});
 					this.consutlantDataComponent?.updateConsultantStepAnchors();
 				}
+                this.mainDataComponent?.getPrimaryCategoryTree();
 			});
-            this.mainDataComponent?.getPrimaryCategoryTree();
 	}
 
 	//#region termination

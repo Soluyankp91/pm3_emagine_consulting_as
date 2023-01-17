@@ -5,7 +5,7 @@
             id="salesMainDataAnchor">
             <h1 class="workflow-section--header-main">Main data</h1>
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
-                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding  form-width-559"
+                <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding  form-width-564"
                     [ngClass]="{'disabled-input': readOnlyMode}">
                     <mat-label>Remarks</mat-label>
                     <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks"
@@ -126,7 +126,7 @@
                                         Clear
                                     </mat-option>
                                     <ng-container *ngFor="let item of margins; trackBy: trackById">
-                                        <mat-option [value]="item">
+                                        <mat-option [value]="item.id">
                                             {{ item.name }}
                                         </mat-option>
                                     </ng-container>
@@ -184,7 +184,7 @@
 
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding textarea-input form-width-559"
+                            class="formFieldNoMarginPadding textarea-input form-width-564"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Project Name</mat-label>
                             <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName"
@@ -199,7 +199,7 @@
 
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding textarea-input form-width-559"
+                            class="formFieldNoMarginPadding textarea-input form-width-564"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Project Description</mat-label>
                             <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password"
@@ -707,7 +707,7 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559"
+                            class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Remarks</mat-label>
                             <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password"
