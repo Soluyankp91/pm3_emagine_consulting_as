@@ -6,6 +6,7 @@ import {
 	DocumentSideNavDto,
 	DocumentSideNavigation,
 	DocumentSideNavItem,
+	EDocumentTypeIcon,
 	EvaluationFromDateList,
 	EvaluationFromDateOption,
 	GeneralDocumentForm,
@@ -99,6 +100,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 	contractsDocuments: ClientContractViewRootDto;
 
 	evaluationFromDateList = EvaluationFromDateList;
+    contractIcons = EDocumentTypeIcon;
 
 	private _unsubscribe = new Subject();
 	constructor(
