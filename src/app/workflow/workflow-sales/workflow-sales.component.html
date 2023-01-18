@@ -4,13 +4,13 @@
             [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
             [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></app-main-data>
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
-            <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
+            <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode" [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
             </app-client-data>
         </ng-container>
         <app-consultant-data #consutlantDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection"
             [isCompleted]="isCompleted" [editEnabledForcefuly]="editEnabledForcefuly"
             [clientDataForm]="clientDataComponent?.salesClientDataForm" [mainDataForm]="mainDataComponent?.salesMainDataForm"
-            [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]=clientSpecialFeeList></app-consultant-data>
+            [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList"></app-consultant-data>
     </ng-container>
 </div>
 <ng-template #terminationTemplate>

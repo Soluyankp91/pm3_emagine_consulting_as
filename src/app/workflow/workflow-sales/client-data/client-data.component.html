@@ -688,11 +688,6 @@
                                 <mat-label>Choose special rate</mat-label>
                                 <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter"
                                     [disableOptionCentering]="true">
-                                    <ng-container *ngIf="clientSpecialRateList.length === 0">
-                                        <mat-option (click)="$event.stopPropagation();">
-                                            No results
-                                        </mat-option>
-                                    </ng-container>
                                     <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: salesClientDataForm!.clientRates?.value : 'clientSpecialRateId'; trackBy: trackById">
                                         <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientSpecialRate($event, item, clientRateMenuTrigger) : ''">
                                             {{ item.internalName }}
@@ -836,11 +831,6 @@
                                 <mat-label>Choose special fee</mat-label>
                                 <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter"
                                     [disableOptionCentering]="true">
-                                    <ng-container *ngIf="clientSpecialFeeList.length === 0">
-                                        <mat-option (click)="$event.stopPropagation();">
-                                            No results
-                                        </mat-option>
-                                    </ng-container>
                                     <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: salesClientDataForm!.clientFees?.value : 'clientSpecialFeeId'; trackBy: trackById">
                                         <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientSpecialFee($event, item, clientFeeMenuTrigger) : ''">
                                             {{ item.internalName }}
