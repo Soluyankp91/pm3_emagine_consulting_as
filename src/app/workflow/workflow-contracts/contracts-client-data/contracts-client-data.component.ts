@@ -97,7 +97,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
 		this.contractClientForm.clientRates.push(form);
-        console.log(this.contractClientForm.clientRates.controls);
 	}
 
 	removeClientRate(index: number) {

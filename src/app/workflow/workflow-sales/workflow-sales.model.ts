@@ -10,9 +10,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             projectTypeId: new UntypedFormControl(null, Validators.required),
             marginId: new UntypedFormControl(null, Validators.required),
             projectCategoryId: new UntypedFormControl(null, Validators.required),
-            primaryCategoryArea: new UntypedFormControl(null, Validators.required),
-            primaryCategoryType: new UntypedFormControl(null, Validators.required),
-            primaryCategoryRole: new UntypedFormControl(null, Validators.required),
+            primaryCategoryArea: new UntypedFormControl(null),
+            primaryCategoryType: new UntypedFormControl(null),
+            primaryCategoryRole: new UntypedFormControl(null),
             projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
             projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
             discountId: new UntypedFormControl(null),
@@ -387,3 +387,10 @@ export const ClientRateTypes: EnumEntityTypeDto[] = [
         name: 'Fixed',
     })
 ];
+
+export enum EProjectTypes {
+    VMShighMargin = 5,
+    VMSlowMargin = 6,
+    NearshoreVMShighMargin = 7,
+    NearshoreVMSlowMargin = 8
+}
