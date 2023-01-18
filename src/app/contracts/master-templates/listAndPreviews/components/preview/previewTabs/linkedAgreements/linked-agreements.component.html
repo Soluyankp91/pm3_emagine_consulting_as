@@ -1,0 +1,77 @@
+<ng-container *ngIf="agreementLinks$ | async as agreementLinks; else loading">
+	<ng-container *ngIf="agreementLinks.length || searchControl.value">
+		<mat-form-field class="form-field">
+			<mat-label class="input-label">Search</mat-label>
+			<input matInput class="input" placeholder="Search" [formControl]="searchControl" />
+		</mat-form-field>
+	</ng-container>
+	<ng-container *ngIf="!(loading$ | async); else loading">
+		<div class="linked-agreements-container">
+			<ng-container *ngIf="agreementLinks.length; else noItems">
+				<ng-container *ngIf="sort$ | async as sort">
+					<mat-table
+						matSort
+						[dataSource]="agreementLinks"
+						[matSortActive]="sort.active"
+						[matSortDirection]="sort.direction"
+						(matSortChange)="onSortChanges($event)">
+						<ng-container matColumnDef="agreementStatus">
+							<mat-header-cell class="header-cell" *matHeaderCellDef>
+								<mat-icon svgIcon="three-lines" class="isEnabled-icon"></mat-icon>
+							</mat-header-cell>
+							<mat-cell *matCellDef="let template">
+								<emg-agreement-status [agreementStatus]="template.agreementStatus"></emg-agreement-status>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="mode">
+							<mat-header-cell class="header-cell" *matHeaderCellDef mat-sort-header> Mode </mat-header-cell>
+							<mat-cell *matCellDef="let template">
+								<emg-mode [linkState]="template.mode" [iconWidth]="20" [iconHeight]="16"></emg-mode>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="agreementId">
+							<mat-header-cell
+								class="header-cell"
+								*matHeaderCellDef
+								mat-sort-header
+								(click)="$event.stopPropagation()"
+								>ID</mat-header-cell
+							>
+							<mat-cell *matCellDef="let template">{{ template.agreementId }}</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="recipientName">
+							<mat-header-cell class="header-cell" *matHeaderCellDef (click)="$event.stopPropagation()">
+								Actual recipient</mat-header-cell
+							>
+							<mat-cell *matCellDef="let template">{{ template.recipientName }}</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="agreementName">
+							<mat-header-cell
+								class="header-cell"
+								*matHeaderCellDef
+								mat-sort-header
+								(click)="$event.stopPropagation()">
+								Agreement name</mat-header-cell
+							>
+							<mat-cell *matCellDef="let template">{{ template.agreementName }}</mat-cell>
+						</ng-container>
+						<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+					</mat-table>
+				</ng-container>
+			</ng-container>
+		</div>
+		<ng-template #noItems>
+            <div class="no-items">
+                <div>
+                    <mat-icon svgIcon="no-items-icon"></mat-icon>
+                </div>
+                <div>There are no linked
+                    agreements for this template</div>
+            </div>
+        </ng-template>
+	</ng-container>
+</ng-container>
+<ng-template #loading>
+	<div class="spinner-container"><mat-spinner [diameter]="32"></mat-spinner></div>
+</ng-template>

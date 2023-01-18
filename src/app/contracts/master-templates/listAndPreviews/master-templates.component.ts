@@ -1,7 +1,20 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, TrackByFunction } from '@angular/core';
-import { map, takeUntil } from 'rxjs/operators';
+import {
+	Component,
+	ChangeDetectionStrategy,
+	OnInit,
+	OnDestroy,
+	Injector,
+	TrackByFunction,
+	ChangeDetectorRef,
+	ViewChildren,
+	ElementRef,
+	QueryList,
+	Inject,
+} from '@angular/core';
+import { Observable, Subject, combineLatest, Subscription, BehaviorSubject, ReplaySubject, fromEvent } from 'rxjs';
+import { map, takeUntil, pairwise, startWith } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
 	MASTER_TEMPLATE_ACTIONS,
@@ -11,7 +24,6 @@ import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { Observable, Subject, combineLatest } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../shared/services/contracts.service';
@@ -20,8 +32,11 @@ import * as moment from 'moment';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,
-	TableFiltersEnum,
+	MasterFiltersEnum,
 } from '../../shared/entities/contracts.interfaces';
+import { PreviewTabsComponent } from './components/preview/preview.component';
+import { tapOnce } from '../../shared/operators/tapOnceOperator';
+import { DOCUMENT } from '@angular/common';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -30,6 +45,8 @@ import {
 	providers: [GridHelpService],
 })
 export class MasterTemplatesComponent extends AppComponentBase implements OnInit, OnDestroy {
+	@ViewChildren(PreviewTabsComponent, { read: ElementRef }) preview: QueryList<ElementRef>;
+
 	cells = this._gridHelpService.generateTableConfig(DISPLAYED_COLUMNS, MASTER_TEMPLATE_HEADER_CELLS);
 	dataSource$ = this._masterTemplatesService.getContracts$();
 
@@ -38,7 +55,14 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 
 	table$: Observable<ITableConfig>;
 
+	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
+	currentRowId: number | null;
+
 	trackById: TrackByFunction<number>;
+
+	outsideClicksSub: Subscription;
+
+	logFilterChange$ = new BehaviorSubject(false);
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -48,13 +72,16 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _injetor: Injector
+		private readonly _injetor: Injector,
+		private readonly _cdr: ChangeDetectorRef,
+		@Inject(DOCUMENT) private document: Document
 	) {
 		super(_injetor);
 		this.trackById = this.createTrackByFn('id');
 	}
 
 	ngOnInit(): void {
+		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();
 	}
@@ -68,13 +95,14 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._masterTemplatesService.updateSort($event);
 	}
 
-	onFormControlChange($event: TableFiltersEnum) {
+	onFormControlChange($event: MasterFiltersEnum) {
 		this._masterTemplatesService.updateTableFilters($event);
 	}
 
 	onPageChange($event: PageEvent) {
 		this._masterTemplatesService.updatePage($event);
 	}
+
 	onAction($event: { row: AgreementTemplatesListItemDto; action: string }) {
 		switch ($event.action) {
 			case 'EDIT': {
@@ -91,10 +119,11 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				});
 				break;
 			}
+			case 'COPY': {
+				navigator.clipboard.writeText(this.document.location.href + `?templateId=${$event.row.agreementTemplateId}`);
+			}
 		}
 	}
-
-	onSelectTableRow(row: { [key: string]: string }) {}
 
 	private _initTable$() {
 		this.table$ = combineLatest([
@@ -113,6 +142,9 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 					active: sort.active,
 				};
 				return tableConfig;
+			}),
+			tapOnce(() => {
+				this._subscribeOnOuterClicks();
 			})
 		);
 	}
@@ -145,9 +177,41 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._masterTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
+				this._cdr.detectChanges();
 				return;
 			}
 			this.hideMainSpinner();
+			this._cdr.detectChanges();
 		});
+	}
+
+	private _subscribeOnOuterClicks() {
+		this.currentRowId$
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				startWith(null),
+				pairwise(),
+				map(([previous, current]) => {
+					if (!previous && current) {
+						this.outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
+							if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
+								this.currentRowId$.next(null);
+							}
+						});
+					} else if (previous && !current) {
+						this.outsideClicksSub.unsubscribe();
+					}
+				})
+			)
+			.subscribe();
+	}
+
+	private _initPreselectedFilters() {
+		const templateId = this._route.snapshot.queryParams['templateId'];
+		if (templateId) {
+			this.currentRowId$.next(parseInt(templateId));
+			return this._masterTemplatesService.setIdFilter([templateId]);
+		}
+		this._masterTemplatesService.setIdFilter([]);
 	}
 }

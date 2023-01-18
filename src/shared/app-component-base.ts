@@ -9,10 +9,10 @@ import { AppConsts } from "./AppConsts";
 import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
 export enum NotifySeverity {
-    Info = 1,
-    Warning = 2,
-    Success = 3,
-    Error = 4
+	Info = 1,
+	Warning = 2,
+	Success = 3,
+	Error = 4,
 }
 
 export abstract class AppComponentBase {
@@ -54,42 +54,21 @@ export abstract class AppComponentBase {
 		}
 	}
 
-	// form validations
-	getValidationMessage(formControl: AbstractControl | null): string | string[] | undefined {
-		if (formControl) {
-			if (formControl.hasError('required')) {
-				return 'This field is required';
-			}
-			if (formControl.hasError('email')) {
-				return 'Email format is not correct';
-			}
-			if (formControl.hasError('pattern')) {
-				return 'Entered format is not correct';
-			}
-			if (formControl.hasError('minlength')) {
-				return `The maximum length is ${formControl.getError('minlength').requiredLength} characters`;
-			}
-			if (formControl.hasError('maxlength')) {
-				return `The maximum length is ${formControl.getError('maxlength').requiredLength} characters`;
-			}
-			if (formControl.hasError('alphanumeric')) {
-				return 'This field can only contain alphanumeric characters';
-			}
-			if (formControl.hasError('nonnumeric')) {
-				return "Couldn't contain numeric characters";
-			}
-			if (formControl.hasError('min')) {
-				return `The minimum value is ${formControl.getError('min').min}`;
-			}
-			if (formControl.hasError('max')) {
-				return `The maximum value is ${formControl.getError('max').max}`;
-			}
-			if (formControl.hasError('lowerThanStartYear')) {
-				return 'This value cannot be lower than starting value';
-			}
-			if (formControl.hasError('optionNotSelected')) {
-				return 'You need to select an option';
-			}
+	disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
+		if (boolValue) {
+			control!.setValue(null, { emitEvent: false });
+			control!.disable();
+		} else {
+			control!.enable();
+		}
+	}
+
+    setValueAndToggleDisalbeState(disableControl: boolean, control: AbstractControl | null | undefined, value: any) {
+		if (disableControl) {
+			control!.disable();
+			control!.setValue(value, { emitEvent: false });
+		} else {
+			control!.enable();
 		}
 	}
 
@@ -118,19 +97,9 @@ export abstract class AppComponentBase {
 		}
 	}
 
-	disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
-		if (boolValue) {
-			// FIXME: do we need to clear input if it will be disabled ?
-			control!.setValue(null, { emitEvent: false });
-			control!.disable();
-		} else {
-			control!.enable();
-		}
-	}
-
 	findItemById(list: EnumEntityTypeDto[] | IdNameDto[] | CountryDto[], id?: number | null) {
 		if (id) {
-			return list.find((x: any) => x.id === id);
+			return list?.find((x: any) => x.id === id);
 		} else {
 			return null;
 		}
@@ -138,7 +107,7 @@ export abstract class AppComponentBase {
 
 	findItemByName(list: EnumEntityTypeDto[], name?: string) {
 		if (name) {
-			return list.find((x: any) => x.name === name);
+			return list?.find((x: any) => x.name === name);
 		} else {
 			return null;
 		}
@@ -197,11 +166,11 @@ export abstract class AppComponentBase {
 
 	// TODO: move all others trackBy methods here
 	trackById(index: number, item: any) {
-		return item?.id;
+		return item.id;
 	}
 
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
-		return item?.documentStorageGuid;
+		return item.documentStorageGuid;
 	}
 
     trackByItem(index: number, item: any) {
@@ -216,7 +185,31 @@ export abstract class AppComponentBase {
 		return option?.name;
 	}
 
-    compareWithFn(listOfItems: any, selectedItem: any) {
-        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
-    }
+	displayFullNameFn(option: any) {
+		return option ? option?.firstName + ' ' + option?.lastName : '';
+	}
+
+	displayClientNameFn(option: any) {
+		return option?.clientName?.trim();
+	}
+
+	displayRecipientFn(option: any) {
+		if (option?.name) {
+			return option?.name;
+		} else if (option?.clientName) {
+			return option?.clientName;
+		} else if (option?.supplierName) {
+			return option?.supplierName;
+		}
+	}
+
+	compareWithFn(listOfItems: any, selectedItem: any) {
+		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
+	}
+
+    focusToggleMethod(overflowStyle: string) {
+		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+		b.style.overflow = overflowStyle;
+	}
+
 }

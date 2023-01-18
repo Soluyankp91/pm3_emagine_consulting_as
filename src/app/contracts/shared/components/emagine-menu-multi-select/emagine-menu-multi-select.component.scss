@@ -1,61 +1,60 @@
 .menu-component-wrapper {
-    & .closed__grey {
-      color: #898785;
-    }
-    & .toggle-button {
-      width: fit-content !important;
-    }
-    & .icon__margin {
-      margin-right: 3px;
-    }
-    & .opened__green {
-      color: #17a297;
-    }
-    & .align-items {
-      display: flex;
-      align-items: center;
-    }
-  }
-  .mat-menu-content-wrapper + .cdk-overlay-connected-position-bounding-box {
-    .mat-menu-content {
-      padding-top: 0px !important;
-      padding-bottom: 0px !important;
-    }
-    .mat-checkbox.mat-checkbox-checked .mat-checkbox-background {
-      background-color: #17a297;
-    }
-    .mat-checkbox-layout .mat-checkbox-inner-container {
-      width: 14px;
-      height: 14px;
-      margin: 0 10px 0 0;
-    }
-    .mat-checkbox-layout .mat-checkbox-label {
-      line-height: 35px;
-      height: 35px;
-      gap: 7px;
-    }
-    .mat-checkbox-inner-container .mat-checkbox-frame {
-      border-color: #b6b4b2;
-      border-width: 2px;
-    }
-    .mat-checkbox.mat-accent {
-      width: 100%;
-    }
-    .mat-checkbox .mat-checkbox-layout {
-      width: 100%;
-      padding-left: 16px;
-      align-items: center;
-    }
-    .mat-menu-panel {
-      max-width: 335px;
-      min-width: 153px !important;
-    }
-    .mat-menu-content {
-      padding: 0;
-    }
-  }
+	& .closed__grey {
+		color: #898785;
+	}
+	& .toggle-button {
+		width: fit-content !important;
+	}
+	& .icon__margin {
+		margin-right: 3px;
+	}
+	& .opened__green {
+		color: #17a297;
+	}
+	& .align-items {
+		display: flex;
+		align-items: center;
+	}
+}
+.mat-menu-content-wrapper + .cdk-overlay-connected-position-bounding-box {
+	.mat-menu-content {
+		padding-top: 0px !important;
+		padding-bottom: 0px !important;
+	}
+	.mat-checkbox.mat-checkbox-checked .mat-checkbox-background {
+		background-color: #17a297;
+	}
+	.mat-checkbox-layout .mat-checkbox-inner-container {
+		width: 14px;
+		height: 14px;
+		margin: 0 10px 0 0;
+	}
+	.mat-checkbox-layout .mat-checkbox-label {
+		gap: 7px;
+	}
+	.mat-checkbox-inner-container .mat-checkbox-frame {
+		border-color: #b6b4b2;
+		border-width: 2px;
+	}
+	.mat-checkbox.mat-accent {
+		width: 100%;
+	}
+	.mat-checkbox .mat-checkbox-layout {
+		width: 100%;
+		align-items: center;
+	}
+	.mat-menu-panel {
+		max-width: 375px;
+		min-width: 153px !important;
+	}
+	.mat-menu-content {
+		padding: 0;
+	}
+}
 .scrollbar-container {
-    max-height: 300px;
-    display: flex;
-    flex-direction: column;
+	max-height: 378px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	padding: 15px;
 }
