@@ -42,8 +42,6 @@ import {
 	ClientSpecialFeeDto,
 	ConsultantPeriodServiceProxy,
 	ConsultantPeriodSalesDataDto,
-	CountryDto,
-	LegalEntityDto,
 	EmployeeDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
@@ -303,9 +301,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			currentStepIsCompleted: this.isCompleted,
 			currentStepIsForcefullyEditing: this.editEnabledForcefuly,
 		});
-        // if (this.isCompleted) {
-            this.getSalesStepData();
-        // }
+        this.getSalesStepData();
 	}
 
 	get canToggleEditMode() {
