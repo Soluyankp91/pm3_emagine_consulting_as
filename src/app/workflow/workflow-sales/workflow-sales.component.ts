@@ -469,7 +469,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					}
 				);
 				if (result?.salesClientData?.directClient?.clientId) {
-					this.clientDataComponent?.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
+					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
 				}
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
@@ -1049,11 +1049,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			if (consultant.consultantInvoicingTime?.name === 'Manual date') {
 				consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
 			}
+            consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
 			if (consultant.specialRates.length) {
-				consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
 				for (let rate of consultant.specialRates) {
-					let consultantSpecialRate = new PeriodConsultantSpecialRateDto();
-					consultantSpecialRate = rate;
+					let consultantSpecialRate = new PeriodConsultantSpecialRateDto(rate);
 					consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
 					consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
@@ -1061,11 +1060,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			} else {
 				consultantInput.noSpecialRate = true;
 			}
+            consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 			if (consultant.specialFees.length) {
-				consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 				for (let fee of consultant.specialFees) {
-					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto();
-					consultantSpecialFee = fee;
+					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto(fee);
 					consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
 					consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
