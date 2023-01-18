@@ -21,6 +21,8 @@ import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() readOnlyMode: boolean;
+    @Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
+	@Input() clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	@Output() onDirectClientSelected: EventEmitter<MatAutocompleteSelectedEvent> = new EventEmitter<MatAutocompleteSelectedEvent>();
 	@Output() clientPeriodDatesChanged: EventEmitter<any> = new EventEmitter<any>();
 	salesClientDataForm: WorkflowSalesClientDataForm;
@@ -47,9 +49,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
 	clientSpecialRateFilter = new UntypedFormControl('');
-	clientSpecialRateList: ClientSpecialRateDto[] = [];
 	clientSpecialFeeFilter = new UntypedFormControl('');
-	clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,

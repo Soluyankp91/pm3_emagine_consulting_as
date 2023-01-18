@@ -495,11 +495,6 @@
                                             <mat-form-field appearance="fill" class="add-rates-button--dropdown formFieldNoMarginPadding filter-select u-w--100">
                                                 <mat-label>Choose special rate</mat-label>
                                                 <mat-select #consultantSpecialRateSelect formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
-                                                    <ng-container *ngIf="clientSpecialRateList.length === 0">
-                                                        <mat-option (click)="$event.stopPropagation();">
-                                                            No results
-                                                        </mat-option>
-                                                    </ng-container>
                                                     <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'; trackBy: trackById">
                                                         <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger) : ''">
                                                             {{ item.internalName }}
@@ -650,11 +645,6 @@
                                             <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                 <mat-label>Choose special fee</mat-label>
                                                 <mat-select #consultantSpecialFeeSelect formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
-                                                    <ng-container *ngIf="clientSpecialFeeList.length === 0">
-                                                        <mat-option (click)="$event.stopPropagation();">
-                                                            No results
-                                                        </mat-option>
-                                                    </ng-container>
                                                     <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.specialFees : 'clientSpecialFeeId'; trackBy: trackById">
                                                         <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger) : ''">
                                                             {{ item.internalName }}
