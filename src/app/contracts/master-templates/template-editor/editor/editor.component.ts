@@ -11,7 +11,7 @@ import { getTabs, Tab } from './tabs';
     DxTabsModule
   ]
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent {
   tabs: Tab[];
   tabContent: string;
 
@@ -21,11 +21,6 @@ export class EditorComponent implements OnInit {
   }
 
   selectTab(e: any) {
-    console.log(e)
     this.tabContent = this.tabs[e.itemIndex].content;
-  }
-
-  ngOnInit(): void {
-    return;
   }
 }
