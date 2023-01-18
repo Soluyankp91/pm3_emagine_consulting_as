@@ -1,15 +1,37 @@
-<div id="tabs">
-  <dx-tabs
-    #apiTabs
-    [dataSource]="tabs"
-    [selectedIndex]="0"
-    (onItemClick)="selectTab($event)"
-  ></dx-tabs>
-  <div class="content dx-fieldset">
-    <div class="dx-field">
-    <div class="dx-field">
-      {{ tabContent }}
+<dx-tab-panel
+  #tabPanel
+  [height]="'auto'"
+  [selectedIndex]="0"
+  [loop]="false"
+>
+  <dxi-item title="File">
+    <div *dxTemplate>
+      <div [innerHTML]="template$ | async"></div>
+      <!-- component -->
     </div>
-  </div>
-</div>
-  
+  </dxi-item>
+
+  <dxi-item title="Format">
+    <div *dxTemplate>
+      <!-- component -->
+    </div>
+  </dxi-item>
+
+  <dxi-item title="Merge Fields">
+    <div *dxTemplate>
+      <!-- component -->
+    </div>
+  </dxi-item>
+
+  <dxi-item title="Compare" icon="">
+    <div *dxTemplate>
+      <!-- component -->
+    </div>
+  </dxi-item>
+
+  <dxi-item title="View" icon="">
+    <div *dxTemplate>
+      <!-- component -->
+    </div>
+  </dxi-item>
+</dx-tab-panel>

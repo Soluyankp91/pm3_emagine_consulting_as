@@ -1,26 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { DxButtonModule, DxTabsModule } from 'devextreme-angular';
-import { getTabs, Tab } from './tabs';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { DxButtonModule, DxTabsModule, DxTabPanelModule, DxCheckBoxModule, DxTemplateModule  } from 'devextreme-angular';
+import { EditorService } from './_api/editor.service';
 @Component({
   standalone: true,
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
   imports: [
+    CommonModule,
     DxButtonModule,
-    DxTabsModule
-  ]
+    DxTabsModule,
+    DxTabPanelModule,
+    DxCheckBoxModule,
+    DxTemplateModule,
+  ],
+  providers: [EditorService]
 })
 export class EditorComponent {
-  tabs: Tab[];
-  tabContent: string;
+  template$ = this.editorService.getTemplate();
 
-  constructor() {
-    this.tabs = getTabs();
-    this.tabContent = this.tabs[0].content;
+  constructor(private editorService: EditorService) {
+    
   }
 
-  selectTab(e: any) {
-    this.tabContent = this.tabs[e.itemIndex].content;
-  }
 }

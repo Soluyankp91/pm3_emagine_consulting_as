@@ -49,6 +49,11 @@ import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
+import { ViewComponent } from './master-templates/template-editor/editor/components/view/view.component';
+import { FormatComponent } from './master-templates/template-editor/editor/components/format/format.component';
+import { MergeFieldsComponent } from './master-templates/template-editor/editor/components/merge-fields/merge-fields.component';
+import { CompareComponent } from './master-templates/template-editor/editor/components/compare/compare.component';
+import { FileComponent } from './master-templates/template-editor/editor/components/file/file.component';
 
 @NgModule({
 	declarations: [
@@ -83,6 +88,11 @@ import { ClientTemplatesService } from './client-specific-templates/listAndPrevi
 		TenantsComponent,
 		IsEnabledComponent,
 		TruncateTextCustomPipe,
+  ViewComponent,
+  FormatComponent,
+  MergeFieldsComponent,
+  CompareComponent,
+  FileComponent,
 	],
 	imports: [
 		CommonModule, 
