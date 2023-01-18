@@ -107,7 +107,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 
             // Client Invoicing Reference Person
             invoicePaperworkContactIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
-
+            dontShowInvoiceContact: new UntypedFormControl(false),
             // Client Evaluations - Consultant
             evaluationsReferencePersonIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
             evaluationsDisabled: new UntypedFormControl(false),
@@ -177,6 +177,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get invoicePaperworkContactIdValue() {
         return this.get('invoicePaperworkContactIdValue');
+    }
+    get dontShowInvoiceContact() {
+        return this.get('dontShowInvoiceContact');
     }
     get evaluationsReferencePersonIdValue() {
         return this.get('evaluationsReferencePersonIdValue');
