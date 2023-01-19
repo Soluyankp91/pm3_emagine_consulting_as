@@ -117,11 +117,6 @@ import { FileComponent } from './master-templates/template-editor/editor/compone
 		EnabledComponent,
 		ApprovalFilterComponent,
 		ModeFilterComponent,
-		ViewComponent,
-		FormatComponent,
-		MergeFieldsComponent,
-		CompareComponent,
-		FileComponent,
 	],
 	imports: [
 		CommonModule,
