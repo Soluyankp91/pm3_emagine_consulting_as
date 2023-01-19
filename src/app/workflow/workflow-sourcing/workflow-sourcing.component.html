@@ -1,7 +1,12 @@
 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="sourcingConsultantsDataForm" class="workflow-sourcing u-w--100" id="consultantData">
-    <ng-container *ngIf="canToggleEditMode">
-        <button class="absolute-edit-toggle" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon svgIcon="edit-icon"></mat-icon></button>
-    </ng-container>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+        <h1 class="workflow-section--header-main">Sourcing data</h1>
+        <ng-container *ngIf="readOnlyMode">
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
+            </div>
+        </ng-container>
+    </div>
     <ng-container formArrayName="consultantTerminationSourcingData">
         <ng-container *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; trackBy: trackByItem; let i = index; last as last" [formGroupName]="i">
             <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">

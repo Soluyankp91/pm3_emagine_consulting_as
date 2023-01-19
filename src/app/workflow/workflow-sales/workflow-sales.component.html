@@ -21,14 +21,7 @@
                     <h1 class="workflow-section--header-main">Termination data</h1>
                     <ng-container *ngIf="readOnlyMode">
                         <div fxLayout="row" fxLayoutAlign="start start">
-                            <ng-container *ngIf="canToggleEditMode">
-                                <button
-                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
-                                    mat-icon-button
-                                    appPreventDoubleClick (throttledClick)="toggleEditMode()">
-                                    <mat-icon svgIcon="edit-icon"></mat-icon>
-                                </button>
-                            </ng-container>
+                            <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
