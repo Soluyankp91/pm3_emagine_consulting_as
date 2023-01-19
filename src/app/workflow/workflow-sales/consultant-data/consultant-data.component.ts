@@ -599,7 +599,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					if (value) {
 						toSend.name = value?.consultant?.id ? value.consultant.name : value;
 					}
-					if (toSend?.clientId && value) {
+					if (toSend?.clientId && value) { // FIXME: remove && value, once BE is fixed
 						return this._lookupService.consultantsWithSourcingRequest(
 							toSend.clientId,
 							toSend.name,
