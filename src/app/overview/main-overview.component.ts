@@ -53,6 +53,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     deliveryTypes: EnumEntityTypeDto[] = [];
     margins: EnumEntityTypeDto[] = [];
     isAdvancedFilters = false;
+    advancedFiltersCounter = 0;
 
     workflowFilter = new UntypedFormControl(null);
     accountManagerFilter = new UntypedFormControl();
@@ -167,6 +168,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(700)
             ).subscribe(() => {
+                this.updateAdvancedFiltersCounter();
                 this.changeViewType(true);
             });
      }
@@ -184,6 +186,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    updateAdvancedFiltersCounter() {
+        let filtersArr = new Array(this.paymentEntityControl.value?.length, this.salesTypeControl.value?.length, this.deliveryTypesControl.value?.length, this.marginsControl.value?.length).filter(item => item !== null && item !== undefined);
+        this.advancedFiltersCounter = filtersArr.length > 0 ? filtersArr.reduce((prev, curr) => prev + curr) : 0;
     }
 
     detectProcessColor(process: OverviewFlag) {
@@ -693,6 +700,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             this.overviewViewTypeControl.setValue(filters?.overviewViewTypeControl, {emitEvent: false});
             this.viewType.setValue(filters?.viewType, {emitEvent: false});
         }
+        this.updateAdvancedFiltersCounter();
         this.changeViewType();
     }
 

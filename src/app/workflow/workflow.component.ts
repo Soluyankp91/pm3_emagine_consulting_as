@@ -42,6 +42,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     totalCount: number | undefined = 0;
     sorting = 'ActualEndDate desc';
     isDataLoading = true;
+    advancedFiltersCounter = 0;
 
     workflowDisplayColumns = [
         'flag',
@@ -135,6 +136,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             takeUntil(this._unsubscribe),
             debounceTime(700)
         ).subscribe(() => {
+            this.updateAdvancedFiltersCounter();
             this.getWorkflowList(true);
         });
 
@@ -185,6 +187,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    updateAdvancedFiltersCounter() {
+        this.advancedFiltersCounter = new Array(this.invoicingEntityControl.value, this.paymentEntityControl.value, this.salesTypeControl.value, this.deliveryTypesControl.value, this.workflowStatusControl.value).filter(item => item !== null && item !== undefined).length;
     }
 
     saveGridOptions() {
@@ -241,6 +247,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.includeDeleted = filters.includeDeleted;
             this.workflowFilter.setValue(filters.searchFilter, {emitEvent: false});
         }
+        this.updateAdvancedFiltersCounter();
         this.getWorkflowList();
     }
 
