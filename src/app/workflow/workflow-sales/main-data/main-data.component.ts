@@ -123,19 +123,16 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.name : value;
-						}
-						return this._lookupService.employees(value);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.name : value;
+                    }
+                    return this._lookupService.employees(value);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {
@@ -158,19 +155,16 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.name : value;
-						}
-						return this._lookupService.employees(value);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.name : value;
+                    }
+                    return this._lookupService.employees(value);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {

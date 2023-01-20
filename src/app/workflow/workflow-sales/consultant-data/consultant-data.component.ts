@@ -293,6 +293,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
@@ -322,8 +323,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
+					// if (value) {
 						let toSend = {
 							name: value,
 							maxRecordsCount: 1000,
@@ -332,9 +334,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 							toSend.name = value.id ? value.clientName : value;
 						}
 						return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
-					}
+					// } else {
+					// 	return of([]);
+					// }
 				})
 			)
 			.subscribe((list: ClientResultDto[]) => {
@@ -599,7 +601,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					if (value) {
 						toSend.name = value?.consultant?.id ? value.consultant.name : value;
 					}
-					if (toSend?.clientId && value) { // FIXME: remove && value, once BE is fixed
+					if (toSend?.clientId) {
 						return this._lookupService.consultantsWithSourcingRequest(
 							toSend.clientId,
 							toSend.name,
