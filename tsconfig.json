@@ -18,9 +18,15 @@
     "module": "es2020",
     "lib": [
       "es2018",
+      "es2020",
       "dom",
       "es2015"
     ],
+    "paths": {
+      "jszip": [
+        "node_modules/jszip/dist/jszip.min.js"
+      ]
+    },
     "strictPropertyInitialization": false,
   },
   "angularCompilerOptions": {
