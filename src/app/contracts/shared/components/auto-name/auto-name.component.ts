@@ -98,31 +98,31 @@ export class AutoNameComponent implements OnInit, DoCheck {
     }
 
     private _subscribeOnShowSampleToggle() {
-        this._templatePreview = this.retriewTemplate$.pipe(
-            switchMap(() => {
-                this.showSample = !this.showSample;
-                if (this.showSample) {
-                    this.textControlBufferValue = this.textControl.value;
-                    this.textControl.disable({ emitEvent: false });
-                    return this.mergeFieldsServiceProxy
-                        .templatePreview(this.textControlBufferValue)
-                        .pipe(
-                            map((v) => v.value),
-                            tap((templatePreview: string | undefined) => {
-                                this.textControl.setValue(templatePreview, {
-                                    emitEvent: false,
-                                });
-                            })
-                        );
-                }
-                this.textControl.enable({ emitEvent: false });
-                this.textControl.setValue(this.textControlBufferValue, {
-                    emitEvent: false,
-                });
-                return EMPTY;
-            })
-        );
-        this._templatePreview.subscribe();
+        // this._templatePreview = this.retriewTemplate$.pipe(
+        //     switchMap(() => {
+        //         this.showSample = !this.showSample;
+        //         if (this.showSample) {
+        //             this.textControlBufferValue = this.textControl.value;
+        //             this.textControl.disable({ emitEvent: false });
+        //             return this.mergeFieldsServiceProxy
+        //                 .templatePreview(this.textControlBufferValue)
+        //                 .pipe(
+        //                     map((v) => v.value),
+        //                     tap((templatePreview: string | undefined) => {
+        //                         this.textControl.setValue(templatePreview, {
+        //                             emitEvent: false,
+        //                         });
+        //                     })
+        //                 );
+        //         }
+        //         this.textControl.enable({ emitEvent: false });
+        //         this.textControl.setValue(this.textControlBufferValue, {
+        //             emitEvent: false,
+        //         });
+        //         return EMPTY;
+        //     })
+        // );
+        // this._templatePreview.subscribe();
     }
 
     private _initValidators() {
