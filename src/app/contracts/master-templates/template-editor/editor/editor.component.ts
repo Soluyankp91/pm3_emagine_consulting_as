@@ -1,21 +1,20 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
-import { FileComponent } from './components/file/file.component';
+import { takeUntil, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+// Project
 import { EditorService } from './_api/editor.service';
+import { FileManagementService } from './services/file-management.service';
+import { DownloadActions, FileActions, ToolbarService } from './services/toolbar-service';
 
 // party
 import { 
   DxButtonModule, 
   DxTabsModule, 
-  DxTabPanelModule,
-  DxCheckBoxModule, 
-  DxTemplateModule,
   DxHtmlEditorModule,
-  DxBoxModule
+  DxDropDownButtonModule
 } from 'devextreme-angular';
-import { FormatComponent } from './components/format/format.component';
-import { tap } from 'rxjs/operators';
+
 @Component({
   standalone: true,
   selector: 'app-editor',
@@ -26,37 +25,71 @@ import { tap } from 'rxjs/operators';
 
     // Dev-extreme
     DxButtonModule,
+    DxDropDownButtonModule,
     DxTabsModule,
-    DxTabPanelModule,
-    DxCheckBoxModule,
-    DxTemplateModule,
     DxHtmlEditorModule,
-    DxBoxModule,
 
     // components
-    FileComponent,
-    FormatComponent
+    
   ],
-  providers: [EditorService]
+  providers: [
+    EditorService,
+    ToolbarService,
+    FileManagementService
+  ]
 })
-export class EditorComponent {
+export class EditorComponent implements OnInit, OnDestroy {
+  _destroy$ = new Subject();
+
   template$ = this.editorService.getTemplate();
   template = '';
-  selectedIndex = 0;
-  multiLine = false;
+
+  toolbars = this.toolbarService.getToolbars();
+  toolbar = this.toolbars[0];
   
+  selectedIndex = 0;
   tabs: string[] = [
     'File', 'Format', 'Merge Fields', 'Compare', 'View'
   ]
 
-  constructor(private editorService: EditorService) {
+  constructor(
+    private editorService: EditorService,
+    private toolbarService: ToolbarService,
+    private fileManagementService: FileManagementService
+  ) {
+    
+  }
+
+  ngOnInit(): void {
     this.template$.pipe(
-      tap(t => this.template = t)
+      tap(template => this.template = template)
     ).subscribe();
+
+    this.registerFileActions();
   }
 
   selectTab(event: {itemIndex: number}) {
     this.selectedIndex = event.itemIndex;
-    this.multiLine = false;
+    this.toolbar = this.toolbars[this.selectedIndex];
+  }
+
+  registerFileActions() {
+    this.toolbarService.toolbarActions$.pipe(
+      takeUntil(this._destroy$),
+      tap((res: FileActions | DownloadActions) => {
+        switch (res) {
+          case FileActions.PRINT:
+            this.fileManagementService.print(this.template);
+            break;
+          case DownloadActions.SAFE_AS_PDF: 
+            this.fileManagementService.exportAsPdf(this.template);
+            break;
+        }
+      })
+    ).subscribe()
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.complete();
   }
 }

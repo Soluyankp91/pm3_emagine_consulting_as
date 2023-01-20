@@ -63,11 +63,6 @@ import { ApprovalComponent } from './shared/components/approval/approval.compone
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
-import { ViewComponent } from './master-templates/template-editor/editor/components/view/view.component';
-import { FormatComponent } from './master-templates/template-editor/editor/components/format/format.component';
-import { MergeFieldsComponent } from './master-templates/template-editor/editor/components/merge-fields/merge-fields.component';
-import { CompareComponent } from './master-templates/template-editor/editor/components/compare/compare.component';
-import { FileComponent } from './master-templates/template-editor/editor/components/file/file.component';
 
 @NgModule({
 	declarations: [
