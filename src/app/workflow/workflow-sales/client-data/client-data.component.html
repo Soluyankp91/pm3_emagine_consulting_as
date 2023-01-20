@@ -32,13 +32,14 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding client-and-consultant-autocomplete"
-                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': directClientAutocomplete.isOpen}">
                             <mat-label>Direct client</mat-label>
                             <input [disabled]="readOnlyMode" required #directClientFilterInput type="text" matInput
                                 [matAutocomplete]="directClientAutocomplete" formControlName="directClientIdValue"
                                 appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                 placeholder="Direct client name + address">
+                            <span matSuffix class="shevron"></span>
                             <mat-autocomplete #directClientAutocomplete="matAutocomplete"
                                 [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)"
                                 (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -71,13 +72,14 @@
                     [fxHide]="!salesClientDataForm.differentEndClient?.value">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding client-and-consultant-autocomplete"
-                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': endClientAutocomplete.isOpen}">
                             <mat-label>End client</mat-label>
                             <input [disabled]="readOnlyMode" [required]="salesClientDataForm.differentEndClient?.value"
                                 #endClientFilterInput type="text" matInput [matAutocomplete]="endClientAutocomplete"
                                 formControlName="endClientIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="End client name + address">
+                            <span matSuffix class="shevron"></span>
                             <mat-autocomplete #endClientAutocomplete="matAutocomplete"
                                 [displayWith]="displayClientNameFn" (optionSelected)="focusToggleMethod('auto')"
                                 (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -247,14 +249,15 @@
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                             <mat-form-field appearance="outline"
-                                class="formFieldNoMarginPadding client-and-consultant-autocomplete u-mr--12"
-                                [ngClass]="{'disabled-input': readOnlyMode}">
+                                class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron u-mr--12"
+                                [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
                                 <mat-label>Client invoicing recipient</mat-label>
                                 <input [disabled]="readOnlyMode" #clientInvoicingRecipientInput type="text" matInput
                                     [matAutocomplete]="clientInvoicingRecipientAutocomplete"
                                     formControlName="clientInvoicingRecipientIdValue" appPreventDoubleClick
                                     (throttledClick)="$event.stopPropagation()"
                                     placeholder="Client invoicing recipient">
+                                    <span matSuffix class="shevron"></span>
                                 <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete"
                                     [displayWith]="displayClientNameFn" (optionSelected)="focusToggleMethod('auto')"
                                     (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -466,13 +469,14 @@
 
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-312"
-                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-312"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
                             <mat-label>Invoice / Paperwork Contact</mat-label>
                             <input [disabled]="readOnlyMode" required #invoicingReferencePersonInput type="text"
                                 matInput [matAutocomplete]="invoicingReferencePersonAutocomplete"
                                 formControlName="invoicePaperworkContactIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="Invoice / Paperwork Contact">
+                                <span matSuffix class="shevron"></span>
                             <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
                                 [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
                                 (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -871,15 +875,16 @@
                     </mat-error>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300"
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-300"
                         [fxHide]="salesClientDataForm.value?.evaluationsDisabled"
-                        [ngClass]="{'disabled-input': readOnlyMode}">
+                        [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': evaluationReferencePersonAutocomplete.isOpen}">
                         <mat-label>Evaluation Reference Person</mat-label>
                         <input [disabled]="readOnlyMode" [required]="!salesClientDataForm.value?.evaluationsDisabled"
                             type="text" matInput [matAutocomplete]="evaluationReferencePersonAutocomplete"
                             name="evaluationsReferencePerson" formControlName="evaluationsReferencePersonIdValue"
                             appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                             placeholder="Final Evaluation Reference Person">
+                            <span matSuffix class="shevron"></span>
                         <mat-autocomplete #evaluationReferencePersonAutocomplete="matAutocomplete"
                             [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
                             (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -949,13 +954,14 @@
                     <ng-container *ngFor="let signer of contractSigners.controls; trackBy: trackByItem; let i = index" [formGroupName]="i">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                             <mat-form-field appearance="outline"
-                                class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%"
-                                [ngClass]="{'disabled-input': readOnlyMode}">
+                                class="u-w--100 formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--16" fxFlex="33%"
+                                [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': contactSignerAutocomplete.isOpen}">
                                 <mat-label>Name</mat-label>
                                 <input [disabled]="readOnlyMode" required type="text" matInput
                                     [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact"
                                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                     placeholder="Name">
+                                    <span matSuffix class="shevron"></span>
                                 <mat-autocomplete #contactSignerAutocomplete="matAutocomplete"
                                     [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
                                     (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">

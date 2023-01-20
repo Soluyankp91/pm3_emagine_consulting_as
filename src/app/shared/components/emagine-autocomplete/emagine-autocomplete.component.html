@@ -1,0 +1,19 @@
+<mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
+    <mat-label>{{label}}</mat-label>
+    <input #invoicingReferencePersonAutocompleteInput type="text" matInput
+        [matAutocomplete]="auto"
+        [formControl]="control" appPreventDoubleClick
+        (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
+    <mat-autocomplete #auto="matAutocomplete"
+        [displayWith]="displayWithFn">
+        <ng-container>
+            <mat-option *ngFor="let item of options" [value]="item" [ngClass]="{ 'no-data': item[idValue] === undefined }">
+                <ng-container
+                    *ngIf="optionTemplate"
+                    [ngTemplateOutlet]="optionTemplate"
+                    [ngTemplateOutletContext]="{ item }">
+                </ng-container>
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+</mat-form-field>
