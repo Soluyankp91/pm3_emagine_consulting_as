@@ -5,7 +5,13 @@ import { Subject } from 'rxjs';
 // Project
 import { EditorService } from './_api/editor.service';
 import { FileManagementService } from './services/file-management.service';
-import { DownloadActions, FileActions, ToolbarService } from './services/toolbar-service';
+import { 
+  DownloadActions, 
+  FileActions, 
+  FileToolbarService,
+  FormatToolbarService
+} from './services/toolbar';
+
 
 // party
 import { 
@@ -34,7 +40,8 @@ import {
   ],
   providers: [
     EditorService,
-    ToolbarService,
+    FileToolbarService,
+    FormatToolbarService,
     FileManagementService
   ]
 })
@@ -44,7 +51,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   template$ = this.editorService.getTemplate();
   template = '';
 
-  toolbars = this.toolbarService.getToolbars();
+  toolbars = [
+    this.fileToolbarService.getToolbar(),
+    this.formatToolbarService.getToolbar()
+  ]
   toolbar = this.toolbars[0];
   
   selectedIndex = 0;
@@ -54,7 +64,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private editorService: EditorService,
-    private toolbarService: ToolbarService,
+    private fileToolbarService: FileToolbarService,
+    private formatToolbarService: FormatToolbarService,
     private fileManagementService: FileManagementService
   ) {
     
@@ -74,7 +85,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   registerFileActions() {
-    this.toolbarService.toolbarActions$.pipe(
+    this.fileToolbarService.fileToolbarActions$.pipe(
       takeUntil(this._destroy$),
       tap((res: FileActions | DownloadActions) => {
         switch (res) {
