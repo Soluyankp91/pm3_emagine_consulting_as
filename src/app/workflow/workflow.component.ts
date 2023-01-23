@@ -5,6 +5,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
@@ -18,9 +19,9 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon, WorkflowStatusMenuList } from './workflow.model';
+import { getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, MultiSortList, SelectableEmployeeDto, StepTypes, SyncStatusIcon, WorkflowStatusMenuList } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.5';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.6';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -41,6 +42,21 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
     sorting = 'ActualEndDate desc';
+
+    sortingValues: {[key: string]: SortDirection} = {
+        WorkflowId: '',
+        clientName: '',
+        SalesTypeId: '',
+        DeliveryTypeId: '',
+        StartDate: '',
+        ActualEndDate: '',
+        ConsultantName: '',
+        WorkflowStatus: '',
+        startDateOfOpenedPeriodOrLastClientPeriod: '',
+        syncStateStatus: ''
+    };
+    sortingValuesArray: MultiSortList[] = Object.keys(this.sortingValues).map(k => { return {column: k, order: null, direction: ''}});
+
     isDataLoading = true;
 
     workflowDisplayColumns = [
@@ -192,6 +208,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             pageNumber: this.pageNumber,
             deafultPageSize: this.deafultPageSize,
             sorting: this.sorting,
+            sortingValues: this.sortingValues,
+            sortingValuesArray: this.sortingValuesArray,
             owners: this.selectedAccountManagers,
             invoicingEntity: this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined,
             paymentEntity: this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined,
@@ -219,6 +237,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.pageNumber = filters.pageNumber;
             this.deafultPageSize = filters.deafultPageSize;
             this.sorting = filters.sorting;
+            this.sortingValues = filters.sortingValues;
+            this.sortingValuesArray = filters.sortingValuesArray;
             this.selectedAccountManagers = filters.owners?.length ? filters.owners : [];
             this.workflowStatusControl.setValue(filters.workflowStatus, {emitEvent: false});
             this.deliveryTypesControl.setValue(filters.deliveryTypes, {emitEvent: false});
@@ -483,7 +503,41 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
+        this.sortingValues[event?.active!] = event?.direction!;
+        let dedicatedColumn = this.sortingValuesArray.find(x => x.column === event?.active);
+        if (dedicatedColumn) {
+            dedicatedColumn.direction = event?.direction!;
+            let order = this.sortingValuesArray.filter(x => x.direction !== '').length;
+            if (event.direction !== '') {
+                this.sortingValuesArray.forEach(x => {
+                    if (x.direction !== '' && x.order !== null) {
+                        if (dedicatedColumn?.order !== null && x.order > 1) {
+                            x.order -= 1;
+                        }
+                    }
+                });
+            }
+            dedicatedColumn.order = event.direction !== '' ? order : null;
+        }
+        this.sortingValuesArray.sort((a, b) => {
+            if (a.order === null) {
+                return 1;
+            }
+            if (b.order === null) {
+                return -1;
+            }
+            if (a.order === b.order) {
+                return 0;
+            }
+            return a.order < b.order ? -1 : 1;
+
+        });
+        let sorting = this.sortingValuesArray.map(item => {
+            if (item.order !== null) {
+                return item['column'].concat(' ', item['direction']);
+            }
+        }).filter(Boolean).join(', ');
+        this.sorting = sorting;
         this.getWorkflowList();
     }
 

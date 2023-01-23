@@ -193,3 +193,10 @@ export const WorkflowStatusMenuList = [
         selected: false
     }
 ];
+
+
+export type MultiSortList = {
+    order: number | null;
+    column: string;
+    direction: 'asc' | 'desc' | ''
+}

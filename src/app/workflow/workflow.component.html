@@ -223,15 +223,15 @@
     </ng-container>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
         <div fxLayout="column" class="u-w--100">
-            <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+            <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort>
                 <ng-container matColumnDef="flag">
-                    <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="3%" fxLayoutAlign="center center">
+                    <mat-header-cell *matHeaderCellDef fxFlex="4%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="4%" fxLayoutAlign="center center" class="u-pr--5">
                         <mat-icon class="workflow-flag" [ngClass]="row?.isNewSale ? 'workflow-flag--sales' : 'workflow-flag--extension'" [matTooltip]="row?.isNewSale ? 'New Sales' : 'Has Extension'" matTooltipClass="white-tooltip">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%">ID</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['WorkflowId'] === '' ? '' : 'WorkflowId'" [matSortDirection]="sortingValues['WorkflowId']" (matSortChange)="sortChanged($event)" mat-sort-header="WorkflowId" fxFlex="5%">ID</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.workflowId" matTooltipClass="white-tooltip">
                             {{row.workflowId}}
@@ -239,7 +239,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%">Client</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['clientName'] === '' ? '' : 'clientName'" [matSortDirection]="sortingValues['clientName']" (matSortChange)="sortChanged($event)" mat-sort-header="clientName" fxFlex="10%">Client</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientName ?? '-'}}
@@ -247,7 +247,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="SalesTypeId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Sales type </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['SalesTypeId'] === '' ? '' : 'SalesTypeId'" [matSortDirection]="sortingValues['SalesTypeId']" (matSortChange)="sortChanged($event)" mat-sort-header="SalesTypeId" fxFlex="8%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.salesType?.name ?? '-'}}
@@ -255,7 +255,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="DeliveryTypeId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Delivery type </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['DeliveryTypeId'] === '' ? '' : 'DeliveryTypeId'" [matSortDirection]="sortingValues['DeliveryTypeId']" (matSortChange)="sortChanged($event)" mat-sort-header="DeliveryTypeId" fxFlex="8%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.deliveryType?.name ?? '-'}}
@@ -264,7 +264,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="StartDate">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%"> Start </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['StartDate'] === '' ? '' : 'StartDate'" [matSortDirection]="sortingValues['StartDate']" (matSortChange)="sortChanged($event)" mat-sort-header="StartDate" fxFlex="6%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="6%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDate | date: 'dd.MM.YYYY') ?? '-'}}
@@ -272,7 +272,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ActualEndDate">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%"> End </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['ActualEndDate'] === '' ? '' : 'ActualEndDate'" [matSortDirection]="sortingValues['ActualEndDate']" (matSortChange)="sortChanged($event)" mat-sort-header="ActualEndDate" fxFlex="6%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="6%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.endDate | date: 'dd.MM.YYYY') ?? '-'}}
@@ -280,7 +280,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ConsultantName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Consultants </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['ConsultantName'] === '' ? '' : 'ConsultantName'" [matSortDirection]="sortingValues['ConsultantName']" (matSortChange)="sortChanged($event)" mat-sort-header="ConsultantName" fxFlex="10%"> Consultants </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                             <span class="flex-items-center" fxFlex="100%">
@@ -301,7 +301,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowStatus">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> Status </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef fxFlex="5%" matSort [matSortActive]="sortingValues['WorkflowStatus'] === '' ? '' : 'WorkflowStatus'" [matSortDirection]="sortingValues['WorkflowStatus']" (matSortChange)="sortChanged($event)" mat-sort-header="WorkflowStatus" fxLayoutAlign="center center"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <ng-container *ngIf="row.status === workflowStatus.Pending || row.status === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
                             <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon"
@@ -434,7 +434,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDateOfOpenedPeriodOrLastClientPeriod">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Step start </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['startDateOfOpenedPeriodOrLastClientPeriod'] === '' ? '' : 'startDateOfOpenedPeriodOrLastClientPeriod'" [matSortDirection]="sortingValues['startDateOfOpenedPeriodOrLastClientPeriod']" (matSortChange)="sortChanged($event)" mat-sort-header="startDateOfOpenedPeriodOrLastClientPeriod" fxFlex="8%"> Step start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'}}
@@ -442,8 +442,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="syncStateStatus">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%" fxLayoutAlign="center center"> Sync </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="6%" fxLayoutAlign="center center">
+                    <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['syncStateStatus'] === '' ? '' : 'syncStateStatus'" [matSortDirection]="sortingValues['syncStateStatus']" (matSortChange)="sortChanged($event)" mat-sort-header="syncStateStatus" fxFlex="5%" fxLayoutAlign="center center"> Sync </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <mat-icon class="sync-status-icon" svgIcon="{{row.syncStateStatusIcon}}" [matTooltip]="row.syncStateStatusName ?? '-'" matTooltipClass="white-tooltip"></mat-icon>
                     </mat-cell>
                 </ng-container>
