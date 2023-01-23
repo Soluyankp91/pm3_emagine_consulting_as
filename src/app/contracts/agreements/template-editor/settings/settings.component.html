@@ -1,0 +1,299 @@
+<ng-container *ngIf="options$ | async as options">
+	<form [formGroup]="agreementFormGroup">
+		<div class="page-container">
+			<div class="template-settings-section">
+				<h3 class="template-settings-header">Agreement settings</h3>
+				<mat-radio-group formControlName="creationMode" class="radio-button-group">
+					<mat-radio-button
+						class="option"
+						[value]="creationModes.InheritedFromParent"
+						(click)="modeControl$.next(creationModes.InheritedFromParent)"
+						>Inherit from template</mat-radio-button
+					>
+					<mat-radio-button
+						class="option"
+						[value]="creationModes.Duplicated"
+						(click)="modeControl$.next(creationModes.Duplicated)"
+						>Duplicate from other agreement</mat-radio-button
+					>
+					<mat-radio-button
+						class="option"
+						[value]="creationModes.ProvidedByOtherParty"
+						(click)="modeControl$.next(creationModes.ProvidedByOtherParty)"
+						>Agreement provided by other party</mat-radio-button
+					>
+					<mat-radio-button
+						class="option"
+						[value]="creationModes.FromScratch"
+						(click)="modeControl$.next(creationModes.FromScratch)"
+						>Create from scratch</mat-radio-button
+					>
+				</mat-radio-group>
+				<mat-divider></mat-divider>
+				<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
+					<ng-container *ngIf="templateOptions.options$ | async as options">
+						<emg-dropdown-autocomplete-single-select
+							[options]="$any(options)"
+							[outputProperty]="templateOptions.outputProperty"
+							[labelKey]="templateOptions.labelKey"
+                            [label]="templateOptions.label"
+							formControlName="parentTemplate"
+							(inputEmitter)="
+								templateOptions.optionsChanged$.next($event)
+							">
+                            </emg-dropdown-autocomplete-single-select
+					></ng-container>
+				</ng-container>
+
+				<div class="form-row">
+					<mat-form-field appearance="outline" class="small-field">
+						<mat-label>Document type</mat-label>
+						<mat-select formControlName="agreementType" placeholder="Document type">
+							<ng-container *ngFor="let agreementType of options[0].agreementTypes">
+								<mat-option [value]="agreementType.id">
+									{{ agreementType.name }}
+								</mat-option>
+							</ng-container>
+						</mat-select>
+						<mat-error>
+							<app-validator [control]="agreementFormGroup.agreementType"></app-validator>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="small-field">
+						<mat-label>Recipient type</mat-label>
+						<mat-select formControlName="recipientTypeId" placeholder="Recipient type">
+							<ng-container *ngFor="let recipientType of options[0].recipientTypes">
+								<mat-option [value]="recipientType.id">
+									{{ recipientType.name }}
+								</mat-option>
+							</ng-container>
+						</mat-select>
+						<mat-error>
+							<app-validator [control]="agreementFormGroup.recipientTypeId"></app-validator>
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<ng-container *ngIf="clientOptions$ | async as clientOptions">
+					<ng-container *ngIf="clientOptions.options$ | async as options">
+						<emg-dropdown-autocomplete-single-select
+							formControlName="recipientId"
+							[labelKey]="clientOptions.labelKey"
+							label="Client"
+							[options]="options"
+							[outputProperty]="clientOptions.outputProperty"
+							(inputEmitter)="clientOptions.optionsChanged$.next($event)"></emg-dropdown-autocomplete-single-select>
+					</ng-container>
+				</ng-container>
+				<mat-divider></mat-divider>
+				<mat-form-field appearance="outline">
+					<mat-label>Agreement name</mat-label>
+					<input matInput type="text" formControlName="nameTemplate" placeholder="Agreement name" />
+					<mat-error><app-validator [control]="agreementFormGroup.nameTemplate"></app-validator></mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="outline">
+					<mat-label>Definition(optional)</mat-label>
+					<input matInput type="text" formControlName="definition" placeholder="Definition" />
+				</mat-form-field>
+				<mat-form-field appearance="outline">
+					<mat-label>Internal legal entity</mat-label>
+					<mat-select formControlName="legalEntityId" placeholder="Internal legal entity">
+						<ng-container *ngFor="let legalEntity of options[0].legalEntities">
+							<mat-option [value]="legalEntity.id">
+								<ng-container *ngIf="legalEntity.id">
+									{{ options[1].legalEntityIds[legalEntity.id] }}
+								</ng-container>
+							</mat-option>
+						</ng-container>
+					</mat-select>
+					<mat-error>
+						<app-validator [control]="agreementFormGroup.legalEntityId"></app-validator>
+					</mat-error>
+				</mat-form-field>
+				<div class="form-row">
+					<mat-form-field appearance="outline" class="small-field">
+						<mat-label>Sales type</mat-label>
+						<mat-select formControlName="salesTypes" multiple placeholder="Sales types">
+							<ng-container *ngFor="let salesType of options[0].salesTypes">
+								<mat-option [value]="salesType.id">
+									{{ salesType.name }}
+								</mat-option>
+							</ng-container>
+						</mat-select>
+						<mat-error>
+							<app-validator [control]="agreementFormGroup.salesTypes"></app-validator>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="small-field">
+						<mat-label>Delivery type</mat-label>
+						<mat-select formControlName="deliveryTypes" multiple placeholder="Delivery type">
+							<ng-container *ngFor="let deliveryType of options[0].deliveryTypes">
+								<mat-option [value]="deliveryType.id">
+									{{ deliveryType.name }}
+								</mat-option>
+							</ng-container>
+						</mat-select>
+						<mat-error>
+							<app-validator [control]="agreementFormGroup.deliveryTypes"></app-validator>
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="form-row">
+					<mat-form-field appearance="outline" class="small-field">
+						<mat-label>Contract type</mat-label>
+						<mat-select formControlName="contractTypes" multiple placeholder="Contract type">
+							<ng-container *ngFor="let contractType of options[0].contractTypes">
+								<mat-option [value]="contractType.id">
+									{{ contractType.name }}
+								</mat-option>
+							</ng-container>
+						</mat-select>
+						<mat-error>
+							<app-validator [control]="agreementFormGroup.contractTypes"></app-validator>
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field appearance="outline" class="small-field">
+						<mat-label>Language of text</mat-label>
+						<mat-select formControlName="language" placeholder="Language of text">
+							<ng-container *ngFor="let language of options[0].languages">
+								<mat-option [value]="language.id">
+									{{ language.name }}
+								</mat-option>
+							</ng-container>
+						</mat-select>
+						<mat-error><app-validator [control]="agreementFormGroup.language"></app-validator></mat-error>
+					</mat-form-field>
+				</div>
+				<mat-form-field appearance="fill" class="date-form-field">
+					<mat-label>Start date - Expiration date</mat-label>
+					<mat-date-range-input
+						[rangePicker]="datePicker"
+						[comparisonStart]="agreementFormGroup.value.startDate"
+						[comparisonEnd]="agreementFormGroup.value.endDate">
+						<input matStartDate placeholder="Start date" formControlName="startDate" />
+						<input matEndDate placeholder="End date" formControlName="endDate" />
+					</mat-date-range-input>
+					<mat-hint>MM/DD/YYYY - MM/DD/YYYY</mat-hint>
+					<mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+					<mat-date-range-picker #datePicker></mat-date-range-picker>
+				</mat-form-field>
+				<mat-form-field appearance="outline" class="textarea-form-field">
+					<mat-label>Notes</mat-label>
+					<textarea matInput formControlName="note" [cdkTextareaAutosize]="false" class="text-area"></textarea>
+				</mat-form-field>
+				<mat-checkbox formControlName="isSignatureRequired">
+					<mat-label>Signature required</mat-label>
+				</mat-checkbox>
+				<ng-container *ngIf="agreementFormGroup.value.isSignatureRequired">
+					<ng-container formArrayName="signers">
+						<ng-container *ngIf="signerTableData.length">
+							<mat-table [dataSource]="signerTableData">
+								<ng-container matColumnDef="signerType">
+									<mat-header-cell *matHeaderCellDef class="signer-type-cell">Signer type</mat-header-cell>
+									<mat-cell *matCellDef="let element; let i = index" class="signer-type-cell">
+										<ng-container [formGroup]="element">
+											<mat-form-field appearance="outline">
+												<mat-select
+													formControlName="signerType"
+													(selectionChange)="onSignerTypeChange($event.value, i)">
+													<ng-container *ngFor="let signerType of options[2][0]">
+														<mat-option [value]="signerType.id">
+															{{ signerType.name }}
+														</mat-option>
+													</ng-container>
+												</mat-select>
+												<mat-error>
+													<app-validator
+														[control]="
+															$any(agreementFormGroup.signers.at(i)).controls['signerType']
+														"></app-validator>
+												</mat-error>
+											</mat-form-field>
+										</ng-container>
+									</mat-cell>
+								</ng-container>
+								<ng-container matColumnDef="signerName">
+									<mat-header-cell *matHeaderCellDef [style.width.px]="178">Name</mat-header-cell>
+									<mat-cell *matCellDef="let element; let i = index">
+										<ng-container [formGroup]="element">
+											<ng-container *ngIf="signerOptionsArr$[i].options$ | async as options">
+												<emg-dropdown-autocomplete-single-select
+													formControlName="signerId"
+													[options]="options[1]"
+													[label]="options[0].label"
+													[width]="'178px'"
+													[labelKey]="options[0].displayedProperty"
+													[outputProperty]="options[0].outputProperty"
+													(inputEmitter)="signerOptionsArr$[i].optionsChanged$.next($event)">
+												</emg-dropdown-autocomplete-single-select>
+											</ng-container>
+										</ng-container>
+									</mat-cell>
+								</ng-container>
+								<ng-container matColumnDef="signingRole">
+									<mat-header-cell *matHeaderCellDef class="signing-role-cell">Signing role</mat-header-cell>
+									<mat-cell *matCellDef="let element; let i = index" class="signing-role-cell">
+										<ng-container [formGroup]="element">
+											<mat-form-field appearance="outline">
+												<mat-select formControlName="roleId">
+													<ng-container *ngFor="let signerRole of options[2][1]">
+														<mat-option [value]="signerRole.id">
+															{{ signerRole.name }}
+														</mat-option>
+													</ng-container>
+												</mat-select>
+												<mat-error>
+													<app-validator
+														[control]="
+															$any(agreementFormGroup.signers.at(i)).controls['roleId']
+														"></app-validator>
+												</mat-error>
+											</mat-form-field>
+										</ng-container>
+									</mat-cell>
+								</ng-container>
+								<ng-container matColumnDef="signOrder">
+									<mat-header-cell *matHeaderCellDef class="sequence-cell">Sequence</mat-header-cell>
+									<mat-cell *matCellDef="let element; let i = index" class="sequence-cell">
+										<ng-container [formGroup]="element">
+											<mat-form-field appearance="outline">
+												<input matInput type="number" formControlName="signOrder" />
+												<mat-error>
+													<app-validator
+														[control]="
+															$any(agreementFormGroup.signers.at(i)).controls['signOrder']
+														"></app-validator>
+												</mat-error>
+											</mat-form-field>
+										</ng-container>
+									</mat-cell>
+								</ng-container>
+								<ng-container matColumnDef="actions">
+									<mat-header-cell *matHeaderCellDef class="delete-cell"></mat-header-cell>
+									<mat-cell *matCellDef="let element; let i = index" class="delete-cell">
+										<button mat-icon-button class="delete-cell" (click)="deleteSigner(i)">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</mat-cell>
+								</ng-container>
+								<mat-header-row *matHeaderRowDef="displayedSignerColumns"></mat-header-row>
+								<mat-row *matRowDef="let row; columns: displayedSignerColumns"></mat-row>
+							</mat-table>
+						</ng-container>
+					</ng-container>
+
+					<button type="button" mat-raised-button (click)="addSigner()">Add signer</button>
+				</ng-container>
+			</div>
+			<div class="attachments-section">
+				<emg-file-selector
+					[inheritedFiles]="preselectedFiles"
+					formControlName="selectedInheritedFiles"></emg-file-selector>
+				<emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
+			</div>
+		</div>
+		<div class="bottom-panel">
+			<button mat-button>Cancel</button>
+			<button mat-raised-button (click)="onSave()">Save</button>
+		</div>
+	</form>
+</ng-container>
