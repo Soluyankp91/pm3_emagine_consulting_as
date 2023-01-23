@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -9,7 +9,9 @@ import {
   DownloadActions, 
   FileActions, 
   FileToolbarService,
-  FormatToolbarService
+  FormatToolbarService,
+  MergeFieldsActions,
+  MergeFieldsToolbarService
 } from './services/toolbar';
 
 
@@ -18,7 +20,9 @@ import {
   DxButtonModule, 
   DxTabsModule, 
   DxHtmlEditorModule,
-  DxDropDownButtonModule
+  DxDropDownButtonModule,
+  DxHtmlEditorComponent,
+  DxPopupModule,
 } from 'devextreme-angular';
 
 @Component({
@@ -33,6 +37,7 @@ import {
     DxButtonModule,
     DxDropDownButtonModule,
     DxTabsModule,
+    DxPopupModule,
     DxHtmlEditorModule,
 
     // components
@@ -40,20 +45,27 @@ import {
   ],
   providers: [
     EditorService,
+    // toolbar
     FileToolbarService,
     FormatToolbarService,
+    MergeFieldsToolbarService,
+
     FileManagementService
   ]
 })
 export class EditorComponent implements OnInit, OnDestroy {
   _destroy$ = new Subject();
 
+  @ViewChild(DxHtmlEditorComponent, { static: false }) htmlEditor: DxHtmlEditorComponent;
+  liveTextpopupVisible: boolean;
+
   template$ = this.editorService.getTemplate();
   template = '';
 
   toolbars = [
     this.fileToolbarService.getToolbar(),
-    this.formatToolbarService.getToolbar()
+    this.formatToolbarService.getToolbar(),
+    this.mergeFieldsToolbarService.getToolbar()
   ]
   toolbar = this.toolbars[0];
   
@@ -66,7 +78,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     private editorService: EditorService,
     private fileToolbarService: FileToolbarService,
     private formatToolbarService: FormatToolbarService,
-    private fileManagementService: FileManagementService
+    private fileManagementService: FileManagementService,
+    private mergeFieldsToolbarService: MergeFieldsToolbarService,
+    private changeDetector: ChangeDetectorRef
   ) {
     
   }
@@ -77,6 +91,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     ).subscribe();
 
     this.registerFileActions();
+    this.registerMergeFieldsActions();
   }
 
   selectTab(event: {itemIndex: number}) {
@@ -94,6 +109,23 @@ export class EditorComponent implements OnInit, OnDestroy {
             break;
           case DownloadActions.SAFE_AS_PDF: 
             this.fileManagementService.exportAsPdf(this.template);
+            break;
+        }
+      })
+    ).subscribe()
+  }
+
+  registerMergeFieldsActions() {
+    this.mergeFieldsToolbarService.mergeFieldsToolbarActions$.pipe(
+      takeUntil(this._destroy$),
+      tap((res: MergeFieldsActions) => {
+        switch (res) {
+          case MergeFieldsActions.INSERT_FIELD:
+            // implement
+            break;
+          case MergeFieldsActions.SHOW_LIVETEXT:
+            this.liveTextpopupVisible = true;
+            this.changeDetector.detectChanges();
             break;
         }
       })

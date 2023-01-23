@@ -14,3 +14,7 @@
   >
   </dx-html-editor>
 </div>
+
+<dx-popup [showTitle]="true" title="Markup" [(visible)]="liveTextpopupVisible">
+  <div>{{template}}</div>
+</dx-popup>
