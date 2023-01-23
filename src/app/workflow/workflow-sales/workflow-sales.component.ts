@@ -829,13 +829,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	resetForms() {
 		this.mainDataComponent?.salesMainDataForm.reset('', { emitEvent: false });
-		this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
-		this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
-		this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
-		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
-		this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
+        if (this.clientDataComponent) {
+            this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
+            this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
+            this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
+        }
+        if (this.mainDataComponent) {
+            this.mainDataComponent.salesMainDataForm.commissions.controls = [];
+            this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
+        }
+        if (this.consutlantDataComponent) {
+            this.consutlantDataComponent.consultantsForm.consultants.controls = [];
+        }
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
-		this.consutlantDataComponent.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
 		this.endClientIdTerminationSales = null;
 	}
