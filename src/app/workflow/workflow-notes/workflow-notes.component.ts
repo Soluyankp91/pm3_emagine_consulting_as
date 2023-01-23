@@ -54,7 +54,7 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit, 
             .subscribe(() => {
                 this.zone.run(() => {
                     if (this.notesContainer) {
-                        this.height = this.notesContainer.nativeElement.getBoundingClientRect().top;
+                        this.height = this.notesContainer.nativeElement.getBoundingClientRect().top ;
                     }
                 });
             });

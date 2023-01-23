@@ -1,15 +1,17 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, DocumentTypeEnum, EmployeeDto, EnumEntityTypeDto, FileParameter, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
-import { WorkflowSalesMainForm } from '../workflow-sales.model';
+import { DocumentForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
+import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
+import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
 
 @Component({
 	selector: 'app-main-data',
@@ -17,6 +19,7 @@ import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-con
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('fileUploader') fileUploader: FileUploaderComponent;
 	@Input() periodId: string | undefined;
     @Input() readOnlyMode: boolean;
     @Input() editEnabledForcefuly: boolean;
@@ -29,6 +32,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
+    documentForm: DocumentForm;
+    isDocumentsLoading = true;
+    documentsNoData = true;
+
     deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
 
@@ -74,11 +81,13 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     ) {
         super(injector);
         this.salesMainDataForm = new WorkflowSalesMainForm();
+        this.documentForm = new DocumentForm();
     }
 
 	ngOnInit(): void {
         this._getEnums();
         this._subscriptions$();
+        this.getDocuments();
     }
 
     ngOnDestroy(): void {
@@ -402,9 +411,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-	get commissions() {
-		return this.salesMainDataForm.commissions as UntypedFormArray;
-	}
+
 
 	removeCommission(index: number) {
 		this.isCommissionInitialAdd = false;
@@ -466,8 +473,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		this.commissions.at(index).get('editable')?.setValue(false);
 	}
 
-
-    //#region commissionedUsers form array
     addCommissionedUser(employee?: EmployeeDto) {
         const form = this._fb.group({
            commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
@@ -509,9 +514,119 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.commissionedUsers.removeAt(index);
     }
 
+    openDialogToAddFile(files: FileUploaderFile[]) {
+        this.showMainSpinner();
+        const fileToUpload = files[0];
+        let fileInput: FileParameter;
+        fileInput = {
+            fileName: fileToUpload.name,
+            // fileType: 'pdf',
+            data: fileToUpload.internalFile
+        }
+        this.fileUploader.clear();
+        this.hideMainSpinner();
+        this.getDocuments(fileInput);
+    }
+
+    getDocuments(documents?: any) {
+        // this.isDocumentsLoading = true;
+        // this._clientDocumentsService.generalAttachments(this.clientId, this.generalDocumentsIncludeLinked.value)
+            // .pipe(finalize(() => this.isDocumentsLoading = false))
+            // .subscribe(result => {
+                this.documentForm.documents.clear();
+                // documents.forEach((dcument: any) => {
+                    if (documents !== null && documents !== undefined) {
+                        this.addDocument(documents)
+                        this.documentsNoData = documents?.length === 0;
+                    }
+                // });
+                console.log(this.documentsNoData)
+            // });
+    }
+
+    addDocument(document?: any) {
+        const form = this._fb.group({
+            // clientAttachmentGuid: new UntypedFormControl(document?.clientAttachmentGuid ?? null),
+            // documentStorageGuid: new UntypedFormControl(document?.documentStorageGuid ?? null),
+            // icon: new UntypedFormControl(this.getFileTypeIcon(document?.documentType!) ?? null),
+            icon: new UntypedFormControl('pdf'),
+            headline: new UntypedFormControl(document?.headline ?? null),
+            filename: new UntypedFormControl(document?.fileName ?? null),
+            // attachmentTypeId: new UntypedFormControl(this.findItemById(this.generalFileTypes, document?.attachmentTypeId) ?? null),
+            // dateUpdated: new UntypedFormControl(document?.dateUpdated ?? null),
+            dateUpdated: new UntypedFormControl(new Date()),
+            updatedBy: new UntypedFormControl(document?.updatedBy ?? null),
+            editable: new UntypedFormControl(document ? false : true)
+        });
+        this.documentForm.documents.push(form);
+    }
+
+    get documents(): UntypedFormArray {
+        return this.documentForm.get('documents') as UntypedFormArray;
+    }
+
+    getFileTypeIcon(fileIcon: number) {
+        switch (fileIcon) {
+            case DocumentTypeEnum.Pdf:
+                return 'pdf';
+            case DocumentTypeEnum.Word:
+                return 'doc';
+            case DocumentTypeEnum.Excel:
+                return 'xls';
+            case DocumentTypeEnum.Image:
+                return 'jpg';
+            case DocumentTypeEnum.Misc:
+                return 'txt';
+            default:
+                return '';
+        }
+    }
+
+    deleteGeneralDocument(clientAttachmentGuid: string) {
+        // this.showMainSpinner();
+        // this._clientDocumentsService.generalFileDELETE(this.clientId, clientAttachmentGuid)
+        //     .pipe(finalize(() => this.hideMainSpinner()))
+        //     .subscribe(result => {
+        //         this.getGeneralDocuments();
+        //     });
+    }
+
+    downloadDocument(clientAttachmentGuid: string) {
+        // this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+        //     const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
+        //     this.httpClient.get(fileUrl, {
+        //         headers: new HttpHeaders({
+        //             'Authorization': `Bearer ${response.accessToken}`,
+        //         }), responseType: 'blob',
+        //         observe: 'response'
+        //     }).subscribe((data: HttpResponse<Blob>) => {
+        //         const blob = new Blob([data.body!], { type: data.body!.type });
+        //         const contentDispositionHeader = data.headers.get('Content-Disposition');
+        //         if (contentDispositionHeader !== null) {
+        //             const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+        //             const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+        //             const downloadlink = document.createElement('a');
+        //             downloadlink.href = window.URL.createObjectURL(blob);
+        //             downloadlink.download = contentDispositionFileName;
+        //             const nav = (window.navigator as any);
+
+        //             if (nav.msSaveOrOpenBlob) {
+        //                 nav.msSaveBlob(blob, contentDispositionFileName);
+        //             } else {
+        //                 downloadlink.click();
+        //             }
+        //         }
+        //     });
+        // });
+    }
+
+
     get commissionedUsers() {
         return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
     }
-    //#endregion commissionedUsers form array
+
+    get commissions() {
+		return this.salesMainDataForm.commissions as UntypedFormArray;
+	}
 
 }

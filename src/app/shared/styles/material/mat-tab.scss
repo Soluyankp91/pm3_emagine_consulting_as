@@ -260,7 +260,7 @@ mat-tab-group.notification-settings--tabs {
     }
 }
 
-.workflow-notes-wrapper {
+.workflow-notes {
     .mat-tab-header {
         border: 0 !important;
     }
@@ -282,7 +282,7 @@ mat-tab-group.notification-settings--tabs {
             height: 48px;
             margin-right: 24px;
             color: #4A4E60;
-    
+
             &-active,
             &:hover {
                 font-weight: 700;

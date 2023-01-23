@@ -388,14 +388,14 @@ export const ClientRateTypes: EnumEntityTypeDto[] = [
     })
 ];
 
-export class DocumentForm extends FormGroup {
+export class DocumentForm extends UntypedFormGroup {
     constructor() {
         super({
-            documents: new FormArray([])
+            documents: new UntypedFormArray([])
         })
 
     }
     get documents() {
-        return this.get('documents') as FormArray;
+        return this.get('documents') as UntypedFormArray;
     }
 }
