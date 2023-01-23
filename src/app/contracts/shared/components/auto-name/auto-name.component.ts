@@ -98,6 +98,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
     }
 
     private _subscribeOnShowSampleToggle() {
+        // FIXME: commented out because of errors after proxies update
         // this._templatePreview = this.retriewTemplate$.pipe(
         //     switchMap(() => {
         //         this.showSample = !this.showSample;

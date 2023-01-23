@@ -18,7 +18,6 @@ import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { EmagineAutocompleteComponent } from '../components/emagine-autocomplete/emagine-autocomplete.component';
 
 @NgModule({
     declarations: [
@@ -33,8 +32,7 @@ import { EmagineAutocompleteComponent } from '../components/emagine-autocomplete
         ValidatorComponent,
         ReplacePipe,
         ConsultantInformationComponent,
-        ExcludeIdsPipe,
-        EmagineAutocompleteComponent
+        ExcludeIdsPipe
     ],
     imports: [
         CommonModule,
