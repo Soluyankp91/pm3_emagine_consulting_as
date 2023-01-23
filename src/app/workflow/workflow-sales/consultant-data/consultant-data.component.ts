@@ -323,27 +323,25 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
-					// if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.clientName : value;
-						}
-						return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-					// } else {
-					// 	return of([]);
-					// }
+					let toSend = {
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.clientName : value;
+					}
+					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
 				})
 			)
 			.subscribe((list: ClientResultDto[]) => {
 				if (list.length) {
 					this.filteredConsultantClientAddresses = list;
 				} else {
-					this.filteredConsultantClientAddresses = [new ClientResultDto({ clientName: 'No records found', clientId: undefined })];
+					this.filteredConsultantClientAddresses = [
+						new ClientResultDto({ clientName: 'No records found', clientId: undefined }),
+					];
 				}
 			});
 	}
