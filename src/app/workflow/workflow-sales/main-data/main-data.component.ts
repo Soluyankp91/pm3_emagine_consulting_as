@@ -6,7 +6,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
-import { WorkflowSalesMainForm } from '../workflow-sales.model';
+import { EProjectTypes, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
@@ -31,6 +31,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	salesMainDataForm: WorkflowSalesMainForm;
     deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
+    eProjectTypes = EProjectTypes;
 
     currencies: EnumEntityTypeDto[];
     deliveryTypes: EnumEntityTypeDto[];
@@ -64,6 +65,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		recipientType: any;
 		recipient: any;
 	};
+    areaTypeRoleRequired = true;
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -200,12 +202,12 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             )
             .subscribe((list) => {
                 this.primaryCategoryTypes = list!;
-                this.salesMainDataForm?.primaryCategoryType?.setValue(
-                    null
-                );
-                this.salesMainDataForm?.primaryCategoryRole?.setValue(
-                    null
-                );
+                    this.salesMainDataForm?.primaryCategoryType?.setValue(
+                        null
+                    );
+                    this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                        null
+                    );
             });
 
         this.salesMainDataForm?.primaryCategoryType?.valueChanges
@@ -273,18 +275,60 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 				this.salesMainDataForm.deliveryTypeId?.setValue(result.deliveryTypeId, { emitEvent: false });
 				this.salesMainDataForm.salesTypeId?.setValue(result.salesTypeId, { emitEvent: false });
 				this.salesMainDataForm.marginId?.setValue(result.marginId, { emitEvent: false });
+                if (
+					projectTypeId === this.eProjectTypes.NearshoreVMShighMargin ||
+					projectTypeId === this.eProjectTypes.NearshoreVMSlowMargin ||
+					projectTypeId === this.eProjectTypes.VMShighMargin ||
+					projectTypeId === this.eProjectTypes.VMSlowMargin ||
+                    this.salesMainDataForm.salesTypeId?.value === SalesTypes.ThirdPartyMgmt
+				) {
+					this.makeAreaTypeRoleNotRequired();
+				} else {
+					this.makeAreaTypeRoleRequired();
+				}
 			});
 	}
 
     salesTypeChange(value: number) {
-		if (value === 3) {
-			// Managed Service
-			const itemToPreselct = this.deliveryTypes.find((x) => x.id === 1); // Managed Service
+		if (value === this.salesTypesEnum.ManagedService) {
+			const itemToPreselct = this.deliveryTypes.find((x) => x.id === this.deliveryTypesEnum.ManagedService);
 			this.salesMainDataForm.deliveryTypeId?.setValue(itemToPreselct?.id, {
 				emitEvent: false,
 			});
 		}
+        const projectTypeId = this.salesMainDataForm.projectTypeId?.value;
+		if (
+			projectTypeId === this.eProjectTypes.NearshoreVMShighMargin ||
+			projectTypeId === this.eProjectTypes.NearshoreVMSlowMargin ||
+			projectTypeId === this.eProjectTypes.VMShighMargin ||
+			projectTypeId === this.eProjectTypes.VMSlowMargin ||
+			value === this.salesTypesEnum.ThirdPartyMgmt
+		) {
+			this.makeAreaTypeRoleNotRequired();
+		} else {
+			this.makeAreaTypeRoleRequired();
+		}
 	}
+
+    makeAreaTypeRoleRequired() {
+        this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
+        this.updateStateAreaTypeRole();
+    }
+
+    makeAreaTypeRoleNotRequired() {
+        this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
+        this.updateStateAreaTypeRole();
+    }
+
+    updateStateAreaTypeRole() {
+        this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
+    }
 
     commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
 		this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });

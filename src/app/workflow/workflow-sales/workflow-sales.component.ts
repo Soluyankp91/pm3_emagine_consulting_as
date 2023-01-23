@@ -42,17 +42,16 @@ import {
 	ClientSpecialFeeDto,
 	ConsultantPeriodServiceProxy,
 	ConsultantPeriodSalesDataDto,
-	CountryDto,
-	LegalEntityDto,
 	EmployeeDto,
 } from 'src/shared/service-proxies/service-proxies';
+import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
-import { ClientRateTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
+import { ClientRateTypes, EProjectTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
 
 @Component({
 	selector: 'app-workflow-sales',
@@ -302,7 +301,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			currentStepIsCompleted: this.isCompleted,
 			currentStepIsForcefullyEditing: this.editEnabledForcefuly,
 		});
-		this.getSalesStepData();
+        this.getSalesStepData();
 	}
 
 	get canToggleEditMode() {
@@ -576,6 +575,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						this.consutlantDataComponent?.addConsultantForm(consultant);
 					});
 					this.consutlantDataComponent?.updateConsultantStepAnchors();
+				}
+                const projectTypeId = result?.salesMainData?.projectTypeId;
+                if (
+					projectTypeId === EProjectTypes.NearshoreVMShighMargin ||
+					projectTypeId === EProjectTypes.NearshoreVMSlowMargin ||
+					projectTypeId === EProjectTypes.VMShighMargin ||
+					projectTypeId === EProjectTypes.VMSlowMargin ||
+                    result?.salesMainData?.salesTypeId === SalesTypes.ThirdPartyMgmt
+				) {
+					this.mainDataComponent?.makeAreaTypeRoleNotRequired();
+				} else {
+					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
 			});
