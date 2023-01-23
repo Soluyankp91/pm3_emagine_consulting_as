@@ -14,7 +14,7 @@
                         <h2 class="workflow-section--header">Sync</h2>
                     </div>
                     <div class="workflow-section--content">
-                        <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode"
+                        <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection"
                         (onSyncToLegacySystem)="processSyncToLegacySystem()" [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-sync-data>
                     </div>
                 </div>
