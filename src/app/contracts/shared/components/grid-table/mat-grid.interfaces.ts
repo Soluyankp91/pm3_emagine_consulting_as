@@ -1,15 +1,24 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
 
+export interface IFilter {
+    filterFormControl: UntypedFormControl;
+}
+
 export interface IHeaderCell {
-    field: string;
     type: EHeaderCells;
     title?: string;
-    component?: ComponentType<IFilter>;
+    filter?: {
+        formControlName: string;
+        component: () => Promise<ComponentType<any>>
+    };
+    width?: number;
 }
-export interface IFilter {
-    filterFormControl: FormControl;
+
+export interface IColumn {
+    matColumnDef: string;
+    headerCell: IHeaderCell;
 }
 
 export interface ITableConfig {
@@ -17,22 +26,15 @@ export interface ITableConfig {
     pageSize: number;
     totalCount: number;
     pageIndex: number;
-    sortDirection: SortDirection;
-    sortActive: string;
-}
-export interface ICell {
-    matColumnDef: string;
-    headerCell: {
-        type: EHeaderCells;
-        title?: string;
-        filter?: {
-            formControlName: string;
-            component: ComponentType<any>;
-        };
-    };
+    direction: SortDirection;
+    active: string;
 }
 
 export enum EHeaderCells {
     SORT = 'sort',
     FILTER = 'filter',
+}
+export enum ETableCells {
+    DEFAULT = 'default',
+    CUSTOM = 'custom',
 }

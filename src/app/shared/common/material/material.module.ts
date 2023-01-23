@@ -35,6 +35,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CustomDateAdapter } from './custom-date-adapter';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 const globalRippleConfig: RippleGlobalOptions = {
     disabled: true,
@@ -95,7 +96,8 @@ const MaterialModules = [
     MatBottomSheetModule,
     MatStepperModule,
     FlexLayoutModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TextFieldModule
 ]
 
 @NgModule({

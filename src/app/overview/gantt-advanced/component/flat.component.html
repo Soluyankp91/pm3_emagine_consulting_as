@@ -18,18 +18,23 @@
             </div>
         </div>
         <div class="gantt-flat-side-body">
-            <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
+            <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy"
+                [style.height.px]="group.mergedItems.length! * (styles.lineHeight + 10) - 10">
                 <div class="gantt-group-content" fxFlex="5%">
                     <span class="text-bold-800" *ngIf="isWorkflow">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]" matTooltipClass="white-tooltip">
-                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu" [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!}" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)"></mat-icon>
+                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu"
+                                [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!}"
+                                [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"
+                                [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"></mat-icon>
                             <mat-menu #workflowMenu backdropClass="main-overview--user-status-menu">
                                 <ng-template matMenuContent let-selectedStatus="selectedStatus">
                                     <button *ngFor="let status of userSelectedStatuses"
                                         class="menu-item"
                                         mat-menu-item
+                                        [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
                                         appPreventDoubleClick (throttledClick)="setUserSelectedStatusForWorflow(group?.origin?.id!, status?.id)">
-                                        <mat-icon class="main-overview-icon-status" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                        <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
                                         <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
                                             {{status?.name}}
                                         </span>
@@ -39,15 +44,22 @@
                         </div>
                     </span>
                     <span class="text-bold" *ngIf="isConsultants">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]" matTooltipClass="white-tooltip">
-                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="consultantsMenu" [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!}" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)"></mat-icon>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100"
+                            [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]"
+                            matTooltipClass="white-tooltip">
+                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="consultantsMenu"
+                                [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!}"
+                                [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]"
+                                [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]">
+                            </mat-icon>
                             <mat-menu #consultantsMenu backdropClass="main-overview--user-status-menu">
                                 <ng-template matMenuContent let-selectedStatus="selectedStatus">
                                     <button *ngFor="let status of userSelectedStatuses"
                                         class="menu-item"
                                         mat-menu-item
+                                        [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
                                         appPreventDoubleClick (throttledClick)="setUserSelectedStatusForConsultant(group?.origin?.origin?.workflowId, group?.origin?.origin?.consultant?.id, status?.id)">
-                                        <mat-icon class="main-overview-icon-status" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                        <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
                                         <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
                                             {{status?.name}}
                                         </span>
@@ -59,21 +71,26 @@
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="35%" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip" appShowIfTruncated>
                     <span class="text-bold-800">
-                        {{group!.origin!.origin!.clientDisplayName}}
+                        {{group!.origin!.origin!.clientDisplayName ?? '-'}}
                     </span>
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
-                    <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" matTooltipClass="white-tooltip" *ngIf="isWorkflow" appShowIfTruncated>
-                        <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
+                    <span class="text-truncate-ellipsis"
+                        [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')"
+                        matTooltipClass="white-tooltip" *ngIf="isWorkflow" appShowIfTruncated>
+                        <ng-container
+                            *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
                         </ng-container>
                         <ng-template #singleConsultantDisplay>
-                            {{group?.origin?.origin?.consultants![0]?.name}}
+                            {{group?.origin?.origin?.consultants![0]?.name?.length ? group?.origin?.origin?.consultants![0]?.name : '-'}}
                         </ng-template>
                     </span>
-                    <span class="text-truncate-ellipsis" *ngIf="isConsultants">
-                        {{group?.origin?.origin?.consultant?.name}}
-                    </span>
+                    <ng-container *ngIf="isConsultants">
+                        <span class="text-truncate-ellipsis">
+                            {{group?.origin?.origin?.consultant?.name ?? '-'}}
+                        </span>
+                    </ng-container>
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="14%" fxLayoutAlign="start center">
                     <span>
@@ -100,14 +117,17 @@
         <div class="gantt-main-container">
             <div class="gantt-main-groups" *ngIf="groups && groups.length > 0" [style.width.px]="view.width">
                 <ng-container *ngFor="let group of groups; trackBy: trackBy">
-                    <div class="gantt-main-group" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
+                    <div class="gantt-main-group"
+                        [style.height.px]="group.mergedItems.length! * (styles.lineHeight + 10) - 10">
                         <ng-container *ngFor="let items of group.mergedItems">
                             <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
                                 <ng-container *ngFor="let item of items; trackBy: trackBy">
                                     <ngx-gantt-bar [item]="item" [template]="barTemplate"
-                                        (barClick)="barClick.emit($event)" (mouseenter)="setPosition($event, item)" class="period-item--bar">
+                                        (barClick)="barClick.emit($event)" (mouseenter)="setPosition($event, item)"
+                                        class="period-item--bar">
                                     </ngx-gantt-bar>
-                                    <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"[style.top.px]="menuTopLeftPosition.y">
+                                    <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"
+                                        [style.top.px]="menuTopLeftPosition.y">
                                         <span><b>{{item?.origin?.title!}}</b></span>
                                         <span>{{tooltipStartDate | momentFormat: momentFormatType}} - {{tooltipEndDate ? (tooltipEndDate | momentFormat: momentFormatType) : '...'}}</span>
                                     </div>

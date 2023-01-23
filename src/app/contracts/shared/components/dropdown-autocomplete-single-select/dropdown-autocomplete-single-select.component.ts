@@ -5,40 +5,28 @@ import {
     OnInit,
     EventEmitter,
     Output,
+    Self,
+    ContentChild,
+    TemplateRef,
 } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormControl,
-    NG_VALIDATORS,
-    NG_VALUE_ACCESSOR,
-    ValidationErrors,
-    Validator,
+    UntypedFormControl,
+    NgControl,
 } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
-import { requiredValidator } from '../../validators/customRequireValidator';
 import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { takeUntil, filter, distinctUntilChanged } from 'rxjs/operators';
+import { RequiredValidator } from '../../validators/customRequireValidator';
 
 @Component({
     selector: 'emg-dropdown-autocomplete-single-select',
     templateUrl: './dropdown-autocomplete-single-select.component.html',
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: DropdownAutocompleteSingleSelectComponent,
-            multi: true,
-        },
-        {
-            provide: NG_VALIDATORS,
-            useExisting: DropdownAutocompleteSingleSelectComponent,
-            multi: true,
-        },
-    ],
 })
 export class DropdownAutocompleteSingleSelectComponent
-    implements OnInit, OnDestroy, ControlValueAccessor, Validator
+    implements OnInit, OnDestroy, ControlValueAccessor
 {
     @Input() options: Item[];
     @Input() labelKey: string = 'name';
@@ -47,19 +35,40 @@ export class DropdownAutocompleteSingleSelectComponent
 
     @Output() inputEmitter = new EventEmitter<string>();
 
+    @ContentChild('optionTemplate') optionTemplate: TemplateRef<any>;
+
+    get control() {
+        return this.ngControl.control as AbstractControl;
+    }
+
     context = this;
+
     matcher = new SingleAutoErrorStateMatcher();
-    inputControl = new FormControl(null, [requiredValidator()]);
+    inputControl = new UntypedFormControl(null);
+
+    selectedItem: Item | null;
 
     onChange: any = () => {};
     onTouch: any = () => {};
 
     private _unSubscribe$ = new Subject();
 
-    constructor() {}
+    constructor(@Self() private readonly ngControl: NgControl) {
+        ngControl.valueAccessor = this;
+    }
 
     ngOnInit(): void {
         this._subsribeOnInputControl();
+        this._initValidators();
+    }
+
+    ngDoCheck(): void {
+        if (this.control?.touched) {
+            this.inputControl.markAsTouched();
+            this.inputControl.updateValueAndValidity({
+                emitEvent: false,
+            });
+        }
     }
 
     ngOnDestroy(): void {
@@ -68,11 +77,12 @@ export class DropdownAutocompleteSingleSelectComponent
     }
 
     displayFn(option: Item) {
-        return option ? option[this.labelKey] : null;
+        return option && option[this.labelKey] ? option[this.labelKey] : option;
     }
 
     onSelect(selectedOption: Item) {
         this.onChange(selectedOption[this.outputProperty]);
+        this.selectedItem = selectedOption;
     }
 
     trackById(index: number, item: Item) {
@@ -87,13 +97,20 @@ export class DropdownAutocompleteSingleSelectComponent
         this.onTouch = fn;
     }
 
-    writeValue(preselectedItem: Item): void {
-        if (preselectedItem === null) {
+    writeValue(id: string | number | null): void {
+        if (!id) {
+            this.selectedItem = null;
             this.inputControl.reset(null, { emitEvent: false });
-            this.inputControl.markAsPristine();
             return;
         }
-        this.inputControl.patchValue(preselectedItem);
+        let preselectedOption = this.options.find(
+            (option: Item) => option[this.outputProperty] == id
+        );
+        this.selectedItem = preselectedOption as Item;
+        this.inputControl.setValue(preselectedOption, {
+            emitEvent: false,
+            onlySelf: true,
+        });
     }
 
     setDisabledState(isDisabled: boolean): void {
@@ -106,26 +123,31 @@ export class DropdownAutocompleteSingleSelectComponent
         this.inputControl.enable();
     }
 
-    validate(control: AbstractControl): ValidationErrors | null {
-        if (!this.inputControl.invalid) {
-            return null;
+    onFocusOut() {
+        if (this.selectedItem) {
+            this.control.setErrors(this.inputControl.errors);
         }
-        return { required: true };
     }
 
     private _subsribeOnInputControl() {
         this.inputControl.valueChanges
             .pipe(
                 takeUntil(this._unSubscribe$),
+                distinctUntilChanged(),
                 filter((val) => val !== null)
             )
             .subscribe((input) => {
                 if (typeof input === 'object') {
                     this.inputEmitter.emit(input[this.labelKey]);
-                    this.onChange(input[this.outputProperty]);
                     return;
                 }
                 this.inputEmitter.emit(input);
             });
+    }
+
+    private _initValidators() {
+        let validators = [RequiredValidator(this.control)];
+        this.inputControl.setValidators(validators);
+        this.inputControl.updateValueAndValidity();
     }
 }

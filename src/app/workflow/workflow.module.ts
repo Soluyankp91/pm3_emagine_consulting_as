@@ -20,6 +20,13 @@ import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart
 import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.component';
 import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { WorkflowDocumentsComponent } from './workflow-documents/workflow-documents.component';
+import { MainDataComponent } from './workflow-sales/main-data/main-data.component';
+import { ClientDataComponent } from './workflow-sales/client-data/client-data.component';
+import { ConsultantDataComponent } from './workflow-sales/consultant-data/consultant-data.component';
+import { ContractsConsultantDataComponent } from './workflow-contracts/contracts-consultant-data/contracts-consultant-data.component';
+import { ContractsMainDataComponent } from './workflow-contracts/contracts-main-data/contracts-main-data.component';
+import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-data/contracts-sync-data.component';
+import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +45,14 @@ import { WorkflowDocumentsComponent } from './workflow-documents/workflow-docume
         GanttChartComponent,
         WorkflowNotesComponent,
         RateAndFeesWarningsDialogComponent,
-        WorkflowDocumentsComponent
+        WorkflowDocumentsComponent,
+        MainDataComponent,
+        ClientDataComponent,
+        ConsultantDataComponent,
+        ContractsConsultantDataComponent,
+        ContractsMainDataComponent,
+        ContractsSyncDataComponent,
+        ContractsClientDataComponent
     ],
     imports: [
         CommonModule,

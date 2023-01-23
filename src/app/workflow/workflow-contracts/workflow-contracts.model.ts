@@ -1,18 +1,22 @@
-import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 
-export class WorkflowContractsMainForm extends FormGroup {
+export class WorkflowContractsMainForm extends UntypedFormGroup {
     constructor() {
         super({
-            salesType: new FormControl(null),
-            deliveryType: new FormControl(null),
-            projectType: new FormControl(null),
-            margin: new FormControl(null),
-            projectDescription: new FormControl(null, Validators.required),
-            projectName: new FormControl(null, Validators.required),
-            discounts: new FormControl(null),
-            remarks: new FormControl(null, Validators.required),
-            noRemarks: new FormControl(false),
-            customDebtorNumber: new FormControl(null)
+            salesType: new UntypedFormControl(null),
+            deliveryType: new UntypedFormControl(null),
+            projectType: new UntypedFormControl(null),
+            margin: new UntypedFormControl(null),
+            projectDescription: new UntypedFormControl(null, Validators.required),
+            projectCategory: new UntypedFormControl(null),
+            primaryCategoryArea: new UntypedFormControl(null),
+            primaryCategoryType: new UntypedFormControl(null),
+            primaryCategoryRole: new UntypedFormControl(null),
+            projectName: new UntypedFormControl(null, Validators.required),
+            discounts: new UntypedFormControl(null),
+            remarks: new UntypedFormControl(null, Validators.required),
+            noRemarks: new UntypedFormControl(false),
+            customDebtorNumber: new UntypedFormControl(null)
         });
     }
 
@@ -31,6 +35,18 @@ export class WorkflowContractsMainForm extends FormGroup {
     get projectDescription() {
         return this.get('projectDescription');
     }
+    get projectCategory() {
+        return this.get('projectCategory');
+    }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
+    }
     get projectName() {
         return this.get('projectName');
     }
@@ -48,17 +64,17 @@ export class WorkflowContractsMainForm extends FormGroup {
     }
 }
 
-export class WorkflowContractsSyncForm extends FormGroup {
+export class WorkflowContractsSyncForm extends UntypedFormGroup {
     constructor() {
         super({
-            contractLinesDoneManuallyInOldPm: new FormControl(false),
-            newLegalContract: new FormControl(false),
-            clientLegalContractDoneStatusId: new FormControl(null),
-            enableLegalContractsButtons: new FormControl(false),
-            showManualOption: new FormControl(false),
-            isNewSyncNeeded: new FormControl(false),
-            lastSyncedDate: new FormControl(null),
-            consultants: new FormArray([], Validators.minLength(1))
+            contractLinesDoneManuallyInOldPm: new UntypedFormControl(false),
+            newLegalContract: new UntypedFormControl(false),
+            clientLegalContractDoneStatusId: new UntypedFormControl(null),
+            enableLegalContractsButtons: new UntypedFormControl(false),
+            showManualOption: new UntypedFormControl(false),
+            isNewSyncNeeded: new UntypedFormControl(false),
+            lastSyncedDate: new UntypedFormControl(null),
+            consultants: new UntypedFormArray([], Validators.minLength(1))
         });
     }
 
@@ -84,32 +100,32 @@ export class WorkflowContractsSyncForm extends FormGroup {
         return this.get('lastSyncedDate');
     }
     get consultants() {
-        return this.get('consultants') as FormArray;
+        return this.get('consultants') as UntypedFormArray;
     }
 }
 
-export class WorkflowContractsClientDataForm extends FormGroup {
+export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     constructor() {
         super({
-            directClientId: new FormControl(null),
-            pdcInvoicingEntityId: new FormControl(null),
-            clientTimeReportingCapId: new FormControl(null),
-            clientTimeReportingCapMaxValue: new FormControl(null),
-            clientTimeReportingCapCurrencyId: new FormControl(null),
-            rateUnitType: new FormControl(null),
-            currency: new FormControl(null),
-            clientRate: new FormControl(null),
+            directClientId: new UntypedFormControl(null),
+            pdcInvoicingEntityId: new UntypedFormControl(null),
+            clientTimeReportingCapId: new UntypedFormControl(null),
+            clientTimeReportingCapMaxValue: new UntypedFormControl(null),
+            clientTimeReportingCapCurrencyId: new UntypedFormControl(null),
+            rateUnitType: new UntypedFormControl(null),
+            currency: new UntypedFormControl(null),
+            clientRate: new UntypedFormControl(null),
 
-            invoicingReferenceNumber: new FormControl(null),
-            clientInvoicingRecipientIdValue: new FormControl(null),
-            clientInvoicingRecipient: new FormControl(null),
-            invoicingReferencePersonIdValue: new FormControl(null),
-            invoicingReferencePerson: new FormControl(null),
+            invoicingReferenceNumber: new UntypedFormControl(null),
+            clientInvoicingRecipientIdValue: new UntypedFormControl(null),
+            clientInvoicingRecipient: new UntypedFormControl(null),
+            invoicingReferencePersonIdValue: new UntypedFormControl(null),
+            invoicingReferencePerson: new UntypedFormControl(null),
 
-            specialContractTerms: new FormControl(null, Validators.required),
-            noSpecialContractTerms: new FormControl(null),
-            clientRates: new FormArray([]),
-            clientFees: new FormArray([]),
+            specialContractTerms: new UntypedFormControl(null, Validators.required),
+            noSpecialContractTerms: new UntypedFormControl(null),
+            clientRates: new UntypedFormArray([]),
+            clientFees: new UntypedFormArray([]),
 
         });
     }
@@ -160,46 +176,46 @@ export class WorkflowContractsClientDataForm extends FormGroup {
         return this.get('noSpecialContractTerms');
     }
     get clientRates() {
-        return this.get('clientRates') as FormArray;
+        return this.get('clientRates') as UntypedFormArray;
     }
     get clientFees() {
-        return this.get('clientFees') as FormArray;
+        return this.get('clientFees') as UntypedFormArray;
     }
 }
 
-export class WorkflowContractsConsultantsDataForm extends FormGroup {
+export class WorkflowContractsConsultantsDataForm extends UntypedFormGroup {
     constructor() {
         super({
-            consultants: new FormArray([], Validators.minLength(1))
+            consultants: new UntypedFormArray([], Validators.minLength(1))
         })
     }
     get consultants() {
-        return this.get('consultants') as FormArray;
+        return this.get('consultants') as UntypedFormArray;
     }
 }
 
-export class WorkflowConsultantsLegalContractForm extends FormGroup {
+export class WorkflowConsultantsLegalContractForm extends UntypedFormGroup {
     constructor() {
         super({
-            consultants: new FormArray([])
+            consultants: new UntypedFormArray([])
         })
 
     }
     get consultants() {
-        return this.get('consultants') as FormArray;
+        return this.get('consultants') as UntypedFormArray;
     }
 }
 
 
-export class WorkflowContractsTerminationConsultantsDataForm extends FormGroup {
+export class WorkflowContractsTerminationConsultantsDataForm extends UntypedFormGroup {
     constructor() {
         super({
-            consultantTerminationContractData: new FormArray([])
+            consultantTerminationContractData: new UntypedFormArray([])
         })
 
     }
     get consultantTerminationContractData() {
-        return this.get('consultantTerminationContractData') as FormArray;
+        return this.get('consultantTerminationContractData') as UntypedFormArray;
     }
 }
 
@@ -211,14 +227,37 @@ export enum LegalContractStatus {
     Done = 10
 }
 
-export class DocumentForm extends FormGroup {
+export class DocumentForm extends UntypedFormGroup {
     constructor() {
         super({
-            documents: new FormArray([])
+            documents: new UntypedFormArray([])
         })
 
     }
     get documents() {
-        return this.get('documents') as FormArray;
+        return this.get('documents') as UntypedFormArray;
     }
+}
+
+export enum ClientTimeReportingCaps {
+    CapOnUnits = 1,
+    CapOnValue = 2,
+    IndividualCap = 3,
+    NoCap = 4
+}
+
+export enum DeliveryTypes {
+    ManagedService = 1,
+    Normal = 2,
+    Offshore = 3,
+    Nearshore = 4
+}
+
+export enum SalesTypes {
+    TimeAndMaterial = 1,
+    ThirdPartyMgmt = 2 ,
+    ManagedService = 3,
+    FeeOnly = 4,
+    Recruitment = 5,
+    Other = 6
 }

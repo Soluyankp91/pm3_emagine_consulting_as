@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.3';
 
@@ -53,14 +54,14 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     margins: EnumEntityTypeDto[] = [];
     isAdvancedFilters = false;
 
-    workflowFilter = new FormControl(null);
-    accountManagerFilter = new FormControl();
-    invoicingEntityControl = new FormControl();
-    paymentEntityControl = new FormControl();
-    salesTypeControl = new FormControl();
-    deliveryTypesControl = new FormControl();
-    marginsControl = new FormControl();
-    overviewViewTypeControl = new FormControl(1);
+    workflowFilter = new UntypedFormControl(null);
+    accountManagerFilter = new UntypedFormControl();
+    invoicingEntityControl = new UntypedFormControl();
+    paymentEntityControl = new UntypedFormControl();
+    salesTypeControl = new UntypedFormControl();
+    deliveryTypesControl = new UntypedFormControl();
+    marginsControl = new UntypedFormControl();
+    overviewViewTypeControl = new UntypedFormControl(1);
 
     managerStatus = ManagerStatus;
     mainOverviewStatuses: MainOverviewStatusDto;
@@ -77,7 +78,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     consultantsItems: GanttItem[] = [];
     consultantsGroups: GanttGroup<any>[] = [];
 
-    viewType: FormControl = new FormControl(GanttViewType.week);
+    viewType: UntypedFormControl = new UntypedFormControl(GanttViewType.week);
 
     startDate = new Date();
     startDateOfChart: number;
@@ -246,18 +247,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     changeViewType(filterChanged?: boolean) {
+        let cutOffDate = new Date();
         switch (this.viewType.value) {
             case GanttViewType.week:
-                let cutOffDateWeek = new Date();
-                cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 7);
                 this.viewOptions.cellWidth = 50;
-                this.getMainOverview(cutOffDateWeek, filterChanged);
+                this.getMainOverview(cutOffDate, filterChanged);
                 break;
             case GanttViewType.month:
-                let cutOffDateMonth = new Date();
-                cutOffDateMonth.setDate(cutOffDateMonth.getDate() - 7);
                 this.viewOptions.cellWidth = 75;
-                this.getMainOverview(cutOffDateMonth, filterChanged);
+                this.getMainOverview(cutOffDate, filterChanged);
                 break;
         }
     }
@@ -491,7 +489,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                         id: x.id!,
                         name: x.name!,
                         tenantName: x.tenantName!,
-                        code: this.getTenantCountryCode(x.tenantName!)!,
+                        code: MapTenantCountryCode(x.tenantName!)!,
                         selected: false,
                         flag: x.tenantName!
                     });
@@ -499,34 +497,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             .subscribe(result => {
                 this.legalEntities = result;
             });
-    }
-
-
-    getTenantCountryCode(name: string) {
-        switch (name) {
-            case 'Denmark':
-                return 'DK';
-            case 'Sweden':
-                return 'SE';
-            case 'Poland':
-                return 'PL';
-            case 'Netherlands':
-                return 'NL';
-            case 'Germany':
-                return 'DE';
-            case 'Norway':
-                return 'NO';
-            case 'France':
-                return 'FR';
-            case 'India':
-                return 'IN';
-            case 'International':
-                return 'EU';
-            case 'United Kingdom':
-                return 'GB';
-            default:
-                break;
-        }
     }
 
     getSalesType() {
@@ -569,7 +539,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     canBeSetAutomatically: x.canBeSetAutomatically!,
                     canBeSetByUser: x.canBeSetByUser!,
                     selected: false,
-                    flag: this.detectIcon(x.id!)
+                    flag: this.detectIcon(x.id!),
+                    color: this.detectProcessColor(x.id!)
                 })
             });
         })

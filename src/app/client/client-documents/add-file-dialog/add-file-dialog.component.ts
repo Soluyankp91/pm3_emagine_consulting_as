@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
@@ -14,7 +14,7 @@ import { ClientDocumentsServiceProxy, IdNameDto } from 'src/shared/service-proxi
 export class AddFileDialogComponent extends AppComponentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
-    attachmentTypeId = new FormControl();
+    attachmentTypeId = new UntypedFormControl();
     generalFileTypes: IdNameDto[];
     file: FileUploaderFile;
     constructor(

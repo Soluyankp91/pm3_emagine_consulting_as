@@ -1,0 +1,26 @@
+<ng-container *ngIf="tenants">
+	<ng-container *ngIf="tenants.length <= countryLimit; else beyondLimit">
+		<div [style.margin-right.px]="-(tenants.length - 1) * 20">
+			<span
+				*ngFor="let tenant of tenants; let i = index; trackByLegalEntity"
+				class="fi fi-{{ tenant.code | lowercase }} tenant"
+				[style.right.px]="20 * i"></span>
+		</div>
+	</ng-container>
+	<ng-template #beyondLimit>
+		<div>
+			<div [customTooltip]="tooltip" class="circle-counter flex">
+				{{ tenants.length }}
+			</div>
+			<ng-template #tooltip>
+				<div>
+					<ng-container *ngFor="let tenant of tenants; let i = index; trackBy: trackByLegalEntity">
+						<div class="tenant-menu">
+							<span>{{ tenant.name }}</span>
+						</div>
+					</ng-container>
+				</div>
+			</ng-template>
+		</div>
+	</ng-template>
+</ng-container>

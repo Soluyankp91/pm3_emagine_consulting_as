@@ -1,6 +1,8 @@
 @import "/src/app/shared/styles/config/_colors";
 .green-slide-toggle {
     box-sizing: content-box;
+    height: 16px !important;
+    line-height: 16px !important;
     .mat-slide-toggle {
         &-thumb {
             background-color: #CCCBC9;
@@ -14,7 +16,7 @@
             height: 10px;
         }
         &-content {
-            color: $medium-grey-color;
+            color: $light-grey-color;
             font-weight: 600;
             font-size: 12px;
         }
@@ -35,6 +37,6 @@
             &-content {
                 color: $medium-grey-color;
             }
-        }    
+        }
     }
 }

@@ -61,7 +61,7 @@ export class CreationComponent
     isDuplicateFromInherited = false;
 
     parentMasterTemplateControl = new FormControl();
-    clientTemplateControl = new FormControl(null);
+    clientTemplateControl = new FormControl();
     creationModeControl = new FormControl(AgreementCreationMode.FromScratch);
 
     clientTemplateFormGroup = new ClientTemplatesModel();
@@ -195,6 +195,8 @@ export class CreationComponent
             switchMap((searchInput) => {
                 return this._apiServiceProxy.simpleList2(
                     isClientTemplate,
+                    undefined,
+                    undefined,
                     searchInput,
                     1,
                     20

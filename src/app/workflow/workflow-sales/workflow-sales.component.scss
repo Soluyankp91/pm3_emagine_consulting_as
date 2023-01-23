@@ -30,19 +30,36 @@
             }
         }
     }
-    &-section--header {
-        @include fontOpenSans(16px, 'inherit');
-        color: $light-grey-color;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-
-        &-main {
-            @include fontOpenSans(18px, 700);
-            line-height: 120%;
+    &-section {
+        &--number {
+            @include fontOpenSans(14px, 700);
+            @include flexCentered;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            margin-right: 24px;
+            background-color: $sand-color;
+            color: $dark-grey-color;
+        }
+        &--header {
+            @include fontOpenSans(16px, 'inherit');
+            color: $light-grey-color;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: $dark-grey-color;
+
+            &-main {
+                @include fontOpenSans(18px, 700);
+                line-height: 120%;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: $dark-grey-color;
+            }
+        }
+        &--content {
+            border-left: 2px solid $sand-color;
+            margin-left: 12px;
+            padding: 5px 0 5px 35px;
+            width: 100%;
         }
     }
     &-sales {
@@ -57,12 +74,12 @@
                     font-size: 12px;
                     color: $medium-grey-color;
                     &-container {
-                        padding: 8px;
+                        padding: 0 16px 5px;
                     }
                 }
                 &__row  {
                     background-color: $white-color;
-                    padding: 0 8px;
+                    padding: 0 16px;
                     height: 50px;
                     border: 1px solid $sand-color;
                     &:hover {
@@ -77,10 +94,10 @@
             }
         }
         &--process-data {
-            padding: 30px;
+            padding: 30px 24px;
         }
         &--additional-address-hint {
-            @include fontOpenSans(14px, 800);
+            @include fontOpenSans(14px, 700);
             color: rgba(56, 72, 83, 0.87);
             &-label {
                 @include fontOpenSans(14px, 700);
@@ -149,4 +166,6 @@
         line-height: 20px;
     }
 }
+
+
 

@@ -7,6 +7,7 @@ import { ClientWorkflowTrackComponent } from './client-workflow-track/client-wor
 import { ClientRatesAndFeesComponent } from './client-rates-and-fees/client-rates-and-fees.component';
 import { ClientDocumentsComponent } from './client-documents/client-documents.component';
 import { ClientContactsComponent } from './client-contacts/client-contacts.component';
+import { WfResponsibleComponent } from './wf-responsible/wf-responsible.component';
 
 const routes: Routes = [
     {
@@ -41,17 +42,13 @@ const routes: Routes = [
             {
                 path: 'contacts',
                 component: ClientContactsComponent
+            },
+            {
+                path: 'wf-responsible',
+                component: WfResponsibleComponent
             }
         ]
     }
-        // ]
-    // },
-
-    //{ path: 'path/:routeParam', component: MyComponent },
-    //{ path: 'staticPath', component: ... },
-    //{ path: '**', component: ... },
-    //{ path: 'oldPath', redirectTo: '/staticPath' },
-    //{ path: ..., component: ..., data: { message: 'Custom' }
 ];
 
 @NgModule({

@@ -1,5 +1,5 @@
 import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -38,7 +38,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
-        private _fb: FormBuilder,
+        private _fb: UntypedFormBuilder,
         private _workflowDataService: WorkflowDataService,
         private _clientPeriodSerivce: ClientPeriodServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
@@ -301,16 +301,16 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
         const form = this._fb.group({
-            id: new FormControl(consultant.consultantId),
-            checkInvoicingSettingsOnConsultant: new FormControl(consultant.checkInvoicingSettingsOnConsultant),
-            creditorCreatedInNavision: new FormControl(consultant.creditorCreatedInNavision),
-            consultant: new FormControl(consultant?.consultant)
+            id: new UntypedFormControl(consultant.consultantId),
+            checkInvoicingSettingsOnConsultant: new UntypedFormControl(consultant.checkInvoicingSettingsOnConsultant),
+            creditorCreatedInNavision: new UntypedFormControl(consultant.creditorCreatedInNavision),
+            consultant: new UntypedFormControl(consultant?.consultant)
         });
         this.financesConsultantsForm.consultants.push(form);
     }
 
-    get consultants(): FormArray {
-        return this.financesConsultantsForm.get('consultants') as FormArray;
+    get consultants(): UntypedFormArray {
+        return this.financesConsultantsForm.get('consultants') as UntypedFormArray;
     }
 
     removeConsultant(index: number) {
@@ -349,23 +349,23 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
     addDocument(document?: any) {
         const form = this._fb.group({
-            // clientAttachmentGuid: new FormControl(document?.clientAttachmentGuid ?? null),
-            // documentStorageGuid: new FormControl(document?.documentStorageGuid ?? null),
-            // icon: new FormControl(this.getFileTypeIcon(document?.documentType!) ?? null),
-            icon: new FormControl('pdf'),
-            headline: new FormControl(document?.headline ?? null),
-            filename: new FormControl(document?.fileName ?? null),
-            // attachmentTypeId: new FormControl(this.findItemById(this.generalFileTypes, document?.attachmentTypeId) ?? null),
-            // dateUpdated: new FormControl(document?.dateUpdated ?? null),
-            dateUpdated: new FormControl(new Date()),
-            updatedBy: new FormControl(document?.updatedBy ?? null),
-            editable: new FormControl(document ? false : true)
+            // clientAttachmentGuid: new UntypedFormControl(document?.clientAttachmentGuid ?? null),
+            // documentStorageGuid: new UntypedFormControl(document?.documentStorageGuid ?? null),
+            // icon: new UntypedFormControl(this.getFileTypeIcon(document?.documentType!) ?? null),
+            icon: new UntypedFormControl('pdf'),
+            headline: new UntypedFormControl(document?.headline ?? null),
+            filename: new UntypedFormControl(document?.fileName ?? null),
+            // attachmentTypeId: new UntypedFormControl(this.findItemById(this.generalFileTypes, document?.attachmentTypeId) ?? null),
+            // dateUpdated: new UntypedFormControl(document?.dateUpdated ?? null),
+            dateUpdated: new UntypedFormControl(new Date()),
+            updatedBy: new UntypedFormControl(document?.updatedBy ?? null),
+            editable: new UntypedFormControl(document ? false : true)
         });
         this.documentForm.documents.push(form);
     }
 
-    get documents(): FormArray {
-        return this.documentForm.get('documents') as FormArray;
+    get documents(): UntypedFormArray {
+        return this.documentForm.get('documents') as UntypedFormArray;
     }
 
     getFileTypeIcon(fileIcon: number) {

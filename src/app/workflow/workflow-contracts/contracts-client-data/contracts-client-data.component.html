@@ -1,0 +1,365 @@
+<form fxLayout="column" fxLayoutAlign="start start" id="clientDataAnchor" [formGroup]="contractClientForm"
+    class="workflow-form workflow-form--sales u-w--100">
+    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <h1 class="workflow-section--header-main">Client data</h1>
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">1</span>
+                <h2 class="workflow-section--header">Invoicing</h2>
+            </div>
+            <div class="workflow-section--content">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
+                        <mat-label>Shared cap on time reporting</mat-label>
+                        <mat-select [disabled]="true" formControlName="clientTimeReportingCapId"
+                            [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <ng-container *ngFor="let item of clientTimeReportingCap; trackBy: trackById">
+                                <mat-option [value]="item">
+                                    {{ item?.name }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error>
+                            <app-validator [control]="contractClientForm.clientTimeReportingCapId"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <ng-container
+                    *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.IndividualCap && contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.NoCap">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150"
+                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            <mat-label>Max value</mat-label>
+                            <input [disabled]="readOnlyMode" autocomplete="off" matInput
+                                formControlName="clientTimeReportingCapMaxValue" type="number">
+                            <mat-error>
+                                <app-validator
+                                    [control]="contractClientForm.clientTimeReportingCapMaxValue"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <ng-container
+                            *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.NoCap">
+                            <span class="workflow-darkblue--text">
+                                <ng-container [ngSwitch]="contractClientForm.clientTimeReportingCapId?.value?.id">
+                                    <ng-container *ngSwitchCase="1"> <!-- Cap on units -->
+                                        <ng-container [ngSwitch]="contractClientForm.rateUnitType?.value?.id">
+                                            <ng-container *ngSwitchCase="1"> <!-- Per hour -->
+                                                hours
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="2"> <!-- Per day -->
+                                                days
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="4"> <!-- Per month -->
+                                                months
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="2"> <!-- Cap on value -->
+                                        {{contractClientForm.currency?.value?.name ?
+                                        contractClientForm.currency?.value?.name : '-'}}
+                                    </ng-container>
+                                </ng-container>
+                            </span>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">2</span>
+                <h2 class="workflow-section--header">Client contract</h2>
+            </div>
+            <div class="workflow-section--content">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                    <mat-form-field appearance="outline"
+                        class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564"
+                        [ngClass]="{'disabled-input': readOnlyMode}">
+                        <mat-label>Special Contract Terms</mat-label>
+                        <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password"
+                            name="specialContractTerms" formControlName="specialContractTerms"
+                            [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                        </textarea>
+                        <mat-error>
+                            <app-validator [control]="contractClientForm.specialContractTerms"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                    <ng-container *ngIf="!readOnlyMode || contractClientForm.noSpecialContractTerms?.value">
+                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialContractTerms"
+                            name="noSpecialContractTerms" class="black-checkbox u-mt--8"
+                            (change)="disableOrEnableInput(contractClientForm.noSpecialContractTerms?.value, contractClientForm.specialContractTerms)">
+                            None
+                        </mat-checkbox>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">3</span>
+                <h2 class="workflow-section--header">Client rates and fees</h2>
+            </div>
+            <div class="workflow-section--content">
+                <ng-container *ngIf="contractClientForm.clientRates?.controls?.length">
+                    <div class="inline-edit-form u-w--100">
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--5">
+                            <span fxFlex="35%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                Rate name
+                            </span>
+                            <span fxFlex="30%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                Reporting unit
+                            </span>
+                            <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                Client rate
+                            </span>
+                            <ng-container *ngIf="!readOnlyMode">
+                                <span fxFlex="10%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                </span>
+                            </ng-container>
+                        </div>
+                        <ng-container formArrayName="clientRates" class="u-w--100">
+                            <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i" [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                    <span fxFlex="35%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{rate.value.rateName}}
+                                    </span>
+                                    <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{rate.value.reportingUnit?.name}}
+                                    </span>
+                                    <ng-container *ngIf="rate.value.editable; else clientRatesDisplay">
+                                        <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
+                                                <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
+                                                <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <ng-container *ngFor="let item of currencies; trackBy: trackById">
+                                                        <mat-option [value]="item">
+                                                            {{ item?.name }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #clientRatesDisplay>
+                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                        </span>
+                                    </ng-template>
+                                    <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
+                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
+                                            <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                <mat-icon svgIcon="rates-save-icon"></mat-icon>
+                                            </button>
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #clientRatesActions>
+                                        <ng-container *ngIf="!readOnlyMode">
+                                            <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100">
+                                                <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
+                                                    <mat-icon svgIcon="3-dots"></mat-icon>
+                                                </button>
+                                                <mat-menu #clientRateMenu>
+                                                    <button
+                                                        class="menu-item green-color"
+                                                        mat-menu-item
+                                                        [disabled]="isClientRateEditing"
+                                                        appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
+                                                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        class="menu-item menu-item--cancel"
+                                                        mat-menu-item
+                                                        appPreventDoubleClick (throttledClick)="removeClientRate(i)">
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
+                                                        Delete
+                                                    </button>
+                                                </mat-menu>
+                                            </div>
+                                        </ng-container>
+                                    </ng-template>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="contractClientForm.clientRates?.controls?.length === 0 && readOnlyMode">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset u-mt--15">
+                        <span class="light-grey-color text-600">
+                            No special rates
+                        </span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!readOnlyMode">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                        <button class="rates-and-fees--btn button-add" mat-flat-button
+                            [ngClass]="{'u-mt--10': contractClientForm.clientRates.controls.length}"
+                            [matMenuTriggerFor]="clientSpecialRateMenu" [disabled]="isClientRateEditing"
+                            #clientRateMenuTrigger="matMenuTrigger"
+                            (menuOpened)="clientSpecialRateFilter!.setValue(''); clientSpecialRateSelect.open();">
+                            <mat-icon>add</mat-icon>
+                            Add special rates
+                        </button>
+                        <mat-menu #clientSpecialRateMenu backdropClass="add-rates-button--menu">
+                            <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                class="u-pg--0">
+                                <mat-form-field appearance="fill"
+                                    class="add-rates-button--dropdown filter-select u-w--100">
+                                    <mat-label>Choose special rate</mat-label>
+                                    <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter"
+                                        [disableOptionCentering]="true">
+                                        <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: contractClientForm!.clientRates?.value : 'clientSpecialRateId'; trackBy: trackById">
+                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientRate($event, item, clientRateMenuTrigger) : ''">
+                                                {{ item.internalName }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </mat-menu>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="contractClientForm.clientFees?.controls?.length">
+                    <div class="inline-edit-form u-w--100 u-mt--15">
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--5">
+                            <span fxFlex="35%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                Fee name
+                            </span>
+                            <span fxFlex="30%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                Frequency
+                            </span>
+                            <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                Client fee
+                            </span>
+                            <ng-container *ngIf="!readOnlyMode">
+                                <span fxFlex="10%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
+                                </span>
+                            </ng-container>
+                        </div>
+                        <ng-container formArrayName="clientFees" class="u-w--100">
+                            <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i" [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                    <span fxFlex="35%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{fee.value.feeName ?? '-'}}
+                                    </span>
+                                    <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{fee.value.feeFrequency?.name ?? '-'}}
+                                    </span>
+                                    <ng-container *ngIf="fee.value.editable; else clientFeeRateDisplay">
+                                        <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
+                                                <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
+                                                <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <ng-container *ngFor="let item of currencies; trackBy: trackById">
+                                                        <mat-option [value]="item">
+                                                            {{ item?.name }}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #clientFeeRateDisplay>
+                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
+                                        </span>
+                                    </ng-template>
+
+                                    <ng-container *ngIf="fee.value.editable && !readOnlyMode; else clientFeeActions">
+                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
+                                            <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                <mat-icon svgIcon="rates-save-icon"></mat-icon>
+                                            </button>
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #clientFeeActions>
+                                        <ng-container *ngIf="!readOnlyMode">
+                                            <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100">
+                                                <ng-container *ngIf="fee.value.editable">
+                                                    <button mat-icon-button
+                                                            [disabled]="false"
+                                                            appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)">
+                                                            <mat-icon>save</mat-icon>
+                                                    </button>
+                                                </ng-container>
+                                                <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
+                                                    <mat-icon svgIcon="3-dots"></mat-icon>
+                                                </button>
+                                                <mat-menu #clientFeeMenu>
+                                                    <ng-container *ngIf="!fee.value.editable">
+                                                        <button
+                                                            class="menu-item green-color"
+                                                            mat-menu-item
+                                                            [disabled]="isClientFeeEditing"
+                                                            appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)">
+                                                            <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                                            Edit
+                                                        </button>
+                                                    </ng-container>
+                                                    <button
+                                                        class="menu-item menu-item--cancel"
+                                                        mat-menu-item
+                                                        appPreventDoubleClick (throttledClick)="removeClientFee(i)">
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
+                                                        Delete
+                                                    </button>
+                                                </mat-menu>
+                                            </div>
+                                        </ng-container>
+                                    </ng-template>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="contractClientForm.clientFees?.controls?.length === 0 && readOnlyMode">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 border-unset u-mt--15">
+                        <span class="light-grey-color text-600">
+                            No special fees
+                        </span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!readOnlyMode">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <button class="rates-and-fees--btn button-add" mat-flat-button
+                            [ngClass]="{'u-mt--10': contractClientForm.clientFees.controls.length}"
+                            [matMenuTriggerFor]="clientSpecialFeeMenu" [disabled]="isClientFeeEditing"
+                            #clientFeeMenuTrigger="matMenuTrigger"
+                            (menuOpened)="clientSpecialFeeFilter!.setValue(''); clientSpecialFeeSelect.open();">
+                            <mat-icon>add</mat-icon>
+                            Add special fees
+                        </button>
+                        <mat-menu #clientSpecialFeeMenu backdropClass="add-rates-button--menu">
+                            <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                class="u-pg--0">
+                                <mat-form-field appearance="fill"
+                                    class="add-rates-button--dropdown filter-select u-w--100">
+                                    <mat-label>Choose special fee</mat-label>
+                                    <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter"
+                                        [disableOptionCentering]="true">
+                                        <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: contractClientForm!.clientFees?.value : 'clientSpecialFeeId'; trackBy: trackById">
+                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientFee($event, item, clientFeeMenuTrigger) : ''">
+                                                {{ item.internalName }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </mat-menu>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</form>

@@ -30,10 +30,12 @@ export class StepAnchorDto implements IStepAnchorDto {
     name?: string;
     anchor?: string;
     consultantName?: string;
+    subItems?: SubItemDto[];
     constructor(data?: IStepAnchorDto) {
         this.name = data?.name;
         this.anchor = data?.anchor;
         this.consultantName = data?.consultantName;
+        this.subItems = data?.subItems;
     }
 }
 
@@ -41,6 +43,21 @@ export interface IStepAnchorDto {
     name?: string;
     anchor?: string;
     consultantName?: string;
+    subItems?: SubItemDto[];
+}
+
+export class SubItemDto implements ISubItemDto {
+    name?: string;
+    anchor?: string;
+    constructor(data?: IStepAnchorDto) {
+        this.name = data?.name;
+        this.anchor = data?.anchor;
+    }
+}
+
+export interface ISubItemDto {
+    name?: string;
+    anchor?: string;
 }
 
 export class WorkflowProcessWithAnchorsDto implements IWorkflowProcessWithAnchorsDto {
@@ -74,3 +91,165 @@ export interface IWorkflowProcessWithAnchorsDto {
     terminationEndDate?: moment.Moment | undefined;
     steps?: StepWithAnchorsDto[] | undefined;
 }
+
+export interface IConsultantAnchor {
+    employmentType: number;
+    name: string;
+}
+
+export const SalesMainDataSections: SubItemDto[] = [
+    {
+        name: 'Project',
+        anchor: 'salesMainProject'
+    },
+    {
+        name: 'Invoicing',
+        anchor: 'salesMainInvoicing'
+    },
+    {
+        name: 'Account manager',
+        anchor: 'salesMainAccountManager'
+    }
+];
+
+export const SalesClientDataSections: SubItemDto[] = [
+    {
+        name: 'Client relation',
+        anchor: 'salesClientRelation'
+    },
+    {
+        name: 'Project duration',
+        anchor: 'salesClientProjectDuration'
+    },
+    {
+        name: 'Client invoicing',
+        anchor: 'salesClientInvoicing'
+    },
+    {
+        name: 'Invoicing Number',
+        anchor: 'salesClientInvoicingNumber'
+    },
+    {
+        name: 'Rates and fees',
+        anchor: 'salesClientRatesFees'
+    },
+    {
+        name: 'Client evaluation',
+        anchor: 'salesClientEvaluation'
+    },
+    {
+        name: 'Client contract',
+        anchor: 'salesClientContract'
+    }
+];
+
+export const SalesConsultantDataSections: SubItemDto[] = [
+    {
+        name: 'Employment type',
+        anchor: 'salesConsultantEmployment'
+    },
+    {
+        name: 'Contract duration',
+        anchor: 'salesConsultantContractDuration'
+    },
+    {
+        name: 'Consultant project',
+        anchor: 'salesConsultantProject'
+    },
+    {
+        name: 'Rates and fees',
+        anchor: 'salesConsultantRatesFees'
+    },
+    {
+        name: 'Consultant payment',
+        anchor: 'salesConsultantPayment'
+    },
+    {
+        name: 'Consultant contract',
+        anchor: 'salesConsultantContract'
+    },
+    {
+        name: 'Account manager',
+        anchor: 'salesConsultantAccountManager'
+    }
+];
+
+
+export const ContractMainDataSections: SubItemDto[] = [
+    {
+        name: 'Project',
+        anchor: 'contractMainProject'
+    },
+    {
+        name: 'Additional data',
+        anchor: 'contractAdditionalData'
+    }
+];
+
+export const ContractClientDataSections: SubItemDto[] = [
+    {
+        name: 'Invoicing',
+        anchor: 'contractClientInvoicing'
+    },
+    {
+        name: 'Client contract',
+        anchor: 'contractClientContract'
+    },
+    {
+        name: 'Rates and fees',
+        anchor: 'contractClientRatesFees'
+    }
+];
+
+export const ContractConsultantDataSections: SubItemDto[] = [
+    {
+        name: 'Employemnt type',
+        anchor: 'contractConsultantEmployment'
+    },
+    {
+        name: 'Invoicing',
+        anchor: 'contractConsultantInvoicing'
+    },
+    {
+        name: 'Contract terms',
+        anchor: 'contractConsultantContract'
+    },
+    {
+        name: 'Payment',
+        anchor: 'contractConsultantPayment'
+    },
+    {
+        name: 'Rates and fees',
+        anchor: 'contractConsultantRatesFees'
+    },
+    {
+        name: 'Project lines',
+        anchor: 'contractConsultantProjectLines'
+    }
+];
+
+export const ContractSyncSections: SubItemDto[] = [
+    {
+        name: 'Sync',
+        anchor: 'contractSyncMain'
+    },
+    {
+        name: 'Client legal contract',
+        anchor: 'contractSyncClientLegal'
+    },
+    {
+        name: 'Consutlant legal contract',
+        anchor: 'contractSyncConsultantLegal'
+    }
+];
+
+export const FinanceSections: SubItemDto[] = [
+    {
+        name: 'Client (debitor)',
+        anchor: 'financeClientDebitor'
+    },
+    {
+        name: 'Consutlants',
+        anchor: 'financeConsultants'
+    }
+];

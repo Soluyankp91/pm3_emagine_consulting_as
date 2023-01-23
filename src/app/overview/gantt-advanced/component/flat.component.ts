@@ -4,7 +4,7 @@ import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, 
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
 import { SortDirections } from 'src/shared/entities/shared-enums';
-import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
+import { OverviewFlag, OverviewFlagNames, OverviewProcessColors, OverviewProcessIcons } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
 
 @Component({
@@ -30,6 +30,8 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 
     momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
+    overviewProcessColors = OverviewProcessColors;
+    overviewProcessIcons = OverviewProcessIcons;
     mergeIntervalDays = 3;
 
     menuTopLeftPosition =  {x: 0, y: 0}
@@ -111,47 +113,9 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 
     employeeProfileUrl(fileToken: string): string {
         if (!fileToken) {
-            return 'assets/common/images//no-img.svg';
+            return 'assets/common/images//no-img.jpg';
         }
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
-    }
-
-    detectProcessColor(process: number | undefined) {
-        switch (process) {
-            case OverviewFlag.ExtensionExpected:
-            case OverviewFlag.Extended:
-            case OverviewFlag.Started:
-                return 'overview-extensions-icon';
-            case OverviewFlag.Terminated:
-            case OverviewFlag.ExpectedToTerminate:
-                return 'overview-termination-icon';
-            case OverviewFlag.ExtensionInNegotiation:
-                return 'overview-negotiation-icon';
-            case OverviewFlag.RequiresAttention:
-                return 'overview-attention-icon';
-            default:
-                return '';
-        }
-    }
-
-    detectIcon(process: number | undefined) {
-        switch (process) {
-            case OverviewFlag.ExtensionExpected:
-                return 'check-circle';
-            case OverviewFlag.Extended:
-            case OverviewFlag.Started:
-                return 'check-circle-fill';
-            case OverviewFlag.ExpectedToTerminate:
-                return 'cancel';
-            case OverviewFlag.Terminated:
-                return 'cancel-fill';
-            case OverviewFlag.ExtensionInNegotiation:
-                return 'schedule';
-            case OverviewFlag.RequiresAttention:
-                return 'warning';
-            default:
-                return '';
-        }
     }
 
     setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {

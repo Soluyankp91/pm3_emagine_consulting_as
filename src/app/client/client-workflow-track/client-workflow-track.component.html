@@ -37,16 +37,16 @@
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{(row.startDate | momentFormat) ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate !== null && row.startDate !== undefined ? (row.startDate | momentFormat) : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.startDate !== null && row.startDate !== undefined ? (row.startDate | momentFormat) : '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{(row?.endDate | momentFormat) ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.endDate !== null && row.endDate !== undefined ? (row.endDate | momentFormat) : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.endDate !== null && row.endDate !== undefined ? (row.endDate | momentFormat) : '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>

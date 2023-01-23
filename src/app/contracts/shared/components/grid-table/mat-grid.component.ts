@@ -1,145 +1,217 @@
-import { startWith, pairwise, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { startWith, pairwise, takeUntil, debounceTime } from 'rxjs/operators';
+import { Subject, merge, of } from 'rxjs';
 import {
-    Component,
-    OnInit,
-    Input,
-    Output,
-    EventEmitter,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    ViewContainerRef,
-    ComponentFactoryResolver,
-    AfterViewInit,
-    ViewChildren,
-    QueryList,
-    ComponentRef,
-    OnDestroy,
+	Component,
+	OnInit,
+	Input,
+	Output,
+	EventEmitter,
+	ChangeDetectionStrategy,
+	ViewContainerRef,
+	ComponentFactoryResolver,
+	AfterViewInit,
+	ViewChildren,
+	QueryList,
+	ComponentRef,
+	OnDestroy,
+	OnChanges,
+	SimpleChanges,
+	ContentChildren,
+	TemplateRef,
+	Injector,
+	TrackByFunction,
+	ViewEncapsulation,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { FormGroup } from '@angular/forms';
-import { ICell, IFilter, ITableConfig } from './mat-grid.interfaces';
+import { FormControl, FormGroup } from '@angular/forms';
+import { EHeaderCells, ETableCells, IColumn, IFilter, ITableConfig } from './mat-grid.interfaces';
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
+import { SelectionModel } from '@angular/cdk/collections';
+import { AppComponentBase } from 'src/shared/app-component-base';
+import { MatTableDataSource } from '@angular/material/table';
+import { Actions } from '../../entities/contracts.interfaces';
+import { FILTER_LABEL_MAP } from '../../entities/contracts.constants';
 
 @Component({
-    selector: 'emg-mat-grid',
-    templateUrl: './mat-grid.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	selector: 'emg-mat-grid',
+	styleUrls: ['./mat-grid.component.scss'],
+	templateUrl: './mat-grid.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	encapsulation: ViewEncapsulation.None,
 })
-export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
-    @Input() displayedColumns: string[];
-    @Input() tableConfig: ITableConfig;
-    @Input() cells: ICell[];
+export class MatGridComponent extends AppComponentBase implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+	@Input() displayedColumns: string[];
+	@Input() tableConfig: ITableConfig;
+	@Input() cells: IColumn[];
+	@Input() selection: boolean = true;
+	@Input() actions: boolean = true;
+	@Input() actionsList: Actions[] = [];
+	@Input() selectedRowId: number | null;
 
-    @Output() sortChange = new EventEmitter<Sort>();
-    @Output() pageChange = new EventEmitter<PageEvent>();
-    @Output() formControlChange = new EventEmitter();
-    @Output() tableRow = new EventEmitter<{ [key: string]: any }>();
+	@Output() sortChange = new EventEmitter<Sort>();
+	@Output() pageChange = new EventEmitter<PageEvent>();
+	@Output() formControlChange = new EventEmitter();
+	@Output() selectedRowIdChange = new EventEmitter();
+	@Output() selectionChange = new EventEmitter();
+	@Output() onAction = new EventEmitter();
 
-    @ViewChildren('filterContainer', { read: ViewContainerRef })
-    children: QueryList<ViewContainerRef>;
-    @ViewChildren('cell_', { read: ViewContainerRef })
-    cells_: QueryList<ViewContainerRef>;
+	@ContentChildren('customCells', {
+		descendants: false,
+		emitDistinctChangesOnly: true,
+	})
+	customCells: QueryList<TemplateRef<ViewContainerRef>>;
 
-    formGroup: FormGroup;
+	@ViewChildren('filterContainer', { read: ViewContainerRef })
+	children: QueryList<ViewContainerRef>;
 
-    matChips: string[] = [];
-    pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
+	cellArr: TemplateRef<ViewContainerRef>[];
 
-    private unSubscribe$ = new Subject<void>();
+	dataSource = new MatTableDataSource<any>();
 
-    constructor(
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private readonly cdr: ChangeDetectorRef
-    ) {}
+	formGroup: FormGroup;
 
-    ngOnInit(): void {
-        this.formGroup = new FormGroup({});
-    }
+	matChips: { label: string; formControl: string }[] = [];
+	pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
 
-    ngOnDestroy(): void {
-        this.unSubscribe$.next();
-        this.unSubscribe$.complete();
-    }
+	headerCellEnum = EHeaderCells;
+	tableCellEnum = ETableCells;
 
-    ngAfterViewInit(): void {
-        this.loadFilters();
-        this._subscribeOnFormControlChanges();
-        this._subscribeOnEachFormControl();
-        this.cdr.detectChanges();
-    }
+	initialSelection = [];
+	allowMultiSelect = true;
 
-    trackByCellColumnDef(index: number, item: ICell) {
-        return item.matColumnDef;
-    }
+	selectionModel = new SelectionModel<any>(this.allowMultiSelect, this.initialSelection);
 
-    loadFilters() {
-        this.cells
-            .filter((cell) => cell.headerCell.type !== 'sort')
-            .forEach((cell, index) => {
-                if (cell.headerCell.filter) {
-                    const factory =
-                        this.componentFactoryResolver.resolveComponentFactory<IFilter>(
-                            cell.headerCell.filter.component
-                        );
-                    const component = this.children
-                        .get(index)
-                        ?.createComponent(factory);
-                    this.formGroup.addControl(
-                        cell.headerCell.filter.formControlName,
-                        (component as ComponentRef<IFilter>).instance
-                            .filterFormControl
-                    );
-                }
-            });
-    }
+	trackByAction: TrackByFunction<Actions>;
+	trackByFormControlName: TrackByFunction<string>;
 
-    closeFilter(chip: string) {
-        this.formGroup.controls[chip].setValue([]);
-    }
+	private _unSubscribe$ = new Subject<void>();
 
-    closeAllFilters() {
-        this.formGroup.patchValue(
-            Object.keys(this.formGroup.controls).reduce((acc, key) => {
-                acc[key] = [];
-                return acc;
-            }, {} as any)
-        );
-    }
+	constructor(private readonly _injector: Injector, private _componentFactoryResolver: ComponentFactoryResolver) {
+		super(_injector);
+		this.trackByAction = this.createTrackByFn('actionType');
+		this.trackByFormControlName = this.createTrackByFn('formControl');
+	}
 
-    getTableRow(row: { [key: string]: any }) {
-        this.tableRow.emit(row);
-    }
+	ngOnInit(): void {
+		this.formGroup = new FormGroup({});
+	}
 
-    private _subscribeOnFormControlChanges() {
-        this.formGroup.valueChanges
-            .pipe(takeUntil(this.unSubscribe$))
-            .subscribe((value) => {
-                this.formControlChange.emit(value);
-            });
-    }
+	ngOnChanges(changes: SimpleChanges): void {
+		const displayedColumns = changes['displayedColumns'];
+		const displayedColumnsCopy = [...this.displayedColumns];
+		if (displayedColumns && this.selection) {
+			displayedColumnsCopy.unshift('select');
+		}
+		if (displayedColumns && this.actions) {
+			displayedColumnsCopy.push('actions');
+		}
+		this.displayedColumns = displayedColumnsCopy;
+	}
 
-    private _subscribeOnEachFormControl() {
-        Object.keys(this.formGroup.controls).forEach((controlName) => {
-            this.formGroup.controls[controlName].valueChanges
-                .pipe(
-                    takeUntil(this.unSubscribe$),
-                    startWith(this.formGroup.controls[controlName].value),
-                    pairwise()
-                )
-                .subscribe(([previousValue, currentValue]: [[], []]) => {
-                    if (previousValue.length === 0 && currentValue.length > 0) {
-                        this.matChips.push(controlName);
-                    } else if (
-                        previousValue.length > 0 &&
-                        currentValue.length === 0
-                    ) {
-                        this.matChips = this.matChips.filter(
-                            (matChip) => matChip !== controlName
-                        );
-                    }
-                });
-        });
-    }
+	async ngAfterViewInit() {
+		this.cellArr = this.customCells.toArray();
+		await this.loadFilters();
+
+		//await for filters to be inited then subscribe to formControls:
+		this._subscribeOnSelectionChange();
+		this._subscribeOnFormControlChanges();
+		this._subscribeOnEachFormControl();
+	}
+
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
+	}
+
+	isAllSelected() {
+		const numSelected = this.selectionModel.selected.length;
+		const numRows = this.tableConfig.items.length;
+		return numSelected === numRows;
+	}
+
+	toggleAllRows() {
+		this.isAllSelected()
+			? this.selectionModel.clear()
+			: this.tableConfig.items.forEach((row) => this.selectionModel.select(row));
+	}
+
+	trackByCellColumnDef(index: number, item: IColumn) {
+		return item.matColumnDef;
+	}
+
+	async loadFilters() {
+		await Promise.all(
+			this.cells
+				.filter((cell) => cell.headerCell.type !== 'sort')
+				.map(async (cell, index) => {
+					if (cell.headerCell.filter) {
+						const componentInstance = await cell.headerCell.filter.component();
+						const factory = this._componentFactoryResolver.resolveComponentFactory<IFilter>(componentInstance);
+						const component = this.children.get(index)?.createComponent(factory, 0);
+						this.formGroup.addControl(
+							cell.headerCell.filter.formControlName,
+							(component as ComponentRef<IFilter>).instance.filterFormControl,
+							{ emitEvent: false }
+						);
+					}
+				})
+		).then(() => {
+			const initialValue = this.selectedRowId ? [this.selectedRowId] : [];
+			this.formGroup.addControl('id', new FormControl(initialValue), { emitEvent: false });
+		});
+	}
+
+	closeFilter(chip: string) {
+		this.formGroup.controls[chip].patchValue([]);
+	}
+
+	closeAllFilters() {
+		this.formGroup.patchValue(
+			Object.keys(this.formGroup.controls).reduce((acc, key) => {
+				acc[key] = [];
+				return acc;
+			}, {} as any)
+		);
+	}
+
+	getTableRow(row: { [key: string]: any }) {
+		this.selectedRowIdChange.emit(row.agreementTemplateId);
+	}
+
+	chooseAction(actionType: string, row: any) {
+		this.onAction.emit({ action: actionType, row });
+	}
+
+	private _subscribeOnSelectionChange() {
+		this.selectionModel.changed.pipe(takeUntil(this._unSubscribe$), debounceTime(500)).subscribe((changeModel) => {
+			this.selectionChange.emit(changeModel.source.selected);
+		});
+	}
+
+	private _subscribeOnFormControlChanges() {
+		this.formGroup.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((value) => {
+			this.formControlChange.emit(value);
+		});
+	}
+
+	private _subscribeOnEachFormControl() {
+		Object.keys(this.formGroup.controls).forEach((controlName) => {
+			merge(
+				of([]),
+				this.formGroup.controls[controlName].valueChanges.pipe(
+					takeUntil(this._unSubscribe$),
+					startWith(this.formGroup.controls[controlName].value)
+				)
+			)
+				.pipe(pairwise())
+				.subscribe(([previousValue, currentValue]: [[], []]) => {
+					if (!previousValue.length && currentValue.length) {
+						this.matChips.push({ formControl: controlName, label: FILTER_LABEL_MAP[controlName] });
+					} else if (previousValue.length && !currentValue.length) {
+						this.matChips = this.matChips.filter((matChip) => matChip.formControl !== controlName);
+					}
+				});
+		});
+	}
 }

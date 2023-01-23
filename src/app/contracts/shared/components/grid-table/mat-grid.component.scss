@@ -1,0 +1,29 @@
+emg-mat-grid {
+	.column-filter {
+		font-family: Open Sans, sans-serif;
+		font-size: 14px;
+		font-weight: 500;
+	}
+	.container {
+		max-height: calc(100vh - 225px);
+		overflow-y: auto;
+		display: block;
+		background-color: #faf9fb;
+	}
+	mat-chip.mat-chip.mat-standard-chip {
+		background-color: #fff;
+		border: 2px solid #17a297;
+	}
+	.mat-chip-list-wrapper {
+		justify-content: flex-end;
+		align-items: center;
+		margin: 0;
+		padding-right: 37px;
+	}
+	.mat-table {
+		background-color: #faf9fb;
+	}
+	.highlight {
+		background-color: #c5e8e5;
+	}
+}

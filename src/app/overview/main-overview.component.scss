@@ -1,7 +1,7 @@
 @import "/src/app/shared/styles/config/_colors";
 @import "/src/app/shared/styles/config/_sizes";
 @import "/src/app/shared/styles/config/_mixins";
-@import '~@worktile/gantt/main.bundle.scss';
+@import "../../../node_modules/@worktile/gantt/gantt.component.scss";
 
 .main-overview {
     &--filter {
@@ -42,15 +42,17 @@
         }
         &-type {
             @include flexCentered;
-            height: 30px;
-            line-height: 24px;
-            padding: 6px 8px;
+            height: 32px;
+            padding: 8px 12px 8px 10px;
+            border-radius: 40px;
+            line-height: 16px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
             &__name {
                 font-weight: 700;
                 color: #384853;
                 font-size: 12px;
+                margin-left: 3px;
             }
             &__quantity {
                 font-weight: 800;
@@ -64,15 +66,15 @@
                 }
                 &.yellow {
                     background-color: rgba(248, 176, 37, 0.22);
-                    border-color: #F8B025;
+                    border-color: #f8b025;
                 }
                 &.blue {
                     background-color: rgba(45, 156, 219, 0.22);
-                    border-color: #2D9CDB;
+                    border-color: #2d9cdb;
                 }
                 &.red {
                     background-color: rgba(255, 122, 120, 0.22);
-                    border-color: #FF7A78;
+                    border-color: #ff7a78;
                 }
             }
         }
@@ -90,7 +92,7 @@
             position: absolute;
             z-index: 101;
             box-shadow: 0 10px 10px 0 rgb(26, 35, 126, 15%);
-            transition: all .3s ease-in-out;
+            transition: all 0.3s ease-in-out;
         }
     }
     &--content {
@@ -104,11 +106,8 @@
     }
     &-icon {
         &-type {
-            width: 20px;
-            height: 20px;
-            font-size: 20px;
-            line-height: 20px;
-            margin-right: 5px;
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            transform: scale(0.8);
         }
     }
     &-search-button {
@@ -129,10 +128,10 @@
     line-height: 16px;
     font-size: 16px;
     &--sales {
-        color: rgba($color: $green-color, $alpha: .5);
+        color: rgba($color: $green-color, $alpha: 0.5);
     }
     &--extension {
-        color: rgba($color: #6A47B8, $alpha: .5);
+        color: rgba($color: #6a47b8, $alpha: 0.5);
     }
 }
 
@@ -145,7 +144,7 @@
 }
 
 .overview-negotiation-icon {
-    color: #2d9cdb
+    color: #2d9cdb;
 }
 
 .overview-attention-icon {
@@ -163,15 +162,13 @@
     font-weight: 700;
     font-size: 12px;
     line-height: 140%;
-    color: #B6B4B2;
+    color: #b6b4b2;
 }
 
 .reset-button {
-    min-width: 50px;
-    @media screen and (max-width: 1366px) {
-        line-height: 30px !important;
-        padding: 0 0 0 15px !important;
-    }
+    min-width: 30px;
+    line-height: 30px !important;
+    padding: 0 0 0 10px !important;
 }
 
 .manager-search--photo {
@@ -202,14 +199,14 @@
     position: absolute;
     top: 0;
     left: 0;
-  }
+}
 
-  .select-button {
+.select-button {
     position: relative;
     display: flex;
     align-items: center;
-  }
+}
 
-  .no-width {
+.no-width {
     width: 0px !important;
-  }
+}

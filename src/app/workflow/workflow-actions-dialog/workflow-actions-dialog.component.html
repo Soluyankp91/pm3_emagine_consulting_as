@@ -7,7 +7,7 @@
     </div>
     <ng-container [ngSwitch]="data.dialogType">
         <ng-container *ngSwitchCase="dialogTypes.AddConsultant">
-            <h3>Select start and end dates</h3>
+            <h3 class="confirmation-dialog--label">Select start and end dates</h3>
             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100">
                 <mat-form-field appearance="outline" fxFlex="50%">
                     <mat-label>Start date</mat-label>
@@ -15,6 +15,7 @@
                             [matDatepicker]="startDatePicker"
                             name="clientExtensionEndDate" [formControl]="startDate"
                             (focus)="startDatePicker.open()"
+                            required
                             appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                     <mat-datepicker #startDatePicker></mat-datepicker>
@@ -27,6 +28,7 @@
                                 [matDatepicker]="endDatePicker"
                                 name="clientExtensionEndDate" [formControl]="endDate"
                                 (focus)="endDatePicker.open()"
+                                required
                                 appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #endDatePicker></mat-datepicker>
@@ -39,21 +41,25 @@
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Change">
             <form [formGroup]="changeWorkflowForm">
-                <h2 class="workflow-change-dialog--label">Select new cutover date</h2>
+                <h3 class="confirmation-dialog--label">Select new cutover date</h3>
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
-                    <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="45%">
+                    <mat-form-field appearance="outline" class="form-width-170 u-mr--12">
                         <mat-label>Cutover date</mat-label>
                         <input autocomplete="off" placeholder="New end date" matInput
                                 [matDatepicker]="cutoverDatePicker"
                                 name="cutoverDate"
+                                required
                                 formControlName="cutoverDate"
                                 (focus)="cutoverDatePicker.open()"
                                 appPreventDoubleClick (throttledClick)="cutoverDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #cutoverDatePicker></mat-datepicker>
+                        <mat-error>
+                            <app-validator [control]="changeWorkflowForm.cutoverDate"></app-validator>
+                        </mat-error>
                     </mat-form-field>
 
-                    <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                    <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox">
                         New legal contract required
                     </mat-checkbox>
                 </div>
@@ -61,51 +67,72 @@
                 <mat-divider class="u-mb--24 u-mt--24">
                 </mat-divider>
 
-                <h3>Select consultants the change applies to</h3>
+                <h3 class="confirmation-dialog--label">Select consultants the change applies to</h3>
                 <ng-container formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
-                            <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.value?.externalId)">
-                            <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
-                                {{consultant?.value?.consulantName}}
-                            </p>
-                        </div>
-                        <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                        <mat-checkbox color="accent" name="changeConsultant" formControlName="changeConsultant" class="black-checkbox u-mr--16" (change)="toggleChangeConsultants()">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
+                                <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                                <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis">
+                                    {{consultant?.value?.consulantName}}
+                                </p>
+                            </div>
+                        </mat-checkbox>
+                        <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox">
                             New legal contract required
                         </mat-checkbox>
                     </div>
+                    <ng-container *ngIf="validationTriggered && !changeConsultantsValid">
+                        <mat-error class="error-message">
+                            Select at least 1 consultant
+                        </mat-error>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="data?.isMigrationNeeded">
+                    <mat-divider class="u-mb--24 u-mt--24">
+                    </mat-divider>
+                    <ng-container *ngTemplateOutlet="projectCategoryMigration">
+                    </ng-container>
                 </ng-container>
             </form>
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Extend">
             <form [formGroup]="extendWorkflowForm">
-                <h3>Select extension end date</h3>
+                <h3 class="confirmation-dialog--label">Select extension end date</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                    <div class="u-mr--12" fxFlex="50%">
-                        <mat-form-field appearance="outline" class="u-w--100">
+                    <div class="u-mr--12">
+                        <mat-form-field appearance="outline" class="form-width-170">
                             <mat-label>Start date</mat-label>
                             <input autocomplete="off" placeholder="New end date" matInput
                                     [matDatepicker]="startDatePicker"
                                     name="startDate"
                                     formControlName="startDate"
                                     (focus)="startDatePicker.open()"
+                                    required
                                     appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #startDatePicker></mat-datepicker>
+                            <mat-error>
+                                <app-validator [control]="extendWorkflowForm.startDate"></app-validator>
+                            </mat-error>
                         </mat-form-field>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%">
-                        <mat-form-field appearance="outline" class="u-w--100 u-mb--5">
+                    <div fxLayout="column" fxLayoutAlign="center start">
+                        <mat-form-field appearance="outline" class="form-width-170 mb--5">
                             <mat-label>New end date</mat-label>
                             <input autocomplete="off" placeholder="New end date" matInput
                                     [matDatepicker]="extensionDatePicker"
                                     name="endDate"
                                     [min]="minEndDate"
                                     formControlName="endDate"
+                                    required
                                     (focus)="extensionDatePicker.open()"
                                     appPreventDoubleClick (throttledClick)="extensionDatePicker.open()" readonly>
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #extensionDatePicker></mat-datepicker>
+                            <mat-error>
+                                <app-validator [control]="extendWorkflowForm.endDate"></app-validator>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(extendWorkflowForm.noEndDate?.value, extendWorkflowForm.endDate)">
@@ -116,10 +143,10 @@
                 <mat-divider class="u-mb--24 u-mt--24">
                 </mat-divider>
 
-                <h3>Select consultants to be extended</h3>
+                <h3 class="confirmation-dialog--label">Select consultants to be extended</h3>
                 <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--16" formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16">
+                        <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16" (change)="toggleExtendConsultants()">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
                                 <img class="workflow-change-dialog--consultant-img u-mr--12" [src]="consultantProfileUrl(consultant.value?.externalId)">
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
@@ -128,14 +155,21 @@
                             </div>
                         </mat-checkbox>
                     </div>
+                    <ng-container *ngIf="validationTriggered && !extendConsultantsValid">
+                        <mat-error class="error-message">
+                            Select at least 1 consultant
+                        </mat-error>
+                    </ng-container>
                 </div>
+                <ng-container *ngIf="data?.isMigrationNeeded">
+                    <mat-divider class="u-mb--24 u-mt--24">
+                    </mat-divider>
+                    <ng-container *ngTemplateOutlet="projectCategoryMigration">
+                    </ng-container>
+                </ng-container>
             </form>
         </ng-container>
-        <ng-container *ngSwitchCase="dialogTypes.Terminate">
-            // TBD
-        </ng-container>
         <ng-container *ngSwitchDefault>
-
         </ng-container>
     </ng-container>
 </mat-dialog-content>
@@ -148,3 +182,67 @@
     </button>
 </mat-dialog-actions>
 
+
+<ng-template #projectCategoryMigration>
+    <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-mr--16">
+            <h3 class="confirmation-dialog--label">
+                Existing Project Category
+            </h3>
+            <div class="confirmation-dialog--category u-mt--10">
+                <span>
+                    {{projectCategory?.name ?? '-'}}
+                </span>
+                <mat-icon class="u-ml--12">
+                    arrow_forward
+                </mat-icon>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start">
+            <h3 class="confirmation-dialog--label">
+                New Project Category
+            </h3>
+            <form class="column" [formGroup]="projectCategoryForm">
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
+                    <mat-label>Area</mat-label>
+                    <mat-select required formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                        <ng-container *ngFor="let item of primaryCategoryAreas; trackBy: trackById">
+                            <mat-option [value]="item">
+                                {{ item.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error>
+                        <app-validator [control]="projectCategoryForm.primaryCategoryArea"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
+                    <mat-label>Type</mat-label>
+                    <mat-select required formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                        <ng-container *ngFor="let item of primaryCategoryTypes; trackBy: trackById">
+                            <mat-option [value]="item">
+                                {{ item.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error>
+                        <app-validator [control]="projectCategoryForm.primaryCategoryType"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
+                    <mat-label>Role</mat-label>
+                    <mat-select required formControlName="primaryCategoryRole" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                        <ng-container *ngFor="let item of primaryCategoryRoles; trackBy: trackById">
+                            <mat-option [value]="item">
+                                {{ item.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error>
+                        <app-validator [control]="projectCategoryForm.primaryCategoryRole"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+            </form>
+        </div>
+    </div>
+</ng-template>

@@ -1,45 +1,58 @@
-import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
+import { EnumEntityTypeDto } from "src/shared/service-proxies/service-proxies";
 import { CustomValidators } from "src/shared/utils/custom-validators";
 
-export class WorkflowSalesMainForm extends FormGroup {
+export class WorkflowSalesMainForm extends UntypedFormGroup {
     constructor() {
         super({
-            salesType: new FormControl(null, Validators.required),
-            deliveryType: new FormControl(null, Validators.required),
-            projectType: new FormControl(null, Validators.required),
-            margin: new FormControl(null, Validators.required),
-            projectCategory: new FormControl(null, Validators.required),
-            projectDescription: new FormControl(null, [Validators.required, Validators.maxLength(4000)]),
-            projectName: new FormControl(null, [Validators.required, Validators.maxLength(100)]),
+            salesTypeId: new UntypedFormControl(null, Validators.required),
+            deliveryTypeId: new UntypedFormControl(null, Validators.required),
+            projectTypeId: new UntypedFormControl(null, Validators.required),
+            marginId: new UntypedFormControl(null, Validators.required),
+            projectCategoryId: new UntypedFormControl(null, Validators.required),
+            primaryCategoryArea: new UntypedFormControl(null, Validators.required),
+            primaryCategoryType: new UntypedFormControl(null, Validators.required),
+            primaryCategoryRole: new UntypedFormControl(null, Validators.required),
+            projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
+            projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
+            discountId: new UntypedFormControl(null),
 
-            discounts: new FormControl(null),
+            commissions: new UntypedFormArray([]),
+            commissionedUsers: new UntypedFormArray([]),
 
-            commissions: new FormArray([]),
+            salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
+            commissionAccountManagerIdValue: new UntypedFormControl(null),
+            contractExpirationNotification: new UntypedFormControl(null),
+            customContractExpirationNotificationDate: new UntypedFormControl(null),
 
-            salesAccountManagerIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
-            commissionAccountManagerIdValue: new FormControl(null),
-            contractExpirationNotification: new FormControl(null),
-            customContractExpirationNotificationDate: new FormControl(null),
-
-            remarks: new FormControl(null),
-            noRemarks: new FormControl(false)
+            remarks: new UntypedFormControl(null),
+            noRemarks: new UntypedFormControl(false)
         });
     }
 
-    get salesType() {
-        return this.get('salesType');
+    get salesTypeId() {
+        return this.get('salesTypeId');
     }
-    get projectType() {
-        return this.get('projectType');
+    get projectTypeId() {
+        return this.get('projectTypeId');
     }
-    get deliveryType() {
-        return this.get('deliveryType');
+    get deliveryTypeId() {
+        return this.get('deliveryTypeId');
     }
-    get margin() {
-        return this.get('margin');
+    get marginId() {
+        return this.get('marginId');
     }
-    get projectCategory() {
-        return this.get('projectCategory');
+    get projectCategoryId() {
+        return this.get('projectCategoryId');
+    }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
     }
     get projectDescription() {
         return this.get('projectDescription');
@@ -47,11 +60,14 @@ export class WorkflowSalesMainForm extends FormGroup {
     get projectName() {
         return this.get('projectName');
     }
-    get discounts() {
-        return this.get('discounts');
+    get discountId() {
+        return this.get('discountId');
     }
     get commissions() {
-        return this.get('commissions') as FormArray;
+        return this.get('commissions') as UntypedFormArray;
+    }
+    get commissionedUsers() {
+        return this.get('commissionedUsers') as UntypedFormArray;
     }
     get salesAccountManagerIdValue () {
         return this.get('salesAccountManagerIdValue');
@@ -73,66 +89,65 @@ export class WorkflowSalesMainForm extends FormGroup {
     }
 }
 
-export class WorkflowSalesClientDataForm extends FormGroup {
+export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     constructor() {
         super({
             // Client
-            differentEndClient: new FormControl(true),
-            directClientIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
-            endClientIdValue: new FormControl(null, CustomValidators.autocompleteValidator(['clientId'])),
+            differentEndClient: new UntypedFormControl(true),
+            directClientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
+            endClientIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['clientId'])),
 
             // PDC Invoicing Entity (client)
 
             // Client Invoicing Recipient
-            pdcInvoicingEntityId: new FormControl(null, Validators.required),
-            clientInvoicingRecipientSameAsDirectClient: new FormControl(false, Validators.required),
-            invoicingReferenceNumber: new FormControl(null),
-            clientInvoicingRecipientIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
+            pdcInvoicingEntityId: new UntypedFormControl(null, Validators.required),
+            clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false, Validators.required),
+            invoicingReferenceNumber: new UntypedFormControl(null),
+            clientInvoicingRecipientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
 
             // Client Invoicing Reference Person
-            invoicingReferencePersonIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
-            noInvoicingReferencePerson: new FormControl(false, Validators.required),
+            invoicePaperworkContactIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
 
             // Client Evaluations - Consultant
-            evaluationsReferencePersonIdValue: new FormControl(null, CustomValidators.autocompleteValidator(['id'])),
-            evaluationsDisabled: new FormControl(false),
-            evaluationsDisabledReason: new FormControl(null),
+            evaluationsReferencePersonIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
+            evaluationsDisabled: new UntypedFormControl(false),
+            evaluationsDisabledReason: new UntypedFormControl(null),
 
             // Client Contract Signers
-            contractSigners: new FormArray([]),
+            contractSigners: new UntypedFormArray([]),
 
             // Client Special Contract Terms
-            specialContractTerms: new FormControl(null, Validators.required),
-            noSpecialContractTerms: new FormControl(false),
+            specialContractTerms: new UntypedFormControl(null, Validators.required),
+            noSpecialContractTerms: new UntypedFormControl(false),
 
             // Client Rate & Invoicing
-            clientRateAndInvoicing: new FormControl(null),
-            clientPrice: new FormControl(null, Validators.required),
-            clientCurrency: new FormControl(null, Validators.required),
-            rateUnitTypeId: new FormControl(null),
-            clientInvoiceCurrency: new FormControl(null, Validators.required),
-            clientInvoiceFrequency: new FormControl(null),
-            clientInvoiceTime: new FormControl(null),
-            clientInvoicingDate: new FormControl(null),
+            clientRateAndInvoicing: new UntypedFormControl(null),
+            normalRate: new UntypedFormControl(null, Validators.required),
+            clientCurrency: new UntypedFormControl(null, Validators.required),
+            rateUnitTypeId: new UntypedFormControl(null),
+            invoiceCurrencyId: new UntypedFormControl(null, Validators.required),
+            clientInvoiceFrequency: new UntypedFormControl(null),
+            clientInvoiceTime: new UntypedFormControl(null),
+            manualDate: new UntypedFormControl(null),
 
             // clientRatesNFees
-            clientFees: new FormArray([]),
-            clientRates: new FormArray([]),
+            clientFees: new UntypedFormArray([]),
+            clientRates: new UntypedFormArray([]),
 
             // Client Contract Duration
-            clientContractStartDate: new FormControl(null, Validators.required),
-            clientContractEndDate: new FormControl(null, Validators.required),
-            clientContractNoEndDate: new FormControl(false),
+            startDate: new UntypedFormControl(null, Validators.required),
+            endDate: new UntypedFormControl(null, Validators.required),
+            noEndDate: new UntypedFormControl(false),
 
             // Client Extension Option
-            clientExtensionDuration: new FormControl(null),
-            clientExtensionEndDate: new FormControl(null),
-            clientExtensionDeadline: new FormControl(null),
-            noClientExtensionOption: new FormControl(false),
+            clientExtensionDurationId: new UntypedFormControl(null),
+            clientExtensionSpecificDate: new UntypedFormControl(null),
+            clientExtensionDeadlineId: new UntypedFormControl(null),
+            noClientExtensionOption: new UntypedFormControl(false),
 
             // Client project
-            capOnTimeReporting: new FormControl(false),
-            capOnTimeReportingValue: new FormControl(null)
+            clientTimeReportingCapId: new UntypedFormControl(false),
+            clientTimeReportingCapMaxValue: new UntypedFormControl(null)
         });
     }
 
@@ -160,11 +175,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');
     }
-    get invoicingReferencePersonIdValue() {
-        return this.get('invoicingReferencePersonIdValue');
-    }
-    get noInvoicingReferencePerson() {
-        return this.get('noInvoicingReferencePerson');
+    get invoicePaperworkContactIdValue() {
+        return this.get('invoicePaperworkContactIdValue');
     }
     get evaluationsReferencePersonIdValue() {
         return this.get('evaluationsReferencePersonIdValue');
@@ -176,7 +188,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
         return this.get('evaluationsDisabledReason');
     }
     get contractSigners() {
-        return this.get('contractSigners') as FormArray;
+        return this.get('contractSigners') as UntypedFormArray;
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
@@ -189,8 +201,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientRateAndInvoicing() {
         return this.get('clientRateAndInvoicing');
     }
-    get clientPrice() {
-        return this.get('clientPrice');
+    get normalRate() {
+        return this.get('normalRate');
     }
     get clientCurrency() {
         return this.get('clientCurrency');
@@ -198,8 +210,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get rateUnitTypeId() {
         return this.get('rateUnitTypeId');
     }
-    get clientInvoiceCurrency() {
-        return this.get('clientInvoiceCurrency');
+    get invoiceCurrencyId() {
+        return this.get('invoiceCurrencyId');
     }
     get clientInvoiceFrequency() {
         return this.get('clientInvoiceFrequency');
@@ -207,8 +219,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientInvoiceTime() {
         return this.get('clientInvoiceTime');
     }
-    get clientInvoicingDate() {
-        return this.get('clientInvoicingDate');
+    get manualDate() {
+        return this.get('manualDate');
     }
     get clientSpecialRatePrice() {
         return this.get('clientSpecialRatePrice');
@@ -220,33 +232,33 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     //clientFees
 
     get clientFees() {
-        return this.get('clientFees') as FormArray;
+        return this.get('clientFees') as UntypedFormArray;
     }
 
     get clientRates() {
-        return this.get('clientRates') as FormArray;
+        return this.get('clientRates') as UntypedFormArray;
     }
 
     // Client Contract Duration
-    get clientContractStartDate() {
-        return this.get('clientContractStartDate');
+    get startDate() {
+        return this.get('startDate');
     }
-    get clientContractEndDate() {
-        return this.get('clientContractEndDate');
+    get endDate() {
+        return this.get('endDate');
     }
-    get clientContractNoEndDate() {
-        return this.get('clientContractNoEndDate');
+    get noEndDate() {
+        return this.get('noEndDate');
     }
 
     // Client Extension Option
-    get clientExtensionDuration() {
-        return this.get('clientExtensionDuration');
+    get clientExtensionDurationId() {
+        return this.get('clientExtensionDurationId');
     }
-    get clientExtensionEndDate() {
-        return this.get('clientExtensionEndDate');
+    get clientExtensionSpecificDate() {
+        return this.get('clientExtensionSpecificDate');
     }
-    get clientExtensionDeadline() {
-        return this.get('clientExtensionDeadline');
+    get clientExtensionDeadlineId() {
+        return this.get('clientExtensionDeadlineId');
     }
     get noClientExtensionOption() {
         return this.get('noClientExtensionOption');
@@ -254,24 +266,24 @@ export class WorkflowSalesClientDataForm extends FormGroup {
 
     // Client Porject
 
-    get capOnTimeReporting() {
-        return this.get('capOnTimeReporting');
+    get clientTimeReportingCapId() {
+        return this.get('clientTimeReportingCapId');
     }
-    get capOnTimeReportingValue() {
-        return this.get('capOnTimeReportingValue');
+    get clientTimeReportingCapMaxValue() {
+        return this.get('clientTimeReportingCapMaxValue');
     }
 
 }
 
-export class WorkflowSalesConsultantsForm extends FormGroup {
+export class WorkflowSalesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
-            consultantData: new FormArray([], Validators.minLength(1))
+            consultants: new UntypedFormArray([], Validators.minLength(1))
         })
 
     }
-    get consultantData() {
-        return this.get('consultantData') as FormArray;
+    get consultants() {
+        return this.get('consultants') as UntypedFormArray;
     }
 }
 
@@ -281,17 +293,17 @@ export enum ConsultantDiallogAction {
     Terminate = 3
 }
 
-export class SalesTerminateConsultantForm extends FormGroup {
+export class SalesTerminateConsultantForm extends UntypedFormGroup {
     constructor() {
         super({
-            finalEvaluationReferencePerson: new FormControl(null),
-            noEvaluation: new FormControl(null),
-            causeOfNoEvaluation: new FormControl(null),
-            terminationTime: new FormControl(null),
-            endDate: new FormControl(null),
-            terminationReason: new FormControl(null),
-            causeOfNonStandardTerminationTime: new FormControl(null),
-            additionalComments: new FormControl(null)
+            finalEvaluationReferencePerson: new UntypedFormControl(null),
+            noEvaluation: new UntypedFormControl(false),
+            causeOfNoEvaluation: new UntypedFormControl(null),
+            terminationTime: new UntypedFormControl(null),
+            endDate: new UntypedFormControl(null),
+            terminationReason: new UntypedFormControl(null),
+            causeOfNonStandardTerminationTime: new UntypedFormControl(null),
+            additionalComments: new UntypedFormControl(null)
         });
     }
 
@@ -322,46 +334,58 @@ export class SalesTerminateConsultantForm extends FormGroup {
 }
 
 export const TenantList = [
-    {
+	{
+		id: 1,
+		name: 'Denmark',
+		code: 'DK',
+	},
+	{
+		id: 27,
+		name: 'France',
+		code: 'FR',
+	},
+	{
+		id: 10,
+		name: 'Germany',
+		code: 'DE',
+	},
+	{
+		id: 25,
+		name: 'International',
+		code: 'EU',
+	},
+	{
+		id: 8,
+		name: 'Netherlands',
+		code: 'NL',
+	},
+	{
+		id: 17,
+		name: 'Norway',
+		code: 'NO',
+	},
+	{
+		id: 4,
+		name: 'Poland',
+		code: 'PL',
+	},
+	{
+		id: 2,
+		name: 'Sweden',
+		code: 'SE',
+	},
+];
+
+
+export const ClientRateTypes: EnumEntityTypeDto[] = [
+    new EnumEntityTypeDto({
         id: 1,
-        name: "Denmark",
-        code: 'DK'
-    },
-    {
-        id: 27,
-        name: "France",
-        code: 'FR'
-    },
-    {
-        id: 10,
-        name: "Germany",
-        code: 'DE'
-    },
-    {
-        id: 25,
-        name: "International",
-        code: 'EU'
-    },
-    {
-        id: 8,
-        name: "Netherlands",
-        code: 'NL'
-    },
-    {
-        id: 17,
-        name: "Norway",
-        code: 'NO'
-    },
-    {
-        id: 4,
-        name: "Poland",
-        code: 'PL'
-    },
-    {
+        name: 'Time based',
+    }),
+    new EnumEntityTypeDto({
         id: 2,
-        name: "Sweden",
-        code: 'SE'
-    }
+        name: 'Fixed',
+    })
 ];
 
 export class DocumentForm extends FormGroup {

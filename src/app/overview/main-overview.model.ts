@@ -18,6 +18,26 @@ export enum OverviewFlagNames {
   "Requires attention" = 20,
 }
 
+export const OverviewProcessColors: {[key: number]: string} = {
+  1: 'overview-extensions-icon',
+  10: 'overview-extensions-icon',
+  11: 'overview-extensions-icon',
+  3: 'overview-termination-icon',
+  12: 'overview-termination-icon',
+  2: 'overview-negotiation-icon',
+  20: 'overview-attention-icon'
+}
+
+export const OverviewProcessIcons: {[key: number]: string} = {
+  1: 'check-circle',
+  11: 'check-circle-fill',
+  10: 'check-circle-fill',
+  3: 'cancel',
+  12: 'cancel-fill',
+  2: 'schedule',
+  20: 'warning'
+}
+
 export class OverviewData {
     firstName: string;
     lastName: string;
@@ -97,6 +117,7 @@ export const MainOverviewStatuses = [
     canBeSetAutomatically: boolean;
     selected: boolean;
     flag: string;
+    color: string;
 }
 
 export class SelectableStatusesDto implements ISelectableStatusesDto {
@@ -106,6 +127,7 @@ export class SelectableStatusesDto implements ISelectableStatusesDto {
     canBeSetAutomatically: boolean;
     selected: boolean;
     flag: string;
+    color: string;
 
     constructor(data?: ISelectableStatusesDto) {
         this.id = data?.id!;
@@ -114,6 +136,7 @@ export class SelectableStatusesDto implements ISelectableStatusesDto {
         this.canBeSetAutomatically = data?.canBeSetAutomatically!;
         this.selected = data?.selected!;
         this.flag = data?.flag!;
+        this.color = data?.color!;
     }
 }
 

@@ -4,8 +4,9 @@
 
 .workflow-list {
     &--filter {
-        padding: 32px 50px;
+        padding: 32px 50px 18px;
         background-color: $white-color;
+        height: 200px;
         &__badge {
             display: flex;
             justify-content: center;
@@ -23,8 +24,11 @@
             width: 30px;
             font-size: 30px;
         }
-        &__add-btn mat-icon {
-            @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
+        &__add-btn {
+            @include fontLineHeightAndSize(35px, 35px, 35px, 35px);
+            mat-icon {
+                @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
+            }
         }
         &-type {
             @include flexCentered;
@@ -114,7 +118,7 @@
     &--content {
         background-color: $sand-25-color;
         flex-grow: 1;
-        padding: 32px 50px;
+        padding: 0 50px 32px 50px;
         position: relative;
     }
     &--table {
@@ -148,7 +152,7 @@
     }
     &--workflow-status {
         &--menu-item-selected {
-            background-color: rgba($color: $sand-color, $alpha: 0.5);
+            background-color: #f9f9f9 !important;
         }
     }
 }
@@ -211,7 +215,7 @@
     &.pending-data-missing-status {
         color: #FB9101;
     }
-    &.finished-status { 
+    &.finished-status {
         color: $purple-color;
     }
     &.deleted-status {

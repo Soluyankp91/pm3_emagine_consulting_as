@@ -11,12 +11,13 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import {
     AvailableConsultantDto,
+    CategoryForMigrateDto,
     ChangeClientPeriodDto,
     ClientPeriodDto,
     ClientPeriodServiceProxy,
@@ -48,14 +49,14 @@ import {
 } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
-import { DialogConfig } from './workflow-details.model';
+import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
 
 @Component({
     selector: 'app-workflow-details',
@@ -98,16 +99,19 @@ export class WorkflowDetailsComponent
     sectionIndex: number;
 
     workflowResponse: WorkflowDto;
-    clientPeriods: ClientPeriodDto[] | undefined = [];
+    clientPeriods: ClientPeriodDto[] | undefined;
     workflowDirectClient: string | undefined;
     workflowEndClient: string | undefined;
     workflowDirectClientId: number | undefined;
     workflowEndClientId: number | undefined;
     workflowConsultants: ConsultantNameWithRequestUrl[] = [];
+    workflowConsultantsList: string | undefined;
     workflowStatusId: number | undefined;
     workflowStatusName: string | undefined;
     workflowStatusIcon: string;
     workflowStatus = WorkflowStatus;
+    endClientCrmId: number | undefined;
+    directClientCrmId: number | undefined;
     workflowStatusMenuList = WorkflowStatusMenuList;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
@@ -115,8 +119,10 @@ export class WorkflowDetailsComponent
     workflowPeriodStepTypes: { [key: string]: string };
     individualConsultantActionsAvailable: boolean;
 
+    projectCategories: EnumEntityTypeDto[];
+
     isNoteVisible = false;
-    workflowNote = new FormControl('', Validators.maxLength(4000));
+    workflowNote = new UntypedFormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
     disabledOverview = true;
     notesEditable = false;
@@ -133,7 +139,8 @@ export class WorkflowDetailsComponent
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private localHttpService: LocalHttpService,
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private router: Router
     ) {
         super(injector);
     }
@@ -178,6 +185,7 @@ export class WorkflowDetailsComponent
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
         this.getNotes();
+        this._getProjectCategories();
 
         this._workflowDataService.workflowTopSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
@@ -185,6 +193,10 @@ export class WorkflowDetailsComponent
                 this.getTopLevelMenu(value);
             });
         this.individualConsultantActionsAvailable = environment.dev;
+    }
+
+    private _getProjectCategories() {
+        this._internalLookupService.getProjectCategory().subscribe(result => this.projectCategories = result);
     }
 
     showOrHideNotes() {
@@ -223,9 +235,7 @@ export class WorkflowDetailsComponent
         this._workflowServiceProxy
             .notesPUT(this.workflowId, this.workflowNote.value)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(
-                () => (this.workflowNoteOldValue = this.workflowNote.value)
-            );
+            .subscribe(() => this.workflowNoteOldValue = this.workflowNote.value);
     }
 
     resetWorkflowProgress() {
@@ -314,8 +324,23 @@ export class WorkflowDetailsComponent
                 this.workflowEndClient = result.endClientName;
                 this.workflowDirectClientId = result.directClientId;
                 this.workflowEndClientId = result.endClientId;
+                this.endClientCrmId = result.endClientCrmId;
+                this.directClientCrmId = result.directClientCrmId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
+                this.workflowConsultantsList = result.consultantNamesWithRequestUrls?.map(x => {
+                    let result = '• ';
+                    if (x.consultantName) {
+                        result += x.consultantName;
+                    }
+                    if (x.consultantId) {
+                        result += (x.consultantName?.length ? ' | ' : '' ) + '#' + x.consultantId;
+                    }
+                    if (x.companyName) {
+                        result += (x.consultantName?.length || x.consultantId ? ' | ' : '' ) + x.companyName;
+                    }
+                    return result;
+                }).join('\n');
                 if (result.workflowStatusId) {
                     this.workflowStatusId = result.workflowStatusId;
                     this.workflowStatusName = getWorkflowStatus(result.workflowStatusId);
@@ -520,22 +545,15 @@ export class WorkflowDetailsComponent
     addTermination() {
         this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Terminate workflow`,
-                confirmationMessage: `Are you sure you want to terminate workflow?`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Terminate',
-                isNegative: true,
-            },
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            confirmationMessageTitle: `Terminate workflow`,
+            confirmationMessage: `Are you sure you want to terminate workflow?`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Terminate',
+            isNegative: true,
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.terminateWorkflowStart();
@@ -577,14 +595,7 @@ export class WorkflowDetailsComponent
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe((result) => {
                 if (result.length) {
-                    switch (workflowAction) {
-                        case WorkflowDiallogAction.Change:
-                            this.changeWorkflow(result);
-                            break;
-                        case WorkflowDiallogAction.Extend:
-                            this.addExtension(result);
-                            break;
-                    }
+                    this.getCategoryForMigrate(workflowAction, result);
                 } else {
                     this.showNotify(
                         NotifySeverity.Error,
@@ -595,21 +606,34 @@ export class WorkflowDetailsComponent
             });
     }
 
-    addExtension(availableConsultants: AvailableConsultantDto[]) {
+    getCategoryForMigrate(workflowAction: number, availableConsultants: AvailableConsultantDto[]) {
+        this._workflowServiceProxy.getCategoryForMigrate(this.workflowId)
+            .subscribe(result => {
+                switch (workflowAction) {
+                    case WorkflowDiallogAction.Change:
+                        this.changeWorkflow(availableConsultants, result);
+                        break;
+                    case WorkflowDiallogAction.Extend:
+                        this.addExtension(availableConsultants, result);
+                        break;
+                }
+            });
+    }
+
+    addExtension(availableConsultants: AvailableConsultantDto[], migrationResult: CategoryForMigrateDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        DialogConfig600.scrollStrategy = scrollStrategy;
+        DialogConfig600.data = {
             dialogType: WorkflowDiallogAction.Extend,
             dialogTitle: 'Extend Workflow',
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
             isNegative: false,
             consultantData: availableConsultants,
+            isMigrationNeeded: migrationResult.isMigrationNeeded,
+            projectCategory: this.findItemById(this.projectCategories, migrationResult.projectCategoryId)
         };
-        const dialogRef = this.dialog.open(
-            WorkflowActionsDialogComponent,
-            DialogConfig
-        );
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig600);
 
         dialogRef.componentInstance.onConfirmed.subscribe(
             (result: ExtendClientPeriodDto) => {
@@ -644,21 +668,20 @@ export class WorkflowDetailsComponent
         );
     }
 
-    changeWorkflow(availableConsultants: AvailableConsultantDto[]) {
+    changeWorkflow(availableConsultants: AvailableConsultantDto[], migrationResult: CategoryForMigrateDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        DialogConfig600.scrollStrategy = scrollStrategy;
+        DialogConfig600.data = {
             dialogType: WorkflowDiallogAction.Change,
             dialogTitle: 'Change Workflow data',
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
             isNegative: false,
             consultantData: availableConsultants,
+            isMigrationNeeded: migrationResult.isMigrationNeeded,
+            projectCategory: this.findItemById(this.projectCategories, migrationResult.projectCategoryId)
         };
-        const dialogRef = this.dialog.open(
-            WorkflowActionsDialogComponent,
-            DialogConfig
-        );
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig600);
 
         dialogRef.componentInstance.onConfirmed.subscribe(
             (result: ChangeClientPeriodDto) => {
@@ -698,19 +721,19 @@ export class WorkflowDetailsComponent
         specialFeesWarnings: string[] | undefined
     ) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        BigDialogConfig.scrollStrategy = scrollStrategy;
+        BigDialogConfig.data = {
             specialRatesWarnings: specialRatesWarnings,
             specialFeesWarnings: specialFeesWarnings,
         };
-        this.dialog.open(RateAndFeesWarningsDialogComponent, DialogConfig);
+        this.dialog.open(RateAndFeesWarningsDialogComponent, BigDialogConfig);
     }
 
     addConsultant() {
         this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: WorkflowDiallogAction.AddConsultant,
             dialogTitle: 'Add consultant',
             rejectButtonText: 'Cancel',
@@ -719,7 +742,7 @@ export class WorkflowDetailsComponent
         };
         const dialogRef = this.dialog.open(
             WorkflowActionsDialogComponent,
-            DialogConfig
+            MediumDialogConfig
         );
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
@@ -758,5 +781,34 @@ export class WorkflowDetailsComponent
         this._workflowServiceProxy.setWorkflowStatus(workflowId, workflowStatus)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(() => this.getTopLevelMenu())
+    }
+
+    openClientProfile(clientId: number) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
+        );
+        window.open(url, '_blank');
+    }
+
+    openInHubspot(clientCrmId: number) {
+        if (this._internalLookupService.hubspotClientUrl?.length) {
+            if (clientCrmId !== null && clientCrmId !== undefined) {
+                window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', clientCrmId!.toString()), '_blank');
+            }
+        } else {
+            this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+                this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
+                        headers: new HttpHeaders({
+                            'Authorization': `Bearer ${response.accessToken}`
+                        }),
+                        responseType: 'text'
+                    }).subscribe((result: string) => {
+                        this._internalLookupService.hubspotClientUrl = result;
+                        if (clientCrmId !== null && clientCrmId !== undefined) {
+                            window.open(result.replace('{CrmClientId}', clientCrmId!.toString()), '_blank');
+                        }
+                })
+            });
+        }
     }
 }

@@ -8,9 +8,10 @@ import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.mod
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
-    AgreementTemplateServiceProxy,
-    FileServiceProxy,
-    MergeFieldsServiceProxy,
+	AgreementTemplateAttachmentServiceProxy,
+	AgreementTemplateServiceProxy,
+	FileServiceProxy,
+	MergeFieldsServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { EmployeesFilterComponent } from './shared/components/grid-table/master-templates/filters/employees-filter/employees-filter.component';
 import { AgreementTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-types-filter/agreement-types-filter.component';
@@ -26,7 +27,6 @@ import { CustomTooltipDirective } from './shared/directives/customTooltip/custom
 import { DropdownAutocompleteMultiselectComponent } from './shared/components/dropdown-autocomplete-multiselect/dropdown-autocomplete-multiselect.component';
 import { DropdownAutocompleteSingleSelectComponent } from './shared/components/dropdown-autocomplete-single-select/dropdown-autocomplete-single-select.component';
 import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { DateCellComponent } from './shared/components/grid-table/master-templates/cells/date-cell/date-cell.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
@@ -42,76 +42,192 @@ import { CreationComponent } from './client-specific-templates/edit-template/set
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
+import { CreationTitleService } from './shared/services/creation-title.service';
+import { TenantsComponent } from './shared/components/tenants/tenants.component';
+import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
+import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
+import { MaterialModule } from '../shared/common/material/material.module';
+import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
+import { PreviewTabsComponent } from './master-templates/listAndPreviews/components/preview/preview.component';
+import { SummaryComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/summary/summary.component';
+import { EmptyStringHandlePipe } from './shared/pipes/empty-string-handle.pipe';
+import { FormatArrayPipe } from './shared/pipes/format-array.pipe';
+import { AttachmentsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/attachments/attachments.component';
+import { LogsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/logs/logs.component';
+import { LinkedClientTemplatesComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedClientTemplates/linked-client-templates.component';
+import { ModeComponent } from './shared/components/mode/mode.component';
+import { CustomTooltipComponent } from './shared/directives/customTooltip/custom-tooltip.component';
+import { LinkedAgreementsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedAgreements/linked-agreements.component';
+import { AgreementStatusComponent } from './shared/components/agreement-status/agreement-status.component';
+import { ApprovalComponent } from './shared/components/approval/approval.component';
+import { EnabledComponent } from './shared/components/enabled/enabled.component';
+import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
+import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
+import { ViewComponent } from './master-templates/template-editor/editor/components/view/view.component';
+import { FormatComponent } from './master-templates/template-editor/editor/components/format/format.component';
+import { MergeFieldsComponent } from './master-templates/template-editor/editor/components/merge-fields/merge-fields.component';
+import { CompareComponent } from './master-templates/template-editor/editor/components/compare/compare.component';
+import { FileComponent } from './master-templates/template-editor/editor/components/file/file.component';
 
 @NgModule({
-    declarations: [
-        ContractComponent,
-        ClientSpecificTemplatesComponent,
-        MasterTemplatesComponent,
-        AgreementsComponent,
-        MatGridComponent,
-        EmployeesFilterComponent,
-        AgreementLanguagesFilterComponent,
-        AgreementTypesFilterComponent,
-        DeliveryTypesFilterComponent,
-        EmploymentTypesFilterComponent,
-        LegalEntitiesFilterComponent,
-        RecipientTypesFilterComponent,
-        SalesTypesFilterComponent,
-        MasterTemplateFilterHeaderComponent,
-        CreateMasterTemplateComponent,
-        EditorComponent,
-        MasterTemplateCreationComponent,
-        AutoNameComponent,
-        MatMenuSingleSelectComponent,
-        MultiSelectComponent,
-        CustomTooltipDirective,
-        DropdownAutocompleteMultiselectComponent,
-        NewFileUploaderDirective,
-        CreationComponent,
-        ClientSpecificComponent,
-        DropdownAutocompleteSingleSelectComponent,
-        ConfirmDialogComponent,
-        DateCellComponent,
-        FileUploaderComponent,
-        FileSelectorComponent,
-    ],
-    imports: [
-        CommonModule,
-        ContractsRoutingModule,
-        ServiceProxyModule,
-        AppCommonModule,
-    ],
-    providers: [
-        ContractsService,
-        MasterTemplatesService,
-        AgreementTemplateServiceProxy,
-        FileServiceProxy,
-        AgreementTemplateServiceProxy,
-        MergeFieldsServiceProxy,
-    ],
+	declarations: [
+		ContractComponent,
+		ClientSpecificTemplatesComponent,
+		MasterTemplatesComponent,
+		AgreementsComponent,
+		MatGridComponent,
+		EmployeesFilterComponent,
+		AgreementLanguagesFilterComponent,
+		AgreementTypesFilterComponent,
+		DeliveryTypesFilterComponent,
+		EmploymentTypesFilterComponent,
+		LegalEntitiesFilterComponent,
+		RecipientTypesFilterComponent,
+		SalesTypesFilterComponent,
+		MasterTemplateFilterHeaderComponent,
+		CreateMasterTemplateComponent,
+		MasterTemplateCreationComponent,
+		AutoNameComponent,
+		MatMenuSingleSelectComponent,
+		MultiSelectComponent,
+		CustomTooltipDirective,
+		DropdownAutocompleteMultiselectComponent,
+		NewFileUploaderDirective,
+		CreationComponent,
+		ClientSpecificComponent,
+		DropdownAutocompleteSingleSelectComponent,
+		ConfirmDialogComponent,
+		FileUploaderComponent,
+		FileSelectorComponent,
+		TenantsComponent,
+		IsEnabledComponent,
+		TruncateTextCustomPipe,
+		PreviewTabsComponent,
+		SummaryComponent,
+		EmptyStringHandlePipe,
+		FormatArrayPipe,
+		AttachmentsComponent,
+		LogsComponent,
+		LinkedClientTemplatesComponent,
+		ModeComponent,
+		CustomTooltipComponent,
+		LinkedAgreementsComponent,
+		AgreementStatusComponent,
+		ApprovalComponent,
+		EnabledComponent,
+		ApprovalFilterComponent,
+		ModeFilterComponent,
+		ViewComponent,
+		FormatComponent,
+		MergeFieldsComponent,
+		CompareComponent,
+		FileComponent,
+	],
+	imports: [
+		CommonModule,
+		ContractsRoutingModule,
+		ServiceProxyModule,
+		AppCommonModule,
+		MaterialModule,
+		// Standalone
+		EditorComponent,
+	],
+	providers: [
+		ContractsService,
+		MasterTemplatesService,
+		ClientTemplatesService,
+		AgreementTemplateServiceProxy,
+		FileServiceProxy,
+		AgreementTemplateServiceProxy,
+		MergeFieldsServiceProxy,
+		AgreementTemplateAttachmentServiceProxy,
+		CreationTitleService,
+	],
 })
 export class ContractsModule {
-    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-        iconRegistry.addSvgIcon(
-            'create-icon',
-            sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/create-icon.svg'
-            )
-        );
+	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+		iconRegistry.addSvgIcon('create-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/create-icon.svg'));
 
-        iconRegistry.addSvgIcon(
-            'euro-union-icon',
-            sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/euro-union.svg'
-            )
-        );
+		iconRegistry.addSvgIcon(
+			'euro-union-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/euro-union.svg')
+		);
 
-        iconRegistry.addSvgIcon(
-            'close-button-icon',
-            sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/close-button-icon.svg'
-            )
-        );
-    }
+		iconRegistry.addSvgIcon(
+			'close-button-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/close-button-icon.svg')
+		);
+		iconRegistry.addSvgIcon('plus-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/plus-icon.svg'));
+		iconRegistry.addSvgIcon(
+			'worldwide-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/worldwide-icon.svg')
+		);
+		iconRegistry.addSvgIcon('cog-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/cog-icon.svg'));
+		iconRegistry.addSvgIcon('editor-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/editor-icon.svg'));
+		iconRegistry.addSvgIcon(
+			'chevron-down',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-down.svg')
+		);
+		iconRegistry.addSvgIcon('enabled', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/enabled-icon.svg'));
+		iconRegistry.addSvgIcon('disabled', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/disabled-icon.svg'));
+		iconRegistry.addSvgIcon(
+			'three-lines',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/three-lines-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'three-hor-dots',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/three-hor-dots.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'dropdown-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/dropdown-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'templates-links',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/templates-links.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-links',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-links.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'fully-linked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/fully-linked.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'summary-unlinked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/summary-unlinked.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'document-unlinked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/document-unlinked.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'fully-unlinked',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/fully-unlinked.svg')
+		);
+		iconRegistry.addSvgIcon('right-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/right-arrow.svg'));
+		iconRegistry.addSvgIcon(
+			'approved-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approved-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'toApprove-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/toApprove-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'not-applicable-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/not-applicable.icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'no-items-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-items-icon.svg')
+		);
+		iconRegistry.addSvgIcon('asc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/asc-arrow.svg'));
+		iconRegistry.addSvgIcon('desc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/desc-arrow.svg'));
+	}
 }

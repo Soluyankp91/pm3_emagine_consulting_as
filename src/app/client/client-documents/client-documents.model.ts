@@ -1,14 +1,15 @@
-import { FormArray, FormGroup } from "@angular/forms";
+import { UntypedFormArray, UntypedFormGroup } from "@angular/forms";
+import { DocumentTypeEnum } from "src/shared/service-proxies/service-proxies";
 
-export class GeneralDocumentForm extends FormGroup {
+export class GeneralDocumentForm extends UntypedFormGroup {
     constructor() {
         super({
-            documents: new FormArray([])
+            documents: new UntypedFormArray([])
         })
 
     }
     get documents() {
-        return this.get('documents') as FormArray;
+        return this.get('documents') as UntypedFormArray;
     }
 }
 
@@ -42,3 +43,38 @@ export const DocumentSideNavigation: DocumentSideNavDto[] = [
         enumValue: DocumentSideNavItem.Evaluations
     }
 ];
+
+export enum EvaluationFromDateOption {
+    LastMonth = 1,
+    Last6Months = 2,
+    Last12Months = 3,
+    AllPeriods = 4
+}
+
+export const EvaluationFromDateList = [
+    {
+        id: EvaluationFromDateOption.LastMonth,
+        name: 'Last month'
+    },
+    {
+        id: EvaluationFromDateOption.Last6Months,
+        name: 'Last 6 months'
+    },
+    {
+        id: EvaluationFromDateOption.Last12Months,
+        name: 'Last 12 months'
+    },
+    {
+        id: EvaluationFromDateOption.AllPeriods,
+        name: 'All periods'
+    }
+]
+
+
+export enum EDocumentTypeIcon {
+	'txt' = DocumentTypeEnum.Misc,
+	'pdf' = DocumentTypeEnum.Pdf,
+	'doc' = DocumentTypeEnum.Word,
+	'jpg' = DocumentTypeEnum.Image,
+	'xls' = DocumentTypeEnum.Excel
+}

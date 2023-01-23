@@ -1,11 +1,11 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 
-export class ChangeWorkflowForm extends FormGroup {
+export class ChangeWorkflowForm extends UntypedFormGroup {
     constructor() {
         super({
-            cutoverDate: new FormControl(null),
-            newLegalContractRequired: new FormControl(false),
-            consultants: new FormArray([])
+            cutoverDate: new UntypedFormControl(null),
+            newLegalContractRequired: new UntypedFormControl(false),
+            consultants: new UntypedFormArray([])
         })
     }
     get cutoverDate() {
@@ -15,17 +15,17 @@ export class ChangeWorkflowForm extends FormGroup {
         return this.get('newLegalContractRequired');
     }
     get consultants() {
-        return this.get('consultants') as FormArray;
+        return this.get('consultants') as UntypedFormArray;
     }
 }
 
-export class ExtendWorkflowForm extends FormGroup {
+export class ExtendWorkflowForm extends UntypedFormGroup {
     constructor() {
         super({
-            startDate: new FormControl(null),
-            endDate: new FormControl(null),
-            noEndDate: new FormControl(null),
-            consultants: new FormArray([])
+            startDate: new UntypedFormControl(null),
+            endDate: new UntypedFormControl(null),
+            noEndDate: new UntypedFormControl(null),
+            consultants: new UntypedFormArray([])
         })
     }
     get startDate() {
@@ -38,6 +38,25 @@ export class ExtendWorkflowForm extends FormGroup {
         return this.get('noEndDate');
     }
     get consultants() {
-        return this.get('consultants') as FormArray;
+        return this.get('consultants') as UntypedFormArray;
+    }
+}
+
+export class ProjectCategoryForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            primaryCategoryArea: new UntypedFormControl(null),
+            primaryCategoryType: new UntypedFormControl(null),
+            primaryCategoryRole: new UntypedFormControl(null)
+        })
+    }
+    get primaryCategoryArea() {
+        return this.get('primaryCategoryArea');
+    }
+    get primaryCategoryType() {
+        return this.get('primaryCategoryType');
+    }
+    get primaryCategoryRole() {
+        return this.get('primaryCategoryRole');
     }
 }

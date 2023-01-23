@@ -23,7 +23,7 @@
 
         &--block {
             width: 100%;
-            padding: 25px 0;
+            padding: 30px 0;
             &.last-block {
                 border-bottom: 0;
             }
@@ -39,14 +39,6 @@
             margin-bottom: 8px !important;
             line-height: 14px;
             color: rgba(56, 72, 83, 0.87);
-        }
-
-        .workflow-section--header {
-            @include fontOpenSans(16px, 'inherit');
-            color: $light-grey-color;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
         }
 
         &--consultant {
@@ -126,6 +118,38 @@
                     color: rgba(56, 72, 83, 0.87);
                 }
             }
+        }
+    }
+    &-section {
+        &--number {
+            @include fontOpenSans(14px, 700);
+            @include flexCentered;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            margin-right: 24px;
+            background-color: $sand-color;
+            color: $dark-grey-color;
+        }
+        &--header {
+            @include fontOpenSans(16px, 'inherit');
+            color: $light-grey-color;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            &-main {
+                @include fontOpenSans(18px, 700);
+                line-height: 120%;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: $dark-grey-color;
+            }
+        }
+        &--content {
+            border-left: 2px solid $sand-color;
+            margin-left: 12px;
+            padding: 5px 0 5px 35px;
+            width: 100%;
         }
     }
 }

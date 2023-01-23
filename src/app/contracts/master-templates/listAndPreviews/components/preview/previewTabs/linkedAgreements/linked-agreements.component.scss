@@ -1,0 +1,41 @@
+app-linked-agreements {
+	.linked-agreements-container {
+		padding: 26px 32px;
+		height: calc(100vh - 260px);
+		overflow: auto;
+	}
+	.header-cell {
+		font-size: 12px;
+	}
+	.icon {
+		width: 8px;
+	}
+	.isEnabled-icon {
+		width: 10px;
+		height: 20px;
+	}
+	.spinner-container {
+		background-color: unset;
+	}
+	.form-field {
+		width: 100%;
+	}
+	.input,
+	.input-label {
+		padding-left: 32px;
+		box-sizing: border-box;
+	}
+	.mat-form-field-underline {
+		background-color: #e7e3e8 !important;
+		bottom: 0px !important;
+	}
+	.no-items {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		max-width: 176px;
+		color: #b6b4b2;
+	}
+}

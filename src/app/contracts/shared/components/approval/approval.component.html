@@ -1,0 +1,11 @@
+<ng-container [ngSwitch]="linkStateAccepted">
+    <ng-container *ngSwitchCase="true">
+        <mat-icon svgIcon="approved-icon"></mat-icon>
+    </ng-container>
+    <ng-container *ngSwitchCase="false">
+        <mat-icon svgIcon="toApprove-icon"></mat-icon>
+    </ng-container>
+    <ng-container *ngSwitchCase="null">
+        <mat-icon svgIcon="not-applicable-icon"></mat-icon>
+    </ng-container>
+</ng-container>

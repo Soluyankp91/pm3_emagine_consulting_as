@@ -31,8 +31,8 @@
         }
         &-status {
             &__badge {
-                height: 30px;
-                padding: 8px;
+                height: 32px;
+                padding: 8px 12px;
                 border: 1px solid $light-grey-color;
                 border-radius: 40px;
                 font-weight: 700;
@@ -60,7 +60,7 @@
     }
 
     &--content {
-        padding: 32px 50px;
+        padding: 0 50px 32px 50px;
         background-color: $sand-25-color;
         min-height: calc(100vh - 150px);
     }
