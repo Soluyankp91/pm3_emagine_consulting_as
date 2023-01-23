@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy } from '@angular/compiler';
-import { EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, EventEmitter } from '@angular/core';
 import { Output } from '@angular/core';
 import { Input } from '@angular/core';
 import { Component } from '@angular/core';
