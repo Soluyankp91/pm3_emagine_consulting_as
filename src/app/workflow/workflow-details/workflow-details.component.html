@@ -192,7 +192,7 @@
                 </ng-template>
                 <div class="workflow-form--panel pos-relative u-w--100">
                     <ng-container *ngIf="clientPeriods?.length">
-                        <app-workflow-overview [periodId]="clientPeriods![0]?.id"></app-workflow-overview>
+                        <app-workflow-overview [periodId]="clientPeriods![0]?.id" [clientPeriods]="clientPeriods"></app-workflow-overview>
                         <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
                             <!-- <mat-tab-group>
                                 <mat-tab label="Notes"> -->

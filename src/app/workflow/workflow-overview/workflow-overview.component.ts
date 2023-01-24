@@ -1,5 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
@@ -11,7 +12,7 @@ import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -28,6 +29,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
+    @Input() clientPeriods: ClientPeriodDto[] | undefined;
+
+    documentsPeriod = new UntypedFormControl(null);
 
     componentInitalized = false;
     workflowStepStatus = WorkflowStepStatus;
@@ -68,7 +72,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         private dialog: MatDialog,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
-
+        private _workflowDocumentsService: WorkflowDocumentServiceProxy
     ) {
         super(injector);
      }
@@ -83,6 +87,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.individualConsultantActionsAvailable = environment.dev;
         this.getOverviewData();
         this.getWorkflowHistory();
+        this._getDocuments();
 
         this._workflowDataService.workflowOverviewUpdated
             .pipe(takeUntil(this._unsubscribe))
@@ -94,6 +99,10 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    private _getDocuments() {
+
     }
 
     displayStepAction(process: StepDto) {
