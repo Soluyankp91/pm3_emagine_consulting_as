@@ -45,42 +45,6 @@
     }
 }
 
-.workflow-form--panel {
-    .mat-accordion {
-        width: 100%;
-        .mat-expansion-panel-spacing {
-            margin: 0 !important;
-        }
-        .mat-expansion-panel {
-            background: $sand-25-color;
-            border-radius: 0 !important;
-            width: 100%;
-            margin-bottom: 0 !important;
-            border-bottom: 1px solid #E7E3E8;
-            .mat-expansion-indicator::after {
-                border: solid $dark-grey-color;
-                border-width: 0 2px 2px 0;
-                display: inline-block;
-                padding: 2px;
-                transform: rotate(45deg);
-                width: 8px;
-                height: 8px;
-                margin-top: -10px;
-            }
-        }
-        .mat-expansion-panel-body {
-            padding: 10px 24px !important;
-        }
-        .mat-expansion-panel-header {
-            padding-left: 16px !important;
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            color: $dark-grey-color;
-        }
-    }
-}
-
 .workflow-sidenav--expansion {
     &.mat-accordion {
         width: 100%;

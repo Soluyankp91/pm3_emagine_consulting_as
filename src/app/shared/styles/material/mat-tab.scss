@@ -121,7 +121,7 @@ mat-tab-group.client-documents--tabs {
         padding-top: 5px;
     }
 
-    .mat-tab-label {
+    .wfPeriodLabel.mat-tab-label {
         position: relative;
         font-family: 'Open Sans', sans-serif !important;
         opacity: 1 !important;
@@ -264,14 +264,16 @@ mat-tab-group.notification-settings--tabs {
     .mat-tab-header {
         border: 0 !important;
     }
-    .mat-tab-label-container {
-        border-left: 1px solid #E7E3E8;
-        border-top: 1px solid #E7E3E8;
-        background-color: #fff;
+    .notesDocumentsLabel {
+        .mat-tab-label-container {
+            border-left: 1px solid #E7E3E8;
+            border-top: 1px solid #E7E3E8;
+            background-color: #fff;
+        }
     }
     .mat-tab-labels {
         padding: 0 16px;
-        .mat-tab-label {
+        .notesDocumentsLabel.mat-tab-label {
             background-color: transparent !important;
             padding: 0 !important;
             min-width: unset !important;
@@ -295,5 +297,7 @@ mat-tab-group.notification-settings--tabs {
         width: auto;
         background-color: $green-color !important;
         height: 3px;
+        bottom: 0;
+        top: unset;
     }
 }

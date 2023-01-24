@@ -5,7 +5,7 @@
                 <mat-accordion class="mat-elevation-z0">
                     <ng-container *ngFor="let item of workflowDocuments">
                         <mat-expansion-panel class="mat-elevation-z0">
-                            <mat-expansion-panel-header 
+                            <mat-expansion-panel-header
                                         [collapsedHeight]="'48px'"
                                         [expandedHeight]="'48px'">
                                 <mat-panel-title>
@@ -40,7 +40,7 @@
                                                         </button>
                                                         <mat-menu #documentActionsMenu>
                                                             <button
-                                                                class="menu-item menu-item--edit"
+                                                                class="menu-item green-color"
                                                                 mat-menu-item
                                                                 appPreventDoubleClick (throttledClick)="downloadDocument()">
                                                                 <mat-icon svgIcon="download-icon"></mat-icon>
