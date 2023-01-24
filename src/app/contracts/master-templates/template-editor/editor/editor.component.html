@@ -1,4 +1,4 @@
-<dx-tabs
+<!-- <dx-tabs
   #apiTabs
   [dataSource]="tabs"
   [selectedIndex]="0"
@@ -17,4 +17,5 @@
 
 <dx-popup [showTitle]="true" title="Markup" [(visible)]="liveTextpopupVisible">
   <div>{{template}}</div>
-</dx-popup>
+</dx-popup> -->
+<app-richedit *ngIf="initiliazed && template" [template]="template"></app-richedit>
