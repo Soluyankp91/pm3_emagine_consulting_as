@@ -179,10 +179,69 @@
             </mat-form-field>
         </div>
         <ng-container *ngIf="overviewDocuments.length">
+            <div fxLayout="row" fxLayoutAlign="start start" class="documents-header u-w--100 u-pl--16 u-pr--16 u-mt--15">
+                <span fxFlex="30px">
+                </span>
+                <span fxFlex="auto">
+                    Documents
+                </span>
+                <span fxFlex="180px">
+                    Process type
+                </span>
+                <span fxFlex="180px">
+                    Workflow step
+                </span>
+                <span fxFlex="120px">
+                    Date
+                </span>
+                <span fxFlex="80px">
+                    By
+                </span>
+                <span fxFlex="40px">
+                </span>
+            </div>
             <ng-container *ngFor="let item of overviewDocuments">
-              {{item.name}} {{item.createdBy?.name}} {{item.stepType}}
+                <div fxLayout="row" fxLayoutAlign="start start" class="documents-row u-w--100 u-pl--16 u-pr--16">
+                    <span fxFlex="30px">
+                    </span>
+                    <span fxFlex="auto" class="text-bold">
+                        {{item.name}}
+                    </span>
+                    <span fxFlex="180px">
+                        {{item.workflowProcessType}}
+                    </span>
+                    <span fxFlex="180px">
+                        {{item.stepType}}
+                    </span>
+                    <span fxFlex="120px">
+                        {{item.createdDateUtc | momentFormat}}
+                    </span>
+                    <span fxFlex="80px">
+                        {{item.createdBy?.name}}
+                    </span>
+                    <span fxFlex="40px">
+                        <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="documentActionsMenu" class="three-dots-actions-btn">
+                            <mat-icon svgIcon="3-dots"></mat-icon>
+                        </button>
+                        <mat-menu #documentActionsMenu>
+                            <button
+                                class="menu-item green-color"
+                                mat-menu-item
+                                appPreventDoubleClick (throttledClick)="downloadDocument()">
+                                <mat-icon svgIcon="download-icon"></mat-icon>
+                                Download
+                            </button>
+                            <button
+                                class="menu-item menu-item--cancel"
+                                mat-menu-item
+                                appPreventDoubleClick (throttledClick)="removeDocument()">
+                                <mat-icon svgIcon="close-icon"></mat-icon>
+                                Delete
+                            </button>
+                        </mat-menu>
+                    </span>
+                </div>
             </ng-container>
-
         </ng-container>
     </ng-container>
     <ng-container *ngIf="workflowHistory.length">

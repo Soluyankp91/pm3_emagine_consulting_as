@@ -118,6 +118,17 @@
     }
 }
 
+.documents {
+    &-header {
+        color: $medium-grey-color;
+        @include fontOpenSans(10px, 600);
+    }
+    &-row {
+        @include fontOpenSans(12px, 600);
+        color: $dark-grey-color;
+    }
+}
+
 .icon-in-progress {
     display: flex;
     mat-icon.mat-icon {

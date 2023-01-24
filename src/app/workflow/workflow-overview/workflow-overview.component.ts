@@ -374,4 +374,13 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     stepsTrackBy(index: number, step: StepDto) {
         return step;
     }
+
+    downloadDocument() {
+
+    }
+
+    removeDocument() {
+
+    }
+
 }
