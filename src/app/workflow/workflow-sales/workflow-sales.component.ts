@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { forkJoin, of, Subject } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
@@ -15,7 +15,7 @@ import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base'
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import {
-	ClientPeriodSalesDataDto,
+	ClientPeriodSalesDataCommandDto,
 	ClientPeriodServiceProxy,
 	ClientRateDto,
 	CommissionDto,
@@ -44,13 +44,14 @@ import {
 	ConsultantPeriodSalesDataDto,
 	EmployeeDto,
 } from 'src/shared/service-proxies/service-proxies';
+import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
-import { ClientRateTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
+import { ClientRateTypes, EProjectTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
 
 @Component({
 	selector: 'app-workflow-sales',
@@ -116,26 +117,23 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							clientId1: this.directClientIdTerminationSales ?? undefined,
-							clientId2: this.endClientIdTerminationSales ?? undefined,
-							name: value ?? '',
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.firstName : value;
-						}
-						return this._lookupService.contacts(
-							toSend.clientId1,
-							toSend.clientId2,
-							toSend.name,
-							toSend.maxRecordsCount
-						);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        clientId1: this.directClientIdTerminationSales ?? undefined,
+                        clientId2: this.endClientIdTerminationSales ?? undefined,
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.firstName : value;
+                    }
+                    return this._lookupService.contacts(
+                        toSend.clientId1,
+                        toSend.clientId2,
+                        toSend.name,
+                        toSend.maxRecordsCount
+                    );
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -300,7 +298,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			currentStepIsCompleted: this.isCompleted,
 			currentStepIsForcefullyEditing: this.editEnabledForcefuly,
 		});
-		this.getSalesStepData();
+        this.getSalesStepData();
 	}
 
 	get canToggleEditMode() {
@@ -574,6 +572,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						this.consutlantDataComponent?.addConsultantForm(consultant);
 					});
 					this.consutlantDataComponent?.updateConsultantStepAnchors();
+				}
+                const projectTypeId = result?.salesMainData?.projectTypeId;
+                if (
+					projectTypeId === EProjectTypes.NearshoreVMShighMargin ||
+					projectTypeId === EProjectTypes.NearshoreVMSlowMargin ||
+					projectTypeId === EProjectTypes.VMShighMargin ||
+					projectTypeId === EProjectTypes.VMSlowMargin ||
+                    result?.salesMainData?.salesTypeId === SalesTypes.ThirdPartyMgmt
+				) {
+					this.mainDataComponent?.makeAreaTypeRoleNotRequired();
+				} else {
+					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
 			});
@@ -876,8 +886,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 	}
 
-	private _packClientPeriodData(): ClientPeriodSalesDataDto {
-		let input = new ClientPeriodSalesDataDto();
+	private _packClientPeriodData(): ClientPeriodSalesDataCommandDto {
+		let input = new ClientPeriodSalesDataCommandDto();
 		input.salesMainData = new SalesMainDataDto(this.mainDataComponent?.salesMainDataForm.value);
 		input.salesMainData.salesAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;

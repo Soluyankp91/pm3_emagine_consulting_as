@@ -1,12 +1,16 @@
 <div class="workflow-finances u-w--100">
-    <ng-container *ngIf="canToggleEditMode">
-        <button class="absolute-edit-toggle" mat-icon-button appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon svgIcon="edit-icon"></mat-icon></button>
-    </ng-container>
     <ng-container *ngIf="activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod">
         <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="financesClientForm" class="workflow-form u-w--100">
             <div class="workflow-finances--block">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                    <h1 class="workflow-section--header-main">Finance data</h1>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                        <h1 class="workflow-section--header-main">Finance data</h1>
+                        <ng-container *ngIf="readOnlyMode">
+                            <div fxLayout="row" fxLayoutAlign="start start">
+                                <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
+                            </div>
+                        </ng-container>
+                    </div>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="financeClientDebitor">
                         <span class="workflow-section--number">1</span>
                         <h2 class="workflow-section--header">Client (debitor)</h2>

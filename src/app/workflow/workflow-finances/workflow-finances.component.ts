@@ -6,7 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, DocumentTypeEnum, FileParameter, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodFinanceDataCommandDto, ClientPeriodServiceProxy,  DocumentTypeEnum, FileParameter, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { DocumentForm, FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
@@ -225,7 +225,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     saveStartChangeOrExtendClientPeriodFinance(isDraft: boolean) {
-        let input = new ClientPeriodFinanceDataDto();
+        let input = new ClientPeriodFinanceDataCommandDto();
         input.differentDebtorNumberForInvoicing = this.financesClientForm.differentDebtorNumberForInvoicing?.value;
         input.customDebtorNumber = this.financesClientForm.customDebtorNumber?.value;
         input.debtorCreatedInNavision = this.financesClientForm.clientCreatedInNavision?.value;
