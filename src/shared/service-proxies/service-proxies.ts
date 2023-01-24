@@ -16338,6 +16338,8 @@ export interface IAgreementDetailsAttachmentDto {
 export class AgreementDetailsDto implements IAgreementDetailsDto {
     agreementId?: number;
     contractNumber?: string | undefined;
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
     parentAgreementTemplateVersion?: number | undefined;
@@ -16385,6 +16387,8 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         if (_data) {
             this.agreementId = _data["agreementId"];
             this.contractNumber = _data["contractNumber"];
+            this.clientPeriodId = _data["clientPeriodId"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
             this.creationMode = _data["creationMode"];
             this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
             this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
@@ -16456,6 +16460,8 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         data = typeof data === 'object' ? data : {};
         data["agreementId"] = this.agreementId;
         data["contractNumber"] = this.contractNumber;
+        data["clientPeriodId"] = this.clientPeriodId;
+        data["consultantPeriodId"] = this.consultantPeriodId;
         data["creationMode"] = this.creationMode;
         data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
         data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
@@ -16520,6 +16526,8 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
 export interface IAgreementDetailsDto {
     agreementId?: number;
     contractNumber?: string | undefined;
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
     parentAgreementTemplateVersion?: number | undefined;
@@ -26441,6 +26449,8 @@ export interface ISaveAgreementCommandResult {
 }
 
 export class SaveAgreementDto implements ISaveAgreementDto {
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
     parentAgreementTemplateVersion?: number | undefined;
@@ -26474,6 +26484,8 @@ export class SaveAgreementDto implements ISaveAgreementDto {
 
     init(_data?: any) {
         if (_data) {
+            this.clientPeriodId = _data["clientPeriodId"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
             this.creationMode = _data["creationMode"];
             this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
             this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
@@ -26531,6 +26543,8 @@ export class SaveAgreementDto implements ISaveAgreementDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["clientPeriodId"] = this.clientPeriodId;
+        data["consultantPeriodId"] = this.consultantPeriodId;
         data["creationMode"] = this.creationMode;
         data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
         data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
@@ -26581,6 +26595,8 @@ export class SaveAgreementDto implements ISaveAgreementDto {
 }
 
 export interface ISaveAgreementDto {
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
     parentAgreementTemplateVersion?: number | undefined;

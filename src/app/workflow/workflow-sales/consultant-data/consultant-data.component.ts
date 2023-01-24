@@ -10,7 +10,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { forkJoin, of, Subject } from 'rxjs';
-import { finalize, takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { finalize, takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
@@ -293,6 +293,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
@@ -322,26 +323,25 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+				startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.clientName : value;
-						}
-						return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
+					let toSend = {
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.clientName : value;
 					}
+					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
 				})
 			)
 			.subscribe((list: ClientResultDto[]) => {
 				if (list.length) {
 					this.filteredConsultantClientAddresses = list;
 				} else {
-					this.filteredConsultantClientAddresses = [new ClientResultDto({ clientName: 'No records found', clientId: undefined })];
+					this.filteredConsultantClientAddresses = [
+						new ClientResultDto({ clientName: 'No records found', clientId: undefined }),
+					];
 				}
 			});
 	}
@@ -589,6 +589,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ? value : '',
@@ -598,7 +599,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					if (value) {
 						toSend.name = value?.consultant?.id ? value.consultant.name : value;
 					}
-					if (toSend?.clientId && value) {
+					if (toSend?.clientId) {
 						return this._lookupService.consultantsWithSourcingRequest(
 							toSend.clientId,
 							toSend.name,

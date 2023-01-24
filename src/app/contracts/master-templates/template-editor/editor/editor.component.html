@@ -1,37 +1,20 @@
-<dx-tab-panel
-  #tabPanel
-  [height]="'auto'"
+<dx-tabs
+  #apiTabs
+  [dataSource]="tabs"
   [selectedIndex]="0"
-  [loop]="false"
->
-  <dxi-item title="File">
-    <div *dxTemplate>
-      <div [innerHTML]="template$ | async"></div>
-      <!-- component -->
-    </div>
-  </dxi-item>
+  (onItemClick)="selectTab($event)"
+></dx-tabs>
 
-  <dxi-item title="Format">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
+<div class="editor">
+  <dx-html-editor 
+    *ngIf="template" 
+    height="600px" 
+    [(value)]="template" 
+    [toolbar]="toolbar"
+  >
+  </dx-html-editor>
+</div>
 
-  <dxi-item title="Merge Fields">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
-
-  <dxi-item title="Compare" icon="">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
-
-  <dxi-item title="View" icon="">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
-</dx-tab-panel>
+<dx-popup [showTitle]="true" title="Markup" [(visible)]="liveTextpopupVisible">
+  <div>{{template}}</div>
+</dx-popup>

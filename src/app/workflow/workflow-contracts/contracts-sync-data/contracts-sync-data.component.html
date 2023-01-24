@@ -1,240 +1,5 @@
-<form [formGroup]="contractsSyncDataForm" id="syncLegalContractAnchor"
-    class="workflow-form workflow-form--main u-w--100">
-    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-            <h1 class="workflow-section--header-main">Sync & legal contracts</h1>
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">1</span>
-                <h2 class="workflow-section--header">Sync</h2>
-            </div>
-            <div class="workflow-section--content">
-                <ng-container *ngIf="readOnlyMode; else syncInput">
-                    <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
-                    <mat-divider class="u-w--100"></mat-divider>
-                </ng-container>
-                <ng-template #syncInput>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
-                            (throttledClick)="processSyncToLegacySystem()">
-                            Sync to legacy system
-                        </button>
-                        <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
-
-                        <ng-container *ngIf="statusAfterSync">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
-                                <mat-icon fxFlex="25px" class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
-                                <span class="workflow-darkblue--text">
-                                    {{syncMessage}}
-                                </span>
-                            </div>
-                        </ng-container>
-                        <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                                <mat-checkbox color="accent" formControlName="contractLinesDoneManuallyInOldPm"
-                                    name="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
-                                    Contract lines done manually in old PM
-                                </mat-checkbox>
-                            </div>
-                        </ng-container>
-                    </div>
-                    <mat-divider class="u-w--100"></mat-divider>
-                </ng-template>
-            </div>
-        </div>
-        <ng-container *ngIf="activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                    <span class="workflow-section--number">2</span>
-                    <h2 class="workflow-section--header">Client legal contract</h2>
-                </div>
-                <div class="workflow-section--content">
-                    <ng-container *ngIf="readOnlyMode; else legalContractsInput">
-                        <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
-                            <mat-icon class="u-mr--5"
-                                [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}"
-                                [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
-                            <div fxLayout="column" fxLayoutAlign="start start">
-                                <span class="workflow-darkblue--text">Contract module for client</span>
-                                <ng-container
-                                    *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
-                                    <span class="sync-hint-text">
-                                        {{legalContractStatuses[contractsSyncDataForm.clientLegalContractDoneStatusId?.value]}}
-                                    </span>
-                                </ng-container>
-                            </div>
-                        </div>
-                    </ng-container>
-                    <ng-template #legalContractsInput>
-                        <div fxLayout="column" fxLayoutAlign="start start">
-                            <span
-                                [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client
-                                legal contracts</span>
-                            <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
-                                <button class="button-accept u-mr--20" appPreventDoubleClick
-                                    (throttledClick)="openContractModule(periodId!, contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)"
-                                    mat-flat-button
-                                    [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value">
-                                    Open contract module for client
-                                </button>
-                                <ng-container
-                                    *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                                    <mat-checkbox color="accent" formControlName="newLegalContract"
-                                        name="newLegalContract" class="black-checkbox u-mt--10">
-                                        New legal contract needed
-                                    </mat-checkbox>
-                                </ng-container>
-                            </div>
-                            <ng-container *ngIf="contractsSyncDataForm.clientLegalContractDoneStatusId?.value !== 0">
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                    <mat-icon class="u-mr--5"
-                                        [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}"
-                                        [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
-                                    <ng-container
-                                        *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
-                                        <span class="sync-hint-text">
-                                            {{legalContractStatuses[contractsSyncDataForm.clientLegalContractDoneStatusId?.value]}}
-                                        </span>
-                                    </ng-container>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </ng-template>
-                </div>
-            </div>
-        </ng-container>
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">
-                    {{activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod ? '3' : '2'}}
-                </span>
-                <h2 class="workflow-section--header">Consultant legal contract</h2>
-            </div>
-            <div class="workflow-section--content">
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                    <ng-container formArrayName="consultants">
-                        <ng-container
-                            *ngFor="let consultant of contractsSyncDataForm.consultants.controls; trackBy: trackByItem; let consultantIndex = index"
-                            [formGroupName]="consultantIndex">
-                            <div class="workflow-form--consultants u-w--100">
-                                <span class="u-mt--20"
-                                    [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant
-                                    legal contracts</span>
-                                <app-consultant-information
-                                    [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                                <ng-template #consultantNameOnly>
-                                    <p class="workflow-contracts--consultant-name">
-                                        {{consultant.value?.nameOnly}}
-                                    </p>
-                                </ng-template>
-                                <ng-container *ngIf="readOnlyMode">
-                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                                        <ng-container
-                                            *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                            <div fxLayout="row" fxLayoutAlign="start center">
-                                                <mat-icon class="u-mr--5"
-                                                    [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}"
-                                                    [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
-                                                <div fxLayout="column" fxLayoutAlign="start start">
-                                                    <span class="workflow-darkblue--text">Internal legal contract module
-                                                        for consultant</span>
-                                                    <ng-container
-                                                        *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
-                                                        <span class="sync-hint-text">
-                                                            {{legalContractStatuses[consultant.value?.internalLegalContractDoneStatusId]}}
-                                                        </span>
-                                                    </ng-container>
-                                                </div>
-                                            </div>
-                                        </ng-container>
-                                        <div fxLayout="row" fxLayoutAlign="start center">
-                                            <mat-icon class="u-mr--5"
-                                                [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}"
-                                                [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
-                                            <div fxLayout="column" fxLayoutAlign="start start">
-                                                <span class="workflow-darkblue--text">Legal contract module for
-                                                    consultant</span>
-                                                <ng-container
-                                                    *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
-                                                    <span class="sync-hint-text">
-                                                        {{legalContractStatuses[consultant?.value?.consultantLegalContractDoneStatusId]}}
-                                                    </span>
-                                                </ng-container>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </ng-container>
-                                <ng-container
-                                    *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
-                                        <button class="button-outlined  u-mr--20" mat-flat-button
-                                            [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value"
-                                            appPreventDoubleClick
-                                            (throttledClick)="openContractModule(consultant.value?.consultantPeriodId!, consultant.value?.internalLegalContractDoneStatusId, true, contractClientForm.pdcInvoicingEntityId?.value, consultant.value.consultant)">
-                                            Open contract module for internal contract
-                                        </button>
-                                    </div>
-                                </ng-container>
-                                <ng-container
-                                    *ngIf="!readOnlyMode && consultant.value?.internalLegalContractDoneStatusId !== 0 && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                        <mat-icon class="u-mr--5"
-                                            [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}"
-                                            [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
-                                        <div fxLayout="column" fxLayoutAlign="start start">
-                                            <ng-container
-                                                *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
-                                                <span class="sync-hint-text">
-                                                    {{legalContractStatuses[consultant?.value?.internalLegalContractDoneStatusId]}}
-                                                </span>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </ng-container>
-                                <ng-container *ngIf="!readOnlyMode">
-                                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                                        <button class="button-outlined  u-mr--20" mat-flat-button
-                                            [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value"
-                                            appPreventDoubleClick
-                                            (throttledClick)="openContractModule(consultant.value?.consultantPeriodId!, consultant.value?.consultantLegalContractDoneStatusId, false, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
-                                            Open contract module for consultant
-                                        </button>
-                                        <ng-container
-                                            *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                                            <mat-checkbox color="accent" formControlName="newLegalContract"
-                                                name="newLegalContract" class="black-checkbox u-mt--10">
-                                                New legal contract needed
-                                            </mat-checkbox>
-                                        </ng-container>
-                                    </div>
-                                </ng-container>
-                                <ng-container
-                                    *ngIf="!readOnlyMode && consultant.value?.consultantLegalContractDoneStatusId !== 0">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                        <mat-icon class="u-mr--5"
-                                            [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}"
-                                            [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
-                                        <div fxLayout="column" fxLayoutAlign="start start">
-                                            <ng-container
-                                                *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
-                                                <span class="sync-hint-text">
-                                                    {{legalContractStatuses[consultant?.value?.consultantLegalContractDoneStatusId]}}
-                                                </span>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </ng-container>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
 <ng-container
-    *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+    *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant; else syncForm">
     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
         <ng-container *ngIf="readOnlyMode; else syncToLegacyControl">
             <span class="workflow-darkblue--text">
@@ -296,6 +61,243 @@
     </ng-container>
 </ng-container>
 
+<ng-template #syncForm>
+    <form [formGroup]="contractsSyncDataForm" id="syncLegalContractAnchor"
+        class="workflow-form workflow-form--main u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <h1 class="workflow-section--header-main">Sync & legal contracts</h1>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">1</span>
+                    <h2 class="workflow-section--header">Sync</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <ng-container *ngIf="readOnlyMode; else syncInput">
+                        <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+                        <mat-divider class="u-w--100"></mat-divider>
+                    </ng-container>
+                    <ng-template #syncInput>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
+                                (throttledClick)="processSyncToLegacySystem()">
+                                Sync to legacy system
+                            </button>
+                            <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+
+                            <ng-container *ngIf="statusAfterSync">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
+                                    <mat-icon fxFlex="25px" class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
+                                    <span class="workflow-darkblue--text">
+                                        {{syncMessage}}
+                                    </span>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                    <mat-checkbox color="accent" formControlName="contractLinesDoneManuallyInOldPm"
+                                        name="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
+                                        Contract lines done manually in old PM
+                                    </mat-checkbox>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <mat-divider class="u-w--100"></mat-divider>
+                    </ng-template>
+                </div>
+            </div>
+            <ng-container *ngIf="activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <span class="workflow-section--number">2</span>
+                        <h2 class="workflow-section--header">Client legal contract</h2>
+                    </div>
+                    <div class="workflow-section--content">
+                        <ng-container *ngIf="readOnlyMode; else legalContractsInput">
+                            <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
+                                <mat-icon class="u-mr--5"
+                                    [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}"
+                                    [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
+                                <div fxLayout="column" fxLayoutAlign="start start">
+                                    <span class="workflow-darkblue--text">Contract module for client</span>
+                                    <ng-container
+                                        *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                        <span class="sync-hint-text">
+                                            {{legalContractStatuses[contractsSyncDataForm.clientLegalContractDoneStatusId?.value]}}
+                                        </span>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #legalContractsInput>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <span
+                                    [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client
+                                    legal contracts</span>
+                                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
+                                    <button class="button-accept u-mr--20" appPreventDoubleClick
+                                        (throttledClick)="openContractModule(periodId!, contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)"
+                                        mat-flat-button
+                                        [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value">
+                                        Open contract module for client
+                                    </button>
+                                    <ng-container
+                                        *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
+                                        <mat-checkbox color="accent" formControlName="newLegalContract"
+                                            name="newLegalContract" class="black-checkbox u-mt--10">
+                                            New legal contract needed
+                                        </mat-checkbox>
+                                    </ng-container>
+                                </div>
+                                <ng-container *ngIf="contractsSyncDataForm.clientLegalContractDoneStatusId?.value !== 0">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                        <mat-icon class="u-mr--5"
+                                            [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}"
+                                            [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
+                                        <ng-container
+                                            *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                            <span class="sync-hint-text">
+                                                {{legalContractStatuses[contractsSyncDataForm.clientLegalContractDoneStatusId?.value]}}
+                                            </span>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </ng-container>
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">
+                        {{activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod ? '3' : '2'}}
+                    </span>
+                    <h2 class="workflow-section--header">Consultant legal contract</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                        <ng-container formArrayName="consultants">
+                            <ng-container
+                                *ngFor="let consultant of contractsSyncDataForm.consultants.controls; trackBy: trackByItem; let consultantIndex = index"
+                                [formGroupName]="consultantIndex">
+                                <div class="workflow-form--consultants u-w--100">
+                                    <span class="u-mt--20"
+                                        [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant
+                                        legal contracts</span>
+                                    <app-consultant-information
+                                        [consultantData]="consultant?.value?.consultant"></app-consultant-information>
+                                    <ng-template #consultantNameOnly>
+                                        <p class="workflow-contracts--consultant-name">
+                                            {{consultant.value?.nameOnly}}
+                                        </p>
+                                    </ng-template>
+                                    <ng-container *ngIf="readOnlyMode">
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                                            <ng-container
+                                                *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <mat-icon class="u-mr--5"
+                                                        [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}"
+                                                        [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
+                                                    <div fxLayout="column" fxLayoutAlign="start start">
+                                                        <span class="workflow-darkblue--text">Internal legal contract module
+                                                            for consultant</span>
+                                                        <ng-container
+                                                            *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                                            <span class="sync-hint-text">
+                                                                {{legalContractStatuses[consultant.value?.internalLegalContractDoneStatusId]}}
+                                                            </span>
+                                                        </ng-container>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <mat-icon class="u-mr--5"
+                                                    [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}"
+                                                    [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
+                                                <div fxLayout="column" fxLayoutAlign="start start">
+                                                    <span class="workflow-darkblue--text">Legal contract module for
+                                                        consultant</span>
+                                                    <ng-container
+                                                        *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                                        <span class="sync-hint-text">
+                                                            {{legalContractStatuses[consultant?.value?.consultantLegalContractDoneStatusId]}}
+                                                        </span>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
+                                        <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
+                                            <button class="button-outlined  u-mr--20" mat-flat-button
+                                                [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value"
+                                                appPreventDoubleClick
+                                                (throttledClick)="openContractModule(consultant.value?.consultantPeriodId!, consultant.value?.internalLegalContractDoneStatusId, true, contractClientForm.pdcInvoicingEntityId?.value, consultant.value.consultant)">
+                                                Open contract module for internal contract
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="!readOnlyMode && consultant.value?.internalLegalContractDoneStatusId !== 0 && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                            <mat-icon class="u-mr--5"
+                                                [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}"
+                                                [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
+                                            <div fxLayout="column" fxLayoutAlign="start start">
+                                                <ng-container
+                                                    *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                                    <span class="sync-hint-text">
+                                                        {{legalContractStatuses[consultant?.value?.internalLegalContractDoneStatusId]}}
+                                                    </span>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="!readOnlyMode">
+                                        <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                                            <button class="button-outlined  u-mr--20" mat-flat-button
+                                                [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value"
+                                                appPreventDoubleClick
+                                                (throttledClick)="openContractModule(consultant.value?.consultantPeriodId!, consultant.value?.consultantLegalContractDoneStatusId, false, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
+                                                Open contract module for consultant
+                                            </button>
+                                            <ng-container
+                                                *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
+                                                <mat-checkbox color="accent" formControlName="newLegalContract"
+                                                    name="newLegalContract" class="black-checkbox u-mt--10">
+                                                    New legal contract needed
+                                                </mat-checkbox>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="!readOnlyMode && consultant.value?.consultantLegalContractDoneStatusId !== 0">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                            <mat-icon class="u-mr--5"
+                                                [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}"
+                                                [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
+                                            <div fxLayout="column" fxLayoutAlign="start start">
+                                                <ng-container
+                                                    *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                                    <span class="sync-hint-text">
+                                                        {{legalContractStatuses[consultant?.value?.consultantLegalContractDoneStatusId]}}
+                                                    </span>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
 <ng-template #syncStatus>
     <ng-container *ngIf="!statusAfterSync">
         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-w--100"
@@ -307,3 +309,5 @@
         </div>
     </ng-container>
 </ng-template>
+
+

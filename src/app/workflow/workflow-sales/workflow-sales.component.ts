@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { forkJoin, of, Subject } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
@@ -117,26 +117,23 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							clientId1: this.directClientIdTerminationSales ?? undefined,
-							clientId2: this.endClientIdTerminationSales ?? undefined,
-							name: value ?? '',
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.firstName : value;
-						}
-						return this._lookupService.contacts(
-							toSend.clientId1,
-							toSend.clientId2,
-							toSend.name,
-							toSend.maxRecordsCount
-						);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        clientId1: this.directClientIdTerminationSales ?? undefined,
+                        clientId2: this.endClientIdTerminationSales ?? undefined,
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.firstName : value;
+                    }
+                    return this._lookupService.contacts(
+                        toSend.clientId1,
+                        toSend.clientId2,
+                        toSend.name,
+                        toSend.maxRecordsCount
+                    );
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -468,7 +465,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					}
 				);
 				if (result?.salesClientData?.directClient?.clientId) {
-					this.clientDataComponent?.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
+					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
 				}
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
@@ -840,13 +837,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	resetForms() {
 		this.mainDataComponent?.salesMainDataForm.reset('', { emitEvent: false });
-		this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
-		this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
-		this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
-		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
-		this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
+        if (this.clientDataComponent) {
+            this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
+            this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
+            this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
+        }
+        if (this.mainDataComponent) {
+            this.mainDataComponent.salesMainDataForm.commissions.controls = [];
+            this.mainDataComponent.salesMainDataForm.commissionedUsers.controls = [];
+        }
+        if (this.consutlantDataComponent) {
+            this.consutlantDataComponent.consultantsForm.consultants.controls = [];
+        }
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
-		this.consutlantDataComponent.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
 		this.endClientIdTerminationSales = null;
 	}
@@ -1060,11 +1063,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			if (consultant.consultantInvoicingTime?.name === 'Manual date') {
 				consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
 			}
+            consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
 			if (consultant.specialRates.length) {
-				consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
 				for (let rate of consultant.specialRates) {
-					let consultantSpecialRate = new PeriodConsultantSpecialRateDto();
-					consultantSpecialRate = rate;
+					let consultantSpecialRate = new PeriodConsultantSpecialRateDto(rate);
 					consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
 					consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
@@ -1072,11 +1074,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			} else {
 				consultantInput.noSpecialRate = true;
 			}
+            consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 			if (consultant.specialFees.length) {
-				consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 				for (let fee of consultant.specialFees) {
-					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto();
-					consultantSpecialFee = fee;
+					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto(fee);
 					consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
 					consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);

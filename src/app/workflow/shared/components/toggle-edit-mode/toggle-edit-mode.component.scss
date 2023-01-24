@@ -1,0 +1,10 @@
+@import "/src/app/shared/styles/config/_mixins";
+
+.absolute-edit-toggle {
+    border-radius: 50%;
+    background-color: rgba($color: #72a0f8, $alpha: 0.2);
+    color: #72a0f8;
+    mat-icon {
+        @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+    }
+}

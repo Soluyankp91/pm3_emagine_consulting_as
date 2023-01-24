@@ -40,7 +40,7 @@ export class ClientTemplatesService extends BaseContract {
 			tableFilters.salesTypeIds.map((item) => item.id as number),
 			tableFilters.deliveryTypeIds.map((item) => item.id as number),
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
-            undefined, // FIXME: commented out because of errors after proxies update //  this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)),
+			undefined, // FIXME: hardcoded after proxies update // this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)),
 			(tableFilters as ClientFiltersEnum).linkState.map((item) => item.id as number), //linkState
 			undefined, //linkStateAccepted
 			page.pageIndex + 1, //pageIndex

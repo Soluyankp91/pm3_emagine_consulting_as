@@ -56,9 +56,10 @@
                             </div>
                             <ng-container *ngIf="consultant.value?.employmentType?.id">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode, 'isPanelOpen': consultantAutocomplete.isOpen}">
                                         <mat-label>Consultant Name</mat-label>
                                         <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
+                                        <span matSuffix class="shevron"></span>
                                         <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn"
                                             (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                             <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
@@ -175,9 +176,10 @@
                                             Onsite
                                         </mat-checkbox>
                                         <ng-container *ngIf="consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-312" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding autocompleteWithShevron u-mr--12 form-width-312" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': consultantClientAddressAuto.isOpen}">
                                                 <mat-label>Client</mat-label>
                                                 <input [disabled]="readOnlyMode" required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
+                                                <span matSuffix class="shevron"></span>
                                                 <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn"
                                                     (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                     <ng-container *ngFor="let client of filteredConsultantClientAddresses; trackBy: trackById">
@@ -241,9 +243,10 @@
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--12" fxFlex="20%">
                                             Remote
                                         </mat-checkbox>
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-312" [fxHide]="!consultantsForm.consultants.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value" [ngClass]="{'disabled-input': readOnlyMode}">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding autocompleteWithShevron form-width-312" [fxHide]="!consultantsForm.consultants.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': consultantCountryAuto.isOpen}">
                                             <mat-label>Remote country</mat-label>
                                             <input [disabled]="readOnlyMode" [required]="consultantsForm.consultants.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value" type="text" matInput [matAutocomplete]="consultantCountryAuto" formControlName="consultantWorkplaceRemote" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search country">
+                                            <span matSuffix class="shevron"></span>
                                             <mat-autocomplete #consultantCountryAuto="matAutocomplete" [displayWith]="displayNameFn"
                                                 (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                 <ng-container *ngFor="let option of filteredConsultantCountries; trackBy: trackById">
@@ -737,17 +740,17 @@
                                                     <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                         (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
                                                         (clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantRateUnitType?.id) &&
-                                                        (clientDataForm.clientPrice?.value && consultant.value?.consultantRate); else calculateMarginNotPossible">
+                                                        (clientDataForm.normalPrice?.value && consultant.value?.consultantRate); else calculateMarginNotPossible">
                                                         <span>
                                                             <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantMargin">
                                                                 <ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateMarginNotPossible">
                                                                     Calculated margin
-                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.clientPrice?.value * 1 | percent: '1.2'}}
+                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
                                                                 </ng-container>
                                                             </ng-container>
                                                             <ng-template #consultantMargin>
                                                                 Calculated margin
-                                                                {{ (clientDataForm.clientPrice?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.clientPrice?.value * 1 | percent: '1.2'}}
+                                                                {{ (clientDataForm.normalPrice?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
                                                             </ng-template>
                                                         </span>
                                                     </ng-container>
@@ -795,9 +798,9 @@
                                                         <span *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                                 (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
                                                                 (clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantPDCRateUnitType?.id) &&
-                                                                (clientDataForm.clientPrice?.value && consultant.value?.consultantPDCRate); else calculatePDCMarginNotPossible">
+                                                                (clientDataForm.normalPrice?.value && consultant.value?.consultantPDCRate); else calculatePDCMarginNotPossible">
                                                                     Calculated margin
-                                                                    {{ (clientDataForm.clientPrice?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.clientPrice?.value * 1 | percent: '1.2'}}
+                                                                    {{ (clientDataForm.normalPrice?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
                                                         </span>
                                                         <ng-template #calculatePDCMarginNotPossible>
                                                             Calculate margin is not possible
@@ -831,17 +834,17 @@
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                     <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                         (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
-                                                        (clientDataForm.clientPrice?.value && consultant.value?.consultantRate); else calculateFixedMarginNotPossible">
+                                                        (clientDataForm.normalPrice?.value && consultant.value?.consultantRate); else calculateFixedMarginNotPossible">
                                                         <span>
                                                             <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantFixedMargin">
                                                                 <ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateFixedMarginNotPossible">
                                                                     Calculated margin
-                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.clientPrice?.value * 1 | percent: '1.2'}}
+                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
                                                                 </ng-container>
                                                             </ng-container>
                                                             <ng-template #consultantFixedMargin>
                                                                 Calculated margin
-                                                                {{ (clientDataForm.clientPrice?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.clientPrice?.value * 1 | percent: '1.2'}}
+                                                                {{ (clientDataForm.normalPrice?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
                                                             </ng-template>
                                                         </span>
                                                     </ng-container>
@@ -875,10 +878,10 @@
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                         <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                             (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
-                                                            (clientDataForm.clientPrice?.value && consultant.value?.consultantPDCRate); else calculateFixedPDCMarginNotPossible">
+                                                            (clientDataForm.normalPrice?.value && consultant.value?.consultantPDCRate); else calculateFixedPDCMarginNotPossible">
                                                             <span>
                                                                 Calculated margin
-                                                                {{ (clientDataForm.clientPrice?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.clientPrice?.value * 1 | percent: '1.2'}}
+                                                                {{ (clientDataForm.normalPrice?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
                                                             </span>
                                                         </ng-container>
                                                         <ng-template #calculateFixedPDCMarginNotPossible>
@@ -1013,9 +1016,10 @@
                                 </div>
                                 <div class="workflow-section--content">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': deliveryManagerAutocomplete.isOpen}">
                                             <mat-label>Delivery Account manager</mat-label>
                                             <input [disabled]="readOnlyMode" required #deliveryManagerFilterInput type="text" matInput [matAutocomplete]="deliveryManagerAutocomplete" formControlName="deliveryAccountManager" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                                            <span matSuffix class="shevron"></span>
                                             <mat-autocomplete #deliveryManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                                 (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                 <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">

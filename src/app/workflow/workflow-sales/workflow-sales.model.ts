@@ -300,7 +300,7 @@ export class SalesTerminateConsultantForm extends UntypedFormGroup {
     constructor() {
         super({
             finalEvaluationReferencePerson: new UntypedFormControl(null),
-            noEvaluation: new UntypedFormControl(null),
+            noEvaluation: new UntypedFormControl(false),
             causeOfNoEvaluation: new UntypedFormControl(null),
             terminationTime: new UntypedFormControl(null),
             endDate: new UntypedFormControl(null),

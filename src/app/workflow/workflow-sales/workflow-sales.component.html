@@ -21,14 +21,7 @@
                     <h1 class="workflow-section--header-main">Termination data</h1>
                     <ng-container *ngIf="readOnlyMode">
                         <div fxLayout="row" fxLayoutAlign="start start">
-                            <ng-container *ngIf="canToggleEditMode">
-                                <button
-                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
-                                    mat-icon-button
-                                    appPreventDoubleClick (throttledClick)="toggleEditMode()">
-                                    <mat-icon svgIcon="edit-icon"></mat-icon>
-                                </button>
-                            </ng-container>
+                            <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
@@ -156,9 +149,10 @@
                     </div>
                     <div class="workflow-section--content">
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value || readOnlyMode}">
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-235" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value || readOnlyMode, 'isPanelOpen': finalEvaluationReferencePersonAutocomplete.isOpen}">
                                 <mat-label>Final Evaluation Reference Person</mat-label>
                                 <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
+                                <span matSuffix class="shevron"></span>
                                 <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn"
                                     (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                     <ng-container *ngFor="let contact of filteredFinalEvaluationReferencePersons; trackBy: trackById">
