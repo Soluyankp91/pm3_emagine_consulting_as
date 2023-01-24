@@ -488,6 +488,12 @@
                                     [control]="salesClientDataForm.invoicePaperworkContactIdValue"></app-validator>
                             </mat-error>
                         </mat-form-field>
+                        <ng-container *ngIf="!readOnlyMode || salesClientDataForm.dontShowInvoiceContact?.value">
+                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="dontShowInvoiceContact"
+                                name="dontShowInvoiceContact" class="black-checkbox">
+                                Don't show on invoice
+                            </mat-checkbox>
+                        </ng-container>
                     </div>
                 </ng-container>
 

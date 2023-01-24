@@ -10,9 +10,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             projectTypeId: new UntypedFormControl(null, Validators.required),
             marginId: new UntypedFormControl(null, Validators.required),
             projectCategoryId: new UntypedFormControl(null, Validators.required),
-            primaryCategoryArea: new UntypedFormControl(null, Validators.required),
-            primaryCategoryType: new UntypedFormControl(null, Validators.required),
-            primaryCategoryRole: new UntypedFormControl(null, Validators.required),
+            primaryCategoryArea: new UntypedFormControl(null),
+            primaryCategoryType: new UntypedFormControl(null),
+            primaryCategoryRole: new UntypedFormControl(null),
             projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
             projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
             discountId: new UntypedFormControl(null),
@@ -107,7 +107,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 
             // Client Invoicing Reference Person
             invoicePaperworkContactIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
-
+            dontShowInvoiceContact: new UntypedFormControl(false),
             // Client Evaluations - Consultant
             evaluationsReferencePersonIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
             evaluationsDisabled: new UntypedFormControl(false),
@@ -177,6 +177,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get invoicePaperworkContactIdValue() {
         return this.get('invoicePaperworkContactIdValue');
+    }
+    get dontShowInvoiceContact() {
+        return this.get('dontShowInvoiceContact');
     }
     get evaluationsReferencePersonIdValue() {
         return this.get('evaluationsReferencePersonIdValue');
@@ -297,7 +300,7 @@ export class SalesTerminateConsultantForm extends UntypedFormGroup {
     constructor() {
         super({
             finalEvaluationReferencePerson: new UntypedFormControl(null),
-            noEvaluation: new UntypedFormControl(null),
+            noEvaluation: new UntypedFormControl(false),
             causeOfNoEvaluation: new UntypedFormControl(null),
             terminationTime: new UntypedFormControl(null),
             endDate: new UntypedFormControl(null),
@@ -387,3 +390,10 @@ export const ClientRateTypes: EnumEntityTypeDto[] = [
         name: 'Fixed',
     })
 ];
+
+export enum EProjectTypes {
+    VMShighMargin = 5,
+    VMSlowMargin = 6,
+    NearshoreVMShighMargin = 7,
+    NearshoreVMSlowMargin = 8
+}
