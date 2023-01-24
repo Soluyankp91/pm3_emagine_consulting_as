@@ -90,12 +90,13 @@
                     Different assignment ID / PO number
                 </mat-checkbox>
 
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
+                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
                     <mat-label>Invoice reference person</mat-label>
                     <input #invoicingReferencePersonAutocompleteInput type="text" matInput
                         [matAutocomplete]="invoicingReferencePersonAutocomplete"
                         formControlName="invoicingReferencePersonId" appPreventDoubleClick
                         (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
+                        <span matSuffix class="shevron"></span>
                     <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
                         [displayWith]="displayFullNameFn">
                         <ng-container>
@@ -121,12 +122,13 @@
                     Different debitor number
                 </mat-checkbox>
 
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
+                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
                     <mat-label>Invoice recipient</mat-label>
                     <input #clientInvoicingRecipientInput type="text" matInput
                         [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId"
                         appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                         placeholder="Invoice recipient">
+                        <span matSuffix class="shevron"></span>
                     <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete"
                         [displayWith]="displayClientNameFn">
                         <ng-container>

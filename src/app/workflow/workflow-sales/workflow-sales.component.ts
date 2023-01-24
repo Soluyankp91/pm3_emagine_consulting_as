@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { forkJoin, of, Subject } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
@@ -117,26 +117,23 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							clientId1: this.directClientIdTerminationSales ?? undefined,
-							clientId2: this.endClientIdTerminationSales ?? undefined,
-							name: value ?? '',
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.firstName : value;
-						}
-						return this._lookupService.contacts(
-							toSend.clientId1,
-							toSend.clientId2,
-							toSend.name,
-							toSend.maxRecordsCount
-						);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        clientId1: this.directClientIdTerminationSales ?? undefined,
+                        clientId2: this.endClientIdTerminationSales ?? undefined,
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.firstName : value;
+                    }
+                    return this._lookupService.contacts(
+                        toSend.clientId1,
+                        toSend.clientId2,
+                        toSend.name,
+                        toSend.maxRecordsCount
+                    );
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
