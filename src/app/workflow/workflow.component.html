@@ -1,7 +1,7 @@
 <div class="workflow-list" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
         <h2 class="page-main-header u-mb--20">Workflows</h2>
-        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--15">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--10" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
@@ -148,79 +148,79 @@
             </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
-            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters || advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
-                <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
+                <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>
             </button>
         </div>
+        <ng-container *ngIf="isAdvancedFilters">
+            <div fxLayout="row" fxLayoutAlign="start center" class="workflow-list--filter-additional u-w--100 u-mt--15">
+                <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                    <mat-label>Invoicing entity</mat-label>
+                    <mat-select [formControl]="invoicingEntityControl" [disableOptionCentering]="true">
+                        <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
+                            Clear
+                        </mat-option>
+                        <mat-option *ngFor="let item of legalEntities" [value]="item.id">
+                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                    <mat-label> Payment entity</mat-label>
+                    <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
+                        <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
+                            Clear
+                        </mat-option>
+                        <mat-option *ngFor="let item of legalEntities" [value]="item.id">
+                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                    <mat-label> Sales type</mat-label>
+                    <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true">
+                        <mat-option class="mat-select-clear-option" *ngIf="salesTypeControl.value">
+                            Clear
+                        </mat-option>
+                        <mat-option *ngFor="let item of saleTypes" [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                    <mat-label> Delivery type</mat-label>
+                    <mat-select [formControl]="deliveryTypesControl" [disableOptionCentering]="true">
+                        <mat-option class="mat-select-clear-option" *ngIf="deliveryTypesControl.value">
+                            Clear
+                        </mat-option>
+                        <mat-option *ngFor="let item of deliveryTypes" [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="filter-select" fxFlex="20%">
+                    <mat-label> Workflow status</mat-label>
+                    <mat-select [formControl]="workflowStatusControl" [disableOptionCentering]="true">
+                        <mat-option class="mat-select-clear-option" *ngIf="workflowStatusControl.value">
+                            Clear
+                        </mat-option>
+                        <mat-option *ngFor="let item of workflowStatuses" [value]="item.id">
+                            {{ item.disaplyName }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </ng-container>
         <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--a" [fxHide]="isAdvancedFilters">
             <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
         </div>
     </div>
-    <ng-container *ngIf="isAdvancedFilters">
-        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-list--filter-additional u-w--100 u-mb--20">
-            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-                <mat-label>Invoicing entity</mat-label>
-                <mat-select [formControl]="invoicingEntityControl" [disableOptionCentering]="true">
-                    <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
-                        Clear
-                    </mat-option>
-                    <mat-option *ngFor="let item of legalEntities" [value]="item.id">
-                        {{ item.tenantName + ' ' + '(' + item.name + ')' }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-                <mat-label> Payment entity</mat-label>
-                <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
-                    <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
-                        Clear
-                    </mat-option>
-                    <mat-option *ngFor="let item of legalEntities" [value]="item.id">
-                        {{ item.tenantName + ' ' + '(' + item.name + ')' }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-                <mat-label> Sales type</mat-label>
-                <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true">
-                    <mat-option class="mat-select-clear-option" *ngIf="salesTypeControl.value">
-                        Clear
-                    </mat-option>
-                    <mat-option *ngFor="let item of saleTypes" [value]="item.id">
-                        {{ item.name }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-                <mat-label> Delivery type</mat-label>
-                <mat-select [formControl]="deliveryTypesControl" [disableOptionCentering]="true">
-                    <mat-option class="mat-select-clear-option" *ngIf="deliveryTypesControl.value">
-                        Clear
-                    </mat-option>
-                    <mat-option *ngFor="let item of deliveryTypes" [value]="item.id">
-                        {{ item.name }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="filter-select" fxFlex="20%">
-                <mat-label> Workflow status</mat-label>
-                <mat-select [formControl]="workflowStatusControl" [disableOptionCentering]="true">
-                    <mat-option class="mat-select-clear-option" *ngIf="workflowStatusControl.value">
-                        Clear
-                    </mat-option>
-                    <mat-option *ngFor="let item of workflowStatuses" [value]="item.id">
-                        {{ item.disaplyName }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-    </ng-container>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
         <div fxLayout="column" class="u-w--100">
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
@@ -491,4 +491,3 @@
         </ng-template>
     </mat-menu>
 </div>
-<!-- <router-outlet></router-outlet> -->
