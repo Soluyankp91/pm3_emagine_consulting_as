@@ -178,7 +178,10 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <ng-container *ngIf="">
+        <ng-container *ngIf="overviewDocuments.length">
+            <ng-container *ngFor="let item of overviewDocuments">
+              {{item.name}} {{item.createdBy?.name}} {{item.stepType}}
+            </ng-container>
 
         </ng-container>
     </ng-container>

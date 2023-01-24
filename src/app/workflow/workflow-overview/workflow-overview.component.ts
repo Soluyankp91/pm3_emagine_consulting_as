@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowDocumentQueryDto, WorkflowDocumentServiceProxy, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -39,6 +39,8 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     workflowProcesses: WorkflowProcessDto[] = [];
     workflowProcessType = WorkflowProcessType;
     workflowHistory: WorkflowHistoryDto[] = [];
+
+    overviewDocuments: WorkflowDocumentQueryDto[] = [];
 
     // gant
 
@@ -102,7 +104,10 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
     private _getDocuments() {
-
+        this._workflowDocumentsService.overviewAll(this.workflowId, this.documentsPeriod.value)
+            .subscribe(result => {
+                this.overviewDocuments = result;
+            });
     }
 
     displayStepAction(process: StepDto) {
