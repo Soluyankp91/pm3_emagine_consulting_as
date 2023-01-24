@@ -67,77 +67,7 @@
                         <h2 class="workflow-section--header">Documents</h2>
                     </div>
                     <div class="workflow-section--content">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                            <div fxLayout="column" fxFlexFill>
-                                <form [formGroup]="documentForm" class="u-w--100">
-                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__header">
-                                        <div fxFlex="5%">
-                                        </div>
-                                        <div fxFlex="65%">
-                                            Document name
-                                        </div>
-                                        <div fxFlex="15%">
-                                            Date
-                                        </div>
-                                        <div fxFlex="10%">
-                                            SM
-                                        </div>
-                                        <div fxFlex="5%">
-                                        </div>
-                                    </div>
-                                    <ng-container formArrayName="documents" class="u-w--100">
-                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__row u-w--100"
-                                            *ngFor="let document of documentForm?.documents?.controls; index as i"
-                                            [formArrayName]="i">
-                                            <div fxFlex="5%" fxLayoutAlign="center center">
-                                                <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon" [svgIcon]="document.value.icon"></mat-icon>
-                                            </div>
-                                            <div fxFlex="65%" class="text-truncate-ellipsis" [matTooltip]="document.value.filename" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                {{document.value.filename}}
-                                            </div>
-                                            <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.dateUpdated | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                {{document.value.dateUpdated | momentFormat}}
-                                            </div>
-                                            <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.updatedBy" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                <img [src]="consultantProfileUrl(document.value.updatedBy)">
-                                            </div>
-                                            <div fxFlex="5%" fxLayoutAlign="end center">
-                                                <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
-                                                <mat-menu #generalDocumentMenu>
-                                                    <button
-                                                        class="menu-item menu-item--edit"
-                                                        mat-menu-item
-                                                        appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.documentStorageGuid)">
-                                                        Download
-                                                    </button>
-                                                    <button
-                                                        class="menu-item menu-item--cancel"
-                                                        mat-menu-item
-                                                        appPreventDoubleClick (throttledClick)="deleteGeneralDocument(document.value?.clientAttachmentGuid)">
-                                                        Delete document
-                                                    </button>
-                                                </mat-menu>
-                                            </div>
-                                        </div>
-                                    </ng-container>
-                                </form>
-                                <ng-container *ngIf="!documensNoData; else addDocumentContainerTemplate">
-                                    <button class="button-add-documents mat-elevation-z0 u-mt--10 u-mb--10"  type="button" mat-flat-button appPreventDoubleClick (throttledClick)="documensNoData = !documensNoData">
-                                        <mat-icon svgIcon="plus-button-icon"></mat-icon>
-                                        Add document
-                                    </button>
-                                </ng-container>
-                                <ng-template #addDocumentContainerTemplate>
-                                    <div fxLayout="row" fxLayoutAlign="center center">
-                                        <app-file-uploader (filesAdded)="openDialogToAddFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
-                                    </div>
-                                </ng-template>
-
-                                <!-- <div class="spinner-container" *ngIf="isGeneralDocumentsLoading">
-                                    <mat-spinner [diameter]="50"></mat-spinner>
-                                </div> -->
-                            </div>
-                        </div>
+                        <app-documents></app-documents>
                     </div>
                 </div>
             </div>
