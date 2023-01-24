@@ -15,7 +15,7 @@ import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base'
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import {
-	ClientPeriodSalesDataDto,
+	ClientPeriodSalesDataCommandDto,
 	ClientPeriodServiceProxy,
 	ClientRateDto,
 	CommissionDto,
@@ -886,8 +886,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 	}
 
-	private _packClientPeriodData(): ClientPeriodSalesDataDto {
-		let input = new ClientPeriodSalesDataDto();
+	private _packClientPeriodData(): ClientPeriodSalesDataCommandDto {
+		let input = new ClientPeriodSalesDataCommandDto();
 		input.salesMainData = new SalesMainDataDto(this.mainDataComponent?.salesMainDataForm.value);
 		input.salesMainData.salesAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
