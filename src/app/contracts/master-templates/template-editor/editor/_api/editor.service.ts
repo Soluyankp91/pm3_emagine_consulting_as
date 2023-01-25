@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -25,12 +25,14 @@ export class EditorService {
     );
   }
 
-  upsertTemplate(templateId: number, template: string = '') {
+  upsertTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
     const endpoint = `${this.baseUrl}/api/AgreementTemplate/${templateId}/document-file/false`;
-    const body = template;
-
-    return this.httpClient.put(endpoint, body);
+    return this.httpClient.put(endpoint, fileContent);
   }
+}
+
+export interface WrappedValueDto<TValue> {
+  value: TValue;
 }
 
 function DataURIToBlob(dataURI: string) {

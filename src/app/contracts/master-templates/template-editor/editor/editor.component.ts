@@ -58,7 +58,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSave(template: string) {
     const templateId = this.route.snapshot.params.id;
-    this.editorService.upsertTemplate(templateId, template).subscribe();
+    this.editorService.upsertTemplate(templateId, { value: template }).subscribe();
   }
 
   ngOnDestroy(): void {
