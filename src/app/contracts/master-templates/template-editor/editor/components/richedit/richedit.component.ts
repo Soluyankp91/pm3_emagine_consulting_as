@@ -72,7 +72,8 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 
     options.width = 'calc(100vw - 160px)';
     options.height = 'calc(100vh - 120px)';
-    options.events.saving = (s, f) => { 
+    options.events.saving = (s, f) => {
+      console.log(f.base64)
       this.save.emit(f.base64);
     }
 
