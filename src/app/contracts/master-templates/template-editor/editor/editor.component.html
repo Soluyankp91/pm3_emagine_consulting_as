@@ -18,4 +18,9 @@
 <dx-popup [showTitle]="true" title="Markup" [(visible)]="liveTextpopupVisible">
   <div>{{template}}</div>
 </dx-popup> -->
-<app-richedit *ngIf="initiliazed && template" [template]="template"></app-richedit>
+<app-richedit 
+  *ngIf="template$ | async as t" 
+  [template]="t"
+  (save)="onSave($event)"
+>
+</app-richedit>

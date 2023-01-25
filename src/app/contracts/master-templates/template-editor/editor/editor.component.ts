@@ -1,11 +1,12 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { tap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 // Project
 import { EditorService } from './_api/editor.service';
 import { RicheditComponent } from './components/richedit/richedit.component';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -27,27 +28,37 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   _destroy$ = new Subject();
   initiliazed = false;
 
-  template$ = this.editorService.getTemplate();
-  template = '';
-
+  template$ = new BehaviorSubject<string | null>(null);
 
   constructor(
     private editorService: EditorService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {
   }
 
   ngOnInit(): void {
-    this.template$.pipe(
-      tap(template => this.template = template)
-    ).subscribe();
+    const templateId = this.route.snapshot.params.id;
+    this.editorService.getTemplate(templateId).pipe(
+      tap(template => this.template$.next(template)),
+    ).subscribe(
+      () => {},
+      () => {
+        this.template$.next(this.editorService.getTemplateMock())
+      },
+      () => {
+        this.changeDetector.detectChanges();
+      }
+    )
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.initiliazed = true;
-      this.changeDetector.detectChanges();
-    })
+
+  }
+
+  onSave(template: string) {
+    const templateId = this.route.snapshot.params.id;
+    this.editorService.upsertTemplate(templateId, template).subscribe();
   }
 
   ngOnDestroy(): void {

@@ -3,8 +3,7 @@ import {
   RibbonButtonItem, RibbonItem, RibbonTab, RibbonTabType, RichEdit, RibbonMenuItem, RibbonSubMenuItem
 } from 'devexpress-richedit';
 
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy } from '@angular/core';
-
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 @Component({
   standalone: true,
   selector: 'app-richedit',
@@ -15,13 +14,14 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
   private rich: RichEdit;
 
   @Input() template: any = '';
+  @Output() save = new EventEmitter();
 
   constructor(private element: ElementRef) { }
 
   ribbonCustomization(options: Options) {
     // remove items
     const fileTab = options.ribbon.getTab(RibbonTabType.File);
-    fileTab.removeItem(FileTabItemId.OpenDocument);
+    // fileTab.removeItem(FileTabItemId.OpenDocument);
 
     const homeTab = options.ribbon.getTab(RibbonTabType.Home);
     // homeTab.removeItem(HomeTabItemId.Copy);
@@ -36,11 +36,11 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
     // fileTab.removeItem(FileTabItemId.DownloadTxt);
 
     // allow only download as docx. Create out item from default items
-    const downloadDocxItem = fileTab.getItem(FileTabItemId.DownloadDocx) as RibbonSubMenuItem;
-    const downloadItem = fileTab.getItem(FileTabItemId.Download) as RibbonMenuItem;
-    fileTab.removeItem(FileTabItemId.Download);
+    // const downloadDocxItem = fileTab.getItem(FileTabItemId.DownloadDocx) as RibbonSubMenuItem;
+    // const downloadItem = fileTab.getItem(FileTabItemId.Download) as RibbonMenuItem;
+    // fileTab.removeItem(FileTabItemId.Download);
     // icons: https://js.devexpress.com/Documentation/Guide/Themes_and_Styles/Icons/
-    fileTab.insertItem(new RibbonButtonItem(downloadDocxItem.id, downloadItem.text, {icon: downloadItem.icon, showText: true}), 2);
+    // fileTab.insertItem(new RibbonButtonItem(downloadDocxItem.id, downloadItem.text, {icon: downloadItem.icon, showText: true}), 2);
 
     // move items to new tab
     const findElem: RibbonItem = homeTab.getItem(HomeTabItemId.Find);
@@ -72,9 +72,12 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 
     options.width = 'calc(100vw - 160px)';
     options.height = 'calc(100vh - 120px)';
+    options.events.saving = (s, f) => { 
+      this.save.emit(f.base64);
+    }
 
     this.rich = create(this.element.nativeElement.firstElementChild, options);
-    // this.rich.openDocument(this.template);
+    this.rich.openDocument(this.template, 'name', 4);
   }
 
   ngOnDestroy() {
