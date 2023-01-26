@@ -1,20 +1,10 @@
-<dx-tabs
-  #apiTabs
-  [dataSource]="tabs"
-  [selectedIndex]="0"
-  (onItemClick)="selectTab($event)"
-></dx-tabs>
-
-<div class="editor">
-  <dx-html-editor 
-    *ngIf="template" 
-    height="600px" 
-    [(value)]="template" 
-    [toolbar]="toolbar"
-  >
-  </dx-html-editor>
-</div>
-
-<dx-popup [showTitle]="true" title="Markup" [(visible)]="liveTextpopupVisible">
-  <div>{{template}}</div>
-</dx-popup>
+<ng-container *ngIf="template$ | async as template" >
+  <ng-container *ngIf="mergeFields$ | async as mergeFields">
+    <app-richedit 
+      [template]="template"
+      [mergeFields]="mergeFields"
+      (save)="onSave($event)"
+    >
+    </app-richedit>
+  </ng-container>
+</ng-container>
