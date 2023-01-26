@@ -54,7 +54,7 @@
                                                     (change)="toggleSelection(manager,selectedAccountManagers)"
                                                     (click)="$event.stopPropagation()">
                                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                        <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                        <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)">
                                                         <span>{{ manager.name }}</span>
                                                     </div>
                                                 </mat-checkbox>
