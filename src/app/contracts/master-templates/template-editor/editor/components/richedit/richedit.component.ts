@@ -4,6 +4,7 @@ import {
 } from 'devexpress-richedit';
 
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { IMergeField } from '../../_api/merge-fields.service';
 @Component({
   standalone: true,
   selector: 'app-richedit',
@@ -13,7 +14,8 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, O
 export class RicheditComponent implements AfterViewInit, OnDestroy {
   private rich: RichEdit;
 
-  @Input() template: any = '';
+  @Input() template: File | Blob | ArrayBuffer | string = '';
+  @Input() mergeFields: IMergeField;
   @Output() save = new EventEmitter();
 
   constructor(private element: ElementRef) { }
@@ -27,11 +29,9 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
     const mergeTab = options.ribbon.getTab(RibbonTabType.MailMerge);
 
     const m = mergeTab.getItem(MailMergeTabItemId.ShowInsertMergeFieldDialog);
+  
     options.mailMerge.dataSource = [
-      {
-        company_id: 'a',
-        company_name: 'b'
-      }
+      this.mergeFields
     ]
     
     // homeTab.removeItem(HomeTabItemId.Copy);
@@ -83,7 +83,6 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
     options.width = 'calc(100vw - 160px)';
     options.height = 'calc(100vh - 120px)';
     options.events.saving = (s, f) => {
-      console.log(f.base64)
       this.save.emit(f.base64);
     }
 

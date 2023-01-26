@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { tap } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -7,6 +7,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { EditorService } from './_api/editor.service';
 import { RicheditComponent } from './components/richedit/richedit.component';
 import { ActivatedRoute } from '@angular/router';
+import { MergeFieldsService } from './_api/merge-fields.service';
 
 
 @Component({
@@ -22,17 +23,18 @@ import { ActivatedRoute } from '@angular/router';
   ],
   providers: [
     EditorService,
+    MergeFieldsService
   ]
 })
-export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditorComponent implements OnInit, OnDestroy {
   _destroy$ = new Subject();
-  initiliazed = false;
 
-  template$ = new BehaviorSubject<Blob | string | null>(null);
+  template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
+  mergeFields$ = this.mergeFieldsService.getMergeFields(this.route.snapshot.params.id);
 
   constructor(
     private editorService: EditorService,
-    private changeDetector: ChangeDetectorRef,
+    private mergeFieldsService: MergeFieldsService,
     private route: ActivatedRoute
   ) {
   }
@@ -45,15 +47,8 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
       () => {},
       () => {
         this.template$.next(this.editorService.getTemplateMock())
-      },
-      () => {
-        this.changeDetector.detectChanges();
       }
     )
-  }
-
-  ngAfterViewInit(): void {
-
   }
 
   onSave(template: string) {
