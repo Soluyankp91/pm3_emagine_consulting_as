@@ -8,6 +8,7 @@ import { AreaRoleNodeDto, BranchRoleNodeDto, DocumentTypeEnum, EnumEntityTypeDto
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
 import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
+import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/f
 	styleUrls: ['../workflow-contracts.component.scss'],
 })
 export class ContractsMainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
     @Input() readOnlyMode: boolean;
     @Input() canToggleEditMode: boolean;
     @Output() editModeToggled = new EventEmitter<any>();

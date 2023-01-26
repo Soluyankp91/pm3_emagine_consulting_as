@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowDocumentQueryDto, WorkflowDocumentServiceProxy, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, StepType, WorkflowDocumentQueryDto, WorkflowDocumentServiceProxy, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -41,6 +41,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     workflowHistory: WorkflowHistoryDto[] = [];
 
     overviewDocuments: WorkflowDocumentQueryDto[] = [];
+    stepTypes = StepType;
 
     // gant
 
@@ -89,7 +90,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.individualConsultantActionsAvailable = environment.dev;
         this.getOverviewData();
         this.getWorkflowHistory();
-        this._getDocuments();
+        this.getDocuments();
 
         this._workflowDataService.workflowOverviewUpdated
             .pipe(takeUntil(this._unsubscribe))
@@ -103,7 +104,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this._unsubscribe.complete();
     }
 
-    private _getDocuments() {
+    getDocuments() {
         this._workflowDocumentsService.overviewAll(this.workflowId, this.documentsPeriod.value ?? undefined)
             .subscribe(result => {
                 this.overviewDocuments = result;

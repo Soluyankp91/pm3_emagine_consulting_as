@@ -54,17 +54,17 @@
                 </ng-container>
             </ng-container>
         </form>
-        <ng-container *ngIf="!documentsNoData; else addDocumentContainerTemplate">
+        <!-- <ng-container *ngIf="!documentsNoData; else addDocumentContainerTemplate">
             <button class="button-add-documents mat-elevation-z0 u-mt--10 u-mb--10"  type="button" mat-flat-button appPreventDoubleClick (throttledClick)="documentsNoData = !documentsNoData">
                 <mat-icon svgIcon="plus-button-icon"></mat-icon>
                 Add document
             </button>
-        </ng-container>
-        <ng-template #addDocumentContainerTemplate>
-            <div fxLayout="row" fxLayoutAlign="center center">
-                <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
-            </div>
-        </ng-template>
+        </ng-container> -->
+        <!-- <ng-template #addDocumentContainerTemplate> -->
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+        </div>
+        <!-- </ng-template> -->
 
         <!-- <div class="spinner-container" *ngIf="isGeneralDocumentsLoading">
             <mat-spinner [diameter]="50"></mat-spinner>

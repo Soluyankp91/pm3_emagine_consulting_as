@@ -15,6 +15,9 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { WFDocument } from './wf-documents.model';
 import * as moment from 'moment';
+import { AuthenticationResult } from '@azure/msal-browser';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 @Component({
 	selector: 'app-documents',
@@ -36,7 +39,9 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
 		private _fileService: FileServiceProxy,
-		private _employeeService: EmployeeServiceProxy
+		private _employeeService: EmployeeServiceProxy,
+        private localHttpService: LocalHttpService,
+        private httpClient: HttpClient
 	) {
 		super(injector);
 		this.documentForm = new DocumentForm();
@@ -99,18 +104,17 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 	}
 
 	addDocument(document: WFDocument) {
-        // TODO: add missing properties (from WFDocument dto)
-        // TODO: add download functionality
-        // TODO: fill data from parent component
-        // TODO: test functionality
-
 		const form = this._fb.group({
 			icon: new UntypedFormControl(document.icon),
 			name: new UntypedFormControl(document?.name),
             temporaryFileId: new UntypedFormControl(document.temporaryFileId),
             workflowDocumentId: new UntypedFormControl(document.workflowDocumentId),
 			createdDateUtc: new UntypedFormControl(document.createdDateUtc),
-			createdBy: new UntypedFormControl(document.createdBy)
+			createdBy: new UntypedFormControl(document.createdBy),
+            clientPeriodId: new UntypedFormControl(document.clientPeriodId),
+            workflowTerminationId: new UntypedFormControl(document.workflowTerminationId),
+            workflowProcessType: new UntypedFormControl(document.workflowProcessType),
+            stepType: new UntypedFormControl(document.stepType)
 		});
 		this.documentForm.documents.push(form);
 	}
@@ -119,31 +123,31 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 		return this.documentForm.get('documents') as UntypedFormArray;
 	}
 
-	downloadDocument(clientAttachmentGuid: string) {
-		// this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-		//     const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
-		//     this.httpClient.get(fileUrl, {
-		//         headers: new HttpHeaders({
-		//             'Authorization': `Bearer ${response.accessToken}`,
-		//         }), responseType: 'blob',
-		//         observe: 'response'
-		//     }).subscribe((data: HttpResponse<Blob>) => {
-		//         const blob = new Blob([data.body!], { type: data.body!.type });
-		//         const contentDispositionHeader = data.headers.get('Content-Disposition');
-		//         if (contentDispositionHeader !== null) {
-		//             const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
-		//             const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
-		//             const downloadlink = document.createElement('a');
-		//             downloadlink.href = window.URL.createObjectURL(blob);
-		//             downloadlink.download = contentDispositionFileName;
-		//             const nav = (window.navigator as any);
-		//             if (nav.msSaveOrOpenBlob) {
-		//                 nav.msSaveBlob(blob, contentDispositionFileName);
-		//             } else {
-		//                 downloadlink.click();
-		//             }
-		//         }
-		//     });
-		// });
+	downloadDocument(workflowDocumentId: number) {
+		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+		    const fileUrl = `${this.apiUrl}/api/WorkflowDocument/${workflowDocumentId}`;
+		    this.httpClient.get(fileUrl, {
+		        headers: new HttpHeaders({
+		            'Authorization': `Bearer ${response.accessToken}`,
+		        }), responseType: 'blob',
+		        observe: 'response'
+		    }).subscribe((data: HttpResponse<Blob>) => {
+		        const blob = new Blob([data.body!], { type: data.body!.type });
+		        const contentDispositionHeader = data.headers.get('Content-Disposition');
+		        if (contentDispositionHeader !== null) {
+		            const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+		            const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+		            const downloadlink = document.createElement('a');
+		            downloadlink.href = window.URL.createObjectURL(blob);
+		            downloadlink.download = contentDispositionFileName;
+		            const nav = (window.navigator as any);
+		            if (nav.msSaveOrOpenBlob) {
+		                nav.msSaveBlob(blob, contentDispositionFileName);
+		            } else {
+		                downloadlink.click();
+		            }
+		        }
+		    });
+		});
 	}
 }
