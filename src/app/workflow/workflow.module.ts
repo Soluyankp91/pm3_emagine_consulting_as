@@ -28,7 +28,7 @@ import { ContractsMainDataComponent } from './workflow-contracts/contracts-main-
 import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-data/contracts-sync-data.component';
 import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
-import { DocumentsComponent } from './shared/components/documents/documents.component';
+import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
 
 @NgModule({
     declarations: [

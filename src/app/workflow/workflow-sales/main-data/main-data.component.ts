@@ -80,6 +80,8 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     }
 
 	ngOnInit(): void {
+        console.log(this.activeSideSection);
+        console.log(this.workflowSideSections);
         this._getEnums();
         this._subscriptions$();
     }

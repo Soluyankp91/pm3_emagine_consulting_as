@@ -104,7 +104,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
     private _getDocuments() {
-        this._workflowDocumentsService.overviewAll(this.workflowId, this.documentsPeriod.value)
+        this._workflowDocumentsService.overviewAll(this.workflowId, this.documentsPeriod.value ?? undefined)
             .subscribe(result => {
                 this.overviewDocuments = result;
             });

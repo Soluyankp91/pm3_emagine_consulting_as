@@ -24,14 +24,14 @@
                         <div fxFlex="5%" fxLayoutAlign="center center">
                             <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon" [svgIcon]="document.value.icon"></mat-icon>
                         </div>
-                        <div fxFlex="65%" class="text-truncate-ellipsis" [matTooltip]="document.value.filename" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{document.value.filename}}
+                        <div fxFlex="65%" class="text-truncate-ellipsis" [matTooltip]="document.value.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{document.value.name}}
                         </div>
-                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.dateUpdated | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{document.value.dateUpdated | momentFormat}}
+                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdDateUtc | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{document.value.createdDateUtc | momentFormat}}
                         </div>
-                        <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.updatedBy" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            <img class="image-settings--dropdown" [src]="consultantProfileUrl(document.value.updatedBy)">
+                        <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdBy?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <img class="image-settings--dropdown" [src]="employeeProfileUrl(document.value.createdBy?.externalId)">
                         </div>
                         <div fxFlex="5%" fxLayoutAlign="end center">
                             <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
@@ -39,13 +39,13 @@
                                 <button
                                     class="menu-item menu-item--edit"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.documentStorageGuid)">
+                                    appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.workflowDocumentId)">
                                     Download
                                 </button>
                                 <button
                                     class="menu-item menu-item--cancel"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="deleteGeneralDocument(document.value?.clientAttachmentGuid)">
+                                    appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, i)">
                                     Delete document
                                 </button>
                             </mat-menu>
@@ -62,7 +62,7 @@
         </ng-container>
         <ng-template #addDocumentContainerTemplate>
             <div fxLayout="row" fxLayoutAlign="center center">
-                <app-file-uploader (filesAdded)="openDialogToAddFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+                <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
             </div>
         </ng-template>
 
