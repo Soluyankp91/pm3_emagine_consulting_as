@@ -30,30 +30,30 @@ export class EditorComponent implements OnInit, OnDestroy {
   _destroy$ = new Subject();
 
   template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
-  mergeFields$ = this.mergeFieldsService.getMergeFields(this.route.snapshot.params.id);
+  mergeFields$ = this._mergeFieldsService.getMergeFields(this._route.snapshot.params.id);
 
   constructor(
-    private editorService: EditorService,
-    private mergeFieldsService: MergeFieldsService,
-    private route: ActivatedRoute
+    private _editorService: EditorService,
+    private _mergeFieldsService: MergeFieldsService,
+    private _route: ActivatedRoute
   ) {
   }
 
   ngOnInit(): void {
-    const templateId = this.route.snapshot.params.id;
-    this.editorService.getTemplate(templateId).pipe(
+    const templateId = this._route.snapshot.params.id;
+    this._editorService.getTemplate(templateId).pipe(
       tap(template => this.template$.next(template)),
     ).subscribe(
       () => {},
       () => {
-        this.template$.next(this.editorService.getTemplateMock())
+        this.template$.next(this._editorService.getTemplateMock())
       }
     )
   }
 
   onSave(template: string) {
-    const templateId = this.route.snapshot.params.id;
-    this.editorService.upsertTemplate(templateId, { value: template }).subscribe();
+    const templateId = this._route.snapshot.params.id;
+    this._editorService.upsertTemplate(templateId, { value: template }).subscribe();
   }
 
   ngOnDestroy(): void {
