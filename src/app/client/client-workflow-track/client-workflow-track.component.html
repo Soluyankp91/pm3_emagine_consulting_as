@@ -5,7 +5,7 @@
                 <ng-container matColumnDef="consultant">
                     <mat-header-cell *matHeaderCellDef fxFlex="25%"> Consultant </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="25%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(row.consultants, 'name')" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.consultants | displayList:  'name'" matTooltipClass="white-tooltip">
                             <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                                 {{row.consultants?.length + ' Consultants'}}
                             </ng-container>
