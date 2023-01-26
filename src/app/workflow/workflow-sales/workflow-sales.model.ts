@@ -299,6 +299,8 @@ export enum ConsultantDiallogAction {
 export class SalesTerminateConsultantForm extends UntypedFormGroup {
     constructor() {
         super({
+            directClientId: new UntypedFormControl(null),
+            endClientId: new UntypedFormControl(null),
             finalEvaluationReferencePerson: new UntypedFormControl(null),
             noEvaluation: new UntypedFormControl(false),
             causeOfNoEvaluation: new UntypedFormControl(null),
@@ -309,7 +311,12 @@ export class SalesTerminateConsultantForm extends UntypedFormGroup {
             additionalComments: new UntypedFormControl(null)
         });
     }
-
+    get directClientId() {
+        return this.get('directClientId');
+    }
+    get endClientId() {
+        return this.get('endClientId');
+    }
     get finalEvaluationReferencePerson() {
         return this.get('finalEvaluationReferencePerson');
     }

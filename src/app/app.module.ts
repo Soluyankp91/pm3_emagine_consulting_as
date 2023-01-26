@@ -102,7 +102,7 @@ export function getRemoteServiceBaseUrl(): string {
         AppCommonModule,
         ServiceProxyModule,
         MsalModule,
-        NgxSpinnerModule,
+        NgxSpinnerModule
     ],
     providers: [
         LoginGuard,

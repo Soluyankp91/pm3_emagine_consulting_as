@@ -165,15 +165,14 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
                 startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-						clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-						clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-					return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+					return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -219,8 +218,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
                 startWith(''),
 				switchMap((value: any) => {
                     let toSend = {
-                        clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-                        clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
                         name: value,
                         maxRecordsCount: 1000,
                     };
@@ -228,8 +226,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
                         toSend.name = value.id ? value.firstName : value;
                     }
                     return this._lookupService.contacts(
-                        toSend.clientId1,
-                        toSend.clientId2,
+                        toSend.clientIds,
                         toSend.name,
                         toSend.maxRecordsCount
                     );
@@ -425,15 +422,14 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				debounceTime(300),
 				switchMap((value: any) => {
 					let toSend = {
-						clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-						clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-					return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+					return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {

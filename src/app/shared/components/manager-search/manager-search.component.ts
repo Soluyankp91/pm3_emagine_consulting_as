@@ -58,9 +58,7 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
                         ? value.name
                         : value;
                 }
-
                 return this._lookupService.employees(toSend.name);
-                // return new Observable();
             }),
         ).subscribe((list: any) => {
             if (list.length) {

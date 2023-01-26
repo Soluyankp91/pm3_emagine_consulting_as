@@ -90,27 +90,30 @@
                     Different assignment ID / PO number
                 </mat-checkbox>
 
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
-                    <mat-label>Invoice reference person</mat-label>
-                    <input #invoicingReferencePersonAutocompleteInput type="text" matInput
-                        [matAutocomplete]="invoicingReferencePersonAutocomplete"
-                        formControlName="invoicingReferencePersonId" appPreventDoubleClick
-                        (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
-                        <span matSuffix class="shevron"></span>
-                    <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
-                        [displayWith]="displayFullNameFn">
-                        <ng-container>
-                            <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
-                                <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
-                            </mat-option>
-                        </ng-container>
-                    </mat-autocomplete>
-                </mat-form-field>
-                <mat-checkbox color="accent" name="differentInvoicingReferencePerson"
-                    formControlName="differentInvoicingReferencePerson" class="black-checkbox"
-                    (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferencePerson!.value, projectLineForm.invoicingReferencePersonId)">
-                    Different invoicing reference person
-                </mat-checkbox>
+                <ng-container *ngIf="!projectLineForm.value?.invoicingReferencePersonDontShowOnInvoice">
+                    <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
+                        <mat-label>Invoice reference person</mat-label>
+                        <input #invoicingReferencePersonAutocompleteInput type="text" matInput
+                            [matAutocomplete]="invoicingReferencePersonAutocomplete"
+                            formControlName="invoicingReferencePersonId" appPreventDoubleClick
+                            (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
+                            <span matSuffix class="shevron"></span>
+                        <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
+                            [displayWith]="displayFullNameFn">
+                            <ng-container>
+                                <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
+                                    <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-checkbox color="accent" name="differentInvoicingReferencePerson"
+                        formControlName="differentInvoicingReferencePerson" class="black-checkbox"
+                        (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferencePerson!.value, projectLineForm.invoicingReferencePersonId)">
+                        Different invoicing reference person
+                    </mat-checkbox>
+                </ng-container>
+
 
                 <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
                     <mat-label>Debitor number</mat-label>

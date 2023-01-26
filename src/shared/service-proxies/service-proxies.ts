@@ -1463,7 +1463,7 @@ export class AgreementServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    documentFilePUT(agreementId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
+    documentFilePUT(agreementId: number, forceUpdate: boolean, body?: StringWrappedValueDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/{forceUpdate}";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
@@ -2805,7 +2805,7 @@ export class AgreementTemplateServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    documentFilePUT2(agreementTemplateId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
+    documentFilePUT2(agreementTemplateId: number, forceUpdate: boolean, body?: StringWrappedValueDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/{forceUpdate}";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
@@ -10519,7 +10519,7 @@ export class FileServiceProxy {
      * @param file (optional) 
      * @return Success
      */
-    temporaryPOST(file?: FileParameter | undefined): Observable<StringResultDto> {
+    temporaryPOST(file?: FileParameter | undefined): Observable<StringWrappedValueDto> {
         let url_ = this.baseUrl + "/api/File/temporary";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10545,14 +10545,14 @@ export class FileServiceProxy {
                 try {
                     return this.processTemporaryPOST(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<StringResultDto>;
+                    return _observableThrow(e) as any as Observable<StringWrappedValueDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<StringResultDto>;
+                return _observableThrow(response_) as any as Observable<StringWrappedValueDto>;
         }));
     }
 
-    protected processTemporaryPOST(response: HttpResponseBase): Observable<StringResultDto> {
+    protected processTemporaryPOST(response: HttpResponseBase): Observable<StringWrappedValueDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -10563,7 +10563,7 @@ export class FileServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = StringResultDto.fromJS(resultData200);
+            result200 = StringWrappedValueDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -10571,7 +10571,7 @@ export class FileServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StringResultDto>(null as any);
+        return _observableOf<StringWrappedValueDto>(null as any);
     }
 
     /**
@@ -11336,17 +11336,17 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param nameFilter (optional) 
+     * @param filter (optional) 
      * @param showAll (optional) 
      * @param idsToExclude (optional) 
      * @return Success
      */
-    employees(nameFilter?: string | undefined, showAll?: boolean | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
+    employees(filter?: string | undefined, showAll?: boolean | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
         let url_ = this.baseUrl + "/api/Lookup/Employees?";
-        if (nameFilter === null)
-            throw new Error("The parameter 'nameFilter' cannot be null.");
-        else if (nameFilter !== undefined)
-            url_ += "nameFilter=" + encodeURIComponent("" + nameFilter) + "&";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
         if (showAll === null)
             throw new Error("The parameter 'showAll' cannot be null.");
         else if (showAll !== undefined)
@@ -11696,22 +11696,17 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param clientId1 (optional) 
-     * @param clientId2 (optional) 
+     * @param clientIds (optional) 
      * @param filter (optional) 
      * @param maxRecords (optional) 
      * @return Success
      */
-    contacts(clientId1?: number | undefined, clientId2?: number | undefined, filter?: string | undefined, maxRecords?: number | undefined): Observable<ContactResultDto[]> {
+    contacts(clientIds?: number[] | undefined, filter?: string | undefined, maxRecords?: number | undefined): Observable<ContactResultDto[]> {
         let url_ = this.baseUrl + "/api/Lookup/Contacts?";
-        if (clientId1 === null)
-            throw new Error("The parameter 'clientId1' cannot be null.");
-        else if (clientId1 !== undefined)
-            url_ += "clientId1=" + encodeURIComponent("" + clientId1) + "&";
-        if (clientId2 === null)
-            throw new Error("The parameter 'clientId2' cannot be null.");
-        else if (clientId2 !== undefined)
-            url_ += "clientId2=" + encodeURIComponent("" + clientId2) + "&";
+        if (clientIds === null)
+            throw new Error("The parameter 'clientIds' cannot be null.");
+        else if (clientIds !== undefined)
+            clientIds && clientIds.forEach(item => { url_ += "clientIds=" + encodeURIComponent("" + item) + "&"; });
         if (filter === null)
             throw new Error("The parameter 'filter' cannot be null.");
         else if (filter !== undefined)
@@ -12506,7 +12501,7 @@ export class MergeFieldsServiceProxy {
      * @param agreementNameTemplate (optional) 
      * @return Success
      */
-    format(agreementId?: number | undefined, agreementNameTemplate?: string | undefined): Observable<StringResultDto> {
+    format(agreementId?: number | undefined, agreementNameTemplate?: string | undefined): Observable<StringWrappedValueDto> {
         let url_ = this.baseUrl + "/api/MergeFields/agreementNameTemplate/format?";
         if (agreementId === null)
             throw new Error("The parameter 'agreementId' cannot be null.");
@@ -12533,14 +12528,14 @@ export class MergeFieldsServiceProxy {
                 try {
                     return this.processFormat(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<StringResultDto>;
+                    return _observableThrow(e) as any as Observable<StringWrappedValueDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<StringResultDto>;
+                return _observableThrow(response_) as any as Observable<StringWrappedValueDto>;
         }));
     }
 
-    protected processFormat(response: HttpResponseBase): Observable<StringResultDto> {
+    protected processFormat(response: HttpResponseBase): Observable<StringWrappedValueDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12551,7 +12546,7 @@ export class MergeFieldsServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = StringResultDto.fromJS(resultData200);
+            result200 = StringWrappedValueDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -12559,7 +12554,7 @@ export class MergeFieldsServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StringResultDto>(null as any);
+        return _observableOf<StringWrappedValueDto>(null as any);
     }
 }
 
@@ -27623,10 +27618,10 @@ export enum StepType {
     Sourcing = 4,
 }
 
-export class StringResultDto implements IStringResultDto {
+export class StringWrappedValueDto implements IStringWrappedValueDto {
     value?: string | undefined;
 
-    constructor(data?: IStringResultDto) {
+    constructor(data?: IStringWrappedValueDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -27641,9 +27636,9 @@ export class StringResultDto implements IStringResultDto {
         }
     }
 
-    static fromJS(data: any): StringResultDto {
+    static fromJS(data: any): StringWrappedValueDto {
         data = typeof data === 'object' ? data : {};
-        let result = new StringResultDto();
+        let result = new StringWrappedValueDto();
         result.init(data);
         return result;
     }
@@ -27655,7 +27650,7 @@ export class StringResultDto implements IStringResultDto {
     }
 }
 
-export interface IStringResultDto {
+export interface IStringWrappedValueDto {
     value?: string | undefined;
 }
 
@@ -28420,6 +28415,7 @@ export interface IWorkflowDocumentQueryDto {
 export class WorkflowDto implements IWorkflowDto {
     workflowId?: string;
     workflowStatusId?: WorkflowStatus;
+    isDeleted?: boolean;
     directClientId?: number | undefined;
     directClientName?: string | undefined;
     directClientCrmId?: number | undefined;
@@ -28442,6 +28438,7 @@ export class WorkflowDto implements IWorkflowDto {
         if (_data) {
             this.workflowId = _data["workflowId"];
             this.workflowStatusId = _data["workflowStatusId"];
+            this.isDeleted = _data["isDeleted"];
             this.directClientId = _data["directClientId"];
             this.directClientName = _data["directClientName"];
             this.directClientCrmId = _data["directClientCrmId"];
@@ -28472,6 +28469,7 @@ export class WorkflowDto implements IWorkflowDto {
         data = typeof data === 'object' ? data : {};
         data["workflowId"] = this.workflowId;
         data["workflowStatusId"] = this.workflowStatusId;
+        data["isDeleted"] = this.isDeleted;
         data["directClientId"] = this.directClientId;
         data["directClientName"] = this.directClientName;
         data["directClientCrmId"] = this.directClientCrmId;
@@ -28495,6 +28493,7 @@ export class WorkflowDto implements IWorkflowDto {
 export interface IWorkflowDto {
     workflowId?: string;
     workflowStatusId?: WorkflowStatus;
+    isDeleted?: boolean;
     directClientId?: number | undefined;
     directClientName?: string | undefined;
     directClientCrmId?: number | undefined;
@@ -29019,6 +29018,7 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
     actualEndDate?: moment.Moment | undefined;
     workflowStatusWithEmployeeDto?: WorkflowStatusWithEmployeeDto;
     mainOverviewStatusForSales?: MainOverviewStatus;
+    isDeleted?: boolean;
 
     constructor(data?: IWorkflowOverviewDto) {
         if (data) {
@@ -29049,6 +29049,7 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
             this.actualEndDate = _data["actualEndDate"] ? moment(_data["actualEndDate"].toString()) : <any>undefined;
             this.workflowStatusWithEmployeeDto = _data["workflowStatusWithEmployeeDto"] ? WorkflowStatusWithEmployeeDto.fromJS(_data["workflowStatusWithEmployeeDto"]) : <any>undefined;
             this.mainOverviewStatusForSales = _data["mainOverviewStatusForSales"];
+            this.isDeleted = _data["isDeleted"];
         }
     }
 
@@ -29079,6 +29080,7 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
         data["actualEndDate"] = this.actualEndDate ? this.actualEndDate.format('YYYY-MM-DD') : <any>undefined;
         data["workflowStatusWithEmployeeDto"] = this.workflowStatusWithEmployeeDto ? this.workflowStatusWithEmployeeDto.toJSON() : <any>undefined;
         data["mainOverviewStatusForSales"] = this.mainOverviewStatusForSales;
+        data["isDeleted"] = this.isDeleted;
         return data;
     }
 }
@@ -29090,6 +29092,7 @@ export interface IWorkflowOverviewDto {
     actualEndDate?: moment.Moment | undefined;
     workflowStatusWithEmployeeDto?: WorkflowStatusWithEmployeeDto;
     mainOverviewStatusForSales?: MainOverviewStatus;
+    isDeleted?: boolean;
 }
 
 export class WorkflowPeriodForLegacyContractDto implements IWorkflowPeriodForLegacyContractDto {

@@ -31,7 +31,8 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         public data: {
             dialogType: number,
             projectLineData: any,
-            clientId: number
+            directClientId: number,
+            endClientId: number,
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>,
         private _lookupService: LookupServiceProxy,
@@ -46,8 +47,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                 debounceTime(300),
                 switchMap((value: any) => {
                     let toSend = {
-                        clientId1: this.data?.clientId,
-                        clientId2: undefined, // TODO: waiting for be
+                        clientIds: [this.data?.directClientId, this.data?.endClientId].filter(Boolean),
                         name: value,
                         maxRecordsCount: 1000,
                     };
@@ -56,7 +56,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -130,6 +130,8 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
             this.projectLineForm.invoicingReferenceNumber?.disable();
         }
 
+        this.projectLineForm.invoicingReferencePersonDontShowOnInvoice?.setValue(data.invoicingReferencePersonDontShowOnInvoice, {emitEvent: false});
+
         this.projectLineForm.invoicingReferencePersonId?.setValue(data.invoicingReferencePerson ?? '', {emitEvent: false});
         this.projectLineForm.differentInvoicingReferencePerson?.setValue(data.differentInvoicingReferencePerson ?? false, {emitEvent: false});
         if (!data.differentInvoicingReferencePerson) {
@@ -172,12 +174,14 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.noEndDate = this.projectLineForm.noEndDate?.value;
         result.differentInvoicingReferenceNumber = this.projectLineForm.differentInvoicingReferenceNumber?.value;
         result.invoicingReferenceNumber = this.projectLineForm.invoicingReferenceNumber?.value;
-        result.differentInvoicingReferencePerson = this.projectLineForm.differentInvoicingReferencePerson?.value;
-        if (this.projectLineForm.invoicingReferencePersonId?.value?.id) {
-            result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
-            result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
-        } else {
-            result.invoicingReferenceString = this.projectLineForm.invoicingReferencePersonId?.value;
+        if (!this.projectLineForm.invoicingReferencePersonDontShowOnInvoice?.value) {
+            result.differentInvoicingReferencePerson = this.projectLineForm.differentInvoicingReferencePerson?.value;
+            if (this.projectLineForm.invoicingReferencePersonId?.value?.id) {
+                result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
+                result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
+            } else {
+                result.invoicingReferenceString = this.projectLineForm.invoicingReferencePersonId?.value;
+            }
         }
         result.optionalInvoicingInfo = this.projectLineForm.optionalInvoicingInfo?.value;
         result.differentDebtorNumber = this.projectLineForm.differentDebtorNumber?.value;
