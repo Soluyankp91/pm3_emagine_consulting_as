@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormArray } from '@angular/forms';
 import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
@@ -24,7 +24,7 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 	templateUrl: './wf-documents.component.html',
 	styleUrls: ['./wf-documents.component.scss'],
 })
-export class DocumentsComponent extends AppComponentBase implements OnInit {
+export class DocumentsComponent extends AppComponentBase {
 	@ViewChild('fileUploader') fileUploader: FileUploaderComponent;
 	@Input() workflowProcessType: WorkflowProcessType;
 	@Input() stepType: StepType;
@@ -47,8 +47,6 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 		super(injector);
 		this.documentForm = new DocumentForm();
 	}
-
-	ngOnInit(): void {}
 
 	tempFileAdded(files: FileUploaderFile[]) {
 		const fileToUpload = files[0];

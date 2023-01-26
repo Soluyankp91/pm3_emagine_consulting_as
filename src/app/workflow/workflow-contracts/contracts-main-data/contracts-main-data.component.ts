@@ -1,15 +1,17 @@
 import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { DeliveryTypes, DocumentForm, SalesTypes, WorkflowContractsMainForm } from '../workflow-contracts.model';
+import { DeliveryTypes, SalesTypes, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AreaRoleNodeDto, BranchRoleNodeDto, DocumentTypeEnum, EnumEntityTypeDto, FileParameter, LookupServiceProxy, RoleNodeDto } from 'src/shared/service-proxies/service-proxies';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
-import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
-import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
+import {
+	AreaRoleNodeDto,
+	BranchRoleNodeDto,
+	EnumEntityTypeDto,
+	LookupServiceProxy,
+	RoleNodeDto,
+} from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
-
 
 @Component({
 	selector: 'app-contracts-main-data',
@@ -17,23 +19,23 @@ import { DocumentsComponent } from '../../shared/components/wf-documents/wf-docu
 	styleUrls: ['../workflow-contracts.component.scss'],
 })
 export class ContractsMainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
-    @Input() readOnlyMode: boolean;
-    @Input() canToggleEditMode: boolean;
-    @Output() editModeToggled = new EventEmitter<any>();
+	@ViewChild('mainDocuments', { static: false }) mainDocuments: DocumentsComponent;
+	@Input() readOnlyMode: boolean;
+	@Input() canToggleEditMode: boolean;
+	@Output() editModeToggled = new EventEmitter<any>();
 	contractsMainForm: WorkflowContractsMainForm;
-    deliveryTypesEnum = DeliveryTypes;
+	deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
-    saleTypes: EnumEntityTypeDto[];
-    deliveryTypes: EnumEntityTypeDto[];
-    projectCategories: EnumEntityTypeDto[];
-    projectTypes: EnumEntityTypeDto[];
-    margins: EnumEntityTypeDto[];
-    discounts: EnumEntityTypeDto[];
-    primaryCategoryAreas: BranchRoleNodeDto[] = [];
-    primaryCategoryTypes: AreaRoleNodeDto[] = [];
-    primaryCategoryRoles: RoleNodeDto[] = [];
-    private _unsubscribe = new Subject();
+	saleTypes: EnumEntityTypeDto[];
+	deliveryTypes: EnumEntityTypeDto[];
+	projectCategories: EnumEntityTypeDto[];
+	projectTypes: EnumEntityTypeDto[];
+	margins: EnumEntityTypeDto[];
+	discounts: EnumEntityTypeDto[];
+	primaryCategoryAreas: BranchRoleNodeDto[] = [];
+	primaryCategoryTypes: AreaRoleNodeDto[] = [];
+	primaryCategoryRoles: RoleNodeDto[] = [];
+	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
 		private _lookupService: LookupServiceProxy,
@@ -44,61 +46,56 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
 	}
 
 	ngOnInit(): void {
-        this._getEnums();
-    }
-
-    ngOnDestroy(): void {
-        this._unsubscribe.next();
-        this._unsubscribe.complete();
-    }
-
-    private _getEnums() {
-        forkJoin({
-            saleTypes: this._internalLookupService.getSaleTypes(),
-            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-            projectCategories: this._internalLookupService.getProjectCategory(),
-            projectTypes: this._internalLookupService.getProjectTypes(),
-            margins: this._internalLookupService.getMargins(),
-            discounts: this._internalLookupService.getDiscounts()
-        })
-        .subscribe(result => {
-            this.saleTypes = result.saleTypes;
-            this.deliveryTypes = result.deliveryTypes;
-            this.projectCategories = result.projectCategories;
-            this.projectTypes = result.projectTypes;
-            this.margins = result.margins;
-            this.discounts = result.discounts;
-        });
-    }
-
-    toggleEditMode() {
-        this.editModeToggled.emit();
+		this._getEnums();
 	}
 
-    getPrimaryCategoryTree(): void {
-        this._lookupService
-            .tree()
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((result) => {
-                this.primaryCategoryAreas = result.branches!;
-                this.setPrimaryCategoryTypeAndRole();
-            });
-    }
+	ngOnDestroy(): void {
+		this._unsubscribe.next();
+		this._unsubscribe.complete();
+	}
 
-    setPrimaryCategoryTypeAndRole(): void {
-        if (this.contractsMainForm?.primaryCategoryArea?.value) {
-            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
-                (x) =>
-                    x.id ===
-                    this.contractsMainForm?.primaryCategoryArea?.value?.id
-            )?.areas!;
-        }
-        if (this.contractsMainForm?.primaryCategoryType?.value) {
-            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
-                (x) =>
-                    x.id ===
-                    this.contractsMainForm?.primaryCategoryType?.value.id
-            )?.roles!;
-        }
-    }
+	private _getEnums() {
+		forkJoin({
+			saleTypes: this._internalLookupService.getSaleTypes(),
+			deliveryTypes: this._internalLookupService.getDeliveryTypes(),
+			projectCategories: this._internalLookupService.getProjectCategory(),
+			projectTypes: this._internalLookupService.getProjectTypes(),
+			margins: this._internalLookupService.getMargins(),
+			discounts: this._internalLookupService.getDiscounts(),
+		}).subscribe((result) => {
+			this.saleTypes = result.saleTypes;
+			this.deliveryTypes = result.deliveryTypes;
+			this.projectCategories = result.projectCategories;
+			this.projectTypes = result.projectTypes;
+			this.margins = result.margins;
+			this.discounts = result.discounts;
+		});
+	}
+
+	toggleEditMode() {
+		this.editModeToggled.emit();
+	}
+
+	getPrimaryCategoryTree(): void {
+		this._lookupService
+			.tree()
+			.pipe(takeUntil(this._unsubscribe))
+			.subscribe((result) => {
+				this.primaryCategoryAreas = result.branches!;
+				this.setPrimaryCategoryTypeAndRole();
+			});
+	}
+
+	setPrimaryCategoryTypeAndRole(): void {
+		if (this.contractsMainForm?.primaryCategoryArea?.value) {
+			this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+				(x) => x.id === this.contractsMainForm?.primaryCategoryArea?.value?.id
+			)?.areas!;
+		}
+		if (this.contractsMainForm?.primaryCategoryType?.value) {
+			this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+				(x) => x.id === this.contractsMainForm?.primaryCategoryType?.value.id
+			)?.roles!;
+		}
+	}
 }

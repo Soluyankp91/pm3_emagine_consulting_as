@@ -1,13 +1,6 @@
 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
-    <!-- <ng-container *ngIf="!readOnlyMode; else startClientPeriodTemplate">
-        ngif
-    </ng-container>
-    <ng-template #elseTemplate>
-        else
-    </ng-template> -->
-
     <ng-container
-        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else elseTemplate">
+        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startPeriodTemplate">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
             <h1 class="workflow-section--header-main">Main data</h1>
@@ -33,7 +26,7 @@
             </div>
         </div>
     </ng-container>
-    <ng-template #elseTemplate>
+    <ng-template #startPeriodTemplate>
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
