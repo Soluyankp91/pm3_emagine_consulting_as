@@ -41,8 +41,8 @@ export class DocumentsComponent extends AppComponentBase {
 		private _fb: UntypedFormBuilder,
 		private _fileService: FileServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
-		private localHttpService: LocalHttpService,
-		private httpClient: HttpClient
+		private _localHttpService: LocalHttpService,
+		private _httpClient: HttpClient
 	) {
 		super(injector);
 		this.documentForm = new DocumentForm();
@@ -119,9 +119,9 @@ export class DocumentsComponent extends AppComponentBase {
 	}
 
 	downloadDocument(workflowDocumentId: number) {
-		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+		this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
 			const fileUrl = `${this.apiUrl}/api/WorkflowDocument/${workflowDocumentId}`;
-			this.httpClient
+			this._httpClient
 				.get(fileUrl, {
 					headers: new HttpHeaders({
 						Authorization: `Bearer ${response.accessToken}`,
