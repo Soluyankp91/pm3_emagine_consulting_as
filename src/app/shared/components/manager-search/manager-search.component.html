@@ -14,8 +14,9 @@
             [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
     </div>
     <mat-menu #managerSearch="matMenu">
-        <mat-form-field appearance="outline" class="">
+        <mat-form-field appearance="outline" class="autocompleteWithShevron" [ngClass]="{'isPanelOpen': auto.isOpen}">
             <input type="text" matInput [matAutocomplete]="auto" [formControl]="managerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" [placeholder]="formFieldLabel">
+            <span matSuffix class="shevron"></span>
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
                 <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
                     <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name" matTooltipClass="white-tooltip" appShowIfTruncated>

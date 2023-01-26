@@ -1,8 +1,7 @@
 trigger:
   - refs/heads/devel
 
-pool:
-  vmImage: 'ubuntu-20.04'
+pool: azure-scale-set
 
 steps:
 - task: NodeTool@0

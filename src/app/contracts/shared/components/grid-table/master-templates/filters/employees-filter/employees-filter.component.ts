@@ -41,15 +41,15 @@ export class EmployeesFilterComponent {
 			});
 	}
 
-	emitText($event: { nameFilter: string; idsToExclude: number[] }) {
+	emitText($event: { filter: string; idsToExclude: number[] }) {
 		this.textEmitter.emit($event);
 	}
 
 	private _initEmployees() {
 		this.employees$ = this.textEmitter.pipe(
-			startWith({ nameFilter: '', idsToExclude: [] }),
-			switchMap(({ nameFilter, idsToExclude }) => {
-				return this.lookupServiceProxy.employees(nameFilter, false, idsToExclude);
+			startWith({ filter: '', idsToExclude: [] }),
+			switchMap(({ filter, idsToExclude }) => {
+				return this.lookupServiceProxy.employees(filter, false, idsToExclude);
 			}),
 			tap(() => this.initialLoading.next(true))
 		);
