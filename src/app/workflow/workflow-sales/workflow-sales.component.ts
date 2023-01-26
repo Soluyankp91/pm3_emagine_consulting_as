@@ -85,9 +85,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	clientSpecialRateList: ClientSpecialRateDto[] = [];
 	clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 
-	directClientIdTerminationSales: number | null;
-	endClientIdTerminationSales: number | null;
-
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
 
@@ -120,8 +117,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 startWith(''),
 				switchMap((value: any) => {
                     let toSend = {
-                        clientId1: this.directClientIdTerminationSales ?? undefined,
-                        clientId2: this.endClientIdTerminationSales ?? undefined,
+                        clientIds: [this.salesTerminateConsultantForm.directClientId?.value, this.salesTerminateConsultantForm.endClientId?.value].filter(Boolean),
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
@@ -129,8 +125,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         toSend.name = value.id ? value.firstName : value;
                     }
                     return this._lookupService.contacts(
-                        toSend.clientId1,
-                        toSend.clientId2,
+                        toSend.clientIds,
                         toSend.name,
                         toSend.maxRecordsCount
                     );
@@ -602,8 +597,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
-				this.directClientIdTerminationSales = result.directClientId!;
-				this.endClientIdTerminationSales = result.endClientId!;
 			});
 	}
 
@@ -644,9 +637,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
-				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
-				this.directClientIdTerminationSales = result.directClientId!;
-				this.endClientIdTerminationSales = result.endClientId!;
 			});
 	}
 
@@ -849,9 +839,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (this.consutlantDataComponent) {
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
+        this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
-		this.directClientIdTerminationSales = null;
-		this.endClientIdTerminationSales = null;
 	}
 
 	openClientInNewTab(clientId: string) {

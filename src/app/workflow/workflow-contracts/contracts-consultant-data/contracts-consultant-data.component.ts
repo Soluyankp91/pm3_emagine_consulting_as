@@ -383,7 +383,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 						? ProjectLineDiallogMode.Edit
 						: ProjectLineDiallogMode.Create,
 				projectLineData: projectLine,
-				clientId: this.contractClientForm.directClientId?.value,
+				directClientId: this.contractClientForm.directClientId?.value,
+                endClientId: this.contractClientForm.endClientId?.value
 			},
 		});
 

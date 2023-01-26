@@ -108,6 +108,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     constructor() {
         super({
             directClientId: new UntypedFormControl(null),
+            endClientId: new UntypedFormControl(null),
             pdcInvoicingEntityId: new UntypedFormControl(null),
             clientTimeReportingCapId: new UntypedFormControl(null),
             clientTimeReportingCapMaxValue: new UntypedFormControl(null),
@@ -133,6 +134,9 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
 
     get directClientId() {
         return this.get('directClientId');
+    }
+    get endClientId() {
+        return this.get('endClientId');
     }
     get pdcInvoicingEntityId() {
         return this.get('pdcInvoicingEntityId');
