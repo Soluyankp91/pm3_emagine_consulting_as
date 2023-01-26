@@ -34,10 +34,12 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
+import { WorkflowDataService } from './workflow-data.service';
 import {
 	getStatusIcon,
 	getWorkflowStatus,
 	ISelectableIdNameDto,
+	MapSortingValues,
 	MultiSortList,
 	SelectableEmployeeDto,
 	StepTypes,
@@ -78,10 +80,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		startDateOfOpenedPeriodOrLastClientPeriod: '',
 		syncStateStatus: '',
 	};
-	sortingValuesArray: MultiSortList[] = Object.keys(this.sortingValues).map((k) => {
-		return { column: k, order: null, direction: '' };
-	});
-
+	sortingValuesArray: MultiSortList[] = MapSortingValues(this.sortingValues);
 	isDataLoading = true;
 	advancedFiltersCounter = 0;
 	workflowDisplayColumns = [
@@ -152,7 +151,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _internalLookupService: InternalLookupService,
 		private _lookupService: LookupServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
-		private _activatedRoute: ActivatedRoute
+		private _activatedRoute: ActivatedRoute,
+        private _workflowDataService: WorkflowDataService
 	) {
 		super(injector);
 
@@ -569,18 +569,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			}
 			dedicatedColumn.order = event.direction !== '' ? order : null;
 		}
-		this.sortingValuesArray.sort((a, b) => {
-			if (a.order === null) {
-				return 1;
-			}
-			if (b.order === null) {
-				return -1;
-			}
-			if (a.order === b.order) {
-				return 0;
-			}
-			return a.order < b.order ? -1 : 1;
-		});
+        this.sortingValuesArray = this._workflowDataService.sortMultiColumnSorting(this.sortingValuesArray);
 		let sorting = this.sortingValuesArray
 			.map((item) => {
 				if (item.order !== null) {

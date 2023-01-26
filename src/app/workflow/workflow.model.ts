@@ -1,3 +1,4 @@
+import { SortDirection } from "@angular/material/sort";
 import { WorkflowStatus } from "src/shared/service-proxies/service-proxies";
 
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
@@ -199,4 +200,10 @@ export type MultiSortList = {
     order: number | null;
     column: string;
     direction: 'asc' | 'desc' | ''
+}
+
+export function MapSortingValues(values: { [key: string]: SortDirection }): MultiSortList[] {
+    return Object.keys(values).map((k) => {
+		return { column: k, order: null, direction: '' };
+	});
 }
