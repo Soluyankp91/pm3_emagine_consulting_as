@@ -64,7 +64,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	deafultPageSize = AppConsts.grid.defaultPageSize;
 	pageSizeOptions = [5, 10, 20, 50, 100];
 	totalCount: number | undefined = 0;
-	sorting = 'ActualEndDate desc';
+	sorting = '';
 
 	sortingValues: { [key: string]: SortDirection } = {
 		WorkflowId: '',
@@ -592,6 +592,26 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.sorting = sorting;
 		this.getWorkflowList();
 	}
+
+    resetSorting() {
+        this.sortingValues = {
+            WorkflowId: '',
+            clientName: '',
+            SalesTypeId: '',
+            DeliveryTypeId: '',
+            StartDate: '',
+            ActualEndDate: '',
+            ConsultantName: '',
+            WorkflowStatus: '',
+            startDateOfOpenedPeriodOrLastClientPeriod: '',
+            syncStateStatus: '',
+        };
+        this.sortingValuesArray = Object.keys(this.sortingValues).map((k) => {
+            return { column: k, order: null, direction: '' };
+        });
+        this.sorting = '';
+        this.getWorkflowList();
+    }
 
 	optionClicked(
 		event: Event,

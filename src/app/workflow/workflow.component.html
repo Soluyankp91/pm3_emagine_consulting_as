@@ -449,7 +449,11 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef fxFlex="3%" fxLayoutAlign="center center">
+                        <ng-container *ngIf="sorting?.length !== 0">
+                            <button mat-icon-button (click)="resetSorting()" class="sort-clear-icon"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
+                        </ng-container>
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
                         <button mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon svgIcon="3-dots"></mat-icon></button>
                         <mat-menu #workflowActions>
