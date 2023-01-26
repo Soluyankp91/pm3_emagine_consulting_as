@@ -1,6 +1,6 @@
 import {
   create, createOptions, FileTabItemId, HomeTabItemId, Options,
-  RibbonButtonItem, RibbonItem, RibbonTab, RibbonTabType, RichEdit, RibbonMenuItem, RibbonSubMenuItem
+  RibbonButtonItem, RibbonItem, RibbonTab, RibbonTabType, RichEdit, RibbonMenuItem, RibbonSubMenuItem, MailMergeTabItemId, RibbonMenuItemOptions
 } from 'devexpress-richedit';
 
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
@@ -24,6 +24,16 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
     // fileTab.removeItem(FileTabItemId.OpenDocument);
 
     const homeTab = options.ribbon.getTab(RibbonTabType.Home);
+    const mergeTab = options.ribbon.getTab(RibbonTabType.MailMerge);
+
+    const m = mergeTab.getItem(MailMergeTabItemId.ShowInsertMergeFieldDialog);
+    options.mailMerge.dataSource = [
+      {
+        company_id: 'a',
+        company_name: 'b'
+      }
+    ]
+    
     // homeTab.removeItem(HomeTabItemId.Copy);
     // homeTab.removeItem(HomeTabItemId.Cut);
     // homeTab.removeItem(HomeTabItemId.Paste);

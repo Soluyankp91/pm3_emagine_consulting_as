@@ -28,7 +28,7 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   _destroy$ = new Subject();
   initiliazed = false;
 
-  template$ = new BehaviorSubject<string | null>(null);
+  template$ = new BehaviorSubject<Blob | string | null>(null);
 
   constructor(
     private editorService: EditorService,
