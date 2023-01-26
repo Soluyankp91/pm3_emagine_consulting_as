@@ -1,61 +1,50 @@
-<div class="workflow-notes" [ngStyle]="{'height': 'calc(100vh - ' + height + 'px)'}" [ngClass]="{'top-toolbar-shown': topToolbarVisible}" #notesContainer>
+<div class="workflow-notes" [ngStyle]="{'height': 'calc(100vh - ' + height + 'px)'}"
+    [ngClass]="{'top-toolbar-shown': topToolbarVisible}" #notesContainer>
     <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-notes--header">
         <h2 class="workflow-notes--header-text">
             Notes
         </h2>
-        <button class="button-close" *ngIf="!alwaysVisible" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
-    </div>
-    <!-- <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'" class="workflow-notes--content" [ngStyle]="{'height': 'calc(100vh - ' + (height + 135) + 'px)'}">
         <button class="button-close" *ngIf="!alwaysVisible" mat-icon-button type="button" appPreventDoubleClick
-            (throttledClick)="showOrHideNotes()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </div> -->
-    <!-- <mat-tab-group>
-        <mat-tab label="Notes" labelClass="notesDocumentsLabel"> -->
-            <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'" class="workflow-notes--content u-mt--10" [ngStyle]="{'height': 'calc(100vh - ' + (height + 135) + '- 50px)'}">
-                <ng-container *ngIf="notesEditable; else notesReadonly">
-                    <mat-form-field appearance="outline" class="u-w--100 u-h--100 textarea-input autosize-textarea" fxFlex="100%"
-                        [ngClass]="{'top-toolbar-shown': topToolbarVisible}">
-                        <mat-label>Workflow notes</mat-label>
-                        <textarea matInput autocomplete="new-password" maxlength="4000" cdkTextareaAutosize
-                            cdkAutosizeMinRows="2" name="workflowNote" [formControl]="workflowNote">
+            (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
+    </div>
+    <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'"
+        class="workflow-notes--content u-mt--10" [ngStyle]="{'height': 'calc(100vh - ' + (height + 135) + '- 50px)'}">
+        <ng-container *ngIf="notesEditable; else notesReadonly">
+            <mat-form-field appearance="outline" class="u-w--100 u-h--100 textarea-input autosize-textarea"
+                fxFlex="100%" [ngClass]="{'top-toolbar-shown': topToolbarVisible}">
+                <mat-label>Workflow notes</mat-label>
+                <textarea matInput autocomplete="new-password" maxlength="4000" cdkTextareaAutosize
+                    cdkAutosizeMinRows="2" name="workflowNote" [formControl]="workflowNote">
                         </textarea>
-                        <mat-error>
-                            <app-validator [control]="workflowNote"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
-                </ng-container>
-                <ng-template #notesReadonly>
-                    <ng-container *ngIf="workflowNote.value?.length; else notesEmpty">
-                        <ng-scrollbar class="u-w--100 u-h--100">
-                            <p class="workflow-notes--content-text" [innerHTML]="workflowNote.value"></p>
-                        </ng-scrollbar>
-                    </ng-container>
-                </ng-template>
-                <ng-template #notesEmpty>
-                    <div fxLayout="column" fxLayoutAlign="center center" class="workflow-notes--empty">
-                        <mat-icon class="workflow-notes--empty-icon" svgIcon="empty-notes-icon"></mat-icon>
-                        <span class="workflow-notes--empty-text">
-                            No notes added yet
-                        </span>
-                    </div>
-                </ng-template>
+                <mat-error>
+                    <app-validator [control]="workflowNote"></app-validator>
+                </mat-error>
+            </mat-form-field>
+        </ng-container>
+        <ng-template #notesReadonly>
+            <ng-container *ngIf="workflowNote.value?.length; else notesEmpty">
+                <ng-scrollbar class="u-w--100 u-h--100">
+                    <p class="workflow-notes--content-text" [innerHTML]="workflowNote.value"></p>
+                </ng-scrollbar>
+            </ng-container>
+        </ng-template>
+        <ng-template #notesEmpty>
+            <div fxLayout="column" fxLayoutAlign="center center" class="workflow-notes--empty">
+                <mat-icon class="workflow-notes--empty-icon" svgIcon="empty-notes-icon"></mat-icon>
+                <span class="workflow-notes--empty-text">
+                    No notes added yet
+                </span>
             </div>
-            <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--16">
-                <button class="edit-toggle contract-manager-action" mat-icon-button *ngIf="!notesEditable && isAllowedToEdit"
-                    type="button" appPreventDoubleClick (throttledClick)="notesEditable = !notesEditable">
-                    <mat-icon [svgIcon]="workflowNote.value?.length ? 'edit-icon' : 'add-icon'"></mat-icon>
-                </button>
-                <button mat-flat-button type="button" class="button-cancel" *ngIf="notesEditable" appPreventDoubleClick
-                    (throttledClick)="cancelNoteEdit()">Cancel</button>
-                <button mat-flat-button type="button" color="primary" class="button-accept" *ngIf="notesEditable"
-                    appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
-            </div>
-        <!-- </mat-tab> -->
-        <!-- <mat-tab label="Documents" labelClass="notesDocumentsLabel">
-            <app-workflow-documents (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-documents>
-        </mat-tab>
-    </mat-tab-group> -->
-
+        </ng-template>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--16">
+        <button class="edit-toggle contract-manager-action" mat-icon-button *ngIf="!notesEditable && isAllowedToEdit"
+            type="button" appPreventDoubleClick (throttledClick)="notesEditable = !notesEditable">
+            <mat-icon [svgIcon]="workflowNote.value?.length ? 'edit-icon' : 'add-icon'"></mat-icon>
+        </button>
+        <button mat-flat-button type="button" class="button-cancel" *ngIf="notesEditable" appPreventDoubleClick
+            (throttledClick)="cancelNoteEdit()">Cancel</button>
+        <button mat-flat-button type="button" color="primary" class="button-accept" *ngIf="notesEditable"
+            appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
+    </div>
 </div>

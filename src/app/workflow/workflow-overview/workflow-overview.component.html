@@ -63,14 +63,27 @@
                                 <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
                             </div>
                         </div>
-                        <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': step.status === workflowStepStatus.Completed, 'in-progress': step.status === workflowStepStatus.Pending}" [matTooltip]="displayStepActionTooltip(step)" matTooltipClass="white-tooltip">
+                        <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': step.status === workflowStepStatus.Completed, 'in-progress': step.status === workflowStepStatus.Pending}" [matTooltip]="stepActionTooltip[step?.status!]" matTooltipClass="white-tooltip">
                         </div>
                         <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
                             <span class="icon-in-progress u-mr--5">
                                 <mat-icon [svgIcon]="step.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'"></mat-icon>
                             </span>
                             <span class="workflow-overview--team__user-status" [ngClass]="{'finished': step.status !== workflowStepStatus.Completed}">
-                                {{displayStepAction(step)}}
+                                <span [ngSwitch]="step.status">
+                                    <ng-container *ngSwitchCase="workflowStepStatus.Completed">
+                                        Step complete
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="workflowStepStatus.Pending">
+                                        Continue setup
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="workflowStepStatus.Upcoming">
+                                        Start setup
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        Step incomplete
+                                    </ng-container>
+                                </span>
                             </span>
                         </div>
                     </div>
@@ -263,14 +276,14 @@
                             <button
                                 class="menu-item green-color"
                                 mat-menu-item
-                                appPreventDoubleClick (throttledClick)="downloadDocument()">
+                                appPreventDoubleClick (throttledClick)="downloadDocument(item)">
                                 <mat-icon svgIcon="download-icon"></mat-icon>
                                 Download
                             </button>
                             <button
                                 class="menu-item menu-item--cancel"
                                 mat-menu-item
-                                appPreventDoubleClick (throttledClick)="removeDocument()">
+                                appPreventDoubleClick (throttledClick)="removeDocument(item)">
                                 <mat-icon svgIcon="close-icon"></mat-icon>
                                 Delete
                             </button>

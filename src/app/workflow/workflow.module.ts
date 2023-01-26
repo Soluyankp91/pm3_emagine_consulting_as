@@ -19,7 +19,6 @@ import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component'
 import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart.component';
 import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.component';
 import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
-import { WorkflowDocumentsComponent } from './workflow-documents/workflow-documents.component';
 import { MainDataComponent } from './workflow-sales/main-data/main-data.component';
 import { ClientDataComponent } from './workflow-sales/client-data/client-data.component';
 import { ConsultantDataComponent } from './workflow-sales/consultant-data/consultant-data.component';
@@ -47,7 +46,6 @@ import { DocumentsComponent } from './shared/components/wf-documents/wf-document
         GanttChartComponent,
         WorkflowNotesComponent,
         RateAndFeesWarningsDialogComponent,
-        WorkflowDocumentsComponent,
         MainDataComponent,
         ClientDataComponent,
         ConsultantDataComponent,

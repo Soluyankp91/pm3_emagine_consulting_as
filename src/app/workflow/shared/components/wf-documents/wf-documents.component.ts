@@ -8,10 +8,10 @@ import {
 	FileParameter,
 	FileServiceProxy,
 	EmployeeServiceProxy,
-    EmployeeDto,
-    WorkflowProcessType,
-    StepType,
-    WorkflowDocumentQueryDto
+	EmployeeDto,
+	WorkflowProcessType,
+	StepType,
+	WorkflowDocumentQueryDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { WFDocument } from './wf-documents.model';
 import * as moment from 'moment';
@@ -26,10 +26,10 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 })
 export class DocumentsComponent extends AppComponentBase implements OnInit {
 	@ViewChild('fileUploader') fileUploader: FileUploaderComponent;
-    @Input() workflowProcessType: WorkflowProcessType;
-    @Input() stepType: StepType;
-    @Input() clientPeriodId: string | undefined;
-    @Input() workflowTerminationId: string | undefined;
+	@Input() workflowProcessType: WorkflowProcessType;
+	@Input() stepType: StepType;
+	@Input() clientPeriodId: string | undefined;
+	@Input() workflowTerminationId: string | undefined;
 	isDocumentsLoading = true;
 	documentsNoData = true;
 	documentForm: DocumentForm;
@@ -40,8 +40,8 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 		private _fb: UntypedFormBuilder,
 		private _fileService: FileServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
-        private localHttpService: LocalHttpService,
-        private httpClient: HttpClient
+		private localHttpService: LocalHttpService,
+		private httpClient: HttpClient
 	) {
 		super(injector);
 		this.documentForm = new DocumentForm();
@@ -50,14 +50,14 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 	ngOnInit(): void {}
 
 	tempFileAdded(files: FileUploaderFile[]) {
-        const fileToUpload = files[0];
+		const fileToUpload = files[0];
 		let fileInput: FileParameter;
 		fileInput = {
 			fileName: fileToUpload.name,
 			data: fileToUpload.internalFile,
 		};
 		this._fileService.temporaryPOST(fileInput).subscribe((result) => {
-            const wrappedDocument = WFDocument.wrap(
+			const wrappedDocument = WFDocument.wrap(
 				fileToUpload.name,
 				moment(),
 				this.currentEmployee,
@@ -72,29 +72,29 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 		});
 	}
 
-    addExistingFile(files: WorkflowDocumentQueryDto[]) {
-        for (const file of files) {
-            const wrappedDocument = WFDocument.wrap(
-                file.name!,
-                file.createdDateUtc!,
-                file.createdBy!,
-                file.workflowProcessType!,
-                file.stepType!,
-                file.clientPeriodId,
-                file.workflowTerminationId,
-                file.id,
-                undefined
-            );
-            this.addDocument(wrappedDocument);
-        }
-    }
+	addExistingFile(files: WorkflowDocumentQueryDto[]) {
+		for (const file of files) {
+			const wrappedDocument = WFDocument.wrap(
+				file.name!,
+				file.createdDateUtc!,
+				file.createdBy!,
+				file.workflowProcessType!,
+				file.stepType!,
+				file.clientPeriodId,
+				file.workflowTerminationId,
+				file.id,
+				undefined
+			);
+			this.addDocument(wrappedDocument);
+		}
+	}
 
 	deleteDocument(fileId: string, index: number) {
-        if (fileId) {
-            this._fileService.temporaryDELETE(fileId).subscribe(() => this.documents.removeAt(index));
-        } else {
-            this.documents.removeAt(index);
-        }
+		if (fileId) {
+			this._fileService.temporaryDELETE(fileId).subscribe(() => this.documents.removeAt(index));
+		} else {
+			this.documents.removeAt(index);
+		}
 	}
 
 	getCurrentEmployee() {
@@ -107,47 +107,50 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 		const form = this._fb.group({
 			icon: new UntypedFormControl(document.icon),
 			name: new UntypedFormControl(document?.name),
-            temporaryFileId: new UntypedFormControl(document.temporaryFileId),
-            workflowDocumentId: new UntypedFormControl(document.workflowDocumentId),
+			temporaryFileId: new UntypedFormControl(document.temporaryFileId),
+			workflowDocumentId: new UntypedFormControl(document.workflowDocumentId),
 			createdDateUtc: new UntypedFormControl(document.createdDateUtc),
 			createdBy: new UntypedFormControl(document.createdBy),
-            clientPeriodId: new UntypedFormControl(document.clientPeriodId),
-            workflowTerminationId: new UntypedFormControl(document.workflowTerminationId),
-            workflowProcessType: new UntypedFormControl(document.workflowProcessType),
-            stepType: new UntypedFormControl(document.stepType)
+			clientPeriodId: new UntypedFormControl(document.clientPeriodId),
+			workflowTerminationId: new UntypedFormControl(document.workflowTerminationId),
+			workflowProcessType: new UntypedFormControl(document.workflowProcessType),
+			stepType: new UntypedFormControl(document.stepType),
 		});
 		this.documentForm.documents.push(form);
 	}
 
-	get documents(): UntypedFormArray {
-		return this.documentForm.get('documents') as UntypedFormArray;
-	}
-
 	downloadDocument(workflowDocumentId: number) {
 		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-		    const fileUrl = `${this.apiUrl}/api/WorkflowDocument/${workflowDocumentId}`;
-		    this.httpClient.get(fileUrl, {
-		        headers: new HttpHeaders({
-		            'Authorization': `Bearer ${response.accessToken}`,
-		        }), responseType: 'blob',
-		        observe: 'response'
-		    }).subscribe((data: HttpResponse<Blob>) => {
-		        const blob = new Blob([data.body!], { type: data.body!.type });
-		        const contentDispositionHeader = data.headers.get('Content-Disposition');
-		        if (contentDispositionHeader !== null) {
-		            const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
-		            const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
-		            const downloadlink = document.createElement('a');
-		            downloadlink.href = window.URL.createObjectURL(blob);
-		            downloadlink.download = contentDispositionFileName;
-		            const nav = (window.navigator as any);
-		            if (nav.msSaveOrOpenBlob) {
-		                nav.msSaveBlob(blob, contentDispositionFileName);
-		            } else {
-		                downloadlink.click();
-		            }
-		        }
-		    });
+			const fileUrl = `${this.apiUrl}/api/WorkflowDocument/${workflowDocumentId}`;
+			this.httpClient
+				.get(fileUrl, {
+					headers: new HttpHeaders({
+						Authorization: `Bearer ${response.accessToken}`,
+					}),
+					responseType: 'blob',
+					observe: 'response',
+				})
+				.subscribe((data: HttpResponse<Blob>) => {
+					const blob = new Blob([data.body!], { type: data.body!.type });
+					const contentDispositionHeader = data.headers.get('Content-Disposition');
+					if (contentDispositionHeader !== null) {
+						const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+						const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+						const downloadlink = document.createElement('a');
+						downloadlink.href = window.URL.createObjectURL(blob);
+						downloadlink.download = contentDispositionFileName;
+						const nav = window.navigator as any;
+						if (nav.msSaveOrOpenBlob) {
+							nav.msSaveBlob(blob, contentDispositionFileName);
+						} else {
+							downloadlink.click();
+						}
+					}
+				});
 		});
+	}
+
+	get documents(): UntypedFormArray {
+		return this.documentForm.get('documents') as UntypedFormArray;
 	}
 }
