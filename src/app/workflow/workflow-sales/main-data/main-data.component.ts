@@ -520,7 +520,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
-                startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
+                startWith({ filter: '', showAll: true, idsToExclude: [] }),
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
