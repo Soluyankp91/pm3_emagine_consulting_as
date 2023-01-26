@@ -121,6 +121,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             clientInvoicingRecipient: new UntypedFormControl(null),
             invoicingReferencePersonIdValue: new UntypedFormControl(null),
             invoicingReferencePerson: new UntypedFormControl(null),
+            invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
 
             specialContractTerms: new UntypedFormControl(null, Validators.required),
             noSpecialContractTerms: new UntypedFormControl(null),
@@ -168,6 +169,9 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     }
     get invoicingReferencePerson() {
         return this.get('invoicingReferencePerson');
+    }
+    get invoicingReferencePersonDontShowOnInvoice() {
+        return this.get('invoicingReferencePersonDontShowOnInvoice');
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');

@@ -362,6 +362,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
 			invoicingReferencePerson: this.contractClientForm.invoicingReferencePerson?.value,
+			invoicingReferencePersonDontShowOnInvoice: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value,
 		};
 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
 			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(

@@ -11,6 +11,7 @@ export class ProjectLineForm extends UntypedFormGroup {
             invoicingReferenceNumber: new UntypedFormControl(null),
             differentInvoicingReferenceNumber: new UntypedFormControl(false),
             invoicingReferencePersonId: new UntypedFormControl(null),
+            invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
             differentInvoicingReferencePerson: new UntypedFormControl(false),
             optionalInvoicingInfo: new UntypedFormControl(null, Validators.maxLength(250)),
             debtorNumber: new UntypedFormControl(null),
@@ -48,6 +49,9 @@ export class ProjectLineForm extends UntypedFormGroup {
     }
     get invoicingReferencePersonId() {
         return this.get('invoicingReferencePersonId');
+    }
+    get invoicingReferencePersonDontShowOnInvoice() {
+        return this.get('invoicingReferencePersonDontShowOnInvoice');
     }
     get differentInvoicingReferencePerson() {
         return this.get('differentInvoicingReferencePerson');
