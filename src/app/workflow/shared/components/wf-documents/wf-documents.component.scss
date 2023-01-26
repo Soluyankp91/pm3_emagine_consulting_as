@@ -12,8 +12,10 @@
         &__row {
             @include fontOpenSans(14px, 400);
             background: $white-color;
-            color: $dark-grey-color !important;
             height: 48px;
+            div {
+                color: $dark-grey-color !important;
+            }
         }
     }
 }

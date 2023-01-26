@@ -30,6 +30,7 @@ export class DocumentsComponent extends AppComponentBase implements OnInit {
 	@Input() stepType: StepType;
 	@Input() clientPeriodId: string | undefined;
 	@Input() workflowTerminationId: string | undefined;
+    @Input() readOnlyMode: boolean;
 	isDocumentsLoading = true;
 	documentsNoData = true;
 	documentForm: DocumentForm;

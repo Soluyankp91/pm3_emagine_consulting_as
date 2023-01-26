@@ -19,12 +19,12 @@
                 </div>
             </ng-container>
             <ng-container formArrayName="documents" class="u-w--100">
-                <ng-container *ngFor="let document of documentForm?.documents?.controls; index as i">
+                <ng-container *ngFor="let document of documentForm?.documents?.controls; trackBy: trackByItem; index as i">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__row u-w--100" [formArrayName]="i">
                         <div fxFlex="5%" fxLayoutAlign="center center">
                             <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon" [svgIcon]="document.value.icon"></mat-icon>
                         </div>
-                        <div fxFlex="65%" class="text-truncate-ellipsis" [matTooltip]="document.value.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <div fxFlex="65%" class="text-truncate-ellipsis text-bold" [matTooltip]="document.value.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{document.value.name}}
                         </div>
                         <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdDateUtc | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -54,8 +54,10 @@
                 </ng-container>
             </ng-container>
         </form>
-        <div fxLayout="row" fxLayoutAlign="center center">
-            <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
-        </div>
+        <ng-container *ngIf="!readOnlyMode">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+            </div>
+        </ng-container>
     </div>
 </div>
