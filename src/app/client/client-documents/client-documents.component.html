@@ -164,7 +164,7 @@
                                                     <div class="u-ml--32">
                                                         <ng-container *ngFor="let file of frame.documents; trackBy: documentsTrackBy; last as last">
                                                             <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
+                                                                <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
                                                                 <span class="text-bold">
                                                                     {{ file.name }}
                                                                 </span>
@@ -234,7 +234,7 @@
                                                                                 <div class="u-ml--32">
                                                                                     <ng-container *ngFor="let file of clientContract.documents; trackBy: documentsTrackBy; last as last">
                                                                                         <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
+                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
                                                                                             <span class="text-bold">
                                                                                                 {{ file.name }}
                                                                                             </span>
@@ -281,7 +281,7 @@
                                                                                 <div class="u-ml--32">
                                                                                     <ng-container *ngFor="let file of consultantContract.documents; trackBy: documentsTrackBy; last as last">
                                                                                         <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
+                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
                                                                                             <span class="text-bold">
                                                                                                 {{ file.name }}
                                                                                             </span>
@@ -328,7 +328,7 @@
                                                                             <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="u-ml--32">
                                                                                 <div *ngFor="let file of internalContract.documents; trackBy: documentsTrackBy; last as last" >
                                                                                     <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                        <mat-icon class="icon cursor-pointer u-mr--5" svgIcon="pdf" matTooltip="Download" matTooltipClass="white-tooltip" (click)="downloadDocument(file.documentStorageGuid!)"></mat-icon>
+                                                                                        <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" matTooltip="Download" matTooltipClass="white-tooltip" (click)="downloadDocument(file.documentStorageGuid!)"></mat-icon>
                                                                                         <span class="text-bold">
                                                                                             {{ file.name }}
                                                                                         </span>

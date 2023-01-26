@@ -1,10 +1,11 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { DeliveryTypes, SalesTypes, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AreaRoleNodeDto, BranchRoleNodeDto, EnumEntityTypeDto, LookupServiceProxy, RoleNodeDto } from 'src/shared/service-proxies/service-proxies';
+import { Output } from '@angular/core';
 
 
 @Component({
@@ -14,6 +15,8 @@ import { AreaRoleNodeDto, BranchRoleNodeDto, EnumEntityTypeDto, LookupServicePro
 })
 export class ContractsMainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() readOnlyMode: boolean;
+    @Input() canToggleEditMode: boolean;
+    @Output() editModeToggled = new EventEmitter<any>();
 	contractsMainForm: WorkflowContractsMainForm;
     deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
@@ -63,6 +66,10 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
             this.discounts = result.discounts;
         });
     }
+
+    toggleEditMode() {
+        this.editModeToggled.emit();
+	}
 
     getPrimaryCategoryTree(): void {
         this._lookupService

@@ -1,38 +1,41 @@
 <div class="manager-search">
     <ng-container *ngIf="readonly">
         <div class="manager-search--image-wrapper">
-            <ng-container *ngIf="responsiblePerson?.externalId">
-                <img class="border-rounded-50" [width]="width" [height]="height" [matTooltip]="responsiblePerson.name!" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" src (error)="setDefaultImage($event.target)" />
-            </ng-container>
-            <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
+            <img class="border-rounded-50" [width]="width" [height]="height"
+            [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" src (error)="setDefaultImage($event.target)"  [matTooltip]="responsiblePerson.name!"
+                matTooltipClass="white-tooltip" alt="" />
+            <mat-icon class="manager-search--status" [svgIcon]="managerStatusIcon[managerStatus]"
+                [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
         </div>
     </ng-container>
     <ng-container *ngIf="!readonly">
         <div class="manager-search--image-wrapper" [matMenuTriggerFor]="managerSearch">
-            <ng-container *ngIf="responsiblePerson?.externalId">
-                <img class="border-rounded-50" [width]="width" [height]="height" [matTooltip]="responsiblePerson.name!" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" src (error)="setDefaultImage($event.target)" />
-                <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
-            </ng-container>
+            <img class="border-rounded-50" [width]="width" [height]="height"
+            [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" src (error)="setDefaultImage($event.target)" [matTooltip]="responsiblePerson.name!"
+                matTooltipClass="white-tooltip" alt="" />
+            <mat-icon class="manager-search--status" [svgIcon]="managerStatusIcon[managerStatus]"
+                [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
         </div>
+        <mat-menu #managerSearch="matMenu">
+            <mat-form-field appearance="outline" class="autocompleteWithShevron" [ngClass]="{'isPanelOpen': auto.isOpen}">
+                <input type="text" matInput [matAutocomplete]="auto" [formControl]="managerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" [placeholder]="formFieldLabel">
+                <span matSuffix class="shevron"></span>
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
+                    <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
+                        <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <ng-container *ngIf="option.id !== 'no-data'">
+                                <img class="image-settings--dropdown u-mr--8" [ngSrc]="employeePhotoUrl + option.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                                <b>{{ option.name }}</b>
+                            </ng-container>
+                            <ng-container *ngIf="option.id === 'no-data'">
+                                <span (click)="$event.stopPropagation()">
+                                    {{ option.name }}
+                                </span>
+                            </ng-container>
+                        </div>
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </mat-menu>
     </ng-container>
-    <mat-menu #managerSearch="matMenu" backdropClass="filter-manager--menu">
-        <mat-form-field appearance="fill" class="filter-manager--dropdown">
-            <input type="text" matInput [matAutocomplete]="auto" [formControl]="managerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" [placeholder]="formFieldLabel">
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
-                <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
-                    <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                        <ng-container *ngIf="option.id !== 'no-data'">
-                            <img class="image-settings--dropdown u-mr--8" [ngSrc]="employeePhotoUrl + option.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
-                            <b>{{ option.name }}</b>
-                        </ng-container>
-                        <ng-container *ngIf="option.id === 'no-data'">
-                            <span (click)="$event.stopPropagation()">
-                                {{ option.name }}
-                            </span>
-                        </ng-container>
-                    </div>
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
-    </mat-menu>
 </div>

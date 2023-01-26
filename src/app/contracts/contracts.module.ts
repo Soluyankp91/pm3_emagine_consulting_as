@@ -63,7 +63,6 @@ import { ApprovalComponent } from './shared/components/approval/approval.compone
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
-
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -81,7 +80,6 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		SalesTypesFilterComponent,
 		MasterTemplateFilterHeaderComponent,
 		CreateMasterTemplateComponent,
-		EditorComponent,
 		MasterTemplateCreationComponent,
 		AutoNameComponent,
 		MatMenuSingleSelectComponent,
@@ -114,7 +112,16 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		ApprovalFilterComponent,
 		ModeFilterComponent,
 	],
-	imports: [CommonModule, ContractsRoutingModule, ServiceProxyModule, AppCommonModule, MaterialModule],
+	imports: [
+		CommonModule,
+		ContractsRoutingModule,
+		ServiceProxyModule,
+		AppCommonModule,
+		MaterialModule,
+		
+		// Standalone
+		EditorComponent
+	],
 	providers: [
 		ContractsService,
 		MasterTemplatesService,

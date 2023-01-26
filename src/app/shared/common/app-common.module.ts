@@ -19,6 +19,7 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
 import { ImageFallbackDirective } from 'src/shared/common/directives/image-fallback.directive';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
 import { environment } from 'src/environments/environment';
 import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 
@@ -37,7 +38,8 @@ import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
         ConsultantInformationComponent,
         ExcludeIdsPipe,
         ImageFallbackDirective,
-        ImgUrlPipe
+        ImgUrlPipe,
+        DisplayListPipe
     ],
     imports: [
         CommonModule,
@@ -72,7 +74,8 @@ import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
     providers: [
         ErrorDialogService,
         InternalLookupService,
-        provideImgixLoader(`${environment.sharedAssets}`)
+        provideImgixLoader(`${environment.sharedAssets}`),
+        DisplayListPipe
     ],
 })
 export class AppCommonModule {}

@@ -5,8 +5,12 @@
                 Client-specific overrides:
             </span>
             <mat-form-field appearance="outline"
-                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete u-mr--20"
-                [ngClass]="{'selected-person': contractStepResponsible.value?.id, 'empty-input': !contractStepResponsible.value || contractStepResponsible.value?.length === 0}">
+                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete autocompleteWithShevron u-mr--20"
+                [ngClass]="{
+                    'selected-person': contractStepResponsible.value?.id,
+                    'empty-input': !contractStepResponsible.value || contractStepResponsible.value?.length === 0,
+                    'isPanelOpen': contractResponsibleAutocomplete.isOpen
+                }">
                 <mat-label>Contract step responsible</mat-label>
                 <ng-container *ngIf="contractStepResponsible.value?.id" matPrefix>
                     <img class="border-rounded-50 image-settings--dropdown"
@@ -18,6 +22,7 @@
                     <div matSuffix>
                         <ng-container *ngIf="contractStepResponsible.value?.id">
                             <button (click)="contractStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
+                            <span matSuffix class="shevron"></span>
                         </ng-container>
                     </div>
                 <mat-autocomplete (optionSelected)="setResponsiblePerson()"
@@ -39,8 +44,12 @@
                 </mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline"
-                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete"
-                [ngClass]="{'selected-person': financeStepResponsible.value?.id, 'empty-input': !financeStepResponsible.value || financeStepResponsible.value?.length === 0}">
+                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete autocompleteWithShevron"
+                [ngClass]="{
+                    'selected-person': financeStepResponsible.value?.id,
+                    'empty-input': !financeStepResponsible.value || financeStepResponsible.value?.length === 0,
+                    'isPanelOpen': financeResponsibleAutocomplete.isOpen
+                }">
                 <mat-label>Finance step responsible</mat-label>
 
                 <ng-container *ngIf="financeStepResponsible.value?.id" matPrefix>
@@ -53,6 +62,7 @@
                     <div matSuffix>
                         <ng-container *ngIf="financeStepResponsible.value?.id">
                             <button (click)="financeStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
+                            <span matSuffix class="shevron"></span>
                         </ng-container>
                     </div>
                 <mat-autocomplete (optionSelected)="setResponsiblePerson()"

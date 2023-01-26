@@ -51,13 +51,6 @@ export abstract class AppComponentBase {
 		}
 	}
 
-	mapListByProperty(list: any[], prop: string) {
-		if (list?.length) {
-			return list.map((x) => x[prop]).join(', ');
-		} else {
-			return '-';
-		}
-	}
 
 	disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
 		if (boolValue) {

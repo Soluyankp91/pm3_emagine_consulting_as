@@ -10,7 +10,6 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.EnumServiceProxy,
         ApiServiceProxies.HubSpotContractFetchServiceProxy,
         ApiServiceProxies.HubSpotInstallServiceProxy,
-        ApiServiceProxies.HubSpotTestServiceProxy,
         ApiServiceProxies.LookupServiceProxy,
         ApiServiceProxies.WorkflowServiceProxy,
         ApiServiceProxies.ClientPeriodServiceProxy,
