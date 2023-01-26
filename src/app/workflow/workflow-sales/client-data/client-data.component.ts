@@ -6,11 +6,11 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { forkJoin, merge, of, Subject } from 'rxjs';
-import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.model';
 
@@ -21,6 +21,8 @@ import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() readOnlyMode: boolean;
+    @Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
+	@Input() clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	@Output() onDirectClientSelected: EventEmitter<MatAutocompleteSelectedEvent> = new EventEmitter<MatAutocompleteSelectedEvent>();
 	@Output() clientPeriodDatesChanged: EventEmitter<any> = new EventEmitter<any>();
 	salesClientDataForm: WorkflowSalesClientDataForm;
@@ -47,9 +49,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
 	clientSpecialRateFilter = new UntypedFormControl('');
-	clientSpecialRateList: ClientSpecialRateDto[] = [];
 	clientSpecialFeeFilter = new UntypedFormControl('');
-	clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -104,6 +104,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ?? '',
@@ -132,6 +133,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ?? '',
@@ -160,17 +162,17 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-						clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-						clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-					return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+					return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -187,6 +189,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ?? '',
@@ -212,26 +215,21 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.firstName : value;
-						}
-						return this._lookupService.contacts(
-							toSend.clientId1,
-							toSend.clientId2,
-							toSend.name,
-							toSend.maxRecordsCount
-						);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.firstName : value;
+                    }
+                    return this._lookupService.contacts(
+                        toSend.clientIds,
+                        toSend.name,
+                        toSend.maxRecordsCount
+                    );
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -424,15 +422,14 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				debounceTime(300),
 				switchMap((value: any) => {
 					let toSend = {
-						clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-						clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-					return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+					return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {

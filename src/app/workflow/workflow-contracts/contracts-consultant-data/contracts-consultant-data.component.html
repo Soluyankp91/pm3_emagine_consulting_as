@@ -43,13 +43,15 @@
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline"
-                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input"
+                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
+                                    [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
                                     [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
                                     <mat-label>Consultant Name</mat-label>
                                     <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
                                         formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
                                         appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                         placeholder="Consultant name">
+                                        <span matSuffix class="shevron"></span>
                                     <mat-autocomplete #consultantAutocomplete="matAutocomplete"
                                         [displayWith]="displayNameFn">
                                         <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
@@ -165,7 +167,7 @@
                             <div class="workflow-section--content">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline"
-                                        class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559"
+                                        class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564"
                                         [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Special Contract Terms</mat-label>
                                         <textarea [disabled]="true" required matInput autocomplete="new-password"
@@ -200,7 +202,7 @@
                             <div class="workflow-section--content">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline"
-                                        class="form-width-559 formFieldNoMarginPadding textarea-input u-mr--12"
+                                        class="form-width-564 formFieldNoMarginPadding textarea-input u-mr--12"
                                         [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Special Payment Terms</mat-label>
                                         <textarea [disabled]="readOnlyMode" required matInput
@@ -516,11 +518,6 @@
                                                     <mat-select #consultantSpecialRateSelect
                                                         formControlName="consultantSpecialRateFilter"
                                                         [disableOptionCentering]="true">
-                                                        <ng-container *ngIf="clientSpecialRateList?.length === 0">
-                                                            <mat-option (click)="$event.stopPropagation();">
-                                                                No results
-                                                            </mat-option>
-                                                        </ng-container>
                                                         <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'; trackBy: trackById">
                                                             <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialRate(consultantIndex, item, consultantRateMenuTrigger) : ''">
                                                                 {{ item.internalName }}
@@ -811,11 +808,6 @@
                                                     <mat-select #consultantSpecialFeeSelect
                                                         formControlName="consultantSpecialFeeFilter"
                                                         [disableOptionCentering]="true">
-                                                        <ng-container *ngIf="clientSpecialFeeList?.length === 0">
-                                                            <mat-option (click)="$event.stopPropagation();">
-                                                                No results
-                                                            </mat-option>
-                                                        </ng-container>
                                                         <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.clientFees : 'clientSpecialFeeId'; trackBy: trackById">
                                                             <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectConsultantSpecialFee(consultantIndex, item, consultantFeeMenuTrigger) : ''">
                                                                 {{ item.internalName }}
@@ -1008,26 +1000,28 @@
                                                             projectLine.value.projectName : '-'}}
                                                         </span>
                                                     </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Invoicing
-                                                            ref person</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            <ng-container
-                                                                *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
-                                                                {{projectLine.value.invoicingReferencePerson?.firstName
-                                                                ? (projectLine.value.invoicingReferencePerson?.firstName
-                                                                + ' ' +
-                                                                projectLine.value.invoicingReferencePerson?.lastName) :
-                                                                '-'}}
-                                                            </ng-container>
-                                                            <ng-template #invoicingReferencePersonFreeText>
-                                                                {{projectLine.value.invoicingReferencePerson &&
-                                                                projectLine.value.invoicingReferencePerson !== '' ?
-                                                                projectLine.value.invoicingReferencePerson : '-'}}
-                                                            </ng-template>
-                                                        </span>
-                                                    </div>
+                                                    <ng-container *ngIf="!contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value">
+                                                        <div fxLayout="row" class="project-line--expansion-additional">
+                                                            <span fxFlex="15%"
+                                                                class="project-line--expansion-additional__header">Invoicing
+                                                                ref person</span>
+                                                            <span class="project-line--expansion-additional__content">
+                                                                <ng-container
+                                                                    *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
+                                                                    {{projectLine.value.invoicingReferencePerson?.firstName
+                                                                    ? (projectLine.value.invoicingReferencePerson?.firstName
+                                                                    + ' ' +
+                                                                    projectLine.value.invoicingReferencePerson?.lastName) :
+                                                                    '-'}}
+                                                                </ng-container>
+                                                                <ng-template #invoicingReferencePersonFreeText>
+                                                                    {{projectLine.value.invoicingReferencePerson &&
+                                                                    projectLine.value.invoicingReferencePerson !== '' ?
+                                                                    projectLine.value.invoicingReferencePerson : '-'}}
+                                                                </ng-template>
+                                                            </span>
+                                                        </div>
+                                                    </ng-container>
                                                     <div fxLayout="row" class="project-line--expansion-additional">
                                                         <span fxFlex="15%"
                                                             class="project-line--expansion-additional__header">Debitor
