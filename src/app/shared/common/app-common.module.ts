@@ -69,13 +69,13 @@ import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
         ImageFallbackDirective,
         ScrollToModule,
         NgOptimizedImage,
-        ImgUrlPipe
+        ImgUrlPipe,
+        DisplayListPipe
     ],
     providers: [
         ErrorDialogService,
         InternalLookupService,
-        provideImgixLoader(`${environment.sharedAssets}`),
-        DisplayListPipe
+        provideImgixLoader(`${environment.sharedAssets}`)
     ],
 })
 export class AppCommonModule {}
