@@ -1,15 +1,4 @@
-import {
-	Component,
-	OnInit,
-	HostBinding,
-	NgZone,
-	ChangeDetectorRef,
-	ElementRef,
-	Inject,
-	Output,
-	EventEmitter,
-	Input,
-} from '@angular/core';
+import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, Inject, Output, EventEmitter, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
@@ -105,9 +94,9 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 		});
 	}
 
-	redirectToWorkflow(id: string) {
-		this.router.navigate(['app/workflow', id]);
-	}
+    redirectToWorkflow(id: string) {
+        this.router.navigate(['app/workflow', id]);
+    }
 
 	employeeProfileUrl(fileToken: string): string {
 		if (!fileToken) {

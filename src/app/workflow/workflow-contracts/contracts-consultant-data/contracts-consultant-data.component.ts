@@ -6,16 +6,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { forkJoin, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import {
-	ClientSpecialFeeDto,
-	ClientSpecialRateDto,
-	ConsultantContractsDataQueryDto,
-	ConsultantResultDto,
-	EnumEntityTypeDto,
-	PeriodConsultantSpecialFeeDto,
-	PeriodConsultantSpecialRateDto,
-	ProjectLineDto,
-} from 'src/shared/service-proxies/service-proxies';
+import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
@@ -36,50 +27,51 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	employmentTypes: EnumEntityTypeDto[];
 	consultantTimeReportingCapList: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
-	consultantInsuranceOptions: { [key: string]: string };
+    consultantInsuranceOptions: { [key: string]: string };
 	filteredConsultants: ConsultantResultDto[] = [];
 
-	consultantRateToEdit: PeriodConsultantSpecialRateDto;
+    consultantRateToEdit: PeriodConsultantSpecialRateDto;
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
 
 	private _unsubscribe = new Subject();
 	constructor(
-		injector: Injector,
-		private overlay: Overlay,
-		private dialog: MatDialog,
-		private _fb: UntypedFormBuilder,
-		private _internalLookupService: InternalLookupService
-	) {
+        injector: Injector,
+        private overlay: Overlay,
+        private dialog: MatDialog,
+        private _fb: UntypedFormBuilder,
+        private _internalLookupService: InternalLookupService,
+    ) {
 		super(injector);
 		this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
 	}
 
 	ngOnInit(): void {
-		this._getEnums();
-	}
+        this._getEnums();
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
 	}
 
-	private _getEnums() {
-		forkJoin({
-			employmentTypes: this._internalLookupService.getEmploymentTypes(),
-			consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-			currencies: this._internalLookupService.getCurrencies(),
-			consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-		}).subscribe((result) => {
-			this.employmentTypes = result.employmentTypes;
-			this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-			this.currencies = result.currencies;
-			this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-		});
-	}
+    private _getEnums() {
+        forkJoin({
+            employmentTypes: this._internalLookupService.getEmploymentTypes(),
+            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+            currencies: this._internalLookupService.getCurrencies(),
+            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions()
+        })
+        .subscribe(result => {
+            this.employmentTypes = result.employmentTypes;
+            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
+            this.currencies = result.currencies;
+            this.consultantInsuranceOptions = result.consultantInsuranceOptions;
+        })
+    }
 
-	addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+    addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
 		const form = this._fb.group({
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
 			consultantId: new UntypedFormControl(consultant?.consultantId),
@@ -112,14 +104,16 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				Validators.required
 			),
 			pdcPaymentEntityId: new UntypedFormControl(consultant?.pdcPaymentEntityId),
-			specialPaymentTerms: new UntypedFormControl(
-				{
-					value: consultant?.specialPaymentTerms,
-					disabled: consultant?.noSpecialPaymentTerms,
-				},
-				Validators.required
-			),
-			noSpecialPaymentTerms: new UntypedFormControl(consultant?.noSpecialPaymentTerms ?? false),
+            specialPaymentTerms: new UntypedFormControl(
+                {
+                    value: consultant?.specialPaymentTerms,
+                    disabled: consultant?.noSpecialPaymentTerms,
+                },
+                Validators.required
+            ),
+            noSpecialPaymentTerms: new UntypedFormControl(
+                consultant?.noSpecialPaymentTerms ?? false
+            ),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			clientFees: new UntypedFormArray([]),
@@ -139,7 +133,11 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this.filteredConsultants.push(consultant.consultant!);
 	}
 
-	selectConsultantSpecialRate(consultantIndex: number, rate: ClientSpecialRateDto, consultantRateMenuTrigger: MatMenuTrigger) {
+    selectConsultantSpecialRate(
+		consultantIndex: number,
+		rate: ClientSpecialRateDto,
+		consultantRateMenuTrigger: MatMenuTrigger
+	) {
 		const consultantRate = new PeriodConsultantSpecialRateDto();
 		consultantRate.id = undefined;
 		consultantRate.clientSpecialRateId = rate.id;
@@ -255,7 +253,11 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		return (this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).controls;
 	}
 
-	selectConsultantSpecialFee(consultantIndex: number, fee: ClientSpecialFeeDto, consultantFeeMenuTrigger: MatMenuTrigger) {
+    selectConsultantSpecialFee(
+		consultantIndex: number,
+		fee: ClientSpecialFeeDto,
+		consultantFeeMenuTrigger: MatMenuTrigger
+	) {
 		const consultantFee = new PeriodConsultantSpecialFeeDto();
 		consultantFee.id = undefined;
 		consultantFee.clientSpecialFeeId = fee.id;
@@ -346,7 +348,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		return (this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as UntypedFormArray).controls;
 	}
 
-	createOrEditProjectLine(index: number, projectLinesMenuTrigger?: MatMenuTrigger, projectLinesIndex?: number) {
+    createOrEditProjectLine(index: number, projectLinesMenuTrigger?: MatMenuTrigger, projectLinesIndex?: number) {
 		if (projectLinesMenuTrigger) {
 			projectLinesMenuTrigger.closeMenu();
 		}
@@ -359,9 +361,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
-			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value
-				? null
-				: this.contractClientForm.invoicingReferencePerson?.value,
+			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value ? null : this.contractClientForm.invoicingReferencePerson?.value
 		};
 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
 			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(
@@ -383,7 +383,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 						: ProjectLineDiallogMode.Create,
 				projectLineData: projectLine,
 				directClientId: this.contractClientForm.directClientId?.value,
-				endClientId: this.contractClientForm.endClientId?.value,
+                endClientId: this.contractClientForm.endClientId?.value
 			},
 		});
 
@@ -539,7 +539,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			?.setValue(!previousValue, { emitEvent: false });
 	}
 
-	get consultants(): UntypedFormArray {
+    get consultants(): UntypedFormArray {
 		return this.contractsConsultantsDataForm.get('consultants') as UntypedFormArray;
 	}
 }
