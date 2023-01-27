@@ -5,7 +5,6 @@ import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { RequiredValidator } from '../../validators/customRequireValidator';
-import { SimpleAgreementListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-single-select',

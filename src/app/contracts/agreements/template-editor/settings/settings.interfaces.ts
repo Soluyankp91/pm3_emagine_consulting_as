@@ -1,6 +1,6 @@
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { IDropdownItem } from 'src/app/contracts/shared/components/emagine-menu-multi-select/emagine-menu-multi-select.interfaces';
-import { SimpleAgreementListItemDto, SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementSimpleListItemDto, SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 export type SignerOptions = {
 	options$: Observable<[{ label: string; labelKey: string; outputProperty: string }, IDropdownItem[]]> | null;
@@ -19,7 +19,7 @@ export type DuplicateOrParentOptions = {
 	formControlName: string;
 	labelKey: string;
 	outputProperty: string;
-	options$: Observable<SimpleAgreementListItemDto[] | SimpleAgreementTemplatesListItemDto[] | undefined>;
+	options$: Observable<AgreementSimpleListItemDto[] | SimpleAgreementTemplatesListItemDto[] | undefined>;
 	optionsChanged$: BehaviorSubject<string>;
 	unwrapFunction?: (arg: InputParentTemplate) => OutputParentTemplate;
 };
