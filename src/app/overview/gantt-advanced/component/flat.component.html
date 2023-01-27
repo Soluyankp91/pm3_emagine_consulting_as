@@ -90,7 +90,7 @@
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
                     <span class="text-truncate-ellipsis"
-                        [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')"
+                        [matTooltip]="group?.origin?.origin?.consultants! | displayList: 'name'"
                         matTooltipClass="white-tooltip" *ngIf="isWorkflow" appShowIfTruncated>
                         <ng-container
                             *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">

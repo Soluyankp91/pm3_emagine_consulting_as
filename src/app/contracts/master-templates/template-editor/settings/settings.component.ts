@@ -411,6 +411,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				return response && response.items
 					? response.items?.map(
 							(item) =>
+							//@ts-ignore
 								<SimpleAgreementTemplatesListItemDto>{
 									...item,
 									tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
