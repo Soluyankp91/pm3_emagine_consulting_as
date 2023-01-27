@@ -2,7 +2,7 @@ import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector } from '@angu
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { combineLatest, Observable, Subject, forkJoin, of, BehaviorSubject, merge, ReplaySubject, EMPTY } from 'rxjs';
+import { combineLatest, Observable, Subject, forkJoin, of, BehaviorSubject, ReplaySubject } from 'rxjs';
 import {
 	startWith,
 	switchMap,
@@ -15,7 +15,6 @@ import {
 	tap,
 	takeUntil,
 	distinctUntilChanged,
-	finalize,
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
@@ -200,7 +199,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			);
 			toSend.attachments = uploadedFiles.map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
 			toSend.parentSele;
-		} else {
+		} else if (this.creationMode.value === 3) {
 			toSend.attachments = [...uploadedFiles, ...selectedInheritedFiles].map(
 				(attachment: FileUpload) => new AgreementAttachmentDto(attachment)
 			);
@@ -214,9 +213,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.hideMainSpinner();
 				})
 			)
-			.subscribe((id) => {
-				//console.log(id);
-			});
+			.subscribe((id) => {});
 	}
 
 	private _subscribeOnModeReplay() {
