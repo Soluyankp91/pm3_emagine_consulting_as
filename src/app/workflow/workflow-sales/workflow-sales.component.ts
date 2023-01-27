@@ -124,11 +124,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (value?.id) {
                         toSend.name = value.id ? value.firstName : value;
                     }
-                    return this._lookupService.contacts(
-                        toSend.clientIds,
-                        toSend.name,
-                        toSend.maxRecordsCount
-                    );
+                    if (toSend.clientIds?.length) {
+                        return this._lookupService.contacts(
+                            toSend.clientIds,
+                            toSend.name,
+                            toSend.maxRecordsCount
+                        );
+                    } else {
+                        return of([]);
+                    }
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
