@@ -1,21 +1,21 @@
 import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
+import { EnumEntityTypeDto } from "src/shared/service-proxies/service-proxies";
 import { CustomValidators } from "src/shared/utils/custom-validators";
 
 export class WorkflowSalesMainForm extends UntypedFormGroup {
     constructor() {
         super({
-            salesType: new UntypedFormControl(null, Validators.required),
-            deliveryType: new UntypedFormControl(null, Validators.required),
-            projectType: new UntypedFormControl(null, Validators.required),
-            margin: new UntypedFormControl(null, Validators.required),
-            projectCategory: new UntypedFormControl(null, Validators.required),
+            salesTypeId: new UntypedFormControl(null, Validators.required),
+            deliveryTypeId: new UntypedFormControl(null, Validators.required),
+            projectTypeId: new UntypedFormControl(null, Validators.required),
+            marginId: new UntypedFormControl(null, Validators.required),
+            projectCategoryId: new UntypedFormControl(null, Validators.required),
             primaryCategoryArea: new UntypedFormControl(null, Validators.required),
             primaryCategoryType: new UntypedFormControl(null, Validators.required),
             primaryCategoryRole: new UntypedFormControl(null, Validators.required),
             projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
             projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
-
-            discounts: new UntypedFormControl(null),
+            discountId: new UntypedFormControl(null),
 
             commissions: new UntypedFormArray([]),
             commissionedUsers: new UntypedFormArray([]),
@@ -30,20 +30,20 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
         });
     }
 
-    get salesType() {
-        return this.get('salesType');
+    get salesTypeId() {
+        return this.get('salesTypeId');
     }
-    get projectType() {
-        return this.get('projectType');
+    get projectTypeId() {
+        return this.get('projectTypeId');
     }
-    get deliveryType() {
-        return this.get('deliveryType');
+    get deliveryTypeId() {
+        return this.get('deliveryTypeId');
     }
-    get margin() {
-        return this.get('margin');
+    get marginId() {
+        return this.get('marginId');
     }
-    get projectCategory() {
-        return this.get('projectCategory');
+    get projectCategoryId() {
+        return this.get('projectCategoryId');
     }
     get primaryCategoryArea() {
         return this.get('primaryCategoryArea');
@@ -60,8 +60,8 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     get projectName() {
         return this.get('projectName');
     }
-    get discounts() {
-        return this.get('discounts');
+    get discountId() {
+        return this.get('discountId');
     }
     get commissions() {
         return this.get('commissions') as UntypedFormArray;
@@ -122,32 +122,32 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 
             // Client Rate & Invoicing
             clientRateAndInvoicing: new UntypedFormControl(null),
-            clientPrice: new UntypedFormControl(null, Validators.required),
+            normalRate: new UntypedFormControl(null, Validators.required),
             clientCurrency: new UntypedFormControl(null, Validators.required),
             rateUnitTypeId: new UntypedFormControl(null),
-            clientInvoiceCurrency: new UntypedFormControl(null, Validators.required),
+            invoiceCurrencyId: new UntypedFormControl(null, Validators.required),
             clientInvoiceFrequency: new UntypedFormControl(null),
             clientInvoiceTime: new UntypedFormControl(null),
-            clientInvoicingDate: new UntypedFormControl(null),
+            manualDate: new UntypedFormControl(null),
 
             // clientRatesNFees
             clientFees: new UntypedFormArray([]),
             clientRates: new UntypedFormArray([]),
 
             // Client Contract Duration
-            clientContractStartDate: new UntypedFormControl(null, Validators.required),
-            clientContractEndDate: new UntypedFormControl(null, Validators.required),
-            clientContractNoEndDate: new UntypedFormControl(false),
+            startDate: new UntypedFormControl(null, Validators.required),
+            endDate: new UntypedFormControl(null, Validators.required),
+            noEndDate: new UntypedFormControl(false),
 
             // Client Extension Option
-            clientExtensionDuration: new UntypedFormControl(null),
-            clientExtensionEndDate: new UntypedFormControl(null),
-            clientExtensionDeadline: new UntypedFormControl(null),
+            clientExtensionDurationId: new UntypedFormControl(null),
+            clientExtensionSpecificDate: new UntypedFormControl(null),
+            clientExtensionDeadlineId: new UntypedFormControl(null),
             noClientExtensionOption: new UntypedFormControl(false),
 
             // Client project
-            capOnTimeReporting: new UntypedFormControl(false),
-            capOnTimeReportingValue: new UntypedFormControl(null)
+            clientTimeReportingCapId: new UntypedFormControl(false),
+            clientTimeReportingCapMaxValue: new UntypedFormControl(null)
         });
     }
 
@@ -201,8 +201,8 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get clientRateAndInvoicing() {
         return this.get('clientRateAndInvoicing');
     }
-    get clientPrice() {
-        return this.get('clientPrice');
+    get normalRate() {
+        return this.get('normalRate');
     }
     get clientCurrency() {
         return this.get('clientCurrency');
@@ -210,8 +210,8 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get rateUnitTypeId() {
         return this.get('rateUnitTypeId');
     }
-    get clientInvoiceCurrency() {
-        return this.get('clientInvoiceCurrency');
+    get invoiceCurrencyId() {
+        return this.get('invoiceCurrencyId');
     }
     get clientInvoiceFrequency() {
         return this.get('clientInvoiceFrequency');
@@ -219,8 +219,8 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get clientInvoiceTime() {
         return this.get('clientInvoiceTime');
     }
-    get clientInvoicingDate() {
-        return this.get('clientInvoicingDate');
+    get manualDate() {
+        return this.get('manualDate');
     }
     get clientSpecialRatePrice() {
         return this.get('clientSpecialRatePrice');
@@ -240,25 +240,25 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
 
     // Client Contract Duration
-    get clientContractStartDate() {
-        return this.get('clientContractStartDate');
+    get startDate() {
+        return this.get('startDate');
     }
-    get clientContractEndDate() {
-        return this.get('clientContractEndDate');
+    get endDate() {
+        return this.get('endDate');
     }
-    get clientContractNoEndDate() {
-        return this.get('clientContractNoEndDate');
+    get noEndDate() {
+        return this.get('noEndDate');
     }
 
     // Client Extension Option
-    get clientExtensionDuration() {
-        return this.get('clientExtensionDuration');
+    get clientExtensionDurationId() {
+        return this.get('clientExtensionDurationId');
     }
-    get clientExtensionEndDate() {
-        return this.get('clientExtensionEndDate');
+    get clientExtensionSpecificDate() {
+        return this.get('clientExtensionSpecificDate');
     }
-    get clientExtensionDeadline() {
-        return this.get('clientExtensionDeadline');
+    get clientExtensionDeadlineId() {
+        return this.get('clientExtensionDeadlineId');
     }
     get noClientExtensionOption() {
         return this.get('noClientExtensionOption');
@@ -266,11 +266,11 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 
     // Client Porject
 
-    get capOnTimeReporting() {
-        return this.get('capOnTimeReporting');
+    get clientTimeReportingCapId() {
+        return this.get('clientTimeReportingCapId');
     }
-    get capOnTimeReportingValue() {
-        return this.get('capOnTimeReportingValue');
+    get clientTimeReportingCapMaxValue() {
+        return this.get('clientTimeReportingCapMaxValue');
     }
 
 }
@@ -278,12 +278,12 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 export class WorkflowSalesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
-            consultantData: new UntypedFormArray([], Validators.minLength(1))
+            consultants: new UntypedFormArray([], Validators.minLength(1))
         })
 
     }
-    get consultantData() {
-        return this.get('consultantData') as UntypedFormArray;
+    get consultants() {
+        return this.get('consultants') as UntypedFormArray;
     }
 }
 
@@ -297,7 +297,7 @@ export class SalesTerminateConsultantForm extends UntypedFormGroup {
     constructor() {
         super({
             finalEvaluationReferencePerson: new UntypedFormControl(null),
-            noEvaluation: new UntypedFormControl(null),
+            noEvaluation: new UntypedFormControl(false),
             causeOfNoEvaluation: new UntypedFormControl(null),
             terminationTime: new UntypedFormControl(null),
             endDate: new UntypedFormControl(null),
@@ -374,4 +374,16 @@ export const TenantList = [
 		name: 'Sweden',
 		code: 'SE',
 	},
+];
+
+
+export const ClientRateTypes: EnumEntityTypeDto[] = [
+    new EnumEntityTypeDto({
+        id: 1,
+        name: 'Time based',
+    }),
+    new EnumEntityTypeDto({
+        id: 2,
+        name: 'Fixed',
+    })
 ];

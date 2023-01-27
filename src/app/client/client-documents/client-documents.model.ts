@@ -1,4 +1,5 @@
 import { UntypedFormArray, UntypedFormGroup } from "@angular/forms";
+import { DocumentTypeEnum } from "src/shared/service-proxies/service-proxies";
 
 export class GeneralDocumentForm extends UntypedFormGroup {
     constructor() {
@@ -68,3 +69,12 @@ export const EvaluationFromDateList = [
         name: 'All periods'
     }
 ]
+
+
+export enum EDocumentTypeIcon {
+	'txt' = DocumentTypeEnum.Misc,
+	'pdf' = DocumentTypeEnum.Pdf,
+	'doc' = DocumentTypeEnum.Word,
+	'jpg' = DocumentTypeEnum.Image,
+	'xls' = DocumentTypeEnum.Excel
+}

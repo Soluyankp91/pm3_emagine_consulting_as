@@ -1,16 +1,29 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { combineLatest, Observable, Subject, forkJoin, of, EMPTY, BehaviorSubject } from 'rxjs';
-import { startWith, switchMap, take, map, debounceTime, filter, finalize, skip, withLatestFrom, tap } from 'rxjs/operators';
-import { IDropdownItem } from 'src/app/contracts/shared/components/emagine-menu-multi-select/emagine-menu-multi-select.interfaces';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { combineLatest, Observable, Subject, forkJoin, of, BehaviorSubject, merge, ReplaySubject, EMPTY } from 'rxjs';
+import {
+	startWith,
+	switchMap,
+	take,
+	map,
+	debounceTime,
+	filter,
+	skip,
+	withLatestFrom,
+	tap,
+	takeUntil,
+	distinctUntilChanged,
+	finalize,
+} from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AgreementAttachmentDto,
 	AgreementCreationMode,
@@ -27,18 +40,14 @@ import {
 	SupplierResultDto,
 	AgreementTemplateServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
-
-export type SignerOptions = {
-	options$: Observable<[{ label: string; displayedProperty: string; outputProperty: string }, IDropdownItem[]]> | null;
-	optionsChanged$: Subject<string>;
-};
+import { DuplicateOrParentOptions, InputParentTemplate, OutputParentTemplate, SignerOptions } from './settings.interfaces';
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
 	encapsulation: ViewEncapsulation.None,
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationModes = AgreementCreationMode;
 
 	agreementFormGroup = new AgreementModel();
@@ -47,42 +56,31 @@ export class SettingsComponent implements OnInit {
 
 	options$: Observable<[SettingsPageOptions, MappedTableCells, [BaseEnumDto[], EnumEntityTypeDto[]]]>;
 
-	clientOptionsChanged$ = new Subject<string>();
+	clientOptionsChanged$ = new BehaviorSubject('');
 
 	signerTableData: AbstractControl[] = [];
 	displayedSignerColumns = ['signerType', 'signerName', 'signingRole', 'signOrder', 'actions'];
 
 	signerOptionsArr$: SignerOptions[] = [];
 
+	creationMode = new FormControl<AgreementCreationMode>({
+		value: AgreementCreationMode.FromScratch,
+		disabled: true,
+	});
 	modeControl$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.FromScratch);
 	dirtyStatus$: Observable<boolean>;
-	clientOptions$:
-		| Observable<{
-				options$: Observable<SupplierResultDto[]>;
-				optionsChanged$: Subject<string>;
-				outputProperty: string;
-				labelKey: string;
-		  } | null>
-		| Observable<{
-				options$: Observable<ConsultantResultDto[]>;
-				optionsChanged$: Subject<string>;
-				outputProperty: string;
-				labelKey: string;
-		  } | null>
-		| Observable<{
-				options$: Observable<ClientResultDto[]>;
-				optionsChanged$: Subject<string>;
-				outputProperty: string;
-				labelKey: string;
-		  } | null>
-		| Observable<{
-				options$: Observable<LegalEntityDto[]>;
-				optionsChanged$: Subject<string>;
-				outputProperty: string;
-				labelKey: string;
-		  } | null>;
+	clientDropdown$: Observable<{
+		options$: Observable<SupplierResultDto[] | ConsultantResultDto[] | ClientResultDto[] | LegalEntityDto[]>;
+		outputProperty: string;
+		labelKey: string;
+	} | null>;
 
-	duplicateOrInherit$: Observable<any>;
+	duplicateOrInherit$: Observable<DuplicateOrParentOptions | null>;
+	duplicateOptionsChanged$ = new BehaviorSubject('');
+
+	creationModeControlReplay$ = new ReplaySubject<AgreementCreationMode | null>(1);
+
+	private _unSubscribe$ = new Subject();
 
 	constructor(
 		private readonly _contractService: ContractsService,
@@ -91,31 +89,43 @@ export class SettingsComponent implements OnInit {
 		private readonly _apiServiceProxy: AgreementServiceProxy,
 		private readonly _apiServiceProxy2: AgreementTemplateServiceProxy,
 		private readonly _dialog: MatDialog,
-		private readonly _fb: FormBuilder
-	) {}
+		private readonly _fb: FormBuilder,
+		private readonly _router: Router,
+		private readonly _route: ActivatedRoute,
+		private readonly _injector: Injector
+	) {
+		super(_injector);
+	}
 
 	ngOnInit(): void {
 		this._initOptions();
+		this._subscribeOnModeReplay();
 		this._setClientOptions();
 		this._setDuplicateObs();
 		this._setDirtyStatus();
 		this._subsribeOnCreationModeChanges();
-		this.agreementFormGroup.valueChanges.subscribe((x) => console.log(x));
+		this._subscribeOnCreationMode();
+		this._subscribeOnQueryParams();
+	}
+
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	addSigner() {
 		this.agreementFormGroup.signers.push(
 			this._fb.group({
-				signerType: new FormControl(null, [Validators.required]),
-				signerId: new FormControl(null, [Validators.required]),
-				roleId: new FormControl(null, [Validators.required]),
-				signOrder: new FormControl(null, [Validators.required]),
+				signerType: new FormControl<null | SignerType>(null, [Validators.required]),
+				signerId: new FormControl<null | number>(null, [Validators.required]),
+				roleId: new FormControl<null | number>(null, [Validators.required]),
+				signOrder: new FormControl<null | number>(null, [Validators.required]),
 			})
 		);
 		this.signerTableData = [...this.agreementFormGroup.signers.controls];
 		this.signerOptionsArr$.push(<SignerOptions>{
 			options$: null,
-			optionsChanged$: new Subject<string>(),
+			optionsChanged$: new BehaviorSubject<string>(''),
 		});
 	}
 
@@ -129,11 +139,10 @@ export class SettingsComponent implements OnInit {
 		switch (signerType) {
 			case 1: {
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-					startWith(''),
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'InternalEmagine', displayedProperty: 'name', outputProperty: 'id' }),
-							this._lookupService.employees(search, false),
+							of({ label: 'InternalEmagine', labelKey: 'name', outputProperty: 'id' }),
+							this._lookupService.employees(search, true),
 						]);
 					})
 				);
@@ -141,10 +150,9 @@ export class SettingsComponent implements OnInit {
 			}
 			case 2:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-					startWith(''),
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Clients', displayedProperty: 'clientName', outputProperty: 'clientId' }),
+							of({ label: 'Clients', labelKey: 'clientName', outputProperty: 'clientId' }),
 							this._lookupService.clientsAll(search, 20),
 						]);
 					})
@@ -152,10 +160,9 @@ export class SettingsComponent implements OnInit {
 				break;
 			case 3:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-					startWith(''),
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Consultants', displayedProperty: 'name', outputProperty: 'id' }),
+							of({ label: 'Consultants', labelKey: 'name', outputProperty: 'id' }),
 							this._lookupService.consultants(search, 20),
 						]);
 					})
@@ -163,10 +170,9 @@ export class SettingsComponent implements OnInit {
 				break;
 			case 4:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-					startWith(''),
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Suppliers', displayedProperty: 'supplierName', outputProperty: 'supplierId' }),
+							of({ label: 'Suppliers', labelKey: 'supplierName', outputProperty: 'supplierId' }),
 							this._lookupService.suppliers(search, 20),
 						]);
 					})
@@ -182,15 +188,50 @@ export class SettingsComponent implements OnInit {
 			this.agreementFormGroup.markAllAsTouched();
 			return;
 		}
-		const toSend = this.agreementFormGroup.value;
+		const toSend = { creationMode: this.creationMode.value, ...this.agreementFormGroup.value };
 		const uploadedFiles = toSend.uploadedFiles ? toSend.uploadedFiles : [];
+		const selectedInheritedFiles = toSend.selectedInheritedFiles ? toSend.selectedInheritedFiles : [];
 		const signers = toSend.signers ? toSend.signers : [];
-		toSend.attachments = [...uploadedFiles].map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
+		if (this.creationMode.value === 2) {
+			toSend.parentAgreementTemplateId = toSend.parentAgreementTemplate.parentAgreementTemplateId;
+			toSend.parentAgreementTemplateVersion = toSend.parentAgreementTemplate.parentAgreementTemplateVersion;
+			toSend.parentSelectedAttachmentIds = selectedInheritedFiles.map(
+				(file: FileUpload) => file.agreementTemplateAttachmentId
+			);
+			toSend.attachments = uploadedFiles.map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
+			toSend.parentSele;
+		} else {
+			toSend.attachments = [...uploadedFiles, ...selectedInheritedFiles].map(
+				(attachment: FileUpload) => new AgreementAttachmentDto(attachment)
+			);
+		}
 		toSend.signers = signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
-		this._apiServiceProxy.agreementPOST(new SaveAgreementDto(toSend)).subscribe((id) => {
-			console.log(id);
-		});
+		this.showMainSpinner();
+		this._apiServiceProxy
+			.agreementPOST(new SaveAgreementDto(toSend))
+			.pipe(
+				tap(() => {
+					this.hideMainSpinner();
+				})
+			)
+			.subscribe((id) => {
+				//console.log(id);
+			});
 	}
+
+	private _subscribeOnModeReplay() {
+		this.creationMode.valueChanges
+			.pipe(takeUntil(this._unSubscribe$), startWith(this.creationMode.value), distinctUntilChanged())
+			.subscribe((val) => {
+				this.creationModeControlReplay$.next(val);
+			});
+	}
+
+	private _unwrap = ({ agreementTemplateId, currentVersion }: InputParentTemplate) =>
+		<OutputParentTemplate>{
+			parentAgreementTemplateId: agreementTemplateId,
+			parentAgreementTemplateVersion: currentVersion,
+		};
 
 	private _initOptions() {
 		this.options$ = combineLatest([
@@ -200,67 +241,74 @@ export class SettingsComponent implements OnInit {
 		]);
 	}
 
+	private _subscribeOnQueryParams() {
+		this._route.queryParams.pipe(takeUntil(this._unSubscribe$)).subscribe(({ id }) => {
+			if (id) {
+				this.creationMode.setValue(AgreementCreationMode.Duplicated);
+				this.duplicateOptionsChanged$.next(id);
+				this.agreementFormGroup.controls['duplicationSourceAgreementId'].setValue(id);
+			}
+		});
+	}
+
 	private _setClientOptions() {
-		this.clientOptions$ = (this.agreementFormGroup.recipientTypeId?.valueChanges as Observable<number>).pipe(
+		this.clientDropdown$ = (this.agreementFormGroup.recipientTypeId?.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
-				const optionsChanged$ = new Subject<string>();
 				if (recipientTypeId === 1) {
 					return of({
-						options$: optionsChanged$.pipe(
-							startWith(''),
+						options$: this.clientOptionsChanged$.pipe(
+							startWith(this.clientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._lookupService.suppliers(search, 20);
 							})
 						),
-						optionsChanged$: optionsChanged$,
 						outputProperty: 'supplierId',
 						labelKey: 'supplierName',
 					});
 				} else if (recipientTypeId === 2) {
 					return of({
-						options$: optionsChanged$.pipe(
-							startWith(''),
+						options$: this.clientOptionsChanged$.pipe(
+							startWith(this.clientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._lookupService.consultants(search, 20);
 							})
 						),
-						optionsChanged$: optionsChanged$,
 						outputProperty: 'id',
 						labelKey: 'name',
 					});
 				} else if (recipientTypeId === 3) {
 					return of({
-						options$: optionsChanged$.pipe(
-							startWith(''),
+						options$: this.clientOptionsChanged$.pipe(
+							startWith(this.clientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._lookupService.clientsAll(search, 20);
 							})
 						),
-						optionsChanged$: optionsChanged$,
 						outputProperty: 'clientId',
 						labelKey: 'clientName',
 					});
 				} else if (recipientTypeId === 4) {
 					return of({
-						options$: optionsChanged$.pipe(
-							startWith(''),
+						options$: this.clientOptionsChanged$.pipe(
+							startWith(this.clientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._enumService
 									.legalEntities()
 									.pipe(
 										map((legalEntities) =>
-											legalEntities.filter((legalEntity) =>
-												legalEntity.name?.toLowerCase().includes(search.toLowerCase())
+											legalEntities.filter(
+												(legalEntity) =>
+													legalEntity.name?.toLowerCase().includes(search.toLowerCase()) ||
+													String(legalEntity.id)?.toLowerCase().includes(search.toLowerCase())
 											)
 										)
 									);
 							})
 						),
-						optionsChanged$: optionsChanged$,
 						outputProperty: 'id',
 						labelKey: 'name',
 					});
@@ -273,6 +321,7 @@ export class SettingsComponent implements OnInit {
 
 	private _setDirtyStatus(): void {
 		this.dirtyStatus$ = this.agreementFormGroup.valueChanges.pipe(
+			takeUntil(this._unSubscribe$),
 			startWith(this.agreementFormGroup.value),
 			dirtyCheck(this.agreementFormGroup.initial$)
 		);
@@ -280,7 +329,9 @@ export class SettingsComponent implements OnInit {
 	private _subsribeOnCreationModeChanges() {
 		this.modeControl$
 			.pipe(
+				takeUntil(this._unSubscribe$),
 				skip(1),
+				distinctUntilChanged(),
 				withLatestFrom(this.dirtyStatus$),
 				switchMap(([, isDirty]) => {
 					if (isDirty) {
@@ -294,56 +345,186 @@ export class SettingsComponent implements OnInit {
 			)
 			.subscribe((discard) => {
 				if (discard) {
-					this.agreementFormGroup.creationMode?.patchValue(this.modeControl$.value);
+					this.creationMode.patchValue(this.modeControl$.value);
 					this._resetForm();
 				}
 			});
 	}
 
+	private _subscribeOnCreationMode() {
+		this.creationModeControlReplay$
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				tap(() => {
+					this.duplicateOptionsChanged$.next('');
+				})
+			)
+			.subscribe((creationMode) => {
+				this.agreementFormGroup.removeControl('parentAgreementTemplate', { emitEvent: false });
+				this.agreementFormGroup.removeControl('duplicationSourceAgreementId', { emitEvent: false });
+				if (creationMode === AgreementCreationMode.InheritedFromParent) {
+					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null), {
+						emitEvent: false,
+					});
+					this._subscribeOnParentChanges();
+				} else if (creationMode === AgreementCreationMode.Duplicated) {
+					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null), {
+						emitEvent: false,
+					});
+					this._subscribeOnDuplicateAgreementChanges();
+				} else {
+					this.agreementFormGroup.enable({ emitEvent: false });
+				}
+			});
+	}
+
+	private _subscribeOnParentChanges() {
+		this.agreementFormGroup.controls['parentAgreementTemplate'].valueChanges
+			.pipe(
+				filter((val) => !!val),
+				takeUntil(
+					this.creationMode.valueChanges.pipe(
+						filter((creationMode) => creationMode !== AgreementCreationMode.InheritedFromParent)
+					)
+				),
+				tap(() => {
+					this.showMainSpinner();
+				}),
+				switchMap(({ parentAgreementTemplateId }) => {
+					return this._apiServiceProxy2.agreementTemplateGET(parentAgreementTemplateId);
+				}),
+				tap(() => {
+					this.hideMainSpinner();
+				}),
+				tap((agreementTemplateDetailsDto) => {
+					this.preselectedFiles = agreementTemplateDetailsDto.attachments as FileUpload[];
+				}),
+				tap((agreementTemplateDetailsDto) => {
+					this.agreementFormGroup.patchValue({
+						agreementType: agreementTemplateDetailsDto.agreementType,
+						recipientTypeId: agreementTemplateDetailsDto.recipientTypeId,
+						nameTemplate: agreementTemplateDetailsDto.name,
+						definition: agreementTemplateDetailsDto.definition,
+						salesTypes: agreementTemplateDetailsDto.salesTypeIds,
+						deliveryTypes: agreementTemplateDetailsDto.deliveryTypeIds,
+						contractTypes: agreementTemplateDetailsDto.contractTypeIds,
+						language: agreementTemplateDetailsDto.language,
+						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
+						note: agreementTemplateDetailsDto.note,
+					});
+				})
+			)
+			.subscribe();
+	}
+	private _subscribeOnDuplicateAgreementChanges() {
+		this.agreementFormGroup.controls['duplicationSourceAgreementId'].valueChanges
+			.pipe(
+				distinctUntilChanged(),
+				takeUntil(
+					this.creationMode.valueChanges.pipe(
+						filter((creationMode) => creationMode !== AgreementCreationMode.Duplicated)
+					)
+				),
+				tap(() => {
+					this._clearSigners();
+				}),
+				tap(() => {
+					this.showMainSpinner();
+				}),
+				switchMap((duplicationSourceAgreementId) => {
+					return this._apiServiceProxy.agreementGET(duplicationSourceAgreementId);
+				}),
+				tap(() => {
+					this.hideMainSpinner();
+				}),
+				tap((agreementDetailsDto) => {
+					const queryParams: Params = {
+						id: `${agreementDetailsDto.agreementId}`,
+					};
+					this._router.navigate([], {
+						queryParams: queryParams,
+					});
+				}),
+				tap((agreementDetailsDto) => {
+					this.preselectedFiles = agreementDetailsDto.attachments as FileUpload[];
+					this.clientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
+				}),
+				tap((agreementDetailsDto) => {
+					this.agreementFormGroup.patchValue({
+						agreementType: agreementDetailsDto.agreementType,
+						recipientTypeId: agreementDetailsDto.recipientTypeId,
+						recipientId: agreementDetailsDto.recipientId,
+						nameTemplate: agreementDetailsDto.name,
+						definition: agreementDetailsDto.definition,
+						legalEntityId: agreementDetailsDto.legalEntityId,
+						salesTypes: agreementDetailsDto.salesTypeIds,
+						deliveryTypes: agreementDetailsDto.deliveryTypeIds,
+						contractTypes: agreementDetailsDto.contractTypeIds,
+						startDate: agreementDetailsDto.startDate,
+						endDate: agreementDetailsDto.endDate,
+						language: agreementDetailsDto.language,
+						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
+						note: agreementDetailsDto.note,
+					});
+					agreementDetailsDto.signers?.forEach((signerDto, index) => {
+						this.agreementFormGroup.signers.push(
+							new FormGroup({
+								signerType: new FormControl(signerDto.signerType as SignerType),
+								signerId: new FormControl(signerDto.signerId as number),
+								roleId: new FormControl(signerDto.roleId as number),
+								signOrder: new FormControl(signerDto.signOrder as number),
+							})
+						);
+						this.signerTableData = [...this.agreementFormGroup.signers.controls];
+						this.signerOptionsArr$.push(<SignerOptions>{
+							options$: null,
+							optionsChanged$: new BehaviorSubject<string>(String(signerDto.signerId as number)),
+						});
+						this.onSignerTypeChange(signerDto.signerType as SignerType, index);
+					});
+				})
+			)
+			.subscribe();
+	}
 	private _setDuplicateObs() {
-		this.duplicateOrInherit$ = this.modeControl$.pipe(
-			switchMap((creationMode: AgreementCreationMode) => {
-				console.log(creationMode);
+		this.duplicateOrInherit$ = this.creationModeControlReplay$.pipe(
+			takeUntil(this._unSubscribe$),
+			switchMap((creationMode: AgreementCreationMode | null) => {
 				if (creationMode === AgreementCreationMode.Duplicated) {
-					let freeText$ = new Subject<string>();
 					return of({
-						options$: freeText$.pipe(
-							startWith(''),
+						options$: this.duplicateOptionsChanged$.pipe(
+							startWith(this.duplicateOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
-								return this._apiServiceProxy.simpleList(undefined, search).pipe(
-									map((response) => {
-										console.log(response.items);
-										return response.items;
-									})
-								);
+								return this._apiServiceProxy
+									.simpleList(undefined, search)
+									.pipe(map((response) => response.items));
 							})
 						),
-						optionsChanged$: freeText$,
-						outputProperty: 'agreementTemplateId',
+						optionsChanged$: this.duplicateOptionsChanged$,
+						outputProperty: 'agreementId',
 						labelKey: 'agreementName',
 						label: 'Duplicate from',
+						formControlName: 'duplicationSourceAgreementId',
 					});
 				} else if (creationMode === AgreementCreationMode.InheritedFromParent) {
-					console.log('parent');
-					let freeText$ = new Subject<string>();
+					let freeText$ = new BehaviorSubject<string>('');
 					return of({
 						options$: freeText$.pipe(
 							startWith(''),
 							debounceTime(300),
 							switchMap((search) => {
-								return this._apiServiceProxy2.simpleList2(undefined, undefined, undefined, search).pipe(
-									map((response) => {
-										console.log(response.items);
-										return response.items;
-									})
-								);
+								return this._apiServiceProxy2
+									.simpleList2(undefined, undefined, undefined, search)
+									.pipe(map((response) => response.items));
 							})
 						),
 						optionsChanged$: freeText$,
 						outputProperty: 'agreementTemplateId',
 						labelKey: 'name',
 						label: 'Parent master template',
+						formControlName: 'parentAgreementTemplate',
+						unwrapFunction: this._unwrap,
 					});
 				} else {
 					return of(null);
@@ -353,10 +534,12 @@ export class SettingsComponent implements OnInit {
 	}
 
 	private _resetForm() {
-		this.agreementFormGroup.reset({
-			...this.agreementFormGroup.initialValue,
-			creationMode: { value: this.agreementFormGroup.creationMode?.value, disabled: true },
-		});
+		this.agreementFormGroup.reset(undefined, { emitEvent: false });
+		this.preselectedFiles = [];
+		this._clearSigners();
+	}
+
+	private _clearSigners() {
 		this.agreementFormGroup.signers.clear();
 		this.signerOptionsArr$ = [];
 		this.signerTableData = [];

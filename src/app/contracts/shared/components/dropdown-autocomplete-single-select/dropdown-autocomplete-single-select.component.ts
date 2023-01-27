@@ -3,8 +3,9 @@ import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } 
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { RequiredValidator } from '../../validators/customRequireValidator';
+import { SimpleAgreementListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-single-select',
@@ -16,6 +17,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	@Input() outputProperty: string = 'id';
 	@Input() label: string = 'label';
 	@Input() width: string;
+	@Input() unwrapFunction?: (arg: any) => {};
 
 	@Output() inputEmitter = new EventEmitter<string>();
 
@@ -65,7 +67,11 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	}
 
 	onSelect(selectedOption: Item) {
-		this.onChange(selectedOption[this.outputProperty]);
+		if (!this.unwrapFunction) {
+			this.onChange(selectedOption[this.outputProperty]);
+		} else {
+			this.onChange(this.unwrapFunction(selectedOption));
+		}
 		this.selectedItem = selectedOption;
 	}
 
@@ -116,7 +122,8 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				distinctUntilChanged(),
-				filter((val) => val !== null && val !== undefined)
+				filter((val) => val !== null && val !== undefined),
+				debounceTime(300)
 			)
 			.subscribe((input) => {
 				if (typeof input === 'object') {

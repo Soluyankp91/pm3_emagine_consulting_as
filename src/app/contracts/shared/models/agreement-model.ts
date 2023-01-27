@@ -1,21 +1,16 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { AgreementCreationMode } from 'src/shared/service-proxies/service-proxies';
+import { AgreementCreationMode, SignerType } from 'src/shared/service-proxies/service-proxies';
 
 export type SignerFormGroup = FormGroup<{
-	signerType: FormControl<null>;
-	signerId: FormControl<null>;
-	roleId: FormControl<null>;
-	signOrder: FormControl<null>;
+	signerType: FormControl<null | SignerType>;
+	signerId: FormControl<null | number>;
+	roleId: FormControl<null | number>;
+	signOrder: FormControl<null | number>;
 }>;
 export class AgreementModel extends FormGroup {
 	constructor() {
 		super({
-			parentTemplate: new FormControl(null),
-			creationMode: new FormControl({
-				value: AgreementCreationMode.FromScratch,
-				disabled: true,
-			}),
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
 			recipientId: new FormControl(null, [Validators.required]),
@@ -26,8 +21,8 @@ export class AgreementModel extends FormGroup {
 			deliveryTypes: new FormControl(null, [Validators.required]),
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
-			startDate: new FormControl(null),
-			endDate: new FormControl(null),
+			startDate: new FormControl(null, [Validators.required]),
+			endDate: new FormControl(null, [Validators.required]),
 			note: new FormControl(null),
 			isSignatureRequired: new FormControl(null),
 			signers: new FormArray<SignerFormGroup>([]),
@@ -43,7 +38,7 @@ export class AgreementModel extends FormGroup {
 			emitEvent?: boolean;
 		}
 	): void {
-		let currentValue = this.INITIAL_AGREEMENT_FORM_VALUE$;
+		let currentValue = this.INITIAL_AGREEMENT_FORM_VALUE$.value;
 		let updatedValue = {
 			...currentValue,
 			[name]: control.value,
@@ -61,16 +56,16 @@ export class AgreementModel extends FormGroup {
 		super.removeControl(name, options);
 	}
 
-	get creationMode() {
-		return this.get('creationMode');
-	}
-
 	get agreementType() {
 		return this.get('agreementType');
 	}
 
 	get recipientTypeId() {
 		return this.get('recipientTypeId');
+	}
+
+	get recipientId() {
+		return this.get('recipientId');
 	}
 
 	get nameTemplate() {
@@ -118,7 +113,6 @@ export class AgreementModel extends FormGroup {
 	}
 
 	private INITIAL_AGREEMENT_FORM_VALUE$ = new BehaviorSubject<{ [key: string]: any }>({
-		parentTemplate: null,
 		agreementType: null,
 		recipientId: null,
 		recipientTypeId: null,

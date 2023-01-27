@@ -3,7 +3,7 @@
 		<div class="page-container">
 			<div class="template-settings-section">
 				<h3 class="template-settings-header">Agreement settings</h3>
-				<mat-radio-group formControlName="creationMode" class="radio-button-group">
+				<mat-radio-group [formControl]="creationMode" class="radio-button-group">
 					<mat-radio-button
 						class="option"
 						[value]="creationModes.InheritedFromParent"
@@ -36,8 +36,9 @@
 							[options]="$any(options)"
 							[outputProperty]="templateOptions.outputProperty"
 							[labelKey]="templateOptions.labelKey"
+                            [unwrapFunction]="templateOptions.unwrapFunction"
                             [label]="templateOptions.label"
-							formControlName="parentTemplate"
+							[formControlName]="templateOptions.formControlName"
 							(inputEmitter)="
 								templateOptions.optionsChanged$.next($event)
 							">
@@ -73,7 +74,7 @@
 						</mat-error>
 					</mat-form-field>
 				</div>
-				<ng-container *ngIf="clientOptions$ | async as clientOptions">
+				<ng-container *ngIf="clientDropdown$ | async as clientOptions">
 					<ng-container *ngIf="clientOptions.options$ | async as options">
 						<emg-dropdown-autocomplete-single-select
 							formControlName="recipientId"
@@ -81,7 +82,7 @@
 							label="Client"
 							[options]="options"
 							[outputProperty]="clientOptions.outputProperty"
-							(inputEmitter)="clientOptions.optionsChanged$.next($event)"></emg-dropdown-autocomplete-single-select>
+							(inputEmitter)="clientOptionsChanged$.next($event)"></emg-dropdown-autocomplete-single-select>
 					</ng-container>
 				</ng-container>
 				<mat-divider></mat-divider>
@@ -221,7 +222,7 @@
 													[options]="options[1]"
 													[label]="options[0].label"
 													[width]="'178px'"
-													[labelKey]="options[0].displayedProperty"
+													[labelKey]="options[0].labelKey"
 													[outputProperty]="options[0].outputProperty"
 													(inputEmitter)="signerOptionsArr$[i].optionsChanged$.next($event)">
 												</emg-dropdown-autocomplete-single-select>

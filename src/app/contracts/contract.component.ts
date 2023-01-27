@@ -2,6 +2,7 @@ import { Tab } from './shared/entities/contracts.interfaces';
 import { ActivatedRoute } from '@angular/router';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
+
 const tabs: Tab[] = [
 	{
 		link: 'agreements',

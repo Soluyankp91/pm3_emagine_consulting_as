@@ -15,6 +15,7 @@
                             [matDatepicker]="startDatePicker"
                             name="clientExtensionEndDate" [formControl]="startDate"
                             (focus)="startDatePicker.open()"
+                            required
                             appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                     <mat-datepicker #startDatePicker></mat-datepicker>
@@ -27,6 +28,7 @@
                                 [matDatepicker]="endDatePicker"
                                 name="clientExtensionEndDate" [formControl]="endDate"
                                 (focus)="endDatePicker.open()"
+                                required
                                 appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #endDatePicker></mat-datepicker>
@@ -46,11 +48,15 @@
                         <input autocomplete="off" placeholder="New end date" matInput
                                 [matDatepicker]="cutoverDatePicker"
                                 name="cutoverDate"
+                                required
                                 formControlName="cutoverDate"
                                 (focus)="cutoverDatePicker.open()"
                                 appPreventDoubleClick (throttledClick)="cutoverDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #cutoverDatePicker></mat-datepicker>
+                        <mat-error>
+                            <app-validator [control]="changeWorkflowForm.cutoverDate"></app-validator>
+                        </mat-error>
                     </mat-form-field>
 
                     <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox">
@@ -64,7 +70,7 @@
                 <h3 class="confirmation-dialog--label">Select consultants the change applies to</h3>
                 <ng-container formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <mat-checkbox color="accent" name="changeConsultant" formControlName="changeConsultant" class="black-checkbox u-mr--16">
+                        <mat-checkbox color="accent" name="changeConsultant" formControlName="changeConsultant" class="black-checkbox u-mr--16" (change)="toggleChangeConsultants()">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
                                 <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.value?.externalId)">
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis">
@@ -76,6 +82,11 @@
                             New legal contract required
                         </mat-checkbox>
                     </div>
+                    <ng-container *ngIf="validationTriggered && !changeConsultantsValid">
+                        <mat-error class="error-message">
+                            Select at least 1 consultant
+                        </mat-error>
+                    </ng-container>
                 </ng-container>
                 <ng-container *ngIf="data?.isMigrationNeeded">
                     <mat-divider class="u-mb--24 u-mt--24">
@@ -97,9 +108,13 @@
                                     name="startDate"
                                     formControlName="startDate"
                                     (focus)="startDatePicker.open()"
+                                    required
                                     appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #startDatePicker></mat-datepicker>
+                            <mat-error>
+                                <app-validator [control]="extendWorkflowForm.startDate"></app-validator>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="center start">
@@ -110,10 +125,14 @@
                                     name="endDate"
                                     [min]="minEndDate"
                                     formControlName="endDate"
+                                    required
                                     (focus)="extensionDatePicker.open()"
                                     appPreventDoubleClick (throttledClick)="extensionDatePicker.open()" readonly>
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #extensionDatePicker></mat-datepicker>
+                            <mat-error>
+                                <app-validator [control]="extendWorkflowForm.endDate"></app-validator>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(extendWorkflowForm.noEndDate?.value, extendWorkflowForm.endDate)">
@@ -127,7 +146,7 @@
                 <h3 class="confirmation-dialog--label">Select consultants to be extended</h3>
                 <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--16" formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16">
+                        <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16" (change)="toggleExtendConsultants()">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
                                 <img class="workflow-change-dialog--consultant-img u-mr--12" [src]="consultantProfileUrl(consultant.value?.externalId)">
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
@@ -136,6 +155,11 @@
                             </div>
                         </mat-checkbox>
                     </div>
+                    <ng-container *ngIf="validationTriggered && !extendConsultantsValid">
+                        <mat-error class="error-message">
+                            Select at least 1 consultant
+                        </mat-error>
+                    </ng-container>
                 </div>
                 <ng-container *ngIf="data?.isMigrationNeeded">
                     <mat-divider class="u-mb--24 u-mt--24">
@@ -167,7 +191,7 @@
             </h3>
             <div class="confirmation-dialog--category u-mt--10">
                 <span>
-                    {{projectCategory?.name ?? 'No project category'}}
+                    {{projectCategory?.name ?? '-'}}
                 </span>
                 <mat-icon class="u-ml--12">
                     arrow_forward

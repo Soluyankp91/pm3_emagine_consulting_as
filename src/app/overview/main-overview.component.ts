@@ -247,18 +247,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     changeViewType(filterChanged?: boolean) {
+        let cutOffDate = new Date();
         switch (this.viewType.value) {
             case GanttViewType.week:
-                let cutOffDateWeek = new Date();
-                cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 7);
                 this.viewOptions.cellWidth = 50;
-                this.getMainOverview(cutOffDateWeek, filterChanged);
+                this.getMainOverview(cutOffDate, filterChanged);
                 break;
             case GanttViewType.month:
-                let cutOffDateMonth = new Date();
-                cutOffDateMonth.setDate(cutOffDateMonth.getDate() - 7);
                 this.viewOptions.cellWidth = 75;
-                this.getMainOverview(cutOffDateMonth, filterChanged);
+                this.getMainOverview(cutOffDate, filterChanged);
                 break;
         }
     }
