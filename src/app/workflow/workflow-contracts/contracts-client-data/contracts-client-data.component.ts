@@ -34,10 +34,9 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
 
-    clientSpecialFeeFilter = new UntypedFormControl('');
+	clientSpecialFeeFilter = new UntypedFormControl('');
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
-
 
 	private _unsubscribe = new Subject();
 	constructor(injector: Injector, private _fb: UntypedFormBuilder, private _internalLookupService: InternalLookupService) {
@@ -46,8 +45,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	}
 
 	ngOnInit(): void {
-        this._getEnums();
-    }
+		this._getEnums();
+	}
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -97,7 +96,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
 		this.contractClientForm.clientRates.push(form);
-        console.log(this.contractClientForm.clientRates.controls);
 	}
 
 	removeClientRate(index: number) {
@@ -200,11 +198,11 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
 	}
 
-    get clientRates(): UntypedFormArray {
+	get clientRates(): UntypedFormArray {
 		return this.contractClientForm.get('clientRates') as UntypedFormArray;
 	}
 
-    get clientFees(): UntypedFormArray {
+	get clientFees(): UntypedFormArray {
 		return this.contractClientForm.get('clientFees') as UntypedFormArray;
 	}
 }

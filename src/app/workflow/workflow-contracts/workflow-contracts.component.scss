@@ -1,167 +1,155 @@
-@import "/src/app/shared/styles/config/_colors";
-@import "/src/app/shared/styles/config/_mixins";
-@import "../workflow.component";
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
+@import '../workflow.component';
 
 .workflow {
-    &-contracts {
-        .absolute-edit-toggle {
-            position: fixed;
-            right: calc(20% + 50px);
-            top: 250px;
-            color: #72a0f8;
-            background-color: rgba($color: #72a0f8, $alpha: 0.2);
-            border-radius: 50%;
-            mat-icon {
-                @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
-            }
-        }
-        .rates-and-fees--btn {
-            width: 180px;
-        }
-        &--process-data {
-            padding: 30px;
-        }
-        &--consultant {
-            &-name {
-                @include fontOpenSans(14px, 800);
-                color: $dark-grey-color;
-            }
-            &-img {
-                border-radius: 50%;
-            }
-            &-text {
-                @include fontOpenSans(12px, 600);
-                line-height: 150%;
-                color: rgba(56, 72, 83, 0.87);
-            }
-        }
-        &--block {
-            &-consultants:not(:last-child) {
-                border-bottom: 1px solid $sand-color;
-                margin-bottom: 20px;
-            }
-        }
-        &--list {
-            height: 50px;
-            border: 1px solid $sand-color;
-            padding: 0 8px;
-            background-color: $white-color;
+	&-contracts {
+		.rates-and-fees--btn {
+			width: 180px;
+		}
+		&--process-data {
+			padding: 30px;
+		}
+		&--consultant {
+			&-name {
+				@include fontOpenSans(14px, 800);
+				color: $dark-grey-color;
+			}
+			&-img {
+				border-radius: 50%;
+			}
+			&-text {
+				@include fontOpenSans(12px, 600);
+				line-height: 150%;
+				color: rgba(56, 72, 83, 0.87);
+			}
+		}
+		&--block {
+			&-consultants:not(:last-child) {
+				border-bottom: 1px solid $sand-color;
+				margin-bottom: 20px;
+			}
+		}
+		&--list {
+			height: 50px;
+			border: 1px solid $sand-color;
+			padding: 0 8px;
+			background-color: $white-color;
 
-            &-item {
-                @include fontOpenSans(14px, 700);
-                line-height: 140%;
-                color: #4a4e60;
-            }
+			&-item {
+				@include fontOpenSans(14px, 700);
+				line-height: 140%;
+				color: #4a4e60;
+			}
 
-            &-header {
-                @include fontOpenSans(12px, 600);
-                line-height: 14px;
-                color: #898785;
-            }
-        }
-    }
-    &-form {
-        &--main,
-        &--sales,
-        &--consultants,
-        &--summary {
-            border-bottom: 1px solid $sand-color;
-        }
-    }
-    &-section {
-        &--number {
-            @include fontOpenSans(14px, 700);
-            @include flexCentered;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            margin-right: 24px;
-            background-color: $sand-color;
-            color: $dark-grey-color;
-        }
-        &--header {
-            @include fontOpenSans(16px, 'inherit');
-            color: $light-grey-color;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+			&-header {
+				@include fontOpenSans(12px, 600);
+				line-height: 14px;
+				color: #898785;
+			}
+		}
+	}
+	&-form {
+		&--main,
+		&--sales,
+		&--consultants,
+		&--summary {
+			border-bottom: 1px solid $sand-color;
+		}
+	}
+	&-section {
+		&--number {
+			@include fontOpenSans(14px, 700);
+			@include flexCentered;
+			height: 24px;
+			width: 24px;
+			border-radius: 50%;
+			margin-right: 24px;
+			background-color: $sand-color;
+			color: $dark-grey-color;
+		}
+		&--header {
+			@include fontOpenSans(16px, 'inherit');
+			color: $light-grey-color;
+			letter-spacing: 1px;
+			text-transform: uppercase;
 
-            &-main {
-                @include fontOpenSans(18px, 700);
-                line-height: 120%;
-                letter-spacing: 1px;
-                text-transform: uppercase;
-                color: $dark-grey-color;
-            }
-        }
-        &--content {
-            border-left: 2px solid $sand-color;
-            margin-left: 12px;
-            padding: 5px 0 5px 35px;
-            width: 100%;
-        }
-    }
+			&-main {
+				@include fontOpenSans(18px, 700);
+				line-height: 120%;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+				color: $dark-grey-color;
+			}
+		}
+		&--content {
+			border-left: 2px solid $sand-color;
+			margin-left: 12px;
+			padding: 5px 0 5px 35px;
+			width: 100%;
+		}
+	}
 
-    &--termination {
-        padding: 30px;
-    }
-
+	&--termination {
+		padding: 30px;
+	}
 }
 
 .icon {
-    &-cancel {
-        color: $red-color;
-    }
-    &-done {
-        color: #B0FD5A;
-    }
+	&-cancel {
+		color: $red-color;
+	}
+	&-done {
+		color: #b0fd5a;
+	}
 }
 
 .sync-hint-text {
-    @include fontOpenSans(12px, 700);
-    line-height: 150%;
-    color: $dark-grey-color;
+	@include fontOpenSans(12px, 700);
+	line-height: 150%;
+	color: $dark-grey-color;
 }
 
 // START remove after we will have correct icons
 
 .termination-complete-icon {
-    height: 22px !important;
-    width: 22px !important;
-    font-size: 21px !important;
-    line-height: 21px !important;
+	height: 22px !important;
+	width: 22px !important;
+	font-size: 21px !important;
+	line-height: 21px !important;
 }
 
 // END remove after we will have correct icons
 
 .project-line--expansion-additional {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 12px;
-    &__header {
-        color: $medium-grey-color;
-    }
-    &__content {
-        color: $dark-grey-color;
-    }
-    &--fees-icon {
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
-    }
+	font-weight: 600;
+	font-size: 14px;
+	margin-bottom: 12px;
+	&__header {
+		color: $medium-grey-color;
+	}
+	&__content {
+		color: $dark-grey-color;
+	}
+	&--fees-icon {
+		width: 20px;
+		height: 20px;
+		line-height: 20px;
+	}
 }
 
 .workflow-darkblue--text {
-    @include fontOpenSans(14px, 700);
-    line-height: 14px;
-    color: rgba(56, 72, 83, 0.87);
+	@include fontOpenSans(14px, 700);
+	line-height: 14px;
+	color: rgba(56, 72, 83, 0.87);
 }
 .workflow-gray--header {
-    @include fontOpenSans(14px, 700);
-    margin-bottom: 8px !important;
-    line-height: 14px;
-    color: #B6B4B2
+	@include fontOpenSans(14px, 700);
+	margin-bottom: 8px !important;
+	line-height: 14px;
+	color: #b6b4b2;
 }
 
 .icon-cancel {
-    @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
+	@include fontLineHeightAndSize(18px, 18px, 18px, 18px);
 }

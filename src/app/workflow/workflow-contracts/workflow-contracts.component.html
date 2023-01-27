@@ -1,8 +1,4 @@
 <div class="workflow-contracts">
-    <ng-container *ngIf="canToggleEditMode">
-        <button class="absolute-edit-toggle" mat-icon-button appPreventDoubleClick
-            (throttledClick)="toggleEditMode(true)"><mat-icon svgIcon="edit-icon"></mat-icon></button>
-    </ng-container>
     <ng-container [ngSwitch]="true">
         <ng-container
             *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
@@ -14,7 +10,7 @@
                         <h2 class="workflow-section--header">Sync</h2>
                     </div>
                     <div class="workflow-section--content">
-                        <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode"
+                        <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection"
                         (onSyncToLegacySystem)="processSyncToLegacySystem()" [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-sync-data>
                     </div>
                 </div>
@@ -67,7 +63,7 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            <app-contracts-main-data #mainDataComponent [readOnlyMode]="readOnlyMode"></app-contracts-main-data>
+            <app-contracts-main-data #mainDataComponent (editModeToggled)="toggleEditMode(true)" [readOnlyMode]="readOnlyMode" [canToggleEditMode]="canToggleEditMode"></app-contracts-main-data>
             <ng-container
                 *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                 <app-contracts-client-data #clientDataComponent [readOnlyMode]="readOnlyMode"

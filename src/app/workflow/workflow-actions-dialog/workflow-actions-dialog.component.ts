@@ -117,12 +117,12 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 break;
             case WorkflowDiallogAction.Change:
                 this.consultants.forEach((consultant: AvailableConsultantDto) => {
-                    this.addConsutlantToChangeForm(consultant);
+                    this.addConsutlantToChangeForm(consultant, this.consultants.length === 1);
                 });
                 break;
             case WorkflowDiallogAction.Extend:
                 this.consultants.forEach((consultant: AvailableConsultantDto) => {
-                    this.addConsutlantToExtendForm(consultant);
+                    this.addConsutlantToExtendForm(consultant, this.consultants.length === 1);
                 });
                 break;
         }
@@ -163,23 +163,23 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
         }
     }
 
-    addConsutlantToChangeForm(consultant: AvailableConsultantDto) {
+    addConsutlantToChangeForm(consultant: AvailableConsultantDto, preselectConsultant: boolean) {
         const form = this._fb.group({
             consulantName: new UntypedFormControl(consultant.consultantName),
             consultantId: new UntypedFormControl(consultant.consultantId),
             externalId: new UntypedFormControl(consultant.externalId),
             newLegalContractRequired: new UntypedFormControl(false),
-            changeConsultant: new UntypedFormControl(false)
+            changeConsultant: new UntypedFormControl(preselectConsultant)
         });
         this.changeWorkflowForm.consultants.push(form);
     }
 
-    addConsutlantToExtendForm(consultant: AvailableConsultantDto) {
+    addConsutlantToExtendForm(consultant: AvailableConsultantDto, preselectConsultant: boolean) {
         const form = this._fb.group({
             consulantName: new UntypedFormControl(consultant.consultantName),
             consultantId: new UntypedFormControl(consultant.consultantId),
             externalId: new UntypedFormControl(consultant.externalId),
-            extendConsultant: new UntypedFormControl(false)
+            extendConsultant: new UntypedFormControl(preselectConsultant)
         });
         this.extendWorkflowForm.consultants.push(form);
     }

@@ -32,6 +32,7 @@
         "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
         "@worktile/gantt": "14.0.1",
         "date-fns": "^2.28.0",
+        "devexpress-richedit": "^22.2.3",
         "devextreme": "22.2.3",
         "devextreme-angular": "22.2.3",
         "flag-icons": "^6.6.3",

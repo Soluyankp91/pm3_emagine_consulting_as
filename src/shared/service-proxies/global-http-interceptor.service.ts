@@ -90,7 +90,12 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                 .pipe(
                     map(responseText => {
                         if (responseText !== null) {
-                            const responseObject = JSON.parse(responseText);
+                            let responseObject
+                            try {
+                                responseObject = JSON.parse(responseText);
+                            } catch(err) {
+                                responseObject = {}
+                            }
                             return responseObject;
                         }
                         return null;
