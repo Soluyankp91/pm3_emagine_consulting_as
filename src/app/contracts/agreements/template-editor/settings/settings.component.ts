@@ -105,6 +105,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subsribeOnCreationModeChanges();
 		this._subscribeOnCreationMode();
 		this._subscribeOnQueryParams();
+		this._subscribeOnSignatureRequire();
 	}
 
 	ngOnDestroy(): void {
@@ -328,7 +329,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				skip(1),
-				distinctUntilChanged(),
 				withLatestFrom(this.dirtyStatus$),
 				switchMap(([, isDirty]) => {
 					if (isDirty) {
@@ -373,6 +373,14 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.agreementFormGroup.enable({ emitEvent: false });
 				}
 			});
+	}
+
+	private _subscribeOnSignatureRequire() {
+		this.agreementFormGroup.isSignatureRequired.valueChanges.subscribe((isSignatureRequired) => {
+			if (isSignatureRequired) {
+				this._clearSigners();
+			}
+		});
 	}
 
 	private _subscribeOnParentChanges() {
