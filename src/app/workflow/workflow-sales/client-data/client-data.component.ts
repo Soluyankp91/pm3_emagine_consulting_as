@@ -10,9 +10,9 @@ import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
-import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.model';
+import { ClientRateTypes, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-client-data',
@@ -21,10 +21,12 @@ import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() readOnlyMode: boolean;
+    @Input() mainDataForm: WorkflowSalesMainForm;
     @Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	@Output() onDirectClientSelected: EventEmitter<MatAutocompleteSelectedEvent> = new EventEmitter<MatAutocompleteSelectedEvent>();
 	@Output() clientPeriodDatesChanged: EventEmitter<any> = new EventEmitter<any>();
+    @Input() isContractModuleEnabled: boolean;
 	salesClientDataForm: WorkflowSalesClientDataForm;
 	filteredDirectClients: ClientResultDto[];
 	filteredEndClients: ClientResultDto[];
@@ -43,6 +45,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	invoicingTimes: EnumEntityTypeDto[];
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	clientRateTypes = ClientRateTypes;
+    frameAgreements: AgreementSimpleListItemDto[];
 
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
@@ -57,9 +60,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _lookupService: LookupServiceProxy,
 		private _clientService: ClientsServiceProxy,
 		private _internalLookupService: InternalLookupService,
-		private httpClient: HttpClient,
-		private localHttpService: LocalHttpService,
-		private router: Router
+		private _httpClient: HttpClient,
+		private _localHttpService: LocalHttpService,
+		private _router: Router,
+        private _agreementService: AgreementServiceProxy
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -258,6 +262,48 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
 			.subscribe(() => {
 				this.clientPeriodDatesChanged.emit();
+			});
+    }
+
+    private _getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+        let dataToSend = {
+            agreementId: agreementId,
+            search: search,
+            clientId: this.salesClientDataForm.directClientIdValue.value.clientId,
+            agreementType: AgreementType.Frame,
+            validity: undefined,
+            legalEntityId: this.salesClientDataForm.pdcInvoicingEntityId.value,
+            salesTypeId: this.mainDataForm.salesTypeId.value,
+            contractTypeId: undefined,
+            deliveryTypeId: this.mainDataForm.deliveryTypeId.value,
+            startDate: this.salesClientDataForm.startDate.value,
+            endDate: this.salesClientDataForm.endDate.value,
+            pageNumber: 1,
+            pageSize: 1000,
+            sort: ''
+        }
+        this._agreementService
+			.simpleList(
+				dataToSend.agreementId,
+				dataToSend.search,
+				dataToSend.clientId,
+				dataToSend.agreementType,
+				dataToSend.validity,
+				dataToSend.legalEntityId,
+				dataToSend.salesTypeId,
+				dataToSend.contractTypeId,
+				dataToSend.deliveryTypeId,
+				dataToSend.startDate,
+				dataToSend.endDate,
+				dataToSend.pageNumber,
+				dataToSend.pageSize,
+				dataToSend.sort
+			)
+			.subscribe((result) => {
+				this.frameAgreements = result.items;
+				if (this.frameAgreements.length === 1) {
+					this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+				}
 			});
     }
 
@@ -460,7 +506,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	openClientInNewTab(clientId: string) {
-		const url = this.router.serializeUrl(this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
+		const url = this._router.serializeUrl(this._router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
 		window.open(url, '_blank');
 	}
 
@@ -473,8 +519,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				);
 			}
 		} else {
-			this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-				this.httpClient
+			this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+				this._httpClient
 					.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
 						headers: new HttpHeaders({
 							Authorization: `Bearer ${response.accessToken}`,

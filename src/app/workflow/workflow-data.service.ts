@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { map } from 'rxjs/operators';
+import { ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { IConsultantAnchor } from './workflow-period/workflow-period.model';
 import { WorkflowProgressStatus } from './workflow.model';
 
@@ -39,7 +40,13 @@ export class WorkflowDataService {
     consultantsAddedToStep = new EventEmitter<{stepType: number, processTypeId: number, consultantNames: IConsultantAnchor[]}>();
 
     cancelForceEdit =  new EventEmitter<any>();
-    constructor() { }
+    isContractModuleEnabled: boolean;
+    isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
+
+    constructor(private _configurationService: ConfigurationServiceProxy) {
+        // console.log(this.isContractModuleEnabled2);
+        this._getContractModuleConfig();
+    }
 
     updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {
         for (const update in status) {
@@ -48,6 +55,14 @@ export class WorkflowDataService {
                 (this.workflowProgress[key] as any) = status[key];
             }
         }
+    }
+
+    private _getContractModuleConfig() {
+        this._configurationService.contractsEnabled().subscribe(result => this.isContractModuleEnabled = result);
+    }
+
+    get contractModuleEnabled() {
+        return this.isContractModuleEnabled;
     }
 
     get getWorkflowProgress() {

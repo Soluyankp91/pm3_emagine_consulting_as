@@ -130,6 +130,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             clientInvoiceTime: new UntypedFormControl(null),
             manualDate: new UntypedFormControl(null),
 
+            // frame agreement
+            frameAgreementId: new UntypedFormControl(null),
+
             // clientRatesNFees
             clientFees: new UntypedFormArray([]),
             clientRates: new UntypedFormArray([]),
@@ -230,6 +233,10 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get clientSpecialRateCurrency() {
         return this.get('clientSpecialRateCurrency');
+    }
+
+    get frameAgreementId() {
+        return this.get('frameAgreementId');
     }
 
     //clientFees

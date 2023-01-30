@@ -87,6 +87,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 
@@ -109,6 +110,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	) {
 		super(injector);
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
+        console.log(this._workflowDataService.contractModuleEnabled);
 
 		this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.valueChanges
 			.pipe(
