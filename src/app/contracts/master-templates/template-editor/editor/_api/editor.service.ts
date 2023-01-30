@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, concatMap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 export interface WrappedValueDto<TValue> {
   value: TValue;
@@ -30,8 +30,21 @@ export class EditorService {
     );
   }
 
-  upsertTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
+  saveAsDraftTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
     const endpoint = `${this.baseUrl}/api/AgreementTemplate/${templateId}/document-file/false`;
     return this.httpClient.put(endpoint, fileContent);
+  }
+
+  comleteTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
+    const draftEndpoint = `${this.baseUrl}/api/AgreementTemplate/${templateId}/document-file/false`;
+    const completeEndpoint = `${this.baseUrl}/api/AgreementTemplate/${templateId}/document-file/complete-template/false`;
+    
+    return this.httpClient.put(draftEndpoint, fileContent).pipe(
+      concatMap(res => this.httpClient.patch(completeEndpoint, {
+        versionDescription: 'test version',
+        propagateChangesToDerivedTemplates: true,
+        markActiveAgreementsAsOutdated: true
+      }))
+    );
   }
 }
