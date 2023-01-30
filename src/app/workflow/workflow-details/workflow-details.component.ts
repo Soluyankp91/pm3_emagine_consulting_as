@@ -115,6 +115,7 @@ export class WorkflowDetailsComponent
     workflowStatusMenuList = WorkflowStatusMenuList;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: { [key: string]: string };
     individualConsultantActionsAvailable: boolean;
@@ -375,7 +376,8 @@ export class WorkflowDetailsComponent
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
-    tabChanged(event: MatTabChangeEvent) {
+    tabChanged(event: any) {
+        console.log(event);
         this.selectedIndex = event.index;
         this.selectedTabName = event.tab.textLabel;
         let newStatus = new WorkflowProgressStatus();

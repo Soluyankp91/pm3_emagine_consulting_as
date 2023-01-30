@@ -2,6 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
+import { WorkflowPeriodComponent, WorkflowPeriodResolver } from './workflow-period/workflow-period.component';
 
 const routes: Routes = [
     {
@@ -19,7 +20,14 @@ const routes: Routes = [
     },
     {
         path: ':id',
-        component: WorkflowDetailsComponent
+        component: WorkflowDetailsComponent,
+        children: [
+            {
+                path: ':periodId',
+                component: WorkflowPeriodComponent,
+                resolve: {data: WorkflowPeriodResolver}
+            }
+        ]
     },
 ];
 

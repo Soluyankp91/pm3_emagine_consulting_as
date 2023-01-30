@@ -1,20 +1,22 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injectable, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, NavigationStart, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmploymentType } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmploymentType, ClientPeriodDto, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contracts.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
+import { WorkflowProgressStatus, WorkflowSteps, WorkflowTopSections } from '../workflow.model';
 import { IConsultantAnchor, StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
@@ -28,9 +30,12 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     @ViewChild('workflowFinances', {static: false}) workflowFinances: WorkflowFinancesComponent;
     @ViewChild('menuDeleteTrigger', {static: false}) menuDeleteTrigger: MatMenuTrigger;
 
-    @Input() workflowId: string;
-    @Input() periodId: string | undefined;
-    @Input() topToolbarVisible: boolean;
+    // @Input() workflowId: string;
+    workflowId: string;
+    // @Input() periodId: string | undefined;
+    periodId: string | undefined;
+    // @Input() topToolbarVisible: boolean;
+    topToolbarVisible: boolean;
 
     sideMenuItems: WorkflowProcessWithAnchorsDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
@@ -48,6 +53,10 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     workflowStatuses = WorkflowStepStatus;
 
     isStatusUpdate = false;
+    clientPeriods: ClientPeriodDto[];
+    workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+    selectedTabName: string;
+    private _routerEventsSubscription: Subscription;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -58,9 +67,21 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
-        private _scrollToService: ScrollToService
+        private _scrollToService: ScrollToService,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router
     ) {
         super(injector);
+        this._activatedRoute.data.pipe(takeUntil(this._unsubscribe)).subscribe((source) => {
+			let data: WorkflowPeriodDto = source['data'];
+			if (data?.workflowId) {
+                this.workflowId = data?.workflowId;
+            }
+            if (data?.periodId) {
+                this.periodId = data?.periodId;
+            }
+		});
+
         this._workflowDataService.consultantsAddedToStep
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {stepType: number, processTypeId: number, consultantNames: IConsultantAnchor[]}) => {
@@ -69,8 +90,22 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     }
 
     ngOnInit(): void {
-        this.getPeriodStepTypes();
+        this.getClientPeriodTypes();
         this.getSideMenu();
+        this.updateWorkflowProgressAfterTopTabChanged();
+        this._routerEventsSubscription = this._router.events.subscribe((evt) => {
+            const navigation  = this._router.getCurrentNavigation();
+            console.log(navigation.extras.state);
+            this.selectedTabName = navigation.extras.state.selectedTabName;
+            this.updateWorkflowProgressAfterTopTabChanged();
+            // if (evt instanceof NavigationStart) {
+            // }
+            if (evt instanceof NavigationEnd) {
+                //Code to reload/filter list
+                this.getSideMenu();
+            }
+        });
+        this.getPeriodStepTypes();
         this._workflowDataService.workflowSideSectionAdded
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
@@ -82,6 +117,50 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                     this.isStatusUpdate = value.isStatusUpdate;
                     this.getSideMenu(value.autoUpdate);
                 });
+    }
+
+    updateWorkflowProgressAfterTopTabChanged() {
+        let newStatus = new WorkflowProgressStatus();
+        newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+        // if (this.selectedTabIndex > 0) {
+            // if not overview - active period
+            newStatus.currentlyActivePeriodId = this.periodId;
+                // this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
+        // }
+        if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Overview) {
+            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        } else {
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
+                this.selectedTabName
+            );
+        }
+        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    }
+
+    getClientPeriodTypes() {
+        this._internalLookupService
+            .getWorkflowClientPeriodTypes()
+            .pipe(finalize(() => {}))
+            .subscribe((result) => {
+                this.workflowClientPeriodTypes = result;
+            });
+    }
+
+    detectTopLevelMenu(clientPeriodName: string) {
+        const selectedTopMenu = this.clientPeriods?.find(
+            (x) => x.name === clientPeriodName
+        );
+        const clientPeriodType = this.workflowClientPeriodTypes.find(
+            (type) => type.id === selectedTopMenu?.typeId
+        );
+        switch (clientPeriodType?.id) {
+            case 1: // Start period
+                return WorkflowTopSections.StartPeriod;
+            case 2: // Change period
+                return WorkflowTopSections.ChangePeriod;
+            case 3: // Extend period
+                return WorkflowTopSections.ExtendPeriod;
+        }
     }
 
     ngOnDestroy(): void {
@@ -105,6 +184,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 
             }))
             .subscribe(result => {
+                this.clientPeriods = result?.clientPeriods;
                 this.sideMenuItems = result?.clientPeriods![0]?.workflowProcesses!.map(side => {
                     return new WorkflowProcessWithAnchorsDto({
                         typeId: side.typeId!,
@@ -415,4 +495,22 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         };
         this._scrollToService.scrollTo(config);
     }
+}
+
+export class WorkflowPeriodDto {
+    workflowId: string;
+    periodId: string;
+}
+
+@Injectable()
+export class WorkflowPeriodResolver implements Resolve<WorkflowPeriodDto> {
+	constructor() {}
+	resolve(route: ActivatedRouteSnapshot): WorkflowPeriodDto {
+		let workflowId = route.parent.params['id'];
+		let periodId = route.params['periodId'];
+		return {
+            workflowId: workflowId,
+            periodId: periodId
+        }
+	}
 }

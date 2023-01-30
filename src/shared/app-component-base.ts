@@ -115,17 +115,17 @@ export abstract class AppComponentBase {
 	}
 
 	consultantProfileUrl(fileToken: string): string {
-		if (!fileToken) {
+		// if (!fileToken) {
 			return 'assets/common/images/no-img.jpg';
-		}
-		return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
+		// }
+		// return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
 	}
 
 	employeeProfileUrl(fileToken: string): string {
-		if (!fileToken) {
+		// if (!fileToken) {
 			return 'assets/common/images/no-img.jpg';
-		}
-		return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
+		// }
+		// return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
 	}
 
 	deepLinkToSourcing(consultantId: number) {

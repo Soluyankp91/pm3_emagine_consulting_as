@@ -12,7 +12,7 @@ import { WorkflowContractsComponent } from './workflow-contracts/workflow-contra
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
 import { WorkflowFinancesComponent } from './workflow-finances/workflow-finances.component';
 import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview.component';
-import { WorkflowPeriodComponent } from './workflow-period/workflow-period.component';
+import { WorkflowPeriodComponent, WorkflowPeriodResolver } from './workflow-period/workflow-period.component';
 import { WorkflowSalesComponent } from './workflow-sales/workflow-sales.component';
 import { WorkflowSourcingComponent } from './workflow-sourcing/workflow-sourcing.component';
 import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
@@ -64,7 +64,8 @@ import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/to
     ],
     exports: [],
     providers: [
-        WorkflowCreateResolver
+        WorkflowCreateResolver,
+        WorkflowPeriodResolver
     ],
 })
 export class WorkflowModule {}
