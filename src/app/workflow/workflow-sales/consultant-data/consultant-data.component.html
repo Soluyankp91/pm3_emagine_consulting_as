@@ -44,7 +44,7 @@
                                     <mat-label>Employment type</mat-label>
                                     <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
-                                            <mat-option [value]="item.id">
+                                            <mat-option [value]="item">
                                                 {{ item.name }}
                                             </mat-option>
                                         </ng-container>
