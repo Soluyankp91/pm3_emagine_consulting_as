@@ -166,7 +166,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantDto.sourcingRequestId = consultant?.requestId;
 		}
 		const form = this._fb.group({
-			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId ?? null),
+			employmentType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
 			consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId ?? null),
 			consultantNameOnly: new UntypedFormControl(consultant?.nameOnly ?? null),
@@ -272,10 +272,10 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 	updateConsultantStepAnchors() {
 		let consultantNames: IConsultantAnchor[] = this.consultants.value.map((item: any) => {
-            if (item.employmentTypeId === EmploymentTypes.FeeOnly || item.employmentTypeId === EmploymentTypes.Recruitment) {
-                return {employmentType: item.employmentTypeId, name: item.consultantNameOnly};
+            if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
+                return {employmentType: item.employmentType?.id, name: item.consultantNameOnly};
             } else {
-                return {employmentType: item.employmentTypeId, name: item.consultantName?.consultant?.name};
+                return {employmentType: item.employmentType?.id, name: item.consultantName?.consultant?.name};
             }
         });
 		this._workflowDataService.consultantsAddedToStep.emit({
