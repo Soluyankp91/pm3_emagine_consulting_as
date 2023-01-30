@@ -1003,10 +1003,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _packConsultantFormData(consultant: any): ConsultantSalesDataDto {
 		let consultantInput = new ConsultantSalesDataDto();
-		consultantInput.employmentTypeId = consultant.employmentType?.id;
+		consultantInput.employmentTypeId = consultant.employmentTypeId;
 		if (
-			consultant.employmentType?.id === EmploymentTypes.FeeOnly ||
-			consultant.employmentType?.id === EmploymentTypes.Recruitment
+			consultant.employmentTypeId === EmploymentTypes.FeeOnly ||
+			consultant.employmentTypeId === EmploymentTypes.Recruitment
 		) {
 			consultantInput.nameOnly = consultant.consultantNameOnly;
 			consultantInput.consultantPeriodId = consultant.consultantPeriodId;
