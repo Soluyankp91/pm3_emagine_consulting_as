@@ -11,8 +11,8 @@
                             <ng-container
                                 *ngIf="consultant.value?.consultant?.id || consultant.value?.consultantNameOnly">
                                 <ng-container *ngIf="consultant.value?.consultant?.id">
-                                    <img class="image-thumbnail-responsive border-rounded-50 u-ml--16 u-mr--16"
-                                        [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16"
+                                        [ngSrc]="consultantPhotoUrl + consultant.value?.consultant?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 </ng-container>
                                 <span class="workflow-form--consultants__name">
                                     {{consultant.value?.consultant?.name}}
@@ -60,7 +60,7 @@
                                                 <div class="multilineDropdown-option--row">
                                                     <ng-container *ngIf="item?.id !== undefined">
                                                         <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                            [src]="consultantProfileUrl(item?.externalId!)" />
+                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                                     </ng-container>
                                                     <div
                                                         class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -1000,28 +1000,26 @@
                                                             projectLine.value.projectName : '-'}}
                                                         </span>
                                                     </div>
-                                                    <ng-container *ngIf="!contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value">
-                                                        <div fxLayout="row" class="project-line--expansion-additional">
-                                                            <span fxFlex="15%"
-                                                                class="project-line--expansion-additional__header">Invoicing
-                                                                ref person</span>
-                                                            <span class="project-line--expansion-additional__content">
-                                                                <ng-container
-                                                                    *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
-                                                                    {{projectLine.value.invoicingReferencePerson?.firstName
-                                                                    ? (projectLine.value.invoicingReferencePerson?.firstName
-                                                                    + ' ' +
-                                                                    projectLine.value.invoicingReferencePerson?.lastName) :
-                                                                    '-'}}
-                                                                </ng-container>
-                                                                <ng-template #invoicingReferencePersonFreeText>
-                                                                    {{projectLine.value.invoicingReferencePerson &&
-                                                                    projectLine.value.invoicingReferencePerson !== '' ?
-                                                                    projectLine.value.invoicingReferencePerson : '-'}}
-                                                                </ng-template>
-                                                            </span>
-                                                        </div>
-                                                    </ng-container>
+                                                    <div fxLayout="row" class="project-line--expansion-additional">
+                                                        <span fxFlex="15%"
+                                                            class="project-line--expansion-additional__header">Invoicing
+                                                            ref person</span>
+                                                        <span class="project-line--expansion-additional__content">
+                                                            <ng-container
+                                                                *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
+                                                                {{projectLine.value.invoicingReferencePerson?.firstName
+                                                                ? (projectLine.value.invoicingReferencePerson?.firstName
+                                                                + ' ' +
+                                                                projectLine.value.invoicingReferencePerson?.lastName) :
+                                                                '-'}}
+                                                            </ng-container>
+                                                            <ng-template #invoicingReferencePersonFreeText>
+                                                                {{projectLine.value.invoicingReferencePerson &&
+                                                                projectLine.value.invoicingReferencePerson !== '' ?
+                                                                projectLine.value.invoicingReferencePerson : '-'}}
+                                                            </ng-template>
+                                                        </span>
+                                                    </div>
                                                     <div fxLayout="row" class="project-line--expansion-additional">
                                                         <span fxFlex="15%"
                                                             class="project-line--expansion-additional__header">Debitor

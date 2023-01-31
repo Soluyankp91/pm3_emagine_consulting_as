@@ -56,7 +56,11 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+                    if (toSend.clientIds?.length) {
+                        return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
+                    }
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -130,8 +134,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
             this.projectLineForm.invoicingReferenceNumber?.disable();
         }
 
-        this.projectLineForm.invoicingReferencePersonDontShowOnInvoice?.setValue(data.invoicingReferencePersonDontShowOnInvoice, {emitEvent: false});
-
         this.projectLineForm.invoicingReferencePersonId?.setValue(data.invoicingReferencePerson ?? '', {emitEvent: false});
         this.projectLineForm.differentInvoicingReferencePerson?.setValue(data.differentInvoicingReferencePerson ?? false, {emitEvent: false});
         if (!data.differentInvoicingReferencePerson) {
@@ -174,14 +176,12 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.noEndDate = this.projectLineForm.noEndDate?.value;
         result.differentInvoicingReferenceNumber = this.projectLineForm.differentInvoicingReferenceNumber?.value;
         result.invoicingReferenceNumber = this.projectLineForm.invoicingReferenceNumber?.value;
-        if (!this.projectLineForm.invoicingReferencePersonDontShowOnInvoice?.value) {
-            result.differentInvoicingReferencePerson = this.projectLineForm.differentInvoicingReferencePerson?.value;
-            if (this.projectLineForm.invoicingReferencePersonId?.value?.id) {
-                result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
-                result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
-            } else {
-                result.invoicingReferenceString = this.projectLineForm.invoicingReferencePersonId?.value;
-            }
+        result.differentInvoicingReferencePerson = this.projectLineForm.differentInvoicingReferencePerson?.value;
+        if (this.projectLineForm.invoicingReferencePersonId?.value?.id) {
+            result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
+            result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
+        } else {
+            result.invoicingReferenceString = this.projectLineForm.invoicingReferencePersonId?.value;
         }
         result.optionalInvoicingInfo = this.projectLineForm.optionalInvoicingInfo?.value;
         result.differentDebtorNumber = this.projectLineForm.differentDebtorNumber?.value;

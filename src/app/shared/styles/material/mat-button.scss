@@ -424,6 +424,20 @@
     }
 }
 
+.sort-clear-icon.mat-icon-button {
+    @include fontLineHeightAndSize(12px, 12px, 12px, 12px);
+    mat-icon {
+        @include fontLineHeightAndSize(10px, 10px, 10px, 10px);
+    }
+    &:hover {
+        mat-icon {
+            path {
+                fill: $green-color;
+            }
+        }
+    }
+}
+
 
 // workaround to avoid default material focus on buttons
 .mat-button.cdk-keyboard-focused .mat-button-focus-overlay,

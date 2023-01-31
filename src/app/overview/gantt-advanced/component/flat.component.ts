@@ -1,7 +1,6 @@
 import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, Inject, Output, EventEmitter, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
-import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
 import { SortDirections } from 'src/shared/entities/shared-enums';
 import { OverviewFlag, OverviewFlagNames, OverviewProcessColors, OverviewProcessIcons } from '../../main-overview.model';
@@ -46,15 +45,17 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 	sorting: string;
 	@HostBinding('class.gantt-flat') ganttFlatClass = true;
 
-	constructor(
-		elementRef: ElementRef<HTMLElement>,
-		cdr: ChangeDetectorRef,
-		ngZone: NgZone,
-		@Inject(GANTT_GLOBAL_CONFIG) config: GanttGlobalConfig,
-		private router: Router
-	) {
-		super(elementRef, cdr, ngZone, config);
-	}
+    consultantPhotoUrl = AppConsts.consultantPhotoUrl;
+    employeePhotoUrl = AppConsts.employeePhotoUrl;
+    constructor(
+        elementRef: ElementRef<HTMLElement>,
+        cdr: ChangeDetectorRef,
+        ngZone: NgZone,
+        @Inject(GANTT_GLOBAL_CONFIG) config: GanttGlobalConfig,
+        private router: Router
+    ) {
+        super(elementRef, cdr, ngZone, config);
+    }
 
 	private buildGroupMergedItems(items: GanttItemInternal[]) {
 		const mergedItems: GanttItemInternal[][] = [];
@@ -94,29 +95,14 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 		});
 	}
 
-	mapListByProperty(list: any[], prop: string) {
-		if (list?.length) {
-			return list.map((x) => x[prop]).join(', ');
-		} else {
-			return '-';
-		}
-	}
+    redirectToWorkflow(id: string) {
+        this.router.navigate(['app/workflow', id]);
+    }
 
-	redirectToWorkflow(id: string) {
-		this.router.navigate(['app/workflow', id]);
-	}
-
-	employeeProfileUrl(fileToken: string): string {
-		if (!fileToken) {
-			return 'assets/common/images//no-img.jpg';
-		}
-		return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
-	}
-
-	setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {
-		let ids = { workflowId: workflowId, userSelectedStatus: userSelectedStatus };
-		this.userSelectedStatusForWorflow.emit(ids);
-	}
+    setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {
+        let ids = {workflowId: workflowId, userSelectedStatus: userSelectedStatus}
+        this.userSelectedStatusForWorflow.emit(ids);
+    }
 
 	setUserSelectedStatusForConsultant(workflowId: string, consultantId: number, userSelectedStatus: number) {
 		let ids = { workflowId: workflowId, consultantId: consultantId, userSelectedStatus: userSelectedStatus };
@@ -145,6 +131,11 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 				? new Date(item?.origin?.end * 1000)
 				: undefined;
 	}
+
+    setDefaultImage(target: EventTarget | null) {
+        (target as HTMLImageElement).src = '../../../../assets/common/images/no-img.jpg';
+    }
+
 
 	sortChanged(sortName: string) {
 		if (this.sortName === '' || sortName === this.sortName) {
