@@ -528,6 +528,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
+    openPeriod(workflowId: string, processId: string) {
+        this.router.navigateByUrl(`/app/workflow/${workflowId}/${processId}`)
+    }
+
 	pageChanged(event?: any): void {
 		this.pageNumber = event.pageIndex + 1;
 		this.deafultPageSize = event.pageSize;

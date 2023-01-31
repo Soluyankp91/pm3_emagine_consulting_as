@@ -40,7 +40,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start center" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
                 <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
-                    <div class="workflow-overview--team__user column">
+                    <div class="workflow-overview--team__user column" appPreventDoubleClick (throttledClick)="openPeriod(item)">
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
                                 <app-manager-search

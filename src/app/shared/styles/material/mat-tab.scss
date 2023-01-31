@@ -97,8 +97,8 @@ mat-tab-group.client-documents--tabs {
     display: none;
 }
 
-.workflow-content--tabs {
-    .mat-tab-header {
+nav.workflow-content--tabs {
+    &.mat-tab-nav-bar {
         top: 50px;
         z-index: 1000;
         position: sticky;
@@ -107,7 +107,7 @@ mat-tab-group.client-documents--tabs {
         background-color: $white-color;
     }
 
-    .mat-tab-label-container {
+    .mat-tab-link-container {
         padding-top: 0 !important;
     }
 
@@ -117,11 +117,11 @@ mat-tab-group.client-documents--tabs {
         top: 0;
     }
 
-    .mat-tab-labels {
+    .mat-tab-links {
         padding-top: 5px;
     }
 
-    .mat-tab-label {
+    .mat-tab-link {
         position: relative;
         font-family: 'Open Sans', sans-serif !important;
         opacity: 1 !important;
@@ -196,9 +196,9 @@ mat-tab-group.client-documents--tabs {
         }
 
         &:first-of-type {
-            flex: 1 1 100%;
+            // flex: 1 1 100%;
             box-sizing: border-box;
-            max-width: 20%;
+            width: 270px;
         }
     }
 

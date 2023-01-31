@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -76,6 +76,7 @@ export class WorkflowDetailsComponent
     menuActionsTrigger: MatMenuTrigger;
     @ViewChild('menuWorkflowStatusesTrigger', {static: false})
     menuWorkflowStatusesTrigger: MatMenuTrigger;
+    @ViewChild('rlaWFOverview', {static: true}) rlaWFOverview: RouterLinkActive;
 
 
     menuIndex = 0;
@@ -93,8 +94,7 @@ export class WorkflowDetailsComponent
 
     // tabs navigation
     selectedTabIndex: number;
-    selectedTabName = 'Overview';
-    extensionIndex: number | null;
+    // selectedTabName = 'Overview';
 
     sectionIndex: number;
 
@@ -148,7 +148,7 @@ export class WorkflowDetailsComponent
 
     get bottomToolbarVisible() {
         if (
-            this.selectedTabName === 'Overview' ||
+            this.rlaWFOverview.isActive ||
             (!this._workflowDataService.getWorkflowProgress
                 .stepSpecificPermissions!['StartEdit'] &&
                 !this._workflowDataService.getWorkflowProgress
@@ -348,57 +348,57 @@ export class WorkflowDetailsComponent
                     this.workflowStatusIcon = getStatusIcon(result.workflowStatusId);
                 }
                 if (value) {
-                    this.selectedIndex = 1;
+                    this.router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
                     this.topMenuTabs.realignInkBar();
-                    this.updateWorkflowProgressAfterTopTabChanged();
+                    // this.updateWorkflowProgressAfterTopTabChanged();
                 }
             });
     }
 
-    updateWorkflowProgressAfterTopTabChanged() {
-        let newStatus = new WorkflowProgressStatus();
-        newStatus.currentlyActiveStep = WorkflowSteps.Sales;
-        if (this.selectedTabIndex > 0) {
-            // if not overview - active period
-            newStatus.currentlyActivePeriodId =
-                this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
-        } else {
-            // if overview - most recent period
-            newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
-        }
-        if (this.selectedTabName === 'Overview') {
-            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
-        } else {
-            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
-                this.selectedTabName
-            );
-        }
-        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
-    }
+    // updateWorkflowProgressAfterTopTabChanged() {
+    //     let newStatus = new WorkflowProgressStatus();
+    //     newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+    //     if (this.selectedTabIndex > 0) {
+    //         // if not overview - active period
+    //         newStatus.currentlyActivePeriodId =
+    //             this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
+    //     } else {
+    //         // if overview - most recent period
+    //         newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
+    //     }
+    //     if (this.selectedTabName === 'Overview') {
+    //         newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+    //     } else {
+    //         newStatus.currentlyActiveSection = this.detectTopLevelMenu(
+    //             this.selectedTabName
+    //         );
+    //     }
+    //     this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    // }
 
-    tabChanged(event: any) {
-        console.log(event);
-        this.selectedIndex = event.index;
-        this.selectedTabName = event.tab.textLabel;
-        let newStatus = new WorkflowProgressStatus();
-        newStatus.currentlyActiveStep = WorkflowSteps.Sales;
-        if (event.index > 0) {
-            // if not overview - active period
-            newStatus.currentlyActivePeriodId =
-                this.clientPeriods![event.index - 1]?.id;
-        } else {
-            // if overview - most recent period
-            newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
-        }
-        if (this.selectedTabName === 'Overview') {
-            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
-        } else {
-            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
-                this.selectedTabName
-            );
-        }
-        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
-    }
+    // tabChanged(event: any) {
+    //     console.log(event);
+    //     this.selectedIndex = event.index;
+    //     this.selectedTabName = event.tab.textLabel;
+    //     let newStatus = new WorkflowProgressStatus();
+    //     newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+    //     if (event.index > 0) {
+    //         // if not overview - active period
+    //         newStatus.currentlyActivePeriodId =
+    //             this.clientPeriods![event.index - 1]?.id;
+    //     } else {
+    //         // if overview - most recent period
+    //         newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
+    //     }
+    //     if (this.selectedTabName === 'Overview') {
+    //         newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+    //     } else {
+    //         newStatus.currentlyActiveSection = this.detectTopLevelMenu(
+    //             this.selectedTabName
+    //         );
+    //     }
+    //     this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    // }
 
     detectTopLevelMenu(clientPeriodName: string) {
         const selectedTopMenu = this.clientPeriods?.find(

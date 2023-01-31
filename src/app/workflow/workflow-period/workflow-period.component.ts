@@ -55,7 +55,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     isStatusUpdate = false;
     clientPeriods: ClientPeriodDto[];
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
-    selectedTabName: string;
+    typeId: number;
     private _routerEventsSubscription: Subscription;
     private _unsubscribe = new Subject();
     constructor(
@@ -96,12 +96,11 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this._routerEventsSubscription = this._router.events.subscribe((evt) => {
             const navigation  = this._router.getCurrentNavigation();
             console.log(navigation.extras.state);
-            this.selectedTabName = navigation.extras.state.selectedTabName;
+            this.typeId = navigation.extras.state?.typeId;
             this.updateWorkflowProgressAfterTopTabChanged();
             // if (evt instanceof NavigationStart) {
             // }
             if (evt instanceof NavigationEnd) {
-                //Code to reload/filter list
                 this.getSideMenu();
             }
         });
@@ -122,17 +121,11 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     updateWorkflowProgressAfterTopTabChanged() {
         let newStatus = new WorkflowProgressStatus();
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
-        // if (this.selectedTabIndex > 0) {
-            // if not overview - active period
-            newStatus.currentlyActivePeriodId = this.periodId;
-                // this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
-        // }
+        newStatus.currentlyActivePeriodId = this.periodId;
         if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Overview) {
             newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
         } else {
-            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
-                this.selectedTabName
-            );
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.typeId);
         }
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
@@ -146,14 +139,14 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
             });
     }
 
-    detectTopLevelMenu(clientPeriodName: string) {
-        const selectedTopMenu = this.clientPeriods?.find(
-            (x) => x.name === clientPeriodName
-        );
-        const clientPeriodType = this.workflowClientPeriodTypes.find(
-            (type) => type.id === selectedTopMenu?.typeId
-        );
-        switch (clientPeriodType?.id) {
+    detectTopLevelMenu(typeId: number) {
+        // const selectedTopMenu = this.clientPeriods?.find(
+        //     (x) => x.name === clientPeriodName
+        // );
+        // const clientPeriodType = this.workflowClientPeriodTypes.find(
+        //     (type) => type.id === selectedTopMenu?.typeId
+        // );
+        switch (typeId) {
             case 1: // Start period
                 return WorkflowTopSections.StartPeriod;
             case 2: // Change period
@@ -166,6 +159,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+        this._routerEventsSubscription.unsubscribe();
     }
 
     getPeriodStepTypes() {
@@ -378,6 +372,9 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveStep: step.typeId, stepSpecificPermissions: step.actionsPermissionsForCurrentUser, currentStepIsCompleted: step.status === WorkflowStepStatus.Completed});
+        console.log(this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit']);
+        console.log(this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion']);
+        console.log(this._workflowDataService.getWorkflowProgress.currentStepIsCompleted);
     }
 
     changeSideSection(item: WorkflowProcessWithAnchorsDto, index: number) {

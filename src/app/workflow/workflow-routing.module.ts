@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
 import { WorkflowPeriodComponent, WorkflowPeriodResolver } from './workflow-period/workflow-period.component';
+import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview.component';
 
 const routes: Routes = [
     {
@@ -22,6 +23,15 @@ const routes: Routes = [
         path: ':id',
         component: WorkflowDetailsComponent,
         children: [
+            {
+                path: '',
+                redirectTo: 'overview',
+                pathMatch: 'full'
+            },
+            {
+                path: 'overview',
+                component: WorkflowOverviewComponent
+            },
             {
                 path: ':periodId',
                 component: WorkflowPeriodComponent,

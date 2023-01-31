@@ -88,7 +88,7 @@
                 z-index: 9999;
             }
             &.wrapper-overlay {
-                top: 0;
+                top: 60;
                 height: 100%;
             }
         }
@@ -199,7 +199,7 @@
         color: #FB9101;
         cursor: pointer;
     }
-    &.finished-status { 
+    &.finished-status {
         color: $purple-color;
     }
     &.deleted-status {

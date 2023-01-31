@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
+import { result } from 'lodash';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -16,7 +17,7 @@ import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workf
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model';
+import { WorkflowDiallogAction, WorkflowProgressStatus, WorkflowTopSections } from '../workflow.model';
 
 @Component({
     selector: 'app-workflow-overview',
@@ -26,8 +27,10 @@ import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model
 export class WorkflowOverviewComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
-    @Input() workflowId: string;
-    @Input() periodId: string | undefined;
+    // @Input() workflowId: string;
+    workflowId: string;
+    // @Input() periodId: string | undefined;
+    periodId: string | undefined;
 
     componentInitalized = false;
     workflowStepStatus = WorkflowStepStatus;
@@ -74,10 +77,11 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
      }
 
     ngOnInit(): void {
-        this.activatedRoute.paramMap.pipe(
+        this.activatedRoute.parent.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.workflowId = params.get('id')!;
+            this.getClientPeriods();
         });
         this.componentInitalized = true;
         this.individualConsultantActionsAvailable = environment.dev;
@@ -94,6 +98,26 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    private _setWFProgress() {
+        let newStatus = new WorkflowProgressStatus();
+        newStatus.currentStepIsCompleted = false;
+        newStatus.currentStepIsForcefullyEditing = false;
+        newStatus.currentlyActiveSideSection = 0;
+        newStatus.currentlyActiveStep = 0;
+        newStatus.stepSpecificPermissions = {
+            StartEdit: false,
+            Edit: false,
+            Completion: false,
+        };
+        newStatus.currentlyActivePeriodId = this.periodId;
+        newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    }
+
+    openPeriod(process: WorkflowProcessDto) {
+        // TODO: navigate to period once we have periodId in a response
     }
 
     displayStepAction(process: StepDto) {
@@ -236,6 +260,14 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 this.historyTotalCount = result.totalCount;
             }
         })
+    }
+
+    getClientPeriods() {
+        this._workflowService.clientPeriods(this.workflowId)
+            .subscribe(result => {
+                this.periodId = result.clientPeriods?.length ? result.clientPeriods[0].id : '';
+                this._setWFProgress();
+            })
     }
 
     terminateConsultant(consultantInfo: ConsultantGanttRow) {
