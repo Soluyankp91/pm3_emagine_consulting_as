@@ -9,3 +9,9 @@ export enum ManagerStatus {
     Pending = 2,
     Completed = 3,
 }
+
+export enum EManagerStatusIcon {
+    'upcoming-icon' = ManagerStatus.Upcoming,
+    'in-progress-icon' = ManagerStatus.Pending,
+    'completed-icon'= ManagerStatus.Completed
+}

@@ -6,6 +6,7 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
+import { EProfileImageLinkTypes } from "./AppEnums";
 import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
 export enum NotifySeverity {
@@ -16,15 +17,19 @@ export enum NotifySeverity {
 }
 
 export abstract class AppComponentBase {
-	apiUrl: string;
-	spinnerService: NgxSpinnerService;
-	matSnackbar: MatSnackBar;
-	momentFormatType = AppConsts.momentFormatType;
-	constructor(injector: Injector) {
-		this.apiUrl = injector.get(API_BASE_URL);
-		this.spinnerService = injector.get(NgxSpinnerService);
-		this.matSnackbar = injector.get(MatSnackBar);
-	}
+    apiUrl: string;
+    spinnerService: NgxSpinnerService;
+    matSnackbar: MatSnackBar;
+    momentFormatType = AppConsts.momentFormatType;
+    consultantPhotoUrl = AppConsts.consultantPhotoUrl;
+    employeePhotoUrl = AppConsts.employeePhotoUrl;
+
+    imageType = EProfileImageLinkTypes;
+    constructor(injector: Injector) {
+        this.apiUrl = injector.get(API_BASE_URL);
+        this.spinnerService = injector.get(NgxSpinnerService);
+        this.matSnackbar = injector.get(MatSnackBar);
+    }
 
 	showNotify(severity: number, text: string, buttonText: string) {
 		const className = this.mapSeverity(severity);
@@ -114,20 +119,6 @@ export abstract class AppComponentBase {
 		this.spinnerService.hide();
 	}
 
-	consultantProfileUrl(fileToken: string): string {
-		if (!fileToken) {
-			return 'assets/common/images/no-img.jpg';
-		}
-		return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
-	}
-
-	employeeProfileUrl(fileToken: string): string {
-		if (!fileToken) {
-			return 'assets/common/images/no-img.jpg';
-		}
-		return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
-	}
-
 	deepLinkToSourcing(consultantId: number) {
 		window.open(`${environment.sourcingUrl}/app/overview/consultants/consultant/${consultantId}`, '_blank');
 	}
@@ -146,6 +137,10 @@ export abstract class AppComponentBase {
 		}
 		return result;
 	}
+
+    setDefaultImage(target: EventTarget | null) {
+        (target as HTMLImageElement).src = '../assets/common/images/no-img.jpg';
+    }
 
 	/** Function to create your own custom trackBy
 	 *  In cases where basic trackByFn cannot be used and you need specific property in comparator.

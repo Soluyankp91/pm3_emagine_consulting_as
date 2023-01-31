@@ -14,7 +14,7 @@
                 <mat-label>Contract step responsible</mat-label>
                 <ng-container *ngIf="contractStepResponsible.value?.id" matPrefix>
                     <img class="border-rounded-50 image-settings--dropdown"
-                        [src]="employeeProfileUrl(contractStepResponsible.value?.externalId!)" />
+                        [ngSrc]="employeePhotoUrl + contractStepResponsible.value.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                 </ng-container>
                 <input #contractResponsibleInput type="text" matInput
                     [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
@@ -32,7 +32,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <ng-container *ngIf=" manager.id !== undefined">
                                     <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                        [src]="employeeProfileUrl(manager?.externalId!)" />
+                                        [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 </ng-container>
                                 <span class="autocopmlete-option-name">{{ manager.name }}</span>
                             </div>
@@ -51,9 +51,10 @@
                     'isPanelOpen': financeResponsibleAutocomplete.isOpen
                 }">
                 <mat-label>Finance step responsible</mat-label>
+
                 <ng-container *ngIf="financeStepResponsible.value?.id" matPrefix>
                     <img class="border-rounded-50 image-settings--dropdown"
-                        [src]="employeeProfileUrl(financeStepResponsible.value?.externalId!)" />
+                    [ngSrc]="employeePhotoUrl + financeStepResponsible.value.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                 </ng-container>
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
                     [formControl]="financeStepResponsible" appPreventDoubleClick
@@ -71,7 +72,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <ng-container *ngIf=" manager.id !== undefined">
                                     <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                        [src]="employeeProfileUrl(manager?.externalId!)" />
+                                        [ngSrc]="employeePhotoUrl + manager?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)"/>
                                 </ng-container>
                                 <span class="autocopmlete-option-name">{{ manager.name }}</span>
                             </div>
@@ -102,7 +103,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.contractStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
                         <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                             [ngClass]="{'placeholder-manager': !row.contractStepResponsible?.id}"
-                            [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
+                            [ngSrc]="employeePhotoUrl + row?.contractStepResponsible?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                         <span>
                             {{row.contractStepResponsible?.name ?? '-'}}
                         </span>
@@ -115,7 +116,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.financeStepResponsible?.name ? '' : 'User not assigned'" matTooltipClass="white-tooltip">
                         <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                             [ngClass]="{'placeholder-manager': !row.financeStepResponsible?.id}"
-                            [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
+                            [ngSrc]="employeePhotoUrl + row?.financeStepResponsible?.externalId + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                         <span>
                             {{row.financeStepResponsible?.name ?? '-'}}
                         </span>
