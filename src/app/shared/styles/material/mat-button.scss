@@ -406,6 +406,13 @@
     mat-icon {
         @include fontLineHeightAndSize(10px, 10px, 10px, 10px);
     }
+    &:hover {
+        mat-icon {
+            path {
+                fill: $green-color;
+            }
+        }
+    }
 }
 
 
