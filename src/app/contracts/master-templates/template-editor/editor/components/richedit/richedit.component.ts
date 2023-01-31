@@ -10,10 +10,12 @@ import {
   RibbonTabType, 
   RichEdit
 } from 'devexpress-richedit';
+import { BehaviorSubject } from 'rxjs';
 
 import { IMergeField } from '../../_api/merge-fields.service';
 import { RicheditService } from '../../services/richedit.service';
 import { TransformMergeFiels } from '../../helpers/transform-merge-fields.helper';
+
 
 @Component({
   standalone: true,
@@ -26,8 +28,8 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
   @Input() template: File | Blob | ArrayBuffer | string = '';
   @Input() mergeFields: IMergeField;
 
-  templateAsBase64$ = this._richeditService.templateAsBase64$;
-  hasUnsavedChanges$ = this._richeditService.hasUnsavedChanges$;
+  templateAsBase64$: BehaviorSubject<string> = this._richeditService.templateAsBase64$;
+  hasUnsavedChanges$: BehaviorSubject<boolean> = this._richeditService.hasUnsavedChanges$;
 
   private _rich: RichEdit;  
 
@@ -38,19 +40,25 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const options: Options = createOptions();
+    
+    this.setDimensions(options);
+    this.ribbonCustomization(options);
+    this.createDocument(this._element.nativeElement.firstElementChild, options);
+    this.registerCustomEvents();
+  }
+
+  setDimensions(options: Options) {
     options.width = 'calc(100vw - 160px)';
     options.height = 'calc(100vh - 240px)';
+  }
 
-    this.ribbonCustomization(options);
-
-    this._rich = create(this._element.nativeElement.firstElementChild, options);
+  createDocument(element: HTMLDivElement, options: Options) {
+    this._rich = create(element, options);
     this._rich.openDocument(this.template, 'emagine_doc', 4);
 
     this._rich.events.documentChanged.addHandler(() => {
       this.hasUnsavedChanges$.next(this._rich.hasUnsavedChanges);
     })
-
-    this.registerCustomEvents();
   }
 
   ribbonCustomization(options: Options) {
@@ -67,7 +75,8 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
   }
 
   insertCompareTab(options: Options) {
-    const selectBtn = new RibbonButtonItem('selectBtn', 'Select Document', {
+    const selectBtnId = 'selectBtn';
+    const selectBtn = new RibbonButtonItem(selectBtnId, 'Select Document', {
       showText: true,
       beginGroup: true,
       icon: 'home'
