@@ -395,6 +395,29 @@
     }
 }
 
+.button-add-documents {
+    background-color: transparent !important;
+    color: $green-color;
+    font-weight: 700;
+    padding-left: 0px !important;
+    font-size: 14px;
+    .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    mat-icon {
+        border-radius: 50% !important;
+        margin-right: 5px;
+    }
+    @media screen and (max-width: 1440px) {
+        mat-icon {
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            font-size: 16px;
+        }
+    }
+}
 .small-icon-button.mat-icon-button {
     mat-icon {
         @include fontLineHeightAndSize(14px, 14px, 14px, 14px);

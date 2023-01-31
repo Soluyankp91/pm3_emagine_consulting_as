@@ -799,5 +799,17 @@ export class AppModule {
                 'assets/common/images/dialog-close-icon.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'download-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/download-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'no-docs-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/no-docs.svg'
+            )
+        );
     }
 }
