@@ -3,33 +3,35 @@
 		<div class="page-container">
 			<div class="template-settings-section">
 				<h3 class="template-settings-header">Agreement settings</h3>
-				<mat-radio-group [formControl]="creationMode" class="radio-button-group">
-					<mat-radio-button
-						class="option"
-						[value]="creationModes.InheritedFromParent"
-						(click)="modeControl$.next(creationModes.InheritedFromParent)"
-						>Inherit from template</mat-radio-button
-					>
-					<mat-radio-button
-						class="option"
-						[value]="creationModes.Duplicated"
-						(click)="modeControl$.next(creationModes.Duplicated)"
-						>Duplicate from other agreement</mat-radio-button
-					>
-					<mat-radio-button
-						class="option"
-						[value]="creationModes.ProvidedByOtherParty"
-						(click)="modeControl$.next(creationModes.ProvidedByOtherParty)"
-						>Agreement provided by other party</mat-radio-button
-					>
-					<mat-radio-button
-						class="option"
-						[value]="creationModes.FromScratch"
-						(click)="modeControl$.next(creationModes.FromScratch)"
-						>Create from scratch</mat-radio-button
-					>
-				</mat-radio-group>
-				<mat-divider></mat-divider>
+                <ng-container *ngIf="!editMode">
+                    <mat-radio-group [formControl]="creationMode" class="radio-button-group">
+                        <mat-radio-button
+                            class="option"
+                            [value]="creationModes.InheritedFromParent"
+                            (click)="modeControl$.next(creationModes.InheritedFromParent)"
+                            >Inherit from template</mat-radio-button
+                        >
+                        <mat-radio-button
+                            class="option"
+                            [value]="creationModes.Duplicated"
+                            (click)="modeControl$.next(creationModes.Duplicated)"
+                            >Duplicate from other agreement</mat-radio-button
+                        >
+                        <mat-radio-button
+                            class="option"
+                            [value]="creationModes.ProvidedByOtherParty"
+                            (click)="modeControl$.next(creationModes.ProvidedByOtherParty)"
+                            >Agreement provided by other party</mat-radio-button
+                        >
+                        <mat-radio-button
+                            class="option"
+                            [value]="creationModes.FromScratch"
+                            (click)="modeControl$.next(creationModes.FromScratch)"
+                            >Create from scratch</mat-radio-button
+                        >
+                    </mat-radio-group>
+                    <mat-divider></mat-divider>
+                </ng-container>
 				<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
 					<ng-container *ngIf="templateOptions.options$ | async as options">
 						<emg-dropdown-autocomplete-single-select

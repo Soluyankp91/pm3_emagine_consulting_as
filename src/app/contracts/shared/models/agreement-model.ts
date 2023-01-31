@@ -1,6 +1,6 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { AgreementCreationMode, SignerType } from 'src/shared/service-proxies/service-proxies';
+import { SignerType } from 'src/shared/service-proxies/service-proxies';
 
 export type SignerFormGroup = FormGroup<{
 	signerType: FormControl<null | SignerType>;

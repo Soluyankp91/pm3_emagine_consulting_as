@@ -1,0 +1,11 @@
+<ng-container [ngSwitch]="agreementValidityState">
+	<ng-container *ngSwitchCase="0">
+        <mat-icon svgIcon="agreement-active-icon" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+    </ng-container>
+	<ng-container *ngSwitchCase="1">
+        <mat-icon svgIcon="agreement-active-outdated-icon" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+    </ng-container>
+	<ng-container *ngSwitchCase="2">
+        <mat-icon svgIcon="agreement-inactive-icon" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+    </ng-container>
+</ng-container>

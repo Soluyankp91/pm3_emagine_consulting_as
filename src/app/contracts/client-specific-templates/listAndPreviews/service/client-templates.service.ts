@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BaseContract, IFilterEnum } from 'src/app/contracts/shared/base/base-contract';
+import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
 import { ClientFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class ClientTemplatesService extends BaseContract {
-	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
-		super();
-	}
-
-	override tableFilters$ = new BehaviorSubject<IFilterEnum>({
+	override tableFilters$ = new BehaviorSubject<ClientFiltersEnum>({
 		language: [],
 		id: [],
 		agreementType: [],
@@ -24,7 +20,11 @@ export class ClientTemplatesService extends BaseContract {
 		isEnabled: [],
 	});
 
-	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
+	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
+		super();
+	}
+
+	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload<ClientFiltersEnum>) {
 		return this._agreementTemplateServiceProxy.list2(
 			true, //isClientTemplate,
 			undefined,

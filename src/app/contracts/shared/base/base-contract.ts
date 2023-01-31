@@ -7,11 +7,10 @@ import {
 	INITIAL_PAGE_INDEX,
 } from '../components/grid-table/master-templates/entities/master-templates.constants';
 import { isEqual } from 'lodash';
-import { PageDto, SortDto, MasterFiltersEnum, TemplatePayload, ClientFiltersEnum } from '../entities/contracts.interfaces';
-export type IFilterEnum = MasterFiltersEnum | ClientFiltersEnum;
+import { PageDto, SortDto, TemplatePayload } from '../entities/contracts.interfaces';
 export abstract class BaseContract {
-	abstract tableFilters$: BehaviorSubject<IFilterEnum>;
-	abstract sendPayload$(templatePayload: TemplatePayload): Observable<AgreementTemplatesListItemDtoPaginatedList>;
+	abstract tableFilters$: BehaviorSubject<any>;
+	abstract sendPayload$(templatePayload: TemplatePayload<any>): Observable<any>;
 
 	contractsLoading$$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
@@ -62,7 +61,7 @@ export abstract class BaseContract {
 		return this._searchFilter$$.asObservable();
 	}
 
-	updateTableFilters(data: IFilterEnum) {
+	updateTableFilters(data: any) {
 		this.tableFilters$.next(data);
 	}
 
@@ -87,15 +86,5 @@ export abstract class BaseContract {
 			...this.tableFilters$.value,
 			id,
 		});
-	}
-
-	enabledToSend(enabled: number[]) {
-		if (!enabled.length || enabled.length === 2) {
-			return undefined;
-		}
-		if (enabled[0] === 1 || enabled[1] === 1) {
-			return true;
-		}
-		return false;
 	}
 }

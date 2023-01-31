@@ -10,13 +10,12 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 import { MODE_FILTER_OPTIONS } from '../../client-template.constants';
 
 @Component({
-	selector: 'app-mode-filter',
+	selector: 'app-client-mode-filter',
 	templateUrl: './mode-filter.component.html',
-	styleUrls: ['./mode-filter.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
-export class ModeFilterComponent {
+export class ClientModeFilterComponent {
 	filterFormControl: FormControl;
 	tableFilter = 'linkState';
 
@@ -27,8 +26,8 @@ export class ModeFilterComponent {
 		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
-			.subscribe((enabled) => {
-				this.filterFormControl = new FormControl(enabled);
+			.subscribe((mode) => {
+				this.filterFormControl = new FormControl(mode);
 			});
 	}
 }

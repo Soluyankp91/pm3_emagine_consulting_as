@@ -21,6 +21,10 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	deliveryTypeIds: 'Delivery type',
 	contractTypeIds: 'Contract type',
 	isEnabled: 'Status',
+	status: 'Status',
 	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
+	mode: 'Mode',
+	saleManager: 'Sales Manager',
+	contractManager: 'Contract Manager',
 };

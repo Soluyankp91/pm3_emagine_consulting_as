@@ -10,6 +10,8 @@ import { CreateMasterTemplateComponent } from './master-templates/template-edito
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
+import { AgreementEditorComponent } from './agreements/template-editor/template-editor.component';
+import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 
 const routes: Routes = [
 	{
@@ -30,8 +32,22 @@ const routes: Routes = [
 						component: AgreementsComponent,
 					},
 					{
-						path: 'create',
-						component: SettingsComponent,
+						path: '',
+						component: AgreementEditorComponent,
+						children: [
+							{
+								path: 'create',
+								component: SettingsComponent,
+							},
+							{
+								path: ':id/settings',
+								component: SettingsComponent,
+							},
+							{
+								path: ':id/editor',
+								component: AgreementDevExpress,
+							},
+						],
 					},
 				],
 			},

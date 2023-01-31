@@ -17,9 +17,7 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class EmployeesFilterComponent {
-	@Output() initialLoading = new ReplaySubject<boolean>(1).pipe(take(1)) as ReplaySubject<boolean>;
-
-	textEmitter = new EventEmitter();
+	freeTextEmitter = new EventEmitter();
 
 	filterFormControl: FormControl;
 	employees$: Observable<EmployeeDto[]>;
@@ -42,16 +40,15 @@ export class EmployeesFilterComponent {
 	}
 
 	emitText($event: { filter: string; idsToExclude: number[] }) {
-		this.textEmitter.emit($event);
+		this.freeTextEmitter.emit($event);
 	}
 
 	private _initEmployees() {
-		this.employees$ = this.textEmitter.pipe(
+		this.employees$ = this.freeTextEmitter.pipe(
 			startWith({ filter: '', idsToExclude: [] }),
 			switchMap(({ filter, idsToExclude }) => {
 				return this.lookupServiceProxy.employees(filter, false, idsToExclude);
-			}),
-			tap(() => this.initialLoading.next(true))
+			})
 		);
 	}
 }
