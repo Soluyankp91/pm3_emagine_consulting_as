@@ -194,11 +194,11 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <ng-container *ngIf="overviewDocuments.length">
+        <ng-container *ngIf="overviewDocuments.length; else noDocuments">
             <div fxLayout="row" fxLayoutAlign="start start" class="documents-header u-w--100 u-pl--16 u-pr--16 u-mb--15">
                 <span fxFlex="30px">
                 </span>
-                <span fxFlex="auto">
+                <span fxFlex>
                     Documents
                 </span>
                 <span fxFlex="180px">
@@ -217,13 +217,14 @@
                 </span>
             </div>
             <ng-container *ngFor="let item of overviewDocuments; trackBy: trackById;">
-                <div fxLayout="row" fxLayoutAlign="start start" class="documents-row u-w--100 u-pl--16 u-pr--16">
+                <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100 u-pl--16 u-pr--16">
                     <span fxFlex="30px">
+                        <mat-icon [svgIcon]="item.icon"></mat-icon>
                     </span>
                     <span fxFlex="auto" class="text-bold">
                         {{item.name}}
                     </span>
-                    <span fxFlex="180px">
+                    <span fxFlex="180px" fxLayoutAlign="start center">
                         <ng-container [ngSwitch]="item.workflowProcessType">
                             <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
                                 <mat-icon svgIcon="workflowAdd"></mat-icon>
@@ -265,8 +266,8 @@
                     <span fxFlex="120px">
                         {{item.createdDateUtc | momentFormat}}
                     </span>
-                    <span fxFlex="80px">
-                        {{item.createdBy?.name}}
+                    <span fxFlex="80px" [matTooltip]="item.createdBy?.name" matTooltipClass="white-tooltip">
+                        <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + item.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
                     </span>
                     <span fxFlex="40px">
                         <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="documentActionsMenu" class="three-dots-actions-btn">
@@ -292,9 +293,15 @@
                 </div>
             </ng-container>
         </ng-container>
+        <ng-template #noDocuments>
+            <div class="documents-noData" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon svgIcon="no-docs-icon"></mat-icon>
+                There are no documents added yet
+            </div>
+        </ng-template>
     </ng-container>
     <ng-container *ngIf="workflowHistory.length">
-        <mat-divider class="u-w--100 u-mb--30"></mat-divider>
+        <mat-divider class="u-w--100 u-mb--30 u-mt--30"></mat-divider>
         <h2 class="workflow-overview--history-header u-mb--30">Latest changes</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="workflow-overview--history">
             <div fxLayout="column" fxLayoutAlign="start start" fxFlex="40%">

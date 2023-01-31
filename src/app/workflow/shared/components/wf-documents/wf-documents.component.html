@@ -30,25 +30,27 @@
                         <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdDateUtc | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{document.value.createdDateUtc | momentFormat}}
                         </div>
-                        <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdBy?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            <img class="image-settings--dropdown" [src]="employeeProfileUrl(document.value.createdBy?.externalId)">
+                        <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdBy?.name" matTooltipClass="white-tooltip">
+                            <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + document.value.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
                         </div>
                         <div fxFlex="5%" fxLayoutAlign="end center">
-                            <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
-                            <mat-menu #generalDocumentMenu>
-                                <button
-                                    class="menu-item menu-item--edit"
-                                    mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.workflowDocumentId)">
-                                    Download
-                                </button>
-                                <button
-                                    class="menu-item menu-item--cancel"
-                                    mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, i)">
-                                    Delete document
-                                </button>
-                            </mat-menu>
+                            <ng-container *ngIf="!readOnlyMode">
+                                <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
+                                <mat-menu #generalDocumentMenu>
+                                    <button
+                                        class="menu-item menu-item--edit"
+                                        mat-menu-item
+                                        appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.workflowDocumentId)">
+                                        Download
+                                    </button>
+                                    <button
+                                        class="menu-item menu-item--cancel"
+                                        mat-menu-item
+                                        appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, i)">
+                                        Delete document
+                                    </button>
+                                </mat-menu>
+                            </ng-container>
                         </div>
                     </div>
                 </ng-container>

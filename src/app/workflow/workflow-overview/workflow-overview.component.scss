@@ -125,7 +125,11 @@
     }
     &-row {
         @include fontOpenSans(12px, 600);
+        background-color: $white-color;
         color: $dark-grey-color;
+    }
+    &-noData {
+        color: $medium-grey-color;
     }
 }
 

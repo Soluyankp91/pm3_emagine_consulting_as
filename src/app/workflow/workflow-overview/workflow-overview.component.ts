@@ -27,7 +27,6 @@ import {
 	GanttRowItem,
 	StepDto,
 	StepType,
-	WorkflowDocumentQueryDto,
 	WorkflowDocumentServiceProxy,
 	WorkflowHistoryDto,
 	WorkflowProcessDto,
@@ -40,7 +39,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model';
-import { EStepActionTooltip } from './workflow-overview.model';
+import { EStepActionTooltip, IWFOverviewDocuments } from './workflow-overview.model';
 
 @Component({
 	selector: 'app-workflow-overview',
@@ -64,7 +63,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	workflowProcessType = WorkflowProcessType;
 	workflowHistory: WorkflowHistoryDto[] = [];
 
-	overviewDocuments: WorkflowDocumentQueryDto[] = [];
+	overviewDocuments: IWFOverviewDocuments[] = [];
 	stepTypes = StepType;
 
 	// gant
@@ -130,8 +129,25 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		this._workflowDocumentsService
 			.overviewAll(this.workflowId, this.documentsPeriod.value ?? undefined)
 			.subscribe((result) => {
-				this.overviewDocuments = result;
+				this.overviewDocuments = result.map(item => {
+                    return <IWFOverviewDocuments>{
+                        id: item.id,
+                        clientPeriodId: item.clientPeriodId,
+                        createdBy: item.createdBy,
+                        createdDateUtc: item.createdDateUtc,
+                        icon: this._getIcon(item.name),
+                        name: item.name,
+                        stepType: item.stepType,
+                        workflowProcessType: item.workflowProcessType,
+                        workflowTerminationId: item.workflowTerminationId
+                    }
+                });
 			});
+	}
+
+    private _getIcon(fileName: string): string {
+		let splittetFileName = fileName.split('.');
+		return splittetFileName[splittetFileName.length - 1];
 	}
 
 	getOverviewData() {
@@ -387,7 +403,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		return step;
 	}
 
-    downloadDocument(item: WorkflowDocumentQueryDto) {
+    downloadDocument(item: IWFOverviewDocuments) {
 		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
 			const fileUrl = `${this.apiUrl}/api/WorkflowDocument/${item.id}`;
 			this.httpClient
@@ -418,7 +434,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		});
 	}
 
-	removeDocument(item: WorkflowDocumentQueryDto) {
+	removeDocument(item: IWFOverviewDocuments) {
         this.showMainSpinner();
         this._workflowDocumentsService.workflowDocumentDELETE(item.id!)
             .pipe(finalize(() => this.hideMainSpinner()))

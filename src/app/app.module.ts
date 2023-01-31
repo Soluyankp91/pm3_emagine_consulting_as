@@ -805,5 +805,11 @@ export class AppModule {
                 'assets/common/images/download-icon.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'no-docs-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/no-docs.svg'
+            )
+        );
     }
 }
