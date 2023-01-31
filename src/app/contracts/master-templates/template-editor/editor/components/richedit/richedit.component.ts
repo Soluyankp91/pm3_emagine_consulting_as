@@ -1,36 +1,57 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, SkipSelf } from '@angular/core';
 import {
   create, 
   createOptions, 
   FileTabItemId, 
   HomeTabCommandId, 
-  MailMergeTabCommandId, 
   Options,
   RibbonButtonItem,
   RibbonTab, 
   RibbonTabType, 
   RichEdit
 } from 'devexpress-richedit';
-import { Subject } from 'rxjs';
 
 import { IMergeField } from '../../_api/merge-fields.service';
-import { getIndexes } from './helper';
+import { RicheditService } from '../../services/richedit.service';
+import { TransformMergeFiels } from '../../helpers/transform-merge-fields.helper';
+
 @Component({
   standalone: true,
   selector: 'app-richedit',
   template: '<div class="editor"></div>',
   styleUrls: ['./richedit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RicheditComponent implements AfterViewInit, OnDestroy {
-  private _rich: RichEdit;
-
   @Input() template: File | Blob | ArrayBuffer | string = '';
   @Input() mergeFields: IMergeField;
 
-  templateAsBase64$ = new Subject<string>();
+  templateAsBase64$ = this._richeditService.templateAsBase64$;
+  hasUnsavedChanges$ = this._richeditService.hasUnsavedChanges$;
 
-  constructor(private element: ElementRef) { }
+  private _rich: RichEdit;  
+
+  constructor(
+    private _element: ElementRef, 
+    @SkipSelf() private _richeditService: RicheditService
+  ) { }
+
+  ngAfterViewInit(): void {
+    const options: Options = createOptions();
+    options.width = 'calc(100vw - 160px)';
+    options.height = 'calc(100vh - 240px)';
+
+    this.ribbonCustomization(options);
+
+    this._rich = create(this._element.nativeElement.firstElementChild, options);
+    this._rich.openDocument(this.template, 'emagine_doc', 4);
+
+    this._rich.events.documentChanged.addHandler(() => {
+      this.hasUnsavedChanges$.next(this._rich.hasUnsavedChanges);
+    })
+
+    this.registerCustomEvents();
+  }
 
   ribbonCustomization(options: Options) {
     const fileTab = options.ribbon.getTab(RibbonTabType.File);
@@ -60,103 +81,19 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  ngAfterViewInit(): void {
-    const options: Options = createOptions();
-    this.ribbonCustomization(options);
-
-    options.width = 'calc(100vw - 160px)';
-    options.height = 'calc(100vh - 240px)';
-    options.spellCheck.enabled = false;
-
-    this._rich = create(this.element.nativeElement.firstElementChild, options);
-    this._rich.openDocument(this.template, 'emagine_doc', 4);
-
-    this.registerCustomEvents();
-  }
-
   registerCustomEvents() {
     this._rich.events.customCommandExecuted.addHandler((s, e) => {
       switch (e.commandName) {
         case 'updateStyles':
           this.updateFontsToDefault();
-          this.updateFileds();
+          this.transformFiledsIntoMergeFields();
           break;
       }
     })
   }
 
-
-  setTemplateAsBase64() {
-    this._rich.exportToBase64(s => {
-      this.templateAsBase64$.next(s);
-    });
-  }
-
-  updateFileds() {
-    this._rich.beginUpdate();
-    for (let i = 0; i < this._rich.document.paragraphs.count; i++) {
-      const p = this._rich.document.paragraphs.getByIndex(i);
-      const t = this._rich.document.getText(p.interval);
-
-      if (t.indexOf('{') > -1) {
-        const regExp = /{([^}]+)}/g;
-        let match = t.match(regExp);
-        
-        if (match.length > 1) {
-          match.forEach((item, index) => {
-            this.updateMergeFields(index, i);
-          })    
-        } else {
-          const firstIndex = t.indexOf('{');
-          const lastIndex = t.indexOf('}');
-
-          const isMergeField = this._rich.document.fields.find({
-            start: p.interval.start,
-            length: p.interval.length - 1
-          });
-
-          if (!isMergeField.length) {
-            const rxp = /{([^}]+)}/g;
-            const arr = t.match(rxp);
-            const mergeFieldName = arr.map(item => item.replace(/\{|\}/gi, ''));
-            this._rich.document.fields.createMergeField(p.interval.end - 1, mergeFieldName[0]);
-            this._rich.document.deleteText({
-              start: p.interval.start + firstIndex,
-              length: lastIndex - firstIndex + 1
-            })
-          }
-        }
-      }
-    }
-
-    this._rich.executeCommand(MailMergeTabCommandId.UpdateAllFields);
-    this._rich.endUpdate();
-  }
-
-  updateMergeFields(index, i) {
-    const p = this._rich.document.paragraphs.getByIndex(i);
-    const t = this._rich.document.getText(p.interval);
-
-    let item = getIndexes(t, p.interval)[index];
-
-    const firstIndex = item.start;
-    const lastIndex = item.end;
-
-    const isMergeField = this._rich.document.fields.find({
-      start: firstIndex,
-      length: lastIndex - firstIndex - 1
-    });
-
-    if (!isMergeField.length) {
-      const rxp = /{([^}]+)}/g;
-      const arr = t.match(rxp);
-      const mergeFieldName = arr.map(item => item.replace(/\{|\}/gi, ''));
-      this._rich.document.fields.createMergeField(lastIndex + 1, mergeFieldName[index]);
-      this._rich.document.deleteText({
-        start: firstIndex,
-        length: lastIndex - firstIndex + 1
-      })
-    }
+  transformFiledsIntoMergeFields() {
+    TransformMergeFiels.updateMergeFields(this._rich);
   }
 
   updateFontsToDefault() {
@@ -166,14 +103,16 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
     this._rich.endUpdate();
   }
 
-  hasUnsavedChanges() {
-    return this._rich.hasUnsavedChanges;
-  }
-
   ngOnDestroy() {
     if (this._rich) {
       this._rich.dispose();
       this._rich = null;
     }
+  }
+
+  public setTemplateAsBase64() {
+    this._rich.exportToBase64(s => {
+      this.templateAsBase64$.next(s);
+    });
   }
 }

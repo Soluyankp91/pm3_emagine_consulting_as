@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { filter, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 
 // Project Specific
 import { EditorService } from './_api/editor.service';
 import { RicheditComponent } from './components/richedit/richedit.component';
-import { ActivatedRoute } from '@angular/router';
 import { MergeFieldsService } from './_api/merge-fields.service';
+import { RicheditService } from './services/richedit.service';
 
 @Component({
   standalone: true,
@@ -22,12 +23,12 @@ import { MergeFieldsService } from './_api/merge-fields.service';
   ],
   providers: [
     EditorService,
-    MergeFieldsService
+    MergeFieldsService,
+    RicheditService
   ]
 })
 export class EditorComponent implements OnInit, OnDestroy {
   _destroy$ = new Subject();
-
   template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
   mergeFields$ = this._mergeFieldsService.getMergeFields(this._route.snapshot.params.id);
   
@@ -36,11 +37,13 @@ export class EditorComponent implements OnInit, OnDestroy {
   );
 
   isLoading$ = new Subject();
+  hasUnsavedChanges$ = this._richeditService.hasUnsavedChanges$;
 
   @ViewChild(RicheditComponent) richEdit: RicheditComponent;
 
   constructor(
     private _editorService: EditorService,
+    private _richeditService: RicheditService,
     private _mergeFieldsService: MergeFieldsService,
     private _route: ActivatedRoute
   ) {
@@ -48,6 +51,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const templateId = this._route.snapshot.params.id;
+
     this._editorService.getTemplate(templateId).pipe(
       tap(template => this.template$.next(template)),
     ).subscribe(
@@ -58,11 +62,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     )
   }
 
-  onSaveDraft() {
+  saveAsDraft() {
     this.isLoading$.next(true);
     this.richEdit.setTemplateAsBase64();
     
     this.richEdit.templateAsBase64$.pipe(
+      filter(res => !!res),
       take(1)
     ).subscribe(base64 => {
       const templateId = this._route.snapshot.params.id;
@@ -72,11 +77,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     })   
   }
 
-  onSaveComplete() {
+  saveAsComplete() {
     this.isLoading$.next(true);
     this.richEdit.setTemplateAsBase64();
 
     this.richEdit.templateAsBase64$.pipe(
+      filter(res => !!res),
       take(1)
     ).subscribe(base64 => {
       const templateId = this._route.snapshot.params.id;
