@@ -38,7 +38,6 @@ import { MasterTemplatesComponent } from './master-templates/listAndPreviews/mas
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
 import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
 import { ContractsService } from './shared/services/contracts.service';
-import { ClientSpecificComponent } from './client-specific-templates/edit-template/client-specific.component';
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
@@ -77,7 +76,6 @@ import { ClientTemplateModeComponent } from './shared/components/client-mode/cli
 import { AgreementService } from './agreements/listAndPreviews/services/agreement.service';
 import { StatusesFilterComponent } from './shared/components/grid-table/agreements/filters/statuses-filter/statuses-filter.component';
 import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
-import { AgreementEditorComponent } from './agreements/template-editor/template-editor.component';
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 @NgModule({
 	declarations: [
@@ -104,7 +102,6 @@ import { AgreementDevExpress } from './agreements/template-editor/editor/agreeme
 		DropdownAutocompleteMultiselectComponent,
 		NewFileUploaderDirective,
 		CreationComponent,
-		ClientSpecificComponent,
 		DropdownAutocompleteSingleSelectComponent,
 		ConfirmDialogComponent,
 		FileUploaderComponent,
@@ -140,7 +137,6 @@ import { AgreementDevExpress } from './agreements/template-editor/editor/agreeme
 		ContractManagerFilterComponent,
 		AgreementModeComponent,
 		StatusesFilterComponent,
-		AgreementEditorComponent,
 	],
 	imports: [
 		CommonModule,
@@ -263,5 +259,14 @@ export class ContractsModule {
 			'agreement-inactive-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-inactive-icon.svg')
 		);
+		iconRegistry.addSvgIcon(
+			'table-edit-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/table-edit-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'duplicate-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/duplicate-icon.svg')
+		);
+		iconRegistry.addSvgIcon('copy-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/copy-icon.svg'));
 	}
 }

@@ -50,7 +50,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 		if (!val) {
 			this.showSample = false;
 			this.textControl.enable();
-			this.textControl.reset('');
+			this.textControl.reset();
 			return;
 		}
 		this.textControl.setValue(val, { emitEvent: false });
@@ -93,7 +93,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 			switchMap(() => {
 				this.showSample = !this.showSample;
 				if (this.showSample) {
-					this.textControlBufferValue = this.textControl.value;
+					this.textControlBufferValue = this.textControl.value ? this.textControl.value : '';
 					this.textControl.disable({ emitEvent: false });
 					return this.mergeFieldsServiceProxy.format(undefined, this.textControlBufferValue).pipe(
 						map((v) => v.value),

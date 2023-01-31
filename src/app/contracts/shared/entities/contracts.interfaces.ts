@@ -55,6 +55,7 @@ export interface AgreementFiltersEnum {
 export interface Actions {
 	label: string;
 	actionType: string;
+	actionIcon: string;
 }
 export interface SortDto {
 	active: string;

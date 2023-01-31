@@ -2,7 +2,7 @@ import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector, ChangeDetect
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { combineLatest, Observable, Subject, forkJoin, of, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { combineLatest, Observable, Subject, forkJoin, of, BehaviorSubject, race } from 'rxjs';
 import {
 	startWith,
 	switchMap,
@@ -79,7 +79,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
 
-	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode | null>(AgreementCreationMode.FromScratch);
+	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.FromScratch);
 
 	editMode: boolean = false;
 
@@ -112,7 +112,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		if (paramId) {
 			this.editMode = true;
 			this.currentAgreementId = paramId;
-			this._preselectAgreement();
+			this._preselectAgreement(paramId);
 		} else {
 			this._setDuplicateObs();
 			this._subscribeOnCreationMode();
@@ -398,8 +398,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						emitEvent: false,
 					});
 					this._subscribeOnDuplicateAgreementChanges();
-				} else {
-					this.agreementFormGroup.enable({ emitEvent: false });
 				}
 			});
 	}
@@ -417,9 +415,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				filter((val) => !!val),
 				takeUntil(
-					this.creationMode.valueChanges.pipe(
-						filter((creationMode) => creationMode !== AgreementCreationMode.InheritedFromParent)
-					)
+					race([
+						this.creationMode.valueChanges.pipe(
+							filter((creationMode) => creationMode !== AgreementCreationMode.InheritedFromParent)
+						),
+						this._unSubscribe$,
+					])
 				),
 				tap(() => {
 					this.showMainSpinner();
@@ -455,9 +456,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				distinctUntilChanged(),
 				takeUntil(
-					this.creationMode.valueChanges.pipe(
-						filter((creationMode) => creationMode !== AgreementCreationMode.Duplicated)
-					)
+					race([
+						this.creationMode.valueChanges.pipe(
+							filter((creationMode) => creationMode !== AgreementCreationMode.Duplicated)
+						),
+						this._unSubscribe$,
+					])
 				),
 				tap(() => {
 					this._clearSigners();
@@ -566,8 +570,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		);
 	}
 
-	private _preselectAgreement() {
-		this._apiServiceProxy.agreementGET(this._route.snapshot.params.id).subscribe((agreement) => {
+	private _preselectAgreement(agreementId: number) {
+		this._apiServiceProxy.agreementGET(agreementId).subscribe((agreement) => {
 			if (agreement.creationMode === 3) {
 				this._setDuplicateObs();
 				this.agreementFormGroup.addControl(

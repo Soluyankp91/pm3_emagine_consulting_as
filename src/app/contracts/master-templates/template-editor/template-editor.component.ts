@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { getAllRouteParams } from '../../shared/utils/allRouteParams';
 import { Subject, Observable } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, take } from 'rxjs/operators';
 import { CreationTitleService } from '../../shared/services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -15,19 +15,28 @@ import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 })
 export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
 	tabs: Tab[];
+	defaultName: string;
 
 	templateName$: Observable<string>;
 	tenants$: Observable<(LegalEntityDto & { code: string })[] | null>;
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(private readonly _router: Router, private readonly _creationTitleService: CreationTitleService) {}
+	constructor(
+		private readonly _router: Router,
+		private readonly _route: ActivatedRoute,
+		private readonly _creationTitleService: CreationTitleService
+	) {}
 
 	ngOnInit(): void {
 		this._setTabs();
 		this._subscribeOnRouteChanges();
 		this.templateName$ = this._creationTitleService.templateName$;
 		this.tenants$ = this._creationTitleService.tenants$;
+
+		this._route.data.pipe(take(1)).subscribe(({ defaultName }) => {
+			this.defaultName = defaultName;
+		});
 	}
 
 	ngOnDestroy(): void {
