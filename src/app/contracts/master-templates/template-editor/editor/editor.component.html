@@ -1,10 +1,10 @@
 <ng-container *ngIf="template$ | async as template" >
-  <ng-container *ngIf="mergeFields$ | async as mergeFields">
-    <app-richedit
-      [template]="template"
-      [mergeFields]="mergeFields"
-      (save)="onSave($event)"
-    >
-    </app-richedit>
+    <ng-container *ngIf="mergeFields$ | async as mergeFields">
+      <app-richedit
+        [template]="template"
+        [mergeFields]="mergeFields"
+        (save)="onSave($event)"
+      >
+      </app-richedit>
+    </ng-container>
   </ng-container>
-</ng-container>
