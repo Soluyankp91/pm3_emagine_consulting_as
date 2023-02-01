@@ -43,6 +43,7 @@ import {
 	ConsultantPeriodServiceProxy,
 	ConsultantPeriodSalesDataDto,
 	EmployeeDto,
+    WorkflowDocumentCommandDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -449,6 +450,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					});
 				}
+                if (result?.workflowDocuments?.length) {
+                    this.mainDataComponent.mainDocuments?.addExistingFile(result.workflowDocuments);
+                }
 				this.clientDataComponent?.salesClientDataForm.patchValue(result, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.patchValue(result.salesClientData!, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.differentEndClient?.setValue(
@@ -845,6 +849,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (this.consutlantDataComponent) {
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
+        if (this.mainDataComponent?.mainDocuments) {
+            this.mainDataComponent.mainDocuments.documents.controls = [];
+        }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
 	}
@@ -883,6 +890,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _packClientPeriodData(): ClientPeriodSalesDataCommandDto {
 		let input = new ClientPeriodSalesDataCommandDto();
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
+			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
 		input.salesMainData = new SalesMainDataDto(this.mainDataComponent?.salesMainDataForm.value);
 		input.salesMainData.salesAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
@@ -1096,6 +1113,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.terminationReason = +this.salesTerminateConsultantForm?.terminationReason?.value;
 		input.finalEvaluationReferencePersonId =
 			this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.id ?? null;
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
+			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
 		return input;
 	}
 
