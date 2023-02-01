@@ -6,7 +6,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmployeeDto, IdNameDto, LookupServiceProxy, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { ManagerStatus } from './manager-search.model';
+import { EManagerStatusIcon, ManagerStatus } from './manager-search.model';
 
 @Component({
     selector: 'app-manager-search',
@@ -32,6 +32,8 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;
+
+    managerStatusIcon = EManagerStatusIcon;
 
     managerFilter = new UntypedFormControl('');
     filteredManagers: any[] = [];

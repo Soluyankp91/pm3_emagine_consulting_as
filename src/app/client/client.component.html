@@ -10,10 +10,10 @@
                     matTooltipClass="white-tooltip"
                     (click)="openManagersMenu($event)">
                     <ng-container *ngIf="selectedAccountManagers?.length === 1">
-                        <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
+                        <img class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
                     </ng-container>
                     <ng-container *ngIf="selectedAccountManagers?.length === 0">
-                        <img class="border-rounded-50" src="../../../assets/common/images/no-img.jpg">
+                        <img class="border-rounded-50" src="../../../assets/common/images/select-user-icon.svg">
                     </ng-container>
                     <ng-container *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1">
                         <div class="client-list--filter__badge">
@@ -38,7 +38,9 @@
                                                     (change)="toggleSelection(manager,selectedAccountManagers)"
                                                     (click)="$event.stopPropagation()">
                                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                        <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                        <ng-container *ngIf="manager?.externalId">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                                                </ng-container>
                                                         <span>{{ manager.name }}</span>
                                                     </div>
                                                 </mat-checkbox>
@@ -71,7 +73,7 @@
                                                         (change)="toggleSelection(manager,selectedAccountManagers)"
                                                         (click)="$event.stopPropagation()">
                                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                            <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                            <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                                                             <span>{{ manager.name }}</span>
                                                         </div>
                                                     </mat-checkbox>
@@ -284,7 +286,7 @@
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.owner_Name ? row.owner_Name : '-' }}
-                            <!-- <img class="manager-search--photo" src="../../../../assets/common/images/no-img.jpg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
+                            <!-- <img class="manager-search--photo" src="../../../../assets/common/images/select-user-icon.svg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -295,6 +297,7 @@
                             <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
                         <mat-menu #clientListMenu>
+                            <!-- FIXME: uncomment once BE is ready -->
                             <!-- <button
                                 class="menu-item menu-item--delete"
                                 mat-menu-item
