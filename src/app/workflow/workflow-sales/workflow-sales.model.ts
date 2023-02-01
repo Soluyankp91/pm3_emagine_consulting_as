@@ -416,4 +416,3 @@ export enum EProjectTypes {
     NearshoreVMShighMargin = 7,
     NearshoreVMSlowMargin = 8
 }
-    

@@ -29,4 +29,4 @@ import * as ApiServiceProxies from './service-proxies';
         }
     ]
 })
-export class ServiceProxyModule {}
+export class ServiceProxyModule { }
