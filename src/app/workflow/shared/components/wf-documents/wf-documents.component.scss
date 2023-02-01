@@ -1,0 +1,21 @@
+@import "/src/app/shared/styles/config/_mixins";
+@import "/src/app/shared/styles/config/_colors";
+
+.workflow-documents {
+    &--form {
+        position: relative;
+        &__header {
+            @include fontOpenSans(12px, 600);
+            min-height: 35px;
+            color: $medium-grey-color !important;
+        }
+        &__row {
+            @include fontOpenSans(14px, 400);
+            background: $white-color;
+            height: 48px;
+            div {
+                color: $dark-grey-color !important;
+            }
+        }
+    }
+}

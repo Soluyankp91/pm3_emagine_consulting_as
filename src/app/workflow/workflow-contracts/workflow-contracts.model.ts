@@ -235,6 +235,17 @@ export enum LegalContractStatus {
     Done = 10
 }
 
+export class DocumentForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            documents: new UntypedFormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as UntypedFormArray;
+    }
+}
 
 export enum ClientTimeReportingCaps {
     CapOnUnits = 1,
