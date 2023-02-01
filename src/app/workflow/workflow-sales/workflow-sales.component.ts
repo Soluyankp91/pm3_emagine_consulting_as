@@ -341,6 +341,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {
 			emitEvent: false,
 		});
+        this._tryPreselectFrameAgreement();
 		this.getRatesAndFees(event.option.value?.clientId);
 		this.focusToggleMethod('auto');
 	}
@@ -349,6 +350,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
 		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
 	}
+
+    private _tryPreselectFrameAgreement() {
+        if (
+			this.clientDataComponent?.salesClientDataForm.startDate.value &&
+			(this.clientDataComponent?.salesClientDataForm.endDate.value ||
+				this.clientDataComponent?.salesClientDataForm.noEndDate.value) &&
+			this.clientDataComponent?.salesClientDataForm.directClientIdValue.value &&
+			this.mainDataComponent.salesMainDataForm.salesTypeId.value &&
+			this.mainDataComponent.salesMainDataForm.deliveryTypeId.value
+		) {
+			this._workflowDataService.preselectFrameAgreement.emit();
+		}
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -591,6 +605,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
+                this.clientDataComponent?.getFrameAgreements();
 			});
 	}
 

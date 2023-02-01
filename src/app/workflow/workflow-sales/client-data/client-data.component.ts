@@ -5,6 +5,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
+import * as moment from 'moment';
 import { forkJoin, merge, of, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -12,6 +13,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
+import { WorkflowDataService } from '../../workflow-data.service';
 import { ClientRateTypes, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
@@ -63,7 +65,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _httpClient: HttpClient,
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
-        private _agreementService: AgreementServiceProxy
+        private _agreementService: AgreementServiceProxy,
+        private _workflowDataService: WorkflowDataService
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -262,10 +265,17 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
 			.subscribe(() => {
 				this.clientPeriodDatesChanged.emit();
+                this._checkAndPreselectFrameAgreement();
+			});
+
+        this._workflowDataService.preselectFrameAgreement
+			.pipe(takeUntil(this._unsubscribe))
+			.subscribe(() => {
+				this._checkAndPreselectFrameAgreement();
 			});
     }
 
-    private _getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+    getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
         let dataToSend = {
             agreementId: agreementId,
             search: search,
@@ -277,7 +287,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
             contractTypeId: undefined,
             deliveryTypeId: this.mainDataForm.deliveryTypeId.value,
             startDate: this.salesClientDataForm.startDate.value,
-            endDate: this.salesClientDataForm.endDate.value,
+            endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
             pageNumber: 1,
             pageSize: 1000,
             sort: ''
@@ -301,10 +311,22 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			)
 			.subscribe((result) => {
 				this.frameAgreements = result.items;
-				if (this.frameAgreements.length === 1) {
-					this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
-				}
 			});
+    }
+
+    private _checkAndPreselectFrameAgreement() {
+        if (
+			this.salesClientDataForm.startDate.value &&
+			(this.salesClientDataForm.endDate.value ||
+				this.salesClientDataForm.noEndDate.value) &&
+			this.salesClientDataForm.directClientIdValue.value &&
+			this.mainDataForm.salesTypeId.value &&
+			this.mainDataForm.deliveryTypeId.value
+		) {
+            if (this.frameAgreements.length === 1) {
+                this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+            }
+		}
     }
 
 	clientRateTypeChange(value: EnumEntityTypeDto) {

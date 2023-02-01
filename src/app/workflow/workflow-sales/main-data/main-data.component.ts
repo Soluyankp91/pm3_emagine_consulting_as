@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import { forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, merge, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
@@ -11,6 +11,7 @@ import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } 
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
 import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
+import { WorkflowDataService } from '../../workflow-data.service';
 
 @Component({
 	selector: 'app-main-data',
@@ -75,7 +76,8 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _lookupService: LookupServiceProxy
+        private _lookupService: LookupServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
         super(injector);
         this.salesMainDataForm = new WorkflowSalesMainForm();
@@ -222,6 +224,14 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
                     null
                 );
             });
+
+        merge(this.salesMainDataForm.salesTypeId.valueChanges, this.salesMainDataForm.deliveryTypeId.valueChanges)
+			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+			.subscribe(() => {
+				if (this.salesMainDataForm.salesTypeId.value && this.salesMainDataForm.deliveryTypeId.value) {
+					this._workflowDataService.preselectFrameAgreement.emit();
+				}
+			});
     }
 
     getPrimaryCategoryTree(): void {

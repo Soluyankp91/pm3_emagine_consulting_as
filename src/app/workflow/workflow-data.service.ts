@@ -39,6 +39,8 @@ export class WorkflowDataService {
 
     consultantsAddedToStep = new EventEmitter<{stepType: number, processTypeId: number, consultantNames: IConsultantAnchor[]}>();
 
+    preselectFrameAgreement = new EventEmitter();
+
     cancelForceEdit =  new EventEmitter<any>();
     isContractModuleEnabled: boolean;
     isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
