@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EProjectTypes, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
+import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
 
 @Component({
 	selector: 'app-main-data',
@@ -17,6 +18,7 @@ import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-con
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
 	@Input() periodId: string | undefined;
     @Input() readOnlyMode: boolean;
     @Input() editEnabledForcefuly: boolean;
@@ -29,6 +31,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
+
     deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
     eProjectTypes = EProjectTypes;
@@ -440,9 +443,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-	get commissions() {
-		return this.salesMainDataForm.commissions as UntypedFormArray;
-	}
+
 
 	removeCommission(index: number) {
 		this.isCommissionInitialAdd = false;
@@ -504,8 +505,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		this.commissions.at(index).get('editable')?.setValue(false);
 	}
 
-
-    //#region commissionedUsers form array
     addCommissionedUser(employee?: EmployeeDto) {
         const form = this._fb.group({
            commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
@@ -547,9 +546,26 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.commissionedUsers.removeAt(index);
     }
 
+    packDocuments(): WorkflowDocumentCommandDto[] {
+        let workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDocuments.documents.value?.length) {
+            for (let document of this.mainDocuments.documents.value) {
+                let documentInput = new WorkflowDocumentCommandDto();
+                documentInput.name = document.name;
+                documentInput.workflowDocumentId = document.workflowDocumentId;
+                documentInput.temporaryFileId = document.temporaryFileId;
+                workflowDocumentsCommandDto.push(documentInput);
+            }
+        }
+        return workflowDocumentsCommandDto;
+    }
+
     get commissionedUsers() {
         return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
     }
-    //#endregion commissionedUsers form array
+
+    get commissions() {
+		return this.salesMainDataForm.commissions as UntypedFormArray;
+	}
 
 }

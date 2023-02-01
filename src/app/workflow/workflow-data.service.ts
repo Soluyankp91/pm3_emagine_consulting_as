@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { IConsultantAnchor } from './workflow-period/workflow-period.model';
-import { WorkflowProgressStatus } from './workflow.model';
+import { MultiSortList, WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
@@ -59,6 +59,21 @@ export class WorkflowDataService {
 
     private _getContractModuleConfig() {
         this._configurationService.contractsEnabled().subscribe(result => this.isContractModuleEnabled = result);
+    }
+
+    sortMultiColumnSorting(sortingValuesArray: MultiSortList[]): MultiSortList[] {
+        return sortingValuesArray.sort((a, b) => {
+			if (a.order === null) {
+				return 1;
+			}
+			if (b.order === null) {
+				return -1;
+			}
+			if (a.order === b.order) {
+				return 0;
+			}
+			return a.order < b.order ? -1 : 1;
+		});
     }
 
     get contractModuleEnabled() {

@@ -1,6 +1,6 @@
 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
     <ng-container
-        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
+        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startPeriodTemplate">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
             <h1 class="workflow-section--header-main">Main data</h1>
@@ -26,7 +26,7 @@
             </div>
         </div>
     </ng-container>
-    <ng-template #startClientPeriodTemplate>
+    <ng-template #startPeriodTemplate>
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -373,7 +373,7 @@
                                                                             <ng-container
                                                                                 *ngIf="recipient.id !== 'no-data'">
                                                                                 <img class="image-settings u-mr--16"
-                                                                                    [src]="consultantProfileUrl(recipient.externalId!)" />
+                                                                                    [ngSrc]="consultantPhotoUrl + recipient.externalId! + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
                                                                             </ng-container>
                                                                             <div
                                                                                 class="multilineDropdown-option--column">
@@ -676,7 +676,7 @@
                                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                         <ng-container *ngIf="employee.id !== undefined">
                                                             <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                                                [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                [ngSrc]="employeePhotoUrl + employee?.externalId + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                                                         </ng-container>
                                                         <span class="autocopmlete-option-name">{{ employee.name
                                                             }}</span>
@@ -727,6 +727,16 @@
                             </mat-checkbox>
                         </ng-container>
                     </div>
+                </div>
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" id="salesMainDocuments">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">4</span>
+                    <h2 class="workflow-section--header">Documents</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <app-documents #mainDocuments [readOnlyMode]="readOnlyMode"></app-documents>
                 </div>
             </div>
         </div>

@@ -405,6 +405,18 @@ export const ClientRateTypes: EnumEntityTypeDto[] = [
     })
 ];
 
+export class DocumentForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            documents: new UntypedFormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as UntypedFormArray;
+    }
+}
+
 export enum EProjectTypes {
     VMShighMargin = 5,
     VMSlowMargin = 6,
