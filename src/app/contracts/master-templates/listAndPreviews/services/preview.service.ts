@@ -18,10 +18,10 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import * as moment from 'moment';
 
-@Injectable({
-	providedIn: 'root',
-})
+@Injectable()
 export class PreviewService {
+	contentLoading$ = new BehaviorSubject<boolean>(false);
+
 	private _rowId$ = new BehaviorSubject<number | null>(null);
 	private _newestFirst$ = new BehaviorSubject<boolean>(false);
 	private _clientTemplateLinksSearch$ = new BehaviorSubject<string | undefined>('');
@@ -51,8 +51,6 @@ export class PreviewService {
 	getAgreementsLinksSort$() {
 		return this._agreementsLinksSort$.asObservable();
 	}
-
-	contentLoading$ = new BehaviorSubject<boolean>(false);
 
 	summary$ = this.currentRowId$.pipe(
 		distinctUntilChanged(),

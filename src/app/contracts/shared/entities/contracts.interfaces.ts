@@ -94,6 +94,7 @@ export interface SettingsPageOptions {
 
 export interface BaseMappedAgreementTemplatesListItemDto {
 	agreementTemplateId: number;
+	clientName?: string;
 	definition: string;
 	name: string;
 	note: string;
@@ -114,6 +115,8 @@ export interface BaseMappedAgreementTemplatesListItemDto {
 	isEnabled: boolean;
 	duplicationSourceAgreementTemplateId?: number;
 	duplicationSourceAgreementTemplateName?: string;
+	parentAgreementTemplateId?: number;
+	parentAgreementTemplateName?: string;
 }
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;

@@ -122,6 +122,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 ];
 export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	name: 'Name',
+	client: 'Client',
 	definition: 'Definition',
 	agreementType: 'Document type',
 	recipientTypeId: 'Recipient type',
@@ -138,6 +139,7 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	lastUpdateDateUtc: 'Last updated',
 	lastUpdatedBy: 'by',
 	duplicationSourceAgreementTemplateId: 'Duplicated from',
+	parentAgreementTemplateId: 'Parent template',
 };
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];

@@ -37,6 +37,7 @@ import {
 import { PreviewTabsComponent } from './components/preview/preview.component';
 import { tapOnce } from '../../shared/operators/tapOnceOperator';
 import { DOCUMENT } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -74,7 +75,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _router: Router,
 		private readonly _injetor: Injector,
 		private readonly _cdr: ChangeDetectorRef,
-		@Inject(DOCUMENT) private document: Document
+		private readonly _snackBar: MatSnackBar,
+		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injetor);
 		this.trackById = this.createTrackByFn('id');
@@ -120,7 +122,16 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				break;
 			}
 			case 'COPY': {
-				navigator.clipboard.writeText(this.document.location.href + `?templateId=${$event.row.agreementTemplateId}`);
+				navigator.clipboard.writeText(
+					this._document.location.protocol +
+						'//' +
+						this._document.location.host +
+						this._document.location.pathname +
+						`?templateId=${$event.row.agreementTemplateId}`
+				);
+				this._snackBar.open('Copied to clipboard', undefined, {
+					duration: 3000,
+				});
 			}
 		}
 	}

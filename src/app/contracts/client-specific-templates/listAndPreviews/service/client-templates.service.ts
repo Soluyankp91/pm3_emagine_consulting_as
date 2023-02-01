@@ -27,7 +27,7 @@ export class ClientTemplatesService extends BaseContract {
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload<ClientFiltersEnum>) {
 		return this._agreementTemplateServiceProxy.list2(
 			true, //isClientTemplate,
-			undefined,
+			tableFilters.id ? tableFilters.id[0] : undefined,
 			search, //search
 			tenantIds.map((item) => item.id as number), // tenantId []
 			tableFilters.legalEntityIds.map((item) => item.id as number), //legalEntities []

@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, Inject } from '@angular/core';
+import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -10,17 +10,18 @@ import {
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
 import { ClientMappedTemplatesListDto, MappedTableCells, ClientFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { combineLatest, fromEvent, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
+import { takeUntil, map, startWith, pairwise } from 'rxjs/operators';
 import { ClientTemplatesService } from './service/client-templates.service';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
-import { MASTER_TEMPLATE_ACTIONS } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { DOCUMENT } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ClientTemplatePreviewComponent } from './preview/client-template-preview.component';
+import { tapOnce } from '../../shared/operators/tapOnceOperator';
 
 @Component({
 	selector: 'app-client-specific-templates',
@@ -29,10 +30,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 	providers: [GridHelpService],
 })
 export class ClientSpecificTemplatesComponent extends AppComponentBase implements OnInit {
+	@ViewChildren(ClientTemplatePreviewComponent, { read: ElementRef }) preview: QueryList<ElementRef>;
 	cells = this._gridHelpService.generateTableConfig(DISPLAYED_COLUMNS, CLIENT_TEMPLATE_HEADER_CELLS);
 
 	displayedColumns = DISPLAYED_COLUMNS;
 	actions = CLIENT_TEMPLATE_ACTIONS;
+
+	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
+
+	outsideClicksSub: Subscription;
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -54,6 +60,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	dataSource$ = this._clientTemplatesService.getContracts$();
 
 	ngOnInit(): void {
+		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();
 	}
@@ -91,7 +98,13 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				break;
 			}
 			case 'COPY': {
-				navigator.clipboard.writeText(this._document.location.href + `?id=${$event.row.agreementTemplateId}`);
+				navigator.clipboard.writeText(
+					this._document.location.protocol +
+						'//' +
+						this._document.location.host +
+						this._document.location.pathname +
+						`?templateId=${$event.row.agreementTemplateId}`
+				);
 				this._snackBar.open('Copied to clipboard', undefined, {
 					duration: 3000,
 				});
@@ -116,6 +129,9 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 					active: sort.active,
 				};
 				return tableConfig;
+			}),
+			tapOnce(() => {
+				this._subscribeOnOuterClicks();
 			})
 		);
 	}
@@ -152,5 +168,35 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 			}
 			this.hideMainSpinner();
 		});
+	}
+
+	private _subscribeOnOuterClicks() {
+		this.currentRowId$
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				startWith(null),
+				pairwise(),
+				map(([previous, current]) => {
+					if (!previous && current) {
+						this.outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
+							if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
+								this.currentRowId$.next(null);
+							}
+						});
+					} else if (previous && !current) {
+						this.outsideClicksSub.unsubscribe();
+					}
+				})
+			)
+			.subscribe();
+	}
+
+	private _initPreselectedFilters() {
+		const templateId = this._route.snapshot.queryParams['templateId'];
+		if (templateId) {
+			this.currentRowId$.next(parseInt(templateId));
+			return this._clientTemplatesService.setIdFilter([templateId]);
+		}
+		this._clientTemplatesService.setIdFilter([]);
 	}
 }
