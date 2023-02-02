@@ -891,6 +891,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.updateConsultantStepAnchors();
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
+        this.clientDataComponent?.getFrameAgreements();
+        this._tryPreselectFrameAgreement();
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
@@ -1159,6 +1161,19 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 		return consultantData;
 	}
+
+    private _tryPreselectFrameAgreement() {
+        if (
+			this.clientDataComponent?.contractClientForm.startDate.value &&
+			(this.clientDataComponent?.contractClientForm.endDate.value ||
+				this.clientDataComponent?.contractClientForm.noEndDate.value) &&
+			this.clientDataComponent?.contractClientForm.directClientId.value &&
+			this.mainDataComponent.contractsMainForm.salesType.value?.id &&
+			this.mainDataComponent.contractsMainForm.deliveryType.value?.id
+		) {
+			this._workflowDataService.preselectFrameAgreement.emit();
+		}
+    }
 
     get canToggleEditMode() {
 		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;

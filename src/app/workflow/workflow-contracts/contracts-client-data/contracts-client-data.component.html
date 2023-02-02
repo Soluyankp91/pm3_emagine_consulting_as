@@ -104,7 +104,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
                             <mat-label>Frame agreement</mat-label>
-                            <mat-select [disabled]="readOnlyMode" required formControlName="frameAgreementId"
+                            <mat-select [disabled]="readOnlyMode" formControlName="frameAgreementId"
                                 [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of frameAgreements; trackBy: trackById">
                                     <mat-option [value]="item.agreementId">
