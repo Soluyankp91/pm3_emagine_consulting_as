@@ -473,6 +473,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
 				});
+                // FIXME: uncomment once BE is deployed
+                // this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
 				if (result?.noEndDate) {
 					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
 						emitEvent: false,
@@ -955,6 +957,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.startDate = this.clientDataComponent?.salesClientDataForm.startDate?.value;
 		input.noEndDate = this.clientDataComponent?.salesClientDataForm.noEndDate?.value;
 		input.endDate = this.clientDataComponent?.salesClientDataForm.endDate?.value;
+        input.salesClientData.clientContactProjectManager = this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.value.id;
 		input.salesClientData.directClientIdValue =
 			this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value?.clientId;
 		input.salesClientData.endClientIdValue = this.clientDataComponent?.salesClientDataForm.endClientIdValue?.value?.clientId;
@@ -1021,10 +1024,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _packConsultantFormData(consultant: any): ConsultantSalesDataDto {
 		let consultantInput = new ConsultantSalesDataDto();
-		consultantInput.employmentTypeId = consultant.employmentType?.id;
+		consultantInput.employmentTypeId = consultant.employmentTypeId;
 		if (
-			consultant.employmentType?.id === EmploymentTypes.FeeOnly ||
-			consultant.employmentType?.id === EmploymentTypes.Recruitment
+			consultant.employmentTypeId === EmploymentTypes.FeeOnly ||
+			consultant.employmentTypeId === EmploymentTypes.Recruitment
 		) {
 			consultantInput.nameOnly = consultant.consultantNameOnly;
 			consultantInput.consultantPeriodId = consultant.consultantPeriodId;

@@ -64,7 +64,6 @@ import { ApprovalComponent } from './shared/components/approval/approval.compone
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
-import { CompareComponent } from './master-templates/template-editor/editor/components/compare/compare.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
 @NgModule({
 	declarations: [
@@ -114,7 +113,6 @@ import { SettingsComponent } from './agreements/template-editor/settings/setting
 		EnabledComponent,
 		ApprovalFilterComponent,
 		ModeFilterComponent,
-		CompareComponent,
 		SettingsComponent,
 	],
 	imports: [
