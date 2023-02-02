@@ -39,7 +39,6 @@ export class MasterTemplatesService extends BaseContract {
 			tableFilters.deliveryTypeIds.map((item) => item.id as number),
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
 			undefined,
-			//this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)), //isEnabled,
 			undefined,
 			undefined,
 			page.pageIndex + 1, //pageIndex

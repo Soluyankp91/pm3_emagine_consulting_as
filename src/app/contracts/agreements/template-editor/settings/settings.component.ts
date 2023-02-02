@@ -1,4 +1,4 @@
-import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector } from '@angular/core';
+import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -18,6 +18,7 @@ import {
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
+import { CREATION_RADIO_BUTTONS } from 'src/app/contracts/shared/entities/contracts.constants';
 import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
@@ -45,9 +46,10 @@ import { DuplicateOrParentOptions, InputParentTemplate, OutputParentTemplate, Si
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
 	encapsulation: ViewEncapsulation.None,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
-	creationModes = AgreementCreationMode;
+	creationRadioButtons = CREATION_RADIO_BUTTONS;
 
 	agreementFormGroup = new AgreementModel();
 
@@ -214,7 +216,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.hideMainSpinner();
 				})
 			)
-			.subscribe((id) => {});
+			.subscribe();
 	}
 
 	private _subscribeOnModeReplay() {

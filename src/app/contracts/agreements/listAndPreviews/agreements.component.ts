@@ -10,7 +10,7 @@ export class AgreementsComponent implements OnInit {
 
 	ngOnInit(): void {}
 
-	navigateTo() {
+	navigateToCreate() {
 		this._router.navigate(['create'], { relativeTo: this._route });
 	}
 }
