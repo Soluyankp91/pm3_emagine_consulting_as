@@ -197,17 +197,15 @@
                 </ng-template>
                 <div class="workflow-form--panel pos-relative u-w--100">
                     <ng-container *ngIf="clientPeriods?.length">
-                        <app-workflow-overview [periodId]="clientPeriods![0].id"></app-workflow-overview>
-                        <ng-container *ngIf="isNoteVisible">
-                            <div class="workflow-notes-wrapper wrapper-overlay">
-                                <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
-                            </div>
-                        </ng-container>
+                        <app-workflow-overview [periodId]="clientPeriods![0]?.id" [clientPeriods]="clientPeriods"></app-workflow-overview>
+                        <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
+                            <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+                        </div>
                     </ng-container>
                 </div>
             </mat-tab>
             <ng-container *ngFor="let tab of clientPeriods; let i = index;">
-                <mat-tab [label]="tab.name!">
+                <mat-tab [label]="tab.name!" labelClass="wfPeriodLabel">
                     <ng-template mat-tab-label>
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <span class="tab-header">{{tab.name}}</span>

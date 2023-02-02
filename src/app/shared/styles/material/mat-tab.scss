@@ -259,3 +259,45 @@ mat-tab-group.notification-settings--tabs {
         padding: 32px 50px;
     }
 }
+
+.workflow-notes {
+    .mat-tab-header {
+        border: 0 !important;
+    }
+    .notesDocumentsLabel {
+        .mat-tab-label-container {
+            border-left: 1px solid #E7E3E8;
+            border-top: 1px solid #E7E3E8;
+            background-color: #fff;
+        }
+    }
+    .mat-tab-labels {
+        padding: 0 16px;
+        .notesDocumentsLabel.mat-tab-label {
+            background-color: transparent !important;
+            padding: 0 !important;
+            min-width: unset !important;
+            font-weight: 600;
+            font-size: 14px !important;
+            line-height: 14px !important;
+            opacity: 1;
+            height: 48px;
+            margin-right: 24px;
+            color: #4A4E60;
+
+            &-active,
+            &:hover {
+                font-weight: 700;
+                color: #17A297;
+                background-color: transparent !important;
+            }
+        }
+    }
+    mat-ink-bar {
+        width: auto;
+        background-color: $green-color !important;
+        height: 3px;
+        bottom: 0;
+        top: unset;
+    }
+}

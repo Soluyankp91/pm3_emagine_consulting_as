@@ -96,7 +96,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             differentEndClient: new UntypedFormControl(true),
             directClientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
             endClientIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['clientId'])),
-
+            clientContactProjectManager: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
             // PDC Invoicing Entity (client)
 
             // Client Invoicing Recipient
@@ -160,6 +160,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get endClientIdValue() {
         return this.get('endClientIdValue');
+    }
+    get clientContactProjectManager() {
+        return this.get('clientContactProjectManager');
     }
 
     // PDC Invoicing Entity (client)
@@ -397,6 +400,18 @@ export const ClientRateTypes: EnumEntityTypeDto[] = [
         name: 'Fixed',
     })
 ];
+
+export class DocumentForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            documents: new UntypedFormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as UntypedFormArray;
+    }
+}
 
 export enum EProjectTypes {
     VMShighMargin = 5,

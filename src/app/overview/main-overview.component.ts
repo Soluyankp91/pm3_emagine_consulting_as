@@ -292,9 +292,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		return new Date(year, month, day);
 	}
 
-	formatItems(length: number, parent: MainOverviewItemPeriodDto[], group: string, workflowStatus: MainOverviewStatus) {
+	formatItems(length: number, parent: MainOverviewItemPeriodDto[], group: string, workflowStatus: MainOverviewStatus, actualEndDate: moment.Moment) {
 		const items = [];
 		for (let i = 0; i < length; i++) {
+            if (workflowStatus === MainOverviewStatus.Terminated && parent![i]?.endDate !== undefined) {
+                parent![i].endDate = actualEndDate;
+            }
 			items.push({
 				id: `${parent![i]?.id || group}`,
 				title: `${parent![i]?.periodType}`,
@@ -426,7 +429,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 										x.clientPeriods?.length!,
 										x.clientPeriods!,
 										groups[index].id,
-										x.mainOverviewStatusOfWorkflowForSales!
+										x.mainOverviewStatusOfWorkflowForSales!,
+                                        x.actualEndDate
 									),
 								];
 							});
@@ -509,7 +513,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 										x.consultantPeriods?.length!,
 										x.consultantPeriods!,
 										groups[index].id,
-										x.mainOverviewStatusOfWorkflowConsultantForSales!
+										x.mainOverviewStatusOfWorkflowConsultantForSales!,
+                                        x.actualEndDate
 									),
 								];
 							});

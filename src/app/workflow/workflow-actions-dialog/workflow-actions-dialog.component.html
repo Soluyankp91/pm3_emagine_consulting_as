@@ -69,19 +69,21 @@
 
                 <h3 class="confirmation-dialog--label">Select consultants the change applies to</h3>
                 <ng-container formArrayName="consultants">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <mat-checkbox color="accent" name="changeConsultant" formControlName="changeConsultant" class="black-checkbox u-mr--16" (change)="toggleChangeConsultants()">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
-                                <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.value?.externalId)">
-                                <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis">
-                                    {{consultant?.value?.consulantName}}
-                                </p>
-                            </div>
-                        </mat-checkbox>
-                        <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox">
-                            New legal contract required
-                        </mat-checkbox>
-                    </div>
+                    <ng-container *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                            <mat-checkbox color="accent" name="changeConsultant" formControlName="changeConsultant" class="black-checkbox u-mr--16" (change)="toggleChangeConsultants()">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
+                                    <img class="border-rounded-50 u-mr--12 image-thumbnail-small"  [ngSrc]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" >
+                                    <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis">
+                                        {{consultant?.value?.consulantName}}
+                                    </p>
+                                </div>
+                            </mat-checkbox>
+                            <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox">
+                                New legal contract required
+                            </mat-checkbox>
+                        </div>
+                    </ng-container>
                     <ng-container *ngIf="validationTriggered && !changeConsultantsValid">
                         <mat-error class="error-message">
                             Select at least 1 consultant
@@ -148,7 +150,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16" (change)="toggleExtendConsultants()">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
-                                <img class="workflow-change-dialog--consultant-img u-mr--12" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                                <img class="workflow-change-dialog--consultant-img u-mr--12" [ngSrc]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
                                     {{consultant?.value?.consulantName}}
                                 </p>
