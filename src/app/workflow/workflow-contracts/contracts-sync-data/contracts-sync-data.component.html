@@ -10,7 +10,7 @@
                     <mat-icon fxFlex="25px" class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
                     <span class="workflow-darkblue--text">
                         {{syncMessage}}
-                    div</span>
+                    </span>
                 </div>
             </ng-container>
         </ng-container>
@@ -74,6 +74,11 @@
                 <div class="workflow-section--content">
                     <ng-container *ngIf="readOnlyMode; else syncInput">
                         <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+                        <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm.value">
+                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="contractLinesDoneManuallyInOldPm" name="contractLinesDoneManuallyInOldPm" class="black-checkbox">
+                                Contract lines done manually in old PM
+                            </mat-checkbox>
+                        </ng-container>
                         <mat-divider class="u-w--100"></mat-divider>
                     </ng-container>
                     <ng-template #syncInput>
