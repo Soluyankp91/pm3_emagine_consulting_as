@@ -10,7 +10,7 @@
                     <mat-icon fxFlex="25px" class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-termination' : 'completed-icon'"></mat-icon>
                     <span class="workflow-darkblue--text">
                         {{syncMessage}}
-                    div</span>
+                    </span>
                 </div>
             </ng-container>
         </ng-container>
@@ -34,29 +34,16 @@
             </ng-container>
         </ng-container>
     </div>
-    <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
+    <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value || readOnlyMode">
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-            <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
-                <ng-container *ngIf="!contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
-                    <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'"
-                        [ngClass]="{'icon-cancel': !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value}"></mat-icon>
-                </ng-container>
-                <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value">
-                    <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px"
-                        width="22px"></mat-icon>
-                </ng-container>
-                <span class="workflow-step-readonly--blue-text">
-                    Contract lines done manually in old PM
-                </span>
-            </ng-container>
-            <ng-template #contractLinesDoneManuallyInOldPMInput>
-                <form [formGroup]="contractsSyncDataForm">
-                    <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM"
+            <form [formGroup]="contractsSyncDataForm">
+                <ng-container *ngIf="!readOnlyMode || (readOnlyMode && !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value)">
+                    <mat-checkbox [disabled]="readOnlyMode" color="accent" name="contractLinesDoneManuallyInOldPM"
                         formControlName="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
                         Contract lines done manually in old PM
                     </mat-checkbox>
-                </form>
-            </ng-template>
+                </ng-container>
+            </form>
         </div>
     </ng-container>
 </ng-container>
@@ -74,6 +61,11 @@
                 <div class="workflow-section--content">
                     <ng-container *ngIf="readOnlyMode; else syncInput">
                         <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+                        <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm.value">
+                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="contractLinesDoneManuallyInOldPm" name="contractLinesDoneManuallyInOldPm" class="black-checkbox">
+                                Contract lines done manually in old PM
+                            </mat-checkbox>
+                        </ng-container>
                         <mat-divider class="u-w--100"></mat-divider>
                     </ng-container>
                     <ng-template #syncInput>
