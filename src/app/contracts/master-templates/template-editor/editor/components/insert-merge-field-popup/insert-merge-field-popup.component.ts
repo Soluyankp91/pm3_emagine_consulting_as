@@ -4,7 +4,6 @@ import {
 	Component,
 	EventEmitter,
 	Input,
-	OnInit,
 	Output,
 	ViewChild,
 	ViewEncapsulation,
@@ -28,7 +27,7 @@ interface IMergeFieldItem {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	encapsulation: ViewEncapsulation.None,
 })
-export class InsertMergeFieldPopupComponent implements OnInit {
+export class InsertMergeFieldPopupComponent {
 	@ViewChild('treeView') private treeView: DxTreeViewComponent;
 
 	selected: string | null = null;
@@ -36,14 +35,12 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 	visibility: boolean = false;
 
 	@Input() set fields(fields: IMergeField) {
-		this.dataSource = this.mapMergeField(fields);
+		this.dataSource = this._mapMergeField(fields);
 	}
 
 	@Output() mergeField: EventEmitter<string> = new EventEmitter();
 
 	constructor(private _chd: ChangeDetectorRef) {}
-
-	ngOnInit(): void {}
 
 	showPopup() {
 		this.visibility = true;
@@ -71,7 +68,7 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 		this.treeView.instance.collapseAll();
 	}
 
-	private mapMergeField(mergeFields: IMergeField) {
+	private _mapMergeField(mergeFields: IMergeField) {
 		return Object.keys(mergeFields).reduce((acc, item) => {
 			let slices = item.split('.');
 			if (!acc.length || acc[acc.length - 1].parentID !== slices[0]) {

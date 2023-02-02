@@ -115,7 +115,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 					this.transformFiledsIntoMergeFields();
 					break;
 				case 'mergeField':
-					this.showMergeFieldModal();
+					this._showMergeFieldModal();
 					break;
 			}
 		});
@@ -132,7 +132,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		this._rich.endUpdate();
 	}
 
-	showMergeFieldModal() {
+	private _showMergeFieldModal() {
 		this.mergeFieldPopup.showPopup();
 	}
 
