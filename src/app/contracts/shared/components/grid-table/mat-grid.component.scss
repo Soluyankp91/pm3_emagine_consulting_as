@@ -26,4 +26,23 @@ emg-mat-grid {
 	.highlight {
 		background-color: #c5e8e5;
 	}
+	.paginator {
+		margin-left: auto;
+	}
+	.bottom-panel {
+		display: flex;
+	}
+	.selected-items-info {
+		padding: 16px 24px;
+		border-right: 1px solid #e7e3e8;
+		font-weight: 700;
+	}
+	.bottom-action-item {
+		cursor: pointer;
+		padding-left: 60px;
+		display: flex;
+		gap: 6px;
+		align-items: center;
+		color: #17a297;
+	}
 }

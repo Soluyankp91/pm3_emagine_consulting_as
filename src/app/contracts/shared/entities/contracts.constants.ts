@@ -1,16 +1,3 @@
-import { Tab } from './contracts.interfaces';
-
-export const CREATIONS_TABS: Tab[] = [
-	{
-		link: 'create',
-		label: 'Settings',
-	},
-	{
-		link: 'editor',
-		label: 'Editor',
-	},
-];
-
 export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	language: 'Language',
 	id: 'ID',
@@ -25,6 +12,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
 	mode: 'Mode',
+	linkStateAccepted: 'Approval',
 	saleManager: 'Sales Manager',
 	contractManager: 'Contract Manager',
 };

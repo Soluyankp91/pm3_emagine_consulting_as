@@ -2,15 +2,21 @@ import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildre
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
+import {
+	AgreementLanguage,
+	AgreementTemplateServiceProxy,
+	AgreementTemplatesListItemDto,
+	AgreementType,
+} from 'src/shared/service-proxies/service-proxies';
 import {
 	CLIENT_TEMPLATE_ACTIONS,
+	CLIENT_TEMPLATE_BOTTOM_ACTIONS,
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
 import { ClientMappedTemplatesListDto, MappedTableCells, ClientFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { combineLatest, fromEvent, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
+import { combineLatest, fromEvent, Observable, ReplaySubject, Subject, Subscription, forkJoin } from 'rxjs';
 import { takeUntil, map, startWith, pairwise } from 'rxjs/operators';
 import { ClientTemplatesService } from './service/client-templates.service';
 import { ContractsService } from '../../shared/services/contracts.service';
@@ -35,6 +41,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 
 	displayedColumns = DISPLAYED_COLUMNS;
 	actions = CLIENT_TEMPLATE_ACTIONS;
+	selectedItemsActions = CLIENT_TEMPLATE_BOTTOM_ACTIONS;
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 
@@ -50,6 +57,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		private readonly _clientTemplatesService: ClientTemplatesService,
 		private readonly _contractService: ContractsService,
 		private readonly _snackBar: MatSnackBar,
+		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
 		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injector);
@@ -107,6 +115,21 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				);
 				this._snackBar.open('Copied to clipboard', undefined, {
 					duration: 3000,
+				});
+			}
+		}
+	}
+
+	onSelectionAction($event: { selectedRows: AgreementTemplatesListItemDto[]; action: string }) {
+		switch ($event.action) {
+			case 'APPROVE': {
+				this.showMainSpinner();
+				const arr$: Observable<void>[] = [];
+				$event.selectedRows.forEach(({ agreementTemplateId }) => {
+					arr$.push(this._agreementTemplateServiceProxy.acceptLinkState(agreementTemplateId));
+				});
+				forkJoin(arr$).subscribe(() => {
+					this._clientTemplatesService.reloadTable();
 				});
 			}
 		}

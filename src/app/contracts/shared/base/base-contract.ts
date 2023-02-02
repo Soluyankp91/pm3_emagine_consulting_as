@@ -1,6 +1,6 @@
 import { SortDirection } from '@angular/material/sort';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { AgreementTemplatesListItemDtoPaginatedList, CountryDto } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto } from 'src/shared/service-proxies/service-proxies';
 import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import {
 	DEFAULT_SIZE_OPTION,
@@ -19,6 +19,8 @@ export abstract class BaseContract {
 		pageSize: DEFAULT_SIZE_OPTION,
 	});
 
+	private reload$ = new BehaviorSubject(false);
+
 	private _tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);
 	private _searchFilter$$ = new BehaviorSubject<string>('');
 
@@ -31,8 +33,12 @@ export abstract class BaseContract {
 			this.getPage$(),
 			this.getTenants$(),
 			this.getSearch$(),
+			this.reload$,
 		]).pipe(
-			distinctUntilChanged((previous, current) => isEqual(previous, current)),
+			distinctUntilChanged((previous, current) => {
+				console.log(previous, current);
+				return isEqual(previous, current);
+			}),
 			tap(() => this.contractsLoading$$.next(true)),
 			switchMap((combined) => {
 				return this.sendPayload$(combined);
@@ -79,6 +85,10 @@ export abstract class BaseContract {
 
 	updatePage(page: { pageIndex: number; pageSize: number }) {
 		this._page$$.next(page);
+	}
+
+	reloadTable() {
+		this.reload$.next(!this.reload$.value);
 	}
 
 	setIdFilter(id: number[]) {

@@ -17,6 +17,7 @@ export class ClientTemplatesService extends BaseContract {
 		contractTypeIds: [],
 		lastUpdatedByLowerCaseInitials: [],
 		linkState: [],
+		linkStateAccepted: [],
 		isEnabled: [],
 	});
 
@@ -43,7 +44,12 @@ export class ClientTemplatesService extends BaseContract {
 			undefined,
 			// this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)),
 			(tableFilters as ClientFiltersEnum).linkState.map((item) => item.id as number), //linkState
-			undefined, //linkStateAccepted
+			tableFilters.linkStateAccepted.map((item) => {
+				if (typeof item.id === 'object') {
+					return '' as any;
+				}
+				return item.id;
+			}),
 			page.pageIndex + 1, //pageIndex
 			page.pageSize, //pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''

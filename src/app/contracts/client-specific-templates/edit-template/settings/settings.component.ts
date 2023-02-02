@@ -140,15 +140,9 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	navigateOnAction() {
-		if (this.editMode) {
-			this._router.navigate(['../../'], {
-				relativeTo: this._route,
-			});
-		} else {
-			this._router.navigate(['../editor'], {
-				relativeTo: this._route,
-			});
-		}
+		this._router.navigate(['../editor'], {
+			relativeTo: this._route,
+		});
 	}
 
 	onSave() {
@@ -188,9 +182,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.navigateOnAction();
-				});
+				.subscribe();
 		} else {
 			this._apiServiceProxy
 				.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))

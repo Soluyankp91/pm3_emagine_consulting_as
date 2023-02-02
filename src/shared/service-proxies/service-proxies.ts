@@ -1000,6 +1000,58 @@ export class AdminServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @param batchSize (optional) 
+     * @return Success
+     */
+    fillMissingClientPeriodsSeqNumbers(batchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/fill-missing-client-periods-seq-numbers?";
+        if (batchSize === null)
+            throw new Error("The parameter 'batchSize' cannot be null.");
+        else if (batchSize !== undefined)
+            url_ += "batchSize=" + encodeURIComponent("" + batchSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFillMissingClientPeriodsSeqNumbers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFillMissingClientPeriodsSeqNumbers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFillMissingClientPeriodsSeqNumbers(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -19708,6 +19760,7 @@ export interface IClientPeriodContractsDataQueryDto {
 
 export class ClientPeriodDto implements IClientPeriodDto {
     id?: string;
+    fullDisplayId?: string | undefined;
     name?: string | undefined;
     typeId?: number;
     startDate?: moment.Moment;
@@ -19727,6 +19780,7 @@ export class ClientPeriodDto implements IClientPeriodDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.fullDisplayId = _data["fullDisplayId"];
             this.name = _data["name"];
             this.typeId = _data["typeId"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
@@ -19754,6 +19808,7 @@ export class ClientPeriodDto implements IClientPeriodDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["fullDisplayId"] = this.fullDisplayId;
         data["name"] = this.name;
         data["typeId"] = this.typeId;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
@@ -19774,6 +19829,7 @@ export class ClientPeriodDto implements IClientPeriodDto {
 
 export interface IClientPeriodDto {
     id?: string;
+    fullDisplayId?: string | undefined;
     name?: string | undefined;
     typeId?: number;
     startDate?: moment.Moment;
@@ -23601,6 +23657,42 @@ export interface ICurrentEmployeeDto {
     employeeRole?: EmployeeRole;
 }
 
+export class DocuSignEnvelopeSummary implements IDocuSignEnvelopeSummary {
+    voidedReason?: string | undefined;
+
+    constructor(data?: IDocuSignEnvelopeSummary) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.voidedReason = _data["voidedReason"];
+        }
+    }
+
+    static fromJS(data: any): DocuSignEnvelopeSummary {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocuSignEnvelopeSummary();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["voidedReason"] = this.voidedReason;
+        return data;
+    }
+}
+
+export interface IDocuSignEnvelopeSummary {
+    voidedReason?: string | undefined;
+}
+
 export enum DocuSignEvent {
     EnvelopeCompleted = 0,
     EnvelopeCorrected = 1,
@@ -23979,6 +24071,7 @@ export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
     envelopeRecipientEmail?: string | undefined;
     documentFileVersion?: number;
     documentFileDescription?: string | undefined;
+    voidReason?: string | undefined;
 
     constructor(data?: IEnvelopeEventListItemDto) {
         if (data) {
@@ -23999,6 +24092,7 @@ export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
             this.envelopeRecipientEmail = _data["envelopeRecipientEmail"];
             this.documentFileVersion = _data["documentFileVersion"];
             this.documentFileDescription = _data["documentFileDescription"];
+            this.voidReason = _data["voidReason"];
         }
     }
 
@@ -24019,6 +24113,7 @@ export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
         data["envelopeRecipientEmail"] = this.envelopeRecipientEmail;
         data["documentFileVersion"] = this.documentFileVersion;
         data["documentFileDescription"] = this.documentFileDescription;
+        data["voidReason"] = this.voidReason;
         return data;
     }
 }
@@ -24032,6 +24127,7 @@ export interface IEnvelopeEventListItemDto {
     envelopeRecipientEmail?: string | undefined;
     documentFileVersion?: number;
     documentFileDescription?: string | undefined;
+    voidReason?: string | undefined;
 }
 
 export class EnvelopePreviewDto implements IEnvelopePreviewDto {
@@ -26331,6 +26427,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     directClient?: ClientResultDto;
     endClientIdValue?: number | undefined;
     endClient?: ClientResultDto;
+    clientContactProjectManager?: ContactResultDto;
     noClientExtensionOption?: boolean;
     clientExtensionDurationId?: number | undefined;
     clientExtensionDeadlineId?: number | undefined;
@@ -26376,6 +26473,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.directClient = _data["directClient"] ? ClientResultDto.fromJS(_data["directClient"]) : <any>undefined;
             this.endClientIdValue = _data["endClientIdValue"];
             this.endClient = _data["endClient"] ? ClientResultDto.fromJS(_data["endClient"]) : <any>undefined;
+            this.clientContactProjectManager = _data["clientContactProjectManager"] ? ContactResultDto.fromJS(_data["clientContactProjectManager"]) : <any>undefined;
             this.noClientExtensionOption = _data["noClientExtensionOption"];
             this.clientExtensionDurationId = _data["clientExtensionDurationId"];
             this.clientExtensionDeadlineId = _data["clientExtensionDeadlineId"];
@@ -26433,6 +26531,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["directClient"] = this.directClient ? this.directClient.toJSON() : <any>undefined;
         data["endClientIdValue"] = this.endClientIdValue;
         data["endClient"] = this.endClient ? this.endClient.toJSON() : <any>undefined;
+        data["clientContactProjectManager"] = this.clientContactProjectManager ? this.clientContactProjectManager.toJSON() : <any>undefined;
         data["noClientExtensionOption"] = this.noClientExtensionOption;
         data["clientExtensionDurationId"] = this.clientExtensionDurationId;
         data["clientExtensionDeadlineId"] = this.clientExtensionDeadlineId;
@@ -26483,6 +26582,7 @@ export interface ISalesClientDataDto {
     directClient?: ClientResultDto;
     endClientIdValue?: number | undefined;
     endClient?: ClientResultDto;
+    clientContactProjectManager?: ContactResultDto;
     noClientExtensionOption?: boolean;
     clientExtensionDurationId?: number | undefined;
     clientExtensionDeadlineId?: number | undefined;
@@ -28261,6 +28361,7 @@ export class UpdateEnvelopeStatusCommand implements IUpdateEnvelopeStatusCommand
     event?: DocuSignEvent;
     timestampUtc?: moment.Moment;
     docuSignRecipientId?: string | undefined;
+    envelopeSummary?: DocuSignEnvelopeSummary;
 
     constructor(data?: IUpdateEnvelopeStatusCommand) {
         if (data) {
@@ -28277,6 +28378,7 @@ export class UpdateEnvelopeStatusCommand implements IUpdateEnvelopeStatusCommand
             this.event = _data["event"];
             this.timestampUtc = _data["timestampUtc"] ? moment(_data["timestampUtc"].toString()) : <any>undefined;
             this.docuSignRecipientId = _data["docuSignRecipientId"];
+            this.envelopeSummary = _data["envelopeSummary"] ? DocuSignEnvelopeSummary.fromJS(_data["envelopeSummary"]) : <any>undefined;
         }
     }
 
@@ -28293,6 +28395,7 @@ export class UpdateEnvelopeStatusCommand implements IUpdateEnvelopeStatusCommand
         data["event"] = this.event;
         data["timestampUtc"] = this.timestampUtc ? this.timestampUtc.toISOString() : <any>undefined;
         data["docuSignRecipientId"] = this.docuSignRecipientId;
+        data["envelopeSummary"] = this.envelopeSummary ? this.envelopeSummary.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -28302,6 +28405,7 @@ export interface IUpdateEnvelopeStatusCommand {
     event?: DocuSignEvent;
     timestampUtc?: moment.Moment;
     docuSignRecipientId?: string | undefined;
+    envelopeSummary?: DocuSignEnvelopeSummary;
 }
 
 export class UpdateProjectLineFromLegacyCommand implements IUpdateProjectLineFromLegacyCommand {
@@ -28618,6 +28722,7 @@ export interface IWorkflowDocumentQueryDto {
 
 export class WorkflowDto implements IWorkflowDto {
     workflowId?: string;
+    workflowSequenceId?: number;
     workflowStatusId?: WorkflowStatus;
     isDeleted?: boolean;
     directClientId?: number | undefined;
@@ -28641,6 +28746,7 @@ export class WorkflowDto implements IWorkflowDto {
     init(_data?: any) {
         if (_data) {
             this.workflowId = _data["workflowId"];
+            this.workflowSequenceId = _data["workflowSequenceId"];
             this.workflowStatusId = _data["workflowStatusId"];
             this.isDeleted = _data["isDeleted"];
             this.directClientId = _data["directClientId"];
@@ -28672,6 +28778,7 @@ export class WorkflowDto implements IWorkflowDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["workflowId"] = this.workflowId;
+        data["workflowSequenceId"] = this.workflowSequenceId;
         data["workflowStatusId"] = this.workflowStatusId;
         data["isDeleted"] = this.isDeleted;
         data["directClientId"] = this.directClientId;
@@ -28696,6 +28803,7 @@ export class WorkflowDto implements IWorkflowDto {
 
 export interface IWorkflowDto {
     workflowId?: string;
+    workflowSequenceId?: number;
     workflowStatusId?: WorkflowStatus;
     isDeleted?: boolean;
     directClientId?: number | undefined;
@@ -28933,6 +29041,7 @@ export interface IWorkflowListEmployeeDto {
 
 export class WorkflowListItemDto implements IWorkflowListItemDto {
     workflowId?: string;
+    workflowSequenceId?: number;
     clientName?: string | undefined;
     startDate?: moment.Moment;
     actualEndDate?: moment.Moment | undefined;
@@ -28961,6 +29070,7 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
     init(_data?: any) {
         if (_data) {
             this.workflowId = _data["workflowId"];
+            this.workflowSequenceId = _data["workflowSequenceId"];
             this.clientName = _data["clientName"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.actualEndDate = _data["actualEndDate"] ? moment(_data["actualEndDate"].toString()) : <any>undefined;
@@ -28997,6 +29107,7 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["workflowId"] = this.workflowId;
+        data["workflowSequenceId"] = this.workflowSequenceId;
         data["clientName"] = this.clientName;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["actualEndDate"] = this.actualEndDate ? this.actualEndDate.format('YYYY-MM-DD') : <any>undefined;
@@ -29026,6 +29137,7 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
 
 export interface IWorkflowListItemDto {
     workflowId?: string;
+    workflowSequenceId?: number;
     clientName?: string | undefined;
     startDate?: moment.Moment;
     actualEndDate?: moment.Moment | undefined;

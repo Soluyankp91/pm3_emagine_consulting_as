@@ -47,6 +47,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() selection: boolean = true;
 	@Input() actions: boolean = true;
 	@Input() actionsList: Actions[] = [];
+	@Input() selectedItemsActions: Actions[] = [];
 	@Input() selectedRowId: number | null;
 	@Input() rowIdProperty: string = 'agreementTemplateId';
 
@@ -54,8 +55,8 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Output() pageChange = new EventEmitter<PageEvent>();
 	@Output() formControlChange = new EventEmitter();
 	@Output() selectedRowIdChange = new EventEmitter();
-	@Output() selectionChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
+	@Output() onSelectionAction = new EventEmitter();
 
 	@ContentChildren('customCells', {
 		descendants: false,
@@ -101,6 +102,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	ngOnChanges(changes: SimpleChanges): void {
 		const displayedColumns = changes['displayedColumns'];
 		const displayedColumnsCopy = [...this.displayedColumns];
+		const tableConfig = changes['tableConfig'];
+		if (tableConfig) {
+			this.selectionModel.clear();
+		}
 		if (displayedColumns && this.selection) {
 			displayedColumnsCopy.unshift('select');
 		}
@@ -115,7 +120,6 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		await this.loadFilters();
 
 		//await for filters to be inited then subscribe to formControls:
-		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();
 	}
@@ -184,10 +188,8 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		this.onAction.emit({ action: actionType, row });
 	}
 
-	private _subscribeOnSelectionChange() {
-		this.selectionModel.changed.pipe(takeUntil(this._unSubscribe$), debounceTime(500)).subscribe((changeModel) => {
-			this.selectionChange.emit(changeModel.source.selected);
-		});
+	chooseSelectionAction(actionType: string) {
+		this.onSelectionAction.emit({ action: actionType, selectedRows: this.selectionModel.selected });
 	}
 
 	private _subscribeOnFormControlChanges() {

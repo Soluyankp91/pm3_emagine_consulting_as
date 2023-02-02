@@ -63,8 +63,8 @@
 					</button>
 					<mat-menu #menu="matMenu">
 						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
-							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow);">
-                                <mat-icon [svgIcon]="action.actionIcon"></mat-icon>
+							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+								<mat-icon [svgIcon]="action.actionIcon"></mat-icon>
 								<span> {{ action.label }}</span>
 							</button>
 						</ng-container>
@@ -77,14 +77,28 @@
 		<mat-row
 			*matRowDef="let row; columns: displayedColumns"
 			[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
-			(click)="getTableRow(row);$event.stopPropagation()"></mat-row>
+			(click)="getTableRow(row); $event.stopPropagation()"></mat-row>
 	</mat-table>
 </div>
-<mat-paginator
-	[showFirstLastButtons]="true"
-	[length]="tableConfig.totalCount"
-	[pageSizeOptions]="pageSizeOptions"
-	[pageSize]="tableConfig.pageSize"
-	[pageIndex]="tableConfig.pageIndex"
-	(page)="pageChange.emit($event)">
-</mat-paginator>
+<div class="bottom-panel">
+    <ng-container *ngIf="!selectionModel.isEmpty()">
+        <div class="selected-items-info">
+           {{selectionModel.selected.length}} selected
+        </div>
+        <ng-container *ngFor="let bottomAction of selectedItemsActions">
+            <div class="bottom-action-item" (click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
+                <mat-icon [svgIcon]="bottomAction.actionIcon"></mat-icon>
+                <span>{{bottomAction.label}}</span>
+            </div>
+        </ng-container>
+    </ng-container>
+	<mat-paginator
+		class="paginator"
+		[showFirstLastButtons]="true"
+		[length]="tableConfig.totalCount"
+		[pageSizeOptions]="pageSizeOptions"
+		[pageSize]="tableConfig.pageSize"
+		[pageIndex]="tableConfig.pageIndex"
+		(page)="pageChange.emit($event)">
+	</mat-paginator>
+</div>

@@ -6,13 +6,14 @@
                 #table
                 [displayedColumns]="displayedColumns"
                 [actionsList]="actions"
+                [selectedItemsActions]="selectedItemsActions"
                 [tableConfig]="table"
                 [selectedRowId]="currentRowId$ | async"
                 [cells]="cells"
-                [selection]="false"
                 (sortChange)="onSortChange($event)"
                 (formControlChange)="onFormControlChange($event)"
                 (onAction)="onAction($event)"
+                (onSelectionAction)="onSelectionAction($event)"
                 (pageChange)="onPageChange($event)"
                 (selectedRowIdChange)="currentRowId$.next($event)">
                 <ng-template let-cell="element" #customCells>
@@ -135,6 +136,9 @@
                 >
                 <ng-template let-cell="element" #customCells>
                     <emg-client-template-mode [linkState]="cell.linkState" [iconWidth]="23" [iconHeight]="16"></emg-client-template-mode>
+                </ng-template>
+                <ng-template let-cell="element" #customCells>
+                    <emg-approval [linkStateAccepted]="cell.linkStateAccepted" [iconWidth]="23" [iconHeight]="16"></emg-approval>
                 </ng-template>
 
                 <ng-template let-cell="element" #customCells>

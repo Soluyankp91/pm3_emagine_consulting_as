@@ -2,11 +2,9 @@ import { SortDirection } from '@angular/material/sort';
 import {
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
-	AgreementValidityState,
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
-	EnvelopeStatus,
 	LegalEntityDto,
 	LogOperationType,
 } from 'src/shared/service-proxies/service-proxies';
@@ -34,6 +32,7 @@ export interface MasterFiltersEnum {
 }
 export interface ClientFiltersEnum extends MasterFiltersEnum {
 	linkState: BaseEnumDto[];
+	linkStateAccepted: BaseEnumDto[];
 }
 export interface AgreementFiltersEnum {
 	language: BaseEnumDto[];
@@ -65,7 +64,7 @@ export interface PageDto {
 	pageIndex: number;
 	pageSize: number;
 }
-export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string];
+export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string, any];
 export interface BaseEnumDto {
 	id: number | string;
 	name: string;
