@@ -17,6 +17,7 @@ import { AgreementService } from './services/agreement.service';
 @Component({
 	selector: 'app-agreements',
 	templateUrl: './agreements.component.html',
+	styleUrls: ['./agreements.component.scss'],
 	providers: [GridHelpService],
 })
 export class AgreementsComponent implements OnInit {

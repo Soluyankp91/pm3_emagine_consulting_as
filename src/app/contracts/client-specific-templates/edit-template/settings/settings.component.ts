@@ -139,8 +139,13 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._unSubscribe$.complete();
 	}
 
-	navigateOnAction() {
-		this._router.navigate(['../editor'], {
+	navigateOnAction(agreementTemplateId?: number) {
+		if (agreementTemplateId) {
+			return this._router.navigate([`../${agreementTemplateId}/editor`], {
+				relativeTo: this._route,
+			});
+		}
+		this._router.navigate(['../'], {
 			relativeTo: this._route,
 		});
 	}
@@ -191,8 +196,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.navigateOnAction();
+				.subscribe(({ agreementTemplateId }) => {
+					this.navigateOnAction(agreementTemplateId);
 				});
 		}
 	}

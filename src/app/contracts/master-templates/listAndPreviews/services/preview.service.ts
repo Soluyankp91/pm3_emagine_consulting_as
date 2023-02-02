@@ -10,6 +10,7 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
 	AgreementLanguage,
+	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateChildAgreementDto,
 	AgreementTemplateChildTemplateDto,
 	AgreementTemplateDetailsDto,
@@ -17,32 +18,29 @@ import {
 	AgreementType,
 } from 'src/shared/service-proxies/service-proxies';
 import * as moment from 'moment';
+import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 
 @Injectable()
-export class PreviewService {
+export class PreviewService extends BasePreview {
 	contentLoading$ = new BehaviorSubject<boolean>(false);
 
-	private _rowId$ = new BehaviorSubject<number | null>(null);
-	private _newestFirst$ = new BehaviorSubject<boolean>(false);
-	private _clientTemplateLinksSearch$ = new BehaviorSubject<string | undefined>('');
-	private _clientTemplateLinksSort$ = new BehaviorSubject<SortDto>({
+	entityGet = this._agreementTemplateServiceProxy.agreementTemplateGET.bind(this._agreementTemplateServiceProxy);
+	entityMetadataLog = this._agreementTemplateServiceProxy.metadataLog.bind(this._agreementTemplateServiceProxy);
+	downloadAttachment = this._agreementTemplateAttachmentServiceProxy.agreementTemplateAttachment.bind(
+		this._agreementTemplateAttachmentServiceProxy
+	);
+
+	protected _clientTemplateLinksSearch$ = new BehaviorSubject<string | undefined>('');
+	protected _clientTemplateLinksSort$ = new BehaviorSubject<SortDto>({
 		direction: '',
 		active: '',
 	});
 
-	private _agreementsLinksSearch$ = new BehaviorSubject<string | undefined>('');
-	private _agreementsLinksSort$ = new BehaviorSubject<SortDto>({
+	protected _agreementsLinksSearch$ = new BehaviorSubject<string | undefined>('');
+	protected _agreementsLinksSort$ = new BehaviorSubject<SortDto>({
 		direction: '',
 		active: '',
 	});
-
-	get currentRowId$() {
-		return this._rowId$.asObservable();
-	}
-
-	get newestFirst$() {
-		return this._newestFirst$.asObservable();
-	}
 
 	getClientTemplateLinksSort$() {
 		return this._clientTemplateLinksSort$.asObservable();
@@ -51,56 +49,6 @@ export class PreviewService {
 	getAgreementsLinksSort$() {
 		return this._agreementsLinksSort$.asObservable();
 	}
-
-	summary$ = this.currentRowId$.pipe(
-		distinctUntilChanged(),
-		tap(() => {
-			this.contentLoading$.next(true);
-		}),
-		switchMap((rowId) => {
-			return this._agreementTemplateServiceProxy.agreementTemplateGET(rowId as number);
-		}),
-		withLatestFrom(this._contractService.getEnumMap$()),
-		map(([row, maps]) => {
-			return this._mapEntityToSummary(row, maps);
-		}),
-		tap(() => {
-			this.contentLoading$.next(false);
-		})
-	);
-
-	attachments$ = this.currentRowId$.pipe(
-		distinctUntilChanged(),
-		tap(() => {
-			this.contentLoading$.next(true);
-		}),
-		switchMap((rowId) => {
-			return this._agreementTemplateServiceProxy.agreementTemplateGET(rowId as number);
-		}),
-		map((template) => {
-			return template.attachments;
-		}),
-		tap(() => {
-			this.contentLoading$.next(false);
-		})
-	);
-
-	logs$ = this.currentRowId$.pipe(
-		tap(() => {
-			this.contentLoading$.next(true);
-		}),
-		distinctUntilChanged(),
-		switchMap((rowId) => {
-			return combineLatest([of(rowId), this._newestFirst$]).pipe(
-				switchMap(([rowId, newestFirst]) => {
-					return this._agreementTemplateServiceProxy.metadataLog(rowId as number, newestFirst);
-				})
-			);
-		}),
-		tap(() => {
-			this.contentLoading$.next(false);
-		})
-	);
 
 	clientTemplateLinks$ = this.currentRowId$.pipe(
 		distinctUntilChanged(),
@@ -162,14 +110,6 @@ export class PreviewService {
 		})
 	);
 
-	updateCurrentRowId(id: number | null) {
-		this._rowId$.next(id);
-	}
-
-	updateNewestFirst(newest: boolean) {
-		this._newestFirst$.next(newest);
-	}
-
 	updateClientTemplatesSearch(search: string | undefined) {
 		this._clientTemplateLinksSearch$.next(search);
 	}
@@ -186,7 +126,7 @@ export class PreviewService {
 		this._agreementsLinksSort$.next(sort);
 	}
 
-	private _mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
+	_mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementTemplatesListItemDto>{
 			name: row.name,
 			definition: row.definition,
@@ -209,11 +149,17 @@ export class PreviewService {
 			lastUpdatedBy: row.lastUpdatedBy?.name,
 			duplicationSourceAgreementTemplateId: row.duplicationSourceAgreementTemplateId,
 			duplicationSourceAgreementTemplateName: row.duplicationSourceAgreementTemplateName,
+
+			parentAgreementTemplateId: row.parentAgreementTemplateId,
+			parentAgreementTemplateName: row.parentAgreementTemplateName,
 		};
 	}
 
 	constructor(
+		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
 		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
-		private readonly _contractService: ContractsService
-	) {}
+		protected readonly _contractService: ContractsService
+	) {
+		super(_contractService);
+	}
 }

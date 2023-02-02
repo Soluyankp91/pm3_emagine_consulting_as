@@ -8,6 +8,7 @@ import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.mod
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
+	AgreementAttachmentServiceProxy,
 	AgreementServiceProxy,
 	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateServiceProxy,
@@ -79,6 +80,7 @@ import { AgreementModeFilterComponent } from './shared/components/grid-table/agr
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { ClientTemplateSummaryComponent } from './client-specific-templates/listAndPreviews/preview/preview-tabs/client-template-summary/client-template-summary.component';
+import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 
 @NgModule({
 	declarations: [
@@ -142,6 +144,7 @@ import { ClientTemplateSummaryComponent } from './client-specific-templates/list
 		StatusesFilterComponent,
 		ClientTemplatePreviewComponent,
 		ClientTemplateSummaryComponent,
+		AgreementPreviewComponent,
 	],
 	imports: [
 		CommonModule,
@@ -164,6 +167,7 @@ import { ClientTemplateSummaryComponent } from './client-specific-templates/list
 		AgreementTemplateServiceProxy,
 		MergeFieldsServiceProxy,
 		AgreementTemplateAttachmentServiceProxy,
+		AgreementAttachmentServiceProxy,
 		CreationTitleService,
 	],
 })

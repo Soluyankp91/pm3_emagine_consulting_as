@@ -1,15 +1,17 @@
-import { Component, OnInit, Injector } from '@angular/core';
+import { Component, OnInit, Injector, Inject } from '@angular/core';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { MappedLog, OperationsTypeMap } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { PreviewService } from '../../../../services/preview.service';
 
 @Component({
 	selector: 'app-logs',
 	templateUrl: './logs.component.html',
 	styleUrls: ['./logs.component.scss'],
+	providers: [PREVIEW_SERVICE_PROVIDER],
 })
 export class LogsComponent extends AppComponentBase implements OnInit {
 	logs$: Observable<MappedLog[]>;
@@ -19,7 +21,10 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 
 	operationsTypeMap = OperationsTypeMap;
 
-	constructor(private readonly _injector: Injector, private readonly _previewService: PreviewService) {
+	constructor(
+		private readonly _injector: Injector,
+		@Inject(PREVIEW_SERVICE_TOKEN) private readonly _previewService: BasePreview
+	) {
 		super(_injector);
 	}
 
@@ -36,7 +41,7 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 	private _initLogObservable() {
 		this.logs$ = this._previewService.logs$.pipe(
 			map((logs) => {
-				return logs.map(
+				return (logs.metadataLogs || logs).map(
 					(log) =>
 						<MappedLog>{
 							...log,
