@@ -68,6 +68,7 @@
                 *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                 <app-contracts-client-data #clientDataComponent [readOnlyMode]="readOnlyMode"
                     [clientSpecialRateList]="clientSpecialRateList"
+                    [contractsMainForm]="mainDataComponent?.contractsMainForm"
                     [clientSpecialFeeList]="clientSpecialFeeList"></app-contracts-client-data>
             </ng-container>
 
