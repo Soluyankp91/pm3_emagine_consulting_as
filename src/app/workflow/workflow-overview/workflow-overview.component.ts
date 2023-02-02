@@ -40,6 +40,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowDiallogAction, WorkflowProgressStatus, WorkflowTopSections } from '../workflow.model';
+import { EStepActionTooltip, IWFOverviewDocuments } from './workflow-overview.model';
 
 @Component({
 	selector: 'app-workflow-overview',
@@ -52,7 +53,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	// @Input() workflowId: string;
 	workflowId: string;
     // @Input() periodId: string | undefined;
-	@Input() clientPeriods: ClientPeriodDto[] | undefined;
+	clientPeriods: ClientPeriodDto[] | undefined;
 
 	documentsPeriod = new UntypedFormControl(null);
     periodId: string | undefined;
