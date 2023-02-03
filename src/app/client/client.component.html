@@ -6,68 +6,85 @@
                 <div class="client-list--filter-manager cursor-pointer u-mr--10"
                     [matMenuTriggerFor]="managerMenu"
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
-                    [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'"
+                    [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Select account manager(s)'"
                     matTooltipClass="white-tooltip"
                     (click)="openManagersMenu($event)">
-                    <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
-                    <img *ngIf="selectedAccountManagers?.length === 0" class="border-rounded-50" src="../../../assets/common/images/no-img.jpg">
-                    <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
-                        {{selectedAccountManagers.length}}
-                    </div>
+                    <ng-container *ngIf="selectedAccountManagers?.length === 1">
+                        <img class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                    </ng-container>
+                    <ng-container *ngIf="selectedAccountManagers?.length === 0">
+                        <img class="border-rounded-50" src="../../../assets/common/images/select-user-icon.svg">
+                    </ng-container>
+                    <ng-container *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1">
+                        <div class="client-list--filter__badge">
+                            {{selectedAccountManagers.length}}
+                        </div>
+                    </ng-container>
                     <mat-menu #managerMenu backdropClass="client-list--filter-manager-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                            <mat-form-field class="client-list--filter-manager-dropdown autocompleteWithShevron" appearance="fill" (click)="$event.stopPropagation()" [ngClass]="{'isPanelOpen': managerAutocomplete.isOpen}">
                                 <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                                <span matSuffix class="shevron"></span>
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
-                                <mat-option *ngFor="let manager of selectedAccountManagers"
-                                    class="u-pg--5"
-                                    [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                    <div class="u-w--100">
-                                        <mat-checkbox [checked]="manager.selected"
-                                            *ngIf="manager.id !== 'no-data'"
-                                            color="primary"
-                                            class="black-checkbox"
-                                            (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            (click)="$event.stopPropagation()">
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
-                                                <span>{{ manager.name }}</span>
-                                            </div>
-                                        </mat-checkbox>
-                                        <span *ngIf="manager.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
-                                            {{ manager.name }}
-                                        </span>
-                                    </div>
-                                </mat-option>
-                                <mat-option *ngIf="isManagersLoading" class="is-loading">
-                                    <div class="is-loading-container">
-                                        <mat-spinner diameter="25"></mat-spinner>
-                                    </div>
-                                </mat-option>
-                                <ng-container *ngIf="!isManagersLoading">
-                                    <mat-option *ngFor="let manager of filteredAccountManagers"
-                                        class="u-pg--5"
-                                        [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                        [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                        <div>
-                                            <mat-checkbox [checked]="manager.selected"
-                                                *ngIf="manager.id !== 'no-data'"
-                                                color="primary"
-                                                class="black-checkbox"
-                                                (change)="toggleSelection(manager,selectedAccountManagers)"
-                                                (click)="$event.stopPropagation()">
-                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
-                                                    <span>{{ manager.name }}</span>
-                                                </div>
-                                            </mat-checkbox>
-                                            <span *ngIf="manager.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">{{ manager.name }}
-                                            </span>
+                                <ng-container *ngFor="let manager of selectedAccountManagers">
+                                    <mat-option class="u-pg--5"
+                                        [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <div class="u-w--100">
+                                            <ng-container *ngIf="manager.id !== 'no-data'">
+                                                <mat-checkbox [checked]="manager.selected"
+                                                    color="primary"
+                                                    class="black-checkbox"
+                                                    (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                    (click)="$event.stopPropagation()">
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                        <ng-container *ngIf="manager?.externalId">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                                                </ng-container>
+                                                        <span>{{ manager.name }}</span>
+                                                    </div>
+                                                </mat-checkbox>
+                                            </ng-container>
+                                            <ng-container *ngIf="manager.id === 'no-data'">
+                                                <span (click)="$event.stopPropagation()">
+                                                    {{ manager.name }}
+                                                </span>
+                                            </ng-container>
                                         </div>
                                     </mat-option>
+                                </ng-container>
+                                <ng-container *ngIf="isManagersLoading">
+                                    <mat-option class="is-loading">
+                                        <div class="is-loading-container">
+                                            <mat-spinner diameter="25"></mat-spinner>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
+                                <ng-container *ngIf="!isManagersLoading">
+                                    <ng-container *ngFor="let manager of filteredAccountManagers">
+                                        <mat-option class="u-pg--5"
+                                            [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                            [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                            <div class="u-w--100">
+                                                <ng-container *ngIf="manager.id !== 'no-data'">
+                                                    <mat-checkbox [checked]="manager.selected"
+                                                        color="primary"
+                                                        class="black-checkbox"
+                                                        (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                        (click)="$event.stopPropagation()">
+                                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                            <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                                                            <span>{{ manager.name }}</span>
+                                                        </div>
+                                                    </mat-checkbox>
+                                                </ng-container>
+                                                <ng-container *ngIf="manager.id === 'no-data'">
+                                                    <span (click)="$event.stopPropagation()">{{ manager.name }}
+                                                    </span>
+                                                </ng-container>
+                                            </div>
+                                        </mat-option>
+                                    </ng-container>
                                 </ng-container>
                             </mat-autocomplete>
                         </div>
@@ -77,16 +94,22 @@
                     [matMenuTriggerFor]="countryMenu"
                     (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.focus();"
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
-                    [matTooltip]="selectedCountries.length ? mapListByProperty(selectedCountries, 'name') : 'Select country'"
+                    [matTooltip]="selectedCountries.length ? (selectedCountries | displayList: 'name') : 'Select country'"
                     matTooltipClass="white-tooltip"
                     (click)="openCountriesMenu($event)">
-                    <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
-                        {{selectedCountries.length}}
-                    </span>
+                    <ng-container *ngIf="selectedCountries.length > 1; else singleCountry">
+                        <span class="client-list--filter-country__badge">
+                            {{selectedCountries.length}}
+                        </span>
+                    </ng-container>
                     <ng-template #singleCountry>
                         <ng-container *ngIf="selectedCountries.length > 0; else iconCountry">
-                            <span *ngIf="selectedCountries[0].id !== 0" class="country-flag--big fi fi-{{selectedCountries[0].code | lowercase }} fis border-rounded-50"></span>
-                            <mat-icon *ngIf="selectedCountries[0].id === 0" class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
+                            <ng-container *ngIf="selectedCountries[0].id !== 0; else unknownCountry">
+                                <span class="country-flag--big fi fi-{{selectedCountries[0].code | lowercase }} fis border-rounded-50"></span>
+                            </ng-container>
+                            <ng-template #unknownCountry>
+                                <mat-icon class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
+                            </ng-template>
                         </ng-container>
                     </ng-template>
                     <ng-template #iconCountry>
@@ -94,59 +117,60 @@
                     </ng-template>
                     <mat-menu #countryMenu backdropClass="client-list--filter-country-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                            <mat-form-field class="client-list--filter-country-dropdown autocompleteWithShevron" appearance="fill" (click)="$event.stopPropagation()" [ngClass]="{'isPanelOpen': countryAutocomplete.isOpen}">
                                 <input #countriesFilterInput type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
+                                <span matSuffix class="shevron"></span>
+                                <mat-autocomplete #countryAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
+                                    <mat-option *ngIf="isCountriesLoading" class="is-loading">
+                                        <div class="is-loading-container">
+                                            <mat-spinner diameter="25"></mat-spinner>
+                                        </div>
+                                    </mat-option>
+                                    <ng-container *ngIf="!isCountriesLoading">
+                                        <mat-option *ngFor="let country of selectedCountries"
+                                            class="u-pg--5"
+                                            [value]="country" (click)="optionClicked($event, country, selectedCountries)">
+                                            <div class="u-w--100">
+                                                <mat-checkbox [checked]="country.selected"
+                                                    *ngIf="country.id !== 'no-data'"
+                                                    color="primary"
+                                                    class="black-checkbox"
+                                                    (change)="toggleSelection(country,selectedCountries)"
+                                                    (click)="$event.stopPropagation()">
+                                                    <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--10 u-mr--10" *ngIf="country.id !== 0"></span>
+                                                    <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--10 u-mr--10"></mat-icon>
+                                                    <span>{{ country.name }}</span>
+                                                </mat-checkbox>
+                                                <span *ngIf="country.id === 'no-data'"
+                                                    (click)="$event.stopPropagation()">
+                                                    {{ country.name }}
+                                                </span>
+                                            </div>
+                                        </mat-option>
+                                        <mat-option *ngFor="let country of filteredCountries | async"
+                                            class="u-pg--5"
+                                            [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
+                                            [value]="country" (click)="optionClicked($event, country, selectedCountries)">
+                                            <div class="u-w--100">
+                                                <mat-checkbox [checked]="country.selected"
+                                                    *ngIf="country.id !== 'no-data'"
+                                                    color="primary"
+                                                    class="black-checkbox"
+                                                    (change)="toggleSelection(country,selectedCountries)"
+                                                    (click)="$event.stopPropagation()">
+                                                    <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--10 u-mr--10" *ngIf="country.id !== 0"></span>
+                                                    <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--10 u-mr--10"></mat-icon>
+                                                    <span>{{ country.name }}</span>
+                                                </mat-checkbox>
+                                                <span *ngIf="country.id === 'no-data'"
+                                                    (click)="$event.stopPropagation()">
+                                                    {{ country.name }}
+                                                </span>
+                                            </div>
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-autocomplete>
                             </mat-form-field>
-                            <mat-autocomplete #countryAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
-                                <mat-option *ngIf="isCountriesLoading" class="is-loading">
-                                    <div class="is-loading-container">
-                                        <mat-spinner diameter="25"></mat-spinner>
-                                    </div>
-                                </mat-option>
-                                <ng-container *ngIf="!isCountriesLoading">
-                                    <mat-option *ngFor="let country of selectedCountries"
-                                        class="u-pg--5"
-                                        [value]="country" (click)="optionClicked($event, country, selectedCountries)">
-                                        <div class="u-w--100">
-                                            <mat-checkbox [checked]="country.selected"
-                                                *ngIf="country.id !== 'no-data'"
-                                                color="primary"
-                                                class="black-checkbox"
-                                                (change)="toggleSelection(country,selectedCountries)"
-                                                (click)="$event.stopPropagation()">
-                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--10 u-mr--10" *ngIf="country.id !== 0"></span>
-                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--10 u-mr--10"></mat-icon>
-                                                <span>{{ country.name }}</span>
-                                            </mat-checkbox>
-                                            <span *ngIf="country.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">
-                                                {{ country.name }}
-                                            </span>
-                                        </div>
-                                    </mat-option>
-                                    <mat-option *ngFor="let country of filteredCountries | async"
-                                        class="u-pg--5"
-                                        [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
-                                        [value]="country" (click)="optionClicked($event, country, selectedCountries)">
-                                        <div class="u-w--100">
-                                            <mat-checkbox [checked]="country.selected"
-                                                *ngIf="country.id !== 'no-data'"
-                                                color="primary"
-                                                class="black-checkbox"
-                                                (change)="toggleSelection(country,selectedCountries)"
-                                                (click)="$event.stopPropagation()">
-                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--10 u-mr--10" *ngIf="country.id !== 0"></span>
-                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--10 u-mr--10"></mat-icon>
-                                                <span>{{ country.name }}</span>
-                                            </mat-checkbox>
-                                            <span *ngIf="country.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">
-                                                {{ country.name }}
-                                            </span>
-                                        </div>
-                                    </mat-option>
-                                </ng-container>
-                            </mat-autocomplete>
                         </div>
                     </mat-menu>
                 </div>
@@ -220,31 +244,41 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Address </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
                         <ng-container *ngIf="row.clientAddress_Address && row.clientAddress_Address !== ''; else noDataTemplate">
+                            <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                {{row.clientAddress_Address}}
+                            </span>
                         </ng-container>
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientAddress_Address}}
-                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="isActive">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="17%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="17%">
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="row.isWrongfullyDeletedInHubspot" [matTooltip]="(row.isActive ? 'Active' : 'Not-active') + ', ' + 'Wrongfully deleted'" matTooltipClass="white-tooltip">
-                            <mat-icon class="status-dot wrong-deleted-flag">fiber_manual_record</mat-icon>
-                            <span class="column">
-                                <span class="text-truncate-ellipsis" *ngIf="!row.isDeleted" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
-                                <span class="text-truncate-ellipsis status-text--deleted" *ngIf="row.isDeleted">Deleted</span>
-                                <span class="text-truncate-ellipsis status-text--wrong-deleted">Wrongfully deleted</span>
-                            </span>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot && !row.isDeleted" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
-                            <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
-                            <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" *ngIf="row.isDeleted" matTooltipClass="white-tooltip">
-                            <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
-                            <span class="text-truncate-ellipsis status-text--deleted">Deleted</span>
-                        </div>
+                        <ng-container *ngIf="row.isWrongfullyDeletedInHubspot">
+                            <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="(row.isActive ? 'Active' : 'Not-active') + ', ' + 'Wrongfully deleted'" matTooltipClass="white-tooltip">
+                                <mat-icon class="status-dot wrong-deleted-flag">fiber_manual_record</mat-icon>
+                                <span class="column">
+                                    <ng-container *ngIf="!row.isDeleted">
+                                        <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="row.isDeleted">
+                                        <span class="text-truncate-ellipsis status-text--deleted">Deleted</span>
+                                    </ng-container>
+                                    <span class="text-truncate-ellipsis status-text--wrong-deleted">Wrongfully deleted</span>
+                                </span>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="!row.isWrongfullyDeletedInHubspot && !row.isDeleted">
+                            <div fxLayout="row" fxLayoutAlign="start center" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
+                                <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
+                                <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
+                            </div>
+                        </ng-container>
+                        <ng-container  *ngIf="row.isDeleted">
+                            <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" matTooltipClass="white-tooltip">
+                                <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
+                                <span class="text-truncate-ellipsis status-text--deleted">Deleted</span>
+                            </div>
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="owner_Name">
@@ -252,7 +286,7 @@
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.owner_Name ? row.owner_Name : '-' }}
-                            <!-- <img class="manager-search--photo" src="../../../../assets/common/images/no-img.jpg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
+                            <!-- <img class="manager-search--photo" src="../../../../assets/common/images/select-user-icon.svg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -263,6 +297,7 @@
                             <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
                         <mat-menu #clientListMenu>
+                            <!-- FIXME: uncomment once BE is ready -->
                             <!-- <button
                                 class="menu-item menu-item--delete"
                                 mat-menu-item
@@ -287,12 +322,16 @@
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToClientDetails(row.id)"></mat-row>
             </mat-table>
-            <div class="spinner-container" *ngIf="isDataLoading">
-                <mat-spinner [diameter]="50"></mat-spinner>
-            </div>
-            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
-                RESULTS NOT FOUND
-            </div>
+            <ng-container *ngIf="isDataLoading">
+                <div class="spinner-container">
+                    <mat-spinner [diameter]="50"></mat-spinner>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="totalCount === 0 && !isDataLoading">
+                <div class="results-not-found">
+                    RESULTS NOT FOUND
+                </div>
+            </ng-container>
         </div>
         <div class="pagination-container u-w--100">
             <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"

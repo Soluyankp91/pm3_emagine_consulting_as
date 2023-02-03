@@ -102,7 +102,7 @@ export function getRemoteServiceBaseUrl(): string {
         AppCommonModule,
         ServiceProxyModule,
         MsalModule,
-        NgxSpinnerModule,
+        NgxSpinnerModule
     ],
     providers: [
         LoginGuard,
@@ -797,6 +797,18 @@ export class AppModule {
             'dialog-close-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/dialog-close-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'download-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/download-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'no-docs-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/no-docs.svg'
             )
         );
     }

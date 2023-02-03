@@ -361,7 +361,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
-			invoicingReferencePerson: this.contractClientForm.invoicingReferencePerson?.value,
+			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value ? null : this.contractClientForm.invoicingReferencePerson?.value
 		};
 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
 			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(
@@ -382,7 +382,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 						? ProjectLineDiallogMode.Edit
 						: ProjectLineDiallogMode.Create,
 				projectLineData: projectLine,
-				clientId: this.contractClientForm.directClientId?.value,
+				directClientId: this.contractClientForm.directClientId?.value,
+                endClientId: this.contractClientForm.endClientId?.value
 			},
 		});
 

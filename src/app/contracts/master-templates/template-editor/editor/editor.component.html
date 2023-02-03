@@ -1,37 +1,25 @@
-<dx-tab-panel
-  #tabPanel
-  [height]="'auto'"
-  [selectedIndex]="0"
-  [loop]="false"
->
-  <dxi-item title="File">
-    <div *dxTemplate>
-      <div [innerHTML]="template$ | async"></div>
-      <!-- component -->
-    </div>
-  </dxi-item>
+<ng-container *ngIf="docReady$ | async as doc">
+  <app-richedit 
+    #richEdit
+    [template]="doc[0]"
+    [mergeFields]="doc[1]"
+  >
+  </app-richedit>
 
-  <dxi-item title="Format">
-    <div *dxTemplate>
-      <!-- component -->
+  <ng-container *ngIf="hasUnsavedChanges$ | async">
+    <div class="save-actions" [class.loading]="isLoading$ | async">
+      <button>
+        cancel
+      </button>
+  
+      <button (click)="saveAsDraft()">
+        Safe as a draft
+      </button>
+  
+      <button (click)="saveAsComplete()">
+        complete
+      </button>
     </div>
-  </dxi-item>
-
-  <dxi-item title="Merge Fields">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
-
-  <dxi-item title="Compare" icon="">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
-
-  <dxi-item title="View" icon="">
-    <div *dxTemplate>
-      <!-- component -->
-    </div>
-  </dxi-item>
-</dx-tab-panel>
+  </ng-container>
+  
+</ng-container>

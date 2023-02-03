@@ -238,15 +238,6 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                         flag: x.name!
                     });
                 });
-                this.countryList.unshift(
-                    new SelectableCountry({
-                        id: 0,
-                        name: 'Unknown country',
-                        selected: false,
-                        code: '',
-                        flag: ''
-                    })
-                );
             });
     }
 

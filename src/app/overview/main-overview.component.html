@@ -26,79 +26,89 @@
                             </div>
                             <button (click)="resetInvoicingEntity()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
                         </mat-option>
-                        <mat-option [fxHide]="invoicingEntityControl.value?.id === item.id" *ngFor="let item of legalEntities" [value]="item">
-                            <div class="u-w--100" [ngStyle]="{'display: none': invoicingEntityControl.value?.id === item.id}">
-                                <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
-                                <span class="tenant-name">{{item.tenantName}}</span>
-                                {{' (' + item.name + ')' }}
-                            </div>
-                        </mat-option>
+                        <ng-container *ngFor="let item of legalEntities">
+                            <mat-option [fxHide]="invoicingEntityControl.value?.id === item.id" [value]="item">
+                                <div class="u-w--100" [ngStyle]="{'display: none': invoicingEntityControl.value?.id === item.id}">
+                                    <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
+                                    <span class="tenant-name">{{item.tenantName}}</span>
+                                    {{' (' + item.name + ')' }}
+                                </div>
+                            </mat-option>
+                        </ng-container>
                     </mat-select>
                 </button>
-                <div class="main-overview--filter-manager cursor-pointer" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Selected account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
-                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
-                    <img *ngIf="selectedAccountManagers.length === 0" class="border-rounded-50" src="../../../assets/common/images/no-img.jpg">
+                <div class="main-overview--filter-manager cursor-pointer" [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Selected account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                    <img *ngIf="selectedAccountManagers.length === 0" class="border-rounded-50" src="../../../assets/common/images/select-user-icon.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
                     <mat-menu #managerMenu backdropClass="main-overview--filter-manager-menu">
                         <div mat-menu-item appPreventDoubleClick (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="main-overview--filter-manager-dropdown" appearance="fill"
+                            <mat-form-field class="main-overview--filter-manager-dropdown autocompleteWithShevron" appearance="fill"
+                                [ngClass]="{'isPanelOpen': managerAutocomplete.isOpen}"
                                 (click)="$event.stopPropagation()">
                                 <input #accountManagerFilterInput #trigger type="text" matInput
                                     [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter"
                                     (click)="$event.stopPropagation();" placeholder="Filter by account manager(s)">
-                            </mat-form-field>
-                            <mat-autocomplete #managerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
-                                <mat-option *ngFor="let manager of selectedAccountManagers" class="u-pg--5"
-                                    [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                    <div class="u-w--100">
-                                        <mat-checkbox [checked]="manager.selected"
-                                            *ngIf="manager.id !== 'no-data'"
-                                            color="primary"
-                                            class="black-checkbox"
-                                            (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            (click)="$event.stopPropagation()">
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
-                                                <span>{{ manager.name }}</span>
-                                            </div>
-                                        </mat-checkbox>
-                                        <span *ngIf="manager.id === 'no-data'" appPreventDoubleClick
-                                            (throttledClick)="$event.stopPropagation()">
-                                            {{ manager.name }}
-                                        </span>
-                                    </div>
-                                </mat-option>
-                                <mat-option *ngIf="isLoading" class="is-loading">
-                                    <div class="is-loading-container">
-                                        <mat-spinner diameter="25"></mat-spinner>
-                                    </div>
-                                </mat-option>
-                                <ng-container *ngIf="!isLoading">
-                                    <mat-option *ngFor="let manager of filteredAccountManagers" class="u-pg--5"
-                                        [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                        [value]="selectedAccountManagers"
-                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                        <div>
-                                            <mat-checkbox [checked]="manager.selected"
-                                                *ngIf="manager.id !== 'no-data'"
-                                                color="primary"
-                                                class="black-checkbox"
-                                                (change)="toggleSelection(manager,selectedAccountManagers)"
-                                                (click)="$event.stopPropagation()">
-                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
-                                                    <span>{{ manager.name }}</span>
+                                    <span matSuffix class="shevron"></span>
+                                    <mat-autocomplete #managerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
+                                        <ng-container *ngFor="let manager of selectedAccountManagers">
+                                            <mat-option class="u-pg--5"
+                                                [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                                <div class="u-w--100">
+                                                    <mat-checkbox [checked]="manager.selected"
+                                                        *ngIf="manager.id !== 'no-data'"
+                                                        color="primary"
+                                                        class="black-checkbox"
+                                                        (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                        (click)="$event.stopPropagation()">
+                                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                            <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager.externalId! + '.jpg'"  width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                                                            <span>{{ manager.name }}</span>
+                                                        </div>
+                                                    </mat-checkbox>
+                                                    <span *ngIf="manager.id === 'no-data'" appPreventDoubleClick
+                                                        (throttledClick)="$event.stopPropagation()">
+                                                        {{ manager.name }}
+                                                    </span>
                                                 </div>
-                                            </mat-checkbox>
-                                            <span *ngIf="manager.id === 'no-data'" appPreventDoubleClick
-                                                (throttledClick)="$event.stopPropagation()">{{ manager.name }}
-                                            </span>
-                                        </div>
-                                    </mat-option>
-                                </ng-container>
-                            </mat-autocomplete>
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="isLoading">
+                                            <mat-option class="is-loading">
+                                                <div class="is-loading-container">
+                                                    <mat-spinner diameter="25"></mat-spinner>
+                                                </div>
+                                            </mat-option>
+                                        </ng-container>
+                                        <ng-container *ngIf="!isLoading">
+                                            <ng-container *ngFor="let manager of filteredAccountManagers">
+                                                <mat-option class="u-pg--5"
+                                                    [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                                    [value]="selectedAccountManagers"
+                                                    (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                                    <div>
+                                                        <mat-checkbox [checked]="manager.selected"
+                                                            *ngIf="manager.id !== 'no-data'"
+                                                            color="primary"
+                                                            class="black-checkbox"
+                                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                            (click)="$event.stopPropagation()">
+                                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                                <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                                                                <span>{{ manager.name }}</span>
+                                                            </div>
+                                                        </mat-checkbox>
+                                                        <span *ngIf="manager.id === 'no-data'" appPreventDoubleClick
+                                                            (throttledClick)="$event.stopPropagation()">{{ manager.name }}
+                                                        </span>
+                                                    </div>
+                                                </mat-option>
+                                            </ng-container>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                            </mat-form-field>
                         </div>
                     </mat-menu>
                 </div>
@@ -128,70 +138,83 @@
             </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
-            <button class="advanced-filterd--btn u-mt--10 u-mb--10" [ngClass]="{'active': isAdvancedFilters}" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+            <button class="advanced-filterd--btn u-mt--10 u-mb--10" [ngClass]="{'active': isAdvancedFilters || advancedFiltersCounter > 0}" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
-                <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
+                <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>
             </button>
         </div>
     </div>
-    <div fxLayout="row" fxLayoutAlign="start center" class="main-overview--filter-additional u-w--100 u-mb--20"
-        *ngIf="isAdvancedFilters">
-        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-            <mat-label> Payment entity</mat-label>
-            <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
-                    Clear
-                </mat-option>
-                <mat-option *ngFor="let item of legalEntities" [value]="item.id">
-                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+    <ng-container *ngIf="isAdvancedFilters">
+        <div fxLayout="row" fxLayoutAlign="start center" class="main-overview--filter-additional u-w--100">
+            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                <mat-label> Payment entity</mat-label>
+                <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
+                    <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
+                        Clear
+                    </mat-option>
+                    <ng-container *ngFor="let item of legalEntities">
+                        <mat-option [value]="item.id">
+                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-            <mat-label> Sales types</mat-label>
-            <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true" [multiple]="true">
-                <mat-option *ngFor="let item of saleTypes" [value]="item.id">
-                    {{ item.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                <mat-label> Sales types</mat-label>
+                <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true" [multiple]="true">
+                    <ng-container *ngFor="let item of saleTypes">
+                        <mat-option [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
-            <mat-label> Delivery types</mat-label>
-            <mat-select [formControl]="deliveryTypesControl" [disableOptionCentering]="true" [multiple]="true">
-                <mat-option *ngFor="let item of deliveryTypes" [value]="item.id">
-                    {{ item.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+                <mat-label> Delivery types</mat-label>
+                <mat-select [formControl]="deliveryTypesControl" [disableOptionCentering]="true" [multiple]="true">
+                    <ng-container *ngFor="let item of deliveryTypes">
+                        <mat-option [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="filter-select" fxFlex="20%">
-            <mat-label> Margins</mat-label>
-            <mat-select [formControl]="marginsControl" [disableOptionCentering]="true" [multiple]="true">
-                <mat-option *ngFor="let item of margins" [value]="item.id">
-                    {{ item.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+            <mat-form-field appearance="outline" class="filter-select" fxFlex="20%">
+                <mat-label> Margins</mat-label>
+                <mat-select [formControl]="marginsControl" [disableOptionCentering]="true" [multiple]="true">
+                    <ng-container *ngFor="let item of margins">
+                        <mat-option [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </ng-container>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
         <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100 u-mr--10 u-mb--20">
             <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding u-mr--20">
                 <mat-select [formControl]="overviewViewTypeControl" name="overviewViewType"
                     [disableOptionCentering]="true" panelClass="main-overview-dropdowns">
-                    <mat-option *ngFor="let view of overviewViewTypes | keyvalue" [value]="+view.key">
-                        {{view.value}}
-                    </mat-option>
+                    <ng-container *ngFor="let view of overviewViewTypes | keyvalue">
+                        <mat-option [value]="+view.key">
+                            {{view.value}}
+                        </mat-option>
+                    </ng-container>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding">
                 <mat-select [formControl]="viewType" name="viewType" [disableOptionCentering]="true"
                     panelClass="main-overview-dropdowns">
-                    <mat-option *ngFor="let view of views" [class.active]="view.value === viewType.value"
-                        appPreventDoubleClick (throttledClick)="changeViewType()" [value]="view.value">
-                        {{view.name}}
-                    </mat-option>
+                    <ng-container *ngFor="let view of views">
+                        <mat-option [class.active]="view.value === viewType.value"
+                            appPreventDoubleClick (throttledClick)="changeViewType()" [value]="view.value">
+                            {{view.name}}
+                        </mat-option>
+                    </ng-container>
                 </mat-select>
             </mat-form-field>
         </div>

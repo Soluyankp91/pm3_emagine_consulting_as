@@ -1,6 +1,6 @@
 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
     <ng-container
-        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
+        *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startPeriodTemplate">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
             <h1 class="workflow-section--header-main">Main data</h1>
@@ -26,7 +26,7 @@
             </div>
         </div>
     </ng-container>
-    <ng-template #startClientPeriodTemplate>
+    <ng-template #startPeriodTemplate>
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -34,12 +34,7 @@
                     <h1 class="workflow-section--header-main">Main data</h1>
                     <ng-container *ngIf="readOnlyMode">
                         <div fxLayout="row" fxLayoutAlign="start start">
-                            <ng-container *ngIf="canToggleEditMode">
-                                <button class="absolute-edit-toggle contract-manager-action u-mr--8" mat-icon-button
-                                    appPreventDoubleClick (throttledClick)="toggleEditMode()">
-                                    <mat-icon svgIcon="edit-icon"></mat-icon>
-                                </button>
-                            </ng-container>
+                            <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
                                 type="button" [matMenuTriggerFor]="returnToSalesMenu"
                                 class="three-dots-actions-btn contract-manager-action">
@@ -141,7 +136,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Area</mat-label>
-                                    <mat-select required [disabled]="readOnlyMode" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="readOnlyMode" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of primaryCategoryAreas; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -154,7 +149,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Type</mat-label>
-                                    <mat-select required [disabled]="readOnlyMode" formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="readOnlyMode" formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of primaryCategoryTypes; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -167,7 +162,8 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                                     <mat-label>Role</mat-label>
-                                    <mat-select required [disabled]="readOnlyMode" formControlName="primaryCategoryRole" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="readOnlyMode" formControlName="primaryCategoryRole" [disableOptionCentering]="true"
+                                        [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of primaryCategoryRoles; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -315,7 +311,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                         <mat-form-field appearance="fill"
-                                            class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="30%"
+                                            class="u-w--100 formFieldNoMarginPadding autocompleteWithShevron filter-select" fxFlex="30%"
                                             [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
                                             <!-- recipientType?.id === 4 - PDC entity -->
                                             <ng-container
@@ -332,9 +328,11 @@
                                             </ng-container>
                                             <ng-template #commissionRecipientAutocomplete>
                                                 <input #recipientFilterInput type="text" matInput
+                                                    [ngClass]="{'isPanelOpen': recipientAutocomplete.isOpen}"
                                                     [matAutocomplete]="recipientAutocomplete"
                                                     formControlName="recipient" appPreventDoubleClick
                                                     (throttledClick)="$event.stopPropagation()" placeholder="Recipient">
+                                                    <span matSuffix class="shevron"></span>
                                                 <mat-autocomplete #recipientAutocomplete="matAutocomplete"
                                                     [displayWith]="displayRecipientFn"
                                                     (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
@@ -375,7 +373,7 @@
                                                                             <ng-container
                                                                                 *ngIf="recipient.id !== 'no-data'">
                                                                                 <img class="image-settings u-mr--16"
-                                                                                    [src]="consultantProfileUrl(recipient.externalId!)" />
+                                                                                    [ngSrc]="consultantPhotoUrl + recipient.externalId! + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
                                                                             </ng-container>
                                                                             <div
                                                                                 class="multilineDropdown-option--column">
@@ -579,13 +577,14 @@
                 <div class="workflow-section--content">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-276"
-                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-276"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': salesManagerAutocomplete.isOpen}">
                             <mat-label>Sales Account Manager</mat-label>
                             <input required [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
                                 matInput [matAutocomplete]="salesManagerAutocomplete"
                                 formControlName="salesAccountManagerIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                                <span matSuffix class="shevron"></span>
                             <mat-autocomplete #salesManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                 (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
                                 (closed)="focusToggleMethod('auto')">
@@ -601,13 +600,14 @@
                         </mat-form-field>
 
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select form-width-276"
-                            [ngClass]="{'disabled-input': readOnlyMode}">
+                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': commissionManagerAutocomplete.isOpen}">
                             <mat-label>Commission Account Manager</mat-label>
                             <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput
                                 [matAutocomplete]="commissionManagerAutocomplete"
                                 formControlName="commissionAccountManagerIdValue" appPreventDoubleClick
                                 (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                                <span matSuffix class="shevron"></span>
                             <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete"
                                 [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
                                 (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -658,13 +658,14 @@
                                 [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline"
-                                        class="formFieldNoMarginPadding filter-select form-width-276"
-                                        [ngClass]="{'disabled-input': readOnlyMode}">
+                                        class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
+                                        [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': commissionedUserAutocomplete.isOpen}">
                                         <mat-label>Commissioned employee</mat-label>
                                         <input required [disabled]="readOnlyMode" #commissionedUserInput type="text"
                                             matInput [matAutocomplete]="commissionedUserAutocomplete"
                                             formControlName="commissionedUser" appPreventDoubleClick
                                             (throttledClick)="$event.stopPropagation()" placeholder="Type something">
+                                            <span matSuffix class="shevron"></span>
                                         <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete"
                                             [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
                                             (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -675,7 +676,7 @@
                                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                         <ng-container *ngIf="employee.id !== undefined">
                                                             <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                                                [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                [ngSrc]="employeePhotoUrl + employee?.externalId + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                                                         </ng-container>
                                                         <span class="autocopmlete-option-name">{{ employee.name
                                                             }}</span>
@@ -726,6 +727,16 @@
                             </mat-checkbox>
                         </ng-container>
                     </div>
+                </div>
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" id="salesMainDocuments">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">4</span>
+                    <h2 class="workflow-section--header">Documents</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <app-documents #mainDocuments [readOnlyMode]="readOnlyMode"></app-documents>
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmployeeDto, IdNameDto, LookupServiceProxy, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { ManagerStatus } from './manager-search.model';
+import { EManagerStatusIcon, ManagerStatus } from './manager-search.model';
 
 @Component({
     selector: 'app-manager-search',
@@ -33,6 +33,8 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
 
     managerStatuses = ManagerStatus;
 
+    managerStatusIcon = EManagerStatusIcon;
+
     managerFilter = new UntypedFormControl('');
     filteredManagers: any[] = [];
     private _unsubscribe = new Subject();
@@ -58,9 +60,7 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
                         ? value.name
                         : value;
                 }
-
                 return this._lookupService.employees(toSend.name);
-                // return new Observable();
             }),
         ).subscribe((list: any) => {
             if (list.length) {

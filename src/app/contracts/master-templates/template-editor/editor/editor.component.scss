@@ -1,33 +1,42 @@
-:host {
-  display: block;
-  padding: 24px 34px 32px 40px;
-}
+.save-actions {
+  display: flex;
+  align-items: center;
+  padding: 10px 60px 30px 60px;
 
-::ng-deep .content {
-  text-align: justify;
-  margin-top: 25px;
-}
+  button {
+    height: 39px;
+    padding: 0 16px;
+    background: #17A297;
+    border: 1px solid;
+    border-radius: 100px;
+    outline: none;
+    color: white;
+    cursor: pointer;
 
-::ng-deep #scrolledtabs {
-  margin-top: 20px;
-}
+    &:first-child {
+      margin-right: auto;
+      background: none;
+      color: grey;
+    }
 
-::ng-deep #tabs {
-  margin-top: 60px;
-}
+    &:last-child {
+      margin-left: 34px;
+    }
+  }
 
-::ng-deep .caption {
-  font-size: 16px;
-  padding-bottom: 3px;
-  padding-left: 10px;
+  &.loading {
+    &::after {
+      content: 'saving...';
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: grey;
+      opacity: .4;
+      color: white;
+      width: 92%;
+      height: 70px;
+      font-size: 26px;
+    }
+  }
 }
-
-::ng-deep .left-aligned {
-  text-align: left;
-}
-
-::ng-deep .dx-tab-text {
-  font-size: 14px;
-}
-
-  

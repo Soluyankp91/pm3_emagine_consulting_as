@@ -108,6 +108,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     constructor() {
         super({
             directClientId: new UntypedFormControl(null),
+            endClientId: new UntypedFormControl(null),
             pdcInvoicingEntityId: new UntypedFormControl(null),
             clientTimeReportingCapId: new UntypedFormControl(null),
             clientTimeReportingCapMaxValue: new UntypedFormControl(null),
@@ -121,6 +122,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             clientInvoicingRecipient: new UntypedFormControl(null),
             invoicingReferencePersonIdValue: new UntypedFormControl(null),
             invoicingReferencePerson: new UntypedFormControl(null),
+            invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
 
             specialContractTerms: new UntypedFormControl(null, Validators.required),
             noSpecialContractTerms: new UntypedFormControl(null),
@@ -132,6 +134,9 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
 
     get directClientId() {
         return this.get('directClientId');
+    }
+    get endClientId() {
+        return this.get('endClientId');
     }
     get pdcInvoicingEntityId() {
         return this.get('pdcInvoicingEntityId');
@@ -168,6 +173,9 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     }
     get invoicingReferencePerson() {
         return this.get('invoicingReferencePerson');
+    }
+    get invoicingReferencePersonDontShowOnInvoice() {
+        return this.get('invoicingReferencePersonDontShowOnInvoice');
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
@@ -227,6 +235,17 @@ export enum LegalContractStatus {
     Done = 10
 }
 
+export class DocumentForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            documents: new UntypedFormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as UntypedFormArray;
+    }
+}
 
 export enum ClientTimeReportingCaps {
     CapOnUnits = 1,

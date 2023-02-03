@@ -11,8 +11,8 @@
                             <ng-container
                                 *ngIf="consultant.value?.consultant?.id || consultant.value?.consultantNameOnly">
                                 <ng-container *ngIf="consultant.value?.consultant?.id">
-                                    <img class="image-thumbnail-responsive border-rounded-50 u-ml--16 u-mr--16"
-                                        [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16"
+                                        [ngSrc]="consultantPhotoUrl + consultant.value?.consultant?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 </ng-container>
                                 <span class="workflow-form--consultants__name">
                                     {{consultant.value?.consultant?.name}}
@@ -43,13 +43,15 @@
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline"
-                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input"
+                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
+                                    [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
                                     [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
                                     <mat-label>Consultant Name</mat-label>
                                     <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
                                         formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
                                         appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                         placeholder="Consultant name">
+                                        <span matSuffix class="shevron"></span>
                                     <mat-autocomplete #consultantAutocomplete="matAutocomplete"
                                         [displayWith]="displayNameFn">
                                         <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
@@ -58,7 +60,7 @@
                                                 <div class="multilineDropdown-option--row">
                                                     <ng-container *ngIf="item?.id !== undefined">
                                                         <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                            [src]="consultantProfileUrl(item?.externalId!)" />
+                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                                     </ng-container>
                                                     <div
                                                         class="multilineDropdown-option--column text-truncate-ellipsis">

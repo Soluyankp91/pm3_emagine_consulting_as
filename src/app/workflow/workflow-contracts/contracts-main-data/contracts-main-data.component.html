@@ -1,7 +1,14 @@
 <form [formGroup]="contractsMainForm" id="mainDataAnchor" class="workflow-form workflow-form--main u-w--100">
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-            <h1 class="workflow-section--header-main">Main data</h1>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                <h1 class="workflow-section--header-main">Main data</h1>
+                <ng-container *ngIf="readOnlyMode">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
+                    </div>
+                </ng-container>
+            </div>
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                 <span class="workflow-section--number">1</span>
                 <h2 class="workflow-section--header">Project</h2>
@@ -148,6 +155,15 @@
                         </mat-checkbox>
                     </ng-container>
                 </div>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">3</span>
+                <h2 class="workflow-section--header">Documents</h2>
+            </div>
+            <div class="workflow-section--content">
+                <app-documents #mainDocuments [readOnlyMode]="readOnlyMode"></app-documents>
             </div>
         </div>
     </div>

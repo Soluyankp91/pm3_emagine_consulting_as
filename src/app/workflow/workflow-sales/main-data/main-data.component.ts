@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
-import { WorkflowSalesMainForm } from '../workflow-sales.model';
+import { EProjectTypes, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
+import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
 
 @Component({
 	selector: 'app-main-data',
@@ -17,6 +18,7 @@ import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-con
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
 	@Input() periodId: string | undefined;
     @Input() readOnlyMode: boolean;
     @Input() editEnabledForcefuly: boolean;
@@ -29,8 +31,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
+
     deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
+    eProjectTypes = EProjectTypes;
 
     currencies: EnumEntityTypeDto[];
     deliveryTypes: EnumEntityTypeDto[];
@@ -64,6 +68,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		recipientType: any;
 		recipient: any;
 	};
+    areaTypeRoleRequired = true;
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -123,19 +128,16 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.name : value;
-						}
-						return this._lookupService.employees(value);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.name : value;
+                    }
+                    return this._lookupService.employees(value);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {
@@ -158,19 +160,16 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.name : value;
-						}
-						return this._lookupService.employees(value);
-					} else {
-						return of([]);
-					}
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.name : value;
+                    }
+                    return this._lookupService.employees(value);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {
@@ -200,12 +199,12 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             )
             .subscribe((list) => {
                 this.primaryCategoryTypes = list!;
-                this.salesMainDataForm?.primaryCategoryType?.setValue(
-                    null
-                );
-                this.salesMainDataForm?.primaryCategoryRole?.setValue(
-                    null
-                );
+                    this.salesMainDataForm?.primaryCategoryType?.setValue(
+                        null
+                    );
+                    this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                        null
+                    );
             });
 
         this.salesMainDataForm?.primaryCategoryType?.valueChanges
@@ -273,18 +272,60 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 				this.salesMainDataForm.deliveryTypeId?.setValue(result.deliveryTypeId, { emitEvent: false });
 				this.salesMainDataForm.salesTypeId?.setValue(result.salesTypeId, { emitEvent: false });
 				this.salesMainDataForm.marginId?.setValue(result.marginId, { emitEvent: false });
+                if (
+					projectTypeId === this.eProjectTypes.NearshoreVMShighMargin ||
+					projectTypeId === this.eProjectTypes.NearshoreVMSlowMargin ||
+					projectTypeId === this.eProjectTypes.VMShighMargin ||
+					projectTypeId === this.eProjectTypes.VMSlowMargin ||
+                    this.salesMainDataForm.salesTypeId?.value === SalesTypes.ThirdPartyMgmt
+				) {
+					this.makeAreaTypeRoleNotRequired();
+				} else {
+					this.makeAreaTypeRoleRequired();
+				}
 			});
 	}
 
     salesTypeChange(value: number) {
-		if (value === 3) {
-			// Managed Service
-			const itemToPreselct = this.deliveryTypes.find((x) => x.id === 1); // Managed Service
+		if (value === this.salesTypesEnum.ManagedService) {
+			const itemToPreselct = this.deliveryTypes.find((x) => x.id === this.deliveryTypesEnum.ManagedService);
 			this.salesMainDataForm.deliveryTypeId?.setValue(itemToPreselct?.id, {
 				emitEvent: false,
 			});
 		}
+        const projectTypeId = this.salesMainDataForm.projectTypeId?.value;
+		if (
+			projectTypeId === this.eProjectTypes.NearshoreVMShighMargin ||
+			projectTypeId === this.eProjectTypes.NearshoreVMSlowMargin ||
+			projectTypeId === this.eProjectTypes.VMShighMargin ||
+			projectTypeId === this.eProjectTypes.VMSlowMargin ||
+			value === this.salesTypesEnum.ThirdPartyMgmt
+		) {
+			this.makeAreaTypeRoleNotRequired();
+		} else {
+			this.makeAreaTypeRoleRequired();
+		}
 	}
+
+    makeAreaTypeRoleRequired() {
+        this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
+        this.updateStateAreaTypeRole();
+    }
+
+    makeAreaTypeRoleNotRequired() {
+        this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
+        this.updateStateAreaTypeRole();
+    }
+
+    updateStateAreaTypeRole() {
+        this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
+    }
 
     commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
 		this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });
@@ -402,9 +443,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-	get commissions() {
-		return this.salesMainDataForm.commissions as UntypedFormArray;
-	}
+
 
 	removeCommission(index: number) {
 		this.isCommissionInitialAdd = false;
@@ -466,8 +505,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		this.commissions.at(index).get('editable')?.setValue(false);
 	}
 
-
-    //#region commissionedUsers form array
     addCommissionedUser(employee?: EmployeeDto) {
         const form = this._fb.group({
            commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
@@ -482,7 +519,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
-                startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
+                startWith({ filter: '', showAll: true, idsToExclude: [] }),
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
@@ -509,9 +546,26 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.commissionedUsers.removeAt(index);
     }
 
+    packDocuments(): WorkflowDocumentCommandDto[] {
+        let workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDocuments.documents.value?.length) {
+            for (let document of this.mainDocuments.documents.value) {
+                let documentInput = new WorkflowDocumentCommandDto();
+                documentInput.name = document.name;
+                documentInput.workflowDocumentId = document.workflowDocumentId;
+                documentInput.temporaryFileId = document.temporaryFileId;
+                workflowDocumentsCommandDto.push(documentInput);
+            }
+        }
+        return workflowDocumentsCommandDto;
+    }
+
     get commissionedUsers() {
         return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
     }
-    //#endregion commissionedUsers form array
+
+    get commissions() {
+		return this.salesMainDataForm.commissions as UntypedFormArray;
+	}
 
 }
