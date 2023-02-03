@@ -33,6 +33,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	filteredDirectClients: ClientResultDto[];
 	filteredEndClients: ClientResultDto[];
 	filteredReferencePersons: ContactResultDto[];
+    filteredProjectManagers: ContactResultDto[];
 	filteredClientInvoicingRecipients: ClientResultDto[];
 	filteredEvaluationReferencePersons: ContactResultDto[];
 	filteredContractSigners: ContactResultDto[];
@@ -195,6 +196,38 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 					];
 				}
 			});
+
+        this.salesClientDataForm.clientContactProjectManager?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+                startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.firstName : value;
+					}
+                    if (toSend.clientIds?.length) {
+					    return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
+                    }
+				})
+			)
+			.subscribe((list: ContactResultDto[]) => {
+				if (list.length) {
+					this.filteredProjectManagers = list;
+				} else {
+					this.filteredProjectManagers = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
+				}
+			});
+
 
 		this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
 			.pipe(

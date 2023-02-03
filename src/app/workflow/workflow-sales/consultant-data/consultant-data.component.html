@@ -43,23 +43,23 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                     <mat-label>Employment type</mat-label>
-                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
-                                            <mat-option [value]="item">
+                                            <mat-option [value]="item.id">
                                                 {{ item.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
                                     <mat-error>
-                                        <app-validator [control]="consultant.get('employmentType')"></app-validator>
+                                        <app-validator [control]="consultant.get('employmentTypeId')"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <ng-container *ngIf="consultant.value?.employmentType?.id">
+                            <ng-container *ngIf="consultant.value?.employmentTypeId">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode, 'isPanelOpen': consultantAutocomplete.isOpen}">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron" [fxHide]="consultant.value?.employmentTypeId === 10 || consultant.value?.employmentTypeId === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode, 'isPanelOpen': consultantAutocomplete.isOpen}">
                                         <mat-label>Consultant Name</mat-label>
-                                        <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
+                                        <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
                                         <span matSuffix class="shevron"></span>
                                         <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn"
                                             (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -86,9 +86,9 @@
                                             <app-validator [control]="consultant.get('consultantName')"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
                                         <mat-label>Consultant Name only</mat-label>
-                                        <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" type="text" matInput formControlName="consultantNameOnly" placeholder="Consultant name only">
+                                        <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentTypeId === 10 || consultant.value?.employmentTypeId === 11" type="text" matInput formControlName="consultantNameOnly" placeholder="Consultant name only">
                                         <mat-error>
                                             <app-validator [control]="consultant.get('consultantNameOnly')"></app-validator>
                                         </mat-error>
@@ -98,7 +98,7 @@
                             <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
                         </div>
                     </div>
-                    <ng-container *ngIf="consultant.value?.employmentType?.id  && (consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment)">
+                    <ng-container *ngIf="consultant.value?.employmentTypeId  && (consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment)">
 
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
@@ -972,7 +972,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="form-width-564 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Special Payment Terms</mat-label>
-                                        <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                        <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                         </textarea>
                                         <mat-error>
                                             <app-validator [control]="consultant.get('specialPaymentTerms')"></app-validator>
@@ -996,7 +996,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-564" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Special Contract Terms</mat-label>
-                                        <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                        <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                         </textarea>
                                         <mat-error>
                                             <app-validator [control]="consultant.get('consultantSpecialContractTerms')"></app-validator>
