@@ -22,7 +22,7 @@ import { IConsultantAnchor, StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWi
 @Component({
     selector: 'app-workflow-period',
     templateUrl: './workflow-period.component.html',
-    styleUrls: ['./workflow-period.component.scss']
+    styleUrls: ['./workflow-period.component.scss'],
 })
 export class WorkflowPeriodComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
@@ -54,7 +54,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 
     isStatusUpdate = false;
     clientPeriods: ClientPeriodDto[];
-    workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+    // workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     typeId: number;
     private _routerEventsSubscription: Subscription;
     private _unsubscribe = new Subject();
@@ -90,17 +90,18 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     }
 
     ngOnInit(): void {
-        this.getClientPeriodTypes();
+        // this.getClientPeriodTypes();
         this.getSideMenu();
         this.updateWorkflowProgressAfterTopTabChanged();
         this._routerEventsSubscription = this._router.events.subscribe((evt) => {
-            const navigation  = this._router.getCurrentNavigation();
-            console.log(navigation.extras.state);
-            this.typeId = navigation.extras.state?.typeId;
-            this.updateWorkflowProgressAfterTopTabChanged();
-            // if (evt instanceof NavigationStart) {
-            // }
+            if (evt instanceof NavigationStart) {
+                this.showMainSpinner();
+            }
             if (evt instanceof NavigationEnd) {
+                const navigation  = this._router.getCurrentNavigation();
+                console.log(navigation.extras.state);
+                this.typeId = navigation.extras.state?.typeId;
+                this.updateWorkflowProgressAfterTopTabChanged();
                 this.getSideMenu();
             }
         });
@@ -130,14 +131,14 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
-    getClientPeriodTypes() {
-        this._internalLookupService
-            .getWorkflowClientPeriodTypes()
-            .pipe(finalize(() => {}))
-            .subscribe((result) => {
-                this.workflowClientPeriodTypes = result;
-            });
-    }
+    // getClientPeriodTypes() {
+    //     this._internalLookupService
+    //         .getWorkflowClientPeriodTypes()
+    //         .pipe(finalize(() => {}))
+    //         .subscribe((result) => {
+    //             this.workflowClientPeriodTypes = result;
+    //         });
+    // }
 
     detectTopLevelMenu(typeId: number) {
         // const selectedTopMenu = this.clientPeriods?.find(

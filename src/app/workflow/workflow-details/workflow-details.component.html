@@ -245,11 +245,11 @@
             </ng-container>
 
         </nav>
-        <div class="u-w--100 u-mb--50">
+        <div class="u-w--100 u-mb--50" @routerSlide>
             <!-- <div fxFlex="80%"> -->
                 <!-- <ng-container *ngIf="selectedIndex === i + 1"> -->
                     <!-- <app-workflow-period #workflowPeriod [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period> -->
-                    <router-outlet></router-outlet>
+                    <router-outlet #outlet="outlet"></router-outlet>
                 <!-- </ng-container> -->
             <!-- </div> -->
         </div>

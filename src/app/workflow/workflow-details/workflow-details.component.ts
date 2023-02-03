@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -57,11 +57,13 @@ import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.comp
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
+import { routerSlide } from 'src/shared/animations/routerTransition';
 
 @Component({
     selector: 'app-workflow-details',
     templateUrl: './workflow-details.component.html',
     styleUrls: ['./workflow-details.component.scss'],
+    animations: [routerSlide]
 })
 export class WorkflowDetailsComponent
     extends AppComponentBase
@@ -172,6 +174,14 @@ export class WorkflowDetailsComponent
     get isProgressTrackVisible() {
         return !environment.production;
     }
+
+    // getState(outlet: RouterOutlet) {
+    //     console.log(outlet.activatedRoute.snapshot.params);
+    //     // console.log(outlet.activatedRoute?.firstChild?.snapshot.params?.periodId);
+    //     return {
+    //         value: outlet.activatedRoute?.snapshot?.params?.periodId
+    //     };
+    // }
 
     ngOnInit(): void {
         this.activatedRoute.paramMap
