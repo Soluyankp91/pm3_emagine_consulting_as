@@ -81,8 +81,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
             salesTypeId: this.contractsMainForm.salesType.value?.id,
             contractTypeId: undefined,
             deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
-            startDate: moment(), //this.contractClientForm.startDate.value,
-            endDate: moment(), //this.contractClientForm.endDate.value ? this.contractClientForm.endDate.value : undefined,
+            startDate: undefined,
+            endDate: undefined,
             pageNumber: 1,
             pageSize: 1000,
             sort: ''
