@@ -241,7 +241,7 @@
                                     <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter"
                                         [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of clientSpecialRateList | excludeIds: contractClientForm!.clientRates?.value : 'clientSpecialRateId'; trackBy: trackById">
-                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientRate($event, item, clientRateMenuTrigger) : ''">
+                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientRate(item, clientRateMenuTrigger) : ''">
                                                 {{ item.internalName }}
                                             </mat-option>
                                         </ng-container>

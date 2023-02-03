@@ -17,7 +17,6 @@ import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContr
 import { forkJoin, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
-import * as moment from 'moment';
 import { WorkflowDataService } from '../../workflow-data.service';
 
 @Component({
@@ -106,25 +105,25 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			)
 			.subscribe((result) => {
 				this.frameAgreements = result.items;
+                if (result.items.length === 1) {
+                    this._checkAndPreselectFrameAgreement();
+                }
 			});
     }
 
     private _checkAndPreselectFrameAgreement() {
-        // if (
-		// 	this.salesClientDataForm.startDate.value &&
-		// 	(this.salesClientDataForm.endDate.value ||
-		// 		this.salesClientDataForm.noEndDate.value) &&
-		// 	this.salesClientDataForm.directClientIdValue.value &&
-		// 	this.mainDataForm.salesTypeId.value &&
-		// 	this.mainDataForm.deliveryTypeId.value
-		// ) {
-        //     if (this.frameAgreements.length === 1) {
+        if (
+			this.contractClientForm.directClientId.value?.clientId &&
+			this.contractsMainForm.salesType.value?.id &&
+			this.contractsMainForm.deliveryType.value?.id
+		) {
+            if (this.frameAgreements.length === 1) {
                 this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
-        //     }
-		// }
+            }
+		}
     }
 
-	selectClientRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
+	selectClientRate(rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
 		const clientRate = new PeriodClientSpecialRateDto();
 		clientRate.id = undefined;
 		clientRate.clientSpecialRateId = rate.id;
