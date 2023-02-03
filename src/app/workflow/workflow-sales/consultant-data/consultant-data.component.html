@@ -43,7 +43,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                     <mat-label>Employment type</mat-label>
-                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
                                             <mat-option [value]="item.id">
                                                 {{ item.name }}
