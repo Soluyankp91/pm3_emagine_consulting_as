@@ -5,5 +5,11 @@
 ::ng-deep {
   .editor {
     margin: 0 60px;
+
+    &.painter-format {
+      .dxreColumn {
+        cursor: context-menu;
+      }
+    }
   }
 }
