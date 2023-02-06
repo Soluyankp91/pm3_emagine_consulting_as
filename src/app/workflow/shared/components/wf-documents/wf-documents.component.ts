@@ -46,6 +46,7 @@ export class DocumentsComponent extends AppComponentBase {
 	) {
 		super(injector);
 		this.documentForm = new DocumentForm();
+        this.getCurrentEmployee();
 	}
 
 	tempFileAdded(files: FileUploaderFile[]) {

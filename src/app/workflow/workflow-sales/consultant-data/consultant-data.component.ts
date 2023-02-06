@@ -23,7 +23,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consult
 import { WorkflowDataService } from '../../workflow-data.service';
 import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
-import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesConsultantsForm } from '../workflow-sales.model';
+import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-consultant-data',
@@ -36,8 +36,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     @Input() isCompleted: boolean;
     @Input() editEnabledForcefuly: boolean;
 
-    @Input() clientDataForm: any;
-    @Input() mainDataForm: any;
+    @Input() clientDataForm: WorkflowSalesClientDataForm;
+    @Input() mainDataForm: WorkflowSalesMainForm;
     @Input() clientSpecialRateList: ClientSpecialRateDto[];
     @Input() clientSpecialFeeList: ClientSpecialFeeDto[];
 
