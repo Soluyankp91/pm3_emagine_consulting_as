@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, ViewEncapsulation } from '@angular/core';
 import { AgreementPreviewService } from '../../services/agreemen-preview.service';
 
 @Component({
 	selector: 'app-agreement-preview',
 	templateUrl: './agreement-preview.component.html',
 	styleUrls: ['./agreement-preview.component.scss'],
+	encapsulation: ViewEncapsulation.None,
 	providers: [AgreementPreviewService],
 })
 export class AgreementPreviewComponent implements OnChanges {

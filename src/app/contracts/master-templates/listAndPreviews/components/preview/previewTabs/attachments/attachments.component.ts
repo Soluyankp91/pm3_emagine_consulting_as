@@ -34,8 +34,14 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 		this.trackById = this.createTrackByFn('agreementTemplateAttachmentId');
 	}
 
-	downloadAttachment(file: any): void {
-		const attachmentId = file.agreementTemplateAttachmentId || file.agreementAttachmentId;
+	downloadAttachment(file: AgreementDetailsAttachmentDto | MappedAgreementTemplateDetailsAttachmentDto): void {
+		let attachmentId: number;
+		if ('agreementTemplateAttachmentId' in file) {
+			attachmentId = file.agreementTemplateAttachmentId;
+		}
+		if ('agreementAttachmentId' in file) {
+			attachmentId = file.agreementAttachmentId;
+		}
 		this._previewService.downloadAttachment(attachmentId).subscribe((d) => {
 			const blob = new Blob([d as any]);
 			const a = document.createElement('a');

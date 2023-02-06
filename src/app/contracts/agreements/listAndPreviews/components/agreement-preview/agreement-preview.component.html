@@ -1,5 +1,10 @@
 <div class="wrapper">
 	<mat-tab-group>
+        <mat-tab label="Summary">
+			<ng-template matTabContent>
+				<app-summary></app-summary>
+			</ng-template>
+		</mat-tab>
 		<mat-tab label="Preview"></mat-tab>
 		<mat-tab label="Attachments">
 			<ng-template matTabContent><app-attachments></app-attachments></ng-template>

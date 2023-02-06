@@ -1,10 +1,12 @@
 import { SortDirection } from '@angular/material/sort';
+import { Observable } from 'rxjs';
 import {
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
+	EnvelopeStatus,
 	LegalEntityDto,
 	LogOperationType,
 } from 'src/shared/service-proxies/service-proxies';
@@ -91,32 +93,48 @@ export interface SettingsPageOptions {
 	signerRoles: EnumEntityTypeDto[];
 }
 
-export interface BaseMappedAgreementTemplatesListItemDto {
-	agreementTemplateId: number;
-	clientName?: string;
-	definition: string;
-	name: string;
-	note: string;
+export interface BaseAgreementTemplate {
 	agreementType: string;
 	recipientTypeId: string;
+
+	definition: string;
+	note: string;
 	language: string;
 	countryCode: string;
-	legalEntityIds: string[];
 	contractTypeIds: string[];
 	salesTypeIds: string[];
 	deliveryTypeIds: string[];
-	createdByLowerCaseInitials?: string;
-	createdDateUtc: string;
+
 	createdBy: string;
+	createdDateUtc: string;
 	lastUpdatedBy: string;
-	lastUpdatedByLowerCaseInitials?: string;
 	lastUpdateDateUtc?: string;
-	isEnabled: boolean;
+	lastUpdatedByLowerCaseInitials?: string;
+	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
 	duplicationSourceAgreementTemplateName?: string;
 	parentAgreementTemplateId?: number;
 	parentAgreementTemplateName?: string;
 }
+export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTemplate {
+	agreementTemplateId?: number;
+	clientName?: string;
+	name?: string;
+	legalEntityIds?: string[];
+	isEnabled?: boolean;
+}
+export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
+	agreementId?: number;
+	agreementName?: string;
+	actualRecipient$: Observable<any>;
+
+	agreementStatus?: EnvelopeStatus;
+	legalEntityId?: string;
+
+	startDate?: string;
+	endDate?: string;
+}
+export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;
 	linkState: AgreementTemplateParentChildLinkState;

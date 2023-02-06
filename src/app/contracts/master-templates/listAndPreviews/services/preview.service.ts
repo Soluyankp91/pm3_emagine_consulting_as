@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, of, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject } from 'rxjs';
 import { switchMap, tap, map, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
@@ -22,8 +22,6 @@ import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 
 @Injectable()
 export class PreviewService extends BasePreview {
-	contentLoading$ = new BehaviorSubject<boolean>(false);
-
 	entityGet = this._agreementTemplateServiceProxy.agreementTemplateGET.bind(this._agreementTemplateServiceProxy);
 	entityMetadataLog = this._agreementTemplateServiceProxy.metadataLog.bind(this._agreementTemplateServiceProxy);
 	downloadAttachment = this._agreementTemplateAttachmentServiceProxy.agreementTemplateAttachment.bind(
@@ -41,6 +39,14 @@ export class PreviewService extends BasePreview {
 		direction: '',
 		active: '',
 	});
+
+	constructor(
+		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
+		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+		protected readonly _contractService: ContractsService
+	) {
+		super(_contractService);
+	}
 
 	getClientTemplateLinksSort$() {
 		return this._clientTemplateLinksSort$.asObservable();
@@ -129,9 +135,11 @@ export class PreviewService extends BasePreview {
 	_mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementTemplatesListItemDto>{
 			name: row.name,
+			clientName: row.clientName,
 			definition: row.definition,
 			agreementType: maps.agreementType[row.agreementType as AgreementType],
 			recipientTypeId: maps.recipientTypeId[row.recipientTypeId as number],
+			actualRecipient$: new Observable(),
 
 			legalEntityIds: row.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 			salesTypeIds: row.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
@@ -153,13 +161,5 @@ export class PreviewService extends BasePreview {
 			parentAgreementTemplateId: row.parentAgreementTemplateId,
 			parentAgreementTemplateName: row.parentAgreementTemplateName,
 		};
-	}
-
-	constructor(
-		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
-		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
-		protected readonly _contractService: ContractsService
-	) {
-		super(_contractService);
 	}
 }

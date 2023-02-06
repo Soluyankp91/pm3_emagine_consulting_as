@@ -6,6 +6,7 @@ import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { MappedLog, OperationsTypeMap } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { AgreementLogQueryResultDto, AgreementTemplateMetadataLogListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	selector: 'app-logs',
@@ -40,8 +41,8 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 
 	private _initLogObservable() {
 		this.logs$ = this._previewService.logs$.pipe(
-			map((logs) => {
-				return (logs.metadataLogs || logs).map(
+			map((logs: AgreementTemplateMetadataLogListItemDto[] | AgreementLogQueryResultDto) => {
+				return (logs instanceof AgreementLogQueryResultDto ? logs.metadataLogs : logs).map(
 					(log) =>
 						<MappedLog>{
 							...log,

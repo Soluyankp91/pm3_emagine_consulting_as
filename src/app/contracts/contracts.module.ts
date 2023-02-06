@@ -79,7 +79,6 @@ import { StatusesFilterComponent } from './shared/components/grid-table/agreemen
 import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
-import { ClientTemplateSummaryComponent } from './client-specific-templates/listAndPreviews/preview/preview-tabs/client-template-summary/client-template-summary.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 
 @NgModule({
@@ -143,7 +142,6 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 		AgreementModeComponent,
 		StatusesFilterComponent,
 		ClientTemplatePreviewComponent,
-		ClientTemplateSummaryComponent,
 		AgreementPreviewComponent,
 	],
 	imports: [
