@@ -43,7 +43,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                     <mat-label>Employment type</mat-label>
-                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true">
+                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentTypeId" [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
                                             <mat-option [value]="item.id">
                                                 {{ item.name }}
@@ -297,7 +297,7 @@
                                 </div>
 
                                 <!-- 'Individual cap' Id = 3 -->
-                                <div [fxHide]="clientDataForm.capOnTimeReporting?.value?.id !== 3" class="u-w--100">
+                                <div [fxHide]="clientDataForm.clientTimeReportingCapId?.value !== 3" class="u-w--100">
                                     <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
@@ -317,7 +317,7 @@
                                             <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Max value</mat-label>
-                                                    <input [disabled]="readOnlyMode" [required]="clientDataForm.capOnTimeReporting?.value?.id === 3 && (consultant.value?.consultantCapOnTimeReporting.id === 1 || consultant.value?.consultantCapOnTimeReporting.id === 2)" autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
+                                                    <input [disabled]="readOnlyMode" [required]="clientDataForm.clientTimeReportingCapId?.value === 3 && (consultant.value?.consultantCapOnTimeReporting.id === 1 || consultant.value?.consultantCapOnTimeReporting.id === 2)" autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
                                                     <mat-error>
                                                         <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
                                                     </mat-error>
@@ -742,17 +742,17 @@
                                                     <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                         (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
                                                         (clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantRateUnitType?.id) &&
-                                                        (clientDataForm.normalPrice?.value && consultant.value?.consultantRate); else calculateMarginNotPossible">
+                                                        (clientDataForm.normalRate?.value && consultant.value?.consultantRate); else calculateMarginNotPossible">
                                                         <span>
                                                             <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantMargin">
                                                                 <ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateMarginNotPossible">
                                                                     Calculated margin
-                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
+                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
                                                                 </ng-container>
                                                             </ng-container>
                                                             <ng-template #consultantMargin>
                                                                 Calculated margin
-                                                                {{ (clientDataForm.normalPrice?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
+                                                                {{ (clientDataForm.normalRate?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
                                                             </ng-template>
                                                         </span>
                                                     </ng-container>
@@ -800,9 +800,9 @@
                                                         <span *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                                 (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
                                                                 (clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantPDCRateUnitType?.id) &&
-                                                                (clientDataForm.normalPrice?.value && consultant.value?.consultantPDCRate); else calculatePDCMarginNotPossible">
+                                                                (clientDataForm.normalRate?.value && consultant.value?.consultantPDCRate); else calculatePDCMarginNotPossible">
                                                                     Calculated margin
-                                                                    {{ (clientDataForm.normalPrice?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
+                                                                    {{ (clientDataForm.normalRate?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
                                                         </span>
                                                         <ng-template #calculatePDCMarginNotPossible>
                                                             Calculate margin is not possible
@@ -836,17 +836,17 @@
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                     <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                         (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
-                                                        (clientDataForm.normalPrice?.value && consultant.value?.consultantRate); else calculateFixedMarginNotPossible">
+                                                        (clientDataForm.normalRate?.value && consultant.value?.consultantRate); else calculateFixedMarginNotPossible">
                                                         <span>
                                                             <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantFixedMargin">
                                                                 <ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateFixedMarginNotPossible">
                                                                     Calculated margin
-                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
+                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
                                                                 </ng-container>
                                                             </ng-container>
                                                             <ng-template #consultantFixedMargin>
                                                                 Calculated margin
-                                                                {{ (clientDataForm.normalPrice?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
+                                                                {{ (clientDataForm.normalRate?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
                                                             </ng-template>
                                                         </span>
                                                     </ng-container>
@@ -880,10 +880,10 @@
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                         <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                             (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
-                                                            (clientDataForm.normalPrice?.value && consultant.value?.consultantPDCRate); else calculateFixedPDCMarginNotPossible">
+                                                            (clientDataForm.normalRate?.value && consultant.value?.consultantPDCRate); else calculateFixedPDCMarginNotPossible">
                                                             <span>
                                                                 Calculated margin
-                                                                {{ (clientDataForm.normalPrice?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalPrice?.value * 1 | percent: '1.2'}}
+                                                                {{ (clientDataForm.normalRate?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
                                                             </span>
                                                         </ng-container>
                                                         <ng-template #calculateFixedPDCMarginNotPossible>
