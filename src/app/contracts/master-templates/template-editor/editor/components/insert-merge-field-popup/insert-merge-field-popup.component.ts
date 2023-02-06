@@ -28,7 +28,7 @@ interface IMergeFieldItem {
 	encapsulation: ViewEncapsulation.None,
 })
 export class InsertMergeFieldPopupComponent {
-	@ViewChild('treeView') private treeView: DxTreeViewComponent;
+	@ViewChild('treeView') private _treeView: DxTreeViewComponent;
 
 	selected: string | null = null;
 	dataSource: Array<IMergeFieldItem> = [];
@@ -65,7 +65,7 @@ export class InsertMergeFieldPopupComponent {
 
 	afterClosed() {
 		this.selected = null;
-		this.treeView.instance.collapseAll();
+		this._treeView.instance.collapseAll();
 	}
 
 	private _mapMergeField(mergeFields: IMergeField) {
