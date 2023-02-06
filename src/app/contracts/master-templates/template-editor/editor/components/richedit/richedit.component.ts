@@ -16,6 +16,7 @@ import {
 	createOptions,
 	FileTabItemId,
 	HomeTabCommandId,
+	HomeTabItemId,
 	MailMergeTabItemId,
 	Options,
 	RibbonButtonItem,
@@ -23,19 +24,19 @@ import {
 	RibbonTabType,
 	RichEdit,
 } from 'devexpress-richedit';
+import { CharacterPropertiesApi } from 'devexpress-richedit/lib/model-api/character-properties';
+import { ParagraphPropertiesApi } from 'devexpress-richedit/lib/model-api/paragraph';
 import { RibbonButtonItemOptions } from 'devexpress-richedit/lib/client/public/ribbon/items/button';
 
 import { IMergeField } from '../../_api/merge-fields.service';
 import { RicheditService } from '../../services/richedit.service';
 import { TransformMergeFiels } from '../../helpers/transform-merge-fields.helper';
 import { InsertMergeFieldPopupComponent } from '../insert-merge-field-popup/insert-merge-field-popup.component';
-
-
 @Component({
 	standalone: true,
 	selector: 'app-richedit',
 	template: `
-		<div class="editor"></div>
+		<div class="editor" #editor></div>
 		<app-insert-merge-field-popup #mergePopup [fields]="mergeFields" (mergeField)="mergeSelectedField($event)">
 		</app-insert-merge-field-popup>`,
 	styleUrls: ['./richedit.component.scss'],
@@ -46,6 +47,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 	@Input() template: File | Blob | ArrayBuffer | string = '';
 	@Input() mergeFields: IMergeField;
 
+	@ViewChild('editor') editor: ElementRef;
 	@ViewChild('mergePopup') private mergeFieldPopup: InsertMergeFieldPopupComponent;
 
 	templateAsBase64$: BehaviorSubject<string> = this._richeditService.templateAsBase64$;
@@ -59,9 +61,11 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		const options: Options = createOptions();
 
 		this.setDimensions(options);
+		this.setUnit(options);
 		this.ribbonCustomization(options);
 		this.createDocument(this._element.nativeElement.firstElementChild, options);
-		this.registerCustomEvents();
+		this.registerDocumentEvents();
+		this.registerCustomEvents(options);
 	}
 
 	setDimensions(options: Options) {
@@ -69,25 +73,45 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		options.height = 'calc(100vh - 240px)';
 	}
 
+	setUnit(options: Options) {
+		options.unit = 1;
+	}
+
 	createDocument(element: HTMLDivElement, options: Options) {
 		this._rich = create(element, options);
 		this._rich.openDocument(this.template, 'emagine_doc', 4);
+	}
 
+	registerDocumentEvents() {
 		this._rich.events.documentChanged.addHandler(() => {
 			this.hasUnsavedChanges$.next(this._rich.hasUnsavedChanges);
+		});
+		
+		this._rich.setCommandEnabled('formatPainter', false);
+		this._rich.events.selectionChanged.addHandler((a, b) => {
+			if (a.selection.intervals[0].length) {
+				a.setCommandEnabled('formatPainter', true);
+			} else {
+				a.setCommandEnabled('formatPainter', false);
+			}
 		});
 	}
 
 	ribbonCustomization(options: Options) {
 		const fileTab = options.ribbon.getTab(RibbonTabType.File);
 		const mergeTab = options.ribbon.getTab(RibbonTabType.MailMerge);
+		const homeTab = options.ribbon.getTab(RibbonTabType.Home);
+
 		const insertFieldBtnOpts: RibbonButtonItemOptions = { icon: 'dxre-icon-InsertDataField', showText: true };
+		const painterFormatBtnOpts: RibbonButtonItemOptions = { icon: 'palette', showText: false };
 
 		fileTab.insertItem(new RibbonButtonItem('updateStyles', 'Update Styles'), 5);
 		mergeTab.insertItem(new RibbonButtonItem('mergeField', 'Insert Merge Field', insertFieldBtnOpts), 2);
-
+		homeTab.insertItem(new RibbonButtonItem('formatPainter', 'Format Painter', painterFormatBtnOpts), 3)
+		
 		mergeTab.removeItem(MailMergeTabItemId.ShowInsertMergeFieldDialog);
 		fileTab.removeItem(FileTabItemId.ExportDocument);
+		homeTab.removeItem(HomeTabItemId.Paste);
 
 		this.insertCompareTab(options);
 
@@ -107,7 +131,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		options.ribbon.insertTab(new RibbonTab('Compare', compareTabId, [selectBtn]));
 	}
 
-	registerCustomEvents() {
+	registerCustomEvents(options: Options) {
 		this._rich.events.customCommandExecuted.addHandler((s, e) => {
 			switch (e.commandName) {
 				case 'updateStyles':
@@ -116,6 +140,9 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 					break;
 				case 'mergeField':
 					this._showMergeFieldModal();
+					break;
+				case 'formatPainter':
+					this.formatPainter();
 					break;
 			}
 		});
@@ -130,6 +157,44 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		this._rich.selection.selectAll();
 		this._rich.executeCommand(HomeTabCommandId.ChangeFontName, 'Arial');
 		this._rich.endUpdate();
+	}
+
+	formatPainter() {
+		this.editor.nativeElement.classList.add('painter-format');
+		this._rich.setCommandEnabled('formatPainter', false);
+
+		let charProperties: CharacterPropertiesApi;
+		let prgphProperties: ParagraphPropertiesApi;
+		
+		const handler = (rich: RichEdit, e) => {
+			let interval = this._rich.selection.intervals[0];
+
+			rich.beginUpdate();
+			rich.document.setCharacterProperties(interval, charProperties);
+			rich.document.setParagraphProperties(interval, prgphProperties);
+			this._rich.setCommandEnabled('formatPainter', true);
+			rich.endUpdate();
+
+			this._rich.events.pointerUp.removeHandler(handler);
+			this._rich.events.selectionChanged.removeHandler(sHandler);
+			this.editor.nativeElement.classList.remove('painter-format');
+		}
+
+		const interval = this._rich.selection.intervals[0];
+		const sHandler = (rich: RichEdit, e) => {
+			charProperties = rich.document.getCharacterProperties(interval);
+			prgphProperties = rich.document.getParagraphProperties(interval);
+		}
+
+		if (!interval.length) {
+			this._rich.events.pointerUp.removeHandler(handler);
+			this._rich.events.selectionChanged.removeHandler(sHandler);
+			return;
+		}
+		
+		this._rich.events.selectionChanged.addHandler(sHandler);
+		this._rich.events.pointerUp.addHandler(handler);
+		
 	}
 
 	private _showMergeFieldModal() {
