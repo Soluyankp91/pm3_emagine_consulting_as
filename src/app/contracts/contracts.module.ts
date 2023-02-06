@@ -3,11 +3,12 @@ import { ContractsRoutingModule } from './contracts-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
-import { AgreementsComponent } from './agreements/agreements.component';
+import { AgreementsComponent } from './agreements/listAndPreviews/agreements.component';
 import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
+	AgreementServiceProxy,
 	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateServiceProxy,
 	FileServiceProxy,
@@ -63,6 +64,7 @@ import { ApprovalComponent } from './shared/components/approval/approval.compone
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
+import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -111,6 +113,7 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		EnabledComponent,
 		ApprovalFilterComponent,
 		ModeFilterComponent,
+		SettingsComponent,
 	],
 	imports: [
 		CommonModule,
@@ -118,9 +121,9 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		ServiceProxyModule,
 		AppCommonModule,
 		MaterialModule,
-		
+
 		// Standalone
-		EditorComponent
+		EditorComponent,
 	],
 	providers: [
 		ContractsService,
@@ -129,6 +132,7 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		AgreementTemplateServiceProxy,
 		FileServiceProxy,
 		AgreementTemplateServiceProxy,
+		AgreementServiceProxy,
 		MergeFieldsServiceProxy,
 		AgreementTemplateAttachmentServiceProxy,
 		CreationTitleService,
