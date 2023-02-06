@@ -53,7 +53,7 @@ export class AgreementsComponent implements OnInit {
 		this._agreementService.updatePage($event);
 	}
 
-	navigateTo() {
+	navigateToCreate() {
 		this._router.navigate(['create'], { relativeTo: this._route });
 	}
 

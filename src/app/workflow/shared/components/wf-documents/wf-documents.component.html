@@ -1,0 +1,75 @@
+<div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+    <div fxLayout="column" fxFlexFill>
+        <form [formGroup]="documentForm" class="u-w--100">
+            <ng-container *ngIf="documentForm?.documents?.controls?.length; else noDocuments">
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__header">
+                    <div fxFlex="5%">
+                    </div>
+                    <div fxFlex="65%">
+                        Document name
+                    </div>
+                    <div fxFlex="15%">
+                        Date
+                    </div>
+                    <div fxFlex="10%">
+                        By
+                    </div>
+                    <div fxFlex="5%">
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container formArrayName="documents" class="u-w--100">
+                <ng-container *ngFor="let document of documentForm?.documents?.controls; trackBy: trackByItem; index as i">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__row u-w--100" [formArrayName]="i">
+                        <div fxFlex="5%" fxLayoutAlign="center center">
+                            <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon" [svgIcon]="document.value.icon"></mat-icon>
+                        </div>
+                        <div fxFlex="65%" class="text-truncate-ellipsis text-bold" [matTooltip]="document.value.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{document.value.name}}
+                        </div>
+                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdDateUtc | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{document.value.createdDateUtc | momentFormat}}
+                        </div>
+                        <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdBy?.name" matTooltipClass="white-tooltip">
+                            <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + document.value.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
+                        </div>
+                        <div fxFlex="5%" fxLayoutAlign="end center">
+                            <ng-container *ngIf="!readOnlyMode">
+                                <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
+                                <mat-menu #generalDocumentMenu>
+                                    <button
+                                        class="menu-item menu-item--edit"
+                                        [disabled]="document.value?.workflowDocumentId === null || document.value?.workflowDocumentId === undefined"
+                                        mat-menu-item
+                                        appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.workflowDocumentId)">
+                                        Download
+                                    </button>
+                                    <button
+                                        class="menu-item menu-item--cancel"
+                                        mat-menu-item
+                                        appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, i)">
+                                        Delete document
+                                    </button>
+                                </mat-menu>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <ng-template #noDocuments>
+                <ng-container *ngIf="readOnlyMode">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 border-unset bgc-white">
+                        <span class="light-grey-color text-600">
+                            No documents
+                        </span>
+                    </div>
+                </ng-container>
+            </ng-template>
+        </form>
+        <ng-container *ngIf="!readOnlyMode">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+            </div>
+        </ng-container>
+    </div>
+</div>

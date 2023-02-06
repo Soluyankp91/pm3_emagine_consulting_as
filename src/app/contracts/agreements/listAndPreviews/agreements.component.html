@@ -1,5 +1,5 @@
-<div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
-    <mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
+<div class="add-button" (click)="navigateToCreate()" [style.display]="'flex'" [style.align-items]="'center'">
+    <mat-icon svgIcon="create-icon"  [ngStyle]="{'height': '50px', 'width': '50px'}"></mat-icon>
     <div>Create</div>
 </div>
 <ng-container *ngIf="table$ | async as table">

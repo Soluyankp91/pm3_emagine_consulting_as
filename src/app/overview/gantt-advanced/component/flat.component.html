@@ -23,7 +23,7 @@
                 <div class="gantt-group-content" fxFlex="5%">
                     <span class="text-bold-800" *ngIf="isWorkflow">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100"
-                            [matTooltip]="group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales !== null && group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales !== undefined ? overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!] : 'Select staataus'"
+                            [matTooltip]="group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales !== null && group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales !== undefined ? overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!] : 'Select status'"
                             matTooltipClass="white-tooltip">
                             <ng-container
                                 *ngIf="group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales === null || group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales === undefined; else statusIcon">
@@ -118,7 +118,9 @@
                 </div>
                 <div class="gantt-group-content" fxFlex="16%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
-                        <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
+                        <ng-container *ngIf="group?.origin?.origin?.salesManager?.externalId">
+                            <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + group?.origin?.origin?.salesManager?.externalId! + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
+                        </ng-container>
                         <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" class="gantt-group-content--redirect-button u-mr--15" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>

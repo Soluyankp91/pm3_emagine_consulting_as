@@ -23,7 +23,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consult
 import { WorkflowDataService } from '../../workflow-data.service';
 import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
-import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesConsultantsForm } from '../workflow-sales.model';
+import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-consultant-data',
@@ -36,8 +36,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     @Input() isCompleted: boolean;
     @Input() editEnabledForcefuly: boolean;
 
-    @Input() clientDataForm: any;
-    @Input() mainDataForm: any;
+    @Input() clientDataForm: WorkflowSalesClientDataForm;
+    @Input() mainDataForm: WorkflowSalesMainForm;
     @Input() clientSpecialRateList: ClientSpecialRateDto[];
     @Input() clientSpecialFeeList: ClientSpecialFeeDto[];
 
@@ -166,7 +166,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantDto.sourcingRequestId = consultant?.requestId;
 		}
 		const form = this._fb.group({
-			employmentType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
+			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId ?? null),
 			consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId ?? null),
 			consultantNameOnly: new UntypedFormControl(consultant?.nameOnly ?? null),
@@ -272,10 +272,10 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 	updateConsultantStepAnchors() {
 		let consultantNames: IConsultantAnchor[] = this.consultants.value.map((item: any) => {
-            if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
-                return {employmentType: item.employmentType?.id, name: item.consultantNameOnly};
+            if (item.employmentTypeId === EmploymentTypes.FeeOnly || item.employmentTypeId === EmploymentTypes.Recruitment) {
+                return {employmentType: item.employmentTypeId, name: item.consultantNameOnly};
             } else {
-                return {employmentType: item.employmentType?.id, name: item.consultantName?.consultant?.name};
+                return {employmentType: item.employmentTypeId, name: item.consultantName?.consultant?.name};
             }
         });
 		this._workflowDataService.consultantsAddedToStep.emit({

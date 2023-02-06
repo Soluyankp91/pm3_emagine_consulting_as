@@ -124,6 +124,22 @@
     &--termination {
         padding: 10px 24px;
     }
+    &-documents {
+        &--form {
+            position: relative;
+            &__header {
+                @include fontOpenSans(12px, 600);
+                min-height: 35px;
+                color: $medium-grey-color !important;
+            }
+            &__row {
+                @include fontOpenSans(14px, 400);
+                background: $white-color;
+                color: $dark-grey-color !important;
+                height: 48px;
+            }
+        }
+    }
 }
 
 

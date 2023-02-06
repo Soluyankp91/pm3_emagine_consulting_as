@@ -108,6 +108,33 @@
                         [ngTemplateOutletContext]="{client: salesClientDataForm.endClientIdValue?.value}">
                     </ng-container>
                 </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                    <mat-form-field appearance="outline"
+                        class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-312"
+                        [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': projectManagerAutocomplete.isOpen}">
+                        <mat-label>Client contact / Project manager</mat-label>
+                        <input [disabled]="readOnlyMode" type="text"
+                            matInput [matAutocomplete]="projectManagerAutocomplete"
+                            formControlName="clientContactProjectManager" appPreventDoubleClick
+                            (throttledClick)="$event.stopPropagation()" placeholder="Type something..">
+                            <span matSuffix class="shevron"></span>
+                        <mat-autocomplete #projectManagerAutocomplete="matAutocomplete"
+                            [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                            <ng-container *ngFor="let contact of filteredProjectManagers; trackBy: trackById">
+                                <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
+                                    <span class="autocopmlete-option-name">{{ contact.firstName + ' ' +
+                                        contact.lastName }}</span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                        <mat-error>
+                            <app-validator
+                                [control]="salesClientDataForm.invoicePaperworkContactIdValue"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
             </div>
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientProjectDuration">
@@ -471,7 +498,7 @@
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-312"
                             [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
-                            <mat-label>Invoice / Paperwork Contact</mat-label>
+                            <mat-label>Invoice / Paperwork Contact Person</mat-label>
                             <input [disabled]="readOnlyMode" required #invoicingReferencePersonInput type="text"
                                 matInput [matAutocomplete]="invoicingReferencePersonAutocomplete"
                                 formControlName="invoicePaperworkContactIdValue" appPreventDoubleClick

@@ -35,8 +35,10 @@ import {
 	ClientPeriodContractsDataQueryDto,
 	ConsultantPeriodContractsDataQueryDto,
 	WorkflowTerminationContractDataQueryDto,
+    WorkflowDocumentCommandDto,
 } from 'src/shared/service-proxies/service-proxies';
 import {} from 'src/shared/service-proxies/service-proxies';
+import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
@@ -70,6 +72,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     @ViewChild('clientDataComponent', { static: false }) clientDataComponent: ContractsClientDataComponent;
     @ViewChild('consultantDataComponent', { static: false }) consultantDataComponent: ContractsConsultantDataComponent;
     @ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
+    @ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
 
 	workflowSideSections = WorkflowProcessType;
 	consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
@@ -470,6 +473,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (this.consultantDataComponent) {
             this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
         }
+        if (this.mainDataComponent?.mainDocuments) {
+            this.mainDataComponent.mainDocuments.documents.controls = [];
+        }
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
 		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
 		this.clientDataComponent?.contractClientForm.reset('', { emitEvent: false });
@@ -839,6 +845,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			if (data.mainData.noRemarks) {
 				this.mainDataComponent?.contractsMainForm.remarks?.disable();
 			}
+            if (data?.workflowDocuments?.length) {
+                this.mainDataComponent.mainDocuments?.addExistingFile(data.workflowDocuments);
+            }
 		}
 		if (data?.clientData !== undefined) {
 			this.clientDataComponent?.contractClientForm.patchValue(data.clientData, { emitEvent: false });
@@ -866,6 +875,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
+        console.log(this.syncDataComponent?.contractsSyncDataForm.value);
 		if (data?.clientData?.periodClientSpecialRates?.length) {
 			data.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
 				this.clientDataComponent?.addSpecialRate(rate);
@@ -889,6 +899,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
 		let input = new ClientPeriodContractsDataCommandDto();
 		input.bypassLegalValidation = this.bypassLegalValidation;
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
+			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
 		input.clientData = new ContractsClientDataDto();
 		input.clientData.specialContractTerms = this.clientDataComponent?.contractClientForm.specialContractTerms?.value;
 		input.clientData.noSpecialContractTerms = this.clientDataComponent?.contractClientForm.noSpecialContractTerms?.value;
@@ -1018,6 +1038,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				consultantInput = consultant;
 				input.consultantTerminationContractData!.push(consultantInput);
 			});
+		}
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.terminationDocuments?.documents.value?.length) {
+			for (let document of this.terminationDocuments?.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
 		}
 		return input;
 	}

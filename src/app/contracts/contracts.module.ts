@@ -32,7 +32,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
 import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { MasterTemplateFilterHeaderComponent } from './master-templates/listAndPreviews/components/top-filters/top-filters.component';
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
@@ -63,12 +62,7 @@ import { ApprovalComponent } from './shared/components/approval/approval.compone
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ClientModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
-import { ViewComponent } from './master-templates/template-editor/editor/components/view/view.component';
-import { FormatComponent } from './master-templates/template-editor/editor/components/format/format.component';
-import { CompareComponent } from './master-templates/template-editor/editor/components/compare/compare.component';
-import { FileComponent } from './master-templates/template-editor/editor/components/file/file.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
-import { MergeFieldsComponent } from './master-templates/template-editor/editor/components/merge-fields/merge-fields.component';
 import { ConsultantsFilterComponent } from './shared/components/grid-table/agreements/filters/consultants-filter/consultants-filter.component';
 import { SalesManagersFilterComponent } from './shared/components/grid-table/agreements/filters/sales-managers-filter/sales-managers-filter.component';
 import { ContractManagerFilterComponent } from './shared/components/grid-table/agreements/filters/contact-manager-filter/contract-manager-filter.component';
@@ -79,6 +73,7 @@ import { StatusesFilterComponent } from './shared/components/grid-table/agreemen
 import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
 import { AgreementEditorComponent } from './agreements/template-editor/template-editor.component';
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
+import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -119,7 +114,7 @@ import { AgreementDevExpress } from './agreements/template-editor/editor/agreeme
 		AttachmentsComponent,
 		LogsComponent,
 		LinkedClientTemplatesComponent,
-		ClientTemplateModeComponent,
+		ClientModeFilterComponent,
 		CustomTooltipComponent,
 		LinkedAgreementsComponent,
 		AgreementStatusComponent,
@@ -127,12 +122,6 @@ import { AgreementDevExpress } from './agreements/template-editor/editor/agreeme
 		EnabledComponent,
 		ApprovalFilterComponent,
 		AgreementModeFilterComponent,
-		ClientModeFilterComponent,
-		ViewComponent,
-		FormatComponent,
-		MergeFieldsComponent,
-		CompareComponent,
-		FileComponent,
 		SettingsComponent,
 		AgreementDevExpress,
 		ConsultantsFilterComponent,
@@ -141,6 +130,7 @@ import { AgreementDevExpress } from './agreements/template-editor/editor/agreeme
 		AgreementModeComponent,
 		StatusesFilterComponent,
 		AgreementEditorComponent,
+		ClientTemplateModeComponent,
 	],
 	imports: [
 		CommonModule,
