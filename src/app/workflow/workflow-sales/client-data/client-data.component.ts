@@ -5,7 +5,6 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import * as moment from 'moment';
 import { forkJoin, merge, of, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
