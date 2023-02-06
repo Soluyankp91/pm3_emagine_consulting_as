@@ -39,6 +39,7 @@
                                 <mat-menu #generalDocumentMenu>
                                     <button
                                         class="menu-item menu-item--edit"
+                                        [disabled]="document.value?.workflowDocumentId === null || document.value?.workflowDocumentId === undefined"
                                         mat-menu-item
                                         appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.workflowDocumentId)">
                                         Download

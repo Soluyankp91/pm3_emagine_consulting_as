@@ -957,7 +957,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.startDate = this.clientDataComponent?.salesClientDataForm.startDate?.value;
 		input.noEndDate = this.clientDataComponent?.salesClientDataForm.noEndDate?.value;
 		input.endDate = this.clientDataComponent?.salesClientDataForm.endDate?.value;
-        input.salesClientData.clientContactProjectManager = this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.value.id;
+        input.salesClientData.clientContactProjectManager = this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.value;
 		input.salesClientData.directClientIdValue =
 			this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value?.clientId;
 		input.salesClientData.endClientIdValue = this.clientDataComponent?.salesClientDataForm.endClientIdValue?.value?.clientId;
