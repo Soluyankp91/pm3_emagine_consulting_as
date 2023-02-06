@@ -45,6 +45,7 @@ import {
 	EmployeeDto,
     WorkflowDocumentCommandDto,
 } from 'src/shared/service-proxies/service-proxies';
+import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -63,6 +64,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	@ViewChild('mainDataComponent', { static: false }) mainDataComponent: MainDataComponent;
 	@ViewChild('clientDataComponent', { static: false }) clientDataComponent: ClientDataComponent;
 	@ViewChild('consutlantDataComponent', { static: false }) consutlantDataComponent: ConsultantDataComponent;
+	@ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
 
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
@@ -1103,7 +1105,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
+			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryManagerSameAsAccountManager ? this.mainDataComponent.salesMainDataForm.salesAccountManagerIdValue?.value?.id : consultant.deliveryAccountManager?.id;
 		}
 		return consultantInput;
 	}
@@ -1114,8 +1116,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.finalEvaluationReferencePersonId =
 			this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.id ?? null;
         input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
-        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
-			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+        if (this.terminationDocuments?.documents.value?.length) {
+			for (let document of this.terminationDocuments?.documents.value) {
 				let documentInput = new WorkflowDocumentCommandDto();
 				documentInput.name = document.name;
 				documentInput.workflowDocumentId = document.workflowDocumentId;

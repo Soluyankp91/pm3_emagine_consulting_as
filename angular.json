@@ -48,7 +48,9 @@
               "node_modules/@worktile/gantt/styles/index.scss",
               "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/devexpress-richedit/dist/pdfkit.js"
+            ]
           },
           "configurations": {
             "production": {
