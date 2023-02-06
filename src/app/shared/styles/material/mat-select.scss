@@ -347,4 +347,23 @@
             border-color: $red-color !important;
         }
     }
+    &.inline-autocomplete {
+        .shevron {
+            padding: 4px;
+            transform: rotate(45deg) !important;
+            width: 8px;
+            height: 8px;
+            margin-bottom: 5px;
+            transition: all .3s ease-in-out;
+            margin-right: 3px;
+            &.isPanelOpen {
+                transform: rotate(225deg) !important;
+                margin-bottom: 0px;
+            }
+            .isPanelOpen + .shevron {
+                transform: rotate(225deg) !important;
+                margin-bottom: -2px;
+            }
+        }
+    }
 }

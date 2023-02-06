@@ -151,7 +151,7 @@
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-235" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value || readOnlyMode, 'isPanelOpen': finalEvaluationReferencePersonAutocomplete.isOpen}">
                                 <mat-label>Final Evaluation Reference Person</mat-label>
-                                <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
+                                <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" required #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
                                 <span matSuffix class="shevron"></span>
                                 <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn"
                                     (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
@@ -188,6 +188,15 @@
                     </div>
                 </div>
             </ng-container>
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">{{salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2 ? '3' : '2'}}</span>
+                    <h2 class="workflow-section--header">Documents</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <app-documents #terminationDocuments [readOnlyMode]="readOnlyMode"></app-documents>
+                </div>
+            </div>
         </div>
     </form>
 </ng-template>
