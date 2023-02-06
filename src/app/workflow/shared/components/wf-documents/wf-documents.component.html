@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
     <div fxLayout="column" fxFlexFill>
         <form [formGroup]="documentForm" class="u-w--100">
-            <ng-container *ngIf="documentForm?.documents?.controls?.length">
+            <ng-container *ngIf="documentForm?.documents?.controls?.length; else noDocuments">
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__header">
                     <div fxFlex="5%">
                     </div>
@@ -56,6 +56,13 @@
                     </div>
                 </ng-container>
             </ng-container>
+            <ng-template #noDocuments>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 border-unset bgc-white">
+                    <span class="light-grey-color text-600">
+                        No client rates
+                    </span>
+                </div>
+            </ng-template>
         </form>
         <ng-container *ngIf="!readOnlyMode">
             <div fxLayout="row" fxLayoutAlign="center center">
