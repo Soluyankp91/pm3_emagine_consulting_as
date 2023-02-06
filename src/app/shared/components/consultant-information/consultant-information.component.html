@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mt--10__reverse': onlyAdditionalInfo}">
+<div fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mt--5__reverse': onlyAdditionalInfo}">
     <ng-container *ngIf="!onlyAdditionalInfo">
         <img class="border-rounded-50 image-thumbnail-responsive u-mr--16"
             [ngSrc]="consultantPhotoUrl + consultantData?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" >
