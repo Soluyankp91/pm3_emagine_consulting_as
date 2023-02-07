@@ -1120,7 +1120,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryManagerSameAsAccountManager ? this.mainDataComponent.salesMainDataForm.salesAccountManagerIdValue?.value?.id : consultant.deliveryAccountManager?.id;
+			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
 		}
 		return consultantInput;
 	}
