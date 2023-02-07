@@ -868,7 +868,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
         if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.documents.controls = [];
+            this.mainDataComponent.mainDocuments.clearDocuments();
         }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });

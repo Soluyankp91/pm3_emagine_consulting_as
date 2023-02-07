@@ -150,6 +150,10 @@ export class DocumentsComponent extends AppComponentBase {
 		});
 	}
 
+    clearDocuments() {
+        this.documentForm.documents.controls = [];
+    }
+
 	get documents(): UntypedFormArray {
 		return this.documentForm.get('documents') as UntypedFormArray;
 	}
