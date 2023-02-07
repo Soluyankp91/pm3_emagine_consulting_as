@@ -47,7 +47,7 @@
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
-                                        appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, i)">
+                                        appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, document.value.uploaderFile, i)">
                                         Delete document
                                     </button>
                                 </mat-menu>

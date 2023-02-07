@@ -1,3 +1,4 @@
+import { FileUploaderFile } from "src/app/shared/components/file-uploader/file-uploader.model";
 import { EmployeeDto, StepType, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 
 export class WFDocument {
@@ -11,6 +12,7 @@ export class WFDocument {
 	createdBy: EmployeeDto;
 	name: string;
 	icon: string;
+    uploaderFile?: FileUploaderFile;
 	constructor(
 		workflowDocumentId: number | undefined,
 		temporaryFileId: string | undefined,
@@ -21,7 +23,8 @@ export class WFDocument {
 		createdDateUtc: moment.Moment,
 		createdBy: EmployeeDto,
 		name: string,
-		icon: string
+		icon: string,
+        uploaderFile?: FileUploaderFile
 	) {
 		this.workflowDocumentId = workflowDocumentId;
 		this.temporaryFileId = temporaryFileId;
@@ -31,6 +34,7 @@ export class WFDocument {
 		this.stepType = stepType;
 		(this.createdDateUtc = createdDateUtc), (this.createdBy = createdBy), (this.name = name);
 		this.icon = icon;
+        this.uploaderFile = uploaderFile;
 	}
 
 	public static wrap(
@@ -42,7 +46,8 @@ export class WFDocument {
         clientPeriodId?: string,
         workflowTerminationId?: string,
 		workflowDocumentId?: number,
-		temporaryFileId?: string
+		temporaryFileId?: string,
+        uploaderFile?: FileUploaderFile
 	) {
 		return new WFDocument(
 			workflowDocumentId ?? undefined,
@@ -54,7 +59,8 @@ export class WFDocument {
 			dateCreated,
 			employee,
 			name,
-			this._getIcon(name)
+			this._getIcon(name),
+            uploaderFile
 		);
 	}
 

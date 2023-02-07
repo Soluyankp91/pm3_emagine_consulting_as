@@ -113,7 +113,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	) {
 		super(injector);
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
-        console.log(this._workflowDataService.contractModuleEnabled);
 
 		this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.valueChanges
 			.pipe(
@@ -868,7 +867,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
         if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.documents.controls = [];
+            this.mainDataComponent.mainDocuments.clearDocuments();
         }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
@@ -1121,7 +1120,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryManagerSameAsAccountManager ? this.mainDataComponent.salesMainDataForm.salesAccountManagerIdValue?.value?.id : consultant.deliveryAccountManager?.id;
+			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
 		}
 		return consultantInput;
 	}

@@ -302,6 +302,9 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     resetForms() {
         this.financesConsultantsForm.consultants.controls = [];
         this.financesClientForm.reset('', {emitEvent: false});
+        if (this.mainDocuments) {
+            this.mainDocuments.clearDocuments();
+        }
     }
 
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
