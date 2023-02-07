@@ -190,7 +190,7 @@
             </ng-container>
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                    <span class="workflow-section--number">3</span>
+                    <span class="workflow-section--number">{{salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2 ? '3' : '2'}}</span>
                     <h2 class="workflow-section--header">Documents</h2>
                 </div>
                 <div class="workflow-section--content">

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, forkJoin, combineLatest } from 'rxjs';
+import { ReplaySubject, forkJoin, combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { MapFlagFromTenantId, GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
@@ -9,7 +9,7 @@ import {
 	LegalEntityDto,
 	LookupServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
-import { BaseEnumDto, KeyType, MappedTableCells } from '../entities/contracts.interfaces';
+import { BaseEnumDto, KeyType, MappedTableCells, SettingsPageOptions } from '../entities/contracts.interfaces';
 
 @Injectable()
 export class ContractsService {
@@ -37,8 +37,11 @@ export class ContractsService {
 
 	private mappedEnums$$ = new ReplaySubject<MappedTableCells>(1);
 
+	signersEnum$$: Observable<[BaseEnumDto[], EnumEntityTypeDto[]]>;
+
 	constructor(private readonly enumServiceProxy: EnumServiceProxy, private readonly lookupServiceProxy: LookupServiceProxy) {
 		this.initBaseEnums$().subscribe();
+		this._setSignersEnum();
 	}
 
 	getTenants$() {
@@ -154,7 +157,7 @@ export class ContractsService {
 			this.agreementLanguages$$,
 		]).pipe(
 			map((combined) => {
-				return {
+				return <SettingsPageOptions>{
 					agreementTypes: combined[0] as BaseEnumDto[],
 					recipientTypes: combined[1] as EnumEntityTypeDto[],
 					legalEntities: combined[2] as LegalEntityDto[],
@@ -166,6 +169,14 @@ export class ContractsService {
 			})
 		);
 	}
+
+	private _setSignersEnum() {
+		this.signersEnum$$ = combineLatest([
+			this.enumServiceProxy.signerTypes().pipe(map((signerTypes) => this.transformToBaseTco(signerTypes))),
+			this.enumServiceProxy.signerRoles(),
+		]);
+	}
+
 	private transformToBaseTco(arrayLikeObject: { [key: string]: string }) {
 		return Object.keys(arrayLikeObject).map((id) => {
 			return {

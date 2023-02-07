@@ -21,13 +21,13 @@
 			<mat-divider></mat-divider>
 			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
 				<mat-label>Document type</mat-label>
-				<mat-select formControlName="agreementType" placeholder="Document type" [panelClass]="'myFilter'">
+				<mat-select formControlName="agreementType" placeholder="Document type">
 					<mat-option *ngFor="let agreementType of options[0].agreementTypes" [value]="agreementType.id">
 						{{ agreementType.name }}
 					</mat-option>
 				</mat-select>
 				<mat-error
-					><app-validator [control]="masterTemplateFormGroup.controls['agreementType']"></app-validator
+					><app-validator [control]="masterTemplateFormGroup.agreementType"></app-validator
 				></mat-error>
 			</mat-form-field>
 			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
