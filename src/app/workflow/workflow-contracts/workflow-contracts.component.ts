@@ -894,6 +894,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.updateConsultantStepAnchors();
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
+        this.clientDataComponent?.getFrameAgreements();
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {

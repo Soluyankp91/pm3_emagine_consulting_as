@@ -113,9 +113,10 @@
                     </mat-menu>
                 </div>
                 <ng-container *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy">
-                    <div class="main-overview--filter-type cursor-pointer" [ngClass]="detectSelectedStatusColor(status)"
+                    <div class="main-overview--filter-type cursor-pointer" [ngClass]="status.selected ? overviewFilterColors[status.id] : ''"
                         appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
-                        <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
+                        <mat-icon class="main-overview-icon-type" [svgIcon]="status.flag"
+                        [ngClass]="overviewProcessColors[status.id]"></mat-icon>
                         <span class="main-overview--filter-type__name">
                             {{status.name}}
                         </span>

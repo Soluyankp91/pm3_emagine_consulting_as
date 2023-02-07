@@ -90,6 +90,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 
@@ -112,6 +113,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	) {
 		super(injector);
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
+        console.log(this._workflowDataService.contractModuleEnabled);
 
 		this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.valueChanges
 			.pipe(
@@ -341,6 +343,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {
 			emitEvent: false,
 		});
+        this._tryPreselectFrameAgreement();
 		this.getRatesAndFees(event.option.value?.clientId);
 		this.focusToggleMethod('auto');
 	}
@@ -349,6 +352,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
 		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
 	}
+
+    private _tryPreselectFrameAgreement() {
+        if (
+			this.clientDataComponent?.salesClientDataForm.startDate.value &&
+			(this.clientDataComponent?.salesClientDataForm.endDate.value ||
+				this.clientDataComponent?.salesClientDataForm.noEndDate.value) &&
+			this.clientDataComponent?.salesClientDataForm.directClientIdValue.value &&
+			this.mainDataComponent.salesMainDataForm.salesTypeId.value &&
+			this.mainDataComponent.salesMainDataForm.deliveryTypeId.value
+		) {
+			this._workflowDataService.preselectFrameAgreement.emit();
+		}
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -475,8 +491,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
 				});
-                // FIXME: uncomment once BE is deployed
-                // this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
+                this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
 				if (result?.noEndDate) {
 					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
 						emitEvent: false,
@@ -593,6 +608,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
+                this.clientDataComponent?.getFrameAgreements();
 			});
 	}
 
