@@ -21,7 +21,7 @@
         display: flex;
         cursor: pointer;
         &:hover {
-            background-color: rgba($color: $sand-color, $alpha: 0.5);
+            // background-color: rgba($color: $sand-color, $alpha: 0.5);
         }
         &__anchor {
             display: flex;
@@ -31,6 +31,9 @@
             line-height: 140%;
             color: $dark-grey-color;
             text-transform: uppercase;
+            &:hover {
+                font-weight: 800;
+            }
             &-consultant-name {
                 text-transform: none;
                 color: $dark-grey-color;
@@ -61,7 +64,8 @@
             text-transform: uppercase;
             margin-left: 10px;
         }
-        &.active-step:not(.completed-step) {
+        &.active-step:not(.completed-step),
+        &:hover:not(.completed-step) {
             .workflow-navigation--step__number {
                 background-color: rgba($color: $green-color, $alpha: 0.3);
                 color: $green-color;
@@ -71,7 +75,8 @@
                 font-weight: 800;
             }
         }
-        &.completed-step:not(.active-step) {
+        &.completed-step:not(.active-step),
+        &.completed-step:hover:not(.active-step) {
             .workflow-navigation--step__number {
                 background-color: $green-color;
                 color: $white-color;

@@ -196,9 +196,9 @@ mat-tab-group.client-documents--tabs {
         }
 
         &:first-of-type {
-            flex: 1 1 100%;
+            // flex: 1 1 100%;
             box-sizing: border-box;
-            max-width: 20%;
+            width: 300px;
         }
     }
 

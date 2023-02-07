@@ -97,6 +97,17 @@ export interface IConsultantAnchor {
     name: string;
 }
 
+export const EProcessIcon: {[key: number]: string} =  {
+    1: 'workflowAdd',
+    4: 'workflowAdd',
+    2: 'workflowEdit',
+    5: 'workflowEdit',
+    3: 'workflowStartOrExtend',
+    6: 'workflowStartOrExtend',
+    7: 'workflowTerminate',
+    8: 'workflowTerminate'
+}
+
 export const SalesMainDataSections: SubItemDto[] = [
     {
         name: 'Project',
