@@ -607,7 +607,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
-                this.clientDataComponent?.getFrameAgreements();
+                if (this.isContractModuleEnabled) {
+                    // FIXME: commented out as Ruslan gets 403
+                    // this.clientDataComponent?.getFrameAgreements();
+                }
 			});
 	}
 
