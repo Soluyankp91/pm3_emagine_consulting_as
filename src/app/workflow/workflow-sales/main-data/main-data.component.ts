@@ -399,6 +399,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
@@ -529,7 +530,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
-                startWith({ filter: '', showAll: true, idsToExclude: [] }),
+                startWith(''),
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
@@ -538,7 +539,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
                     };
                     if (value?.id) {
                         toSend.name = value.id
-                            ? value.clientName
+                            ? value.name
                             : value;
                     }
                     return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);

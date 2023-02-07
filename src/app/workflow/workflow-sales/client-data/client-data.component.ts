@@ -370,8 +370,15 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
+        this._initContactSubs();
 		this.onDirectClientSelected.emit(event);
 	}
+
+    private _initContactSubs() {
+        this.salesClientDataForm.clientContactProjectManager.setValue('');
+        this.salesClientDataForm.invoicePaperworkContactIdValue.setValue('');
+        this.salesClientDataForm.evaluationsReferencePersonIdValue.setValue('');
+    }
 
 	getRatesAndFees(clientId: number) {
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
@@ -528,6 +535,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
                         clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
