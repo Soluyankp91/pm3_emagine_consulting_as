@@ -106,6 +106,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
 
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -893,7 +895,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.updateConsultantStepAnchors();
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
-        this.clientDataComponent?.getFrameAgreements();
+        if (this.isContractModuleEnabled) {
+            // FIXME: commented out as Ruslan gets 403
+            // this.clientDataComponent?.getFrameAgreements();
+        }
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
