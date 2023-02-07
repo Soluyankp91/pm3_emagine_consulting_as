@@ -46,7 +46,6 @@ export class WorkflowDataService {
     isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
 
     constructor(private _configurationService: ConfigurationServiceProxy) {
-        // console.log(this.isContractModuleEnabled2);
         this._getContractModuleConfig();
     }
 

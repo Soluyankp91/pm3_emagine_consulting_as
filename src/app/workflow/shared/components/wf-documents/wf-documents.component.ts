@@ -66,7 +66,8 @@ export class DocumentsComponent extends AppComponentBase {
 				this.clientPeriodId,
 				this.workflowTerminationId,
 				undefined,
-				result.value!
+				result.value!,
+                fileToUpload
 			);
 			this.addDocument(wrappedDocument);
 		});
@@ -89,12 +90,15 @@ export class DocumentsComponent extends AppComponentBase {
 		}
 	}
 
-	deleteDocument(fileId: string, index: number) {
+	deleteDocument(fileId: string, file: FileUploaderFile, index: number) {
 		if (fileId) {
 			this._fileService.temporaryDELETE(fileId).subscribe(() => this.documents.removeAt(index));
 		} else {
 			this.documents.removeAt(index);
 		}
+        if (file) {
+            this.fileUploader.removeFile(file);
+        }
 	}
 
 	getCurrentEmployee() {
@@ -115,6 +119,7 @@ export class DocumentsComponent extends AppComponentBase {
 			workflowTerminationId: new UntypedFormControl(document.workflowTerminationId),
 			workflowProcessType: new UntypedFormControl(document.workflowProcessType),
 			stepType: new UntypedFormControl(document.stepType),
+            uploaderFile: new UntypedFormControl(document.uploaderFile)
 		});
 		this.documentForm.documents.push(form);
 	}

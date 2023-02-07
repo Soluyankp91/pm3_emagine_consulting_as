@@ -113,7 +113,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	) {
 		super(injector);
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
-        console.log(this._workflowDataService.contractModuleEnabled);
 
 		this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.valueChanges
 			.pipe(
