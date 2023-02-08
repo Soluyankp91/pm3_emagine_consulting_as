@@ -64,11 +64,6 @@ export class WFDocument {
 		);
 	}
 
-	// private static _getIcon(fileName: string): string {
-	// 	let splittetFileName = fileName.split('.');
-	// 	return splittetFileName[splittetFileName.length - 1];
-	// }
-
     public static getIcon(fileName: string): string {
         if (fileName) {
             let fileType = this._getFileExtensionFromName(
