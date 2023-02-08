@@ -224,4 +224,9 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 			this.templateAsBase64$.next(s);
 		});
 	}
+
+	public setAsSaved() {
+		console.log(11)
+		this._rich.hasUnsavedChanges = false;
+	}
 }

@@ -1,7 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable, throwError } from 'rxjs';
-import { catchError, concatMap, map } from 'rxjs/operators';
+import { catchError, concatMap, map, tap } from 'rxjs/operators';
+import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { environment } from 'src/environments/environment';
 import { IDocumentVersion } from '../types';
 export interface WrappedValueDto<TValue> {
@@ -11,7 +13,7 @@ export interface WrappedValueDto<TValue> {
 export class EditorService {
 	baseUrl = `${environment.apiUrl}/api/AgreementTemplate`;
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(private httpClient: HttpClient, private dialog: MatDialog) {}
 
 	getTemplateMock(): string {
 		const documentAsBase64 = `
@@ -35,7 +37,11 @@ export class EditorService {
 
 	saveAsDraftTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/false`;
-		return this.httpClient.put(endpoint, fileContent);
+		return this.httpClient.put(endpoint, fileContent).pipe(
+			tap(res => {
+				alert('saved');
+			})
+		);
 	}
 
 	completeTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
@@ -50,6 +56,10 @@ export class EditorService {
 					markActiveAgreementsAsOutdated: true,
 				})
 			)
+		).pipe(
+			tap(res => {
+				alert('saved');
+			})
 		);
 	}
 

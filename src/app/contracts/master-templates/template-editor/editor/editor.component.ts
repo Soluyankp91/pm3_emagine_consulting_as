@@ -77,7 +77,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.subscribe((base64) => {
 				this._editorService
 					.saveAsDraftTemplate(this.templateId, { value: base64 })
-					.subscribe(() => this.isLoading$.next(false));
+					.subscribe(() => {
+						this.richEdit.setAsSaved();
+						this.isLoading$.next(false);
+					});
 			});
 	}
 
@@ -93,7 +96,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.subscribe((base64) => {
 				this._editorService
 					.completeTemplate(this.templateId, { value: base64 })
-					.subscribe(() => this.isLoading$.next(false));
+					.subscribe(() => {
+						this.richEdit.setAsSaved();
+						this.isLoading$.next(false);
+					});
 			});
 	}
 
