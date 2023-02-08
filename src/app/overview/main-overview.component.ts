@@ -275,7 +275,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	formatItems(length: number, parent: MainOverviewItemPeriodDto[], group: string, workflowStatus: MainOverviewStatus, actualEndDate: moment.Moment) {
 		const items = [];
 		for (let i = 0; i < length; i++) {
-            if (workflowStatus === MainOverviewStatus.Terminated && parent![i]?.endDate !== undefined) {
+            if (workflowStatus === MainOverviewStatus.Terminated) {
                 parent![i].endDate = actualEndDate;
             }
 			items.push({
