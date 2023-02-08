@@ -1,0 +1,5 @@
+<div class="editor" #editor></div>
+<app-insert-merge-field-popup #mergePopup [fields]="mergeFields" (mergeField)="mergeSelectedField($event)">
+</app-insert-merge-field-popup>
+<app-compare-select-version-popup #compareVersionPopup [dataSource]="templateVersions || []"></app-compare-select-version-popup>
+<app-compare-select-document-popup #compareDocumentPopup></app-compare-select-document-popup>

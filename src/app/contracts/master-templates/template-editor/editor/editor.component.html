@@ -1,25 +1,13 @@
 <ng-container *ngIf="docReady$ | async as doc">
-  <app-richedit 
-    #richEdit
-    [template]="doc[0]"
-    [mergeFields]="doc[1]"
-  >
-  </app-richedit>
+	<app-richedit [template]="doc[0]" [mergeFields]="doc[1]" [templateVersions]="templateVersions$ | async"></app-richedit>
 
-  <ng-container *ngIf="hasUnsavedChanges$ | async">
-    <div class="save-actions" [class.loading]="isLoading$ | async">
-      <button>
-        cancel
-      </button>
-  
-      <button (click)="saveAsDraft()">
-        Safe as a draft
-      </button>
-  
-      <button (click)="saveAsComplete()">
-        complete
-      </button>
-    </div>
-  </ng-container>
-  
+	<ng-container *ngIf="hasUnsavedChanges$ | async">
+		<div class="save-actions" [class.loading]="isLoading$ | async">
+			<button>cancel</button>
+
+			<button (click)="saveAsDraft()">Safe as a draft</button>
+
+			<button (click)="saveAsComplete()">complete</button>
+		</div>
+	</ng-container>
 </ng-container>

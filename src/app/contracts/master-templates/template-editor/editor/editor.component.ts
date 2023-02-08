@@ -9,90 +9,95 @@ import { EditorService } from './_api/editor.service';
 import { RicheditComponent } from './components/richedit/richedit.component';
 import { MergeFieldsService } from './_api/merge-fields.service';
 import { RicheditService } from './services/richedit.service';
+import { IDocumentVersion } from './types';
 
 @Component({
-  standalone: true,
-  selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss'],
-  imports: [
-    CommonModule,
+	standalone: true,
+	selector: 'app-editor',
+	templateUrl: './editor.component.html',
+	styleUrls: ['./editor.component.scss'],
+	imports: [
+		CommonModule,
 
-    // components
-    RicheditComponent
-  ],
-  providers: [
-    EditorService,
-    MergeFieldsService,
-    RicheditService
-  ]
+		// components
+		RicheditComponent,
+	],
+	providers: [EditorService, MergeFieldsService, RicheditService],
 })
 export class EditorComponent implements OnInit, OnDestroy {
-  _destroy$ = new Subject();
-  template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
-  mergeFields$ = this._mergeFieldsService.getMergeFields(this._route.snapshot.params.id);
-  
-  docReady$ = combineLatest([this.template$, this.mergeFields$]).pipe(
-    filter(res => !!res[0] && !!res[1])
-  );
+	_destroy$ = new Subject();
+	templateId: number | undefined;
+	template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
+	templateVersions$ = new BehaviorSubject<Array<IDocumentVersion>>([]);
+	mergeFields$ = this._mergeFieldsService.getMergeFields(this._route.snapshot.params.id);
 
-  isLoading$ = new Subject();
-  hasUnsavedChanges$ = this._richeditService.hasUnsavedChanges$;
+	docReady$ = combineLatest([this.template$, this.mergeFields$]).pipe(filter((res) => !!res[0] && !!res[1]));
 
-  @ViewChild(RicheditComponent) richEdit: RicheditComponent;
+	isLoading$ = new Subject();
+	hasUnsavedChanges$ = this._richeditService.hasUnsavedChanges$;
 
-  constructor(
-    private _editorService: EditorService,
-    private _richeditService: RicheditService,
-    private _mergeFieldsService: MergeFieldsService,
-    private _route: ActivatedRoute
-  ) {
-  }
+	@ViewChild(RicheditComponent) richEdit: RicheditComponent;
 
-  ngOnInit(): void {
-    const templateId = this._route.snapshot.params.id;
+	constructor(
+		private _editorService: EditorService,
+		private _richeditService: RicheditService,
+		private _mergeFieldsService: MergeFieldsService,
+		private _route: ActivatedRoute
+	) {}
 
-    this._editorService.getTemplate(templateId).pipe(
-      tap(template => this.template$.next(template)),
-    ).subscribe(
-      () => {},
-      () => {
-        this.template$.next(this._editorService.getTemplateMock())
-      }
-    )
-  }
+	ngOnInit(): void {
+		this.templateId = this._route.snapshot.params.id;
+		this._editorService.getFileVersion(this.templateId, 1).subscribe(console.log);
+		this._editorService.getSimpleList().subscribe(console.log);
 
-  saveAsDraft() {
-    this.isLoading$.next(true);
-    this.richEdit.setTemplateAsBase64();
-    
-    this.richEdit.templateAsBase64$.pipe(
-      filter(res => !!res),
-      take(1)
-    ).subscribe(base64 => {
-      const templateId = this._route.snapshot.params.id;
-      this._editorService.saveAsDraftTemplate(templateId, { value: base64 }).subscribe(
-        () => this.isLoading$.next(false)
-      );
-    })   
-  }
+		this._editorService
+			.getTemplate(this.templateId)
+			.pipe(tap((template) => this.template$.next(template)))
+			.subscribe(
+				() => {},
+				() => {
+					this.template$.next(this._editorService.getTemplateMock());
+				}
+			);
 
-  saveAsComplete() {
-    this.isLoading$.next(true);
-    this.richEdit.setTemplateAsBase64();
+		this._editorService.getTemplateVersions(this.templateId).subscribe((res) => {
+			this.templateVersions$.next(res || []);
+		});
+	}
 
-    this.richEdit.templateAsBase64$.pipe(
-      filter(res => !!res),
-      take(1)
-    ).subscribe(base64 => {
-      const templateId = this._route.snapshot.params.id;
-      this._editorService.comleteTemplate(templateId, { value: base64 }).subscribe(
-        () => this.isLoading$.next(false)
-      );
-    })   
-  }
+	saveAsDraft() {
+		this.isLoading$.next(true);
+		this.richEdit.setTemplateAsBase64();
 
-  ngOnDestroy(): void {
-    this._destroy$.complete();
-  }
+		this.richEdit.templateAsBase64$
+			.pipe(
+				filter((res) => !!res),
+				take(1)
+			)
+			.subscribe((base64) => {
+				this._editorService
+					.saveAsDraftTemplate(this.templateId, { value: base64 })
+					.subscribe(() => this.isLoading$.next(false));
+			});
+	}
+
+	saveAsComplete() {
+		this.isLoading$.next(true);
+		this.richEdit.setTemplateAsBase64();
+
+		this.richEdit.templateAsBase64$
+			.pipe(
+				filter((res) => !!res),
+				take(1)
+			)
+			.subscribe((base64) => {
+				this._editorService
+					.completeTemplate(this.templateId, { value: base64 })
+					.subscribe(() => this.isLoading$.next(false));
+			});
+	}
+
+	ngOnDestroy(): void {
+		this._destroy$.complete();
+	}
 }

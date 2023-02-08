@@ -20,7 +20,6 @@ import {
 	MailMergeTabItemId,
 	Options,
 	RibbonButtonItem,
-	RibbonTab,
 	RibbonTabType,
 	RichEdit,
 } from 'devexpress-richedit';
@@ -31,31 +30,45 @@ import { RibbonButtonItemOptions } from 'devexpress-richedit/lib/client/public/r
 import { IMergeField } from '../../_api/merge-fields.service';
 import { RicheditService } from '../../services/richedit.service';
 import { TransformMergeFiels } from '../../helpers/transform-merge-fields.helper';
-import { InsertMergeFieldPopupComponent } from '../insert-merge-field-popup/insert-merge-field-popup.component';
+import { InsertMergeFieldPopupComponent } from '../insert-merge-field-popup';
+import { CompareSelectDocumentPopupComponent } from '../compare-select-document-popup';
+import { CompareSelectVersionPopupComponent } from '../compare-select-version-popup';
+import { CompareService } from '../../services/compare.service';
+import { ICompareButtonType, IDocumentVersion } from '../../types';
+
 @Component({
 	standalone: true,
 	selector: 'app-richedit',
-	template: `
-		<div class="editor" #editor></div>
-		<app-insert-merge-field-popup #mergePopup [fields]="mergeFields" (mergeField)="mergeSelectedField($event)">
-		</app-insert-merge-field-popup>`,
+	templateUrl: './richedit.component.html',
 	styleUrls: ['./richedit.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [CommonModule, InsertMergeFieldPopupComponent],
+	imports: [
+		CommonModule,
+		InsertMergeFieldPopupComponent,
+		CompareSelectVersionPopupComponent,
+		CompareSelectDocumentPopupComponent,
+	],
 })
 export class RicheditComponent implements AfterViewInit, OnDestroy {
 	@Input() template: File | Blob | ArrayBuffer | string = '';
+	@Input() templateVersions: Array<IDocumentVersion> | null;
 	@Input() mergeFields: IMergeField;
 
 	@ViewChild('editor') editor: ElementRef;
 	@ViewChild('mergePopup') private mergeFieldPopup: InsertMergeFieldPopupComponent;
+	@ViewChild('compareVersionPopup') private compareVersionPopup: CompareSelectVersionPopupComponent;
+	@ViewChild('compareDocumentPopup') private compareDocumentPopup: CompareSelectDocumentPopupComponent;
 
 	templateAsBase64$: BehaviorSubject<string> = this._richeditService.templateAsBase64$;
 	hasUnsavedChanges$: BehaviorSubject<boolean> = this._richeditService.hasUnsavedChanges$;
 
 	private _rich: RichEdit;
 
-	constructor(private _element: ElementRef, @SkipSelf() private _richeditService: RicheditService) {}
+	constructor(
+		private _element: ElementRef,
+		private _compareService: CompareService,
+		@SkipSelf() private _richeditService: RicheditService
+	) {}
 
 	ngAfterViewInit(): void {
 		const options: Options = createOptions();
@@ -66,6 +79,8 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		this.createDocument(this._element.nativeElement.firstElementChild, options);
 		this.registerDocumentEvents();
 		this.registerCustomEvents(options);
+
+		this._compareService.initialize(this._rich);
 	}
 
 	setDimensions(options: Options) {
@@ -86,7 +101,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		this._rich.events.documentChanged.addHandler(() => {
 			this.hasUnsavedChanges$.next(this._rich.hasUnsavedChanges);
 		});
-		
+
 		this._rich.setCommandEnabled('formatPainter', false);
 		this._rich.events.selectionChanged.addHandler((a, b) => {
 			if (a.selection.intervals[0].length) {
@@ -107,33 +122,25 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 
 		fileTab.insertItem(new RibbonButtonItem('updateStyles', 'Update Styles'), 5);
 		mergeTab.insertItem(new RibbonButtonItem('mergeField', 'Insert Merge Field', insertFieldBtnOpts), 2);
-		homeTab.insertItem(new RibbonButtonItem('formatPainter', 'Format Painter', painterFormatBtnOpts), 3)
-		
+		homeTab.insertItem(new RibbonButtonItem('formatPainter', 'Format Painter', painterFormatBtnOpts), 3);
+
 		mergeTab.removeItem(MailMergeTabItemId.ShowInsertMergeFieldDialog);
 		fileTab.removeItem(FileTabItemId.ExportDocument);
 		homeTab.removeItem(HomeTabItemId.Paste);
-
-		this.insertCompareTab(options);
 
 		// merge fields
 		options.mailMerge.dataSource = [this.mergeFields];
 	}
 
-	insertCompareTab(options: Options) {
-		const selectBtnId = 'selectBtn';
-		const selectBtn = new RibbonButtonItem(selectBtnId, 'Select Document', {
-			showText: true,
-			beginGroup: true,
-			icon: 'home',
-		});
-
-		const compareTabId = 'CompareTabID';
-		options.ribbon.insertTab(new RibbonTab('Compare', compareTabId, [selectBtn]));
-	}
-
 	registerCustomEvents(options: Options) {
 		this._rich.events.customCommandExecuted.addHandler((s, e) => {
 			switch (e.commandName) {
+				case ICompareButtonType.Select:
+					this.compareDocumentPopup.show();
+					break;
+				case ICompareButtonType.Compare:
+					this.compareVersionPopup.show();
+					break;
 				case 'updateStyles':
 					this.updateFontsToDefault();
 					this.transformFiledsIntoMergeFields();
@@ -165,7 +172,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 
 		let charProperties: CharacterPropertiesApi;
 		let prgphProperties: ParagraphPropertiesApi;
-		
+
 		const handler = (rich: RichEdit, e) => {
 			let interval = this._rich.selection.intervals[0];
 
@@ -178,23 +185,22 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 			this._rich.events.pointerUp.removeHandler(handler);
 			this._rich.events.selectionChanged.removeHandler(sHandler);
 			this.editor.nativeElement.classList.remove('painter-format');
-		}
+		};
 
 		const interval = this._rich.selection.intervals[0];
 		const sHandler = (rich: RichEdit, e) => {
 			charProperties = rich.document.getCharacterProperties(interval);
 			prgphProperties = rich.document.getParagraphProperties(interval);
-		}
+		};
 
 		if (!interval.length) {
 			this._rich.events.pointerUp.removeHandler(handler);
 			this._rich.events.selectionChanged.removeHandler(sHandler);
 			return;
 		}
-		
+
 		this._rich.events.selectionChanged.addHandler(sHandler);
 		this._rich.events.pointerUp.addHandler(handler);
-		
 	}
 
 	private _showMergeFieldModal() {
