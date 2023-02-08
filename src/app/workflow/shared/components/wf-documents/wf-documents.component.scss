@@ -13,6 +13,11 @@
             @include fontOpenSans(14px, 400);
             background: $white-color;
             height: 48px;
+            border: 1px solid #E7E3E8;
+            &:hover {
+                transition: box-shadow .7s ease;
+                box-shadow: 0 0 20px #1a237e26;
+            }
             div {
                 color: $dark-grey-color !important;
             }
