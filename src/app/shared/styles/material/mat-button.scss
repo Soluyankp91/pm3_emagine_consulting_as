@@ -261,6 +261,14 @@
         color: $green-color;
     }
 
+    &-chevron {
+        @include fontLineHeightAndSize(14px, 14px, 12px, 6px);
+        transition: all .3s ease-in-out;
+        &.should-rotate {
+            transform: rotate(180deg);
+        }
+    }
+
     &.active {
         background-color: rgba($color: $green-color-25, $alpha: 0.33);
         padding: 4px 9px !important;
