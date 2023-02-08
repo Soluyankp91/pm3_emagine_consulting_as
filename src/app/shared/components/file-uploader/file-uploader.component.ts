@@ -1,7 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, Input } from '@angular/core';
 import { of, Observable } from 'rxjs';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { FileUploaderFile, FileUploaderHelper } from './file-uploader.model';
 import { FileDragAndDropEvent } from './file-drag-and-drop.directive';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -27,8 +25,6 @@ export class FileUploaderComponent implements OnInit {
     public duplicatedFile = false;
     public acceptedTypes: string[] = [];
     constructor(
-        private _iconRegistry: MatIconRegistry,
-        private _sanitizer: DomSanitizer,
         private _tokenService: LocalHttpService
     ) {}
 
@@ -43,7 +39,6 @@ export class FileUploaderComponent implements OnInit {
         return of(<any>null);
       }
       return new Observable((observer) => {
-        // let uploader: FileUploader = new FileUploader({ url: url });
         let uploader: any = url;
         let uploaderOptions: any = {};
         uploaderOptions.autoUpload = false;
@@ -54,8 +49,6 @@ export class FileUploaderComponent implements OnInit {
         };
         uploader.onBuildItemForm = (fileItem: File, form: any) => {
             form.append('Id', id);
-            // form.append('FileType', fileItem.file.type);
-            // form.append('FileName', fileItem.file.name);
         };
         uploader.onCompleteAll = () => {
             observer.next();

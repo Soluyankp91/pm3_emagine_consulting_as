@@ -59,13 +59,53 @@ export class WFDocument {
 			dateCreated,
 			employee,
 			name,
-			this._getIcon(name),
+			this.getIcon(name),
             uploaderFile
 		);
 	}
 
-	private static _getIcon(fileName: string): string {
-		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
-	}
+	// private static _getIcon(fileName: string): string {
+	// 	let splittetFileName = fileName.split('.');
+	// 	return splittetFileName[splittetFileName.length - 1];
+	// }
+
+    public static getIcon(fileName: string): string {
+        if (fileName) {
+            let fileType = this._getFileExtensionFromName(
+                fileName
+            );
+            switch (fileType) {
+                case '.pdf':
+                    return 'pdf';
+                case '.doc':
+                case '.docx':
+                    return 'doc';
+                case '.xls':
+                case '.xlsx':
+                    return 'xls';
+                case '.txt':
+                    return 'txt';
+                case '.jpeg':
+                case '.jpg':
+                    return 'jpg';
+                case '.png':
+                    return 'png';
+                case '.svg':
+                    return 'svg';
+            }
+        }
+        return 'raw';
+    }
+
+    private static _getFileExtensionFromName(fileName: string) {
+        const extensions = /(\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.txt|\.jpg|\.jpeg|\.svg|\.png)$/i;
+        if (!fileName) {
+            return '';
+        }
+        let matches = extensions.exec(fileName.toLowerCase());
+        if (matches && matches.length > 0) {
+            return matches[matches.length - 1];
+        }
+        return '';
+    }
 }

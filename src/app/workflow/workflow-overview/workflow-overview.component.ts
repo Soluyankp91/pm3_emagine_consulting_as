@@ -34,6 +34,7 @@ import {
 	WorkflowServiceProxy,
 	WorkflowStepStatus,
 } from 'src/shared/service-proxies/service-proxies';
+import { WFDocument } from '../shared/components/wf-documents/wf-documents.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -135,7 +136,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                         clientPeriodId: item.clientPeriodId,
                         createdBy: item.createdBy,
                         createdDateUtc: item.createdDateUtc,
-                        icon: this._getIcon(item.name),
+                        icon: WFDocument.getIcon(item.name),
                         name: item.name,
                         stepType: item.stepType,
                         workflowProcessType: item.workflowProcessType,
@@ -143,11 +144,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                     }
                 });
 			});
-	}
-
-    private _getIcon(fileName: string): string {
-		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
 	}
 
 	getOverviewData() {
