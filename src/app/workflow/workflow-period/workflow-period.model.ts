@@ -23,7 +23,7 @@ export interface IStepWithAnchorsDto {
     status?: WorkflowStepStatus;
     responsiblePerson?: EmployeeDto;
     actionsPermissionsForCurrentUser?: { [key: string]: boolean; } | undefined;
-    menuAnchors?: StepAnchorDto[]
+    menuAnchors?: StepAnchorDto[];
 }
 
 export class StepAnchorDto implements IStepAnchorDto {
@@ -31,11 +31,13 @@ export class StepAnchorDto implements IStepAnchorDto {
     anchor?: string;
     consultantName?: string;
     subItems?: SubItemDto[];
+    anchorsOpened?: boolean;
     constructor(data?: IStepAnchorDto) {
         this.name = data?.name;
         this.anchor = data?.anchor;
         this.consultantName = data?.consultantName;
         this.subItems = data?.subItems;
+        this.anchorsOpened = data?.anchorsOpened;
     }
 }
 
@@ -44,6 +46,7 @@ export interface IStepAnchorDto {
     anchor?: string;
     consultantName?: string;
     subItems?: SubItemDto[];
+    anchorsOpened?: boolean;
 }
 
 export class SubItemDto implements ISubItemDto {

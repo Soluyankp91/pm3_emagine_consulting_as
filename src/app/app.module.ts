@@ -811,5 +811,9 @@ export class AppModule {
                 'assets/common/images/no-docs.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+			'chevron-down',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-down.svg')
+		);
     }
 }

@@ -156,12 +156,12 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                             {
                                 name: 'Main Data',
                                 anchor: 'salesMainDataAnchor',
-                                subItems: new Array<SubItemDto>(...SalesMainDataSections) //FIXME: commented out till next release
+                                subItems: new Array<SubItemDto>(...SalesMainDataSections)
                             },
                             {
                                 name: 'Client Data',
                                 anchor: 'salesClientDataAnchor',
-                                subItems: new Array<SubItemDto>(...SalesClientDataSections) //FIXME: commented out till next release
+                                subItems: new Array<SubItemDto>(...SalesClientDataSections)
                             }
                         ];
                         break;
@@ -190,7 +190,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 								item.employmentType === EmploymentTypes.FeeOnly ||
 								item.employmentType === EmploymentTypes.Recruitment
 									? []
-									: new Array<SubItemDto>(...SalesConsultantDataSections), //FIXME: commented out till next release
+									: new Array<SubItemDto>(...SalesConsultantDataSections),
+                            anchorsOpened: false
 						});
                     })
                 }
@@ -205,17 +206,20 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                             {
                                 name: 'Main Data',
                                 anchor: 'mainDataAnchor',
-                                subItems: new Array<SubItemDto>(...ContractMainDataSections) //FIXME: commented out till next release
+                                subItems: new Array<SubItemDto>(...ContractMainDataSections),
+                                anchorsOpened: false
                             },
                             {
                                 name: 'Client Data',
                                 anchor: 'clientDataAnchor',
-                                subItems: new Array<SubItemDto>(...ContractClientDataSections) //FIXME: commented out till next release
+                                subItems: new Array<SubItemDto>(...ContractClientDataSections),
+                                anchorsOpened: false
                             },
                             {
                                 name: 'Sync & Legal',
                                 anchor: 'syncLegalContractAnchor',
-                                subItems: new Array<SubItemDto>(...ContractSyncSections) //FIXME: commented out till next release
+                                subItems: new Array<SubItemDto>(...ContractSyncSections),
+                                anchorsOpened: false
                             }
                         ];
                         if (consultantNames?.length) {
@@ -228,7 +232,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 										item.employmentType === EmploymentTypes.FeeOnly ||
 										item.employmentType === EmploymentTypes.Recruitment
 											? []
-											: new Array<SubItemDto>(...ContractConsultantDataSections), //FIXME: commented out till next release
+											: new Array<SubItemDto>(...ContractConsultantDataSections),
+                                    anchorsOpened: false
 								};
                             });
                             ContractAnchors.splice(2, 0, ...consultantAnchors);
@@ -252,7 +257,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                                 return {
                                     name: 'Consultant Data',
                                     anchor: `consultantDataAnchor${index}`,
-                                    consultantName: item.name
+                                    consultantName: item.name,
+                                    anchorsOpened: false
                                 }
                             });
                             ContractAnchors.splice(1, 0, ...consultantAnchors);
@@ -268,7 +274,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                     {
                         name: 'Finance Data',
                         anchor: 'financeDataAnchor',
-                        subItems: new Array<SubItemDto>(...FinanceSections) //FIXME: commented out till next release
+                        subItems: new Array<SubItemDto>(...FinanceSections),
+                        anchorsOpened: false
                     }
                 ];
                 return FinanceAnchors;
@@ -277,31 +284,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         }
     }
 
-    // mapIconFromMenuItem(typeId: number) {
-    //     switch (typeId) {
-    //         case WorkflowProcessType.StartClientPeriod:
-    //         case WorkflowProcessType.StartConsultantPeriod:
-    //             return 'workflowAdd'
-    //         case WorkflowProcessType.ChangeClientPeriod:
-    //         case WorkflowProcessType.ChangeConsultantPeriod:
-    //             return 'workflowEdit'
-    //         case WorkflowProcessType.ExtendClientPeriod:
-    //         case WorkflowProcessType.ExtendConsultantPeriod:
-    //             return 'workflowStartOrExtend'
-    //         case WorkflowProcessType.TerminateConsultant:
-    //         case WorkflowProcessType.TerminateWorkflow:
-    //             return 'workflowTerminate'
-    //     }
-    // }
-
     changeStepSelection(step: StepWithAnchorsDto) {
-        // this.selectedAnchor = '';
-        const config: ScrollToConfigOptions = {
-            target: 'topOfTheWorkflow',
-            // offset: -230
-        };
-        this._scrollToService.scrollTo(config);
-        // window.scrollTo(0, 0);
+        this._scrollToService.scrollTo({target: 'topOfTheWorkflow'});
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
         this.changeAnchorSelection(step.menuAnchors[0]);
