@@ -112,12 +112,10 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		});
 		this.componentInitalized = true;
 		this.individualConsultantActionsAvailable = environment.dev;
-		this.getOverviewData();
-		this.getWorkflowHistory();
-		this.getDocuments();
+		this._getOverviewData();
 
 		this._workflowDataService.workflowOverviewUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
-			this.getOverviewData();
+			this._getOverviewData();
 		});
 	}
 
@@ -125,6 +123,12 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
 	}
+
+    private _getOverviewData() {
+        this.getChartData();
+        this.getWorkflowHistory();
+        this.getDocuments();
+    }
 
 	getDocuments() {
 		this._workflowDocumentsService
@@ -146,7 +150,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			});
 	}
 
-	getOverviewData() {
+	getChartData() {
 		this.overviewGroups = [];
 		this.overviewItems = [];
 		this._workflowService.overview(this.workflowId).subscribe((result) => {
