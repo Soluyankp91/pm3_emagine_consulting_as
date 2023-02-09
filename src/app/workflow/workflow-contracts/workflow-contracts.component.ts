@@ -478,6 +478,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (this.mainDataComponent?.mainDocuments) {
             this.mainDataComponent.mainDocuments.clearDocuments();
         }
+        if (this.terminationDocuments) {
+            this.terminationDocuments.clearDocuments();
+        }
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
 		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
 		this.clientDataComponent?.contractClientForm.reset('', { emitEvent: false });
