@@ -521,7 +521,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	addSignerToForm(signer?: ContractSignerDto) {
 		const form = this._fb.group({
 			clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
-			clientRole: new UntypedFormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
+			signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
 			clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
 		});
 		this.salesClientDataForm.contractSigners.push(form);
