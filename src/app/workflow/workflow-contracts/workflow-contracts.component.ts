@@ -1031,6 +1031,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		data.consultantTerminationContractData?.forEach((consultant) => {
 			this.addConsultantDataToTerminationForm(consultant);
 		});
+        if (data?.workflowDocuments?.length) {
+            this.terminationDocuments?.addExistingFile(data.workflowDocuments);
+        }
 	}
 
 	private _packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
