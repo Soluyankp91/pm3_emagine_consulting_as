@@ -875,6 +875,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (this.mainDataComponent?.mainDocuments) {
             this.mainDataComponent.mainDocuments.clearDocuments();
         }
+        if (this.terminationDocuments) {
+            this.terminationDocuments.clearDocuments();
+        }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
 	}
@@ -970,8 +973,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
 			this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
 				const user: EmployeeDto = form.commissionedUser;
-				if (user.id) {
-					input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+				if (user?.id) {
+					input.salesMainData!.commissionedEmployeesIdValues?.push(user?.id);
 					input.salesMainData!.commissionedEmployeesData?.push(user);
 				}
 			});
