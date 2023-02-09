@@ -183,6 +183,14 @@ export class WorkflowDetailsComponent
     //     };
     // }
 
+    prepareRoute(outlet: RouterOutlet) {
+        return (
+            outlet &&
+            outlet.activatedRouteData &&
+            outlet.activatedRouteData['animation']
+        );
+    }
+
     ngOnInit(): void {
         this.activatedRoute.paramMap
             .pipe(takeUntil(this._unsubscribe))

@@ -30,11 +30,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     @ViewChild('workflowFinances', {static: false}) workflowFinances: WorkflowFinancesComponent;
     @ViewChild('menuDeleteTrigger', {static: false}) menuDeleteTrigger: MatMenuTrigger;
 
-    // @Input() workflowId: string;
     workflowId: string;
-    // @Input() periodId: string | undefined;
     periodId: string | undefined;
-    // @Input() topToolbarVisible: boolean;
     topToolbarVisible: boolean;
 
     sideMenuItems: WorkflowProcessWithAnchorsDto[] = [];
@@ -56,6 +53,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     clientPeriods: ClientPeriodDto[];
     // workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     typeId: number;
+
     private _routerEventsSubscription: Subscription;
     private _unsubscribe = new Subject();
     constructor(
@@ -90,7 +88,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     }
 
     ngOnInit(): void {
-        // this.getClientPeriodTypes();
         this.getSideMenu();
         this.updateWorkflowProgressAfterTopTabChanged();
         this._routerEventsSubscription = this._router.events.subscribe((evt) => {
@@ -99,7 +96,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
             }
             if (evt instanceof NavigationEnd) {
                 const navigation  = this._router.getCurrentNavigation();
-                console.log(navigation.extras.state);
                 this.typeId = navigation.extras.state?.typeId;
                 this.updateWorkflowProgressAfterTopTabChanged();
                 this.getSideMenu();
@@ -131,22 +127,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
-    // getClientPeriodTypes() {
-    //     this._internalLookupService
-    //         .getWorkflowClientPeriodTypes()
-    //         .pipe(finalize(() => {}))
-    //         .subscribe((result) => {
-    //             this.workflowClientPeriodTypes = result;
-    //         });
-    // }
-
     detectTopLevelMenu(typeId: number) {
-        // const selectedTopMenu = this.clientPeriods?.find(
-        //     (x) => x.name === clientPeriodName
-        // );
-        // const clientPeriodType = this.workflowClientPeriodTypes.find(
-        //     (type) => type.id === selectedTopMenu?.typeId
-        // );
         switch (typeId) {
             case 1: // Start period
                 return WorkflowTopSections.StartPeriod;
@@ -161,6 +142,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this._unsubscribe.next();
         this._unsubscribe.complete();
         this._routerEventsSubscription.unsubscribe();
+        this.hideMainSpinner();
     }
 
     getPeriodStepTypes() {
@@ -174,6 +156,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     }
 
     getSideMenu(autoUpdate?: boolean) {
+        console.log('test');
         this._workflowService.clientPeriods(this.workflowId, this.periodId, true)
             .pipe(finalize(() => {
 
@@ -373,9 +356,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveStep: step.typeId, stepSpecificPermissions: step.actionsPermissionsForCurrentUser, currentStepIsCompleted: step.status === WorkflowStepStatus.Completed});
-        console.log(this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit']);
-        console.log(this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion']);
-        console.log(this._workflowDataService.getWorkflowProgress.currentStepIsCompleted);
     }
 
     changeSideSection(item: WorkflowProcessWithAnchorsDto, index: number) {

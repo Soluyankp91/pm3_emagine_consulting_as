@@ -185,43 +185,6 @@
                 <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
             </div>
         </ng-container>
-        <!-- <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
-            <mat-tab label="Overview">
-                <ng-template mat-tab-label>
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <mat-icon class="u-mr--10" svgIcon="overview-icon"></mat-icon>
-                        <div fxLayout="column" fxLayoutAlign="center start">
-                            <span class="tab-header">Overview</span>
-                        </div>
-                    </div>
-                </ng-template>
-                <div class="workflow-form--panel pos-relative u-w--100">
-                    <ng-container *ngIf="clientPeriods?.length">
-                        <app-workflow-overview [periodId]="clientPeriods![0]?.id" [clientPeriods]="clientPeriods"></app-workflow-overview>
-                        <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
-                            <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
-                        </div>
-                    </ng-container>
-                </div>
-            </mat-tab>
-            <ng-container *ngFor="let tab of clientPeriods; let i = index;">
-                <mat-tab [label]="tab.name!" labelClass="wfPeriodLabel">
-                    <ng-template mat-tab-label>
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <span class="tab-header">{{tab.name}}</span>
-                        </div>
-                        <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
-                    </ng-template>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
-                        <div fxFlex="80%">
-                            <ng-container *ngIf="selectedIndex === i + 1">
-                                <app-workflow-period #workflowPeriod [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
-                            </ng-container>
-                        </div>
-                    </div>
-                </mat-tab>
-            </ng-container>
-        </mat-tab-group> -->
         <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs u-w--100">
             <a mat-tab-link routerLink="overview" [active]="rlaWFOverview.isActive" routerLinkActive
                 #rlaWFOverview="routerLinkActive">
@@ -245,20 +208,9 @@
             </ng-container>
 
         </nav>
-        <div class="u-w--100 u-mb--50" @routerSlide>
-            <!-- <div fxFlex="80%"> -->
-                <!-- <ng-container *ngIf="selectedIndex === i + 1"> -->
-                    <!-- <app-workflow-period #workflowPeriod [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period> -->
-                    <router-outlet #outlet="outlet"></router-outlet>
-                <!-- </ng-container> -->
-            <!-- </div> -->
+        <div class="u-w--100 u-mb--50" [@routerSlide]>
+            <router-outlet #outlet="outlet"></router-outlet>
         </div>
-        <!-- <div class="">
-            <ng-scrollbar>
-                <div class="full-height">
-                </div>
-            </ng-scrollbar>
-        </div> -->
         <div class="workflow-notes-wrapper">
             <ng-container *ngIf="!rlaWFOverview.isActive">
                 <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>

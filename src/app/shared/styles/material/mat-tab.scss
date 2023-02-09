@@ -183,7 +183,7 @@ nav.workflow-content--tabs {
             background-color: #fff;
             box-shadow: 1px -6px 20px rgb(0 0 0 / 15%);
         }
-        &-active,
+        &.mat-tab-label-active,
         &:hover {
             background-color: $sand-25-color;
             color: $dark-grey-color;

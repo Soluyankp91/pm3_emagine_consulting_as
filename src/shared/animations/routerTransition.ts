@@ -1,12 +1,11 @@
-import { animate, group, query, state, style, transition, trigger } from "@angular/animations";
+import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
-import { WorkflowPeriodComponent } from "src/app/workflow/workflow-period/workflow-period.component";
 
 export const routerSlide = trigger('routerSlide', [
     state('*',
       style({
         opacity: 1,
-        transform: 'translateX(0)'
+        transform: 'translateX(0)',
       })
     ),
     transition(':enter', [
@@ -41,6 +40,6 @@ export const routerSlide = trigger('routerSlide', [
         return false;
     }
     shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-        return curr.component !== WorkflowPeriodComponent;
+        return curr.routeConfig == future.routeConfig && curr.params?.periodId === future.params?.periodId;
     }
   }
