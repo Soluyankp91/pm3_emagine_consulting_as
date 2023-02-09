@@ -1034,7 +1034,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				signerInput.signOrder = signer.clientSequence;
 				signerInput.contactId = signer.clientContact?.id;
 				signerInput.contact = signer.clientContact;
-				signerInput.signerRoleId = signer.clientRole?.id;
+				signerInput.signerRoleId = signer.signerRoleId;
 				input.salesClientData!.contractSigners?.push(signerInput);
 			});
 		}
