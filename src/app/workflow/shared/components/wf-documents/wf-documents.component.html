@@ -2,16 +2,16 @@
     <div fxLayout="column" fxFlexFill>
         <form [formGroup]="documentForm" class="u-w--100">
             <ng-container *ngIf="documentForm?.documents?.controls?.length; else noDocuments">
-                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__header">
-                    <div fxFlex="5%">
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-documents--form__header">
+                    <div fxFlex="20px" class="u-mr--16">
                     </div>
-                    <div fxFlex="65%">
+                    <div fxFlex>
                         Document name
                     </div>
                     <div fxFlex="15%">
                         Date
                     </div>
-                    <div fxFlex="10%">
+                    <div fxFlex="10%" fxLayoutAlign="center center">
                         By
                     </div>
                     <div fxFlex="5%">
@@ -20,17 +20,17 @@
             </ng-container>
             <ng-container formArrayName="documents" class="u-w--100">
                 <ng-container *ngFor="let document of documentForm?.documents?.controls; trackBy: trackByItem; index as i">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-documents--form__row u-w--100" [formArrayName]="i">
-                        <div fxFlex="5%" fxLayoutAlign="center center">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-documents--form__row u-w--100 u-mb--8" [formArrayName]="i">
+                        <div fxFlex="20px" fxLayoutAlign="start center" class="u-mr--16">
                             <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon" [svgIcon]="document.value.icon"></mat-icon>
                         </div>
-                        <div fxFlex="65%" class="text-truncate-ellipsis text-bold" [matTooltip]="document.value.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <div fxFlex class="text-truncate-ellipsis text-bold" [matTooltip]="document.value.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{document.value.name}}
                         </div>
-                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdDateUtc | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <div fxFlex="15%" class="text-truncate-ellipsis dark-grey-color text-600" [matTooltip]="document.value.createdDateUtc | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{document.value.createdDateUtc | momentFormat}}
                         </div>
-                        <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.createdBy?.name" matTooltipClass="white-tooltip">
+                        <div fxFlex="10%" fxLayoutAlign="center center" class="text-truncate-ellipsis" [matTooltip]="document.value.createdBy?.name" matTooltipClass="white-tooltip">
                             <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + document.value.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
                         </div>
                         <div fxFlex="5%" fxLayoutAlign="end center">
@@ -42,12 +42,14 @@
                                         [disabled]="document.value?.workflowDocumentId === null || document.value?.workflowDocumentId === undefined"
                                         mat-menu-item
                                         appPreventDoubleClick (throttledClick)="downloadDocument(document.value?.workflowDocumentId)">
+                                        <mat-icon svgIcon="download-icon"></mat-icon>
                                         Download
                                     </button>
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
                                         appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, document.value.uploaderFile, i)">
+                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                         Delete document
                                     </button>
                                 </mat-menu>
