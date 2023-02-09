@@ -1,14 +1,15 @@
+@import 'mixins';
+
 emg-mat-grid {
-	.column-filter {
-		font-family: Open Sans, sans-serif;
-		font-size: 14px;
-		font-weight: 500;
-	}
+	@include table-header-cell;
 	.container {
-		max-height: calc(100vh - 225px);
-		overflow-y: auto;
 		display: block;
 		background-color: #faf9fb;
+	}
+	.table-container {
+		max-width: calc(100vw - 44px);
+		max-height: calc(100vh - 225px);
+		overflow-y: auto;
 	}
 	mat-chip.mat-chip.mat-standard-chip {
 		background-color: #fff;
@@ -22,6 +23,7 @@ emg-mat-grid {
 	}
 	.mat-table {
 		background-color: #faf9fb;
+		width: fit-content;
 	}
 	.highlight {
 		background-color: #c5e8e5;

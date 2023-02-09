@@ -11,27 +11,28 @@ import {
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 
 @Component({
-	selector: 'app-employment-types-filter',
-	templateUrl: './employment-types-filter.component.html',
+	selector: 'app-delivery-types-filter',
+	templateUrl: './delivery-types-filter.component.html',
+	styleUrls: ['./delivery-types-filter.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
-export class EmploymentTypesFilterComponent implements IFilter {
-	employmentTypes$ = this.contractsService.getEmploymentTypes$();
+export class DeliveryTypesFilterComponent implements IFilter {
+	deliveryTypes$ = this.contractService.getDeliveryTypes$();
 	filterFormControl: FormControl;
-
-	tableFilter = 'contractTypeIds';
 
 	labelMap = FILTER_LABEL_MAP;
 
+	tableFilter = 'deliveryTypeIds';
+
 	constructor(
-		private contractsService: ContractsService,
+		private contractService: ContractsService,
 		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
 		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
-			.subscribe((employmentTypes) => {
-				this.filterFormControl = new FormControl(employmentTypes);
+			.subscribe((deliveryTypes) => {
+				this.filterFormControl = new FormControl(deliveryTypes);
 			});
 	}
 }

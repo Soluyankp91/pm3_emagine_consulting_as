@@ -1,4 +1,6 @@
-<button mat-icon-button [matMenuTriggerFor]="menu" (onMenuOpen)="openPanel()" (onMenuClose)="menuClosed()">{{ label }}</button>
+<div [matMenuTriggerFor]="menu" (onMenuOpen)="openPanel()" (onMenuClose)="menuClosed()">
+    <ng-container *ngIf="triggerButton" [ngTemplateOutlet]="triggerButton" [ngTemplateOutletContext]="{selectedOptions}"></ng-container>
+</div>
 <mat-menu #menu="matMenu">
 	<div mat-menu-item (click)="$event.stopPropagation()">
 		<mat-form-field>

@@ -14,6 +14,7 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 @Component({
 	selector: 'app-employees-filter',
 	templateUrl: './employees-filter.component.html',
+	styleUrls: ['./employees-filter.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class EmployeesFilterComponent {

@@ -36,7 +36,6 @@ export abstract class BaseContract {
 			this.reload$,
 		]).pipe(
 			distinctUntilChanged((previous, current) => {
-				console.log(previous, current);
 				return isEqual(previous, current);
 			}),
 			tap(() => this.contractsLoading$$.next(true)),
@@ -68,7 +67,7 @@ export abstract class BaseContract {
 	}
 
 	updateTableFilters(data: any) {
-		this.tableFilters$.next(data);
+		this.tableFilters$.next({ ...this.tableFilters$.value, ...data });
 	}
 
 	updateTenantFilter(data: CountryDto[]) {

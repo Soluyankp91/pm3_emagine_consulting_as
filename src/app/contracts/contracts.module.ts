@@ -17,10 +17,10 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { EmployeesFilterComponent } from './shared/components/grid-table/master-templates/filters/employees-filter/employees-filter.component';
 import { AgreementTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-types-filter/agreement-types-filter.component';
-import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component';
-import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component';
-import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component';
-import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component';
+import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter.component';
+import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter.component';
+import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter.component';
+import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter.component';
 import { SalesTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/sales-types-filter/sales-types-filter.component';
 import { AutoNameComponent } from './shared/components/auto-name/auto-name.component';
 import { MatMenuSingleSelectComponent } from './shared/components/emagine-menu-single-select/emagine-menu-single-select.component';
@@ -45,7 +45,7 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
-import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
+import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled.component';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
@@ -80,6 +80,8 @@ import { AgreementModeFilterComponent } from './shared/components/grid-table/agr
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
+import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
+import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
 
 @NgModule({
 	declarations: [
@@ -143,6 +145,8 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 		StatusesFilterComponent,
 		ClientTemplatePreviewComponent,
 		AgreementPreviewComponent,
+		TableArrayFormatPipe,
+		AgreementsTopFiltersComponent,
 	],
 	imports: [
 		CommonModule,
@@ -275,5 +279,10 @@ export class ContractsModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/duplicate-icon.svg')
 		);
 		iconRegistry.addSvgIcon('copy-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/copy-icon.svg'));
+
+		iconRegistry.addSvgIcon(
+			'avatar-placeholder',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/avatar-placeholder.svg')
+		);
 	}
 }

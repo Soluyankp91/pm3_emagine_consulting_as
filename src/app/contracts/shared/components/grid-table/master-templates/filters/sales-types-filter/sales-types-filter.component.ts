@@ -13,6 +13,7 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 @Component({
 	selector: 'app-sales-types-filter',
 	templateUrl: './sales-types-filter.component.html',
+	styleUrls: ['sales-types-filter.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class SalesTypesFilterComponent implements IFilter {

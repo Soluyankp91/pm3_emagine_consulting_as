@@ -12,6 +12,8 @@ import {
 	forwardRef,
 	ChangeDetectorRef,
 	ViewChild,
+	ContentChild,
+	TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -42,6 +44,8 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 	@Output() emitText = new EventEmitter();
 
 	@ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+
+	@ContentChild('triggerButton', { static: true }) triggerButton: TemplateRef<any>;
 
 	get idsToExclude() {
 		return Array.from(this.selectedOptions).map((selectedOption: IDropdownItem) => selectedOption.id);
@@ -156,7 +160,7 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 			.pipe(debounceTime(300), takeUntil(this.unSubscribe$), distinctUntilChanged())
 			.subscribe((nameFilter) => {
 				this.emitText.emit({
-					nameFilter: nameFilter || '',
+					filter: nameFilter || '',
 					idsToExclude: this.idsToExclude,
 				});
 			});

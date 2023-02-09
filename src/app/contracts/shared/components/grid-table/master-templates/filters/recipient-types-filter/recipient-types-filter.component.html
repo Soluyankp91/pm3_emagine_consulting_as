@@ -1,9 +1,9 @@
 <emg-multi-select
-	*ngIf="deliveryTypes$ | async as deliveryTypes"
-	[options]="deliveryTypes"
+	*ngIf="recipientTypes$ | async as agreementTypes"
+	[options]="agreementTypes"
 	[displayedProperty]="'name'"
 	[formControl]="filterFormControl">
 	<ng-template #triggerButton>
-		<div>{{ labelMap[tableFilter] }}</div>
+		<div class="table-header-cell">{{ labelMap[tableFilter] }}</div>
 	</ng-template>
 </emg-multi-select>

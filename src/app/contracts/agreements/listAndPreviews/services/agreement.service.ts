@@ -2,21 +2,23 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
 import { AgreementFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
-import { AgreementListItemDtoPaginatedList, AgreementServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import {
+	AgreementListItemDtoPaginatedList,
+	AgreementServiceProxy,
+	EnumEntityTypeDto,
+} from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class AgreementService extends BaseContract {
 	override tableFilters$ = new BehaviorSubject<AgreementFiltersEnum>({
 		language: [],
 		id: [],
-		//consultantName ???
-		//companyName ???
-		// legalEntityIds: [],
+		legalEntityId: [],
 		agreementType: [],
 		recipientTypeId: [],
-		// salesTypeIds: EnumEntityTypeDto [],
-		// deliveryTypesIds: EnumEntityTypeDto [],
-		// contractTypeIds: EnumEntityTypeDto [],
+		salesTypeIds: [],
+		deliveryTypeIds: [],
+		contractTypeIds: [],
 		mode: [],
 		status: [],
 		saleManager: [],
@@ -42,12 +44,13 @@ export class AgreementService extends BaseContract {
 			undefined, //consultantName
 			undefined, //companyName
 			undefined, //actualRecipientName
-			undefined, //legalEntities
+			tableFilters.legalEntityId.map((item) => item.id), //legalEntities
+			undefined, //tenantIds
 			tableFilters.agreementType.map((item) => item.id as number),
 			tableFilters.recipientTypeId.map((item) => item.id as number),
-			undefined, // salesTypes,
-			undefined, // deliveryTypes
-			undefined, // contractTypes
+			tableFilters.salesTypeIds.map((item) => item.id as number), // salesTypes,
+			tableFilters.deliveryTypeIds.map((item) => item.id as number), // deliveryTypes
+			tableFilters.contractTypeIds.map((item) => item.id as number), // contractTypes
 			tableFilters.mode.map((item) => item.id as number),
 			tableFilters.status.map((item) => item.id as number),
 			tableFilters.saleManager.map((saleManager) => saleManager.id as number),

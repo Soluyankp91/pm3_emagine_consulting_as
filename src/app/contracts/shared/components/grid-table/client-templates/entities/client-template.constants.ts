@@ -56,9 +56,9 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'recipientTypeId',
 			component: () =>
-				import(
-					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
-				).then((it) => it.RecipientTypesFilterComponent),
+				import('../../master-templates/filters/recipient-types-filter/recipient-types-filter.component').then(
+					(it) => it.RecipientTypesFilterComponent
+				),
 		},
 	},
 	{
@@ -66,9 +66,9 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'legalEntityIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component'
-				).then((it) => it.LegalEntitiesFilterComponent),
+				import('../../master-templates/filters/legal-entities-filter/legal-entities-filter.component').then(
+					(it) => it.LegalEntitiesFilterComponent
+				),
 		},
 	},
 	{
@@ -86,9 +86,9 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'deliveryTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component'
-				).then((it) => it.DeliveryTypesFilterComponent),
+				import('../../master-templates/filters/delivery-types-filter/delivery-types-filter.component').then(
+					(it) => it.DeliveryTypesFilterComponent
+				),
 		},
 	},
 	{
@@ -96,9 +96,9 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'contractTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component'
-				).then((it) => it.EmploymentTypesFilterComponent),
+				import('../../master-templates/filters/employment-types-filter/employment-types-filter.component').then(
+					(it) => it.EmploymentTypesFilterComponent
+				),
 		},
 	},
 	{
@@ -141,9 +141,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'isEnabled',
 			component: () =>
-				import('../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component').then(
-					(it) => it.IsEnabledComponent
-				),
+				import('../../master-templates/filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
 		},
 	},
 ];

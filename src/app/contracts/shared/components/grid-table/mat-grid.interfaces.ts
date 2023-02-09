@@ -3,38 +3,41 @@ import { UntypedFormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
 
 export interface IFilter {
-    filterFormControl: UntypedFormControl;
+	filterFormControl: UntypedFormControl;
 }
 
 export interface IHeaderCell {
-    type: EHeaderCells;
-    title?: string;
-    filter?: {
-        formControlName: string;
-        component: () => Promise<ComponentType<any>>
-    };
-    width?: number;
+	type: EHeaderCells;
+	title?: string;
+	filter?: {
+		formControlName: string;
+		component: () => Promise<ComponentType<any>>;
+	};
+	class?: string;
+	sticky?: boolean;
 }
 
 export interface IColumn {
-    matColumnDef: string;
-    headerCell: IHeaderCell;
+	matColumnDef: string;
+	headerCell: IHeaderCell;
+	class?: string;
+	sticky?: boolean;
 }
 
 export interface ITableConfig {
-    items: any[];
-    pageSize: number;
-    totalCount: number;
-    pageIndex: number;
-    direction: SortDirection;
-    active: string;
+	items: any[];
+	pageSize: number;
+	totalCount: number;
+	pageIndex: number;
+	direction: SortDirection;
+	active: string;
 }
 
 export enum EHeaderCells {
-    SORT = 'sort',
-    FILTER = 'filter',
+	SORT = 'sort',
+	FILTER = 'filter',
 }
 export enum ETableCells {
-    DEFAULT = 'default',
-    CUSTOM = 'custom',
+	DEFAULT = 'default',
+	CUSTOM = 'custom',
 }

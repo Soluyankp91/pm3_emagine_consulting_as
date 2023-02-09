@@ -50,6 +50,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() selectedItemsActions: Actions[] = [];
 	@Input() selectedRowId: number | null;
 	@Input() rowIdProperty: string = 'agreementTemplateId';
+	@Input() sticky: boolean;
 
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();

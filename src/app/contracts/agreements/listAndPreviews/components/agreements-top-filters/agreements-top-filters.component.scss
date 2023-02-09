@@ -1,0 +1,41 @@
+@import 'variables';
+.top-filters-container {
+	padding: 20px 50px 24px;
+}
+.top-filters {
+	display: flex;
+	justify-content: space-between;
+}
+.right-panel,
+.left-panel,
+.icons-container {
+	display: flex;
+}
+.left-panel {
+	gap: 12px;
+	align-items: center;
+}
+.circle-counter {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 32px;
+	height: 32px;
+	background-color: #4a4e60;
+	border-radius: 50%;
+	color: rgb(255, 255, 255);
+	position: relative;
+	z-index: 2;
+}
+.saleManager-icon {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+}
+.vertical-divider {
+	height: 25px;
+}
+.clear-filter {
+	color: $secondary-3;
+	cursor: pointer;
+}

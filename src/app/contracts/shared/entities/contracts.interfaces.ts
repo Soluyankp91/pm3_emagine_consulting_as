@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import {
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
+	AgreementValidityState,
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
@@ -41,12 +42,12 @@ export interface AgreementFiltersEnum {
 	id: number[];
 	//consultantName ???
 	//companyName ???
-	// legalEntityIds: LegalEntityDto[];
+	legalEntityId: LegalEntityDto[];
 	agreementType: BaseEnumDto[];
 	recipientTypeId: EnumEntityTypeDto[];
-	// salesTypeIds: EnumEntityTypeDto [],
-	// deliveryTypesIds: EnumEntityTypeDto [],
-	// contractTypeIds: EnumEntityTypeDto [],
+	salesTypeIds: EnumEntityTypeDto[];
+	deliveryTypeIds: EnumEntityTypeDto[];
+	contractTypeIds: EnumEntityTypeDto[];
 	mode: BaseEnumDto[];
 	status: BaseEnumDto[];
 	saleManager: EmployeeDto[];
@@ -126,7 +127,7 @@ export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTe
 export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	agreementId?: number;
 	agreementName?: string;
-	actualRecipient$: Observable<any>;
+	actualRecipient$?: Observable<any>;
 
 	agreementStatus?: EnvelopeStatus;
 	legalEntityId?: string;
@@ -155,3 +156,25 @@ export const OperationsTypeMap = {
 	[LogOperationType.Update]: 'changed',
 	[LogOperationType.Delete]: 'deleted',
 };
+
+export interface MappedAgreementTableItem {
+	language: string;
+	agreementId: number;
+	agreementName: string;
+	actualRecipientName: string;
+	recipientTypeId: string;
+	agreementType: string;
+	legalEntityId: string;
+	clientName: string;
+	companyName: string;
+	consultantName: string;
+	salesTypeIds: string[];
+	deliveryTypeIds: string[];
+	contractTypeIds: string[];
+	mode: AgreementValidityState;
+	status: EnvelopeStatus;
+	startDate: string;
+	endDate: string;
+	saleManager: EmployeeDto;
+	contractManager: EmployeeDto;
+}

@@ -18,6 +18,9 @@ export class CustomTooltipDirective implements OnDestroy {
 
 	@HostListener('mouseenter')
 	private _show(): void {
+		if (this.elementRef.nativeElement.scrollWidth <= this.elementRef.nativeElement.clientWidth) {
+			return;
+		}
 		this._createOverlay();
 		const injector = Injector.create({
 			providers: [

@@ -16,17 +16,9 @@
 							<div class="circle-counter">
 								<span>{{ selectedItems.length }}</span>
 							</div>
-							<div class="icon-container" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+							<div class="icon-container">
 								<mat-icon svgIcon="dropdown-icon"></mat-icon>
 							</div>
-							<mat-menu #menu="matMenu">
-								<ng-container *ngFor="let tenant of selectedItems">
-									<div mat-menu-item class="displayed-countries">
-										<span class="fi fi-{{ tenant.code | lowercase }} flag"></span>
-										<span class>{{ tenant.name }}</span>
-									</div>
-								</ng-container>
-							</mat-menu>
 						</div>
 					</ng-template>
 				</ng-template>

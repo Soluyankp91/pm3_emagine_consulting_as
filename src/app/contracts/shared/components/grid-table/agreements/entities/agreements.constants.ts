@@ -5,14 +5,16 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'language',
 	'agreementId',
 	'agreementName',
-	//'clientName',
-	// 'consultantName',
-	// 'companyName',
-	//'actualRecipientName',
-	// 'legalEntityId',
-	//'recipientId',
-	'agreementType',
+	'actualRecipientName',
 	'recipientTypeId',
+	'agreementType',
+	'legalEntityId',
+	'clientName',
+	'companyName',
+	'consultantName',
+	'salesTypeIds',
+	'deliveryTypeIds',
+	'contractTypeIds',
 	'mode',
 	'status',
 	'startDate',
@@ -30,23 +32,37 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		class: 'language-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'ID',
+		class: 'id-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Agreement name',
+		class: 'agreement-name-column',
+		sticky: true,
 	},
-	// {
-	// 	type: EHeaderCells.SORT,
-	// 	title: 'Client',
-	// },
-	// {
-	// 	type: EHeaderCells.SORT,
-	// 	title: 'Actual Recipient',
-	// },
+	{
+		type: EHeaderCells.SORT,
+		title: 'Actual Recipient',
+		class: 'actual-recipient-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'recipientTypeId',
+			component: () =>
+				import('../../master-templates/filters/recipient-types-filter/recipient-types-filter.component').then(
+					(it) => it.RecipientTypesFilterComponent
+				),
+		},
+		class: 'recipientId-column',
+	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
@@ -56,16 +72,66 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+		class: 'agreementType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
-			formControlName: 'recipientTypeId',
+			formControlName: 'legalEntityId',
 			component: () =>
-				import(
-					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
-				).then((it) => it.RecipientTypesFilterComponent),
+				import('../../master-templates/filters/legal-entities-filter/legal-entities-filter.component').then(
+					(it) => it.LegalEntitiesFilterComponent
+				),
 		},
+		class: 'legalEntityId-column',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Client',
+		class: 'client-column',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Company name',
+		class: 'company-column',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Consultant name',
+		class: 'consultant-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'salesTypeIds',
+			component: () =>
+				import('../../master-templates/filters/sales-types-filter/sales-types-filter.component').then(
+					(it) => it.SalesTypesFilterComponent
+				),
+		},
+		class: 'salesType-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'deliveryTypeIds',
+			component: () =>
+				import('../../master-templates/filters/delivery-types-filter/delivery-types-filter.component').then(
+					(it) => it.DeliveryTypesFilterComponent
+				),
+		},
+		class: 'deliveryType-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'contractTypeIds',
+			component: () =>
+				import('../../master-templates/filters/employment-types-filter/employment-types-filter.component').then(
+					(it) => it.EmploymentTypesFilterComponent
+				),
+		},
+		class: 'contractType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -76,6 +142,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementModeFilterComponent
 				),
 		},
+		class: 'mode-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -86,14 +153,17 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.StatusesFilterComponent
 				),
 		},
+		class: 'status-column',
 	},
 	{
 		type: EHeaderCells.SORT,
-		title: 'Start date',
+		title: 'Strt. date',
+		class: 'start-date-column',
 	},
 	{
 		type: EHeaderCells.SORT,
-		title: 'End date',
+		title: 'Exp. date',
+		class: 'end-date-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -104,6 +174,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.SalesManagersFilterComponent
 				),
 		},
+		class: 'saleManager-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -114,6 +185,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ContractManagerFilterComponent
 				),
 		},
+		class: 'contractManager-column',
 	},
 ];
 
