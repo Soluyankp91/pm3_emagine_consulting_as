@@ -245,7 +245,7 @@
 
 .advanced-filterd--btn {
     min-width: 155px;
-    padding: 0 !important;
+    padding: 4px 9px !important;
     .mat-button-wrapper {
         @include flexCentered();
         mat-icon {
@@ -271,7 +271,6 @@
 
     &.active {
         background-color: rgba($color: $green-color-25, $alpha: 0.33);
-        padding: 4px 9px !important;
     }
 }
 

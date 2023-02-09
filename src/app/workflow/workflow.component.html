@@ -149,7 +149,7 @@
             </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
-            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters || advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
                 <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>
                 <mat-icon class="advanced-filterd--btn-chevron u-ml--8" [ngClass]="{'should-rotate': isAdvancedFilters}" svgIcon="chevron-green"></mat-icon>
