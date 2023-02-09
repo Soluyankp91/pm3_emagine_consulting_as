@@ -89,10 +89,18 @@ $sizes: (
     gap: 55px;
 }
 
+.u-mt--5__reverse {
+    margin-top: -5px !important;
+}
+
 .u-mt--10__reverse {
     margin-top: -10px !important;
 }
 
 .u-mt--a {
     margin-top: auto !important;
+}
+
+.u-h--50px {
+    height: 50px !important;
 }

@@ -1,5 +1,5 @@
 <ng-container *ngIf="docReady$ | async as doc">
-  <app-richedit 
+  <app-richedit
     #richEdit
     [template]="doc[0]"
     [mergeFields]="doc[1]"
@@ -11,15 +11,15 @@
       <button>
         cancel
       </button>
-  
+
       <button (click)="saveAsDraft()">
         Safe as a draft
       </button>
-  
+
       <button (click)="saveAsComplete()">
         complete
       </button>
     </div>
   </ng-container>
-  
+
 </ng-container>

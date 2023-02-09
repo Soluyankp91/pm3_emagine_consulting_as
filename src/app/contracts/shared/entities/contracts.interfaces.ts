@@ -61,6 +61,18 @@ export interface MappedTableCells {
 	contractTypeIds: Record<KeyType, string>;
 }
 
+export interface SettingsPageOptions {
+	agreementTypes: BaseEnumDto[];
+	recipientTypes: EnumEntityTypeDto[];
+	legalEntities: LegalEntityDto[];
+	salesTypes: EnumEntityTypeDto[];
+	deliveryTypes: EnumEntityTypeDto[];
+	contractTypes: EnumEntityTypeDto[];
+	languages: BaseEnumDto[];
+	signerTypes: BaseEnumDto[];
+	signerRoles: EnumEntityTypeDto[];
+}
+
 export interface BaseMappedAgreementTemplatesListItemDto {
 	agreementTemplateId: number;
 	definition: string;

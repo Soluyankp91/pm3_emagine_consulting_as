@@ -195,36 +195,36 @@
             </mat-form-field>
         </div>
         <ng-container *ngIf="overviewDocuments.length; else noDocuments">
-            <div fxLayout="row" fxLayoutAlign="start start" class="documents-header u-w--100 u-pl--16 u-pr--16 u-mb--15">
-                <span fxFlex="30px">
-                </span>
-                <span fxFlex>
+            <div fxLayout="row" fxLayoutAlign="start start" class="documents-header u-w--100 u-mb--8">
+                <div fxFlex="20px" class="u-mr--16">
+                </div>
+                <div fxFlex fxLayoutAlign="start center">
                     Documents
-                </span>
-                <span fxFlex="180px">
+                </div>
+                <div fxFlex="180px" fxLayoutAlign="start center">
                     Process type
-                </span>
-                <span fxFlex="180px">
+                </div>
+                <div fxFlex="180px" fxLayoutAlign="start center">
                     Workflow step
-                </span>
-                <span fxFlex="120px">
+                </div>
+                <div fxFlex="120px" fxLayoutAlign="start center">
                     Date
-                </span>
-                <span fxFlex="80px">
+                </div>
+                <div fxFlex="80px" fxLayoutAlign="center center">
                     By
-                </span>
-                <span fxFlex="40px">
-                </span>
+                </div>
+                <div fxFlex="40px" fxLayoutAlign="end center">
+                </div>
             </div>
             <ng-container *ngFor="let item of overviewDocuments; trackBy: trackById;">
-                <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100 u-pl--16 u-pr--16">
-                    <span fxFlex="30px">
+                <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100">
+                    <div fxFlex="20px" class="u-mr--16" fxLayoutAlign="start center">
                         <mat-icon [svgIcon]="item.icon"></mat-icon>
-                    </span>
-                    <span fxFlex="auto" class="text-bold">
+                    </div>
+                    <div fxFlex="auto" class="text-bold" fxLayoutAlign="start center">
                         {{item.name}}
-                    </span>
-                    <span fxFlex="180px" fxLayoutAlign="start center">
+                    </div>
+                    <div fxFlex="180px" fxLayoutAlign="start center">
                         <ng-container [ngSwitch]="item.workflowProcessType">
                             <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
                                 <mat-icon svgIcon="workflowAdd"></mat-icon>
@@ -259,17 +259,17 @@
                                 Terminate consultant
                             </ng-container>
                         </ng-container>
-                    </span>
-                    <span fxFlex="180px">
+                    </div>
+                    <span fxFlex="180px" fxLayoutAlign="start center">
                         {{stepTypes[item.stepType!]}}
                     </span>
-                    <span fxFlex="120px">
+                    <span fxFlex="120px" fxLayoutAlign="start center">
                         {{item.createdDateUtc | momentFormat}}
                     </span>
-                    <span fxFlex="80px" [matTooltip]="item.createdBy?.name" matTooltipClass="white-tooltip">
+                    <span fxFlex="80px" fxLayoutAlign="center center" [matTooltip]="item.createdBy?.name" matTooltipClass="white-tooltip">
                         <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + item.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
                     </span>
-                    <span fxFlex="40px">
+                    <span fxFlex="40px" fxLayoutAlign="end center">
                         <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="documentActionsMenu" class="three-dots-actions-btn">
                             <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
@@ -296,7 +296,7 @@
         <ng-template #noDocuments>
             <div class="documents-noData" fxLayout="row" fxLayoutAlign="start center">
                 <mat-icon svgIcon="no-docs-icon"></mat-icon>
-                There are no documents added yet
+                <span color="medium-grey-color">There are no documents added yet</span>
             </div>
         </ng-template>
     </ng-container>

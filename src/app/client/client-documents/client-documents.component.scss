@@ -65,6 +65,11 @@
             margin-right: 5px;
         }
     }
+    .noFiles {
+        .document-date {
+            color: $light-grey-color;
+        }
+    }
 }
 
 .tree-invisible {

@@ -4,14 +4,14 @@
     <div class="content">
         <button class="button-add" mat-flat-button>
             <mat-icon>add</mat-icon>
-            Add file
+            Add Document
         </button>
         <span class="content-instructions">Upload or simply drag and drop file here</span>
     </div>
 </div>
 <div class="d-flex flex-column uploader-hint">
-    <mat-hint *ngIf="maxFileSize" class="maxfilesize-hint">FILE_UPLOADER_ERROR_SIZE</mat-hint>
-    <mat-hint *ngIf="duplicatedFile" class="maxfilesize-hint">FILE_UPLOADER_ERROR_DUPLICATE_FILE</mat-hint>
+    <mat-hint *ngIf="maxFileSize" class="maxfilesize-hint">Max file size is 5MB.</mat-hint>
+    <mat-hint *ngIf="duplicatedFile" class="maxfilesize-hint">This file is already uploaded.</mat-hint>
     <mat-hint *ngIf="!acceptedFileType" class="maxfilesize-hint">File type is not supported, accepted file types: {{ acceptedTypes.join(', ')}} </mat-hint>
 </div>
 

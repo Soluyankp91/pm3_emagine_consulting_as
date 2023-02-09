@@ -121,9 +121,11 @@
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <app-file-uploader (filesAdded)="openDialogToAddFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
                         </div>
-                        <div class="spinner-container" *ngIf="isGeneralDocumentsLoading">
-                            <mat-spinner [diameter]="50"></mat-spinner>
-                        </div>
+                        <ng-container *ngIf="isGeneralDocumentsLoading">
+                            <div class="spinner-container">
+                                <mat-spinner [diameter]="50"></mat-spinner>
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
             </ng-container>
@@ -141,39 +143,51 @@
 
                         <!-- Frame agreements -->
                         <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                            <mat-expansion-panel class="mat-elevation-z0 contract-parent--folder">
+                            <mat-expansion-panel #frameAgreementsPanel class="mat-elevation-z0 contract-parent--folder" [ngClass]="{'noFiles': contractsDocuments?.frameAgreements?.length === 0}" hideToggle>
                                 <mat-expansion-panel-header
                                     [collapsedHeight]="'44px'"
                                     [expandedHeight]="'44px'">
-                                    <h4 class="u-mb--0">
-                                        Frame agreements
-                                    </h4>
+                                    <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="contractsDocuments?.frameAgreements?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="contractsDocuments?.frameAgreements?.length === 0 ? 'No documents of this type' : ''">
+                                        <mat-panel-description>
+                                            <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': frameAgreementsPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                        </mat-panel-description>
+                                        <h4 class="u-mb--0">
+                                            Frame agreements
+                                        </h4>
+                                    </div>
                                 </mat-expansion-panel-header>
                                 <ng-template matExpansionPanelContent>
                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                         <ng-container *ngIf="contractsDocuments?.frameAgreements?.length; else noFilesTemplate">
-                                            <mat-expansion-panel *ngFor="let frame of contractsDocuments?.frameAgreements; trackBy: trackById" class="mat-elevation-z0">
-                                                <mat-expansion-panel-header
-                                                    [collapsedHeight]="'44px'"
-                                                    [expandedHeight]="'44px'">
-                                                    <h4 class="u-mb--0">
-                                                        {{frame.name}} {{frame.startDate | momentFormat}}
-                                                    </h4>
-                                                </mat-expansion-panel-header>
-                                                <ng-container *ngIf="frame.documents?.length">
-                                                    <div class="u-ml--32">
-                                                        <ng-container *ngFor="let file of frame.documents; trackBy: documentsTrackBy; last as last">
-                                                            <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
-                                                                <span class="text-bold">
-                                                                    {{ file.name }}
-                                                                </span>
-                                                            </div>
-                                                        </ng-container>
-                                                    </div>
-                                                </ng-container>
+                                            <ng-container *ngFor="let frame of contractsDocuments?.frameAgreements; trackBy: trackById">
+                                                <mat-expansion-panel #singleAgreementPanel class="mat-elevation-z0" [ngClass]="{'noFiles': frame.documents?.length === 0}" hideToggle>
+                                                    <mat-expansion-panel-header
+                                                        [collapsedHeight]="'44px'"
+                                                        [expandedHeight]="'44px'">
+                                                        <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="frame.documents?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="frame.documents?.length === 0 ? 'No documents of this type' : ''">
+                                                            <mat-panel-description>
+                                                                <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': singleAgreementPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                            </mat-panel-description>
+                                                            <h4 class="u-mb--0">
+                                                                {{frame.name}} {{frame.startDate | momentFormat}}
+                                                            </h4>
+                                                        </div>
+                                                    </mat-expansion-panel-header>
+                                                    <ng-container *ngIf="frame.documents?.length">
+                                                        <div class="u-ml--32">
+                                                            <ng-container *ngFor="let file of frame.documents; trackBy: documentsTrackBy; last as last">
+                                                                <div class="width-fit-content cursor-pointer" fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
+                                                                    <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]"></mat-icon>
+                                                                    <span class="text-bold">
+                                                                        {{ file.name }}
+                                                                    </span>
+                                                                </div>
+                                                            </ng-container>
+                                                        </div>
+                                                    </ng-container>
 
-                                            </mat-expansion-panel>
+                                                </mat-expansion-panel>
+                                            </ng-container>
                                         </ng-container>
                                     </mat-accordion>
                                 </ng-template>
@@ -182,167 +196,204 @@
 
                         <!-- Workflows -->
                         <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                            <mat-expansion-panel class="mat-elevation-z0 contract-parent--folder" #workPanel>
+                            <mat-expansion-panel class="mat-elevation-z0 contract-parent--folder" #workPanel [ngClass]="{'noFiles': contractsDocuments?.workflows?.length === 0}" hideToggle>
                                 <mat-expansion-panel-header
                                     [collapsedHeight]="'44px'"
                                     [expandedHeight]="'44px'">
-                                    <h4 class="u-mb--0">
-                                        Workflows
-                                    </h4>
+                                    <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="contractsDocuments?.workflows?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="contractsDocuments?.workflows?.length === 0 ? 'No documents of this type' : ''">
+                                        <mat-panel-description>
+                                            <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': workPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                        </mat-panel-description>
+                                        <h4 class="u-mb--0">
+                                            Workflows
+                                        </h4>
+                                    </div>
                                 </mat-expansion-panel-header>
                                 <ng-template matExpansionPanelContent>
                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                         <ng-container *ngIf="contractsDocuments?.workflows?.length; else noFilesTemplate">
-                                            <mat-expansion-panel *ngFor="let workflow of contractsDocuments?.workflows; trackBy: trackById" class="mat-elevation-z0">
-                                                <mat-expansion-panel-header
-                                                    [collapsedHeight]="'44px'"
-                                                    [expandedHeight]="'44px'">
-                                                    <h4 class="u-mb--0">
-                                                        {{workflow.name}} {{workflow.startDate | momentFormat}}
-                                                    </h4>
-                                                </mat-expansion-panel-header>
-                                                <ng-template matExpansionPanelContent>
-                                                    <!-- client contracts -->
-                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                                        <mat-expansion-panel class="mat-elevation-z0">
-                                                            <mat-expansion-panel-header
-                                                                [collapsedHeight]="'44px'"
-                                                                [expandedHeight]="'44px'">
-                                                                <div class="flex-row flex-justify-between flex-items-center u-w--100">
-                                                                    <h4 class="u-mb--0">
-                                                                        Client contracts
-                                                                    </h4>
-                                                                </div>
-                                                            </mat-expansion-panel-header>
-                                                            <ng-template matExpansionPanelContent>
-                                                                <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                                                    <ng-container *ngIf="workflow.clientContracts?.length; else noFilesTemplate">
-                                                                        <mat-expansion-panel *ngFor="let clientContract of workflow.clientContracts; trackBy: trackById" class="mat-elevation-z0">
-                                                                            <mat-expansion-panel-header
-                                                                                [collapsedHeight]="'44px'"
-                                                                                [expandedHeight]="'44px'">
-                                                                                <div class="flex-row flex-items-center u-w--100">
-                                                                                    <h4 class="u-mb--0 u-mr--10">
-                                                                                        {{clientContract.name}}
-                                                                                    </h4>
-                                                                                    <span class="document-date">
-                                                                                        {{clientContract.startDate | momentFormat}} - {{clientContract.endDate ? (clientContract.endDate | momentFormat) : 'No end date'}}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </mat-expansion-panel-header>
-                                                                            <ng-container *ngIf="clientContract.documents?.length; else noFilesTemplate">
-                                                                                <div class="u-ml--32">
-                                                                                    <ng-container *ngFor="let file of clientContract.documents; trackBy: documentsTrackBy; last as last">
-                                                                                        <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
-                                                                                            <span class="text-bold">
-                                                                                                {{ file.name }}
+                                            <ng-container *ngFor="let workflow of contractsDocuments?.workflows; trackBy: trackById">
+                                                <mat-expansion-panel #workContractPanel class="mat-elevation-z0" hideToggle>
+                                                    <mat-expansion-panel-header
+                                                        [collapsedHeight]="'44px'"
+                                                        [expandedHeight]="'44px'">
+                                                        <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center">
+                                                            <mat-panel-description>
+                                                                <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': workContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                            </mat-panel-description>
+                                                            <h4 class="u-mb--0">
+                                                                {{workflow.name}} {{workflow.startDate | momentFormat}}
+                                                            </h4>
+                                                        </div>
+                                                    </mat-expansion-panel-header>
+                                                    <ng-template matExpansionPanelContent>
+                                                        <!-- client contracts -->
+                                                        <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                            <mat-expansion-panel #clientContractPanel class="mat-elevation-z0" [ngClass]="{'noFiles': workflow.clientContracts?.length === 0}" hideToggle>
+                                                                <mat-expansion-panel-header
+                                                                    [collapsedHeight]="'44px'"
+                                                                    [expandedHeight]="'44px'">
+                                                                    <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="workflow.clientContracts?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="workflow.clientContracts?.length === 0 ? 'No documents of this type' : ''">
+                                                                        <mat-panel-description>
+                                                                            <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': clientContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                                        </mat-panel-description>
+                                                                        <h4 class="u-mb--0">
+                                                                            Client contracts
+                                                                        </h4>
+                                                                    </div>
+                                                                </mat-expansion-panel-header>
+                                                                <ng-template matExpansionPanelContent>
+                                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                                        <ng-container *ngIf="workflow.clientContracts?.length; else noFilesTemplate">
+                                                                            <ng-container *ngFor="let clientContract of workflow.clientContracts; trackBy: trackById">
+                                                                                <mat-expansion-panel class="mat-elevation-z0" #singleClientContractPanel [ngClass]="{'noFiles': clientContract.documents?.length === 0}" hideToggle>
+                                                                                    <mat-expansion-panel-header
+                                                                                        [collapsedHeight]="'44px'"
+                                                                                        [expandedHeight]="'44px'">
+                                                                                        <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="clientContract.documents?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="clientContract.documents?.length === 0 ? 'No documents of this type' : ''">
+                                                                                            <mat-panel-description>
+                                                                                                <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': singleClientContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                                                            </mat-panel-description>
+                                                                                            <h4 class="u-mb--0 u-mr--10">
+                                                                                                {{clientContract.name}}
+                                                                                            </h4>
+                                                                                            <span class="document-date">
+                                                                                                {{clientContract.startDate | momentFormat}} - {{clientContract.endDate ? (clientContract.endDate | momentFormat) : 'No end date'}}
                                                                                             </span>
                                                                                         </div>
-                                                                                    </ng-container>
-                                                                                </div>
-                                                                            </ng-container>
-
-                                                                        </mat-expansion-panel>
-                                                                    </ng-container>
-                                                                </mat-accordion>
-                                                            </ng-template>
-                                                        </mat-expansion-panel>
-                                                    </mat-accordion>
-                                                    <!-- consultant contracts -->
-                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                                        <mat-expansion-panel class="mat-elevation-z0">
-                                                            <mat-expansion-panel-header
-                                                                [collapsedHeight]="'44px'"
-                                                                [expandedHeight]="'44px'">
-                                                                <div class="flex-row flex-justify-between flex-items-center u-w--100">
-                                                                    <h4 class="u-mb--0">
-                                                                        Consultant contracts
-                                                                    </h4>
-                                                                </div>
-                                                            </mat-expansion-panel-header>
-                                                            <ng-template matExpansionPanelContent>
-                                                                <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                                                    <ng-container *ngIf="workflow.consultantContracts?.length; else noFilesTemplate">
-                                                                        <mat-expansion-panel *ngFor="let consultantContract of workflow.consultantContracts; trackBy: trackById" class="mat-elevation-z0">
-                                                                            <mat-expansion-panel-header
-                                                                                [collapsedHeight]="'44px'"
-                                                                                [expandedHeight]="'44px'">
-                                                                                <div class="flex-row flex-items-center u-w--100">
-                                                                                    <h4 class="u-mb--0 u-mr--10">
-                                                                                        {{consultantContract.name}}
-                                                                                    </h4>
-                                                                                    <span class="document-date">
-                                                                                        {{consultantContract.startDate | momentFormat}} - {{consultantContract.endDate ? (consultantContract.endDate | momentFormat) : 'No end date'}}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </mat-expansion-panel-header>
-                                                                            <ng-container *ngIf="consultantContract.documents?.length; else noFilesTemplate">
-                                                                                <div class="u-ml--32">
-                                                                                    <ng-container *ngFor="let file of consultantContract.documents; trackBy: documentsTrackBy; last as last">
-                                                                                        <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                            <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip"></mat-icon>
-                                                                                            <span class="text-bold">
-                                                                                                {{ file.name }}
-                                                                                            </span>
+                                                                                    </mat-expansion-panel-header>
+                                                                                    <ng-container *ngIf="clientContract.documents?.length; else noFilesTemplate">
+                                                                                        <div class="u-ml--32">
+                                                                                            <ng-container *ngFor="let file of clientContract.documents; trackBy: documentsTrackBy; last as last">
+                                                                                                <div class="width-fit-content cursor-pointer" fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
+                                                                                                    <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]"></mat-icon>
+                                                                                                    <span class="text-bold">
+                                                                                                        {{ file.name }}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </ng-container>
                                                                                         </div>
                                                                                     </ng-container>
-                                                                                </div>
-                                                                            </ng-container>
 
-                                                                        </mat-expansion-panel>
-                                                                    </ng-container>
-                                                                </mat-accordion>
-                                                            </ng-template>
-                                                        </mat-expansion-panel>
-                                                    </mat-accordion>
-                                                    <!-- internal contracts -->
-                                                    <mat-accordion *ngIf="workflow.internalContracts?.length"
-                                                                    [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                                        <mat-expansion-panel class="mat-elevation-z0">
-                                                            <mat-expansion-panel-header
-                                                                [collapsedHeight]="'44px'"
-                                                                [expandedHeight]="'44px'">
-                                                                <div class="flex-row flex-justify-between flex-items-center u-w--100">
-                                                                    <h4 class="u-mb--0">
-                                                                        Internal contracts
-                                                                    </h4>
-                                                                </div>
-                                                            </mat-expansion-panel-header>
-                                                            <ng-template matExpansionPanelContent>
-                                                                <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                                                    <ng-container *ngIf="workflow.internalContracts?.length; else noFilesTemplate">
-                                                                        <mat-expansion-panel *ngFor="let internalContract of workflow.internalContracts; trackBy: trackById" class="mat-elevation-z0">
-                                                                            <mat-expansion-panel-header
-                                                                                [collapsedHeight]="'44px'"
-                                                                                [expandedHeight]="'44px'">
-                                                                                <div class="flex-row flex-items-center u-w--100">
-                                                                                    <h4 class="u-mb--0 u-mr--10">
-                                                                                        {{internalContract.name}}
-                                                                                    </h4>
-                                                                                    <span class="document-date">
-                                                                                        {{internalContract.startDate | momentFormat}} - {{internalContract.endDate ? (internalContract.endDate | momentFormat) : 'No end date'}}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </mat-expansion-panel-header>
-                                                                            <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="u-ml--32">
-                                                                                <div *ngFor="let file of internalContract.documents; trackBy: documentsTrackBy; last as last" >
-                                                                                    <div class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                                        <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]" matTooltip="Download" matTooltipClass="white-tooltip" (click)="downloadDocument(file.documentStorageGuid!)"></mat-icon>
-                                                                                        <span class="text-bold">
-                                                                                            {{ file.name }}
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </mat-expansion-panel>
-                                                                    </ng-container>
-                                                                </mat-accordion>
-                                                            </ng-template>
-                                                        </mat-expansion-panel>
-                                                    </mat-accordion>
-                                                </ng-template>
-                                            </mat-expansion-panel>
+                                                                                </mat-expansion-panel>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </mat-accordion>
+                                                                </ng-template>
+                                                            </mat-expansion-panel>
+                                                        </mat-accordion>
+                                                        <!-- consultant contracts -->
+                                                        <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                            <mat-expansion-panel #consultantContractPanel class="mat-elevation-z0" [ngClass]="{'noFiles': workflow.consultantContracts?.length === 0}" hideToggle>
+                                                                <mat-expansion-panel-header
+                                                                    [collapsedHeight]="'44px'"
+                                                                    [expandedHeight]="'44px'">
+                                                                    <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="workflow.consultantContracts?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="workflow.consultantContracts?.length === 0 ? 'No documents of this type' : ''">
+                                                                        <mat-panel-description>
+                                                                            <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': consultantContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                                        </mat-panel-description>
+                                                                        <h4 class="u-mb--0">
+                                                                            Consultant contracts
+                                                                        </h4>
+                                                                    </div>
+                                                                </mat-expansion-panel-header>
+                                                                <ng-template matExpansionPanelContent>
+                                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                                        <ng-container *ngIf="workflow.consultantContracts?.length; else noFilesTemplate">
+                                                                            <ng-container *ngFor="let consultantContract of workflow.consultantContracts; trackBy: trackById">
+                                                                                <mat-expansion-panel class="mat-elevation-z0" #singleConsultantContractPanel [ngClass]="{'noFiles': consultantContract.documents?.length === 0}" hideToggle>
+                                                                                    <mat-expansion-panel-header
+                                                                                        [collapsedHeight]="'44px'"
+                                                                                        [expandedHeight]="'44px'">
+                                                                                        <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="consultantContract.documents?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="consultantContract.documents?.length === 0 ? 'No documents of this type' : ''">
+                                                                                            <mat-panel-description>
+                                                                                                <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': singleConsultantContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                                                            </mat-panel-description>
+                                                                                            <h4 class="u-mb--0 u-mr--10">
+                                                                                                {{consultantContract.name}}
+                                                                                            </h4>
+                                                                                            <span class="document-date">
+                                                                                                {{consultantContract.startDate | momentFormat}} - {{consultantContract.endDate ? (consultantContract.endDate | momentFormat) : 'No end date'}}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </mat-expansion-panel-header>
+                                                                                    <ng-container *ngIf="consultantContract.documents?.length; else noFilesTemplate">
+                                                                                        <div class="u-ml--32">
+                                                                                            <ng-container *ngFor="let file of consultantContract.documents; trackBy: documentsTrackBy; last as last">
+                                                                                                <div class="width-fit-content cursor-pointer" fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
+                                                                                                    <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]"></mat-icon>
+                                                                                                    <span class="text-bold">
+                                                                                                        {{ file.name }}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </ng-container>
+                                                                                        </div>
+                                                                                    </ng-container>
+
+                                                                                </mat-expansion-panel>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </mat-accordion>
+                                                                </ng-template>
+                                                            </mat-expansion-panel>
+                                                        </mat-accordion>
+                                                        <!-- internal contracts -->
+                                                        <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                            <mat-expansion-panel #internalContractPanel class="mat-elevation-z0" [ngClass]="{'noFiles': workflow.internalContracts?.length === 0}" hideToggle>
+                                                                <mat-expansion-panel-header
+                                                                    [collapsedHeight]="'44px'"
+                                                                    [expandedHeight]="'44px'">
+                                                                    <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="workflow.internalContracts?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="workflow.internalContracts?.length === 0 ? 'No documents of this type' : ''">
+                                                                        <mat-panel-description>
+                                                                            <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': internalContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                                        </mat-panel-description>
+                                                                        <h4 class="u-mb--0">
+                                                                            Internal contracts
+                                                                        </h4>
+                                                                    </div>
+                                                                </mat-expansion-panel-header>
+                                                                <ng-template matExpansionPanelContent>
+                                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                                        <ng-container *ngIf="workflow.internalContracts?.length; else noFilesTemplate">
+                                                                            <ng-container *ngFor="let internalContract of workflow.internalContracts; trackBy: trackById">
+                                                                                <mat-expansion-panel #singleInternalContractPanel class="mat-elevation-z0" [ngClass]="{'noFiles': internalContract.documents?.length === 0}" hideToggle>
+                                                                                    <mat-expansion-panel-header
+                                                                                        [collapsedHeight]="'44px'"
+                                                                                        [expandedHeight]="'44px'">
+                                                                                        <div class="width-fit-content" fxLayout="row" fxLayoutAlign="start center" (click)="internalContract.documents?.length === 0 ? $event.preventDefault() : ''" matTooltipClass="white-tooltip" [matTooltip]="internalContract.documents?.length === 0 ? 'No documents of this type' : ''">
+                                                                                            <mat-panel-description>
+                                                                                                <mat-icon class="documents-chevron" [ngClass]="{'expanded-chevron': singleInternalContractPanel.expanded}" svgIcon="chevron-green-big"></mat-icon>
+                                                                                            </mat-panel-description>
+                                                                                            <h4 class="u-mb--0 u-mr--10">
+                                                                                                {{internalContract.name}}
+                                                                                            </h4>
+                                                                                            <span class="document-date">
+                                                                                                {{internalContract.startDate | momentFormat}} - {{internalContract.endDate ? (internalContract.endDate | momentFormat) : 'No end date'}}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </mat-expansion-panel-header>
+                                                                                    <ng-container *ngIf="internalContract.documents?.length; else noFilesTemplate">
+                                                                                        <div class="u-ml--32">
+                                                                                            <ng-container *ngFor="let file of internalContract.documents; trackBy: documentsTrackBy; last as last" >
+                                                                                                <div class="width-fit-content cursor-pointer" fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'u-mb--20': !last}" (click)="downloadDocument(file.documentStorageGuid!)" matTooltip="Download" matTooltipClass="white-tooltip">
+                                                                                                    <mat-icon class="icon cursor-pointer u-mr--5" [svgIcon]="contractIcons[file.type!]"></mat-icon>
+                                                                                                    <span class="text-bold">
+                                                                                                        {{ file.name }}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </ng-container>
+                                                                                        </div>
+                                                                                    </ng-container>
+                                                                                </mat-expansion-panel>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </mat-accordion>
+                                                                </ng-template>
+                                                            </mat-expansion-panel>
+                                                        </mat-accordion>
+                                                    </ng-template>
+                                                </mat-expansion-panel>
+                                            </ng-container>
                                         </ng-container>
                                     </mat-accordion>
                                 </ng-template>
@@ -354,9 +405,11 @@
                             </span>
                         </ng-template>
                     </div>
-                    <div class="spinner-container" *ngIf="isContractsLoading">
-                        <mat-spinner [diameter]="50"></mat-spinner>
-                    </div>
+                    <ng-container *ngIf="isContractsLoading">
+                        <div class="spinner-container">
+                            <mat-spinner [diameter]="50"></mat-spinner>
+                        </div>
+                    </ng-container>
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="documentSideItems.Evaluations">
@@ -452,12 +505,16 @@
                             <mat-row *matRowDef="let row; columns: evalsDocsDisplayColumns;" class="mat-elevation-z0">
                             </mat-row>
                         </mat-table>
-                        <div class="spinner-container" *ngIf="isDataLoading">
-                            <mat-spinner [diameter]="50"></mat-spinner>
-                        </div>
-                        <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
-                            RESULTS NOT FOUND
-                        </div>
+                        <ng-container *ngIf="isDataLoading">
+                            <div class="spinner-container">
+                                <mat-spinner [diameter]="50"></mat-spinner>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="totalCount === 0 && !isDataLoading">
+                            <div class="results-not-found">
+                                RESULTS NOT FOUND
+                            </div>
+                        </ng-container>
                     </div>
                     <div class="pagination-container u-w--100">
                         <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"

@@ -310,29 +310,31 @@
                                                 </ng-container>
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill"
-                                            class="u-w--100 formFieldNoMarginPadding autocompleteWithShevron filter-select" fxFlex="30%"
-                                            [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
-                                            <!-- recipientType?.id === 4 - PDC entity -->
-                                            <ng-container
-                                                *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
-                                                <mat-select formControlName="recipient" placeholder="Recipient"
-                                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <ng-container
-                                                        *ngFor="let item of legalEntities; trackBy: trackById">
-                                                        <mat-option [value]="item">
-                                                            <b>{{ item.tenantName + ' ' + '(' + item.name + ')' }}</b>
-                                                        </mat-option>
-                                                    </ng-container>
-                                                </mat-select>
-                                            </ng-container>
-                                            <ng-template #commissionRecipientAutocomplete>
+                                        <!-- recipientType?.id === 4 - PDC entity -->
+                                        <ng-container *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
+                                            <mat-form-field appearance="fill"
+                                                class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="30%"
+                                                [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
+                                                    <mat-select formControlName="recipient" placeholder="Recipient"
+                                                        [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <ng-container
+                                                            *ngFor="let item of legalEntities; trackBy: trackById">
+                                                            <mat-option [value]="item">
+                                                                <b>{{ item.tenantName + ' ' + '(' + item.name + ')' }}</b>
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                            </mat-form-field>
+                                        </ng-container>
+                                        <ng-template #commissionRecipientAutocomplete>
+                                            <mat-form-field appearance="fill"
+                                                class="u-w--100 formFieldNoMarginPadding autocompleteWithShevron inline-autocomplete filter-select" fxFlex="30%"
+                                                [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
                                                 <input #recipientFilterInput type="text" matInput
-                                                    [ngClass]="{'isPanelOpen': recipientAutocomplete.isOpen}"
                                                     [matAutocomplete]="recipientAutocomplete"
                                                     formControlName="recipient" appPreventDoubleClick
                                                     (throttledClick)="$event.stopPropagation()" placeholder="Recipient">
-                                                    <span matSuffix class="shevron"></span>
+                                                    <span [ngClass]="{'isPanelOpen': recipientAutocomplete.isOpen}" matSuffix class="shevron"></span>
                                                 <mat-autocomplete #recipientAutocomplete="matAutocomplete"
                                                     [displayWith]="displayRecipientFn"
                                                     (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
@@ -398,8 +400,8 @@
                                                         </ng-container>
                                                     </ng-container>
                                                 </mat-autocomplete>
-                                            </ng-template>
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </ng-template>
                                         <div fxFlex="20%">
                                             <mat-form-field appearance="fill"
                                                 class="u-w--100 formFieldNoMarginPadding filter-select"
