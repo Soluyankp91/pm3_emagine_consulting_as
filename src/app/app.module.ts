@@ -812,8 +812,8 @@ export class AppModule {
             )
         );
         iconRegistry.addSvgIcon(
-			'chevron-down',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-down.svg')
+			'chevron-grey',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-grey.svg')
 		);
         iconRegistry.addSvgIcon(
             'chevron-green',

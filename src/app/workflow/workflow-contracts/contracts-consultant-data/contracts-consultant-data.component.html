@@ -19,7 +19,7 @@
                                 </span>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="contractConsultantEmployment">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Employment type</h2>
                         </div>
@@ -104,7 +104,7 @@
                         *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
                         <ng-container
                             *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap">
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantInvoicing">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                     <span class="workflow-section--number">2</span>
                                     <h2 class="workflow-section--header">Invoicing</h2>
@@ -156,7 +156,7 @@
                                 </div>
                             </div>
                         </ng-container>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantContract">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">
                                     {{contractClientForm.clientTimeReportingCapId?.value?.id ===
@@ -191,7 +191,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantPayment">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">
                                     {{contractClientForm.clientTimeReportingCapId?.value?.id ===
@@ -227,7 +227,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantRatesFees">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">
                                     {{contractClientForm.clientTimeReportingCapId?.value?.id ===
@@ -821,7 +821,7 @@
                                 </ng-template>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantProjectLines">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">
                                     {{contractClientForm.clientTimeReportingCapId?.value?.id ===

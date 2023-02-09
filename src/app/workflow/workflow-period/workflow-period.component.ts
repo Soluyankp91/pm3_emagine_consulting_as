@@ -16,7 +16,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { EmploymentTypes } from '../workflow.model';
-import { ContractClientDataSections, ContractConsultantDataSections, ContractMainDataSections, ContractSyncSections, EProcessIcon, FinanceSections, IConsultantAnchor, SalesClientDataSections, SalesConsultantDataSections, SalesMainDataSections, StepAnchorDto, StepWithAnchorsDto, SubItemDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
+import { ContractClientDataSections, ContractConsultantDataSections, ContractMainDataSections, ContractPlaceholderConsultantAnchors, ContractSyncSections, EProcessIcon, FinanceSections, IConsultantAnchor, SalesClientDataSections, SalesConsultantDataSections, SalesMainDataSections, SalesPlaceholderConsultantAnchors, StepAnchorDto, StepWithAnchorsDto, SubItemDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
     selector: 'app-workflow-period',
@@ -189,7 +189,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 							subItems:
 								item.employmentType === EmploymentTypes.FeeOnly ||
 								item.employmentType === EmploymentTypes.Recruitment
-									? []
+									? new Array<SubItemDto>(...SalesPlaceholderConsultantAnchors)
 									: new Array<SubItemDto>(...SalesConsultantDataSections),
                             anchorsOpened: false
 						});
@@ -231,7 +231,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 									subItems:
 										item.employmentType === EmploymentTypes.FeeOnly ||
 										item.employmentType === EmploymentTypes.Recruitment
-											? []
+											? new Array<SubItemDto>(...ContractPlaceholderConsultantAnchors)
 											: new Array<SubItemDto>(...ContractConsultantDataSections),
                                     anchorsOpened: false
 								};

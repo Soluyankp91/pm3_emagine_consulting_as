@@ -69,17 +69,21 @@
                                                 [ngxScrollTo]="item.anchor!"
                                                 [ngxScrollToOffset]="-120"
                                                 [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
-                                                <span>
-                                                    {{item.name}}
-                                                    <mat-icon (click)="$event.stopPropagation(); item.anchorsOpened = !item.anchorsOpened" class="section-anchor--chevron" [ngClass]="{'active-chevron': item.anchor === selectedAnchor || item.anchorsOpened}" svgIcon="chevron-down"></mat-icon>
-                                                </span>
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <span class="workflow-navigation--step__anchor-name">
+                                                        {{item.name}}
+                                                    </span>
+                                                    <mat-icon (click)="$event.stopPropagation(); item.anchorsOpened = !item.anchorsOpened" class="section-anchor--chevron u-ml--10"
+                                                        [ngClass]="{'active-chevron': item.anchor === selectedAnchor || item.anchorsOpened}"
+                                                        svgIcon="chevron-grey"></mat-icon>
+                                                </div>
                                                 <ng-container *ngIf="item?.consultantName">
                                                     <span class="workflow-navigation--step__anchor-consultant-name">
                                                         {{item.consultantName}}
                                                     </span>
                                                 </ng-container>
                                                 <ng-container *ngIf="item.subItems?.length && item.anchor === selectedAnchor || item.anchorsOpened">
-                                                    <div class="u-ml--12 u-mt--12">
+                                                    <div class="side-nav--container u-pl--12 u-mt--12">
                                                         <ng-container *ngFor="let section of item.subItems; trackBy: trackByItem; index as i">
                                                             <div class="workflow-navigation--step__anchor-section u-mb--10" (click)="$event.stopPropagation(); scrollToSection(section.anchor!)" [ngxScrollTo]="section.anchor!" [ngxScrollToOffset]="-120">
                                                                 {{i + 1}} • {{section.name}}

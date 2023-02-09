@@ -123,6 +123,10 @@ export const SalesMainDataSections: SubItemDto[] = [
     {
         name: 'Account manager',
         anchor: 'salesMainAccountManager'
+    },
+    {
+        name: 'Documents',
+        anchor: 'salesMainDocuments'
     }
 ];
 
@@ -154,6 +158,13 @@ export const SalesClientDataSections: SubItemDto[] = [
     {
         name: 'Client contract',
         anchor: 'salesClientContract'
+    }
+];
+
+export const SalesPlaceholderConsultantAnchors: SubItemDto[] = [
+    {
+        name: 'Employment type',
+        anchor: 'salesConsultantEmployment'
     }
 ];
 
@@ -197,6 +208,10 @@ export const ContractMainDataSections: SubItemDto[] = [
     {
         name: 'Additional data',
         anchor: 'contractAdditionalData'
+    },
+    {
+        name: 'Document',
+        anchor: 'contractDocuments'
     }
 ];
 
@@ -212,6 +227,13 @@ export const ContractClientDataSections: SubItemDto[] = [
     {
         name: 'Rates and fees',
         anchor: 'contractClientRatesFees'
+    }
+];
+
+export const ContractPlaceholderConsultantAnchors: SubItemDto[] = [
+    {
+        name: 'Employment type',
+        anchor: 'contractConsultantEmployment'
     }
 ];
 
