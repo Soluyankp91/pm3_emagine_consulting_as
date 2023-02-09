@@ -25,61 +25,65 @@
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100"
                             [matTooltip]="group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales !== null && group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales !== undefined ? overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!] : 'Select status'"
                             matTooltipClass="white-tooltip">
-                            <ng-container
-                                *ngIf="group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales === null || group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales === undefined; else statusIcon">
-                                -
-                            </ng-container>
-                            <ng-template #statusIcon>
-                                <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu"
-                                    [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!}"
-                                    [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"
-                                    [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"></mat-icon>
-                                <mat-menu #workflowMenu backdropClass="main-overview--user-status-menu">
-                                    <ng-template matMenuContent let-selectedStatus="selectedStatus">
-                                        <button *ngFor="let status of userSelectedStatuses"
-                                            class="menu-item"
-                                            mat-menu-item
-                                            [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
-                                            appPreventDoubleClick (throttledClick)="setUserSelectedStatusForWorflow(group?.origin?.id!, status?.id)">
-                                            <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
-                                            <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
-                                                {{status?.name}}
-                                            </span>
-                                        </button>
-                                    </ng-template>
-                                </mat-menu>
-                            </ng-template>
+                            <div class="flex-center cursor-pointer" [matMenuTriggerFor]="workflowMenu"
+                                [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!}">
+                                <ng-container
+                                    *ngIf="group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales === null || group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales === undefined; else statusIcon">
+                                    -
+                                </ng-container>
+                                <ng-template #statusIcon>
+                                    <mat-icon class="main-overview-icon cursor-pointer"
+                                        [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"
+                                        [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"></mat-icon>
+                                </ng-template>
+                            </div>
+                            <mat-menu #workflowMenu backdropClass="main-overview--user-status-menu">
+                                <ng-template matMenuContent let-selectedStatus="selectedStatus">
+                                    <button *ngFor="let status of userSelectedStatuses"
+                                        class="menu-item"
+                                        mat-menu-item
+                                        [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
+                                        appPreventDoubleClick (throttledClick)="setUserSelectedStatusForWorflow(group?.origin?.id!, status?.id)">
+                                        <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
+                                        <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
+                                            {{status?.name}}
+                                        </span>
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
                         </div>
                     </span>
                     <span class="text-bold" *ngIf="isConsultants">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100"
                             [matTooltip]="group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales !== null && group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales !== undefined ? overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!] : 'Select status'"
                             matTooltipClass="white-tooltip">
-                            <ng-container
-                                *ngIf="group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales === null || group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales === undefined; else statusIcon">
-                                -
-                            </ng-container>
-                            <ng-template #statusIcon>
-                                <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="consultantsMenu"
-                                    [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!}"
-                                    [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]"
-                                    [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]">
-                                </mat-icon>
-                                <mat-menu #consultantsMenu backdropClass="main-overview--user-status-menu">
-                                    <ng-template matMenuContent let-selectedStatus="selectedStatus">
-                                        <button *ngFor="let status of userSelectedStatuses"
-                                            class="menu-item"
-                                            mat-menu-item
-                                            [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
-                                            appPreventDoubleClick (throttledClick)="setUserSelectedStatusForConsultant(group?.origin?.origin?.workflowId, group?.origin?.origin?.consultant?.id, status?.id)">
-                                            <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
-                                            <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
-                                                {{status?.name}}
-                                            </span>
-                                        </button>
-                                    </ng-template>
-                                </mat-menu>
-                            </ng-template>
+                            <div class="flex-center cursor-pointer" [matMenuTriggerFor]="consultantsMenu"
+                                [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!}">
+                                <ng-container
+                                    *ngIf="group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales === null || group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales === undefined; else statusIcon">
+                                    -
+                                </ng-container>
+                                <ng-template #statusIcon>
+                                    <mat-icon class="main-overview-icon cursor-pointer"
+                                        [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]"
+                                        [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]">
+                                    </mat-icon>
+                                </ng-template>
+                            </div>
+                            <mat-menu #consultantsMenu backdropClass="main-overview--user-status-menu">
+                                <ng-template matMenuContent let-selectedStatus="selectedStatus">
+                                    <button *ngFor="let status of userSelectedStatuses"
+                                        class="menu-item"
+                                        mat-menu-item
+                                        [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
+                                        appPreventDoubleClick (throttledClick)="setUserSelectedStatusForConsultant(group?.origin?.origin?.workflowId, group?.origin?.origin?.consultant?.id, status?.id)">
+                                        <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
+                                        <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
+                                            {{status?.name}}
+                                        </span>
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
                         </div>
                     </span>
                 </div>

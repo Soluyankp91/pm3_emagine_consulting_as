@@ -90,6 +90,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 
@@ -341,6 +342,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {
 			emitEvent: false,
 		});
+        this._tryPreselectFrameAgreement();
 		this.getRatesAndFees(event.option.value?.clientId);
 		this.focusToggleMethod('auto');
 	}
@@ -349,6 +351,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
 		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
 	}
+
+    private _tryPreselectFrameAgreement() {
+        if (
+			this.clientDataComponent?.salesClientDataForm.startDate.value &&
+			(this.clientDataComponent?.salesClientDataForm.endDate.value ||
+				this.clientDataComponent?.salesClientDataForm.noEndDate.value) &&
+			this.clientDataComponent?.salesClientDataForm.directClientIdValue.value &&
+			this.mainDataComponent.salesMainDataForm.salesTypeId.value &&
+			this.mainDataComponent.salesMainDataForm.deliveryTypeId.value
+		) {
+			this._workflowDataService.preselectFrameAgreement.emit();
+		}
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -475,8 +490,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
 				});
-                // FIXME: uncomment once BE is deployed
-                // this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
+                this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
 				if (result?.noEndDate) {
 					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
 						emitEvent: false,
@@ -593,6 +607,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
+                if (this.isContractModuleEnabled) {
+                    // FIXME: commented out as Ruslan gets 403
+                    // this.clientDataComponent?.getFrameAgreements();
+                }
 			});
 	}
 
@@ -649,6 +667,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
+                if (result?.workflowDocuments?.length) {
+                    this.terminationDocuments?.addExistingFile(result.workflowDocuments);
+                }
 			});
 	}
 
@@ -852,7 +873,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
         if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.documents.controls = [];
+            this.mainDataComponent.mainDocuments.clearDocuments();
+        }
+        if (this.terminationDocuments) {
+            this.terminationDocuments.clearDocuments();
         }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
@@ -949,8 +973,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
 			this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
 				const user: EmployeeDto = form.commissionedUser;
-				if (user.id) {
-					input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+				if (user?.id) {
+					input.salesMainData!.commissionedEmployeesIdValues?.push(user?.id);
 					input.salesMainData!.commissionedEmployeesData?.push(user);
 				}
 			});
@@ -1010,7 +1034,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				signerInput.signOrder = signer.clientSequence;
 				signerInput.contactId = signer.clientContact?.id;
 				signerInput.contact = signer.clientContact;
-				signerInput.signerRoleId = signer.clientRole?.id;
+				signerInput.signerRoleId = signer.signerRoleId;
 				input.salesClientData!.contractSigners?.push(signerInput);
 			});
 		}
@@ -1105,7 +1129,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryManagerSameAsAccountManager ? this.mainDataComponent.salesMainDataForm.salesAccountManagerIdValue?.value?.id : consultant.deliveryAccountManager?.id;
+			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
 		}
 		return consultantInput;
 	}
