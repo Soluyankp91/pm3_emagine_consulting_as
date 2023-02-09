@@ -113,9 +113,10 @@
                     </mat-menu>
                 </div>
                 <ng-container *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy">
-                    <div class="main-overview--filter-type cursor-pointer" [ngClass]="detectSelectedStatusColor(status)"
+                    <div class="main-overview--filter-type cursor-pointer" [ngClass]="status.selected ? overviewFilterColors[status.id] : ''"
                         appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
-                        <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
+                        <mat-icon class="main-overview-icon-type" [svgIcon]="status.flag"
+                        [ngClass]="overviewProcessColors[status.id]"></mat-icon>
                         <span class="main-overview--filter-type__name">
                             {{status.name}}
                         </span>
@@ -141,6 +142,7 @@
             <button class="advanced-filterd--btn u-mt--10 u-mb--10" [ngClass]="{'active': isAdvancedFilters || advancedFiltersCounter > 0}" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
                 <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>
+                <mat-icon class="advanced-filterd--btn-chevron u-ml--8" [ngClass]="{'should-rotate': isAdvancedFilters}" svgIcon="chevron-green"></mat-icon>
             </button>
         </div>
     </div>

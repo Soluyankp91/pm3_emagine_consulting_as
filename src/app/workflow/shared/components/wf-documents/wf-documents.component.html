@@ -47,7 +47,7 @@
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
-                                        appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, i)">
+                                        appPreventDoubleClick (throttledClick)="deleteDocument(document.value.temporaryFileId, document.value.uploaderFile, i)">
                                         Delete document
                                     </button>
                                 </mat-menu>
@@ -58,7 +58,7 @@
             </ng-container>
             <ng-template #noDocuments>
                 <ng-container *ngIf="readOnlyMode">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 border-unset bgc-white">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 border-unset bgc-white u-h--50px u-pl--16">
                         <span class="light-grey-color text-600">
                             No documents
                         </span>

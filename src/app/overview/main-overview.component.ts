@@ -18,7 +18,7 @@ import {
 import { SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
-import { OverviewFlag, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
+import { OverviewFilterColors, OverviewFlag, OverviewProcessColors, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -63,6 +63,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	margins: EnumEntityTypeDto[] = [];
 	isAdvancedFilters = false;
 	advancedFiltersCounter = 0;
+    overviewFilterColors = OverviewFilterColors;
+    overviewProcessColors = OverviewProcessColors;
 
 	workflowFilter = new UntypedFormControl(null);
 	accountManagerFilter = new UntypedFormControl();
@@ -227,28 +229,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		}
 	}
 
-	detectSelectedStatusColor(status: SelectableStatusesDto) {
-		if (status.selected) {
-			switch (status.id) {
-				case OverviewFlag.ExtensionExpected:
-				case OverviewFlag.Extended:
-				case OverviewFlag.Started:
-					return 'selected-status green';
-				case OverviewFlag.Terminated:
-				case OverviewFlag.ExpectedToTerminate:
-					return 'selected-status red';
-				case OverviewFlag.ExtensionInNegotiation:
-					return 'selected-status blue';
-				case OverviewFlag.RequiresAttention:
-					return 'selected-status yellow';
-				default:
-					return '';
-			}
-		} else {
-			return '';
-		}
-	}
-
 	detectIcon(process: number) {
 		switch (process) {
 			case OverviewFlag.ExtensionExpected:
@@ -295,7 +275,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	formatItems(length: number, parent: MainOverviewItemPeriodDto[], group: string, workflowStatus: MainOverviewStatus, actualEndDate: moment.Moment) {
 		const items = [];
 		for (let i = 0; i < length; i++) {
-            if (workflowStatus === MainOverviewStatus.Terminated && parent![i]?.endDate !== undefined) {
+            if (workflowStatus === MainOverviewStatus.Terminated) {
                 parent![i].endDate = actualEndDate;
             }
 			items.push({

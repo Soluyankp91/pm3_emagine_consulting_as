@@ -106,6 +106,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
 
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -474,7 +476,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
         }
         if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.documents.controls = [];
+            this.mainDataComponent.mainDocuments.clearDocuments();
         }
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
 		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
@@ -875,7 +877,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
-        console.log(this.syncDataComponent?.contractsSyncDataForm.value);
 		if (data?.clientData?.periodClientSpecialRates?.length) {
 			data.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
 				this.clientDataComponent?.addSpecialRate(rate);
@@ -894,6 +895,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.updateConsultantStepAnchors();
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
+        if (this.isContractModuleEnabled) {
+            // FIXME: commented out as Ruslan gets 403
+            // this.clientDataComponent?.getFrameAgreements();
+        }
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {

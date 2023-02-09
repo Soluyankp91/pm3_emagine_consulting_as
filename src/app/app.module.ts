@@ -815,5 +815,17 @@ export class AppModule {
 			'chevron-down',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-down.svg')
 		);
+        iconRegistry.addSvgIcon(
+            'chevron-green',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-green.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'chevron-green-big',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-green-big.svg'
+            )
+        );
     }
 }
