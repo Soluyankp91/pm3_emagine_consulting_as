@@ -667,6 +667,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
+                if (result?.workflowDocuments?.length) {
+                    this.terminationDocuments?.addExistingFile(result.workflowDocuments);
+                }
 			});
 	}
 
