@@ -817,5 +817,11 @@ export class AppModule {
                 'assets/common/images/chevron-green.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'chevron-green-big',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-green-big.svg'
+            )
+        );
     }
 }
