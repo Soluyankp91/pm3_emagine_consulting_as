@@ -1,12 +1,22 @@
-<div class="file-uploader" file-drag-and-drop (click)="fileInput.click()" (onFileDropped)="fileDropped($event)">
+<div class="file-uploader" file-drag-and-drop (click)="fileInput.click()" (onFileDropped)="fileDropped($event)" [ngClass]="{'uploading-wrapper': isFileUploading}">
     <input #fileInput type="file" [accept]="'.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.svg'" style="display: none"
         (change)="onFilesAdded()">
     <div class="content">
-        <button class="button-add" mat-flat-button>
-            <mat-icon>add</mat-icon>
-            Add Document
-        </button>
-        <span class="content-instructions">Upload or simply drag and drop file here</span>
+        <ng-container *ngIf="isFileUploading; else fileUpload">
+            <div class="loading">
+                <mat-icon class="loading-icon" svgIcon="loading-icon"></mat-icon>
+                <span class="loading-text u-ml--10">
+                    Uploading document
+                </span>
+            </div>
+        </ng-container>
+        <ng-template #fileUpload>
+            <button class="button-add" mat-flat-button>
+                <mat-icon>add</mat-icon>
+                Add Document
+            </button>
+            <span class="content-instructions">Upload or simply drag and drop file here</span>
+        </ng-template>
     </div>
 </div>
 <div class="d-flex flex-column uploader-hint">
