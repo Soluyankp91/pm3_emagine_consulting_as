@@ -19,6 +19,7 @@ export class FileUploaderComponent implements OnInit {
     @Input() acceptOnlyOneFile: boolean = false;
     @Input() isCreationMode: boolean = true;
     @Input() withoutDisplay: boolean = true;
+    @Input() isFileUploading: boolean;
     public _files: FileUploaderFile[] = [];
     public maxFileSize = false;
     public acceptedFileType = true;

@@ -1,7 +1,7 @@
 import { Directive, Input } from '@angular/core';
 
 @Directive({
-    selector: '[src (error)="setDefaultImage($event.target)"]',
+    selector: '[ngSrc]',
     host: {
         '(error)': 'updateImageOnError()',
         '[ngSrc]': 'ngSrc'
