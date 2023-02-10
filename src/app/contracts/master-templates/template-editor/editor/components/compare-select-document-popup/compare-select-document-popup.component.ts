@@ -1,19 +1,34 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	EventEmitter,
+	Input,
+	OnInit,
+	Output,
+	ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DxButtonModule, DxPopupModule, DxTemplateModule } from 'devextreme-angular';
+import { DxButtonModule, DxListComponent, DxPopupModule, DxTemplateModule, DxListModule } from 'devextreme-angular';
+import { IDocumentItem, IDocumentVersion } from '../../types';
 
 @Component({
 	standalone: true,
 	selector: 'app-compare-select-document-popup',
 	templateUrl: './compare-select-document-popup.component.html',
 	styleUrls: ['./compare-select-document-popup.component.scss'],
-	imports: [CommonModule, DxTemplateModule, DxButtonModule, DxPopupModule],
+	imports: [CommonModule, DxTemplateModule, DxButtonModule, DxPopupModule, DxListModule],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompareSelectDocumentPopupComponent implements OnInit {
 	visibility: boolean = false;
-	selected: string | null = null;
-	dataSource: Array<any> = [];
+	selected: number | null = null;
+
+	@ViewChild('listView') private _listView: DxListComponent;
+
+	@Input() dataSource: Array<IDocumentItem> = [];
+
+	@Output() select: EventEmitter<number> = new EventEmitter();
 
 	constructor(private _chd: ChangeDetectorRef) {}
 
@@ -29,15 +44,18 @@ export class CompareSelectDocumentPopupComponent implements OnInit {
 		this.afterClosed();
 	}
 
-	afterClosed() {}
+	afterClosed() {
+		this.selected = null;
+		this._listView.instance.unselectAll();
+	}
 
-	selectItem(event: Record<'itemData', any>) {
-		this.selected = event.itemData.parentID ? event.itemData.id : null;
+	selectItem(event: Record<'itemData', IDocumentItem>) {
+		this.selected = event.itemData.agreementTemplateId || null;
 	}
 
 	applySelected() {
 		if (this.selected) {
-			// this.mergeField.emit(this.selected);
+			this.select.emit(this.selected);
 			this.close();
 		}
 	}

@@ -10,7 +10,13 @@
 		[copyRootClassesToWrapper]="true"
 		(onHiding)="afterClosed()"
 		class="merge-field-insert-popup">
-		<div class="form"></div>
+		<div class="form">
+			<dx-list #listView [dataSource]="dataSource" [height]="400" (onItemClick)="selectItem($event)">
+				<div *dxTemplate="let data of 'item'">
+					<div>Version {{ data.name }}</div>
+				</div>
+			</dx-list>
+		</div>
 		<div class="buttons-column button-group">
 			<div>
 				<dx-button

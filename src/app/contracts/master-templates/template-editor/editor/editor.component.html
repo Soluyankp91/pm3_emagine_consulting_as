@@ -1,5 +1,12 @@
 <ng-container *ngIf="docReady$ | async as doc">
-	<app-richedit [template]="doc[0]" [mergeFields]="doc[1]" [templateVersions]="templateVersions$ | async"></app-richedit>
+	<app-richedit
+		[template]="doc[0]"
+		[mergeFields]="doc[1]"
+		[templateVersions]="templateVersions$ | async"
+		[documents]="documentList$ | async"
+		(compareVersionSelect)="loadCompareTemplateByVersion($event)"
+		(compareTemplateSelect)="loadCompareDocumentTemplate($event)">
+	</app-richedit>
 
 	<ng-container *ngIf="hasUnsavedChanges$ | async">
 		<div class="save-actions" [class.loading]="isLoading$ | async">

@@ -21,3 +21,17 @@ export interface IDocumentVersion {
 	version: number;
 	createdBy: IDocumentCreator;
 }
+
+export interface IDocumentItem {
+	agreementTemplateId?: number;
+	name?: string | undefined;
+	clientName?: string | undefined;
+	agreementType?: any;
+	linkState?: any;
+	linkStateAccepted?: boolean | undefined;
+	currentVersion?: number | undefined;
+	languageId?: any;
+	createdDateUtc?: string;
+	isEnabled?: boolean;
+	tenantIds?: number[] | undefined;
+}

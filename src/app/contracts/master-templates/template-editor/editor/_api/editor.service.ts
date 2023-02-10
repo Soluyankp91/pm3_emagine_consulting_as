@@ -1,11 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Observable, throwError } from 'rxjs';
-import { catchError, concatMap, map, tap } from 'rxjs/operators';
-import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
+import { catchError, concatMap, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IDocumentVersion } from '../types';
+import { IDocumentItem, IDocumentVersion } from '../types';
 export interface WrappedValueDto<TValue> {
 	value: TValue;
 }
@@ -13,7 +11,7 @@ export interface WrappedValueDto<TValue> {
 export class EditorService {
 	baseUrl = `${environment.apiUrl}/api/AgreementTemplate`;
 
-	constructor(private httpClient: HttpClient, private dialog: MatDialog) {}
+	constructor(private httpClient: HttpClient) {}
 
 	getTemplateMock(): string {
 		const documentAsBase64 = `
@@ -37,11 +35,7 @@ export class EditorService {
 
 	saveAsDraftTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/false`;
-		return this.httpClient.put(endpoint, fileContent).pipe(
-			tap(res => {
-				alert('saved');
-			})
-		);
+		return this.httpClient.put(endpoint, fileContent);
 	}
 
 	completeTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
@@ -56,16 +50,14 @@ export class EditorService {
 					markActiveAgreementsAsOutdated: true,
 				})
 			)
-		).pipe(
-			tap(res => {
-				alert('saved');
-			})
 		);
 	}
 
 	getSimpleList() {
 		const endpoint = `${this.baseUrl}/simple-list`;
-		return this.httpClient.get(endpoint).pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
+		return this.httpClient
+			.get<{ items: IDocumentItem[] }>(endpoint)
+			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
 
 	getTemplateVersions(templateId: number) {
@@ -75,7 +67,7 @@ export class EditorService {
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
 
-	getFileVersion(templateId: number, version: number) {
+	getTemplateByVersion(templateId: number, version: number) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/${version}`;
 		return this.httpClient
 			.get(endpoint, {

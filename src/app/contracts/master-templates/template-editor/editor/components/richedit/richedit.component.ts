@@ -3,8 +3,10 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	ElementRef,
+	EventEmitter,
 	Input,
 	OnDestroy,
+	Output,
 	SkipSelf,
 	ViewChild,
 } from '@angular/core';
@@ -34,7 +36,7 @@ import { InsertMergeFieldPopupComponent } from '../insert-merge-field-popup';
 import { CompareSelectDocumentPopupComponent } from '../compare-select-document-popup';
 import { CompareSelectVersionPopupComponent } from '../compare-select-version-popup';
 import { CompareService } from '../../services/compare.service';
-import { ICompareButtonType, IDocumentVersion } from '../../types';
+import { ICompareButtonType, IDocumentItem, IDocumentVersion } from '../../types';
 
 @Component({
 	standalone: true,
@@ -52,7 +54,11 @@ import { ICompareButtonType, IDocumentVersion } from '../../types';
 export class RicheditComponent implements AfterViewInit, OnDestroy {
 	@Input() template: File | Blob | ArrayBuffer | string = '';
 	@Input() templateVersions: Array<IDocumentVersion> | null;
+	@Input() documents: Array<IDocumentItem> | null;
 	@Input() mergeFields: IMergeField;
+
+	@Output() compareVersionSelect: EventEmitter<number> = new EventEmitter();
+	@Output() compareTemplateSelect: EventEmitter<number> = new EventEmitter();
 
 	@ViewChild('editor') editor: ElementRef;
 	@ViewChild('mergePopup') private mergeFieldPopup: InsertMergeFieldPopupComponent;
@@ -79,8 +85,7 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		this.createDocument(this._element.nativeElement.firstElementChild, options);
 		this.registerDocumentEvents();
 		this.registerCustomEvents(options);
-
-		this._compareService.initialize(this._rich);
+		this.initCompareTab(this._rich);
 	}
 
 	setDimensions(options: Options) {
@@ -203,8 +208,21 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 		this._rich.events.pointerUp.addHandler(handler);
 	}
 
-	private _showMergeFieldModal() {
-		this.mergeFieldPopup.showPopup();
+	initCompareTab(instance: RichEdit) {
+		this._compareService.initialize(this._rich);
+		this._richeditService.compareTemplateBlob$.subscribe((blob) => {
+			if (blob) {
+				this._compareService.applyCompareTemplate(blob);
+			}
+		});
+	}
+
+	onVersionCompareSelect(versionID: number) {
+		this.compareVersionSelect.emit(versionID);
+	}
+
+	onTemplateCompareSelect(templateID: number) {
+		this.compareTemplateSelect.emit(templateID);
 	}
 
 	mergeSelectedField(field: string) {
@@ -217,6 +235,10 @@ export class RicheditComponent implements AfterViewInit, OnDestroy {
 			this._rich.dispose();
 			this._rich = null;
 		}
+	}
+
+	private _showMergeFieldModal() {
+		this.mergeFieldPopup.showPopup();
 	}
 
 	public setTemplateAsBase64() {

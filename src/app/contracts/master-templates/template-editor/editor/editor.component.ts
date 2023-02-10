@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { filter, take, tap } from 'rxjs/operators';
+import { filter, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 
 // Project Specific
@@ -9,7 +9,7 @@ import { EditorService } from './_api/editor.service';
 import { RicheditComponent } from './components/richedit/richedit.component';
 import { MergeFieldsService } from './_api/merge-fields.service';
 import { RicheditService } from './services/richedit.service';
-import { IDocumentVersion } from './types';
+import { IDocumentItem, IDocumentVersion } from './types';
 
 @Component({
 	standalone: true,
@@ -28,6 +28,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	_destroy$ = new Subject();
 	templateId: number | undefined;
 	template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
+	documentList$ = new BehaviorSubject<Array<IDocumentItem>>([]);
 	templateVersions$ = new BehaviorSubject<Array<IDocumentVersion>>([]);
 	mergeFields$ = this._mergeFieldsService.getMergeFields(this._route.snapshot.params.id);
 
@@ -47,9 +48,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.templateId = this._route.snapshot.params.id;
-		this._editorService.getFileVersion(this.templateId, 1).subscribe(console.log);
-		this._editorService.getSimpleList().subscribe(console.log);
-
 		this._editorService
 			.getTemplate(this.templateId)
 			.pipe(tap((template) => this.template$.next(template)))
@@ -63,6 +61,23 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._editorService.getTemplateVersions(this.templateId).subscribe((res) => {
 			this.templateVersions$.next(res || []);
 		});
+
+		this._editorService.getSimpleList().subscribe((res) => {
+			this.documentList$.next(res.items);
+		});
+	}
+
+	loadCompareTemplateByVersion(version: number) {
+		const tmpID = this.templateId;
+		this._editorService.getTemplateByVersion(tmpID, version).subscribe((blob) => {
+			this._richeditService.compareTemplateBlob$.next(blob);
+		});
+	}
+
+	loadCompareDocumentTemplate(templateID: number) {
+		this._editorService.getTemplate(templateID).subscribe((blob) => {
+			this._richeditService.compareTemplateBlob$.next(blob);
+		});
 	}
 
 	saveAsDraft() {
@@ -72,16 +87,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.richEdit.templateAsBase64$
 			.pipe(
 				filter((res) => !!res),
-				take(1)
+				take(1),
+				switchMap(base64 => this._editorService
+					.saveAsDraftTemplate(this.templateId, { value: base64 }).pipe(
+						tap(() => {
+							this.richEdit.setAsSaved();
+							this.isLoading$.next(false);
+						})
+					))
 			)
-			.subscribe((base64) => {
-				this._editorService
-					.saveAsDraftTemplate(this.templateId, { value: base64 })
-					.subscribe(() => {
-						this.richEdit.setAsSaved();
-						this.isLoading$.next(false);
-					});
-			});
+			.subscribe();
 	}
 
 	saveAsComplete() {
@@ -91,16 +106,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.richEdit.templateAsBase64$
 			.pipe(
 				filter((res) => !!res),
-				take(1)
+				take(1),
+				switchMap(base64 => this._editorService
+					.completeTemplate(this.templateId, { value: base64 }).pipe(
+						tap(() => {
+							this.richEdit.setAsSaved();
+							this.isLoading$.next(false);
+						})
+					))
 			)
-			.subscribe((base64) => {
-				this._editorService
-					.completeTemplate(this.templateId, { value: base64 })
-					.subscribe(() => {
-						this.richEdit.setAsSaved();
-						this.isLoading$.next(false);
-					});
-			});
+			.subscribe();
 	}
 
 	ngOnDestroy(): void {
