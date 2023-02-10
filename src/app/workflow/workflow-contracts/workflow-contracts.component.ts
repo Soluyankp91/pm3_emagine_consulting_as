@@ -456,7 +456,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
-		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
+		return listOfItems && selectedItem && listOfItems?.id === selectedItem?.id;
 	}
 
 	displayNameFn(option: any) {
@@ -1031,6 +1031,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	fillWorkflowTerminationForm(data: WorkflowTerminationContractDataQueryDto) {
 		this.resetForms();
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
+        this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
+			emitEvent: false,
+		});
 		data.consultantTerminationContractData?.forEach((consultant) => {
 			this.addConsultantDataToTerminationForm(consultant);
 		});
