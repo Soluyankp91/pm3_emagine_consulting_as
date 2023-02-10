@@ -8,7 +8,7 @@ import { takeUntil, startWith, pairwise } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
-import { AgreementLanguage, AgreementListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
+import { AgreementLanguage, AgreementListItemDto, AgreementListItemDtoPaginatedList, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import {
 	AGREEMENT_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
@@ -33,7 +33,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
 
-	dataSource$ = this._agreementService.getContracts$();
+	dataSource$: Observable<AgreementListItemDtoPaginatedList>  = this._agreementService.getContracts$();
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 

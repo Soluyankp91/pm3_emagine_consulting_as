@@ -1,7 +1,7 @@
 import { SortDirection } from '@angular/material/sort';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { CountryDto } from 'src/shared/service-proxies/service-proxies';
-import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 import {
 	DEFAULT_SIZE_OPTION,
 	INITIAL_PAGE_INDEX,
@@ -26,7 +26,7 @@ export abstract class BaseContract {
 
 	private _sort$: BehaviorSubject<SortDto> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
 
-	getContracts$() {
+	getContracts$() : Observable<any> {
 		return combineLatest([
 			this.getTableFilters$(),
 			this.getSort$(),
