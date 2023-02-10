@@ -4,7 +4,7 @@ import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scrol
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodFinanceDataCommandDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodFinanceDataCommandDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowDocumentCommandDto, WorkflowDocumentServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -37,7 +37,8 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         private _workflowDataService: WorkflowDataService,
         private _clientPeriodSerivce: ClientPeriodServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private scrollToService: ScrollToService
+        private scrollToService: ScrollToService,
+        private _workflowDocumentsService: WorkflowDocumentServiceProxy
     ) {
         super(injector);
         this.financesClientForm = new FinancesClientForm();
@@ -247,20 +248,43 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         if (isDraft) {
             this._clientPeriodSerivce.clientFinancePUT(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(() => {
-                    if (this.editEnabledForcefuly) {
-                        this.toggleEditMode();
+                .subscribe({
+                    next: () => {
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
                     }
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
             this._clientPeriodSerivce.editFinish3(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(() => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                .subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
                 });
         }
+    }
+
+    private _tempUpdateDocuments() {
+        this._workflowDocumentsService
+			.overviewAll(this.workflowId, this.periodId)
+			.subscribe((result) => {
+				if (this.mainDocuments) {
+                    this.mainDocuments.clearDocuments();
+                }
+                if (result.length) {
+                    this.mainDocuments.addExistingFile(result);
+                }
+			});
     }
 
     getStartConsultantPeriodFinance() {
