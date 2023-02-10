@@ -9,14 +9,8 @@ export class AgreementService extends BaseContract {
 	override tableFilters$ = new BehaviorSubject<AgreementFiltersEnum>({
 		language: [],
 		id: [],
-		//consultantName ???
-		//companyName ???
-		// legalEntityIds: [],
 		agreementType: [],
 		recipientTypeId: [],
-		// salesTypeIds: EnumEntityTypeDto [],
-		// deliveryTypesIds: EnumEntityTypeDto [],
-		// contractTypeIds: EnumEntityTypeDto [],
 		mode: [],
 		status: [],
 		saleManager: [],

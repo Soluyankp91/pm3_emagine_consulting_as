@@ -63,7 +63,6 @@ import { EnabledComponent } from './shared/components/enabled/enabled.component'
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ClientModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
-import { ConsultantsFilterComponent } from './shared/components/grid-table/agreements/filters/consultants-filter/consultants-filter.component';
 import { SalesManagersFilterComponent } from './shared/components/grid-table/agreements/filters/sales-managers-filter/sales-managers-filter.component';
 import { ContractManagerFilterComponent } from './shared/components/grid-table/agreements/filters/contact-manager-filter/contract-manager-filter.component';
 import { AgreementModeComponent } from './shared/components/agreement-mode/agreement-mode.component';
@@ -74,6 +73,7 @@ import { AgreementModeFilterComponent } from './shared/components/grid-table/agr
 import { AgreementEditorComponent } from './agreements/template-editor/template-editor.component';
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -124,13 +124,13 @@ import { EditorComponent } from './master-templates/template-editor/editor/edito
 		AgreementModeFilterComponent,
 		SettingsComponent,
 		AgreementDevExpress,
-		ConsultantsFilterComponent,
 		SalesManagersFilterComponent,
 		ContractManagerFilterComponent,
 		AgreementModeComponent,
 		StatusesFilterComponent,
 		AgreementEditorComponent,
 		ClientTemplateModeComponent,
+        SignersTableComponent
 	],
 	imports: [
 		CommonModule,
