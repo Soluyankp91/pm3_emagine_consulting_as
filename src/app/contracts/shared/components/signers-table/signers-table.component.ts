@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/settings.interfaces';
+import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/types';
 import { AgreementDetailsSignerDto, LookupServiceProxy, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../services/contracts.service';
 
@@ -20,7 +20,7 @@ import { ContractsService } from '../../services/contracts.service';
 	templateUrl: './signers-table.component.html',
 	styleUrls: ['./signers-table.component.scss'],
 })
-export class SignersTableComponent implements OnInit,DoCheck, ControlValueAccessor {
+export class SignersTableComponent implements OnInit, DoCheck, ControlValueAccessor {
 	formArray: FormArray;
 
 	options$ = this._contractService.signersEnum$$;
@@ -45,7 +45,7 @@ export class SignersTableComponent implements OnInit,DoCheck, ControlValueAccess
 		this._subscribeOnFormArray();
 	}
 
-    ngDoCheck(): void {
+	ngDoCheck(): void {
 		if (this.ngControl.control?.touched) {
 			this.formArray.markAllAsTouched();
 			this.formArray.updateValueAndValidity({
@@ -70,7 +70,7 @@ export class SignersTableComponent implements OnInit,DoCheck, ControlValueAccess
 		});
 	}
 
-    deleteSigner(signerRowIndex: number) {
+	deleteSigner(signerRowIndex: number) {
 		this.formArray.removeAt(signerRowIndex);
 		this.signerTableData = [...this.formArray.controls];
 		this.signerOptionsArr$.splice(signerRowIndex, 1);
@@ -85,9 +85,9 @@ export class SignersTableComponent implements OnInit,DoCheck, ControlValueAccess
 	}
 
 	writeValue(signers: AgreementDetailsSignerDto[] | null) {
-        this.formArray = new FormArray([]);
-        this.signerTableData = [];
-        this.signerOptionsArr$ = []
+		this.formArray = new FormArray([]);
+		this.signerTableData = [];
+		this.signerOptionsArr$ = [];
 		if (!signers) {
 			return;
 		}
@@ -98,7 +98,8 @@ export class SignersTableComponent implements OnInit,DoCheck, ControlValueAccess
 					signerId: new FormControl(signerDto.signerId as number),
 					roleId: new FormControl(signerDto.roleId as number),
 					signOrder: new FormControl(signerDto.signOrder as number),
-				}), { emitEvent : false}
+				}),
+				{ emitEvent: false }
 			);
 			this.signerTableData = [...this.formArray.controls];
 			this.signerOptionsArr$.push(<SignerOptions>{

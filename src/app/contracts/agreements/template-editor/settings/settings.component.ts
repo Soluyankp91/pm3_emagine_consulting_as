@@ -38,7 +38,7 @@ import {
 	AgreementTemplateServiceProxy,
 	AgreementDetailsDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfaces';
+import { DuplicateOrParentOptions, ParentTemplateDto } from './types';
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
