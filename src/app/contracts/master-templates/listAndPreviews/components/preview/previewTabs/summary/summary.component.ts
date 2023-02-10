@@ -29,7 +29,6 @@ export class SummaryComponent implements OnInit {
 	}
 
 	navigateToTemplate(templateId: any, isDuplicate: boolean) {
-		console.log(templateId);
 		return;
 		let url: string;
 		if (isDuplicate) {

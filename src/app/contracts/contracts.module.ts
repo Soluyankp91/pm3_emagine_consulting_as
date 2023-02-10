@@ -1,6 +1,7 @@
 import { AppCommonModule } from './../shared/common/app-common.module';
 import { ContractsRoutingModule } from './contracts-routing.module';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
 import { AgreementsComponent } from './agreements/listAndPreviews/agreements.component';
@@ -82,6 +83,7 @@ import { ClientTemplatePreviewComponent } from './client-specific-templates/list
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
+import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 
 @NgModule({
 	declarations: [
@@ -147,9 +149,11 @@ import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/comp
 		AgreementPreviewComponent,
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
+		SignersTableComponent,
 	],
 	imports: [
 		CommonModule,
+		FormsModule,
 		ContractsRoutingModule,
 		ServiceProxyModule,
 		AppCommonModule,
