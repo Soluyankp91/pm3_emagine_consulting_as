@@ -25,7 +25,7 @@ export class AgreementModel extends FormGroup {
 			endDate: new FormControl(null, [Validators.required]),
 			note: new FormControl(null),
 			isSignatureRequired: new FormControl(null),
-			signers: new FormArray<SignerFormGroup>([]),
+			signers: new FormControl([]),
 			selectedInheritedFiles: new FormControl(null),
 			uploadedFiles: new FormControl(null),
 		});
@@ -101,7 +101,7 @@ export class AgreementModel extends FormGroup {
 	}
 
 	get signers() {
-		return this.get('signers') as FormArray<SignerFormGroup>;
+		return this.get('signers');
 	}
 
 	get initial$() {

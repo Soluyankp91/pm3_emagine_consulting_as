@@ -1,5 +1,6 @@
 import { AppCommonModule } from './../shared/common/app-common.module';
 import { ContractsRoutingModule } from './contracts-routing.module';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
@@ -134,6 +135,7 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 	],
 	imports: [
 		CommonModule,
+        FormsModule,
 		ContractsRoutingModule,
 		ServiceProxyModule,
 		AppCommonModule,
