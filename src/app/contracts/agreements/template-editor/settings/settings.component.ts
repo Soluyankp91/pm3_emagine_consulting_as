@@ -38,7 +38,7 @@ import {
 	AgreementTemplateServiceProxy,
 	AgreementDetailsDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { DuplicateOrParentOptions, ParentTemplateDto } from './types';
+import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfaces';
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
@@ -113,7 +113,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
 		}
-		this.agreementFormGroup.valueChanges.subscribe((x) => console.log(x));
 	}
 
 	ngOnDestroy(): void {

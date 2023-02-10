@@ -78,20 +78,30 @@ const routes: Routes = [
 			{
 				path: 'master-templates',
 				children: [
-					{
+                    {
 						path: '',
 						pathMatch: 'full',
 						component: MasterTemplatesComponent,
 					},
-					{
-						path: '',
+                    {
+						path: 'create',
 						component: MasterTemplateCreationComponent,
+                        data: { isEdit: false },
 						children: [
 							{
-								path: 'create',
+								path: '',
+                                pathMatch: 'full',
 								component: CreateMasterTemplateComponent,
 							},
-							{
+						],
+                        
+					},
+                    {
+                        path: '',
+                        component: MasterTemplateCreationComponent,
+                        data: { isEdit: true },
+                        children: [
+                            {
 								path: ':id/settings',
 								component: CreateMasterTemplateComponent,
 							},
@@ -99,8 +109,8 @@ const routes: Routes = [
 								path: ':id/editor',
 								component: EditorComponent,
 							},
-						],
-					},
+                        ]
+                    },
 				],
 			},
 		],

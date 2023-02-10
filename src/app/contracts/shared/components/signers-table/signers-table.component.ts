@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/types';
+import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/settings.interfaces';
 import { AgreementDetailsSignerDto, LookupServiceProxy, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../services/contracts.service';
 
