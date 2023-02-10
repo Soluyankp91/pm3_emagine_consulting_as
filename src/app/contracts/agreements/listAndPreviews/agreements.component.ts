@@ -4,6 +4,7 @@ import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AgreementListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 import {
 	AGREEMENT_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
@@ -24,7 +25,7 @@ export class AgreementsComponent implements OnInit {
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
 
-	dataSource$ = this._agreementService.getContracts$();
+	dataSource$ : Observable<AgreementListItemDtoPaginatedList>  = this._agreementService.getContracts$();
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 
