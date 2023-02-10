@@ -173,7 +173,7 @@
                             </div>
                             <div class="workflow-section--content">
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>
+                                    <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--12" fxFlex="20%">
                                             Onsite
