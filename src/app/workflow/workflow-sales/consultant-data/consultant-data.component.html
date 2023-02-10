@@ -313,7 +313,7 @@
                                                 <app-validator [control]="consultant.get('consultantCapOnTimeReporting')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
-                                        <ng-container [ngSwitch]="consultant.value?.consultantCapOnTimeReporting.id">
+                                        <ng-container [ngSwitch]="consultant.value?.consultantCapOnTimeReporting?.id">
                                             <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Max value</mat-label>
