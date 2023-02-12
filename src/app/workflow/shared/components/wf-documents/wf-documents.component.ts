@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-documents',
@@ -36,6 +37,7 @@ export class DocumentsComponent extends AppComponentBase {
 	documentForm: DocumentForm;
 	tempFilesIds: string[] = [];
 	currentEmployee: EmployeeDto;
+    isFileUploading = false;
 	constructor(
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
@@ -50,27 +52,31 @@ export class DocumentsComponent extends AppComponentBase {
 	}
 
 	tempFileAdded(files: FileUploaderFile[]) {
+        this.isFileUploading = true;
 		const fileToUpload = files[0];
 		let fileInput: FileParameter;
 		fileInput = {
 			fileName: fileToUpload.name,
 			data: fileToUpload.internalFile,
 		};
-		this._fileService.temporaryPOST(fileInput).subscribe((result) => {
-			const wrappedDocument = WFDocument.wrap(
-				fileToUpload.name,
-				moment(),
-				this.currentEmployee,
-				this.workflowProcessType,
-				this.stepType,
-				this.clientPeriodId,
-				this.workflowTerminationId,
-				undefined,
-				result.value!,
-                fileToUpload
-			);
-			this.addDocument(wrappedDocument);
-		});
+		this._fileService
+			.temporaryPOST(fileInput)
+			.pipe(finalize(() => (this.isFileUploading = false)))
+			.subscribe((result) => {
+				const wrappedDocument = WFDocument.wrap(
+					fileToUpload.name,
+					moment(),
+					this.currentEmployee,
+					this.workflowProcessType,
+					this.stepType,
+					this.clientPeriodId,
+					this.workflowTerminationId,
+					undefined,
+					result.value!,
+					fileToUpload
+				);
+				this.addDocument(wrappedDocument);
+			});
 	}
 
 	addExistingFile(files: WorkflowDocumentQueryDto[]) {

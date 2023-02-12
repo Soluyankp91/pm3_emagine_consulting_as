@@ -215,27 +215,26 @@
                     <h2 class="workflow-section--header">Invoicing</h2>
                 </div>
                 <div class="workflow-section--content">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select form-width-150">
-                            <mat-label>Discounts</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="discountId"
-                                [disableOptionCentering]="true" required>
-                                <mat-option class="mat-select-clear-option">
-                                    Clear
-                                </mat-option>
-                                <ng-container *ngFor="let item of discounts; trackBy: trackById">
-                                    <mat-option [value]="item.id">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                        <h3 class="workflow-gray--header u-mb--10">Discounts</h3>
+                        <mat-button-toggle-group [disabled]="readOnlyMode"
+                            [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.discountId?.valid}" class="workflow-toggle-buttons"
+                            formControlName="discountId" required>
+                            <ng-container *ngFor="let item of discounts; trackBy: trackById">
+                                <ng-container *ngIf="(readOnlyMode && item.id === salesMainDataForm.discountId?.value) || !readOnlyMode">
+                                    <mat-button-toggle [value]="item.id">
                                         {{ item.name }}
-                                    </mat-option>
+                                    </mat-button-toggle>
                                 </ng-container>
-                            </mat-select>
-                            <mat-error>
-                                <app-validator [control]="salesMainDataForm.discountId"></app-validator>
-                            </mat-error>
-                        </mat-form-field>
+                            </ng-container>
+                        </mat-button-toggle-group>
+                        <mat-error>
+                            <ng-container *ngIf="salesMainDataForm.discountId?.touched">
+                                <app-validator [withoutFormField]="true" [control]="salesMainDataForm.discountId"></app-validator>
+                            </ng-container>
+                        </mat-error>
                     </div>
-                    <div class="inline-edit-form u-w--100">
+                    <div class="inline-edit-form u-w--100 u-mt--15">
                         <ng-container *ngIf="salesMainDataForm.commissions?.controls?.length">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
                                 class="workflow-sales-inline--form__header-container u-w--100">

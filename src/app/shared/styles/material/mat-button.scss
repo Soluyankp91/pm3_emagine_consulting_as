@@ -262,7 +262,6 @@
     }
 
     &-chevron {
-        @include fontLineHeightAndSize(14px, 14px, 12px, 6px);
         transition: all .3s ease-in-out;
         &.should-rotate {
             transform: rotate(180deg);
@@ -456,4 +455,27 @@
 .mat-flat-button.cdk-keyboard-focused .mat-button-focus-overlay,
 .mat-flat-button.cdk-program-focused .mat-button-focus-overlay {
     opacity: 0 !important;
+}
+
+
+.showMore-btn {
+    padding: 0 !important;
+    background-color: transparent !important;
+    line-height: 1 !important;
+    .mat-button-wrapper {
+        @include flexCentered();
+        mat-icon {
+            @include fontLineHeightAndSize(14px, 14px, 14px, 14px);
+        }
+    }
+    &--chevron {
+        transition: all .3s ease-in-out;
+        &.should-rotate {
+            transform: rotate(180deg);
+        }
+    }
+    &--text {
+        color: $green-color;
+        @include fontOpenSans(12px, 700);
+    }
 }
