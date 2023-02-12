@@ -1,0 +1,8 @@
+<emg-multi-select [options]="options" [displayedProperty]="'name'" [formControl]="filterFormControl">
+	<ng-template #triggerButton>
+		<div>{{ labelMap[tableFilter] }}</div>
+	</ng-template>
+	<ng-template #optionPrefix let-option="$implicit">
+		<emg-agreement-status class="icon" [agreementStatus]="option.id"></emg-agreement-status>
+	</ng-template>
+</emg-multi-select>

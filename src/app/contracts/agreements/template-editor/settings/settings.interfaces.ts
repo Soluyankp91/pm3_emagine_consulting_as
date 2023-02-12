@@ -6,13 +6,9 @@ export type SignerOptions = {
 	options$: Observable<[{ label: string; labelKey: string; outputProperty: string }, IDropdownItem[]]> | null;
 	optionsChanged$: Subject<string>;
 };
-export type InputParentTemplate = {
+export type ParentTemplateDto = {
 	agreementTemplateId: string;
 	currentVersion: string;
-};
-export type OutputParentTemplate = {
-	parentAgreementTemplateId: string;
-	parentAgreementTemplateVersion: string;
 };
 export type DuplicateOrParentOptions = {
 	label: string;
@@ -21,5 +17,5 @@ export type DuplicateOrParentOptions = {
 	outputProperty: string;
 	options$: Observable<AgreementSimpleListItemDto[] | SimpleAgreementTemplatesListItemDto[] | undefined>;
 	optionsChanged$: BehaviorSubject<string>;
-	unwrapFunction?: (arg: InputParentTemplate) => OutputParentTemplate;
+	unwrapFunction?: (arg: ParentTemplateDto) => ParentTemplateDto;
 };
