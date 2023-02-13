@@ -1049,16 +1049,16 @@
                             <mat-form-field appearance="outline"
                                 class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                 <mat-label>Client Role</mat-label>
-                                <mat-select [disabled]="readOnlyMode" required formControlName="clientRole"
-                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                <mat-select [disabled]="readOnlyMode" required formControlName="signerRoleId"
+                                    [disableOptionCentering]="true">
                                     <ng-container *ngFor="let item of signerRoles; trackBy: trackById">
-                                        <mat-option [value]="item">
+                                        <mat-option [value]="item.id">
                                             {{ item.name }}
                                         </mat-option>
                                     </ng-container>
                                 </mat-select>
                                 <mat-error>
-                                    <app-validator [control]="contractSigners.at(i).get('clientRole')"></app-validator>
+                                    <app-validator [control]="contractSigners.at(i).get('signerRoleId')"></app-validator>
                                 </mat-error>
                             </mat-form-field>
 

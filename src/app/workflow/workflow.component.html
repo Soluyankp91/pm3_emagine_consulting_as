@@ -1,7 +1,7 @@
 <div class="workflow-list" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
         <h2 class="page-main-header u-mb--20">Workflows</h2>
-        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--15">
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--10" [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
@@ -149,7 +149,7 @@
             </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
-            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters || advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
                 <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>
                 <mat-icon class="advanced-filterd--btn-chevron u-ml--8" [ngClass]="{'should-rotate': isAdvancedFilters}" svgIcon="chevron-green"></mat-icon>

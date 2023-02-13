@@ -72,16 +72,6 @@ app-settings {
 	.textarea-form-field .mat-form-field-outline {
 		height: 133px !important;
 	}
-	.signer-type-cell,
-	.signing-role-cell {
-		max-width: 134px;
-		min-width: 134px;
-	}
-	.delete-cell,
-	.sequence-cell {
-		max-width: 64px;
-		min-width: 64px;
-	}
 	mat-cell:last-of-type,
 	mat-cell:first-of-type {
 		padding: 0;

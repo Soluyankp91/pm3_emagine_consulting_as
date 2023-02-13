@@ -331,3 +331,7 @@ html {
     padding: 0 16px;
     background-color: $white-color;
 }
+
+.rotate-180 {
+    transform: rotate(180deg);
+}

@@ -37,8 +37,8 @@
     <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value || readOnlyMode">
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
             <form [formGroup]="contractsSyncDataForm">
-                <ng-container *ngIf="!readOnlyMode || (readOnlyMode && !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value)">
-                    <mat-checkbox [disabled]="readOnlyMode" color="accent" name="contractLinesDoneManuallyInOldPM"
+                <ng-container *ngIf="!readOnlyMode || (readOnlyMode && contractsSyncDataForm.showManualOption?.value)">
+                    <mat-checkbox [disabled]="readOnlyMode" color="accent" name="contractLinesDoneManuallyInOldPm"
                         formControlName="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
                         Contract lines done manually in old PM
                     </mat-checkbox>
@@ -61,7 +61,7 @@
                 <div class="workflow-section--content">
                     <ng-container *ngIf="readOnlyMode; else syncInput">
                         <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
-                        <ng-container *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm.value">
+                        <ng-container *ngIf="contractsSyncDataForm.showManualOption?.value">
                             <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="contractLinesDoneManuallyInOldPm" name="contractLinesDoneManuallyInOldPm" class="black-checkbox">
                                 Contract lines done manually in old PM
                             </mat-checkbox>

@@ -23,9 +23,9 @@ export class AgreementLanguagesFilterComponent implements IFilter {
 
 	constructor(
 		private readonly contractsService: ContractsService,
-		@Inject(TEMPLATE_SERVICE_TOKEN) private masterTemplateService: ITemplatesService
+		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
-		masterTemplateService
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this._tableFilter))
 			.subscribe((agreementLanguages) => {

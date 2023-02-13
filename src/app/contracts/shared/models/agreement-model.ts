@@ -1,6 +1,6 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { AgreementCreationMode, SignerType } from 'src/shared/service-proxies/service-proxies';
+import { SignerType } from 'src/shared/service-proxies/service-proxies';
 
 export type SignerFormGroup = FormGroup<{
 	signerType: FormControl<null | SignerType>;
@@ -25,7 +25,7 @@ export class AgreementModel extends FormGroup {
 			endDate: new FormControl(null, [Validators.required]),
 			note: new FormControl(null),
 			isSignatureRequired: new FormControl(null),
-			signers: new FormArray<SignerFormGroup>([]),
+			signers: new FormControl([]),
 			selectedInheritedFiles: new FormControl(null),
 			uploadedFiles: new FormControl(null),
 		});
@@ -101,7 +101,7 @@ export class AgreementModel extends FormGroup {
 	}
 
 	get signers() {
-		return this.get('signers') as FormArray<SignerFormGroup>;
+		return this.get('signers');
 	}
 
 	get initial$() {

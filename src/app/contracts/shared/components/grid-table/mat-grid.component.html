@@ -75,7 +75,7 @@
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 		<mat-row
 			*matRowDef="let row; columns: displayedColumns"
-			[ngClass]="{ highlight: selectedRowId === row.agreementTemplateId }"
+			[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
 			(click)="getTableRow(row);$event.stopPropagation()"></mat-row>
 	</mat-table>
 </div>

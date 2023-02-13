@@ -87,6 +87,13 @@ export class WFDocument {
                     return 'png';
                 case '.svg':
                     return 'svg';
+                case '.ppt':
+                case '.pptx':
+                    return 'ppt';
+                case '.xml':
+                    return 'xml';
+                default:
+                    return 'file'
             }
         }
         return 'raw';

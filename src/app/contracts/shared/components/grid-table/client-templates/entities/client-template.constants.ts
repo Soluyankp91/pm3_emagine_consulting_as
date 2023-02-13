@@ -120,7 +120,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'linkState',
 			component: () =>
 				import('../../client-templates/entities/filters/mode-filter/mode-filter.component').then(
-					(it) => it.ModeFilterComponent
+					(it) => it.ClientModeFilterComponent
 				),
 		},
 	},
