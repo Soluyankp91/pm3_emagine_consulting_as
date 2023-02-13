@@ -7,13 +7,13 @@ import { Component } from '@angular/core';
 	selector: 'toggle-edit-mode',
 	templateUrl: './toggle-edit-mode.component.html',
 	styleUrls: ['./toggle-edit-mode.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ToggleEditClientTemplateModeComponent {
-	@Input() canToggleEditMode: boolean;
-	@Output() editModeToggled = new EventEmitter<any>();
+export class ToggleEditModeComponent {
+    @Input() canToggleEditMode: boolean;
+    @Output() editModeToggled = new EventEmitter<any>();
 	constructor() {}
-	toggleEditMode() {
-		this.editModeToggled.emit();
+    toggleEditMode() {
+        this.editModeToggled.emit();
 	}
 }

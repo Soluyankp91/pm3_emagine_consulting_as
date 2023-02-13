@@ -12,7 +12,7 @@
             <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                     <ng-container *ngIf="consultant.value?.consultantData?.id">
-                        <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
+                        <img class="border-rounded-50 image-thumbnail-small u-mr--16" [ngSrc]="consultantPhotoUrl + consultant.value.consultantData?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                     </ng-container>
                     <p class="workflow-sourcing--consultant-name">
                         {{sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('consultantData')?.value?.name}}

@@ -43,7 +43,9 @@ import {
 	ConsultantPeriodServiceProxy,
 	ConsultantPeriodSalesDataDto,
 	EmployeeDto,
+    WorkflowDocumentCommandDto,
 } from 'src/shared/service-proxies/service-proxies';
+import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -62,6 +64,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	@ViewChild('mainDataComponent', { static: false }) mainDataComponent: MainDataComponent;
 	@ViewChild('clientDataComponent', { static: false }) clientDataComponent: ClientDataComponent;
 	@ViewChild('consutlantDataComponent', { static: false }) consutlantDataComponent: ConsultantDataComponent;
+	@ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
 
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
@@ -87,6 +90,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 
@@ -338,6 +342,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {
 			emitEvent: false,
 		});
+        this._tryPreselectFrameAgreement();
 		this.getRatesAndFees(event.option.value?.clientId);
 		this.focusToggleMethod('auto');
 	}
@@ -346,6 +351,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
 		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
 	}
+
+    private _tryPreselectFrameAgreement() {
+        if (
+			this.clientDataComponent?.salesClientDataForm.startDate.value &&
+			(this.clientDataComponent?.salesClientDataForm.endDate.value ||
+				this.clientDataComponent?.salesClientDataForm.noEndDate.value) &&
+			this.clientDataComponent?.salesClientDataForm.directClientIdValue.value &&
+			this.mainDataComponent.salesMainDataForm.salesTypeId.value &&
+			this.mainDataComponent.salesMainDataForm.deliveryTypeId.value
+		) {
+			this._workflowDataService.preselectFrameAgreement.emit();
+		}
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -449,6 +467,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					});
 				}
+                if (result?.workflowDocuments?.length) {
+                    this.mainDataComponent.mainDocuments?.addExistingFile(result.workflowDocuments);
+                }
 				this.clientDataComponent?.salesClientDataForm.patchValue(result, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.patchValue(result.salesClientData!, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.differentEndClient?.setValue(
@@ -469,6 +490,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
 				});
+                this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
 				if (result?.noEndDate) {
 					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
 						emitEvent: false,
@@ -585,6 +607,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
+                if (this.isContractModuleEnabled) {
+                    // FIXME: commented out as Ruslan gets 403
+                    // this.clientDataComponent?.getFrameAgreements();
+                }
 			});
 	}
 
@@ -641,6 +667,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
+                if (result.noEvaluation) {
+                    this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable();
+                }
+                if (result?.workflowDocuments?.length) {
+                    this.terminationDocuments?.addExistingFile(result.workflowDocuments);
+                }
 			});
 	}
 
@@ -843,6 +875,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (this.consutlantDataComponent) {
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
+        if (this.mainDataComponent?.mainDocuments) {
+            this.mainDataComponent.mainDocuments.clearDocuments();
+        }
+        if (this.terminationDocuments) {
+            this.terminationDocuments.clearDocuments();
+        }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
 	}
@@ -881,6 +919,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _packClientPeriodData(): ClientPeriodSalesDataCommandDto {
 		let input = new ClientPeriodSalesDataCommandDto();
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
+			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
 		input.salesMainData = new SalesMainDataDto(this.mainDataComponent?.salesMainDataForm.value);
 		input.salesMainData.salesAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
@@ -928,8 +976,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
 			this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
 				const user: EmployeeDto = form.commissionedUser;
-				if (user.id) {
-					input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+				if (user?.id) {
+					input.salesMainData!.commissionedEmployeesIdValues?.push(user?.id);
 					input.salesMainData!.commissionedEmployeesData?.push(user);
 				}
 			});
@@ -938,6 +986,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.startDate = this.clientDataComponent?.salesClientDataForm.startDate?.value;
 		input.noEndDate = this.clientDataComponent?.salesClientDataForm.noEndDate?.value;
 		input.endDate = this.clientDataComponent?.salesClientDataForm.endDate?.value;
+        input.salesClientData.clientContactProjectManager = this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.value;
 		input.salesClientData.directClientIdValue =
 			this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value?.clientId;
 		input.salesClientData.endClientIdValue = this.clientDataComponent?.salesClientDataForm.endClientIdValue?.value?.clientId;
@@ -988,7 +1037,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				signerInput.signOrder = signer.clientSequence;
 				signerInput.contactId = signer.clientContact?.id;
 				signerInput.contact = signer.clientContact;
-				signerInput.signerRoleId = signer.clientRole?.id;
+				signerInput.signerRoleId = signer.signerRoleId;
 				input.salesClientData!.contractSigners?.push(signerInput);
 			});
 		}
@@ -1004,10 +1053,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _packConsultantFormData(consultant: any): ConsultantSalesDataDto {
 		let consultantInput = new ConsultantSalesDataDto();
-		consultantInput.employmentTypeId = consultant.employmentType?.id;
+		consultantInput.employmentTypeId = consultant.employmentTypeId;
 		if (
-			consultant.employmentType?.id === EmploymentTypes.FeeOnly ||
-			consultant.employmentType?.id === EmploymentTypes.Recruitment
+			consultant.employmentTypeId === EmploymentTypes.FeeOnly ||
+			consultant.employmentTypeId === EmploymentTypes.Recruitment
 		) {
 			consultantInput.nameOnly = consultant.consultantNameOnly;
 			consultantInput.consultantPeriodId = consultant.consultantPeriodId;
@@ -1093,6 +1142,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.terminationReason = +this.salesTerminateConsultantForm?.terminationReason?.value;
 		input.finalEvaluationReferencePersonId =
 			this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.id ?? null;
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.terminationDocuments?.documents.value?.length) {
+			for (let document of this.terminationDocuments?.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
 		return input;
 	}
 

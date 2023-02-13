@@ -428,6 +428,41 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'file',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/default_file.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'eml',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/eml.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'ppt',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/ppt.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'xml',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/xml.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'loading-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/loading-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'calendar',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/calendar.svg'
@@ -797,6 +832,30 @@ export class AppModule {
             'dialog-close-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/dialog-close-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'download-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/download-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'no-docs-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/no-docs.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'chevron-green',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-green.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'chevron-green-big',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-green-big.svg'
             )
         );
     }

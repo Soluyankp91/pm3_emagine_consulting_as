@@ -38,14 +38,8 @@ export interface ClientFiltersEnum extends MasterFiltersEnum {
 export interface AgreementFiltersEnum {
 	language: BaseEnumDto[];
 	id: number[];
-	//consultantName ???
-	//companyName ???
-	// legalEntityIds: LegalEntityDto[];
 	agreementType: BaseEnumDto[];
 	recipientTypeId: EnumEntityTypeDto[];
-	// salesTypeIds: EnumEntityTypeDto [],
-	// deliveryTypesIds: EnumEntityTypeDto [],
-	// contractTypeIds: EnumEntityTypeDto [],
 	mode: BaseEnumDto[];
 	status: BaseEnumDto[];
 	saleManager: EmployeeDto[];

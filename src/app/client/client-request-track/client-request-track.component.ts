@@ -107,7 +107,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
     }
 
     redirectToSourcingBoard(requestId: number) {
-        window.open(`${environment.sourcingUrl}/app/request-hub/${requestId}/board`, '_blank');
+        window.open(`${environment.sourcingUrl}/request-hub/${requestId}/board`, '_blank');
     }
 
     mapEmployeeArrayByName(list: EmployeeDto[]): string {

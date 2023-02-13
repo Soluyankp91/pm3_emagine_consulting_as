@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ImageLoaderConfig, IMAGE_LOADER, NgOptimizedImage, provideImgixLoader } from '@angular/common';
 import { MaterialModule } from './material/material.module';
 import { ErrorDialogComponent } from './errors/error-dialog/error-dialog.component';
 import { ErrorDialogService } from './errors/error-dialog.service';
@@ -17,52 +17,61 @@ import { ValidatorComponent } from '../components/validator/validator.component'
 import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
+import { ImageFallbackDirective } from 'src/shared/common/directives/image-fallback.directive';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
+import { environment } from 'src/environments/environment';
+import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 
 @NgModule({
-    declarations: [
-        ErrorDialogComponent,
-        FileDragAndDropDirective,
-        FileUploaderComponent,
-        ConfirmationDialogComponent,
-        ManagerSearchComponent,
-        MomentFormatPipe,
-        ShowIfTruncatedDirective,
-        PreventDoubleClickDirective,
-        ValidatorComponent,
-        ReplacePipe,
-        ConsultantInformationComponent,
-        ExcludeIdsPipe,
-        DisplayListPipe
-    ],
-    imports: [
-        CommonModule,
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgScrollbarModule,
-        ScrollToModule.forRoot()
-    ],
-    exports: [
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-        FileDragAndDropDirective,
-        FileUploaderComponent,
-        ConfirmationDialogComponent,
-        NgScrollbarModule,
-        ManagerSearchComponent,
-        MomentFormatPipe,
-        ShowIfTruncatedDirective,
-        PreventDoubleClickDirective,
-        ValidatorComponent,
-        ReplacePipe,
-        ConsultantInformationComponent,
-        ExcludeIdsPipe,
-        ScrollToModule,
-        DisplayListPipe
-    ],
-    providers: [ErrorDialogService, InternalLookupService],
+	declarations: [
+		ErrorDialogComponent,
+		FileDragAndDropDirective,
+		FileUploaderComponent,
+		ConfirmationDialogComponent,
+		ManagerSearchComponent,
+		MomentFormatPipe,
+		ShowIfTruncatedDirective,
+		PreventDoubleClickDirective,
+		ValidatorComponent,
+		ReplacePipe,
+		ConsultantInformationComponent,
+		ExcludeIdsPipe,
+		ImageFallbackDirective,
+		ImgUrlPipe,
+		DisplayListPipe,
+	],
+	imports: [
+		CommonModule,
+		MaterialModule,
+		FormsModule,
+		ReactiveFormsModule,
+		NgScrollbarModule,
+		ScrollToModule.forRoot(),
+		NgOptimizedImage,
+	],
+	exports: [
+		MaterialModule,
+		FormsModule,
+		ReactiveFormsModule,
+		FileDragAndDropDirective,
+		FileUploaderComponent,
+		ConfirmationDialogComponent,
+		NgScrollbarModule,
+		ManagerSearchComponent,
+		MomentFormatPipe,
+		ShowIfTruncatedDirective,
+		PreventDoubleClickDirective,
+		ValidatorComponent,
+		ReplacePipe,
+		ConsultantInformationComponent,
+		ExcludeIdsPipe,
+		ImageFallbackDirective,
+		ScrollToModule,
+		NgOptimizedImage,
+		ImgUrlPipe,
+		DisplayListPipe,
+	],
+	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })
 export class AppCommonModule {}
