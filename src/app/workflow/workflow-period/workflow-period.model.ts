@@ -282,7 +282,7 @@ export const ContractSyncSections: SubItemDto[] = [
         anchor: 'contractSyncClientLegal'
     },
     {
-        name: 'Consutlant legal contract',
+        name: 'Consutlant contract',
         anchor: 'contractSyncConsultantLegal'
     }
 ];
@@ -291,6 +291,10 @@ export const FinanceSections: SubItemDto[] = [
     {
         name: 'Client (debitor)',
         anchor: 'financeClientDebitor'
+    },
+    {
+        name: 'Docuemnts',
+        anchor: 'financeDocuments'
     },
     {
         name: 'Consutlants',
