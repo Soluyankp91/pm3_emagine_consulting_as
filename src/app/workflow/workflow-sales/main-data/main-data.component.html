@@ -299,7 +299,7 @@
                                             class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                             <mat-select formControlName="recipientType" placeholder="Recipient type"
                                                 [disableOptionCentering]="true"
-                                                (selectionChange)="commissionRecipientTypeChanged($event, i)"
+                                                (selectionChange)="commissionRecipientTypeChanged(i)"
                                                 [compareWith]="compareWithFn">
                                                 <ng-container
                                                     *ngFor="let item of commissionRecipientTypeList; trackBy: trackById">

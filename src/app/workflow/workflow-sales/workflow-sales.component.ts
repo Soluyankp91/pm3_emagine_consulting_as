@@ -498,6 +498,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				);
 				if (result?.salesClientData?.directClient?.clientId) {
 					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
+                    this.clientDataComponent.initContactSubs();
 				}
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
