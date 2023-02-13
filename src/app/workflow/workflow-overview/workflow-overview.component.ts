@@ -92,6 +92,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	historyPageNumber = 1;
 	pageSizeOptions = [5, 10, 20, 50, 100];
 	individualConsultantActionsAvailable: boolean;
+    showAllDocument = false;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -116,6 +117,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		});
 		this.componentInitalized = true;
 		this.individualConsultantActionsAvailable = environment.dev;
+        this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
 		this._getOverviewData();
 
 		this._workflowDataService.workflowOverviewUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
@@ -155,8 +157,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
 	getDocuments() {
+        const periodFilter = this.documentsPeriod.value === 'All' ? undefined : this.documentsPeriod.value;
 		this._workflowDocumentsService
-			.overviewAll(this.workflowId, this.documentsPeriod.value ?? undefined)
+			.overviewAll(this.workflowId, periodFilter)
 			.subscribe((result) => {
 				this.overviewDocuments = result.map(item => {
                     return <IWFOverviewDocuments>{

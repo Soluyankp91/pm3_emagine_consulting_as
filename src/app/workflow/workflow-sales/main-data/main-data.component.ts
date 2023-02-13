@@ -337,9 +337,9 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
     }
 
-    commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
-		this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });
+    commissionRecipientTypeChanged(index: number) {
 		this.filteredRecipients = [];
+		this.commissions.at(index).get('recipient')?.setValue('');
 	}
 
 	addCommission(isInitial?: boolean, commission?: CommissionDto) {
@@ -405,34 +405,22 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 						name: value,
 						maxRecordsCount: 1000,
 					};
-					switch (arrayControl.value.recipientType.id) {
+					switch (arrayControl.value.recipientType?.id) {
 						case 3: // Client
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.clientName : value;
-								}
-								return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.clientName : value;
+                            }
+                            return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
 						case 2: // Consultant
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.name : value;
-								}
-								return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.name : value;
+                            }
+                            return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
 						case 1: // Supplier
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.supplierName : value;
-								}
-								return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.supplierName : value;
+                            }
+                            return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
 						default:
 							return of([]);
 					}

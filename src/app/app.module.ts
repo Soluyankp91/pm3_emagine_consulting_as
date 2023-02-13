@@ -456,6 +456,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'loading-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/loading-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'calendar',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/calendar.svg'

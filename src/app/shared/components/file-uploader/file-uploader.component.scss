@@ -1,15 +1,39 @@
 @import "/src/app/shared/styles/config/_colors";
 @import "/src/app/shared/styles/config/_mixins";
 
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
 .file-uploader {
-    height: 60px;
-    padding: 10px;
+    height: 50px;
+    padding: 16px;
     background-color: transparent;
-    border: 1px dashed #e7e3e8;;
+    border: 1px dashed #e7e3e8;
     border-radius: 0;
 
+    &.uploading-wrapper {
+        background-color: rgba(197, 232, 229, 0.2);
+        border-color: rgb(197, 232, 229);
+        .loading {
+            display: flex;
+            align-items: center;
+            &-text {
+                color: $green-color;
+                @include fontOpenSans(14px, 700);
+            }
+            &-icon {
+                animation: rotation 2s infinite linear;
+            }
+        }
+    }
+
     .content {
-        overflow: auto;
         height: 100%;
         display: flex;
         justify-content: space-between;
@@ -18,7 +42,7 @@
         &-instructions {
             @include fontOpenSans(12px, 600);
             color: $light-grey-color;
-            line-height: 140%;
+            line-height: 1;
         }
 
         .files {
