@@ -32,7 +32,7 @@ import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialo
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
-import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
+import { SettingsTabComponent } from './shared/components/settings-tab/settings-tab.component';
 import { MasterTemplateFilterHeaderComponent } from './master-templates/listAndPreviews/components/top-filters/top-filters.component';
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
@@ -90,7 +90,7 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		SalesTypesFilterComponent,
 		MasterTemplateFilterHeaderComponent,
 		CreateMasterTemplateComponent,
-		MasterTemplateCreationComponent,
+		SettingsTabComponent,
 		AutoNameComponent,
 		MatMenuSingleSelectComponent,
 		MultiSelectComponent,

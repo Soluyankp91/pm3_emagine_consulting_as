@@ -139,16 +139,22 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._unSubscribe$.complete();
 	}
 
-	navigateOnAction() {
-		if (this.editMode) {
-			this._router.navigate(['../../'], {
-				relativeTo: this._route,
-			});
-		} else {
-			this._router.navigate(['../editor'], {
-				relativeTo: this._route,
-			});
-		}
+    navigateBack() {
+        if(this.editMode) {
+            this._router.navigate([`../../`], {
+                relativeTo: this._route,
+            });
+        } else {
+            this._router.navigate([`../`], {
+                relativeTo: this._route,
+            });
+        }
+    }
+
+	navigateToEditor(templateId: number) {
+		this._router.navigate([`../${templateId}/editor`], {
+			relativeTo: this._route,
+		});
 	}
 
 	onSave() {
@@ -188,9 +194,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.navigateOnAction();
-				});
+				.subscribe();
 		} else {
 			this._apiServiceProxy
 				.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
@@ -199,8 +203,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.navigateOnAction();
+				.subscribe(({ agreementTemplateId }) => {
+					this.navigateToEditor(agreementTemplateId);
 				});
 		}
 	}

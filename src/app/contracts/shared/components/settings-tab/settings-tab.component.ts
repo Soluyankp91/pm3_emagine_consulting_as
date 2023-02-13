@@ -1,18 +1,18 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getAllRouteParams } from '../../shared/utils/allRouteParams';
-import { Subject, Observable } from 'rxjs';
-import { CreationTitleService } from '../../shared/services/creation-title.service';
+import { getAllRouteParams } from '../../utils/allRouteParams';
+import { Observable } from 'rxjs';
+import { CreationTitleService } from '../../services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	selector: 'app-master-template-creation',
-	styleUrls: ['./template-editor.component.scss'],
-	templateUrl: './template-editor.component.html',
+	styleUrls: ['./settings-tab.component.scss'],
+	templateUrl: './settings-tab.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MasterTemplateCreationComponent implements OnInit {
+export class SettingsTabComponent implements OnInit {
 	isEdit: boolean;
 	tabs: Tab[];
 	defaultName: string;
@@ -28,9 +28,10 @@ export class MasterTemplateCreationComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.isEdit = this._route.snapshot.data.isEdit;
-		this._setTabs();
+		this.defaultName = this._route.snapshot.data.defaultName;
 		this.templateName$ = this._creationTitleService.templateName$;
 		this.tenants$ = this._creationTitleService.tenants$;
+		this._setTabs();
 	}
 
 	private _setTabs() {
