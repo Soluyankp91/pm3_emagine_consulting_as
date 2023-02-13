@@ -35,7 +35,8 @@ import {
 	ClientPeriodContractsDataQueryDto,
 	ConsultantPeriodContractsDataQueryDto,
 	WorkflowTerminationContractDataQueryDto,
-    WorkflowDocumentCommandDto,
+	WorkflowDocumentCommandDto,
+	WorkflowDocumentServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import {} from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
@@ -59,7 +60,6 @@ import {
 	templateUrl: './workflow-contracts.component.html',
 	styleUrls: ['./workflow-contracts.component.scss'],
 })
-
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
@@ -68,11 +68,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	@Input() isCompleted: boolean;
 	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
 
-    @ViewChild('mainDataComponent', { static: false }) mainDataComponent: ContractsMainDataComponent;
-    @ViewChild('clientDataComponent', { static: false }) clientDataComponent: ContractsClientDataComponent;
-    @ViewChild('consultantDataComponent', { static: false }) consultantDataComponent: ContractsConsultantDataComponent;
-    @ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
-    @ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
+	@ViewChild('mainDataComponent', { static: false }) mainDataComponent: ContractsMainDataComponent;
+	@ViewChild('clientDataComponent', { static: false }) clientDataComponent: ContractsClientDataComponent;
+	@ViewChild('consultantDataComponent', { static: false }) consultantDataComponent: ContractsConsultantDataComponent;
+	@ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
+	@ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
 
 	workflowSideSections = WorkflowProcessType;
 	consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
@@ -106,7 +106,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
 
-    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 
@@ -120,7 +120,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _consultantPeriodService: ConsultantPeriodServiceProxy,
 		private _clientService: ClientsServiceProxy,
 		private _contractSyncService: ContractSyncServiceProxy,
-		private _scrollToService: ScrollToService
+		private _scrollToService: ScrollToService,
+		private _workflowDocumentsService: WorkflowDocumentServiceProxy
 	) {
 		super(injector);
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
@@ -322,6 +323,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 	}
 
+	private _tempUpdateDocuments() {
+		this._workflowDocumentsService.overviewAll(this.workflowId, this.periodId).subscribe((result) => {
+			if (this.mainDataComponent.mainDocuments) {
+				this.mainDataComponent.mainDocuments.clearDocuments();
+			}
+			if (this.terminationDocuments) {
+				this.terminationDocuments.clearDocuments();
+			}
+			if (result.length) {
+				this.mainDataComponent.mainDocuments.addExistingFile(result);
+			}
+		});
+	}
+
 	startEditClientPeriod() {
 		this.showMainSpinner();
 		this._clientPeriodService
@@ -371,42 +386,41 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this._unsubscribe.complete();
 	}
 
-    private _getEnums() {
-        forkJoin({
-            currencies: this._internalLookupService.getCurrencies(),
-            clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
-            clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
-            discounts: this._internalLookupService.getDiscounts(),
-            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-            saleTypes: this._internalLookupService.getSaleTypes(),
-            projectTypes: this._internalLookupService.getProjectTypes(),
-            margins: this._internalLookupService.getMargins(),
-            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            employmentTypes: this._internalLookupService.getEmploymentTypes(),
-            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-            rateUnitTypes: this._internalLookupService.getUnitTypes(),
-            legalContractStatuses: this._internalLookupService.getLegalContractStatuses(),
-            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-            projectCategories: this._internalLookupService.getProjectCategory()
-        })
-        .subscribe(result => {
-            this.currencies = result.currencies;
-            this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
-            this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
-            this.discounts = result.discounts;
-            this.deliveryTypes = result.deliveryTypes;
-            this.saleTypes = result.saleTypes;
-            this.projectTypes = result.projectTypes;
-            this.margins = result.margins;
-            this.clientTimeReportingCap = result.clientTimeReportingCap;
-            this.employmentTypes = result.employmentTypes;
-            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-            this.rateUnitTypes = result.rateUnitTypes;
-            this.legalContractStatuses = result.legalContractStatuses;
-            this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-            this.projectCategories = result.projectCategories;
-        })
-    }
+	private _getEnums() {
+		forkJoin({
+			currencies: this._internalLookupService.getCurrencies(),
+			clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
+			clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
+			discounts: this._internalLookupService.getDiscounts(),
+			deliveryTypes: this._internalLookupService.getDeliveryTypes(),
+			saleTypes: this._internalLookupService.getSaleTypes(),
+			projectTypes: this._internalLookupService.getProjectTypes(),
+			margins: this._internalLookupService.getMargins(),
+			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+			employmentTypes: this._internalLookupService.getEmploymentTypes(),
+			consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+			rateUnitTypes: this._internalLookupService.getUnitTypes(),
+			legalContractStatuses: this._internalLookupService.getLegalContractStatuses(),
+			consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
+			projectCategories: this._internalLookupService.getProjectCategory(),
+		}).subscribe((result) => {
+			this.currencies = result.currencies;
+			this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
+			this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
+			this.discounts = result.discounts;
+			this.deliveryTypes = result.deliveryTypes;
+			this.saleTypes = result.saleTypes;
+			this.projectTypes = result.projectTypes;
+			this.margins = result.margins;
+			this.clientTimeReportingCap = result.clientTimeReportingCap;
+			this.employmentTypes = result.employmentTypes;
+			this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
+			this.rateUnitTypes = result.rateUnitTypes;
+			this.legalContractStatuses = result.legalContractStatuses;
+			this.consultantInsuranceOptions = result.consultantInsuranceOptions;
+			this.projectCategories = result.projectCategories;
+		});
+	}
 
 	toggleEditMode(isToggledFromUi?: boolean) {
 		this.isCompleted = !this.isCompleted;
@@ -421,18 +435,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	updateConsultantStepAnchors() {
-		let consultantNames = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value.map(
-            (item: any) => {
-                if (
-                    item.consultantType?.id === EmploymentTypes.FeeOnly ||
-                    item.consultantType?.id === EmploymentTypes.Recruitment
-                ) {
-                    return {employmentType: item.employmentType?.id, name: item.nameOnly};
-                } else {
-                    return {employmentType: item.employmentType?.id, name: item.consultant?.name};
-                }
-            }
-        );
+		let consultantNames = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value.map((item: any) => {
+			if (item.consultantType?.id === EmploymentTypes.FeeOnly || item.consultantType?.id === EmploymentTypes.Recruitment) {
+				return { employmentType: item.employmentType?.id, name: item.nameOnly };
+			} else {
+				return { employmentType: item.employmentType?.id, name: item.consultant?.name };
+			}
+		});
 		this._workflowDataService.consultantsAddedToStep.emit({
 			stepType: StepType.Contract,
 			processTypeId: this.activeSideSection.typeId!,
@@ -464,23 +473,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	resetForms() {
-        if (this.syncDataComponent) {
-            this.syncDataComponent.statusAfterSync = false;
-            this.syncDataComponent.contractsSyncDataForm.consultants.controls = [];
-        }
-        if (this.clientDataComponent) {
-            this.clientDataComponent.contractClientForm.clientRates.controls = [];
-            this.clientDataComponent.contractClientForm.clientFees.controls = [];
-        }
-        if (this.consultantDataComponent) {
-            this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
-        }
-        if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.clearDocuments();
-        }
-        if (this.terminationDocuments) {
-            this.terminationDocuments.clearDocuments();
-        }
+		if (this.syncDataComponent) {
+			this.syncDataComponent.statusAfterSync = false;
+			this.syncDataComponent.contractsSyncDataForm.consultants.controls = [];
+		}
+		if (this.clientDataComponent) {
+			this.clientDataComponent.contractClientForm.clientRates.controls = [];
+			this.clientDataComponent.contractClientForm.clientFees.controls = [];
+		}
+		if (this.consultantDataComponent) {
+			this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
+		}
+		if (this.mainDataComponent?.mainDocuments) {
+			this.mainDataComponent.mainDocuments.clearDocuments();
+		}
+		if (this.terminationDocuments) {
+			this.terminationDocuments.clearDocuments();
+		}
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
 		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
 		this.clientDataComponent?.contractClientForm.reset('', { emitEvent: false });
@@ -503,7 +512,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 	}
 
-
 	saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean) {
 		let input = this._packClientPeriodData();
 		this.showMainSpinner();
@@ -515,13 +523,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.validationTriggered = false;
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					if (this.editEnabledForcefuly) {
-						this.toggleEditMode();
-					}
-					this.getContractStepData();
+				.subscribe({
+					next: () => {
+						this.validationTriggered = false;
+						this._workflowDataService.workflowOverviewUpdated.emit(true);
+						if (this.editEnabledForcefuly) {
+							this.toggleEditMode();
+						}
+						this.getContractStepData();
+					},
+					error: () => {
+						this._tempUpdateDocuments();
+					},
 				});
 		} else {
 			this._clientPeriodService
@@ -532,11 +545,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.validationTriggered = false;
-					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getContractStepData();
+				.subscribe({
+					next: () => {
+						this.validationTriggered = false;
+						this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+						this._workflowDataService.workflowOverviewUpdated.emit(true);
+						this.getContractStepData();
+					},
+					error: () => {
+						this._tempUpdateDocuments();
+					},
 				});
 		}
 	}
@@ -691,8 +709,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(
-					() => {
+				.subscribe({
+					next: () => {
 						this.validationTriggered = false;
 						this._workflowDataService.workflowOverviewUpdated.emit(true);
 						if (this.editEnabledForcefuly) {
@@ -700,8 +718,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						}
 						this.getContractStepData();
 					},
-					() => this.hideMainSpinner()
-				);
+					error: () => {
+						this.hideMainSpinner();
+						this._tempUpdateDocuments();
+					},
+				});
 		} else {
 			this._workflowServiceProxy
 				.terminationContractComplete(this.workflowId!, input)
@@ -710,11 +731,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.validationTriggered = false;
-					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getContractStepData();
+				.subscribe({
+					next: () => {
+						this.validationTriggered = false;
+						this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+						this._workflowDataService.workflowOverviewUpdated.emit(true);
+						this.getContractStepData();
+					},
+					error: () => {
+						this._tempUpdateDocuments();
+					},
 				});
 		}
 	}
@@ -832,27 +858,39 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.resetForms();
 		if (data?.mainData !== undefined) {
 			this.mainDataComponent?.contractsMainForm.patchValue(data?.mainData, { emitEvent: false });
-			this.mainDataComponent?.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data.mainData.salesTypeId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data.mainData.discountId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data.mainData.projectTypeId), {
-				emitEvent: false,
-			});
+			this.mainDataComponent?.contractsMainForm.salesType?.setValue(
+				this.findItemById(this.saleTypes, data.mainData.salesTypeId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(
+				this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.discounts?.setValue(
+				this.findItemById(this.discounts, data.mainData.discountId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.projectType?.setValue(
+				this.findItemById(this.projectTypes, data.mainData.projectTypeId),
+				{
+					emitEvent: false,
+				}
+			);
 			this.mainDataComponent?.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data.mainData.marginId), {
 				emitEvent: false,
 			});
 			if (data.mainData.noRemarks) {
 				this.mainDataComponent?.contractsMainForm.remarks?.disable();
 			}
-            if (data?.workflowDocuments?.length) {
-                this.mainDataComponent.mainDocuments?.addExistingFile(data.workflowDocuments);
-            }
+			if (data?.workflowDocuments?.length) {
+				this.mainDataComponent.mainDocuments?.addExistingFile(data.workflowDocuments);
+			}
 		}
 		if (data?.clientData !== undefined) {
 			this.clientDataComponent?.contractClientForm.patchValue(data.clientData, { emitEvent: false });
@@ -897,18 +935,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 			this.updateConsultantStepAnchors();
 		}
-        this.mainDataComponent.getPrimaryCategoryTree();
-        if (this.isContractModuleEnabled) {
-            // FIXME: commented out as Ruslan gets 403
-            // this.clientDataComponent?.getFrameAgreements();
-        }
+		this.mainDataComponent.getPrimaryCategoryTree();
+		if (this.isContractModuleEnabled) {
+			// FIXME: commented out as Ruslan gets 403
+			// this.clientDataComponent?.getFrameAgreements();
+		}
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
 		let input = new ClientPeriodContractsDataCommandDto();
 		input.bypassLegalValidation = this.bypassLegalValidation;
-        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
-        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
+		input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+		if (this.mainDataComponent.mainDocuments.documents.value?.length) {
 			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
 				let documentInput = new WorkflowDocumentCommandDto();
 				documentInput.name = document.name;
@@ -920,9 +958,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		input.clientData = new ContractsClientDataDto();
 		input.clientData.specialContractTerms = this.clientDataComponent?.contractClientForm.specialContractTerms?.value;
 		input.clientData.noSpecialContractTerms = this.clientDataComponent?.contractClientForm.noSpecialContractTerms?.value;
-		input.clientData.clientTimeReportingCapId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value?.id;
-		input.clientData.clientTimeReportingCapMaxValue = this.clientDataComponent?.contractClientForm.clientTimeReportingCapMaxValue?.value;
-		input.clientData.clientTimeReportingCapCurrencyId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
+		input.clientData.clientTimeReportingCapId =
+			this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value?.id;
+		input.clientData.clientTimeReportingCapMaxValue =
+			this.clientDataComponent?.contractClientForm.clientTimeReportingCapMaxValue?.value;
+		input.clientData.clientTimeReportingCapCurrencyId =
+			this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
 		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.clientRate?.value;
 		input.clientData.pdcInvoicingEntityId = this.clientDataComponent?.contractClientForm.pdcInvoicingEntityId?.value;
 		input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
@@ -953,7 +994,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		input.clientData.noSpecialFee = this.clientDataComponent?.contractClientForm.clientFees.value?.length === 0;
-		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
+		input.contractLinesDoneManuallyInOldPm =
+			this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
 
 		input.mainData = new ContractsMainDataDto();
 		input.mainData.projectDescription = this.mainDataComponent?.contractsMainForm.projectDescription?.value;
@@ -979,21 +1021,36 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.resetForms();
 		if (data?.mainData !== undefined) {
 			this.mainDataComponent?.contractsMainForm.patchValue(data, { emitEvent: false });
-			this.mainDataComponent?.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {
-				emitEvent: false,
-			});
-			this.mainDataComponent?.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {
-				emitEvent: false,
-			});
+			this.mainDataComponent?.contractsMainForm.salesType?.setValue(
+				this.findItemById(this.saleTypes, data?.mainData?.salesTypeId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(
+				this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.projectType?.setValue(
+				this.findItemById(this.projectTypes, data?.mainData?.projectTypeId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.margin?.setValue(
+				this.findItemById(this.margins, data?.mainData?.marginId),
+				{
+					emitEvent: false,
+				}
+			);
+			this.mainDataComponent?.contractsMainForm.discounts?.setValue(
+				this.findItemById(this.discounts, data?.mainData?.discountId),
+				{
+					emitEvent: false,
+				}
+			);
 			if (data?.noRemarks) {
 				this.mainDataComponent?.contractsMainForm.remarks?.disable();
 			}
@@ -1023,7 +1080,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (consultantInput) {
 			input.consultantData = this._packConsultantFormData(consultantInput);
 		}
-		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+		input.contractLinesDoneManuallyInOldPm =
+			this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
 		input.newLegalContractRequired = this.syncDataComponent?.contractsSyncDataForm.newLegalContract?.value;
 		return input;
 	}
@@ -1031,15 +1089,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	fillWorkflowTerminationForm(data: WorkflowTerminationContractDataQueryDto) {
 		this.resetForms();
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
-        this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
-			emitEvent: false,
-		});
+		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(
+			data?.contractLinesDoneManuallyInOldPm,
+			{
+				emitEvent: false,
+			}
+		);
 		data.consultantTerminationContractData?.forEach((consultant) => {
 			this.addConsultantDataToTerminationForm(consultant);
 		});
-        if (data?.workflowDocuments?.length) {
-            this.terminationDocuments?.addExistingFile(data.workflowDocuments);
-        }
+		if (data?.workflowDocuments?.length) {
+			this.terminationDocuments?.addExistingFile(data.workflowDocuments);
+		}
 	}
 
 	private _packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
@@ -1053,8 +1114,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				input.consultantTerminationContractData!.push(consultantInput);
 			});
 		}
-        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
-        if (this.terminationDocuments?.documents.value?.length) {
+		input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+		if (this.terminationDocuments?.documents.value?.length) {
 			for (let document of this.terminationDocuments?.documents.value) {
 				let documentInput = new WorkflowDocumentCommandDto();
 				documentInput.name = document.name;
@@ -1068,16 +1129,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	fillConsultantTerminationForm(data: ConsultantTerminationContractDataQueryDto) {
 		this.resetForms();
-		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
-			emitEvent: false,
-		});
+		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(
+			data?.contractLinesDoneManuallyInOldPm,
+			{
+				emitEvent: false,
+			}
+		);
 		this.addConsultantDataToTerminationForm(data);
 	}
 
 	private _packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
 		let input = new ConsultantTerminationContractDataCommandDto();
 		input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-		input.contractLinesDoneManuallyInOldPM = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+		input.contractLinesDoneManuallyInOldPm =
+			this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
 		input.removedConsultantFromAnyManualChecklists =
 			this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
 		input.deletedAnySensitiveDocumentsForGDPR =
@@ -1177,7 +1242,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		return consultantData;
 	}
 
-    get canToggleEditMode() {
+	get canToggleEditMode() {
 		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
 	}
 
@@ -1185,7 +1250,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		return this.isCompleted;
 	}
 
-    get consultantTerminationContractData(): UntypedFormArray {
+	get consultantTerminationContractData(): UntypedFormArray {
 		return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as UntypedFormArray;
 	}
 }

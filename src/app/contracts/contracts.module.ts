@@ -113,6 +113,7 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		LogsComponent,
 		LinkedClientTemplatesComponent,
 		ClientModeFilterComponent,
+		ClientModeFilterComponent,
 		CustomTooltipComponent,
 		LinkedAgreementsComponent,
 		AgreementStatusComponent,
