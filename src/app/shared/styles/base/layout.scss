@@ -324,3 +324,10 @@ html {
 .width-fit-content {
     width: fit-content;
 }
+
+.emptyStateRow {
+    height: 50px;
+    width: 100%;
+    padding: 0 16px;
+    background-color: $white-color;
+}

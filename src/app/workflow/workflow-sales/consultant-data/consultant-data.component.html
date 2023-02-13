@@ -476,7 +476,7 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="consultant.value.specialRates?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow">
                                                 <span class="light-grey-color text-600">
                                                     No consultant rates
                                                 </span>
@@ -625,7 +625,7 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="consultant.value.specialFees?.length === 0 && readOnlyMode">
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100 border-unset u-mt--15">
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow u-mt--15">
                                                 <span class="light-grey-color text-600">
                                                     No consultant fees
                                                 </span>
@@ -1010,13 +1010,13 @@
                                 </div>
                             </div>
                         </div>
-                        <ng-container *ngIf="(consultant.value?.consultantProdataEntity?.id && clientDataForm.value?.pdcInvoicingEntityId) && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId)">
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantAccountManager">
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                    <span class="workflow-section--number">7</span>
-                                    <h2 class="workflow-section--header">Account manager</h2>
-                                </div>
-                                <div class="workflow-section--content">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantAccountManager">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">7</span>
+                                <h2 class="workflow-section--header">Account manager</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <ng-container *ngIf="(consultant.value?.consultantProdataEntity?.id && clientDataForm.value?.pdcInvoicingEntityId) && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId); else noDeliveryAccountManager">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': deliveryManagerAutocomplete.isOpen}">
                                             <mat-label>Delivery Account manager</mat-label>
@@ -1042,9 +1042,16 @@
                                             </mat-checkbox>
                                         </ng-container>
                                     </div>
-                                </div>
+                                </ng-container>
+                                <ng-template #noDeliveryAccountManager>
+                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow u-mt--15">
+                                        <span class="light-grey-color text-600">
+                                            Account manager - required only for Nearshore projects
+                                        </span>
+                                    </div>
+                                </ng-template>
                             </div>
-                        </ng-container>
+                        </div>
                     </ng-container>
                 </div>
             </ng-container>

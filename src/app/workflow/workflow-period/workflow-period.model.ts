@@ -144,6 +144,10 @@ export const SalesClientDataSections: SubItemDto[] = [
         anchor: 'salesClientInvoicing'
     },
     {
+        name: 'Frame agreement',
+        anchor: 'salesFrameAgreement'
+    },
+    {
         name: 'Invoicing Number',
         anchor: 'salesClientInvoicingNumber'
     },
@@ -225,6 +229,10 @@ export const ContractClientDataSections: SubItemDto[] = [
         anchor: 'contractClientContract'
     },
     {
+        name: 'Frame agreement',
+        anchor: 'contractFrameAgreement'
+    },
+    {
         name: 'Rates and fees',
         anchor: 'contractClientRatesFees'
     }
@@ -287,5 +295,32 @@ export const FinanceSections: SubItemDto[] = [
     {
         name: 'Consutlants',
         anchor: 'financeConsultants'
+    }
+];
+
+
+export const SalesTerminationSections: SubItemDto[] = [
+    {
+        name: 'End of contact',
+        anchor: 'salesTerminationEndOfContract'
+    },
+    {
+        name: 'Final evaluation',
+        anchor: 'salesTerminationFinalEvaluation'
+    },
+    {
+        name: 'Documents',
+        anchor: 'salesTerminationDocuments'
+    }
+];
+
+export const ContractTerminationSections: SubItemDto[] = [
+    {
+        name: 'Finish contact in pm',
+        anchor: 'contractTerminationFinishContract'
+    },
+    {
+        name: 'Documents',
+        anchor: 'contractTerminationDocuments'
     }
 ];

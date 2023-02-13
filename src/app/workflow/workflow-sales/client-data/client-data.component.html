@@ -477,13 +477,13 @@
             </div>
         </div>
 
-        <ng-container *ngIf="isContractModuleEnabled">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesFrameAgreement">
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                    <span class="workflow-section--number">4</span>
-                    <h2 class="workflow-section--header">Frame agreement</h2>
-                </div>
-                <div class="workflow-section--content">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesFrameAgreement">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">4</span>
+                <h2 class="workflow-section--header">Frame agreement</h2>
+            </div>
+            <div class="workflow-section--content">
+                <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
                             <mat-label>Frame agreement</mat-label>
@@ -500,9 +500,17 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                </div>
+                </ng-container>
+                <ng-template #noFrameAgreementsTemplate>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                        class="emptyStateRow u-mt--15">
+                        <span class="light-grey-color text-600">
+                            Coming soon - with the contracts module..
+                        </span>
+                    </div>
+                </ng-template>
             </div>
-        </ng-container>
+        </div>
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicingNumber">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">

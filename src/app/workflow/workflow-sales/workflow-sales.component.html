@@ -16,7 +16,7 @@
 <ng-template #terminationTemplate>
     <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesTerminationData">
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                     <h1 class="workflow-section--header-main">Termination data</h1>
                     <ng-container *ngIf="readOnlyMode">
@@ -42,7 +42,7 @@
                         </div>
                     </ng-container>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="salesTerminationEndOfContract">
                     <span class="workflow-section--number">1</span>
                     <h2 class="workflow-section--header">
                         <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
@@ -141,13 +141,13 @@
                     </div>
                 </div>
             </div>
-            <ng-container *ngIf="salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2">
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                        <span class="workflow-section--number">2</span>
-                        <h2 class="workflow-section--header">Final evaluation</h2>
-                    </div>
-                    <div class="workflow-section--content">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesTerminationFinalEvaluation">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">2</span>
+                    <h2 class="workflow-section--header">Final evaluation</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <ng-container *ngIf="salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2; else noEvaluationTemplate">
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-235" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value || readOnlyMode, 'isPanelOpen': finalEvaluationReferencePersonAutocomplete.isOpen}">
                                 <mat-label>Final Evaluation Reference Person</mat-label>
@@ -185,12 +185,20 @@
                                 </mat-form-field>
                             </div>
                         </div>
-                    </div>
+                    </ng-container>
+                    <ng-template #noEvaluationTemplate>
+                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                            class="emptyStateRow u-mt--15">
+                            <span class="light-grey-color text-600">
+                                Evaluation - not required for projects which did not start
+                            </span>
+                        </div>
+                    </ng-template>
                 </div>
-            </ng-container>
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesTerminationDocuments">
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                    <span class="workflow-section--number">{{salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2 ? '3' : '2'}}</span>
+                    <span class="workflow-section--number">3</span>
                     <h2 class="workflow-section--header">Documents</h2>
                 </div>
                 <div class="workflow-section--content">

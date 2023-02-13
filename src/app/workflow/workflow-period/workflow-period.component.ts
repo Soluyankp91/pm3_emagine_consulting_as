@@ -16,7 +16,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { EmploymentTypes } from '../workflow.model';
-import { ContractClientDataSections, ContractConsultantDataSections, ContractMainDataSections, ContractPlaceholderConsultantAnchors, ContractSyncSections, EProcessIcon, FinanceSections, IConsultantAnchor, SalesClientDataSections, SalesConsultantDataSections, SalesMainDataSections, SalesPlaceholderConsultantAnchors, StepAnchorDto, StepWithAnchorsDto, SubItemDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
+import { ContractClientDataSections, ContractConsultantDataSections, ContractMainDataSections, ContractPlaceholderConsultantAnchors, ContractSyncSections, ContractTerminationSections, EProcessIcon, FinanceSections, IConsultantAnchor, SalesClientDataSections, SalesConsultantDataSections, SalesMainDataSections, SalesPlaceholderConsultantAnchors, SalesTerminationSections, StepAnchorDto, StepWithAnchorsDto, SubItemDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
     selector: 'app-workflow-period',
@@ -177,6 +177,13 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                         break;
                     case WorkflowProcessType.TerminateWorkflow:
                     case WorkflowProcessType.TerminateConsultant:
+                        SalesAnchors = [
+                            {
+                                name: 'Termination Data',
+                                anchor: 'salesTerminationData',
+                                subItems: new Array<SubItemDto>(...SalesTerminationSections)
+                            }
+                        ];
                         break;
                 }
 
@@ -266,6 +273,13 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                         break;
                     case WorkflowProcessType.TerminateWorkflow:
                     case WorkflowProcessType.TerminateConsultant:
+                        ContractAnchors = [
+                            {
+                                name: 'Termination Data',
+                                anchor: 'contractTerminationData',
+                                subItems: new Array<SubItemDto>(...ContractTerminationSections)
+                            }
+                        ];
                         break;
                 }
                 return new Array<StepAnchorDto>(...ContractAnchors);
