@@ -1,16 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 	Component,
 	EventEmitter,
 	Input,
+	OnInit,
 	Output,
 	ViewChild,
 	ViewEncapsulation,
 } from '@angular/core';
 import { DxButtonModule, DxPopupModule, DxTemplateModule, DxTreeViewComponent, DxTreeViewModule } from 'devextreme-angular';
-import { IMergeField } from '../../_api/merge-fields.service';
-import { CommonModule } from '@angular/common';
+import { IMergeField } from '../../types';
+import { EditorCoreService } from '../../services';
 
 interface IMergeFieldItem {
 	id: string;
@@ -27,7 +29,7 @@ interface IMergeFieldItem {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	encapsulation: ViewEncapsulation.None,
 })
-export class InsertMergeFieldPopupComponent {
+export class InsertMergeFieldPopupComponent implements OnInit {
 	@ViewChild('treeView') private _treeView: DxTreeViewComponent;
 
 	selected: string | null = null;
@@ -40,11 +42,13 @@ export class InsertMergeFieldPopupComponent {
 
 	@Output() mergeField: EventEmitter<string> = new EventEmitter();
 
-	constructor(private _chd: ChangeDetectorRef) {}
+	constructor(private _cdr: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
 
-	showPopup() {
-		this.visibility = true;
-		this._chd.detectChanges();
+	ngOnInit(): void {
+		this._editorCoreService.onSelectMergeField$.subscribe(() => {
+			this.visibility = true;
+			this._cdr.detectChanges();
+		});
 	}
 
 	selectItem(event: Record<'itemData', IMergeFieldItem>) {

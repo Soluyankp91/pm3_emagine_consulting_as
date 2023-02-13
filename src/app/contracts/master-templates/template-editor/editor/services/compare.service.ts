@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
-import { create, createOptions, Options, RibbonButtonItem, RibbonTab, RichEdit } from 'devexpress-richedit';
 import { DOCUMENT } from '@angular/common';
-import { FileTabCommandId } from 'devexpress-richedit/lib/client/public/commands/enum';
-import { ICompareButtonType } from '../types';
+
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
-import { ParagraphApi } from 'devexpress-richedit/lib/model-api/paragraph';
+import { FileTabCommandId } from 'devexpress-richedit/lib/client/public/commands/enum';
+import { create, createOptions, Options, RibbonButtonItem, RibbonTab, RichEdit } from 'devexpress-richedit';
+
+import { ICompareButtonType, ICustomEventType } from '../types';
+import { compareTexts, highlightDifferences, highlightDifferencesConsole } from '../helpers/compare';
 
 interface ICompareTabOptions {
 	id: string;
@@ -13,7 +15,7 @@ interface ICompareTabOptions {
 }
 
 interface ICompareButton {
-	type: ICompareButtonType;
+	type: ICustomEventType;
 	title: string;
 	icon: string;
 }
@@ -22,25 +24,23 @@ type ICompareButtons = Record<ICompareButtonType, ICompareButton>;
 
 const CompareButtons: ICompareButtons = {
 	[ICompareButtonType.Select]: {
-		type: ICompareButtonType.Select,
+		type: ICustomEventType.CompareTabSelect,
 		title: 'Select document',
 		icon: 'refresh',
 	},
 	[ICompareButtonType.Upload]: {
-		type: ICompareButtonType.Upload,
+		type: ICustomEventType.CompareTabOpen,
 		title: 'Upload document',
 		icon: 'activefolder',
 	},
 	[ICompareButtonType.Compare]: {
-		type: ICompareButtonType.Compare,
+		type: ICustomEventType.CompareTabCompareVersion,
 		title: 'Compare to version',
 		icon: 'unselectall',
 	},
 };
 
-@Injectable({
-	providedIn: 'root',
-})
+@Injectable()
 export class CompareService {
 	private _instance: RichEdit;
 	constructor(@Inject(DOCUMENT) private document: Document) {}
@@ -60,94 +60,74 @@ export class CompareService {
 	applyCompareTemplate(blob: any) {
 		let temp = this._createInstance();
 		temp.openDocument(blob, 'temp_compare_document', DocumentFormatApi.OpenXml, () => {
-			// let instance = this.createInstance();
-
 			let diffArray = this._generateComparisonMap(this._instance, temp);
-
 			this._applyDiffsToTemplate(this._instance, diffArray);
 		});
 	}
 
 	private _generateComparisonMap(current: RichEdit, processor: RichEdit) {
-		const diffMap = {
-			list1: [],
-			list2: [],
-		};
-
 		let doc1 = current.document;
 		let doc2 = processor.document;
 
+		const arr1 = [];
+		const arr2 = [];
 		const paragraphsCount = Math.max(doc1.paragraphs.count, doc2.paragraphs.count);
 
 		for (let i = 0; i < paragraphsCount; i++) {
 			let pr1 = doc1.paragraphs.getByIndex(i);
 			let pr2 = doc2.paragraphs.getByIndex(i);
 
-			let txt1 = doc1.getText(pr1?.interval);
-			let txt2 = doc2.getText(pr2?.interval);
+			let txt1 = doc1.getText(pr1?.interval) || '';
+			let txt2 = doc2.getText(pr2?.interval) || '';
 
-			if (txt1.replace(/(\r\n|\n|\r)/gm, '').length > 0) {
-				diffMap.list1.push({
-					paragraph: pr1,
-					text: txt1,
-				});
+			// if (txt1.replace(/(\r\n|\n|\r)/gm, '').length > 0) {
+			if (pr1) {
+				arr1.push(txt1);
 			}
+			// }
 
-			if (txt2.replace(/(\r\n|\n|\r)/gm, '').length > 0) {
-				diffMap.list2.push({
-					paragraph: pr2,
-					text: txt2,
-				});
+			if (pr2) {
+				arr2.push(txt2);
 			}
 		}
 
-		return diffMap;
-	}
+		// COMPARE ALGORITHM
+		const diff = compareTexts(arr2.join('\n'), arr1.join('\n'));
+		const changes = highlightDifferences(diff);
+		highlightDifferencesConsole(diff);
 
-	private _applyDiffsToTemplate(current: RichEdit, diffMap) {
-		let { list1, list2 } = diffMap;
-		let maxPCount = Math.max(list1.length, list2.length);
-		let isSame = true;
-		const changes = [];
-
-		for (let i = 0; i < maxPCount; i++) {
-			if (list1[i] && list2[i]) {
-				if (list1[i].text !== list2[i].text) {
-					isSame = false;
-
-					let currentP: ParagraphApi = list1[i].paragraph;
-					current.document.setCharacterProperties(currentP.interval, {
-						...currentP.properties,
+		for (let i = 0; i < changes.length; i++) {
+			setTimeout(() => {
+				if (changes[i].type === 'insert') {
+					const p = current.document.paragraphs.getByIndex(changes[i].line - 1);
+					current.document.setCharacterProperties(p.interval, {
+						...p.properties,
 						...{ backColor: '#F8EAA1' },
 					});
-					changes.push({
-						pr: list1[i].paragraph,
-						text: list2[i].text,
-						length: list2[i].paragraph?.interval?.length || 0
+				}
+
+				if (changes[i].type === 'delete') {
+					const p = current.document.paragraphs.getByIndex(changes[i].line - 1);
+					const chProperties = current.document.getCharacterProperties(p.interval);
+					const pProperties = current.document.getParagraphProperties(p.interval);
+
+					current.document.insertText(p.interval.start, changes[i].text);
+
+					const ap = current.document.paragraphs.getByIndex(changes[i].line - 1);
+					current.document.setParagraphProperties(ap.interval, pProperties);
+					current.document.setCharacterProperties(ap.interval, {
+						...chProperties,
+						...{ backColor: '#BDE3FF' },
 					});
 				}
-			}
+			}, i * 800);
 		}
 
-		changes.forEach(change => {
-			current.beginUpdate();
+		return [];
+	}
 
-			current.document.insertText(change.pr.interval.end, change.text);
-
-			current.document.setCharacterProperties({
-				start: change.pr.interval.end,
-				length: change.length
-			}, {
-				...change.pr.properties,
-				...{ backColor: '#BDE3FF' },
-			})
-
-			current.endUpdate();
-		})
-
-		if (isSame) {
-			alert('No Changes!');
-		}
+	private _applyDiffsToTemplate(current: RichEdit, diff) {
+		let pointer = 0;
 	}
 
 	private _registerListeners(instance: RichEdit) {

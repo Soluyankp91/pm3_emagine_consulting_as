@@ -11,6 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { DxButtonModule, DxListComponent, DxListModule, DxPopupModule, DxTemplateModule } from 'devextreme-angular';
 import { IDocumentVersion } from '../../types';
+import { EditorCoreService } from '../../services';
 
 @Component({
 	standalone: true,
@@ -30,13 +31,13 @@ export class CompareSelectVersionPopupComponent implements OnInit {
 
 	@Output() select: EventEmitter<number> = new EventEmitter();
 
-	constructor(private _chd: ChangeDetectorRef) {}
+	constructor(private _cdr: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
 
-	ngOnInit(): void {}
-
-	show() {
-		this.visibility = true;
-		this._chd.detectChanges();
+	ngOnInit(): void {
+		this._editorCoreService.onCompareVersion$.subscribe(() => {
+			this.visibility = true;
+			this._cdr.detectChanges();
+		});
 	}
 
 	close() {

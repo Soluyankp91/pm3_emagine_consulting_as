@@ -4,11 +4,31 @@ export enum ICompareButtonType {
 	Compare = 'COMPARE_TAB_COMPARE_BTN',
 }
 
+export enum ICustomEventType {
+	UpdateStyle = 'UPDATE_STYLE',
+	ShowMergeFieldPopup = 'SHOW_MERGE_FIELD_POPUP',
+	FormatPainter = 'FORMAT_PAINTER',
+	CompareTabSelect = 'COMPARE_TAB_SELECT',
+	CompareTabOpen = 'COMPARE_TAB_OPEN_DOCUMENT',
+	CompareTabCompareVersion = 'COMPARE_TAB_COMPARE_VERSION',
+}
+
+export enum ITemplateSaveType {
+	Draft,
+	Complete,
+}
+
+export interface WrappedValueDto<TValue> {
+	value: TValue;
+}
+
 export interface IDocumentCreator {
 	id: number;
 	name: string;
 	externalId: string;
 }
+
+export type IMergeField = { [key: string]: string };
 
 export enum IDocumentCreationReason {}
 

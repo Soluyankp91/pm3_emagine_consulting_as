@@ -1,15 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { filter, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, filter } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 
 // Project Specific
-import { EditorService } from './_api/editor.service';
-import { RicheditComponent } from './components/richedit/richedit.component';
-import { MergeFieldsService } from './_api/merge-fields.service';
-import { RicheditService } from './services/richedit.service';
-import { IDocumentItem, IDocumentVersion } from './types';
+import { CommentService, CompareService, EditorCoreService } from './services';
+import { RichEditorDirective } from './directives';
+import { RichEditorOptionsProvider } from './providers';
+import { AgreementService, MergeFieldsService } from './data-access';
+import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './types';
+
+import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
+import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
+import { CompareSelectDocumentPopupComponent } from './components/compare-select-document-popup';
 
 @Component({
 	standalone: true,
@@ -18,11 +22,19 @@ import { IDocumentItem, IDocumentVersion } from './types';
 	styleUrls: ['./editor.component.scss'],
 	imports: [
 		CommonModule,
-
-		// components
-		RicheditComponent,
+		RichEditorDirective,
+		InsertMergeFieldPopupComponent,
+		CompareSelectVersionPopupComponent,
+		CompareSelectDocumentPopupComponent,
 	],
-	providers: [EditorService, MergeFieldsService, RicheditService],
+	providers: [
+		RichEditorOptionsProvider,
+		AgreementService,
+		MergeFieldsService,
+		CompareService,
+		CommentService,
+		EditorCoreService,
+	],
 })
 export class EditorComponent implements OnInit, OnDestroy {
 	_destroy$ = new Subject();
@@ -30,92 +42,80 @@ export class EditorComponent implements OnInit, OnDestroy {
 	template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
 	documentList$ = new BehaviorSubject<Array<IDocumentItem>>([]);
 	templateVersions$ = new BehaviorSubject<Array<IDocumentVersion>>([]);
-	mergeFields$ = this._mergeFieldsService.getMergeFields(this._route.snapshot.params.id);
+	mergeFields$ = new BehaviorSubject<IMergeField>({});
 
-	docReady$ = combineLatest([this.template$, this.mergeFields$]).pipe(filter((res) => !!res[0] && !!res[1]));
-
-	isLoading$ = new Subject();
-	hasUnsavedChanges$ = this._richeditService.hasUnsavedChanges$;
-
-	@ViewChild(RicheditComponent) richEdit: RicheditComponent;
+	isLoading: boolean = false;
+	hasUnsavedChanges: boolean = false;
 
 	constructor(
-		private _editorService: EditorService,
-		private _richeditService: RicheditService,
+		private _route: ActivatedRoute,
+		private _agreementService: AgreementService,
 		private _mergeFieldsService: MergeFieldsService,
-		private _route: ActivatedRoute
+		private _editorCoreService: EditorCoreService
 	) {}
 
 	ngOnInit(): void {
+		this.isLoading = true;
 		this.templateId = this._route.snapshot.params.id;
-		this._editorService
+		this._agreementService
 			.getTemplate(this.templateId)
-			.pipe(tap((template) => this.template$.next(template)))
-			.subscribe(
-				() => {},
-				() => {
-					this.template$.next(this._editorService.getTemplateMock());
-				}
-			);
+			.pipe(catchError(() => this._agreementService.getTemplateMock()))
+			.subscribe((tmp) => {
+				this.template$.next(tmp);
+				this.isLoading = false;
+				this._editorCoreService.loadDocument(tmp);
+			});
 
-		this._editorService.getTemplateVersions(this.templateId).subscribe((res) => {
+		this._agreementService.getTemplateVersions(this.templateId).subscribe((res) => {
 			this.templateVersions$.next(res || []);
 		});
 
-		this._editorService.getSimpleList().subscribe((res) => {
+		this._agreementService.getSimpleList().subscribe((res) => {
 			this.documentList$.next(res.items);
 		});
+
+		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
+			this.mergeFields$.next(res);
+		});
+	}
+
+	mergeSelectedField(field: string) {
+		this._editorCoreService.insertMergeField(field);
 	}
 
 	loadCompareTemplateByVersion(version: number) {
 		const tmpID = this.templateId;
-		this._editorService.getTemplateByVersion(tmpID, version).subscribe((blob) => {
-			this._richeditService.compareTemplateBlob$.next(blob);
+		this._agreementService.getTemplateByVersion(tmpID, version).subscribe((blob) => {
+			this._editorCoreService.compareTemplate(blob);
 		});
 	}
 
 	loadCompareDocumentTemplate(templateID: number) {
-		this._editorService.getTemplate(templateID).subscribe((blob) => {
-			this._richeditService.compareTemplateBlob$.next(blob);
+		this._agreementService.getTemplate(templateID).subscribe((blob) => {
+			this._editorCoreService.compareTemplate(blob);
 		});
 	}
 
 	saveAsDraft() {
-		this.isLoading$.next(true);
-		this.richEdit.setTemplateAsBase64();
-
-		this.richEdit.templateAsBase64$
-			.pipe(
-				filter((res) => !!res),
-				take(1),
-				switchMap(base64 => this._editorService
-					.saveAsDraftTemplate(this.templateId, { value: base64 }).pipe(
-						tap(() => {
-							this.richEdit.setAsSaved();
-							this.isLoading$.next(false);
-						})
-					))
-			)
-			.subscribe();
+		this._saveFileAs(ITemplateSaveType.Draft);
 	}
 
 	saveAsComplete() {
-		this.isLoading$.next(true);
-		this.richEdit.setTemplateAsBase64();
+		this._saveFileAs(ITemplateSaveType.Complete);
+	}
 
-		this.richEdit.templateAsBase64$
-			.pipe(
-				filter((res) => !!res),
-				take(1),
-				switchMap(base64 => this._editorService
-					.completeTemplate(this.templateId, { value: base64 }).pipe(
-						tap(() => {
-							this.richEdit.setAsSaved();
-							this.isLoading$.next(false);
-						})
-					))
-			)
-			.subscribe();
+	private _saveFileAs(type: ITemplateSaveType) {
+		let functionName = type === ITemplateSaveType.Draft ? 'saveAsDraftTemplate' : 'completeTemplate';
+		this.isLoading = true;
+		this._editorCoreService.setTemplateAsBase64((base64) => {
+			if (base64) {
+				this._agreementService[functionName](this.templateId, { value: base64 }).subscribe(() => {
+					this._editorCoreService.hasUnsavedChanges = true;
+					this.hasUnsavedChanges = true;
+					this.isLoading = false;
+				});
+			}
+		});
 	}
 
 	ngOnDestroy(): void {

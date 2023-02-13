@@ -10,7 +10,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DxButtonModule, DxListComponent, DxPopupModule, DxTemplateModule, DxListModule } from 'devextreme-angular';
-import { IDocumentItem, IDocumentVersion } from '../../types';
+import { IDocumentItem } from '../../types';
+import { EditorCoreService } from '../../services';
 
 @Component({
 	standalone: true,
@@ -30,13 +31,13 @@ export class CompareSelectDocumentPopupComponent implements OnInit {
 
 	@Output() select: EventEmitter<number> = new EventEmitter();
 
-	constructor(private _chd: ChangeDetectorRef) {}
+	constructor(private _chd: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
 
-	ngOnInit(): void {}
-
-	show() {
-		this.visibility = true;
-		this._chd.detectChanges();
+	ngOnInit(): void {
+		this._editorCoreService.onCompareTemplate$.subscribe(() => {
+			this.visibility = true;
+			this._chd.detectChanges();
+		});
 	}
 
 	close() {
