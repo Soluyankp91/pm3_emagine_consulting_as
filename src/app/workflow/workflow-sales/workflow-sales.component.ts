@@ -44,6 +44,7 @@ import {
 	ConsultantPeriodSalesDataDto,
 	EmployeeDto,
     WorkflowDocumentCommandDto,
+    WorkflowDocumentServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
@@ -109,7 +110,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
 		private httpClient: HttpClient,
 		private localHttpService: LocalHttpService,
-		private _scrollToService: ScrollToService
+		private _scrollToService: ScrollToService,
+		private _workflowDocumentsService: WorkflowDocumentServiceProxy
 	) {
 		super(injector);
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
@@ -390,34 +392,44 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		let input = this._packClientPeriodData();
 		this.showMainSpinner();
 		if (isDraft) {
-			this._clientPeriodService
-				.clientSalesPUT(this.periodId!, input)
-				.pipe(
-					finalize(() => {
-						this.hideMainSpinner();
-					})
-				)
-				.subscribe(() => {
-					this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
-					this._workflowDataService.workflowTopSectionUpdated.emit();
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					if (this.editEnabledForcefuly) {
-						this.toggleEditMode();
-					}
-				});
+            this._clientPeriodService
+                .clientSalesPUT(this.periodId!, input)
+                .pipe(
+                    finalize(() => {
+                        this.hideMainSpinner();
+                    })
+                )
+                .subscribe({
+                    next: () => {
+                        this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
+                        this._workflowDataService.workflowTopSectionUpdated.emit();
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
+                });
 		} else {
-			this._clientPeriodService
-				.editFinish(this.periodId!, input)
-				.pipe(
-					finalize(() => {
-						this.hideMainSpinner();
-					})
-				)
-				.subscribe(() => {
-					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getSalesStepData();
-				});
+            this._clientPeriodService
+                .editFinish(this.periodId!, input)
+                .pipe(
+                    finalize(() => {
+                        this.hideMainSpinner();
+                    })
+                )
+                .subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        this.getSalesStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
+                });
 		}
 	}
 
@@ -683,22 +695,33 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this._workflowServiceProxy
 				.terminationSalesPUT(this.workflowId!, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
-				.subscribe(() => {
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					if (this.editEnabledForcefuly) {
-						this.toggleEditMode();
-					}
+				.subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
+
 				});
 		} else {
 			this._workflowServiceProxy
 				.terminationSalesComplete(this.workflowId!, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
-				.subscribe(() => {
-					this._workflowDataService.workflowSideSectionUpdated.emit({
-						isStatusUpdate: true,
-					});
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getSalesStepData();
+				.subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowSideSectionUpdated.emit({
+                            isStatusUpdate: true,
+                        });
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        this.getSalesStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
 				});
 		}
 	}
@@ -733,6 +756,22 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			});
 	}
 	//#endregion termination
+
+    private _tempUpdateDocuments() {
+        this._workflowDocumentsService
+			.overviewAll(this.workflowId, this.periodId)
+			.subscribe((result) => {
+				if (this.mainDataComponent.mainDocuments) {
+                    this.mainDataComponent.mainDocuments.clearDocuments();
+                }
+                if (this.terminationDocuments) {
+                    this.terminationDocuments.clearDocuments();
+                }
+                if (result.length) {
+                    this.mainDataComponent.mainDocuments.addExistingFile(result);
+                }
+			});
+    }
 
 	getSalesStepData(consultant?: ConsultantResultDto, consultantPeriodId?: string) {
 		switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
