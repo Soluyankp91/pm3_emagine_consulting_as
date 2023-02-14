@@ -26,7 +26,7 @@
 						<ng-container matColumnDef="mode">
 							<mat-header-cell class="header-cell" *matHeaderCellDef mat-sort-header> Mode </mat-header-cell>
 							<mat-cell *matCellDef="let template">
-								<emg-mode [linkState]="template.mode" [iconWidth]="20" [iconHeight]="16"></emg-mode>
+								<emg-agreement-mode [agreementValidityState]="template.mode" [iconWidth]="20" [iconHeight]="16"></emg-agreement-mode>
 							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="agreementId">

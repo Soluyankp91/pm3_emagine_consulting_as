@@ -52,7 +52,7 @@
     <form [formGroup]="contractsSyncDataForm" id="syncLegalContractAnchor"
         class="workflow-form workflow-form--main u-w--100">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractSyncMain">
                 <h1 class="workflow-section--header-main">Sync & legal contracts</h1>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                     <span class="workflow-section--number">1</span>
@@ -98,7 +98,7 @@
                 </div>
             </div>
             <ng-container *ngIf="activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod">
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractSyncClientLegal">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                         <span class="workflow-section--number">2</span>
                         <h2 class="workflow-section--header">Client legal contract</h2>
@@ -159,7 +159,7 @@
                     </div>
                 </div>
             </ng-container>
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractSyncConsultantLegal">
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                     <span class="workflow-section--number">
                         {{activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod ? '3' : '2'}}

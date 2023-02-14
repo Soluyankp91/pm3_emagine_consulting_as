@@ -2,8 +2,8 @@
     <ng-container [ngSwitch]="true">
         <ng-container
             *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
-            <div class="workflow--termination">
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div class="workflow--termination" id="contractTerminationData">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractTerminationFinishContract">
                     <h1 class="workflow-section--header-main">Termination data</h1>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                         <span class="workflow-section--number">1</span>
@@ -53,7 +53,7 @@
                         </form>
                     </div>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractTerminationDocuments">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                         <span class="workflow-section--number">2</span>
                         <h2 class="workflow-section--header">Documents</h2>

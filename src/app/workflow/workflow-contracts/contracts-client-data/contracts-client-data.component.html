@@ -1,7 +1,7 @@
 <form fxLayout="column" fxLayoutAlign="start start" id="clientDataAnchor" [formGroup]="contractClientForm"
     class="workflow-form workflow-form--sales u-w--100">
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractClientInvoicing">
             <h1 class="workflow-section--header-main">Client data</h1>
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                 <span class="workflow-section--number">1</span>
@@ -65,7 +65,7 @@
                 </ng-container>
             </div>
         </div>
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractClientContract">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                 <span class="workflow-section--number">2</span>
                 <h2 class="workflow-section--header">Client contract</h2>
@@ -94,13 +94,13 @@
                 </div>
             </div>
         </div>
-        <ng-container *ngIf="isContractModuleEnabled">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicing">
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                    <span class="workflow-section--number">4</span>
-                    <h2 class="workflow-section--header">Frame agreement</h2>
-                </div>
-                <div class="workflow-section--content">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractFrameAgreement">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">3</span>
+                <h2 class="workflow-section--header">Frame agreement</h2>
+            </div>
+            <div class="workflow-section--content">
+                <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
                             <mat-label>Frame agreement</mat-label>
@@ -108,7 +108,16 @@
                                 [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of frameAgreements; trackBy: trackById">
                                     <mat-option [value]="item.agreementId">
-                                        {{ item.agreementName }}
+                                        <div class="multilineDropdown-option--row">
+                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                    {{item.countryName}}
+                                                    {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
+                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </mat-option>
                                 </ng-container>
                             </mat-select>
@@ -117,13 +126,21 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                </div>
+                </ng-container>
+                <ng-template #noFrameAgreementsTemplate>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                        class="emptyStateRow">
+                        <span class="light-grey-color text-600">
+                            Coming soon - with the contracts module..
+                        </span>
+                    </div>
+                </ng-template>
             </div>
-        </ng-container>
+        </div>
 
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractClientRatesFees">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">{{isContractModuleEnabled ? '4' : '3'}}</span>
+                <span class="workflow-section--number">4</span>
                 <h2 class="workflow-section--header">Client rates and fees</h2>
             </div>
             <div class="workflow-section--content">

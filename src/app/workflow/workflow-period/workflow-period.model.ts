@@ -23,7 +23,7 @@ export interface IStepWithAnchorsDto {
     status?: WorkflowStepStatus;
     responsiblePerson?: EmployeeDto;
     actionsPermissionsForCurrentUser?: { [key: string]: boolean; } | undefined;
-    menuAnchors?: StepAnchorDto[]
+    menuAnchors?: StepAnchorDto[];
 }
 
 export class StepAnchorDto implements IStepAnchorDto {
@@ -31,11 +31,13 @@ export class StepAnchorDto implements IStepAnchorDto {
     anchor?: string;
     consultantName?: string;
     subItems?: SubItemDto[];
+    anchorsOpened?: boolean;
     constructor(data?: IStepAnchorDto) {
         this.name = data?.name;
         this.anchor = data?.anchor;
         this.consultantName = data?.consultantName;
         this.subItems = data?.subItems;
+        this.anchorsOpened = data?.anchorsOpened;
     }
 }
 
@@ -44,6 +46,7 @@ export interface IStepAnchorDto {
     anchor?: string;
     consultantName?: string;
     subItems?: SubItemDto[];
+    anchorsOpened?: boolean;
 }
 
 export class SubItemDto implements ISubItemDto {
@@ -97,6 +100,17 @@ export interface IConsultantAnchor {
     name: string;
 }
 
+export const EProcessIcon: {[key: number]: string} =  {
+    1: 'workflowAdd',
+    4: 'workflowAdd',
+    2: 'workflowEdit',
+    5: 'workflowEdit',
+    3: 'workflowStartOrExtend',
+    6: 'workflowStartOrExtend',
+    7: 'workflowTerminate',
+    8: 'workflowTerminate'
+}
+
 export const SalesMainDataSections: SubItemDto[] = [
     {
         name: 'Project',
@@ -109,6 +123,10 @@ export const SalesMainDataSections: SubItemDto[] = [
     {
         name: 'Account manager',
         anchor: 'salesMainAccountManager'
+    },
+    {
+        name: 'Documents',
+        anchor: 'salesMainDocuments'
     }
 ];
 
@@ -126,6 +144,10 @@ export const SalesClientDataSections: SubItemDto[] = [
         anchor: 'salesClientInvoicing'
     },
     {
+        name: 'Frame agreement',
+        anchor: 'salesFrameAgreement'
+    },
+    {
         name: 'Invoicing Number',
         anchor: 'salesClientInvoicingNumber'
     },
@@ -140,6 +162,13 @@ export const SalesClientDataSections: SubItemDto[] = [
     {
         name: 'Client contract',
         anchor: 'salesClientContract'
+    }
+];
+
+export const SalesPlaceholderConsultantAnchors: SubItemDto[] = [
+    {
+        name: 'Employment type',
+        anchor: 'salesConsultantEmployment'
     }
 ];
 
@@ -183,6 +212,10 @@ export const ContractMainDataSections: SubItemDto[] = [
     {
         name: 'Additional data',
         anchor: 'contractAdditionalData'
+    },
+    {
+        name: 'Document',
+        anchor: 'contractDocuments'
     }
 ];
 
@@ -196,8 +229,19 @@ export const ContractClientDataSections: SubItemDto[] = [
         anchor: 'contractClientContract'
     },
     {
+        name: 'Frame agreement',
+        anchor: 'contractFrameAgreement'
+    },
+    {
         name: 'Rates and fees',
         anchor: 'contractClientRatesFees'
+    }
+];
+
+export const ContractPlaceholderConsultantAnchors: SubItemDto[] = [
+    {
+        name: 'Employment type',
+        anchor: 'contractConsultantEmployment'
     }
 ];
 
@@ -238,7 +282,7 @@ export const ContractSyncSections: SubItemDto[] = [
         anchor: 'contractSyncClientLegal'
     },
     {
-        name: 'Consutlant legal contract',
+        name: 'Consutlant contract',
         anchor: 'contractSyncConsultantLegal'
     }
 ];
@@ -249,7 +293,38 @@ export const FinanceSections: SubItemDto[] = [
         anchor: 'financeClientDebitor'
     },
     {
+        name: 'Docuemnts',
+        anchor: 'financeDocuments'
+    },
+    {
         name: 'Consutlants',
         anchor: 'financeConsultants'
+    }
+];
+
+
+export const SalesTerminationSections: SubItemDto[] = [
+    {
+        name: 'End of contact',
+        anchor: 'salesTerminationEndOfContract'
+    },
+    {
+        name: 'Final evaluation',
+        anchor: 'salesTerminationFinalEvaluation'
+    },
+    {
+        name: 'Documents',
+        anchor: 'salesTerminationDocuments'
+    }
+];
+
+export const ContractTerminationSections: SubItemDto[] = [
+    {
+        name: 'Finish contact in pm',
+        anchor: 'contractTerminationFinishContract'
+    },
+    {
+        name: 'Documents',
+        anchor: 'contractTerminationDocuments'
     }
 ];
