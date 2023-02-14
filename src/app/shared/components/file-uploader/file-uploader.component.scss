@@ -1,99 +1,122 @@
-@import "/src/app/shared/styles/config/_colors";
-@import "/src/app/shared/styles/config/_mixins";
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
 
+@keyframes rotation {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(359deg);
+	}
+}
 .file-uploader {
-    height: 60px;
-    padding: 10px;
-    background-color: transparent;
-    border: 1px dashed #e7e3e8;;
-    border-radius: 0;
+	height: 50px;
+	padding: 16px;
+	background-color: transparent;
+	border: 1px dashed #e7e3e8;
+	border-radius: 0;
 
-    .content {
-        overflow: auto;
-        height: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+	&.uploading-wrapper {
+		background-color: rgba(197, 232, 229, 0.2);
+		border-color: rgb(197, 232, 229);
+		.loading {
+			display: flex;
+			align-items: center;
+			&-text {
+				color: $green-color;
+				@include fontOpenSans(14px, 700);
+			}
+			&-icon {
+				animation: rotation 2s infinite linear;
+			}
+		}
+	}
 
-        &-instructions {
-            @include fontOpenSans(12px, 600);
-            color: $light-grey-color;
-            line-height: 140%;
-        }
+	.content {
+		height: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 
-        .files {
-            display: flex;
-            flex-direction: column;
-            margin-right: auto;
-            margin-bottom: auto;
+		&-instructions {
+			@include fontOpenSans(12px, 600);
+			color: $light-grey-color;
+			line-height: 1;
+		}
 
-            .file {
-                z-index: 1;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
+		.files {
+			display: flex;
+			flex-direction: column;
+			margin-right: auto;
+			margin-bottom: auto;
 
-                .icon{
-                    margin: 0 5px;
-                    width: 32px;
-                    height: 32px;
-                }
+			.file {
+				z-index: 1;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
 
-                .label {
-                    margin-left: 3px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    color: #384853;
-                }
-            }
-        }
-    }
+				.icon {
+					margin: 0 5px;
+					width: 32px;
+					height: 32px;
+				}
+
+				.label {
+					margin-left: 3px;
+					font-size: 14px;
+					font-weight: 500;
+					color: #384853;
+				}
+			}
+		}
+	}
 }
 
-
 .uploader-hint {
-    font-weight: 400;
-    line-height: 1.125;
-    font-family: 'Barlow',sans-serif;
-    font-size: 75%;
-    .maxfilesize-hint {
-        color: $red-color !important;
-    }
+	font-weight: 400;
+	line-height: 1.125;
+	font-family: 'Barlow', sans-serif;
+	font-size: 75%;
+	.maxfilesize-hint {
+		color: $red-color !important;
+	}
 }
 
 .files {
-    display: flex;
-    flex-direction: column;
-    margin-right: auto;
-    margin-bottom: auto;
-    margin-top: 16px;
+	display: flex;
+	flex-direction: column;
+	margin-right: auto;
+	margin-bottom: auto;
+	margin-top: 16px;
 
-    .file {
-        z-index: 1;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        margin-bottom: 8px;
+	.file {
+		z-index: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		margin-bottom: 8px;
 
-        .icon{
-            margin: 0 5px;
-            min-width: 32px;
-            width: 32px;
-            height: 32px;
-        }
+		.icon {
+			margin: 0 5px;
+			min-width: 32px;
+			width: 32px;
+			height: 32px;
+		}
 
-        .label {
-            margin-left: 3px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #384853;
-        }
+		.label {
+			margin-left: 3px;
+			font-size: 14px;
+			font-weight: 500;
+			color: #384853;
+		}
 
-        .show-menu--icon {
-            color: $green-color;
-            cursor: pointer;
-        }
-    }
+		.show-menu--icon {
+			color: $green-color;
+			cursor: pointer;
+		}
+	}
 }

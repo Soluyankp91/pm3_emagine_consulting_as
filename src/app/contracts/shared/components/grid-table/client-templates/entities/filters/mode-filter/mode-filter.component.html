@@ -3,6 +3,6 @@
 		<div>{{ labelMap[tableFilter] }}</div>
 	</ng-template>
 	<ng-template #optionPrefix let-option="$implicit">
-		<emg-mode class="icon" [linkState]="option.id" [iconWidth]="16" [iconHeight]="16"></emg-mode>
+		<emg-client-template-mode [linkState]="option.id" [iconWidth]="16" [iconHeight]="16"></emg-client-template-mode>
 	</ng-template>
 </emg-multi-select>

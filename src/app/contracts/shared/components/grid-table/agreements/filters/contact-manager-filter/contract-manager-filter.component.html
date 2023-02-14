@@ -1,0 +1,9 @@
+
+<ng-container *ngIf="contractManagers$ | async as contractManagers">
+	<emg-dropdown-autocomplete-multiselect
+		[options]="contractManagers"
+		[formControl]="filterFormControl"
+		[idProperty]="'id'"
+		[label]="labelMap[tableFilter]"
+		(emitText)="emitText($event)"></emg-dropdown-autocomplete-multiselect>
+</ng-container>

@@ -2,24 +2,17 @@
     <ng-container [ngSwitch]="true">
         <ng-container
             *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
-            <div class="workflow--termination">
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                    <h1 class="workflow-section--header-main">Finish contract in PM</h1>
+            <div class="workflow--termination" id="contractTerminationData">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractTerminationFinishContract">
+                    <h1 class="workflow-section--header-main">Termination data</h1>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                         <span class="workflow-section--number">1</span>
-                        <h2 class="workflow-section--header">Sync</h2>
+                        <h2 class="workflow-section--header">Finish contract in PM</h2>
                     </div>
                     <div class="workflow-section--content">
                         <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection"
                         (onSyncToLegacySystem)="processSyncToLegacySystem()" [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-sync-data>
-                    </div>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                        <span class="workflow-section--number">2</span>
-                        <h2 class="workflow-section--header">Consultants</h2>
-                    </div>
-                    <div class="workflow-section--content">
+
                         <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                             <ng-container formArrayName="consultantTerminationContractData">
                                 <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; trackBy: trackByItem; index as i; last as last" [formGroupName]="i">
@@ -60,6 +53,15 @@
                         </form>
                     </div>
                 </div>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractTerminationDocuments">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <span class="workflow-section--number">2</span>
+                        <h2 class="workflow-section--header">Documents</h2>
+                    </div>
+                    <div class="workflow-section--content">
+                        <app-documents #terminationDocuments [readOnlyMode]="readOnlyMode"></app-documents>
+                    </div>
+                </div>
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
@@ -68,6 +70,7 @@
                 *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                 <app-contracts-client-data #clientDataComponent [readOnlyMode]="readOnlyMode"
                     [clientSpecialRateList]="clientSpecialRateList"
+                    [contractsMainForm]="mainDataComponent?.contractsMainForm"
                     [clientSpecialFeeList]="clientSpecialFeeList"></app-contracts-client-data>
             </ng-container>
 

@@ -64,6 +64,7 @@
 					<mat-menu #menu="matMenu">
 						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
 							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow);">
+                                <mat-icon [svgIcon]="action.actionIcon"></mat-icon>
 								<span> {{ action.label }}</span>
 							</button>
 						</ng-container>
@@ -75,7 +76,7 @@
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 		<mat-row
 			*matRowDef="let row; columns: displayedColumns"
-			[ngClass]="{ highlight: selectedRowId === row.agreementTemplateId }"
+			[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
 			(click)="getTableRow(row);$event.stopPropagation()"></mat-row>
 	</mat-table>
 </div>

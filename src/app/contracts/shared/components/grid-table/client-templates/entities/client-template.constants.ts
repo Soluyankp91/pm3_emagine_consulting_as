@@ -120,7 +120,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'linkState',
 			component: () =>
 				import('../../client-templates/entities/filters/mode-filter/mode-filter.component').then(
-					(it) => it.ModeFilterComponent
+					(it) => it.ClientModeFilterComponent
 				),
 		},
 	},
@@ -144,10 +144,17 @@ export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 	{
 		label: 'Edit',
 		actionType: 'EDIT',
+		actionIcon: 'table-edit-icon',
 	},
 	{
 		label: 'Duplicate',
 		actionType: 'DUPLICATE',
+		actionIcon: 'duplicate-icon',
+	},
+	{
+		label: 'Copy Link',
+		actionType: 'COPY',
+		actionIcon: 'copy-icon',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;

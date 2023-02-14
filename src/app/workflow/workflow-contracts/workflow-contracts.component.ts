@@ -36,8 +36,10 @@ import {
 	ConsultantPeriodContractsDataQueryDto,
 	WorkflowTerminationContractDataQueryDto,
     WorkflowDocumentCommandDto,
+    WorkflowDocumentServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import {} from 'src/shared/service-proxies/service-proxies';
+import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
@@ -71,6 +73,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     @ViewChild('clientDataComponent', { static: false }) clientDataComponent: ContractsClientDataComponent;
     @ViewChild('consultantDataComponent', { static: false }) consultantDataComponent: ContractsConsultantDataComponent;
     @ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
+    @ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
 
 	workflowSideSections = WorkflowProcessType;
 	consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
@@ -104,6 +107,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
 
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -116,7 +121,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _consultantPeriodService: ConsultantPeriodServiceProxy,
 		private _clientService: ClientsServiceProxy,
 		private _contractSyncService: ContractSyncServiceProxy,
-		private _scrollToService: ScrollToService
+		private _scrollToService: ScrollToService,
+        private _workflowDocumentsService: WorkflowDocumentServiceProxy
 	) {
 		super(injector);
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
@@ -318,6 +324,22 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 	}
 
+    private _tempUpdateDocuments() {
+        this._workflowDocumentsService
+			.overviewAll(this.workflowId, this.periodId)
+			.subscribe((result) => {
+				if (this.mainDataComponent.mainDocuments) {
+                    this.mainDataComponent.mainDocuments.clearDocuments();
+                }
+                if (this.terminationDocuments) {
+                    this.terminationDocuments.clearDocuments();
+                }
+                if (result.length) {
+                    this.mainDataComponent.mainDocuments.addExistingFile(result);
+                }
+			});
+    }
+
 	startEditClientPeriod() {
 		this.showMainSpinner();
 		this._clientPeriodService
@@ -452,7 +474,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
-		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
+		return listOfItems && selectedItem && listOfItems?.id === selectedItem?.id;
 	}
 
 	displayNameFn(option: any) {
@@ -472,7 +494,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
         }
         if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.documents.controls = [];
+            this.mainDataComponent.mainDocuments.clearDocuments();
+        }
+        if (this.terminationDocuments) {
+            this.terminationDocuments.clearDocuments();
         }
 		this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
 		this.mainDataComponent?.contractsMainForm.reset('', { emitEvent: false });
@@ -508,13 +533,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.validationTriggered = false;
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					if (this.editEnabledForcefuly) {
-						this.toggleEditMode();
-					}
-					this.getContractStepData();
+				.subscribe({
+                    next: () => {
+                        this.validationTriggered = false;
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                        this.getContractStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
 				});
 		} else {
 			this._clientPeriodService
@@ -525,11 +555,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.validationTriggered = false;
-					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getContractStepData();
+				.subscribe({
+                    next: () => {
+                        this.validationTriggered = false;
+                        this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        this.getContractStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
 				});
 		}
 	}
@@ -684,8 +719,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(
-					() => {
+				.subscribe({
+					next: () => {
 						this.validationTriggered = false;
 						this._workflowDataService.workflowOverviewUpdated.emit(true);
 						if (this.editEnabledForcefuly) {
@@ -693,8 +728,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						}
 						this.getContractStepData();
 					},
-					() => this.hideMainSpinner()
-				);
+					error: () => {
+                        this.hideMainSpinner();
+                        this._tempUpdateDocuments();
+                    }
+                });
 		} else {
 			this._workflowServiceProxy
 				.terminationContractComplete(this.workflowId!, input)
@@ -703,11 +741,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this.validationTriggered = false;
-					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getContractStepData();
+				.subscribe({
+                    next: () => {
+                        this.validationTriggered = false;
+                        this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        this.getContractStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
 				});
 		}
 	}
@@ -873,7 +916,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
-        console.log(this.syncDataComponent?.contractsSyncDataForm.value);
 		if (data?.clientData?.periodClientSpecialRates?.length) {
 			data.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
 				this.clientDataComponent?.addSpecialRate(rate);
@@ -892,6 +934,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.updateConsultantStepAnchors();
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
+        if (this.isContractModuleEnabled) {
+            this.clientDataComponent?.getFrameAgreements();
+        }
 	}
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
@@ -1021,9 +1066,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	fillWorkflowTerminationForm(data: WorkflowTerminationContractDataQueryDto) {
 		this.resetForms();
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
+        this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {
+			emitEvent: false,
+		});
 		data.consultantTerminationContractData?.forEach((consultant) => {
 			this.addConsultantDataToTerminationForm(consultant);
 		});
+        if (data?.workflowDocuments?.length) {
+            this.terminationDocuments?.addExistingFile(data.workflowDocuments);
+        }
 	}
 
 	private _packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
@@ -1038,8 +1089,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 		}
         input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
-        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
-			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+        if (this.terminationDocuments?.documents.value?.length) {
+			for (let document of this.terminationDocuments?.documents.value) {
 				let documentInput = new WorkflowDocumentCommandDto();
 				documentInput.name = document.name;
 				documentInput.workflowDocumentId = document.workflowDocumentId;
@@ -1052,7 +1103,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	fillConsultantTerminationForm(data: ConsultantTerminationContractDataQueryDto) {
 		this.resetForms();
-		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
+		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {
 			emitEvent: false,
 		});
 		this.addConsultantDataToTerminationForm(data);
@@ -1061,7 +1112,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	private _packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
 		let input = new ConsultantTerminationContractDataCommandDto();
 		input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-		input.contractLinesDoneManuallyInOldPM = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
 		input.removedConsultantFromAnyManualChecklists =
 			this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
 		input.deletedAnySensitiveDocumentsForGDPR =

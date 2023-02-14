@@ -1,13 +1,15 @@
 import { AppCommonModule } from './../shared/common/app-common.module';
 import { ContractsRoutingModule } from './contracts-routing.module';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
-import { AgreementsComponent } from './agreements/agreements.component';
+import { AgreementsComponent } from './agreements/listAndPreviews/agreements.component';
 import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
+	AgreementServiceProxy,
 	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateServiceProxy,
 	FileServiceProxy,
@@ -30,14 +32,12 @@ import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialo
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
-import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { SettingsTabComponent } from './shared/components/settings-tab/settings-tab.component';
 import { MasterTemplateFilterHeaderComponent } from './master-templates/listAndPreviews/components/top-filters/top-filters.component';
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
 import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
 import { ContractsService } from './shared/services/contracts.service';
-import { ClientSpecificComponent } from './client-specific-templates/edit-template/client-specific.component';
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
@@ -55,14 +55,24 @@ import { FormatArrayPipe } from './shared/pipes/format-array.pipe';
 import { AttachmentsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/attachments/attachments.component';
 import { LogsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/logs/logs.component';
 import { LinkedClientTemplatesComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedClientTemplates/linked-client-templates.component';
-import { ModeComponent } from './shared/components/mode/mode.component';
 import { CustomTooltipComponent } from './shared/directives/customTooltip/custom-tooltip.component';
 import { LinkedAgreementsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedAgreements/linked-agreements.component';
 import { AgreementStatusComponent } from './shared/components/agreement-status/agreement-status.component';
 import { ApprovalComponent } from './shared/components/approval/approval.component';
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
-import { ModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
+import { ClientModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
+import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
+import { SalesManagersFilterComponent } from './shared/components/grid-table/agreements/filters/sales-managers-filter/sales-managers-filter.component';
+import { ContractManagerFilterComponent } from './shared/components/grid-table/agreements/filters/contact-manager-filter/contract-manager-filter.component';
+import { AgreementModeComponent } from './shared/components/agreement-mode/agreement-mode.component';
+import { ClientTemplateModeComponent } from './shared/components/client-mode/client-mode.component';
+import { AgreementService } from './agreements/listAndPreviews/services/agreement.service';
+import { StatusesFilterComponent } from './shared/components/grid-table/agreements/filters/statuses-filter/statuses-filter.component';
+import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
+import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
+import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -80,7 +90,7 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		SalesTypesFilterComponent,
 		MasterTemplateFilterHeaderComponent,
 		CreateMasterTemplateComponent,
-		MasterTemplateCreationComponent,
+		SettingsTabComponent,
 		AutoNameComponent,
 		MatMenuSingleSelectComponent,
 		MultiSelectComponent,
@@ -88,7 +98,6 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		DropdownAutocompleteMultiselectComponent,
 		NewFileUploaderDirective,
 		CreationComponent,
-		ClientSpecificComponent,
 		DropdownAutocompleteSingleSelectComponent,
 		ConfirmDialogComponent,
 		FileUploaderComponent,
@@ -103,29 +112,41 @@ import { ModeFilterComponent } from './shared/components/grid-table/client-templ
 		AttachmentsComponent,
 		LogsComponent,
 		LinkedClientTemplatesComponent,
-		ModeComponent,
+		ClientModeFilterComponent,
+		ClientModeFilterComponent,
 		CustomTooltipComponent,
 		LinkedAgreementsComponent,
 		AgreementStatusComponent,
 		ApprovalComponent,
 		EnabledComponent,
 		ApprovalFilterComponent,
-		ModeFilterComponent,
+		AgreementModeFilterComponent,
+		SettingsComponent,
+		AgreementDevExpress,
+		SalesManagersFilterComponent,
+		ContractManagerFilterComponent,
+		AgreementModeComponent,
+		StatusesFilterComponent,
+		ClientTemplateModeComponent,
+		SignersTableComponent,
 	],
 	imports: [
 		CommonModule,
+		FormsModule,
 		ContractsRoutingModule,
 		ServiceProxyModule,
 		AppCommonModule,
 		MaterialModule,
-		
+
 		// Standalone
-		EditorComponent
+		EditorComponent,
 	],
 	providers: [
 		ContractsService,
 		MasterTemplatesService,
 		ClientTemplatesService,
+		AgreementService,
+		AgreementServiceProxy,
 		AgreementTemplateServiceProxy,
 		FileServiceProxy,
 		AgreementTemplateServiceProxy,
@@ -219,5 +240,26 @@ export class ContractsModule {
 		);
 		iconRegistry.addSvgIcon('asc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/asc-arrow.svg'));
 		iconRegistry.addSvgIcon('desc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/desc-arrow.svg'));
+		iconRegistry.addSvgIcon(
+			'agreement-active-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-active-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-active-outdated-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-active-outdated-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-inactive-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-inactive-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'table-edit-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/table-edit-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'duplicate-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/duplicate-icon.svg')
+		);
+		iconRegistry.addSvgIcon('copy-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/copy-icon.svg'));
 	}
 }

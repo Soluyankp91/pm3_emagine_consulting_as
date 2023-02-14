@@ -247,7 +247,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			deliveryManagerSameAsAccountManager: new UntypedFormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
 			deliveryAccountManager: new UntypedFormControl(
 				{
-					value: consultant?.deliveryAccountManager ?? '',
+					value: consultant?.deliveryManagerSameAsAccountManager ? this.mainDataForm.salesAccountManagerIdValue?.value : consultant?.deliveryAccountManager,
 					disabled: consultant?.deliveryManagerSameAsAccountManager,
 				},
 				CustomValidators.autocompleteValidator(['id'])

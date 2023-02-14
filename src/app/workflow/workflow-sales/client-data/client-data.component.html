@@ -134,12 +134,6 @@
                                 [control]="salesClientDataForm.invoicePaperworkContactIdValue"></app-validator>
                         </mat-error>
                     </mat-form-field>
-                    <ng-container *ngIf="!readOnlyMode || salesClientDataForm.invoicingReferencePersonDontShowOnInvoice?.value">
-                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="invoicingReferencePersonDontShowOnInvoice"
-                            name="invoicingReferencePersonDontShowOnInvoice" class="black-checkbox">
-                            Don't show on invoice
-                        </mat-checkbox>
-                    </ng-container>
                 </div>
             </div>
         </div>
@@ -481,12 +475,55 @@
                     </div>
                 </ng-container>
             </div>
+        </div>
 
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesFrameAgreement">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">4</span>
+                <h2 class="workflow-section--header">Frame agreement</h2>
+            </div>
+            <div class="workflow-section--content">
+                <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
+                            <mat-label>Frame agreement</mat-label>
+                            <mat-select [disabled]="readOnlyMode" formControlName="frameAgreementId"
+                                [disableOptionCentering]="true">
+                                <ng-container *ngFor="let item of frameAgreements; trackBy: trackById">
+                                    <mat-option [value]="item.agreementId">
+                                        <div class="multilineDropdown-option--row">
+                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                    {{item.countryName}}
+                                                    {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
+                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="salesClientDataForm.frameAgreementId"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+                <ng-template #noFrameAgreementsTemplate>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                        class="emptyStateRow">
+                        <span class="light-grey-color text-600">
+                            Coming soon - with the contracts module..
+                        </span>
+                    </div>
+                </ng-template>
+            </div>
         </div>
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicingNumber">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">4</span>
+                <span class="workflow-section--number">5</span>
                 <h2 class="workflow-section--header">Invoicing number</h2>
             </div>
             <div class="workflow-section--content">
@@ -595,7 +632,7 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientRatesFees">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">5</span>
+                <span class="workflow-section--number">6</span>
                 <h2 class="workflow-section--header">Client rates and fees</h2>
             </div>
             <div class="workflow-section--content">
@@ -888,7 +925,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientEvaluation">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">6</span>
+                <span class="workflow-section--number">7</span>
                 <h2 class="workflow-section--header">Client evaluation</h2>
             </div>
             <div class="workflow-section--content">
@@ -964,7 +1001,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientContract">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">7</span>
+                <span class="workflow-section--number">8</span>
                 <h2 class="workflow-section--header">Client contract</h2>
             </div>
             <div class="workflow-section--content">
@@ -1021,16 +1058,16 @@
                             <mat-form-field appearance="outline"
                                 class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                 <mat-label>Client Role</mat-label>
-                                <mat-select [disabled]="readOnlyMode" required formControlName="clientRole"
-                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                <mat-select [disabled]="readOnlyMode" required formControlName="signerRoleId"
+                                    [disableOptionCentering]="true">
                                     <ng-container *ngFor="let item of signerRoles; trackBy: trackById">
-                                        <mat-option [value]="item">
+                                        <mat-option [value]="item.id">
                                             {{ item.name }}
                                         </mat-option>
                                     </ng-container>
                                 </mat-select>
                                 <mat-error>
-                                    <app-validator [control]="contractSigners.at(i).get('clientRole')"></app-validator>
+                                    <app-validator [control]="contractSigners.at(i).get('signerRoleId')"></app-validator>
                                 </mat-error>
                             </mat-form-field>
 

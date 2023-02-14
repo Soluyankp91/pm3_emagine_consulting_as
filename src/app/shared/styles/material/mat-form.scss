@@ -516,7 +516,7 @@
                     color: #4A4E60;
                 }
                 &-info {
-                    @include fontOpenSans(14px, 600);
+                    @include fontOpenSans(13px, 600);
                     line-height: 140%;
                     color: #4A4E60;
                 }
@@ -687,9 +687,6 @@ input[type=number] {
 
 .client-and-consultant-autocomplete {
     width: 450px;
-    .mat-form-field-flex {
-        padding: 0 1em 0 1em !important;
-    }
 }
 
 

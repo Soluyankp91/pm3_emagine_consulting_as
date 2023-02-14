@@ -44,7 +44,9 @@ import {
 	ConsultantPeriodSalesDataDto,
 	EmployeeDto,
     WorkflowDocumentCommandDto,
+    WorkflowDocumentServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
+import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -63,6 +65,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	@ViewChild('mainDataComponent', { static: false }) mainDataComponent: MainDataComponent;
 	@ViewChild('clientDataComponent', { static: false }) clientDataComponent: ClientDataComponent;
 	@ViewChild('consutlantDataComponent', { static: false }) consutlantDataComponent: ConsultantDataComponent;
+	@ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
 
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
@@ -88,6 +91,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 
@@ -106,7 +110,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
 		private httpClient: HttpClient,
 		private localHttpService: LocalHttpService,
-		private _scrollToService: ScrollToService
+		private _scrollToService: ScrollToService,
+		private _workflowDocumentsService: WorkflowDocumentServiceProxy
 	) {
 		super(injector);
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
@@ -339,6 +344,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {
 			emitEvent: false,
 		});
+        this._tryPreselectFrameAgreement();
 		this.getRatesAndFees(event.option.value?.clientId);
 		this.focusToggleMethod('auto');
 	}
@@ -347,6 +353,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
 		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
 	}
+
+    private _tryPreselectFrameAgreement() {
+        if (
+			this.clientDataComponent?.salesClientDataForm.startDate.value &&
+			(this.clientDataComponent?.salesClientDataForm.endDate.value ||
+				this.clientDataComponent?.salesClientDataForm.noEndDate.value) &&
+			this.clientDataComponent?.salesClientDataForm.directClientIdValue.value &&
+			this.mainDataComponent.salesMainDataForm.salesTypeId.value &&
+			this.mainDataComponent.salesMainDataForm.deliveryTypeId.value
+		) {
+			this._workflowDataService.preselectFrameAgreement.emit();
+		}
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -373,34 +392,44 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		let input = this._packClientPeriodData();
 		this.showMainSpinner();
 		if (isDraft) {
-			this._clientPeriodService
-				.clientSalesPUT(this.periodId!, input)
-				.pipe(
-					finalize(() => {
-						this.hideMainSpinner();
-					})
-				)
-				.subscribe(() => {
-					this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
-					this._workflowDataService.workflowTopSectionUpdated.emit();
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					if (this.editEnabledForcefuly) {
-						this.toggleEditMode();
-					}
-				});
+            this._clientPeriodService
+                .clientSalesPUT(this.periodId!, input)
+                .pipe(
+                    finalize(() => {
+                        this.hideMainSpinner();
+                    })
+                )
+                .subscribe({
+                    next: () => {
+                        this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
+                        this._workflowDataService.workflowTopSectionUpdated.emit();
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
+                });
 		} else {
-			this._clientPeriodService
-				.editFinish(this.periodId!, input)
-				.pipe(
-					finalize(() => {
-						this.hideMainSpinner();
-					})
-				)
-				.subscribe(() => {
-					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getSalesStepData();
-				});
+            this._clientPeriodService
+                .editFinish(this.periodId!, input)
+                .pipe(
+                    finalize(() => {
+                        this.hideMainSpinner();
+                    })
+                )
+                .subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        this.getSalesStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
+                });
 		}
 	}
 
@@ -469,12 +498,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				);
 				if (result?.salesClientData?.directClient?.clientId) {
 					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
+                    this.clientDataComponent.initContactSubs();
 				}
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
 				});
-                // FIXME: uncomment once BE is deployed
-                // this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
+                this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
 				if (result?.noEndDate) {
 					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
 						emitEvent: false,
@@ -591,6 +620,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					this.mainDataComponent?.makeAreaTypeRoleRequired();
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
+                if (this.isContractModuleEnabled) {
+                    this.clientDataComponent?.getFrameAgreements();
+                }
 			});
 	}
 
@@ -647,6 +679,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
+                if (result.noEvaluation) {
+                    this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable();
+                }
+                if (result?.workflowDocuments?.length) {
+                    this.terminationDocuments?.addExistingFile(result.workflowDocuments);
+                }
 			});
 	}
 
@@ -657,22 +695,33 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this._workflowServiceProxy
 				.terminationSalesPUT(this.workflowId!, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
-				.subscribe(() => {
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					if (this.editEnabledForcefuly) {
-						this.toggleEditMode();
-					}
+				.subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
+
 				});
 		} else {
 			this._workflowServiceProxy
 				.terminationSalesComplete(this.workflowId!, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
-				.subscribe(() => {
-					this._workflowDataService.workflowSideSectionUpdated.emit({
-						isStatusUpdate: true,
-					});
-					this._workflowDataService.workflowOverviewUpdated.emit(true);
-					this.getSalesStepData();
+				.subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowSideSectionUpdated.emit({
+                            isStatusUpdate: true,
+                        });
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        this.getSalesStepData();
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
 				});
 		}
 	}
@@ -707,6 +756,22 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			});
 	}
 	//#endregion termination
+
+    private _tempUpdateDocuments() {
+        this._workflowDocumentsService
+			.overviewAll(this.workflowId, this.periodId)
+			.subscribe((result) => {
+				if (this.mainDataComponent.mainDocuments) {
+                    this.mainDataComponent.mainDocuments.clearDocuments();
+                }
+                if (this.terminationDocuments) {
+                    this.terminationDocuments.clearDocuments();
+                }
+                if (result.length) {
+                    this.mainDataComponent.mainDocuments.addExistingFile(result);
+                }
+			});
+    }
 
 	getSalesStepData(consultant?: ConsultantResultDto, consultantPeriodId?: string) {
 		switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
@@ -850,7 +915,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.consutlantDataComponent.consultantsForm.consultants.controls = [];
         }
         if (this.mainDataComponent?.mainDocuments) {
-            this.mainDataComponent.mainDocuments.documents.controls = [];
+            this.mainDataComponent.mainDocuments.clearDocuments();
+        }
+        if (this.terminationDocuments) {
+            this.terminationDocuments.clearDocuments();
         }
         this.salesTerminateConsultantForm.reset('', {emitEvent: false});
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
@@ -947,8 +1015,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		if (this.mainDataComponent?.salesMainDataForm.commissionedUsers.value?.length) {
 			this.mainDataComponent?.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
 				const user: EmployeeDto = form.commissionedUser;
-				if (user.id) {
-					input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+				if (user?.id) {
+					input.salesMainData!.commissionedEmployeesIdValues?.push(user?.id);
 					input.salesMainData!.commissionedEmployeesData?.push(user);
 				}
 			});
@@ -1008,7 +1076,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				signerInput.signOrder = signer.clientSequence;
 				signerInput.contactId = signer.clientContact?.id;
 				signerInput.contact = signer.clientContact;
-				signerInput.signerRoleId = signer.clientRole?.id;
+				signerInput.signerRoleId = signer.signerRoleId;
 				input.salesClientData!.contractSigners?.push(signerInput);
 			});
 		}
@@ -1114,8 +1182,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.finalEvaluationReferencePersonId =
 			this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.id ?? null;
         input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
-        if (this.mainDataComponent.mainDocuments.documents.value?.length) {
-			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
+        if (this.terminationDocuments?.documents.value?.length) {
+			for (let document of this.terminationDocuments?.documents.value) {
 				let documentInput = new WorkflowDocumentCommandDto();
 				documentInput.name = document.name;
 				documentInput.workflowDocumentId = document.workflowDocumentId;
