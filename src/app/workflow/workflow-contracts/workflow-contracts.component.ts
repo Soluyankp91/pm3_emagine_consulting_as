@@ -935,8 +935,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
         if (this.isContractModuleEnabled) {
-            // FIXME: commented out as Ruslan gets 403
-            // this.clientDataComponent?.getFrameAgreements();
+            this.clientDataComponent?.getFrameAgreements();
         }
 	}
 

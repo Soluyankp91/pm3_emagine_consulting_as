@@ -108,7 +108,16 @@
                                 [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of frameAgreements; trackBy: trackById">
                                     <mat-option [value]="item.agreementId">
-                                        {{ item.agreementName }}
+                                        <div class="multilineDropdown-option--row">
+                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                    {{item.countryName}}
+                                                    {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
+                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </mat-option>
                                 </ng-container>
                             </mat-select>
