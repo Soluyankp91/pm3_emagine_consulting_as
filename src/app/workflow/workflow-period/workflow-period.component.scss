@@ -20,9 +20,6 @@
     &--step {
         display: flex;
         cursor: pointer;
-        &:hover {
-            background-color: rgba($color: $sand-color, $alpha: 0.5);
-        }
         &__anchor {
             display: flex;
             flex-direction: column;
@@ -31,6 +28,12 @@
             line-height: 140%;
             color: $dark-grey-color;
             text-transform: uppercase;
+            &-name {
+                line-height: 140%;
+            }
+            &:hover {
+                font-weight: 800;
+            }
             &-consultant-name {
                 text-transform: none;
                 color: $dark-grey-color;
@@ -39,6 +42,9 @@
                 @include fontOpenSans(12px, 700);
                 line-height: 12px;
                 color: $medium-grey-color;
+                &:first-of-type {
+                    margin-top: 10px;
+                }
                 &:hover {
                     color: $dark-grey-color;
                 }
@@ -61,7 +67,8 @@
             text-transform: uppercase;
             margin-left: 10px;
         }
-        &.active-step:not(.completed-step) {
+        &.active-step:not(.completed-step),
+        &:hover:not(.completed-step) {
             .workflow-navigation--step__number {
                 background-color: rgba($color: $green-color, $alpha: 0.3);
                 color: $green-color;
@@ -71,7 +78,8 @@
                 font-weight: 800;
             }
         }
-        &.completed-step:not(.active-step) {
+        &.completed-step:not(.active-step),
+        &.completed-step:hover:not(.active-step) {
             .workflow-navigation--step__number {
                 background-color: $green-color;
                 color: $white-color;
@@ -93,9 +101,22 @@
         }
     }
 }
-
+.section-anchor--chevron {
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: -4px;
+    transition: transform .3s ease-in-out;
+    &.active-chevron {
+        transform: rotate(180deg);
+        margin-top: 0;
+    }
+}
 .active-anchor {
     font-weight: 800;
+}
+
+.side-nav--container {
+    border-left: 2.5px solid $sand-color;
 }
 
 .workflow-period--delete {
