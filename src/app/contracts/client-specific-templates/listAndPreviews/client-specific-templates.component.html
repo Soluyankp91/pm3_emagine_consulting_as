@@ -9,6 +9,7 @@
 		[selection]="false"
 		(sortChange)="onSortChange($event)"
 		(formControlChange)="onFormControlChange($event)"
+        (onAction)="onAction($event)"
 		(pageChange)="onPageChange($event)">
 		<ng-template let-cell="element" #customCells>
 			<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
