@@ -162,14 +162,13 @@
                             <mat-icon svgIcon="add-icon-green"></mat-icon>
                             Extend consultant
                         </button>
-                        <!-- FIXME: uncomment when BE will return cons id -->
-                        <!-- <button
+                        <button
                             class="menu-item menu-item--cancel"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="terminateConsultant(item.origin)">
                             <mat-icon svgIcon="close-icon"></mat-icon>
                             Terminate consultant
-                        </button> -->
+                        </button>
                     </mat-menu>
                 </div>
             </ng-container>
@@ -182,9 +181,6 @@
             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
                 <mat-label>Period</mat-label>
                 <mat-select [formControl]="documentsPeriod" [disableOptionCentering]="true" (selectionChange)="getDocuments()">
-                    <!-- <mat-option class="mat-select-clear-option" *ngIf="documentsPeriod.value">
-                        Clear
-                    </mat-option> -->
                     <mat-option [value]="'All'">
                         <div class="u-w--100">
                             <mat-checkbox [checked]="documentsPeriod.value === 'All'"

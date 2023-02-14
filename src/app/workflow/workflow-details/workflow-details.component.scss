@@ -167,13 +167,13 @@
     }
 
     &-controls {
-        position: fixed;
+        position: sticky;
         bottom: 0;
         z-index: 999;
         background-color: #fff;
         height: 60px;
-        width: calc(80% - 35px);
-        padding: 0 35px 0 15%;
+        width: 80%;
+        padding: 0 35px 0 270px;
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         clip-path: inset(-20px 0px -20px -20px);
         button {
