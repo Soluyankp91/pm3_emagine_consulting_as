@@ -9,14 +9,8 @@ export class AgreementService extends BaseContract {
 	override tableFilters$ = new BehaviorSubject<AgreementFiltersEnum>({
 		language: [],
 		id: [],
-		//consultantName ???
-		//companyName ???
-		// legalEntityIds: [],
 		agreementType: [],
 		recipientTypeId: [],
-		// salesTypeIds: EnumEntityTypeDto [],
-		// deliveryTypesIds: EnumEntityTypeDto [],
-		// contractTypeIds: EnumEntityTypeDto [],
 		mode: [],
 		status: [],
 		saleManager: [],
@@ -42,7 +36,8 @@ export class AgreementService extends BaseContract {
 			undefined, //consultantName
 			undefined, //companyName
 			undefined, //actualRecipientName
-			undefined, //legalEntities
+			undefined, //legalEntities,
+			undefined,
 			tableFilters.agreementType.map((item) => item.id as number),
 			tableFilters.recipientTypeId.map((item) => item.id as number),
 			undefined, // salesTypes,
@@ -53,6 +48,7 @@ export class AgreementService extends BaseContract {
 			tableFilters.saleManager.map((saleManager) => saleManager.id as number),
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
 			search,
+            undefined, //isWorkflowRelated
 			page.pageIndex,
 			page.pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''

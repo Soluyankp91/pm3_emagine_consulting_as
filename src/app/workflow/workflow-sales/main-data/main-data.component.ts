@@ -1,15 +1,17 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import { forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, merge, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EProjectTypes, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
+import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
+import { WorkflowDataService } from '../../workflow-data.service';
 
 @Component({
 	selector: 'app-main-data',
@@ -17,6 +19,7 @@ import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-con
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
 	@Input() periodId: string | undefined;
     @Input() readOnlyMode: boolean;
     @Input() editEnabledForcefuly: boolean;
@@ -29,6 +32,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
+
     deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
     eProjectTypes = EProjectTypes;
@@ -72,7 +76,8 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _lookupService: LookupServiceProxy
+        private _lookupService: LookupServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
         super(injector);
         this.salesMainDataForm = new WorkflowSalesMainForm();
@@ -219,6 +224,14 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
                     null
                 );
             });
+
+        merge(this.salesMainDataForm.salesTypeId.valueChanges, this.salesMainDataForm.deliveryTypeId.valueChanges)
+			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+			.subscribe(() => {
+				if (this.salesMainDataForm.salesTypeId.value && this.salesMainDataForm.deliveryTypeId.value) {
+					this._workflowDataService.preselectFrameAgreement.emit();
+				}
+			});
     }
 
     getPrimaryCategoryTree(): void {
@@ -324,9 +337,9 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
     }
 
-    commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
-		this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });
+    commissionRecipientTypeChanged(index: number) {
 		this.filteredRecipients = [];
+		this.commissions.at(index).get('recipient')?.setValue('');
 	}
 
 	addCommission(isInitial?: boolean, commission?: CommissionDto) {
@@ -386,39 +399,28 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
 						maxRecordsCount: 1000,
 					};
-					switch (arrayControl.value.recipientType.id) {
+					switch (arrayControl.value.recipientType?.id) {
 						case 3: // Client
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.clientName : value;
-								}
-								return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.clientName : value;
+                            }
+                            return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
 						case 2: // Consultant
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.name : value;
-								}
-								return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.name : value;
+                            }
+                            return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
 						case 1: // Supplier
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.supplierName : value;
-								}
-								return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.supplierName : value;
+                            }
+                            return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
 						default:
 							return of([]);
 					}
@@ -440,9 +442,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-	get commissions() {
-		return this.salesMainDataForm.commissions as UntypedFormArray;
-	}
+
 
 	removeCommission(index: number) {
 		this.isCommissionInitialAdd = false;
@@ -504,8 +504,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		this.commissions.at(index).get('editable')?.setValue(false);
 	}
 
-
-    //#region commissionedUsers form array
     addCommissionedUser(employee?: EmployeeDto) {
         const form = this._fb.group({
            commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
@@ -520,7 +518,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
-                startWith({ filter: '', showAll: true, idsToExclude: [] }),
+                startWith(''),
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
@@ -529,7 +527,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
                     };
                     if (value?.id) {
                         toSend.name = value.id
-                            ? value.clientName
+                            ? value.name
                             : value;
                     }
                     return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
@@ -547,9 +545,26 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.commissionedUsers.removeAt(index);
     }
 
+    packDocuments(): WorkflowDocumentCommandDto[] {
+        let workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDocuments.documents.value?.length) {
+            for (let document of this.mainDocuments.documents.value) {
+                let documentInput = new WorkflowDocumentCommandDto();
+                documentInput.name = document.name;
+                documentInput.workflowDocumentId = document.workflowDocumentId;
+                documentInput.temporaryFileId = document.temporaryFileId;
+                workflowDocumentsCommandDto.push(documentInput);
+            }
+        }
+        return workflowDocumentsCommandDto;
+    }
+
     get commissionedUsers() {
         return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
     }
-    //#endregion commissionedUsers form array
+
+    get commissions() {
+		return this.salesMainDataForm.commissions as UntypedFormArray;
+	}
 
 }

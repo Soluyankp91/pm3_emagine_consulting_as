@@ -31,3 +31,15 @@ export class FinancesConsultantsForm extends UntypedFormGroup {
         return this.get('consultants') as UntypedFormArray;
     }
 }
+
+export class DocumentForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            documents: new UntypedFormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as UntypedFormArray;
+    }
+}

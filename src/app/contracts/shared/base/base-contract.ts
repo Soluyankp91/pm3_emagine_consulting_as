@@ -1,7 +1,7 @@
 import { SortDirection } from '@angular/material/sort';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { CountryDto } from 'src/shared/service-proxies/service-proxies';
-import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 import {
 	DEFAULT_SIZE_OPTION,
 	INITIAL_PAGE_INDEX,

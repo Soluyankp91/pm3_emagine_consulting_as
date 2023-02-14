@@ -1,16 +1,16 @@
 <div fxLayout="row" fxLayoutAlign="start start" class="primary-workflow">
-    <div fxFlex="25%" class="workflow-navigation--wrapper" [ngClass]="{'topToolbarVisible': topToolbarVisible}">
+    <div fxFlex="300px" class="workflow-navigation--wrapper" [ngClass]="{'topToolbarVisible': topToolbarVisible}">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
                 <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; trackBy: trackByItem; index as i"
                     [expanded]="sectionIndex === i" appPreventDoubleClick
                     (throttledClick)="sectionIndex === i ? $event.preventDefault() : ''"
                     (opened)="changeSideSection(item, i)">
-                    <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
+                    <mat-expansion-panel-header [collapsedHeight]="'50px'" [expandedHeight]="'50px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header" fxFlex="90%">
                                 <span class="flex-row flex-items-center">
-                                    <mat-icon [svgIcon]="mapIconFromMenuItem(item.typeId!)!"></mat-icon>
+                                    <mat-icon [svgIcon]="processIcon[item.typeId]"></mat-icon>
                                     <span class="sidenav-expansion--header__name">
                                         {{item.name}}
                                     </span>
@@ -65,18 +65,25 @@
                                     <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--35 u-mt--8">
                                         <ng-container *ngFor="let item of step.menuAnchors; trackBy: trackByItem">
                                             <div class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
-                                                (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
+                                                (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item)"
                                                 [ngxScrollTo]="item.anchor!"
                                                 [ngxScrollToOffset]="-120"
                                                 [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
-                                                {{item.name}}
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <span class="workflow-navigation--step__anchor-name">
+                                                        {{item.name}}
+                                                    </span>
+                                                    <mat-icon (click)="$event.stopPropagation(); item.anchorsOpened = !item.anchorsOpened" class="section-anchor--chevron u-ml--10"
+                                                        [ngClass]="{'active-chevron': item.anchor === selectedAnchor || item.anchorsOpened}"
+                                                        svgIcon="chevron-grey"></mat-icon>
+                                                </div>
                                                 <ng-container *ngIf="item?.consultantName">
                                                     <span class="workflow-navigation--step__anchor-consultant-name">
                                                         {{item.consultantName}}
                                                     </span>
                                                 </ng-container>
-                                                <ng-container *ngIf="item.subItems?.length && item.anchor === selectedAnchor">
-                                                    <div class="u-ml--12 u-mt--12">
+                                                <ng-container *ngIf="item.subItems?.length && item.anchor === selectedAnchor || item.anchorsOpened">
+                                                    <div class="side-nav--container u-pl--12 u-mt--12">
                                                         <ng-container *ngFor="let section of item.subItems; trackBy: trackByItem; index as i">
                                                             <div class="workflow-navigation--step__anchor-section u-mb--10" (click)="$event.stopPropagation(); scrollToSection(section.anchor!)" [ngxScrollTo]="section.anchor!" [ngxScrollToOffset]="-120">
                                                                 {{i + 1}} • {{section.name}}
@@ -95,7 +102,7 @@
             </mat-accordion>
         </ng-scrollbar>
     </div>
-    <div fxFlex="75%" id="step-container">
+    <div fxFlex="calc(100% - 300px)" id="step-container">
         <ng-container [ngSwitch]="selectedStepEnum">
             <ng-container *ngSwitchCase="workflowSteps.Sales">
                 <app-workflow-sales #workflowSales [workflowId]="workflowId" [periodId]="periodId"

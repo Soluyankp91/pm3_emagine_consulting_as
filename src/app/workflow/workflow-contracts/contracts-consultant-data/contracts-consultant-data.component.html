@@ -11,15 +11,15 @@
                             <ng-container
                                 *ngIf="consultant.value?.consultant?.id || consultant.value?.consultantNameOnly">
                                 <ng-container *ngIf="consultant.value?.consultant?.id">
-                                    <img class="image-thumbnail-responsive border-rounded-50 u-ml--16 u-mr--16"
-                                        [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16"
+                                        [ngSrc]="consultantPhotoUrl + consultant.value?.consultant?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 </ng-container>
                                 <span class="workflow-form--consultants__name">
                                     {{consultant.value?.consultant?.name}}
                                 </span>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="contractConsultantEmployment">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Employment type</h2>
                         </div>
@@ -60,7 +60,7 @@
                                                 <div class="multilineDropdown-option--row">
                                                     <ng-container *ngIf="item?.id !== undefined">
                                                         <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                            [src]="consultantProfileUrl(item?.externalId!)" />
+                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                                     </ng-container>
                                                     <div
                                                         class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -100,16 +100,14 @@
                     </div>
 
                     <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                    <ng-container
-                        *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
-                        <ng-container
-                            *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap">
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                    <span class="workflow-section--number">2</span>
-                                    <h2 class="workflow-section--header">Invoicing</h2>
-                                </div>
-                                <div class="workflow-section--content">
+                    <ng-container *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantInvoicing">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">2</span>
+                                <h2 class="workflow-section--header">Invoicing</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap; else noConsultantInvoicing">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline"
                                             class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
@@ -153,15 +151,20 @@
                                             </span>
                                         </ng-container>
                                     </div>
-                                </div>
+                                </ng-container>
+                                <ng-template #noConsultantInvoicing>
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                        class="emptyStateRow">
+                                        <span class="light-grey-color text-600">
+                                            Required only for Individual Cap on time reporting
+                                        </span>
+                                    </div>
+                                </ng-template>
                             </div>
-                        </ng-container>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantContract">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                <span class="workflow-section--number">
-                                    {{contractClientForm.clientTimeReportingCapId?.value?.id ===
-                                    clientTimeReportingCaps.IndividualCap ? '3' : '2'}}
-                                </span>
+                                <span class="workflow-section--number">3</span>
                                 <h2 class="workflow-section--header">Consultant contract terms</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -191,12 +194,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantPayment">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                <span class="workflow-section--number">
-                                    {{contractClientForm.clientTimeReportingCapId?.value?.id ===
-                                    clientTimeReportingCaps.IndividualCap ? '4' : '3'}}
-                                </span>
+                                <span class="workflow-section--number">4</span>
                                 <h2 class="workflow-section--header">Consultant payment</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -227,12 +227,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantRatesFees">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                <span class="workflow-section--number">
-                                    {{contractClientForm.clientTimeReportingCapId?.value?.id ===
-                                    clientTimeReportingCaps.IndividualCap ? '5' : '4'}}
-                                </span>
+                                <span class="workflow-section--number">5</span>
                                 <h2 class="workflow-section--header">Consultant rates and fees</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -309,7 +306,7 @@
                                                 *ngIf="consultant.value.specialRates?.length === 0 && readOnlyMode">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="emptyStateRow u-pl--16 u-pr--16">
                                                     <span class="light-grey-color text-600">
                                                         No special rates
                                                     </span>
@@ -602,7 +599,7 @@
                                                 *ngIf="consultant.value.clientFees?.length === 0 && readOnlyMode">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16 u-mt--15">
+                                                    class="emptyStateRow u-pl--16 u-pr--16 u-mt--15">
                                                     <span class="light-grey-color text-600">
                                                         No special fees
                                                     </span>
@@ -821,12 +818,9 @@
                                 </ng-template>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantProjectLines">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                <span class="workflow-section--number">
-                                    {{contractClientForm.clientTimeReportingCapId?.value?.id ===
-                                    clientTimeReportingCaps.IndividualCap ? '6' : '5'}}
-                                </span>
+                                <span class="workflow-section--number">6</span>
                                 <h2 class="workflow-section--header">Project lines</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -1114,7 +1108,7 @@
                                     </ng-container>
                                     <ng-container *ngIf="consultant.value.projectLines?.length === 0 && readOnlyMode">
                                         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
-                                            class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                            class="emptyStateRow u-pl--16 u-pr--16">
                                             <span class="light-grey-color text-600">
                                                 No project lines
                                             </span>

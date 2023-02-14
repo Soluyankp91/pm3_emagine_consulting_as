@@ -38,6 +38,16 @@ export const OverviewProcessIcons: {[key: number]: string} = {
   20: 'warning'
 }
 
+export const OverviewFilterColors: {[key: number]: string} = {
+    1: 'selected-status green',
+    11: 'selected-status green',
+    10: 'selected-status green',
+    3: 'selected-status red',
+    12: 'selected-status red',
+    2: 'selected-status blue',
+    20: 'selected-status yellow'
+}
+
 export class OverviewData {
     firstName: string;
     lastName: string;

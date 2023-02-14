@@ -5,6 +5,15 @@
 }
 
 .client-documents--contract-folders {
+    .documents-chevron {
+        transition: all 0.3s ease-in-out;
+        &.expanded-chevron {
+            transform: rotate(180deg);
+        }
+    }
+    .mat-expansion-toggle-indicator-before .mat-content.mat-content-hide-toggle {
+        margin-left: 0 !important;
+    }
     .mat-accordion {
         width: 100%;
         .mat-expansion-panel-spacing {
@@ -14,19 +23,9 @@
         .mat-expansion-panel {
             background: $white-color;
             width: 100%;
-            .mat-expansion-indicator::after {
-                border: solid $green-color;
-                border-width: 0 2px 2px 0;
-                display: inline-block;
-                padding: 2px;
-                transform: rotate(45deg);
-                width: 8px;
-                height: 8px;
-                margin-top: -10px;
-            }
-            &.max-expanded {
-                .mat-expansion-indicator::after {
-                    transform: rotate(225deg);
+            &:not(.mat-expanded) {
+                .mat-expansion-panel-content {
+                    display: none;
                 }
             }
         }
@@ -38,45 +37,38 @@
         }
         .mat-expansion-panel-body {
             padding: 10px 8px !important;
+            font-size: 14px !important;
         }
         .mat-expansion-panel-header {
             padding: 0 16px !important;
-        }
-    }
-}
-
-.workflow-form--panel {
-    .mat-accordion {
-        width: 100%;
-        .mat-expansion-panel-spacing {
-            margin: 0 !important;
-        }
-        .mat-expansion-panel {
-            background: $sand-25-color;
-            border-radius: 0 !important;
-            width: 100%;
-            margin-bottom: 0 !important;
-            border-bottom: 1px solid #E7E3E8;
-            .mat-expansion-indicator::after {
-                border: solid $dark-grey-color;
-                border-width: 0 2px 2px 0;
-                display: inline-block;
-                padding: 2px;
-                transform: rotate(45deg);
-                width: 8px;
-                height: 8px;
-                margin-top: -10px;
+            font-size: 14px !important;
+            .mat-expansion-panel-header-description {
+                flex-grow: 0;
+                margin-right: 12px;
+            }
+            &:hover {
+                background: rgba(0, 0, 0, 0.04) !important;
             }
         }
-        .mat-expansion-panel-body {
-            padding: 10px 24px !important;
-        }
-        .mat-expansion-panel-header {
-            padding-left: 16px !important;
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            color: $dark-grey-color;
+        .mat-expansion-panel.noFiles {
+            .mat-expansion-panel-header {
+                color: $light-grey-color !important;
+                &:active {
+                    pointer-events: none;
+                }
+                pointer-events: all;
+                .mat-expansion-panel-header-description {
+                    mat-icon path {
+                        fill: $light-grey-color;
+                    }
+                }
+                .mat-expansion-indicator::after {
+                    border-color: $light-grey-color !important;
+                }
+                &:hover {
+                    background: unset !important;
+                }
+            }
         }
     }
 }
@@ -109,7 +101,7 @@
             }
         }
         .mat-expansion-panel-body {
-            padding: 10px 16px !important;
+            padding: 0 16px 10px 16px !important;
         }
         .mat-expansion-panel-header {
             align-items: flex-start !important;
@@ -207,5 +199,28 @@
     }
     .mat-expansion-panel-header {
         padding: 0 16px !important;
+    }
+}
+
+.workflow-documents {
+    .mat-accordion {
+        .mat-expansion-panel {
+            border-bottom: 1px solid #E7E3E8;
+            .mat-expansion-panel-header {
+                padding: 6px 24px 6px 16px;
+            }
+            .mat-expansion-panel-content:visible {
+                margin-top: 12px;
+                .mat-expansion-panel-body {
+                    padding: 0 16px 16px !important;
+                }
+            }
+        }
+        .mat-expansion-panel-body {
+            padding: 0 16px !important;
+        }
+        .mat-expansion-panel-spacing {
+            margin: 0 !important;
+        }
     }
 }

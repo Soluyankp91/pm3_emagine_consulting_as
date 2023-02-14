@@ -11,7 +11,9 @@
                             </ng-container>
                             <ng-template #singleConsultantDisplay>
                                 <span class="flex-items-center">
-                                    <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-thumbnail-small u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
+                                    <ng-container *ngIf="row.consultants[0]?.name">
+                                        <img class="border-rounded-50 image-thumbnail-small u-mr--10" [ngSrc]="consultantPhotoUrl + row.consultants[0].externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                    </ng-container>
                                     {{row.consultants[0]?.name ?? '-'}}
                                 </span>
                             </ng-template>
@@ -54,7 +56,9 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Invoicing </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.id ? (row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName) : '-'" matTooltipClass="white-tooltip">
-                            <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
+                            <ng-container *ngIf="row?.invoicingReferencePerson?.id">
+                                <img class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + row.invoicingReferencePerson.id + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                            </ng-container>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -62,7 +66,9 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowEmployee?.name" matTooltipClass="white-tooltip">
-                            <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.workflowEmployee?.externalId)" />
+                            <ng-container *ngIf="row?.workflowEmployee?.externalId">
+                                <img class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + row.workflowEmployee.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                            </ng-container>
                         </span>
                     </mat-cell>
                 </ng-container>

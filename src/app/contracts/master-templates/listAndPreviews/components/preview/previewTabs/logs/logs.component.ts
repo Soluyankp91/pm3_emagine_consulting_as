@@ -48,7 +48,7 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 							...log,
 							date: moment(log.dateTime).format('DD.MM.YYYY'),
 							dayTime: moment(log.dateTime).format('h:mm'),
-							profilePictureUrl: this.employeeProfileUrl(log.employee?.externalId as string),
+							profilePictureUrl: log.employee?.externalId as string
 						}
 				);
 			})

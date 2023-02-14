@@ -1,10 +1,11 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodFinanceDataCommandDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodFinanceDataCommandDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowDocumentCommandDto, WorkflowDocumentServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
@@ -15,6 +16,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
     styleUrls: ['./workflow-finances.component.scss']
 })
 export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
@@ -35,11 +37,13 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         private _workflowDataService: WorkflowDataService,
         private _clientPeriodSerivce: ClientPeriodServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private scrollToService: ScrollToService
+        private scrollToService: ScrollToService,
+        private _workflowDocumentsService: WorkflowDocumentServiceProxy
     ) {
         super(injector);
         this.financesClientForm = new FinancesClientForm();
         this.financesConsultantsForm = new FinancesConsultantsForm();
+
     }
 
     ngOnInit(): void {
@@ -210,6 +214,9 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                 this.financesClientForm.differentDebtorNumberForInvoicing?.setValue(result.differentDebtorNumberForInvoicing, {emitEvent: false});
                 this.financesClientForm.customDebtorNumber?.setValue(result.customDebtorNumber, {emitEvent: false});
                 result?.consultantFinanceData?.forEach((consultant: ConsultantPeriodFinanceDataDto) => this.addConsultantToForm(consultant));
+                if (result?.workflowDocuments?.length) {
+                    this.mainDocuments.addExistingFile(result.workflowDocuments);
+                }
             });
     }
 
@@ -227,24 +234,57 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             consultantInput.consultant = consultant.consultant;
             input.consultantFinanceData?.push(consultantInput);
         });
+        input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+        if (this.mainDocuments.documents.value?.length) {
+			for (let document of this.mainDocuments.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				input.workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
         this.showMainSpinner();
         if (isDraft) {
             this._clientPeriodSerivce.clientFinancePUT(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(() => {
-                    if (this.editEnabledForcefuly) {
-                        this.toggleEditMode();
+                .subscribe({
+                    next: () => {
+                        if (this.editEnabledForcefuly) {
+                            this.toggleEditMode();
+                        }
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
                     }
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
             this._clientPeriodSerivce.editFinish3(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(() => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                .subscribe({
+                    next: () => {
+                        this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    },
+                    error: () => {
+                        this._tempUpdateDocuments();
+                    }
                 });
         }
+    }
+
+    private _tempUpdateDocuments() {
+        this._workflowDocumentsService
+			.overviewAll(this.workflowId, this.periodId)
+			.subscribe((result) => {
+				if (this.mainDocuments) {
+                    this.mainDocuments.clearDocuments();
+                }
+                if (result.length) {
+                    this.mainDocuments.addExistingFile(result);
+                }
+			});
     }
 
     getStartConsultantPeriodFinance() {
@@ -286,6 +326,9 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     resetForms() {
         this.financesConsultantsForm.consultants.controls = [];
         this.financesClientForm.reset('', {emitEvent: false});
+        if (this.mainDocuments) {
+            this.mainDocuments.clearDocuments();
+        }
     }
 
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {

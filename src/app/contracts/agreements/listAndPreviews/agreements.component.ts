@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, startWith, pairwise } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+import { AgreementListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 import {
 	AGREEMENT_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
@@ -28,7 +29,7 @@ export class AgreementsComponent implements OnInit {
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
 
-	dataSource$ = this._agreementService.getContracts$();
+	dataSource$ : Observable<AgreementListItemDtoPaginatedList>  = this._agreementService.getContracts$();
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 
@@ -62,7 +63,7 @@ export class AgreementsComponent implements OnInit {
 		this._agreementService.updatePage($event);
 	}
 
-	navigateTo() {
+	navigateToCreate() {
 		this._router.navigate(['create'], { relativeTo: this._route });
 	}
 

@@ -5,12 +5,6 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'language',
 	'agreementId',
 	'agreementName',
-	//'clientName',
-	// 'consultantName',
-	// 'companyName',
-	//'actualRecipientName',
-	// 'legalEntityId',
-	//'recipientId',
 	'agreementType',
 	'recipientTypeId',
 	'mode',
@@ -39,14 +33,6 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		type: EHeaderCells.SORT,
 		title: 'Agreement name',
 	},
-	// {
-	// 	type: EHeaderCells.SORT,
-	// 	title: 'Client',
-	// },
-	// {
-	// 	type: EHeaderCells.SORT,
-	// 	title: 'Actual Recipient',
-	// },
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
