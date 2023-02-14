@@ -41,9 +41,9 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model';
-import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { CreationTitleService } from 'src/app/contracts/shared/services/creation-title.service';
+import { CREATION_RADIO_BUTTONS } from 'src/app/contracts/shared/entities/contracts.constants';
 @Component({
 	selector: 'app-creation',
 	templateUrl: './settings.component.html',
@@ -52,9 +52,7 @@ import { CreationTitleService } from 'src/app/contracts/shared/services/creation
 	encapsulation: ViewEncapsulation.None,
 })
 export class CreationComponent extends AppComponentBase implements OnInit, OnDestroy {
-	get currentMode() {
-		return this.creationModeControl.value;
-	}
+	creationRadioButtons = CREATION_RADIO_BUTTONS;
 
 	creationModes = AgreementCreationMode;
 
@@ -139,17 +137,21 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._unSubscribe$.complete();
 	}
 
-    navigateBack() {
-        if(this.editMode) {
-            this._router.navigate([`../../`], {
-                relativeTo: this._route,
-            });
-        } else {
-            this._router.navigate([`../`], {
-                relativeTo: this._route,
-            });
-        }
-    }
+	onModeControlChange(creationMode: AgreementCreationMode) {
+		this.modeControl$.next(creationMode);
+	}
+
+	navigateBack() {
+		if (this.editMode) {
+			this._router.navigate([`../../`], {
+				relativeTo: this._route,
+			});
+		} else {
+			this._router.navigate([`../`], {
+				relativeTo: this._route,
+			});
+		}
+	}
 
 	navigateToEditor(templateId: number) {
 		this._router.navigate([`../${templateId}/editor`], {
