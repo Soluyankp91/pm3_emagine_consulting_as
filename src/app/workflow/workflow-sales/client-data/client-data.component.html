@@ -477,13 +477,13 @@
             </div>
         </div>
 
-        <ng-container *ngIf="isContractModuleEnabled">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicing">
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                    <span class="workflow-section--number">4</span>
-                    <h2 class="workflow-section--header">Frame agreement</h2>
-                </div>
-                <div class="workflow-section--content">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesFrameAgreement">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">4</span>
+                <h2 class="workflow-section--header">Frame agreement</h2>
+            </div>
+            <div class="workflow-section--content">
+                <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
                             <mat-label>Frame agreement</mat-label>
@@ -491,7 +491,16 @@
                                 [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of frameAgreements; trackBy: trackById">
                                     <mat-option [value]="item.agreementId">
-                                        {{ item.agreementName }}
+                                        <div class="multilineDropdown-option--row">
+                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                    {{item.countryName}}
+                                                    {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
+                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </mat-option>
                                 </ng-container>
                             </mat-select>
@@ -500,13 +509,21 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                </div>
+                </ng-container>
+                <ng-template #noFrameAgreementsTemplate>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                        class="emptyStateRow">
+                        <span class="light-grey-color text-600">
+                            Coming soon - with the contracts module..
+                        </span>
+                    </div>
+                </ng-template>
             </div>
-        </ng-container>
+        </div>
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicingNumber">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">{{ isContractModuleEnabled ? '5' : '4' }}</span>
+                <span class="workflow-section--number">5</span>
                 <h2 class="workflow-section--header">Invoicing number</h2>
             </div>
             <div class="workflow-section--content">
@@ -615,7 +632,7 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientRatesFees">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">{{ isContractModuleEnabled ? '6' : '5' }}</span>
+                <span class="workflow-section--number">6</span>
                 <h2 class="workflow-section--header">Client rates and fees</h2>
             </div>
             <div class="workflow-section--content">
@@ -908,7 +925,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientEvaluation">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">{{ isContractModuleEnabled ? '7' : '6' }}</span>
+                <span class="workflow-section--number">7</span>
                 <h2 class="workflow-section--header">Client evaluation</h2>
             </div>
             <div class="workflow-section--content">
@@ -984,7 +1001,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientContract">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">{{ isContractModuleEnabled ? '8' : '7' }}</span>
+                <span class="workflow-section--number">8</span>
                 <h2 class="workflow-section--header">Client contract</h2>
             </div>
             <div class="workflow-section--content">

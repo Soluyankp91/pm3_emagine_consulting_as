@@ -370,11 +370,11 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
-        this._initContactSubs();
+        this.initContactSubs();
 		this.onDirectClientSelected.emit(event);
 	}
 
-    private _initContactSubs() {
+    initContactSubs() {
         this.salesClientDataForm.clientContactProjectManager.setValue('');
         this.salesClientDataForm.invoicePaperworkContactIdValue.setValue('');
         this.salesClientDataForm.evaluationsReferencePersonIdValue.setValue('');
