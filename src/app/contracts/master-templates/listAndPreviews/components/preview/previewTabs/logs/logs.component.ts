@@ -42,8 +42,6 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 	}
 
 	private _initLogObservable() {
-		if (this._previewService instanceof AgreementPreviewService) {
-		}
 		this.logs$ = this._previewService.logs$.pipe(
 			map((logs: AgreementTemplateMetadataLogListItemDto[] | AgreementLogQueryResultDto) => {
 				return (logs instanceof AgreementLogQueryResultDto ? logs.metadataLogs : logs).map(
