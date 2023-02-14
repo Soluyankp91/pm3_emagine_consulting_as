@@ -57,13 +57,11 @@ import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.comp
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
-import { routerSlide } from 'src/shared/animations/routerTransition';
 
 @Component({
     selector: 'app-workflow-details',
     templateUrl: './workflow-details.component.html',
-    styleUrls: ['./workflow-details.component.scss'],
-    animations: [routerSlide]
+    styleUrls: ['./workflow-details.component.scss']
 })
 export class WorkflowDetailsComponent
     extends AppComponentBase
@@ -175,13 +173,6 @@ export class WorkflowDetailsComponent
         return !environment.production;
     }
 
-    // getState(outlet: RouterOutlet) {
-    //     console.log(outlet.activatedRoute.snapshot.params);
-    //     // console.log(outlet.activatedRoute?.firstChild?.snapshot.params?.periodId);
-    //     return {
-    //         value: outlet.activatedRoute?.snapshot?.params?.periodId
-    //     };
-    // }
 
     prepareRoute(outlet: RouterOutlet) {
         return (
@@ -368,7 +359,6 @@ export class WorkflowDetailsComponent
                 if (value) {
                     this.router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
                     this.topMenuTabs.realignInkBar();
-                    // this.updateWorkflowProgressAfterTopTabChanged();
                 }
             });
     }

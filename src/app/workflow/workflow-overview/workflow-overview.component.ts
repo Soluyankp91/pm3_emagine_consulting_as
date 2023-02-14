@@ -114,11 +114,10 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		this.activatedRoute.parent.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.workflowId = params.get('id')!;
             this.getClientPeriods();
+            this.componentInitalized = true;
+            this.individualConsultantActionsAvailable = environment.dev;
+            this._getOverviewData();
 		});
-		this.componentInitalized = true;
-		this.individualConsultantActionsAvailable = environment.dev;
-        this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
-		this._getOverviewData();
 
 		this._workflowDataService.workflowOverviewUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
 			this._getOverviewData();
@@ -310,6 +309,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this._workflowService.clientPeriods(this.workflowId)
             .subscribe(result => {
                 this.periodId = result.clientPeriods?.length ? result.clientPeriods[0].id : '';
+                this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
                 this._setWFProgress();
             })
     }

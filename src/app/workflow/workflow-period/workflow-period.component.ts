@@ -11,7 +11,7 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmploymentType, ClientPeriodDto, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmploymentType, ClientPeriodDto, EnumEntityTypeDto, WorkflowStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contracts.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
@@ -53,7 +53,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     clientPeriods: ClientPeriodDto[];
     // workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     typeId: number;
-
+    topNavChanged = false;
     private _routerEventsSubscription: Subscription;
     private _unsubscribe = new Subject();
     constructor(
@@ -93,6 +93,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this._routerEventsSubscription = this._router.events.subscribe((evt) => {
             if (evt instanceof NavigationStart) {
                 this.showMainSpinner();
+                this.topNavChanged = true;
             }
             if (evt instanceof NavigationEnd) {
                 const navigation  = this._router.getCurrentNavigation();
@@ -119,6 +120,8 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         let newStatus = new WorkflowProgressStatus();
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
         newStatus.currentlyActivePeriodId = this.periodId;
+        // newStatus.currentStepIsCompleted = this.selectedStep.status === WorkflowStepStatus.Completed;
+        // this.workflowSales.isCompleted = this.selectedStep.status === WorkflowStepStatus.Completed;
         if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Overview) {
             newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
         } else {
@@ -156,7 +159,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     }
 
     getSideMenu(autoUpdate?: boolean) {
-        console.log('test');
         this._workflowService.clientPeriods(this.workflowId, this.periodId, true)
             .pipe(finalize(() => {
 
@@ -355,6 +357,13 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
         this.selectedAnchor = '';
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
+        if (this.topNavChanged) {
+            this._workflowDataService.resetStepState.emit({
+				isCompleted: this.selectedStep.status === WorkflowStepStatus.Completed,
+				editEnabledForcefuly: false,
+				fetchData: false,
+			});
+        }
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveStep: step.typeId, stepSpecificPermissions: step.actionsPermissionsForCurrentUser, currentStepIsCompleted: step.status === WorkflowStepStatus.Completed});
     }
 
