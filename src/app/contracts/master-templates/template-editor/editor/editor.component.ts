@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, filter } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
@@ -39,13 +39,13 @@ import { CompareSelectDocumentPopupComponent } from './components/compare-select
 export class EditorComponent implements OnInit, OnDestroy {
 	_destroy$ = new Subject();
 	templateId: number | undefined;
+	hasUnsavedChanges$ = this._editorCoreService.hasUnsavedChanges$;
 	template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
 	documentList$ = new BehaviorSubject<Array<IDocumentItem>>([]);
 	templateVersions$ = new BehaviorSubject<Array<IDocumentVersion>>([]);
 	mergeFields$ = new BehaviorSubject<IMergeField>({});
 
 	isLoading: boolean = false;
-	hasUnsavedChanges: boolean = false;
 
 	constructor(
 		private _route: ActivatedRoute,
@@ -59,11 +59,15 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.templateId = this._route.snapshot.params.id;
 		this._agreementService
 			.getTemplate(this.templateId)
-			.pipe(catchError(() => this._agreementService.getTemplateMock()))
+			.pipe(catchError(() => of(null)))
 			.subscribe((tmp) => {
 				this.template$.next(tmp);
 				this.isLoading = false;
-				this._editorCoreService.loadDocument(tmp);
+				if (tmp) {
+					this._editorCoreService.loadDocument(tmp);
+				} else {
+					this._editorCoreService.newDocument();
+				}
 			});
 
 		this._agreementService.getTemplateVersions(this.templateId).subscribe((res) => {
@@ -75,6 +79,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 
 		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
+			this._editorCoreService.applyMergeFields(res);
 			this.mergeFields$.next(res);
 		});
 	}
@@ -110,8 +115,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			if (base64) {
 				this._agreementService[functionName](this.templateId, { value: base64 }).subscribe(() => {
-					this._editorCoreService.hasUnsavedChanges = true;
-					this.hasUnsavedChanges = true;
+					this.hasUnsavedChanges$.next(false);
 					this.isLoading = false;
 				});
 			}

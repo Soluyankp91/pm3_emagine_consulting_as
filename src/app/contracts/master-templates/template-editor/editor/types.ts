@@ -1,16 +1,22 @@
-export enum ICompareButtonType {
-	Select = 'COMPARE_TAB_SELECT_BTN',
-	Upload = 'COMPARE_TAB_UPLOAD_BTN',
-	Compare = 'COMPARE_TAB_COMPARE_BTN',
-}
-
-export enum ICustomEventType {
+export enum ICustomCommand {
+	// Merge fields
 	UpdateStyle = 'UPDATE_STYLE',
 	ShowMergeFieldPopup = 'SHOW_MERGE_FIELD_POPUP',
 	FormatPainter = 'FORMAT_PAINTER',
-	CompareTabSelect = 'COMPARE_TAB_SELECT',
-	CompareTabOpen = 'COMPARE_TAB_OPEN_DOCUMENT',
-	CompareTabCompareVersion = 'COMPARE_TAB_COMPARE_VERSION',
+
+	// Compare
+	SelectDocument = 'COMPARE_TAB_SELECT_DOCUMENT',
+	UploadDocument = 'COMPARE_TAB_UPLOAD_DOCUMENT',
+	CompareVersion = 'COMPARE_TAB_COMPARE_VERSION',
+	KeepCurrentVersion = 'KEEP_CURRENT_VERSION',
+	KeepNewVersion = 'KEEP_NEW_VERSION',
+	KeepBothVersions = 'KEEP_BOTH_VERSIONS',
+	ToggleCompareMode = 'TOGGLE_COMPARE_MODE',
+}
+
+export enum IContextMenuType {
+	Default = 'DEFAULT',
+	Compare = 'COMPARE',
 }
 
 export enum ITemplateSaveType {

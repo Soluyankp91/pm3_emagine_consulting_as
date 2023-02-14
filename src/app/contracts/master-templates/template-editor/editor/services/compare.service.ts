@@ -5,8 +5,10 @@ import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enu
 import { FileTabCommandId } from 'devexpress-richedit/lib/client/public/commands/enum';
 import { create, createOptions, Options, RibbonButtonItem, RibbonTab, RichEdit } from 'devexpress-richedit';
 
-import { ICompareButtonType, ICustomEventType } from '../types';
+import { ICustomCommand } from '../types';
 import { compareTexts, highlightDifferences, highlightDifferencesConsole } from '../helpers/compare';
+import { COMPARE_TAB_CONTEXT_MENU_ITEM_IDS } from '../helpers/context-menu';
+import { BehaviorSubject } from 'rxjs';
 
 interface ICompareTabOptions {
 	id: string;
@@ -15,26 +17,26 @@ interface ICompareTabOptions {
 }
 
 interface ICompareButton {
-	type: ICustomEventType;
+	type: ICustomCommand.SelectDocument | ICustomCommand.UploadDocument | ICustomCommand.CompareVersion;
 	title: string;
 	icon: string;
 }
 
-type ICompareButtons = Record<ICompareButtonType, ICompareButton>;
+type ICompareButtons = Record<ICompareButton['type'], ICompareButton>;
 
 const CompareButtons: ICompareButtons = {
-	[ICompareButtonType.Select]: {
-		type: ICustomEventType.CompareTabSelect,
+	[ICustomCommand.SelectDocument]: {
+		type: ICustomCommand.SelectDocument,
 		title: 'Select document',
 		icon: 'refresh',
 	},
-	[ICompareButtonType.Upload]: {
-		type: ICustomEventType.CompareTabOpen,
+	[ICustomCommand.UploadDocument]: {
+		type: ICustomCommand.UploadDocument,
 		title: 'Upload document',
 		icon: 'activefolder',
 	},
-	[ICompareButtonType.Compare]: {
-		type: ICustomEventType.CompareTabCompareVersion,
+	[ICustomCommand.CompareVersion]: {
+		type: ICustomCommand.CompareVersion,
 		title: 'Compare to version',
 		icon: 'unselectall',
 	},
@@ -43,12 +45,15 @@ const CompareButtons: ICompareButtons = {
 @Injectable()
 export class CompareService {
 	private _instance: RichEdit;
+	public isCompareMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
 	constructor(@Inject(DOCUMENT) private document: Document) {}
 
 	initialize(richInstance: RichEdit) {
 		this._instance = richInstance;
 
 		const buttons = this._initializeTabButtons();
+		this._updateContextMenuItems(richInstance);
 		this._registerListeners(richInstance);
 		this._initializeTab(richInstance, {
 			id: 'CompareTabID',
@@ -62,7 +67,12 @@ export class CompareService {
 		temp.openDocument(blob, 'temp_compare_document', DocumentFormatApi.OpenXml, () => {
 			let diffArray = this._generateComparisonMap(this._instance, temp);
 			this._applyDiffsToTemplate(this._instance, diffArray);
+			this._toggleCompareMode(true);
 		});
+	}
+
+	private _toggleCompareMode(cond: boolean) {
+		this.isCompareMode$.next(cond);
 	}
 
 	private _generateComparisonMap(current: RichEdit, processor: RichEdit) {
@@ -102,7 +112,7 @@ export class CompareService {
 					const p = current.document.paragraphs.getByIndex(changes[i].line - 1);
 					current.document.setCharacterProperties(p.interval, {
 						...p.properties,
-						...{ backColor: '#F8EAA1' },
+						...{ backColor: '#fbf5d0' },
 					});
 				}
 
@@ -117,7 +127,7 @@ export class CompareService {
 					current.document.setParagraphProperties(ap.interval, pProperties);
 					current.document.setCharacterProperties(ap.interval, {
 						...chProperties,
-						...{ backColor: '#BDE3FF' },
+						...{ backColor: '#dff1ff' },
 					});
 				}
 			}, i * 800);
@@ -133,7 +143,7 @@ export class CompareService {
 	private _registerListeners(instance: RichEdit) {
 		instance.events.customCommandExecuted.addHandler((s, e) => {
 			switch (e.commandName) {
-				case ICompareButtonType.Upload: {
+				case ICustomCommand.UploadDocument: {
 					instance.executeCommand(FileTabCommandId.OpenDocument);
 					break;
 				}
@@ -150,9 +160,9 @@ export class CompareService {
 
 	private _initializeTabButtons() {
 		return [
-			this._createButton(CompareButtons.COMPARE_TAB_SELECT_BTN),
-			this._createButton(CompareButtons.COMPARE_TAB_UPLOAD_BTN),
-			this._createButton(CompareButtons.COMPARE_TAB_COMPARE_BTN),
+			this._createButton(CompareButtons.COMPARE_TAB_SELECT_DOCUMENT),
+			this._createButton(CompareButtons.COMPARE_TAB_UPLOAD_DOCUMENT),
+			this._createButton(CompareButtons.COMPARE_TAB_COMPARE_VERSION),
 		];
 	}
 
@@ -180,6 +190,19 @@ export class CompareService {
 			showText: true,
 			beginGroup: true,
 			icon: button.icon || null,
+		});
+	}
+
+	private _updateContextMenuItems(editor: RichEdit) {
+		const allowedItemIds = COMPARE_TAB_CONTEXT_MENU_ITEM_IDS;
+		editor.events.contextMenuShowing.addHandler((s, e) => {
+			if (this.isCompareMode$.value) {
+				e.contextMenu.items.forEach((item) => {
+					const isCompatible = allowedItemIds.includes(item.id);
+					item.visible = isCompatible;
+					item.disabled = !isCompatible;
+				});
+			}
 		});
 	}
 }

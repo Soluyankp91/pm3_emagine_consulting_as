@@ -8,7 +8,7 @@
 <app-compare-select-document-popup
 	[dataSource]="documentList$ | async"
 	(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
-<ng-container *ngIf="hasUnsavedChanges">
+<ng-container *ngIf="hasUnsavedChanges$ | async">
 	<div class="save-actions" [class.loading]="isLoading">
 		<button>cancel</button>
 
