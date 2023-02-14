@@ -8,6 +8,7 @@ import { CustomTooltipComponent, TooltipData, TOOLTIP_DATA } from './custom-tool
 })
 export class CustomTooltipDirective implements OnDestroy {
 	@Input('customTooltip') tooltipTemplate: TooltipData;
+	@Input('showAlways') showAlways: boolean = false;
 
 	@HostListener('mouseout')
 	private _hide(): void {
@@ -18,7 +19,7 @@ export class CustomTooltipDirective implements OnDestroy {
 
 	@HostListener('mouseenter')
 	private _show(): void {
-		if (this.elementRef.nativeElement.scrollWidth <= this.elementRef.nativeElement.clientWidth) {
+		if (!this.showAlways && this.elementRef.nativeElement.scrollWidth <= this.elementRef.nativeElement.clientWidth) {
 			return;
 		}
 		this._createOverlay();

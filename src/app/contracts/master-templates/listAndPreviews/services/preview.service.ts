@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject } from 'rxjs';
-import { switchMap, tap, map, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { switchMap, tap, map, distinctUntilChanged } from 'rxjs/operators';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,

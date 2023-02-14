@@ -123,17 +123,23 @@ export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTe
 	name?: string;
 	legalEntityIds?: string[];
 	isEnabled?: boolean;
+    actionList?: Actions []
 }
 export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	agreementId?: number;
 	agreementName?: string;
 	actualRecipient$?: Observable<any>;
+	consultantName: string;
+	companyName: string;
 
 	agreementStatus?: EnvelopeStatus;
 	legalEntityId?: string;
+	saleManager: string;
+	contractManager: string;
 
 	startDate?: string;
 	endDate?: string;
+    validity: AgreementValidityState;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
@@ -177,4 +183,5 @@ export interface MappedAgreementTableItem {
 	endDate: string;
 	saleManager: EmployeeDto;
 	contractManager: EmployeeDto;
+    actionList: Actions [];
 }

@@ -180,6 +180,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
 				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
 				isEnabled: item.isEnabled,
+				actionList: this.actions,
 			};
 		});
 	}

@@ -8,8 +8,11 @@
 				[selectedRowId]="currentRowId$ | async"
 				[cells]="cells"
 				[sticky]="true"
+                [selectedItemsActions]="selectedItemsActions"
 				rowIdProperty="agreementId"
 				(formControlChange)="onFormControlChange($event)"
+                (onAction)="onAction($event)"
+                (onSelectionAction)="onSelectionAction($event)"
 				(sortChange)="onSortChange($event)"
 				(pageChange)="onPageChange($event)"
 				(selectedRowIdChange)="currentRowId$.next($event)">
@@ -46,7 +49,7 @@
 					<div class="table-cell">{{ cell.consultantName | emptyStringHandle }}</div>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<div class="table-cell" [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | tableArrayFormat }}</div>
+					<div class="table-cell" [customTooltip]="salesTypeIdsTooltip" [showAlways]="!!(cell.salesTypeIds.length - 1)">{{ cell.salesTypeIds | tableArrayFormat }}</div>
 					<ng-template #salesTypeIdsTooltip>
 						<div>
 							<ng-container *ngFor="let saleType of cell.salesTypeIds">
@@ -58,7 +61,7 @@
 					</ng-template>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<div class="table-cell" [customTooltip]="deliveryTypeIdsTooltip">
+					<div class="table-cell" [customTooltip]="deliveryTypeIdsTooltip" [showAlways]="!!(cell.deliveryTypeIds.length - 1)">
 						{{ cell.deliveryTypeIds | tableArrayFormat }}
 					</div>
 					<ng-template #deliveryTypeIdsTooltip>
@@ -72,7 +75,7 @@
 					</ng-template>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<div class="table-cell" [customTooltip]="contractTypeIdsTooltip">
+					<div class="table-cell" [customTooltip]="contractTypeIdsTooltip" [showAlways]="!!(cell.contractTypeIds.length - 1)">
 						{{ cell.contractTypeIds | tableArrayFormat }}
 					</div>
 					<ng-template #contractTypeIdsTooltip>

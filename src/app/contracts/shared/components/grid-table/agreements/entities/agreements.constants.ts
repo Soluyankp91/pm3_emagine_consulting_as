@@ -192,21 +192,55 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
-export const AGREEMENT_ACTIONS: Actions[] = [
+export const WORKFLOW_AGREEMENT_ACTIONS: Actions[] = [
+	{
+		label: 'Download *.pdf',
+		actionType: 'DOWNLOAD_PDF',
+		actionIcon: 'pdf-download-icon',
+	},
+	{
+		label: 'Download *.doc',
+		actionType: 'DOWNLOAD_DOC',
+		actionIcon: 'doc-download-icon',
+	},
+	{
+		label: 'Open workflow',
+		actionType: 'WORKFLOW_LINK',
+		actionIcon: 'open-workflow-icon',
+	},
+];
+export const NON_WORKFLOW_AGREEMENT_ACTIONS: Actions[] = [
+	{
+		label: 'Download *.pdf',
+		actionType: 'DOWNLOAD_PDF',
+		actionIcon: 'pdf-download-icon',
+	},
+	{
+		label: 'Download *.doc',
+		actionType: 'DOWNLOAD_DOC',
+		actionIcon: 'doc-download-icon',
+	},
 	{
 		label: 'Edit',
 		actionType: 'EDIT',
 		actionIcon: 'table-edit-icon',
 	},
 	{
-		label: 'Duplicate',
-		actionType: 'DUPLICATE',
-		actionIcon: 'duplicate-icon',
+		label: 'Delete',
+		actionType: 'DELETE',
+		actionIcon: 'table-delete-icon',
+	},
+];
+export const AGREEMENT_BOTTOM_ACTIONS: Actions[] = [
+	{
+		label: 'Send reminder',
+		actionType: 'REMINDER',
+		actionIcon: 'send-reminder-icon',
 	},
 	{
-		label: 'Copy link',
-		actionType: 'COPY',
-		actionIcon: 'copy-icon',
+		label: 'Download',
+		actionType: 'DOWNLOAD',
+		actionIcon: 'download-agreement-icon',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;

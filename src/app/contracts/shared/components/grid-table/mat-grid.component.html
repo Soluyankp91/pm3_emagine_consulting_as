@@ -11,87 +11,93 @@
 			</mat-chip>
 		</span>
 	</mat-chip-list>
-    <div class="table-container">
-        <mat-table
-		matSort
-		[dataSource]="tableConfig.items"
-		[matSortActive]="tableConfig.active"
-		[matSortDirection]="tableConfig.direction"
-		[formGroup]="formGroup"
-		(matSortChange)="sortChange.emit($event)">
-		<ng-container *ngIf="selection">
-			<ng-container matColumnDef="select" [sticky]="sticky">
-				<mat-header-cell *matHeaderCellDef class="select-column">
-					<mat-checkbox
-						[checked]="selectionModel.hasValue() && isAllSelected()"
-						[indeterminate]="selectionModel.hasValue() && !isAllSelected()"
-						(change)="toggleAllRows()">
-					</mat-checkbox>
-				</mat-header-cell>
-				<mat-cell *matCellDef="let row" class="select-column">
-					<mat-checkbox
-						[checked]="selectionModel.isSelected(row)"
-						(click)="$event.stopPropagation()"
-						(change)="selectionModel.toggle(row)"></mat-checkbox>
+	<div class="table-container">
+		<mat-table
+			matSort
+			[dataSource]="tableConfig.items"
+			[matSortActive]="tableConfig.active"
+			[matSortDirection]="tableConfig.direction"
+			[formGroup]="formGroup"
+			(matSortChange)="sortChange.emit($event)">
+			<ng-container *ngIf="selection">
+				<ng-container matColumnDef="select" [sticky]="sticky">
+					<mat-header-cell *matHeaderCellDef class="select-column">
+						<mat-checkbox
+							[checked]="selectionModel.hasValue() && isAllSelected()"
+							[indeterminate]="selectionModel.hasValue() && !isAllSelected()"
+							(change)="toggleAllRows()">
+						</mat-checkbox>
+					</mat-header-cell>
+					<mat-cell *matCellDef="let row" class="select-column">
+						<mat-checkbox
+							[checked]="selectionModel.isSelected(row)"
+							(click)="$event.stopPropagation()"
+							(change)="selectionModel.toggle(row)"></mat-checkbox>
+					</mat-cell>
+				</ng-container>
+			</ng-container>
+			<ng-container
+				*ngFor="let item of cells; let i = index; trackBy: trackByCellColumnDef"
+				[matColumnDef]="item.matColumnDef"
+				[sticky]="item.sticky">
+				<ng-container [ngSwitch]="item.headerCell.type">
+					<ng-container *ngSwitchCase="headerCellEnum.SORT">
+						<mat-header-cell
+							*matHeaderCellDef
+							mat-sort-header
+							class="table-header-cell {{ item.class | lowercase }} ">
+							{{ item.headerCell.title }}
+						</mat-header-cell>
+					</ng-container>
+					<ng-container *ngSwitchCase="headerCellEnum.FILTER">
+						<mat-header-cell *matHeaderCellDef class="{{ item.class }}">
+							<ng-container #filterContainer></ng-container>
+							<span mat-sort-header></span>
+						</mat-header-cell>
+					</ng-container>
+				</ng-container>
+				<mat-cell *matCellDef="let element" [class]="item.class">
+					<ng-container
+						*ngIf="cellArr"
+						[ngTemplateOutlet]="cellArr[i]"
+						[ngTemplateOutletContext]="{ element: element }">
+					</ng-container>
 				</mat-cell>
 			</ng-container>
-		</ng-container>
-		<ng-container
-			*ngFor="let item of cells; let i = index; trackBy: trackByCellColumnDef"
-			[matColumnDef]="item.matColumnDef"
-			[sticky]="item.sticky">
-			<ng-container [ngSwitch]="item.headerCell.type">
-				<ng-container *ngSwitchCase="headerCellEnum.SORT">
-					<mat-header-cell *matHeaderCellDef mat-sort-header class="table-header-cell {{ item.class | lowercase }} ">
-						{{ item.headerCell.title }}
-					</mat-header-cell>
-				</ng-container>
-				<ng-container *ngSwitchCase="headerCellEnum.FILTER">
-					<mat-header-cell *matHeaderCellDef class="{{ item.class }}">
-						<ng-container #filterContainer></ng-container>
-						<span mat-sort-header></span>
-					</mat-header-cell>
+			<ng-container *ngIf="actions">
+				<ng-container matColumnDef="actions" [stickyEnd]="sticky">
+					<mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
+					<mat-cell *matCellDef="let actionRow" class="actions-column">
+						<button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+							<mat-icon svgIcon="three-hor-dots"></mat-icon>
+						</button>
+						<mat-menu #menu="matMenu" class="custom">
+							<ng-container *ngFor="let action of actionRow.actionList; trackBy: trackByAction">
+								<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+									<mat-icon [svgIcon]="action.actionIcon" class="small-icon"></mat-icon>
+									<span> {{ action.label }}</span>
+								</button>
+							</ng-container>
+						</mat-menu>
+					</mat-cell>
 				</ng-container>
 			</ng-container>
-			<mat-cell *matCellDef="let element" [class]="item.class">
-				<ng-container *ngIf="cellArr" [ngTemplateOutlet]="cellArr[i]" [ngTemplateOutletContext]="{ element: element }">
-				</ng-container>
-			</mat-cell>
-		</ng-container>
-		<ng-container *ngIf="actions">
-			<ng-container matColumnDef="actions" [stickyEnd]="sticky">
-				<mat-header-cell *matHeaderCellDef class="actions-column"  ></mat-header-cell>
-				<mat-cell *matCellDef="let actionRow" class="actions-column">
-					<button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-						<mat-icon svgIcon="three-hor-dots"></mat-icon>
-					</button>
-					<mat-menu #menu="matMenu">
-						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
-							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
-								<mat-icon [svgIcon]="action.actionIcon"></mat-icon>
-								<span> {{ action.label }}</span>
-							</button>
-						</ng-container>
-					</mat-menu>
-				</mat-cell>
-			</ng-container>
-		</ng-container>
 
-		<mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
-		<mat-row
-			*matRowDef="let row; columns: displayedColumns"
-			[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
-			(click)="getTableRow(row); $event.stopPropagation()"></mat-row>
-	</mat-table>
-    </div>
+			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+			<mat-row
+				*matRowDef="let row; columns: displayedColumns"
+				[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
+				(click)="getTableRow(row); $event.stopPropagation()"></mat-row>
+		</mat-table>
+	</div>
 </div>
 <div class="bottom-panel">
 	<ng-container *ngIf="!selectionModel.isEmpty()">
 		<div class="selected-items-info">{{ selectionModel.selected.length }} selected</div>
 		<ng-container *ngFor="let bottomAction of selectedItemsActions">
 			<div class="bottom-action-item" (click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
-				<mat-icon [svgIcon]="bottomAction.actionIcon"></mat-icon>
-				<span>{{ bottomAction.label }}</span>
+				<mat-icon [svgIcon]="bottomAction.actionIcon" class="small-icon"></mat-icon>
+				<span class="bottom-panel-label">{{ bottomAction.label }}</span>
 			</div>
 		</ng-container>
 	</ng-container>

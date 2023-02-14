@@ -113,7 +113,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
 		}
-		this.agreementFormGroup.valueChanges.subscribe((x) => console.log(x));
 	}
 
 	ngOnDestroy(): void {
@@ -532,7 +531,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				signers: agreement.signers,
 				selectedInheritedFiles: agreement.attachments,
 			});
+
+            this._disableFields();
 		});
+	}
+
+    private _disableFields() {
+		this.agreementFormGroup.agreementType.disable({ emitEvent: false });
+		this.agreementFormGroup.recipientTypeId.disable({ emitEvent: false });
+		this.agreementFormGroup.recipientId.disable({ emitEvent: false });
 	}
 
 	private _resetForm() {

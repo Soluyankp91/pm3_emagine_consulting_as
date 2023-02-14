@@ -5,8 +5,6 @@ import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { PREVIEW_LABEL_MAP } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
 import {
 	AgreementTemplate,
-	BaseMappedAgreementListItemDto,
-	BaseMappedAgreementTemplatesListItemDto,
 } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 

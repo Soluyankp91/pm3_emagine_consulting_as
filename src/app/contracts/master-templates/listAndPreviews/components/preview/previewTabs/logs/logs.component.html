@@ -1,7 +1,7 @@
 <div class="logs-container">
 	<ng-container *ngIf="logs$ | async as logs; else loading">
 		<ng-container *ngIf="logs.length">
-			<div class="filter" (click)="emitFilter(); $event.stopPropagation()">
+			<div class="filter" (click)="emitNewestFirst(); $event.stopPropagation()">
 				<mat-icon [svgIcon]="newestFirst ? 'desc-arrow' : 'asc-arrow'" class="sort-icon"></mat-icon>
 				<p class="filter-label">{{ newestFirst ? 'Newest first' : 'Oldest first' }}</p>
 			</div>

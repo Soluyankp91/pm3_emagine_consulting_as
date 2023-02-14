@@ -8,15 +8,25 @@ import { takeUntil, startWith, pairwise } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
-import { AgreementLanguage, AgreementListItemDto, AgreementListItemDtoPaginatedList, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import {
+	AgreementLanguage,
+	AgreementListItemDto,
+	AgreementListItemDtoPaginatedList,
+	AgreementServiceProxy,
+	AgreementType,
+} from 'src/shared/service-proxies/service-proxies';
+import {
+	AGREEMENT_BOTTOM_ACTIONS,
 	AGREEMENT_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
+	NON_WORKFLOW_AGREEMENT_ACTIONS,
+	WORKFLOW_AGREEMENT_ACTIONS,
 } from '../../shared/components/grid-table/agreements/entities/agreements.constants';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { AgreementFiltersEnum, MappedAgreementTableItem, MappedTableCells } from '../../shared/entities/contracts.interfaces';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
+import { DownloadFile } from '../../shared/utils/download-file';
 import { AgreementPreviewComponent } from './components/agreement-preview/agreement-preview.component';
 import { AgreementService } from './services/agreement.service';
 
@@ -33,7 +43,11 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
 
-	dataSource$: Observable<AgreementListItemDtoPaginatedList>  = this._agreementService.getContracts$();
+	workflowActions = WORKFLOW_AGREEMENT_ACTIONS;
+	nonWorkflowAction = NON_WORKFLOW_AGREEMENT_ACTIONS;
+	selectedItemsActions = AGREEMENT_BOTTOM_ACTIONS;
+
+	dataSource$: Observable<AgreementListItemDtoPaginatedList> = this._agreementService.getContracts$();
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 
@@ -46,6 +60,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 		private readonly _route: ActivatedRoute,
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _agreementService: AgreementService,
+		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _contractService: ContractsService,
 		private readonly _injector: Injector
 	) {
@@ -69,6 +84,38 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 
 	onPageChange($event: PageEvent) {
 		this._agreementService.updatePage($event);
+	}
+
+	onAction($event: { row: AgreementListItemDto; action: string }) {
+		switch ($event.action) {
+			case 'DOWNLOAD_PDF':
+				break;
+			case 'DOWNLOAD_DOC':
+				this._agreementServiceProxy.latestAgreementVersion($event.row.agreementId, true).subscribe((d) => {
+					DownloadFile(d as any, `${$event.row.agreementId}.doc`);
+				});
+				break;
+			case 'WORKFLOW_LINK':
+				break;
+			case 'EDIT':
+				this._router.navigate([`${$event.row.agreementId}`, 'settings'], { relativeTo: this._route });
+				break;
+			case 'DELETE':
+				break;
+		}
+	}
+
+	onSelectionAction($event: { selectedRows: AgreementListItemDto[]; action: string }) {
+		switch ($event.action) {
+			case 'REMINDER':
+				break;
+
+			case 'DOWNLOAD':
+				this._agreementServiceProxy
+					.signedDocuments($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
+					.subscribe((d) => DownloadFile(d as any, 'signed-documents'));
+				break;
+		}
 	}
 
 	private _initTable$() {
@@ -116,12 +163,14 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
-				mode: item.mode,
+				mode: item.validity,
 				status: item.status,
 				startDate: moment(item.startDate).format('DD.MM.YYYY'),
 				endDate: moment(item.endDate).format('DD.MM.YYYY'),
-				saleManager: item.saleManager ? item.saleManager : null,
+				saleManager: item.salesManager ? item.salesManager : null,
 				contractManager: item.contractManager ? item.contractManager : null,
+				isWorkflowRelated: item.isWorkflowRelated,
+				actionList: item.isWorkflowRelated ? this.workflowActions : this.nonWorkflowAction,
 			};
 		});
 	}

@@ -1,7 +1,9 @@
 import { Component, OnInit, Injector, Inject } from '@angular/core';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AgreementPreviewService } from 'src/app/contracts/agreements/listAndPreviews/services/agreemen-preview.service';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { MappedLog, OperationsTypeMap } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
@@ -34,12 +36,14 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 		this._setLoadingObservable();
 	}
 
-	emitFilter() {
+	emitNewestFirst() {
 		this.newestFirst = !this.newestFirst;
 		this._previewService.updateNewestFirst(this.newestFirst);
 	}
 
 	private _initLogObservable() {
+		if (this._previewService instanceof AgreementPreviewService) {
+		}
 		this.logs$ = this._previewService.logs$.pipe(
 			map((logs: AgreementTemplateMetadataLogListItemDto[] | AgreementLogQueryResultDto) => {
 				return (logs instanceof AgreementLogQueryResultDto ? logs.metadataLogs : logs).map(

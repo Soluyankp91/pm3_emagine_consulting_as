@@ -1024,7 +1024,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	fillConsultantTerminationForm(data: ConsultantTerminationContractDataQueryDto) {
 		this.resetForms();
-		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {
+		this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {
 			emitEvent: false,
 		});
 		this.addConsultantDataToTerminationForm(data);
@@ -1033,7 +1033,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	private _packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
 		let input = new ConsultantTerminationContractDataCommandDto();
 		input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-		input.contractLinesDoneManuallyInOldPM = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
 		input.removedConsultantFromAnyManualChecklists =
 			this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
 		input.deletedAnySensitiveDocumentsForGDPR =

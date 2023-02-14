@@ -288,5 +288,31 @@ export class ContractsModule {
 			'avatar-placeholder',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/avatar-placeholder.svg')
 		);
+
+        iconRegistry.addSvgIcon(
+			'send-reminder-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/send-reminder-icon.svg')
+		);
+
+        iconRegistry.addSvgIcon(
+			'download-agreement-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-agreement-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'pdf-download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/pdf-download-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'doc-download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/doc-download-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'open-workflow-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/open-workflow-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'table-delete-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/table-delete-icon.svg')
+		);
 	}
 }

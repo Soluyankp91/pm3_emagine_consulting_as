@@ -4,7 +4,6 @@
 		<ng-container *ngIf="table$ | async as table">
 			<emg-mat-grid
 				[displayedColumns]="displayedColumns"
-				[actionsList]="actions"
 				[tableConfig]="table"
 				[selectedRowId]="currentRowId$ | async"
 				[cells]="cells"

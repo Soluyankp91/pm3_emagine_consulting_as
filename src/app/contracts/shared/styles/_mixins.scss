@@ -1,3 +1,4 @@
+@import 'variables';
 @mixin table-header-cell {
 	.table-header-cell {
 		font-style: normal;
@@ -21,4 +22,13 @@
 @mixin table-cell-width($width) {
 	min-width: $width;
 	max-width: $width;
+}
+@mixin small-icon {
+	height: 16px;
+	width: 16px;
+}
+@mixin bottom-panel-label {
+	font-weight: 800;
+	font-size: 12px;
+    color: $primary-1;
 }

@@ -47,4 +47,15 @@ emg-mat-grid {
 		align-items: center;
 		color: #17a297;
 	}
+	.bottom-panel-label {
+		@include bottom-panel-label;
+	}
+    .small-icon {
+		@include small-icon;
+	}
+}
+.custom {
+    .small-icon {
+		@include small-icon;
+	}
 }

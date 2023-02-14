@@ -179,6 +179,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				linkState: item.linkState,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
+                actionList: this.actions,
 			};
 		});
 	}
