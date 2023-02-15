@@ -38,12 +38,6 @@
                     </span>
                     <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
                         <mat-icon class="legal-contract--mode" [ngClass]="eLegalContractModeIcon[contract.value.validity]" svgIcon="legal-contract-mode-icon"></mat-icon>
-                        <!-- <ng-template #modeTooltip>
-                            <div fxLayout="row" fxLayoutAlign="start center">
-                                <mat-icon class="legal-contract--mode" [ngClass]="eLegalContractModeIcon[contract.value.validity]" svgIcon="legal-contract-mode-icon"></mat-icon>
-                                <span></span>
-                            </div>
-                        </ng-template> -->
                     </span>
                     <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
                         <mat-icon class="legal-contract--mode" svgIcon="via-email-icon"></mat-icon>
@@ -64,7 +58,7 @@
                         <ng-template #statusTooltip>
                             <div fxLayout="row" fxLayoutAlign="start center">
                                 <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
-                                <span [fxHide]="false" fxHide.lt-xl>
+                                <span>
                                     {{eLegalContractStatusText[contract.value.agreementStatus]}}
                                 </span>
                             </div>

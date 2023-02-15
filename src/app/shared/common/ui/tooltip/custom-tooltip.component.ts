@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
 import { TooltipPosition } from './custom-tooltip.enums';
 
 @Component({
@@ -8,11 +8,7 @@ import { TooltipPosition } from './custom-tooltip.enums';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomTooltipComponent {
-	position: TooltipPosition = TooltipPosition.BELOW;
-	tooltip: TemplateRef<any>;
-	left = 0;
-	top = 'unset';
-	bottom = 0;
-	visible = false;
+	@Input() text: string;
+	@Input() contentTemplate: TemplateRef<any>;
 	constructor() {}
 }
