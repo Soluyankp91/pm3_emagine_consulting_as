@@ -1,0 +1,5 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 0C4.3125 0 3.75 0.5625 3.75 1.25V18.75C3.75 19.4375 4.3125 20 5 20H17.5C18.1875 20 18.75 19.4375 18.75 18.75V5L13.75 0H5Z" fill="#E2E5E7"/>
+<path d="M15 5H18.75L13.75 0V3.75C13.75 4.4375 14.3125 5 15 5Z" fill="#B0B7BD"/>
+<path d="M18.75 8.75L15 5H18.75V8.75Z" fill="#CAD1D8"/>
+</svg>

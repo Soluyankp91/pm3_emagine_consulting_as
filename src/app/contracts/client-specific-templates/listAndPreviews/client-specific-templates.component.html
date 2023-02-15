@@ -9,6 +9,7 @@
 		[selection]="false"
 		(sortChange)="onSortChange($event)"
 		(formControlChange)="onFormControlChange($event)"
+        (onAction)="onAction($event)"
 		(pageChange)="onPageChange($event)">
 		<ng-template let-cell="element" #customCells>
 			<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
@@ -129,7 +130,7 @@
 			</p></ng-template
 		>
 		<ng-template let-cell="element" #customCells>
-			<emg-mode [linkState]="cell.linkState" [iconWidth]="23" [iconHeight]="16"></emg-mode>
+			<emg-client-template-mode [linkState]="cell.linkState" [iconWidth]="23" [iconHeight]="16"></emg-client-template-mode>
 		</ng-template>
 
 		<ng-template let-cell="element" #customCells>

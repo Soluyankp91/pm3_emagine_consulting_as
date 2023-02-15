@@ -1,37 +1,40 @@
 
 
 <ng-container [ngSwitch]="agreementStatus">
-    <ng-container *ngSwitchCase="1">
+    <ng-container *ngSwitchCase="envelopeStatuses.Created">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#50BEE8'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="2">
+    <ng-container *ngSwitchCase="envelopeStatuses.CreatedInDocuSign">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="3">
+    <ng-container *ngSwitchCase="envelopeStatuses.Sent">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="envelopeStatuses.Viewed">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="envelopeStatuses.Voided">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="envelopeStatuses.Signed">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="envelopeStatuses.Declined">
+        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="envelopeStatuses.WaitingForOthers">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#9747FF'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="4">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="5">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="6">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#17A297;'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="7">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="8">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="9">
+    <ng-container *ngSwitchCase="envelopeStatuses.Completed">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#17A297'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="10">
+    <ng-container *ngSwitchCase="envelopeStatuses.AboutToExpire">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#F3AB20'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="11">
+    <ng-container *ngSwitchCase="envelopeStatuses.Expired">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
     </ng-container>
 </ng-container>

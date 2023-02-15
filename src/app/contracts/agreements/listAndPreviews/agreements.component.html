@@ -1,0 +1,69 @@
+<div class="add-button" (click)="navigateToCreate()" [style.display]="'flex'" [style.align-items]="'center'">
+    <mat-icon svgIcon="create-icon"  [ngStyle]="{'height': '50px', 'width': '50px'}"></mat-icon>
+    <div>Create</div>
+</div>
+<ng-container *ngIf="table$ | async as table">
+    <emg-mat-grid
+        [displayedColumns]="displayedColumns"
+        [tableConfig]="table"
+        [selectedRowId]="currentRowId$ | async"
+        [cells]="cells"
+        rowIdProperty="agreementId"
+        (formControlChange)="onFormControlChange($event)"
+        (sortChange)="onSortChange($event)"
+        (pageChange)="onPageChange($event)"
+        (selectedRowIdChange)="currentRowId$.next($event)"
+>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.languageId}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.agreementId}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.agreementName}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.agreementType}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.recipientTypeId}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <emg-agreement-mode [agreementValidityState]="cell.mode"></emg-agreement-mode>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.startDate}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.endDate}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.saleManager | emptyStringHandle}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+            <p>{{cell.contractManager | emptyStringHandle}}</p>
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+
+        </ng-template>
+        <ng-template let-cell="element" #customCells>
+
+        </ng-template>
+
+
+
+    </emg-mat-grid>
+</ng-container>

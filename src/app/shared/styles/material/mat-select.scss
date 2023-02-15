@@ -321,6 +321,9 @@
 }
 
 .autocompleteWithShevron {
+    .mat-form-field-suffix {
+        right: 0.3em !important;
+    }
     .shevron {
         border: solid $dark-grey-color;
         border-width: 0 2px 2px 0;
@@ -366,4 +369,9 @@
             }
         }
     }
+}
+
+.mat-autocomplete-panel.mat-autocomplete-visible {
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
 }

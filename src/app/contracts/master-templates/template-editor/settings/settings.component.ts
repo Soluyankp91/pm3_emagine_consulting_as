@@ -206,7 +206,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	private _navigateOnAction(templateId?: number) {
 		if (!this.editMode && templateId) {
-			return this._router.navigate([`../${templateId}/settings`], {
+			return this._router.navigate([`../${templateId}/editor`], {
 				relativeTo: this._route,
 			});
 		}
@@ -411,7 +411,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				return response && response.items
 					? response.items?.map(
 							(item) =>
-							//@ts-ignore
+								//@ts-ignore
 								<SimpleAgreementTemplatesListItemDto>{
 									...item,
 									tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),

@@ -48,6 +48,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() actions: boolean = true;
 	@Input() actionsList: Actions[] = [];
 	@Input() selectedRowId: number | null;
+	@Input() rowIdProperty: string = 'agreementTemplateId';
 
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
@@ -176,7 +177,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	}
 
 	getTableRow(row: { [key: string]: any }) {
-		this.selectedRowIdChange.emit(row.agreementTemplateId);
+		this.selectedRowIdChange.emit(row[this.rowIdProperty]);
 	}
 
 	chooseAction(actionType: string, row: any) {

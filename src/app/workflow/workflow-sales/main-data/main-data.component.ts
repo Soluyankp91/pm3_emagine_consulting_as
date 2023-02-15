@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import { forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, merge, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
@@ -11,6 +11,7 @@ import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } 
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
 import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
+import { WorkflowDataService } from '../../workflow-data.service';
 
 @Component({
 	selector: 'app-main-data',
@@ -75,7 +76,8 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _lookupService: LookupServiceProxy
+        private _lookupService: LookupServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
         super(injector);
         this.salesMainDataForm = new WorkflowSalesMainForm();
@@ -222,6 +224,14 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
                     null
                 );
             });
+
+        merge(this.salesMainDataForm.salesTypeId.valueChanges, this.salesMainDataForm.deliveryTypeId.valueChanges)
+			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+			.subscribe(() => {
+				if (this.salesMainDataForm.salesTypeId.value && this.salesMainDataForm.deliveryTypeId.value) {
+					this._workflowDataService.preselectFrameAgreement.emit();
+				}
+			});
     }
 
     getPrimaryCategoryTree(): void {
@@ -327,9 +337,9 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
     }
 
-    commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
-		this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });
+    commissionRecipientTypeChanged(index: number) {
 		this.filteredRecipients = [];
+		this.commissions.at(index).get('recipient')?.setValue('');
 	}
 
 	addCommission(isInitial?: boolean, commission?: CommissionDto) {
@@ -389,39 +399,28 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
+                startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
 						maxRecordsCount: 1000,
 					};
-					switch (arrayControl.value.recipientType.id) {
+					switch (arrayControl.value.recipientType?.id) {
 						case 3: // Client
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.clientName : value;
-								}
-								return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.clientName : value;
+                            }
+                            return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
 						case 2: // Consultant
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.name : value;
-								}
-								return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.name : value;
+                            }
+                            return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
 						case 1: // Supplier
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.supplierName : value;
-								}
-								return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
+                            if (value?.id) {
+                                toSend.name = value.id ? value.supplierName : value;
+                            }
+                            return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
 						default:
 							return of([]);
 					}
@@ -519,7 +518,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
-                startWith({ filter: '', showAll: true, idsToExclude: [] }),
+                startWith(''),
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
@@ -528,7 +527,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
                     };
                     if (value?.id) {
                         toSend.name = value.id
-                            ? value.clientName
+                            ? value.name
                             : value;
                     }
                     return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
