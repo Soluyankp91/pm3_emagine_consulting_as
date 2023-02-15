@@ -198,7 +198,7 @@ export class CompareService {
 		let characterProperties = editor.selection.activeSubDocument.getCharacterProperties(editor.selection.intervals[0])
 		let p = editor.selection.activeSubDocument.paragraphs.find(editor.selection.intervals[0]);
 		if (characterProperties.backColor === '#FBF5D0') {
-			editor.selection.activeSubDocument
+			editor.document.deleteText(p[0].interval);
 		} else {
 			console.log('another');
 		}
