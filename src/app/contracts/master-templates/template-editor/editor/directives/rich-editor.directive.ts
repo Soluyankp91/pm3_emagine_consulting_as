@@ -14,14 +14,14 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 	constructor(
 		private _renderer: Renderer2,
 		private _elementRef: ElementRef,
-		@SkipSelf() @Inject(RICH_EDITOR_OPTIONS) private editorOptions: Options,
-		@SkipSelf() private editorService: EditorCoreService
+		@SkipSelf() @Inject(RICH_EDITOR_OPTIONS) private _editorOptions: Options,
+		@SkipSelf() private _editorService: EditorCoreService
 	) {}
 
 	ngAfterViewInit(): void {
 		setTimeout(() => {
-			this.editor = create(this._elementRef.nativeElement, this.editorOptions);
-			this.editorService.initialize(this.editor);
+			this.editor = create(this._elementRef.nativeElement, this._editorOptions);
+			this._editorService.initialize(this.editor);
 		});
 	}
 
@@ -29,7 +29,7 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 		if (this.editor) {
 			this.editor.dispose();
 			this.editor = null;
-			this.editorService.destroy();
+			this._editorService.destroy();
 		}
 	}
 }
