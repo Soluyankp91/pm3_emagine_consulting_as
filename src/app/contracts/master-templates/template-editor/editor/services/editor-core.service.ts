@@ -13,15 +13,15 @@ import {
 } from 'devexpress-richedit';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
 
-import { RICH_EDITOR_OPTIONS } from '../providers';
-import { CompareService } from './compare.service';
-import { CommentService } from './comment.service';
-import { ICustomCommand, IMergeField } from '../types';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
 import { CharacterPropertiesApi } from 'devexpress-richedit/lib/model-api/character-properties';
 import { ParagraphPropertiesApi } from 'devexpress-richedit/lib/model-api/paragraph';
 import { ClientRichEdit } from 'devexpress-richedit/lib/client/client-rich-edit';
-import { CUSTOM_CONTEXT_MENU_ITEMS } from '../helpers/context-menu';
+
+import { RICH_EDITOR_OPTIONS } from '../providers';
+import { CompareService } from './compare.service';
+import { CommentService } from './comment.service';
+import { ICustomCommand, IMergeField, CUSTOM_CONTEXT_MENU_ITEMS } from '../entities';
 
 @Injectable()
 export class EditorCoreService {

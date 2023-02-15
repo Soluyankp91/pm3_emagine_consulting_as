@@ -44,6 +44,10 @@ const routes: Routes = [
                                 path: ':id/settings',
                                 component: CreationComponent,
                             },
+                            {
+                                path: ':id/editor',
+                                component: EditorComponent
+                            }
                         ],
                     },
                 ],

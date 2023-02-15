@@ -1,53 +1,20 @@
 import { Inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
 import { FileTabCommandId } from 'devexpress-richedit/lib/client/public/commands/enum';
 import { create, createOptions, Options, RibbonButtonItem, RibbonTab, RichEdit } from 'devexpress-richedit';
 
-import { ICustomCommand } from '../types';
-import { compareTexts, highlightDifferences, highlightDifferencesConsole } from '../helpers/compare';
-import { COMPARE_TAB_CONTEXT_MENU_ITEM_IDS } from '../helpers/context-menu';
-import { BehaviorSubject } from 'rxjs';
-
-interface ICompareTabOptions {
-	id: string;
-	title: string;
-	buttons: Array<RibbonButtonItem>;
-}
-
-interface ICompareButton {
-	type: ICustomCommand.SelectDocument | ICustomCommand.UploadDocument | ICustomCommand.CompareVersion;
-	title: string;
-	icon: string;
-}
-
-type ICompareButtons = Record<ICompareButton['type'], ICompareButton>;
-
-const CompareButtons: ICompareButtons = {
-	[ICustomCommand.SelectDocument]: {
-		type: ICustomCommand.SelectDocument,
-		title: 'Select document',
-		icon: 'refresh',
-	},
-	[ICustomCommand.UploadDocument]: {
-		type: ICustomCommand.UploadDocument,
-		title: 'Upload document',
-		icon: 'activefolder',
-	},
-	[ICustomCommand.CompareVersion]: {
-		type: ICustomCommand.CompareVersion,
-		title: 'Compare to version',
-		icon: 'unselectall',
-	},
-};
+import { compareTexts, getDifferences } from '../helpers/compare';
+import { CompareButtons, ICompareButton, ICompareTabOptions, ICustomCommand, COMPARE_TAB_CONTEXT_MENU_ITEM_IDS} from '../entities';
 
 @Injectable()
 export class CompareService {
 	private _instance: RichEdit;
 	public isCompareMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-	constructor(@Inject(DOCUMENT) private document: Document) {}
+	constructor(@Inject(DOCUMENT) private _document: Document) {}
 
 	initialize(richInstance: RichEdit) {
 		this._instance = richInstance;
@@ -66,7 +33,7 @@ export class CompareService {
 		let temp = this._createInstance();
 		temp.openDocument(blob, 'temp_compare_document', DocumentFormatApi.OpenXml, () => {
 			let diffArray = this._generateComparisonMap(this._instance, temp);
-			this._applyDiffsToTemplate(this._instance, diffArray);
+			this._applyDiffsToTemplate(this._instance, temp, diffArray);
 			this._toggleCompareMode(true);
 		});
 	}
@@ -79,8 +46,8 @@ export class CompareService {
 		let doc1 = current.document;
 		let doc2 = processor.document;
 
-		const arr1 = [];
-		const arr2 = [];
+		const doc1Lines = [];
+		const doc2Lines = [];
 		const paragraphsCount = Math.max(doc1.paragraphs.count, doc2.paragraphs.count);
 
 		for (let i = 0; i < paragraphsCount; i++) {
@@ -90,22 +57,23 @@ export class CompareService {
 			let txt1 = doc1.getText(pr1?.interval) || '';
 			let txt2 = doc2.getText(pr2?.interval) || '';
 
-			// if (txt1.replace(/(\r\n|\n|\r)/gm, '').length > 0) {
 			if (pr1) {
-				arr1.push(txt1);
+				doc1Lines.push(txt1);
 			}
-			// }
 
 			if (pr2) {
-				arr2.push(txt2);
+				doc2Lines.push(txt2);
 			}
 		}
 
 		// COMPARE ALGORITHM
-		const diff = compareTexts(arr2.join('\n'), arr1.join('\n'));
-		const changes = highlightDifferences(diff);
-		highlightDifferencesConsole(diff);
+		const diff = compareTexts(doc2Lines.join('\n'), doc1Lines.join('\n'));
+		const changes = getDifferences(diff);
+		console.log(changes);
+		return changes;
+	}
 
+	private _applyDiffsToTemplate(current: RichEdit, temp: RichEdit, changes: any[]) {
 		for (let i = 0; i < changes.length; i++) {
 			setTimeout(() => {
 				if (changes[i].type === 'insert') {
@@ -118,8 +86,8 @@ export class CompareService {
 
 				if (changes[i].type === 'delete') {
 					const p = current.document.paragraphs.getByIndex(changes[i].line - 1);
-					const chProperties = current.document.getCharacterProperties(p.interval);
-					const pProperties = current.document.getParagraphProperties(p.interval);
+					const chProperties = temp.document.getCharacterProperties(p.interval);
+					const pProperties = temp.document.getParagraphProperties(p.interval);
 
 					current.document.insertText(p.interval.start, changes[i].text);
 
@@ -130,14 +98,8 @@ export class CompareService {
 						...{ backColor: '#dff1ff' },
 					});
 				}
-			}, i * 800);
+			}, i);
 		}
-
-		return [];
-	}
-
-	private _applyDiffsToTemplate(current: RichEdit, diff) {
-		let pointer = 0;
 	}
 
 	private _registerListeners(instance: RichEdit) {
@@ -145,6 +107,18 @@ export class CompareService {
 			switch (e.commandName) {
 				case ICustomCommand.UploadDocument: {
 					instance.executeCommand(FileTabCommandId.OpenDocument);
+					break;
+				}
+				case ICustomCommand.KeepBothVersions: {
+					this._keepBoth(instance);
+					break;
+				}
+				case ICustomCommand.KeepCurrentVersion: {
+					this._keepCurrent(instance);
+					break;
+				}
+				case ICustomCommand.KeepNewVersion: {
+					this._keepNew(instance);
 					break;
 				}
 			}
@@ -172,9 +146,9 @@ export class CompareService {
 		options.height = 'calc(100vh - 240px)';
 		options.unit = 1;
 
-		let elem = this.document.createElement('div');
+		let elem = this._document.createElement('div');
 		this._disappearElement(elem);
-		this.document.body.appendChild(elem);
+		this._document.body.appendChild(elem);
 		return create(elem, options);
 	}
 
@@ -196,13 +170,41 @@ export class CompareService {
 	private _updateContextMenuItems(editor: RichEdit) {
 		const allowedItemIds = COMPARE_TAB_CONTEXT_MENU_ITEM_IDS;
 		editor.events.contextMenuShowing.addHandler((s, e) => {
-			if (this.isCompareMode$.value) {
-				e.contextMenu.items.forEach((item) => {
+		   if (this.isCompareMode$.value) {
+			  let characterProperties = s.selection.activeSubDocument.getCharacterProperties(s.selection.intervals[0]);
+			  if (characterProperties.backColor === '#FBF5D0' || characterProperties.backColor === '#DFF1FF') {
+				 e.contextMenu.items.forEach((item) => {
 					const isCompatible = allowedItemIds.includes(item.id);
 					item.visible = isCompatible;
 					item.disabled = !isCompatible;
-				});
-			}
+				 });
+			  }
+		   }
 		});
+	}
+
+	private _keepCurrent(editor: RichEdit) {
+		let characterProperties = editor.selection.activeSubDocument.getCharacterProperties(editor.selection.intervals[0])
+		let p = editor.selection.activeSubDocument.paragraphs.find(editor.selection.intervals[0]);
+		if (characterProperties.backColor === '#FBF5D0') {
+			console.log(p[0].interval.start);
+		} else {
+			console.log('another');
+		}
+		
+	}
+
+	private _keepNew(editor: RichEdit) {
+		let characterProperties = editor.selection.activeSubDocument.getCharacterProperties(editor.selection.intervals[0])
+		let p = editor.selection.activeSubDocument.paragraphs.find(editor.selection.intervals[0]);
+		if (characterProperties.backColor === '#FBF5D0') {
+			editor.selection.activeSubDocument
+		} else {
+			console.log('another');
+		}
+	}
+
+	private _keepBoth(editor: RichEdit) {
+
 	}
 }

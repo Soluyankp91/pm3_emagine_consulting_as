@@ -1,3 +1,4 @@
+// Not Used, but cool algorithm :)
 export function LCS(X, Y) {
 	const m = X.length;
 	const n = Y.length;
@@ -110,7 +111,7 @@ export function highlightDifferencesConsole(diff) {
 	}
 }
 
-export function highlightDifferences(diff) {
+export function getDifferences(diff) {
 	let currentLine = 1;
 	let changes = [];
 
@@ -150,6 +151,6 @@ export function highlightDifferences(diff) {
 			currentLine++;
 		}
 	}
-	console.log(changes);
+
 	return changes;
 }

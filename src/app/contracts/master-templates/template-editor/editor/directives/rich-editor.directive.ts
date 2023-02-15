@@ -1,6 +1,7 @@
 import { AfterViewInit, Directive, ElementRef, Inject, OnDestroy, Renderer2, SkipSelf } from '@angular/core';
 import { EditorCoreService } from '../services/editor-core.service';
 import { create, Options, RichEdit } from 'devexpress-richedit';
+
 import { RICH_EDITOR_OPTIONS } from '../providers';
 
 @Directive({

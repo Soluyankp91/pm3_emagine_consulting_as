@@ -1,5 +1,24 @@
-import { ICustomCommand } from '../types';
-import { ContextMenuCommandId, ContextMenuItem } from 'devexpress-richedit';
+import { ContextMenuCommandId, ContextMenuItem } from "devexpress-richedit";
+import { ICompareButtons } from ".";
+import { ICustomCommand } from "./entities";
+
+export const CompareButtons: ICompareButtons = {
+	[ICustomCommand.SelectDocument]: {
+		type: ICustomCommand.SelectDocument,
+		title: 'Select document',
+		icon: 'refresh',
+	},
+	[ICustomCommand.UploadDocument]: {
+		type: ICustomCommand.UploadDocument,
+		title: 'Upload document',
+		icon: 'activefolder',
+	},
+	[ICustomCommand.CompareVersion]: {
+		type: ICustomCommand.CompareVersion,
+		title: 'Compare to version',
+		icon: 'unselectall',
+	},
+};
 
 export const CUSTOM_CONTEXT_MENU_ITEMS: Array<ContextMenuItem> = [
 	{

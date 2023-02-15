@@ -5,18 +5,13 @@ import { throwError } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
-import { IDocumentItem, IDocumentVersion, WrappedValueDto } from '../types';
-import { MockTemplateBase64 } from '../helpers/mock-data';
+import { IDocumentItem, IDocumentVersion, WrappedValueDto } from '../entities';
 
 @Injectable()
 export class AgreementService {
 	baseUrl = `${environment.apiUrl}/api/AgreementTemplate`;
 
 	constructor(private httpClient: HttpClient) {}
-
-	getTemplateMock(): string {
-		return MockTemplateBase64;
-	}
 
 	getTemplate(templateId: number) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/latest-template-version/true`;

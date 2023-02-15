@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IMergeField } from '../types';
+import { IMergeField } from '../entities';
 
 @Injectable()
 export class MergeFieldsService {

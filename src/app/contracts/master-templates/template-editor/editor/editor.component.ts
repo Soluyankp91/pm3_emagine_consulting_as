@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, filter } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
 import { RichEditorDirective } from './directives';
 import { RichEditorOptionsProvider } from './providers';
 import { AgreementService, MergeFieldsService } from './data-access';
-import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './types';
+import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './entities';
 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
@@ -57,18 +57,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.isLoading = true;
 		this.templateId = this._route.snapshot.params.id;
-		this._agreementService
-			.getTemplate(this.templateId)
-			.pipe(catchError(() => of(null)))
-			.subscribe((tmp) => {
-				this.template$.next(tmp);
-				this.isLoading = false;
-				if (tmp) {
-					this._editorCoreService.loadDocument(tmp);
-				} else {
-					this._editorCoreService.newDocument();
-				}
-			});
+		this.getTemplate()
 
 		this._agreementService.getTemplateVersions(this.templateId).subscribe((res) => {
 			this.templateVersions$.next(res || []);
@@ -82,6 +71,21 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._editorCoreService.applyMergeFields(res);
 			this.mergeFields$.next(res);
 		});
+	}
+
+	getTemplate() {
+		this._agreementService
+			.getTemplate(this.templateId)
+			.pipe(catchError(() => of(null)))
+			.subscribe((tmp) => {
+				this.template$.next(tmp);
+				this.isLoading = false;
+				if (tmp) {
+					this._editorCoreService.loadDocument(tmp);
+				} else {
+					this._editorCoreService.newDocument();
+				}
+			});
 	}
 
 	mergeSelectedField(field: string) {
@@ -114,10 +118,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.isLoading = true;
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			if (base64) {
-				this._agreementService[functionName](this.templateId, { value: base64 }).subscribe(() => {
-					this.hasUnsavedChanges$.next(false);
-					this.isLoading = false;
-				});
+				this._agreementService[functionName](this.templateId, { value: base64 }).pipe(
+					finalize(() => {
+						this.hasUnsavedChanges$.next(false);
+						this.isLoading = false;
+					})
+				).subscribe();
 			}
 		});
 	}

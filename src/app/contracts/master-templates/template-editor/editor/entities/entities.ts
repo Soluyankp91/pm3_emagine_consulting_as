@@ -1,3 +1,5 @@
+import { RibbonButtonItem } from "devexpress-richedit";
+
 export enum ICustomCommand {
 	// Merge fields
 	UpdateStyle = 'UPDATE_STYLE',
@@ -61,3 +63,17 @@ export interface IDocumentItem {
 	isEnabled?: boolean;
 	tenantIds?: number[] | undefined;
 }
+
+export interface ICompareTabOptions {
+	id: string;
+	title: string;
+	buttons: Array<RibbonButtonItem>;
+}
+
+export interface ICompareButton {
+	type: ICustomCommand.SelectDocument | ICustomCommand.UploadDocument | ICustomCommand.CompareVersion;
+	title: string;
+	icon: string;
+}
+
+export type ICompareButtons = Record<ICompareButton['type'], ICompareButton>;

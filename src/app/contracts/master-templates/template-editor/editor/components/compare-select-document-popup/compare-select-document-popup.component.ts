@@ -10,7 +10,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DxButtonModule, DxListComponent, DxPopupModule, DxTemplateModule, DxListModule } from 'devextreme-angular';
-import { IDocumentItem } from '../../types';
+
+import { IDocumentItem } from '../../entities';
 import { EditorCoreService } from '../../services';
 
 @Component({

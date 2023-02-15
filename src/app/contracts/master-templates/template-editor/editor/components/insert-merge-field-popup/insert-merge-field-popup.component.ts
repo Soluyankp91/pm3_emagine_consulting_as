@@ -11,7 +11,8 @@ import {
 	ViewEncapsulation,
 } from '@angular/core';
 import { DxButtonModule, DxPopupModule, DxTemplateModule, DxTreeViewComponent, DxTreeViewModule } from 'devextreme-angular';
-import { IMergeField } from '../../types';
+
+import { IMergeField } from '../../entities';
 import { EditorCoreService } from '../../services';
 
 interface IMergeFieldItem {
