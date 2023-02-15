@@ -59,6 +59,10 @@
                 #rlaWfResponsible="routerLinkActive">
                 WF responsible
             </a>
+            <a mat-tab-link routerLink="address" [active]="rlaAddress.isActive" routerLinkActive
+                #rlaAddress="routerLinkActive">
+                Client addresses
+            </a>
         </nav>
         <div class="u-w--100 nav-tab--content-wrapper">
             <ng-scrollbar>

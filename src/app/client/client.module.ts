@@ -13,6 +13,8 @@ import { ClientWorkflowTrackComponent } from './client-workflow-track/client-wor
 import { AddFileDialogComponent } from './client-documents/add-file-dialog/add-file-dialog.component';
 import { HubspotSyncModalComponent } from './client-details/hubspot-sync-modal/hubspot-sync-modal.component';
 import { WfResponsibleComponent } from './wf-responsible/wf-responsible.component';
+import { ClientAddressComponent } from './client-address/client-address.component';
+import { AddAddressDialogComponent } from './client-address/add-address-dialog/add-address-dialog.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +28,9 @@ import { WfResponsibleComponent } from './wf-responsible/wf-responsible.componen
         ClientWorkflowTrackComponent,
         AddFileDialogComponent,
         HubspotSyncModalComponent,
-        WfResponsibleComponent
+        WfResponsibleComponent,
+        ClientAddressComponent,
+        AddAddressDialogComponent
     ],
     imports: [
         CommonModule,

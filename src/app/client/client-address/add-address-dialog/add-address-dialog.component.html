@@ -1,0 +1,73 @@
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header" align="start">
+        <span class="text-bold-800">
+            Client address
+        </span>
+        <mat-icon class="confirmation-dialog--header-close-icon" svgIcon="dialog-close-icon" (click)="close()"></mat-icon>
+    </div>
+    <form [formGroup]="clientAddressForm">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <mat-checkbox color="accent" formControlName="isMainAddress" name="isMainAddress" class="black-checkbox u-mr--10">
+                <mat-icon svgIcon="crown-icon"></mat-icon>
+                Main address
+            </mat-checkbox>
+            <mat-hint>Main address will be synced to Hubspot</mat-hint>
+            <ng-container *ngIf="clientAddressForm.value.isMainAddress">
+                <mat-hint>The existing Main address will be overridden</mat-hint>
+            </ng-container>
+            <mat-form-field appearance="outline" class="form-width-300 formFieldNoMarginPadding filter-select u-mt--10">
+                <mat-label>Country</mat-label>
+                <mat-select formControlName="country" placeholder="Country" [disableOptionCentering]="true">
+                    <mat-select-trigger>
+                        <span class="country-flag fi fi-{{clientAddressForm.value.country?.code | lowercase }} fis"></span>&nbsp;{{ clientAddressForm.value.country?.name }}
+                    </mat-select-trigger>
+                    <mat-option *ngFor="let item of countries" [value]="item">
+                        {{ item.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">
+                <mat-label>Street + number</mat-label>
+                <input autocomplete="off" placeholder="Street + number" matInput name="streetAndNumber" formControlName="streetAndNumber">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">
+                <mat-label>Address line #2</mat-label>
+                <input autocomplete="off" placeholder="Address line #2" matInput name="addressLine2" formControlName="addressLine2">
+            </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--10">
+                    <mat-label>Zip code</mat-label>
+                    <input autocomplete="off" placeholder="Zip code" matInput name="zipCode" formControlName="zipCode">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-290">
+                    <mat-label>City</mat-label>
+                    <input autocomplete="off" placeholder="City" matInput name="city" formControlName="city">
+                </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-420">
+                <mat-label>Region</mat-label>
+                <input autocomplete="off" placeholder="Region" matInput name="region" formControlName="region">
+            </mat-form-field>
+            <mat-checkbox color="accent" formControlName="isWorkplaceAddress" name="isWorkplaceAddress" class="black-checkbox u-mr--10">
+                Workplace address
+            </mat-checkbox>
+            <mat-checkbox color="accent" formControlName="isInvoiceAddress" name="isInvoiceAddress" class="black-checkbox u-mr--10">
+                Invoice address
+            </mat-checkbox>
+            <ng-container *ngIf="clientAddressForm.value.isInvoiceAddress">
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-290">
+                    <mat-label>Debitor number</mat-label>
+                    <input autocomplete="off" placeholder="Debitor number" matInput name="debitorNumber" formControlName="debitorNumber">
+                </mat-form-field>
+            </ng-container>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="start" class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined confirmation-dialog--actions-cancel" appPreventDoubleClick (throttledClick)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="confirm()">
+        Save
+    </button>
+</mat-dialog-actions>

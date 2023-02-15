@@ -1,0 +1,24 @@
+@import "/src/app/shared/styles/config/_colors";
+
+.pending-status {
+    color: #ffda44;
+}
+
+.active-status {
+    color: $green-color;
+}
+
+.finished-status {
+    color: rgba($color: $red-color, $alpha: .5);
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+}
+
+.workflow-track-status {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+}
