@@ -235,6 +235,10 @@ export const ContractClientDataSections: SubItemDto[] = [
     {
         name: 'Rates and fees',
         anchor: 'contractClientRatesFees'
+    },
+    {
+        name: 'Client legal contracts',
+        anchor: 'contractClientLegalContracts'
     }
 ];
 

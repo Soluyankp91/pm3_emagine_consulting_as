@@ -1,0 +1,133 @@
+<form [formGroup]="clientLegalContractsForm" class="u-w--100">
+    <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length">
+        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="5px" class="u-w--100 u-pl--16 u-pr--16 u-pb--5">
+            <span fxFlex="20px" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+            </span>
+            <span fxFlex="auto" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                Agreement name
+            </span>
+            <span fxFlex="35px" fxLayoutAlign="center start" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                Mode
+            </span>
+            <span fxFlex="35px" fxLayoutAlign="center start" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                Via
+            </span>
+            <span fxFlex="160px" fxFlex.lt-xl="50px" fxLayoutAlign.lx-xl="center start" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                Status
+            </span>
+            <span fxFlex="80px" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                Date
+            </span>
+            <span fxFlex="35px" fxLayoutAlign="center start" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                By
+            </span>
+            <ng-container *ngIf="!readOnlyMode">
+                <span fxFlex="40px" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
+                </span>
+            </ng-container>
+        </div>
+        <ng-container formArrayName="legalContracts" class="u-w--100">
+            <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i" [formArrayName]="i">
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
+                    <span fxFlex="20px" class="legal-contract--list-item u-w--100">
+                        <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement" class="black-checkbox">
+                        </mat-checkbox>
+                    </span>
+                    <span fxFlex="auto" class="legal-contract--list-item u-w--100 text-truncate-ellipsis text-bold">
+                        {{contract.value.name}}
+                    </span>
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
+                        <mat-icon class="legal-contract--mode" [ngClass]="eLegalContractModeIcon[contract.value.validity]" svgIcon="legal-contract-mode-icon"></mat-icon>
+                        <!-- <ng-template #modeTooltip>
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <mat-icon class="legal-contract--mode" [ngClass]="eLegalContractModeIcon[contract.value.validity]" svgIcon="legal-contract-mode-icon"></mat-icon>
+                                <span></span>
+                            </div>
+                        </ng-template> -->
+                    </span>
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
+                        <mat-icon class="legal-contract--mode" svgIcon="via-email-icon"></mat-icon>
+                        <ng-template #statusTooltip>
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
+                                <span [fxHide]="false" fxHide.lt-xl>
+                                    {{eLegalContractStatusText[contract.value.agreementStatus]}}
+                                </span>
+                            </div>
+                        </ng-template>
+                    </span>
+                    <span fxFlex="160px" fxFlex.lt-xl="50px" fxLayoutAlign="start center" fxLayoutAlign.lt-xl="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" emgCustomTooltip [contentTemplate]="statusTooltip">
+                        <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
+                        <span [fxHide]="false" fxHide.lt-xl>
+                            {{eLegalContractStatusText[contract.value.agreementStatus]}}
+                        </span>
+                        <ng-template #statusTooltip>
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
+                                <span [fxHide]="false" fxHide.lt-xl>
+                                    {{eLegalContractStatusText[contract.value.agreementStatus]}}
+                                </span>
+                            </div>
+                        </ng-template>
+                    </span>
+                    <span fxFlex="80px" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
+                        {{contract.value.lastUpdateDateUtc | momentFormat}}
+                    </span>
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
+                        <img class="border-rounded-50" [matTooltip]="contract.value.lastUpdatedBy?.name" matTooltipClass="white-tooltip"
+                            [ngSrc]="employeePhotoUrl + contract.value.lastUpdatedBy?.externalId + '.jpg'" src
+                            width="32" height="32" src (error)="setDefaultImage($event.target)">
+                    </span>
+                    <ng-container *ngIf="!readOnlyMode">
+                        <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
+                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="legalContractMenu" class="three-dots-actions-btn">
+                                <mat-icon svgIcon="3-dots"></mat-icon>
+                            </button>
+                            <mat-menu #legalContractMenu>
+                                <!-- <button
+                                    class="menu-item green-color"
+                                    mat-menu-item
+                                    [disabled]="isClientRateEditing"
+                                    appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
+                                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                    Edit
+                                </button>
+                                <button
+                                    class="menu-item menu-item--cancel"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="removeClientRate(i)">
+                                    <mat-icon svgIcon="close-icon"></mat-icon>
+                                    Delete
+                                </button> -->
+                            </mat-menu>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length === 0 && readOnlyMode">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="legal-contract--list u-w--100 u-pl--16 u-pr--16 border-unset u-mt--15">
+            <span class="light-grey-color text-600">
+                No client legal contracts
+            </span>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!readOnlyMode">
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mb--10">
+            <button class="rates-and-fees--btn button-add" mat-flat-button (click)="addLegalContract()">
+                <mat-icon>add</mat-icon>
+                Add legal contract
+            </button>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--12"
+                    appPreventDoubleClick>
+                    Download envelope
+                </button>
+                <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button>
+                    Complete step
+                </button>
+            </div>
+        </div>
+    </ng-container>
+</form>

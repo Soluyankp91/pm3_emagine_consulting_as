@@ -42,57 +42,59 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline"
-                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
-                                    [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
-                                    [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
-                                    <mat-label>Consultant Name</mat-label>
-                                    <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
-                                        formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
-                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                        placeholder="Consultant name">
-                                        <span matSuffix class="shevron"></span>
-                                    <mat-autocomplete #consultantAutocomplete="matAutocomplete"
-                                        [displayWith]="displayNameFn">
-                                        <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
-                                            <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
-                                                appPreventDoubleClick>
-                                                <div class="multilineDropdown-option--row">
-                                                    <ng-container *ngIf="item?.id !== undefined">
-                                                        <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
-                                                    </ng-container>
-                                                    <div
-                                                        class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                        <span class="multilineDropdown-option--column-client-name">{{
-                                                            item?.name }}</span>
+                                <ng-container *ngIf="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11; else nameOnlyConsutlant">
+                                    <mat-form-field appearance="outline"
+                                        class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
+                                        [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}">
+                                        <mat-label>Consultant Name</mat-label>
+                                        <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
+                                            formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
+                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                            placeholder="Consultant name">
+                                            <span matSuffix class="shevron"></span>
+                                        <mat-autocomplete #consultantAutocomplete="matAutocomplete"
+                                            [displayWith]="displayNameFn">
+                                            <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
+                                                <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
+                                                    appPreventDoubleClick>
+                                                    <div class="multilineDropdown-option--row">
                                                         <ng-container *ngIf="item?.id !== undefined">
-                                                            <span
-                                                                class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                {{item?.companyName ? item.companyName + ' | ' : ''}}
-                                                                {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
-                                                                {{item?.legacyId}}
-                                                            </span>
+                                                            <img class="image-thumbnail-small border-rounded-50 u-mr--10"
+                                                                [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                                         </ng-container>
+                                                        <div
+                                                            class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                            <span class="multilineDropdown-option--column-client-name">{{
+                                                                item?.name }}</span>
+                                                            <ng-container *ngIf="item?.id !== undefined">
+                                                                <span
+                                                                    class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                    {{item?.companyName ? item.companyName + ' | ' : ''}}
+                                                                    {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
+                                                                    {{item?.legacyId}}
+                                                                </span>
+                                                            </ng-container>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-autocomplete>
-                                    <mat-error>
-                                        <app-validator [control]="consultant.get('consultant')"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                                <mat-form-field appearance="outline"
-                                    class="client-and-consultant-autocomplete formFieldNoMarginPadding filter-select disabled-input"
-                                    [fxHide]="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11">
-                                    <mat-label>Consultant Name only</mat-label>
-                                    <input [disabled]="true" type="text" matInput formControlName="nameOnly"
-                                        placeholder="Consultant name only">
-                                    <mat-error>
-                                        <app-validator [control]="consultant.get('nameOnly')"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('consultant')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-template #nameOnlyConsutlant>
+                                    <mat-form-field appearance="outline"
+                                        class="client-and-consultant-autocomplete formFieldNoMarginPadding filter-select disabled-input">
+                                        <mat-label>Consultant Name only</mat-label>
+                                        <input [disabled]="true" type="text" matInput formControlName="nameOnly"
+                                            placeholder="Consultant name only">
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('nameOnly')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </ng-template>
                             </div>
                             <app-consultant-information [onlyAdditionalInfo]="true"
                                 [consultantData]="consultant?.value?.consultant"></app-consultant-information>

@@ -1,0 +1,8 @@
+<div class="tooltip"
+     [ngClass]="'tooltip--'+position"
+     [class.tooltip--visible]="visible"
+     [style.left]="left + 'px'"
+     [style.bottom]="bottom + 'px'"
+     [style.top]="top + 'px'">
+    <ng-template [ngTemplateOutlet]="tooltip"></ng-template>
+</div>

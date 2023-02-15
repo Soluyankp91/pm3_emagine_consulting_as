@@ -5,6 +5,8 @@ import {
     AgreementServiceProxy,
 	AgreementSimpleListItemDto,
 	AgreementType,
+	AgreementValidityState,
+	ClientPeriodServiceProxy,
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
 	EnumEntityTypeDto,
@@ -12,12 +14,14 @@ import {
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
 	PeriodConsultantSpecialRateDto,
+    WorkflowAgreementsDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { forkJoin, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -28,7 +32,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	@Input() readOnlyMode: boolean;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
-    @Input() contractsMainForm: WorkflowContractsMainForm;
+	@Input() contractsMainForm: WorkflowContractsMainForm;
+    @Input() periodId: string;
 	contractClientForm: WorkflowContractsClientDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	clientTimeReportingCap: EnumEntityTypeDto[];
@@ -38,21 +43,28 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
 
-    clientSpecialFeeFilter = new UntypedFormControl('');
+	clientSpecialFeeFilter = new UntypedFormControl('');
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
-    frameAgreements: AgreementSimpleListItemDto[];
-    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+	frameAgreements: AgreementSimpleListItemDto[];
+	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
-	constructor(injector: Injector, private _fb: UntypedFormBuilder, private _internalLookupService: InternalLookupService, private _agreementService: AgreementServiceProxy, private _workflowDataService: WorkflowDataService) {
+	constructor(
+		injector: Injector,
+		private _fb: UntypedFormBuilder,
+		private _internalLookupService: InternalLookupService,
+		private _agreementService: AgreementServiceProxy,
+		private _workflowDataService: WorkflowDataService,
+		private _clientPeriodService: ClientPeriodServiceProxy
+	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
 	}
 
 	ngOnInit(): void {
-        this._getEnums();
-    }
+		this._getEnums();
+	}
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -69,24 +81,24 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		});
 	}
 
-    getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
-        let dataToSend = {
-            agreementId: agreementId,
-            search: search,
-            clientId: this.contractClientForm.directClientId.value.clientId,
-            agreementType: AgreementType.Frame,
-            validity: undefined,
-            legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
-            salesTypeId: this.contractsMainForm.salesType.value?.id,
-            contractTypeId: undefined,
-            deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
-            startDate: undefined,
-            endDate: undefined,
-            pageNumber: 1,
-            pageSize: 1000,
-            sort: ''
-        }
-        this._agreementService
+	getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+		let dataToSend = {
+			agreementId: agreementId,
+			search: search,
+			clientId: this.contractClientForm.directClientId.value.clientId,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
+			salesTypeId: this.contractsMainForm.salesType.value?.id,
+			contractTypeId: undefined,
+			deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
+			startDate: undefined,
+			endDate: undefined,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		this._agreementService
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
@@ -105,23 +117,23 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			)
 			.subscribe((result) => {
 				this.frameAgreements = result.items;
-                if (result.items.length === 1) {
-                    this._checkAndPreselectFrameAgreement();
-                }
+				if (result.items.length === 1) {
+					this._checkAndPreselectFrameAgreement();
+				}
 			});
-    }
+	}
 
-    private _checkAndPreselectFrameAgreement() {
-        if (
+	private _checkAndPreselectFrameAgreement() {
+		if (
 			this.contractClientForm.directClientId.value?.clientId &&
 			this.contractsMainForm.salesType.value?.id &&
 			this.contractsMainForm.deliveryType.value?.id
 		) {
-            if (this.frameAgreements.length === 1) {
-                this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
-            }
+			if (this.frameAgreements.length === 1) {
+				this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+			}
 		}
-    }
+	}
 
 	selectClientRate(rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
 		const clientRate = new PeriodClientSpecialRateDto();
@@ -258,11 +270,16 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
 	}
 
-    get clientRates(): UntypedFormArray {
+
+
+
+
+	get clientRates(): UntypedFormArray {
 		return this.contractClientForm.get('clientRates') as UntypedFormArray;
 	}
 
-    get clientFees(): UntypedFormArray {
+	get clientFees(): UntypedFormArray {
 		return this.contractClientForm.get('clientFees') as UntypedFormArray;
 	}
+
 }

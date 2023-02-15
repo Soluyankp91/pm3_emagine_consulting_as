@@ -862,5 +862,17 @@ export class AppModule {
                 'assets/common/images/chevron-green-big.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'legal-contract-mode-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/legal-contract-mode-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'via-email-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/via-email-icon.svg'
+            )
+        );
     }
 }

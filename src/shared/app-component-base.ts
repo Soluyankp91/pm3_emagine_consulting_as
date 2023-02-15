@@ -157,6 +157,10 @@ export abstract class AppComponentBase {
 		return item.id;
 	}
 
+    trackByAgreementId(index: number, item: any) {
+		return item.agreementId;
+	}
+
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
 		return item.documentStorageGuid;
 	}

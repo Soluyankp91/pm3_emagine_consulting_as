@@ -1,0 +1,21 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.legal-contract--mode {
+    @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
+    &__active {
+        svg path {
+            fill: $green-color;
+        }
+    }
+    &__activeOutdatedTemplate {
+        svg path {
+            fill: #F3AB20;
+        }
+    }
+    &__inactive {
+        svg path {
+            fill: $light-grey-color;
+        }
+    }
+}

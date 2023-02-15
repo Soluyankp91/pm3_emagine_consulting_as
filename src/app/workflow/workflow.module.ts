@@ -28,6 +28,7 @@ import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-
 import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
+import { LegalContractsComponent } from './workflow-contracts/legal-contracts/legal-contracts.component';
 
 @NgModule({
     declarations: [
@@ -54,7 +55,8 @@ import { DocumentsComponent } from './shared/components/wf-documents/wf-document
         ContractsSyncDataComponent,
         ContractsClientDataComponent,
         ToggleEditModeComponent,
-        DocumentsComponent
+        DocumentsComponent,
+        LegalContractsComponent
     ],
     imports: [
         CommonModule,
