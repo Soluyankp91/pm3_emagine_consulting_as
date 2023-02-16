@@ -15,12 +15,12 @@
     >
         <p>{{ templateName }}</p>
     </ng-container>
-    <ng-template #defaultName> <p>New master template</p> </ng-template>
+    <ng-template #defaultName> <p>New Agreement</p> </ng-template>
 </div>
 <nav mat-tab-nav-bar>
-    <ng-container *ngFor="let tab of tabs">
-        <a
+    <a
         mat-tab-link
+        *ngFor="let tab of tabs"
         [active]="masterTemplate.isActive"
         [disabled]="tab.disabled"
         [routerLink]="tab.link"
@@ -30,6 +30,5 @@
         <mat-icon *ngIf="tab.icon" [svgIcon]="tab.icon"></mat-icon>
         <span>{{ tab.label }}</span>
     </a>
-    </ng-container>
 </nav>
 <router-outlet></router-outlet>

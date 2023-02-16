@@ -64,7 +64,6 @@
 					<mat-menu #menu="matMenu">
 						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
 							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow);">
-                                <mat-icon [svgIcon]="action.actionIcon"></mat-icon>
 								<span> {{ action.label }}</span>
 							</button>
 						</ng-container>

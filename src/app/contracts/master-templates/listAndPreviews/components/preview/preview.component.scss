@@ -4,7 +4,7 @@ app-preview-tabs {
 	width: 842px;
 	right: 0;
 	background-color: #fff;
-	height: calc(100vh - 155px);
+	height: calc(100vh - 150px);
 	border: 1px solid #e6e6e5;
 	box-shadow: 0px 0px 16px 0px #00000014;
 	.mat-tab-header {
@@ -21,7 +21,7 @@ app-preview-tabs {
 		max-height: 100%;
 	}
 	.mat-tab-group {
-		height: calc(100vh - 155px);
+		height: calc(100vh - 152px);
 	}
 	.mat-tab-body-wrapper {
 		height: 100%;
