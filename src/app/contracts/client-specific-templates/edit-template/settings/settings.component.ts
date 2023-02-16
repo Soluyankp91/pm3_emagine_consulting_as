@@ -70,17 +70,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	legalEntities: LegalEntityDto[];
 
-	options$: Observable<SettingsOptions> = combineLatest([
-		this._contractsService.settingsPageOptions$(),
-		this._contractsService.getEnumMap$().pipe(take(1)),
-	]).pipe(
-		tap(([{ legalEntities }, maps]) => {
-			this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
-		}),
-		map(([options]) => {
-			return options;
-		})
-	);
+	options$: Observable<SettingsOptions>;
 
 	modeControl$ = new BehaviorSubject(AgreementCreationMode.FromScratch);
 
@@ -115,6 +105,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	ngOnInit(): void {
+        this._setOptions();
 		this._initClients();
 		this._subsribeOnLegEntitiesChanges();
 		const paramId = this._route.snapshot.params.id;
@@ -210,6 +201,20 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				});
 		}
 	}
+
+    private _setOptions() {
+      this.options$  = combineLatest([
+            this._contractsService.settingsPageOptions$(),
+            this._contractsService.getEnumMap$().pipe(take(1)),
+        ]).pipe(
+            tap(([{ legalEntities }, maps]) => {
+                this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
+            }),
+            map(([options]) => {
+                return options;
+            })
+        );
+    }
 
 	private _subscribeOnModeReplay() {
 		this.creationModeControl.valueChanges.pipe(takeUntil(this._unSubscribe$), distinctUntilChanged()).subscribe((val) => {
