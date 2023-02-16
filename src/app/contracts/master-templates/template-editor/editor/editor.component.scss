@@ -1,42 +1,65 @@
 .save-actions {
-  display: flex;
-  align-items: center;
-  padding: 10px 60px 30px 60px;
+	display: flex;
+	align-items: center;
+	padding: 10px 60px 30px 60px;
 
-  button {
-    height: 39px;
-    padding: 0 16px;
-    background: #17A297;
-    border: 1px solid;
-    border-radius: 100px;
-    outline: none;
-    color: white;
-    cursor: pointer;
+	button {
+		height: 39px;
+		padding: 0 16px;
+		background: #17a297;
+		border: 1px solid;
+		border-radius: 100px;
+		outline: none;
+		color: white;
+		cursor: pointer;
 
-    &:first-child {
-      margin-right: auto;
-      background: none;
-      color: grey;
-    }
+		&:first-child {
+			margin-right: auto;
+			background: none;
+			color: grey;
+		}
 
-    &:last-child {
-      margin-left: 34px;
-    }
-  }
+		&:last-child {
+			margin-left: 34px;
+		}
+	}
 
-  &.loading {
-    &::after {
-      content: 'saving...';
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: grey;
-      opacity: .4;
-      color: white;
-      width: 92%;
-      height: 70px;
-      font-size: 26px;
-    }
-  }
+	&.loading {
+		&::after {
+			content: 'saving...';
+			position: absolute;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: grey;
+			opacity: 0.4;
+			color: white;
+			width: 92%;
+			height: 70px;
+			font-size: 26px;
+		}
+	}
+}
+
+:host {
+	padding: 20px 60px;
+	display: block;
+}
+::ng-deep {
+	.editor {
+		&.painter-format {
+			.dxreColumn {
+				cursor: -webkit-image-set(
+							url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAWCAMAAACWh252AAAAQlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABz07T7AAAAFXRSTlMASwj1EeVcRbTw0S/B6oRlsKDcOTfaTrUAAAAAYUlEQVQoz8WORw7AIAwETTWQXvz/r0ZRmomA3MKcvNZotQB/oYIFEVRekMs8GZT76ejExcpKeBx08yq5MnHKwvOLBL4hKWR/PKQ2RIm+6ioJSLYkaGH6btB5wbcIzeihChva2Ah1iGy3cAAAAABJRU5ErkJggg==)
+								1x,
+							url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAsCAMAAADigU7NAAAAZlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACLZRe2AAAAIXRSTlMA9RAX0yUI40n4tQGJGsyU8VpHOOvGPNt8LV2hrG2aYUs0eqYlAAAAwklEQVRIx+3W2Q6CMBRF0cNYyuCI4Kz7/3/SJxODQqDEqJHz2GGlN23TSlO+LJ6ZzSNJ8rcz4zkAAPYkJSWAAxAX6yMsK8tmFcT31sTQiEk6kAt2Qf7Y8jQfTNcyzpA+FdZMFxBANApQs5vWfBJ4Ne59QNs29gbaDlJvQEPHvQ1w3saBQHtXzys+GuguYQL+BojgOgbIUqh9dyDLKUM2hRsQR/sQWwU1Xr72HQCAcCUVB8fH1Zp0mUmSdvNwMX13fic3WPk1hE3qWf0AAAAASUVORK5CYII=)
+								2x
+						)
+						5 10,
+					text;
+				width: 5px;
+				height: 5px;
+			}
+		}
+	}
 }
