@@ -37,7 +37,7 @@
                         {{contract.value.name}}
                     </span>
                     <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
-                        <mat-icon class="legal-contract--mode" [ngClass]="eLegalContractModeIcon[contract.value.validity]" svgIcon="legal-contract-mode-icon"></mat-icon>
+                        <mat-icon class="legal-contract--mode" [svgIcon]="eLegalContractModeIcon[contract.value.validity]"></mat-icon>
                     </span>
                     <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
                         <mat-icon class="legal-contract--mode" svgIcon="via-email-icon"></mat-icon>
@@ -78,21 +78,49 @@
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
                             <mat-menu #legalContractMenu>
-                                <!-- <button
+                                <button
                                     class="menu-item green-color"
                                     mat-menu-item
-                                    [disabled]="isClientRateEditing"
-                                    appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
-                                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                    appPreventDoubleClick (throttledClick)="uploadSignedContract(contract.value, i)">
+                                    <mat-icon svgIcon="legal-contract-upload"></mat-icon>
+                                    Upload signed contract
+                                </button>
+                                <button
+                                    class="menu-item green-color"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="downloadPdf(contract.value, i)">
+                                    <mat-icon svgIcon="download-pdf"></mat-icon>
+                                    Download *.pdf
+                                </button>
+                                <button
+                                    class="menu-item green-color"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="downloadDoc(contract.value, i)">
+                                    <mat-icon svgIcon="download-doc"></mat-icon>
+                                    Download *.doc
+                                </button>
+                                <button
+                                    class="menu-item green-color"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="openInDocuSign(contract.value, i)">
+                                    <mat-icon svgIcon="open-in-docusign"></mat-icon>
+                                    Open in DocuSign
+                                </button>
+                                <button
+                                    class="menu-item green-color"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="editAgreement(contract.value, i)">
+                                    <mat-icon svgIcon="legal-contract-edit"></mat-icon>
                                     Edit
                                 </button>
                                 <button
                                     class="menu-item menu-item--cancel"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="removeClientRate(i)">
-                                    <mat-icon svgIcon="close-icon"></mat-icon>
-                                    Delete
-                                </button> -->
+                                    appPreventDoubleClick (throttledClick)="removeAgreement(contract.value, i)">
+                                    <mat-icon svgIcon="legal-contract-remove"></mat-icon>
+                                    {{legalContractStatus.Created || legalContractStatus.CreatedInDocuSign || legalContractStatus.Completed ||
+                                    legalContractStatus.Expired || legalContractStatus.Voided || legalContractStatus.Declined ? 'Delete' : 'Void'}}
+                                </button>
                             </mat-menu>
                         </div>
                     </ng-container>
@@ -101,27 +129,27 @@
         </ng-container>
     </ng-container>
     <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length === 0 && readOnlyMode">
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="legal-contract--list u-w--100 u-pl--16 u-pr--16 border-unset u-mt--15">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="legal-contract--list u-w--100 u-pl--16 u-pr--16 border-unset">
             <span class="light-grey-color text-600">
                 No client legal contracts
             </span>
         </div>
     </ng-container>
-    <ng-container *ngIf="!readOnlyMode">
-        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mb--10">
-            <button class="rates-and-fees--btn button-add" mat-flat-button (click)="addLegalContract()">
-                <mat-icon>add</mat-icon>
-                Add legal contract
-            </button>
+    <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mt--15">
+            <ng-container *ngIf="!readOnlyMode">
+                <button class="rates-and-fees--btn button-add" mat-flat-button (click)="addLegalContract()">
+                    <mat-icon>add</mat-icon>
+                    Add agreement
+                </button>
+            </ng-container>
             <div fxLayout="row" fxLayoutAlign="start start">
                 <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--12"
                     appPreventDoubleClick>
                     Download envelope
                 </button>
-                <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button>
-                    Complete step
+                <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button (click)="sendAgreement()">
+                    Send agreement
                 </button>
             </div>
         </div>
-    </ng-container>
 </form>

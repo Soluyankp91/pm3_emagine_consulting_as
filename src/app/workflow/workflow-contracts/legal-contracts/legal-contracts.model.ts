@@ -45,14 +45,14 @@ export enum ELegalContractStatusText {
 }
 
 export enum ELegalContractModeIcon {
-    "legal-contract--mode__active" = AgreementValidityState.Active,
-    "legal-contract--mode__activeOutdatedTemplate" = AgreementValidityState.ActiveOutdatedTemplate,
-    "legal-contract--mode__inactive" = AgreementValidityState.Inactive
+    "agreement-active-icon" = AgreementValidityState.Active,
+    "agreement-active-outdated-icon" = AgreementValidityState.ActiveOutdatedTemplate,
+    "agreement-inactive-icon" = AgreementValidityState.Inactive
 }
 
 export const LegalContractsMockedData: WorkflowAgreementDto[] = [
     new WorkflowAgreementDto({
-        agreementId: 1,
+        agreementId: 2,
         name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
         agreementStatus: EnvelopeStatus.Created,
         validity: AgreementValidityState.Active,

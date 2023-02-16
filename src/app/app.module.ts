@@ -863,15 +863,9 @@ export class AppModule {
             )
         );
         iconRegistry.addSvgIcon(
-            'legal-contract-mode-icon',
+            'warning-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/legal-contract-mode-icon.svg'
-            )
-        );
-        iconRegistry.addSvgIcon(
-            'via-email-icon',
-            sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/via-email-icon.svg'
+                'assets/common/images/warning-icon.svg'
             )
         );
     }

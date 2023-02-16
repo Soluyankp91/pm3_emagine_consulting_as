@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
-import { TooltipPosition } from './custom-tooltip.enums';
 
 @Component({
 	selector: 'app-custom-tooltip',

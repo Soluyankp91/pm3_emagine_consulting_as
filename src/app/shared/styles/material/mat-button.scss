@@ -227,6 +227,13 @@
             min-width: unset;
         }
 
+        &__positive-outline {
+            color: $green-color;
+            background: $white-color;
+            border-radius: 5px;
+            border-color: $green-color;
+        }
+
         &__positive {
             color: $white-color;
             background: $green-color;

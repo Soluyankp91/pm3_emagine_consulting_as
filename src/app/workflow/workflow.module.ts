@@ -29,46 +29,88 @@ import { ContractsClientDataComponent } from './workflow-contracts/contracts-cli
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
 import { LegalContractsComponent } from './workflow-contracts/legal-contracts/legal-contracts.component';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { RemoveAgreementDialogComponent } from './workflow-contracts/legal-contracts/remove-agreement-dialog/remove-agreement-dialog.component';
+import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contracts/send-envelope-dialog/send-envelope-dialog.component';
+import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
 
 @NgModule({
-    declarations: [
-        WorkflowComponent,
-        WorkflowSalesComponent,
-        WorkflowDetailsComponent,
-        WorkflowContractsComponent,
-        WorkflowOverviewComponent,
-        WorkflowFinancesComponent,
-        WorkflowConsultantActionsDialogComponent,
-        WorkflowActionsDialogComponent,
-        CreateWorkflowDialogComponent,
-        WorkflowSourcingComponent,
-        WorkflowPeriodComponent,
-        AddOrEditProjectLineDialogComponent,
-        GanttChartComponent,
-        WorkflowNotesComponent,
-        RateAndFeesWarningsDialogComponent,
-        MainDataComponent,
-        ClientDataComponent,
-        ConsultantDataComponent,
-        ContractsConsultantDataComponent,
-        ContractsMainDataComponent,
-        ContractsSyncDataComponent,
-        ContractsClientDataComponent,
-        ToggleEditModeComponent,
-        DocumentsComponent,
-        LegalContractsComponent
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        WorkflowRoutingModule,
-        AppCommonModule,
-        NgxGanttModule
-    ],
-    exports: [],
-    providers: [
-        WorkflowCreateResolver
-    ],
+	declarations: [
+		WorkflowComponent,
+		WorkflowSalesComponent,
+		WorkflowDetailsComponent,
+		WorkflowContractsComponent,
+		WorkflowOverviewComponent,
+		WorkflowFinancesComponent,
+		WorkflowConsultantActionsDialogComponent,
+		WorkflowActionsDialogComponent,
+		CreateWorkflowDialogComponent,
+		WorkflowSourcingComponent,
+		WorkflowPeriodComponent,
+		AddOrEditProjectLineDialogComponent,
+		GanttChartComponent,
+		WorkflowNotesComponent,
+		RateAndFeesWarningsDialogComponent,
+		MainDataComponent,
+		ClientDataComponent,
+		ConsultantDataComponent,
+		ContractsConsultantDataComponent,
+		ContractsMainDataComponent,
+		ContractsSyncDataComponent,
+		ContractsClientDataComponent,
+		ToggleEditModeComponent,
+		DocumentsComponent,
+		LegalContractsComponent,
+  RemoveAgreementDialogComponent,
+  SendEnvelopeDialogComponent,
+  SignersPreviewDialogComponent,
+	],
+	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
+	exports: [],
+	providers: [WorkflowCreateResolver],
 })
-export class WorkflowModule {}
+export class WorkflowModule {
+	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+		iconRegistry.addSvgIcon(
+			'agreement-active-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-active-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-active-outdated-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-active-outdated-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-inactive-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-inactive-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'via-email-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-email-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-doc',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-doc.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-pdf',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-pdf.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'legal-contract-edit',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/legal-contract-edit.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'legal-contract-remove',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/legal-contract-remove.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'legal-contract-upload',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/legal-contract-upload.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'open-in-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/open-in-docusign.svg')
+		);
+	}
+}
