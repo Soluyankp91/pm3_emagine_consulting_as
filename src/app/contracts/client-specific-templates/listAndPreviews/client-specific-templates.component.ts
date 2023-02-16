@@ -1,9 +1,10 @@
-import { Component, OnInit, Injector } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, Injector, Inject } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import {
+	CLIENT_TEMPLATE_ACTIONS,
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
@@ -18,6 +19,8 @@ import { MASTER_TEMPLATE_ACTIONS } from '../../shared/components/grid-table/mast
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
+import { DOCUMENT } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-client-specific-templates',
@@ -29,17 +32,19 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	cells = this._gridHelpService.generateTableConfig(DISPLAYED_COLUMNS, CLIENT_TEMPLATE_HEADER_CELLS);
 
 	displayedColumns = DISPLAYED_COLUMNS;
-	actions = MASTER_TEMPLATE_ACTIONS;
+	actions = CLIENT_TEMPLATE_ACTIONS;
 
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
-		private readonly route: ActivatedRoute,
-		private readonly router: Router,
+		private readonly _route: ActivatedRoute,
+		private readonly _router: Router,
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _injector: Injector,
 		private readonly _clientTemplatesService: ClientTemplatesService,
-		private readonly _contractService: ContractsService
+		private readonly _contractService: ContractsService,
+		private readonly _snackBar: MatSnackBar,
+		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injector);
 	}
@@ -54,7 +59,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	}
 
 	navigateTo() {
-		this.router.navigate(['create'], { relativeTo: this.route });
+		this._router.navigate(['create'], { relativeTo: this._route });
 	}
 
 	onSortChange($event: Sort) {
@@ -67,6 +72,31 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 
 	onPageChange($event: PageEvent) {
 		this._clientTemplatesService.updatePage($event);
+	}
+
+	onAction($event: { row: AgreementTemplatesListItemDto; action: string }) {
+		switch ($event.action) {
+			case 'EDIT': {
+				this._router.navigate([`${$event.row.agreementTemplateId}`, 'settings'], { relativeTo: this._route });
+				break;
+			}
+			case 'DUPLICATE': {
+				const params: Params = {
+					id: $event.row.agreementTemplateId,
+				};
+				this._router.navigate(['create'], {
+					relativeTo: this._route,
+					queryParams: params,
+				});
+				break;
+			}
+			case 'COPY': {
+				navigator.clipboard.writeText(this._document.location.href + `?id=${$event.row.agreementTemplateId}`);
+				this._snackBar.open('Copied to clipboard', undefined, {
+					duration: 3000,
+				});
+			}
+		}
 	}
 
 	private _initTable$() {
