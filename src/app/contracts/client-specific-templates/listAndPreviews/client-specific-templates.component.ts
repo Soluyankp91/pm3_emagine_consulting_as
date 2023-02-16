@@ -1,6 +1,5 @@
 import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AgreementLanguage,
@@ -173,9 +172,9 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
-				createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
+				createdDateUtc: item.createdDateUtc,
 				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
-				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
+				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				linkState: item.linkState,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,

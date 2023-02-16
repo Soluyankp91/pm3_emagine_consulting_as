@@ -29,18 +29,7 @@ export class SummaryComponent implements OnInit {
 	}
 
 	navigateToTemplate(templateId: any, isDuplicate: boolean) {
-		console.log(templateId);
+        //need update on BackEnd
 		return;
-		let url: string;
-		if (isDuplicate) {
-			url = this._router.serializeUrl(
-				this._router.createUrlTree(['/app/contracts/client-specific-templates'], { queryParams: { templateId } })
-			);
-		} else {
-			url = this._router.serializeUrl(
-				this._router.createUrlTree(['/app/contracts/master-templates'], { queryParams: { templateId } })
-			);
-		}
-		window.open(url, '_blank');
 	}
 }

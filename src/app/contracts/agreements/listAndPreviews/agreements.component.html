@@ -37,10 +37,10 @@
 					<emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<p>{{ cell.startDate }}</p>
+					<p>{{ cell.startDate | momentFormat }}</p>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<p>{{ cell.endDate }}</p>
+					<p>{{ cell.endDate | momentFormat }}</p>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
 					<p>{{ cell.saleManager | emptyStringHandle }}</p>

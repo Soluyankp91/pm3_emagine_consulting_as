@@ -85,7 +85,7 @@
         <div class="selected-items-info">
            {{selectionModel.selected.length}} selected
         </div>
-        <ng-container *ngFor="let bottomAction of selectedItemsActions">
+        <ng-container *ngFor="let bottomAction of selectedItemsActions;trackBy: trackByAction">
             <div class="bottom-action-item" (click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
                 <mat-icon [svgIcon]="bottomAction.actionIcon"></mat-icon>
                 <span>{{bottomAction.label}}</span>

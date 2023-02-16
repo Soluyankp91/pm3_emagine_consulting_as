@@ -36,7 +36,6 @@ export abstract class BaseContract {
 			this.reload$,
 		]).pipe(
 			distinctUntilChanged((previous, current) => {
-				console.log(previous, current);
 				return isEqual(previous, current);
 			}),
 			tap(() => this.contractsLoading$$.next(true)),

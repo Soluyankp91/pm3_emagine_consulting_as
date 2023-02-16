@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject } from 'rxjs';
-import { switchMap, tap, map, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { switchMap, tap, map, distinctUntilChanged } from 'rxjs/operators';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,
@@ -17,7 +17,6 @@ import {
 	AgreementTemplateServiceProxy,
 	AgreementType,
 } from 'src/shared/service-proxies/service-proxies';
-import * as moment from 'moment';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 
 @Injectable()
@@ -132,7 +131,7 @@ export class PreviewService extends BasePreview {
 		this._agreementsLinksSort$.next(sort);
 	}
 
-	_mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
+	mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementTemplatesListItemDto>{
 			name: row.name,
 			clientName: row.clientName,
@@ -151,9 +150,9 @@ export class PreviewService extends BasePreview {
 			isEnabled: row.isEnabled,
 
 			agreementTemplateId: row.agreementTemplateId,
-			createdDateUtc: moment(row.createdDateUtc).format('DD.MM.YYYY'),
+			createdDateUtc: row.createdDateUtc,
 			createdBy: row.createdBy?.name,
-			lastUpdateDateUtc: moment(row.lastUpdateDateUtc).format('DD.MM.YYYY'),
+			lastUpdateDateUtc: row.lastUpdateDateUtc,
 			lastUpdatedBy: row.lastUpdatedBy?.name,
 			duplicationSourceAgreementTemplateId: row.duplicationSourceAgreementTemplateId,
 			duplicationSourceAgreementTemplateName: row.duplicationSourceAgreementTemplateName,

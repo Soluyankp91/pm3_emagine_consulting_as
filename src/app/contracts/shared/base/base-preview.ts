@@ -27,7 +27,7 @@ export abstract class BasePreview {
 		}),
 		withLatestFrom(this._contractService.getEnumMap$()),
 		map(([row, maps]) => {
-			return this._mapEntityToSummary(row, maps);
+			return this.mapEntityToSummary(row, maps);
 		}),
 		tap(() => {
 			this.contentLoading$.next(false);
@@ -82,7 +82,7 @@ export abstract class BasePreview {
 		return this._newestFirst$.asObservable();
 	}
 
-	abstract _mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells): any;
+	abstract mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells): any;
 
 	abstract entityGet: (rowId: number) => Observable<any>;
 	abstract entityMetadataLog: (rowId: number, newestFirst: boolean) => Observable<any>;

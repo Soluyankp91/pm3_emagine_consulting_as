@@ -28,7 +28,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import * as moment from 'moment';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,
@@ -176,9 +175,9 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
-				createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
+				createdDateUtc: item.createdDateUtc,
 				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
-				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
+				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				isEnabled: item.isEnabled,
 			};
 		});

@@ -1,4 +1,5 @@
 import { SortDirection } from '@angular/material/sort';
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import {
 	AgreementTemplateMetadataLogListItemDto,
@@ -100,9 +101,9 @@ export interface BaseAgreementTemplate {
 	deliveryTypeIds: string[];
 
 	createdBy: string;
-	createdDateUtc: string;
+	createdDateUtc: moment.Moment;
 	lastUpdatedBy: string;
-	lastUpdateDateUtc?: string;
+	lastUpdateDateUtc?: moment.Moment;
 	lastUpdatedByLowerCaseInitials?: string;
 	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
@@ -125,8 +126,8 @@ export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	agreementStatus?: EnvelopeStatus;
 	legalEntityId?: string;
 
-	startDate?: string;
-	endDate?: string;
+	startDate?: moment.Moment;
+	endDate?: moment.Moment;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
