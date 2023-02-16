@@ -142,7 +142,7 @@ export interface MasterTemplatePreview {
 
 export type MappedLog = AgreementTemplateMetadataLogListItemDto & {
 	profilePictureUrl: string;
-	date: string;
+	date: moment.Moment;
 	dayTime: string;
 };
 export const OperationsTypeMap = {

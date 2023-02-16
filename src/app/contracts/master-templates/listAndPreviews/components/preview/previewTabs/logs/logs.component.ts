@@ -46,7 +46,7 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 					(log) =>
 						<MappedLog>{
 							...log,
-							date: moment(log.dateTime).format('DD.MM.YYYY'),
+							date: log.dateTime,
 							dayTime: moment(log.dateTime).format('h:mm'),
 							profilePictureUrl: log.employee?.externalId as string
 						}
