@@ -19,3 +19,46 @@ app-contract {
 		}
 	}
 }
+.app-contract-backdrop ~ .cdk-overlay-connected-position-bounding-box {
+	::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+
+	::-webkit-scrollbar-track {
+		background-color: transparent;
+		border-radius: 50px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #b6b4b2;
+		border-radius: 50px;
+
+		&:hover {
+			border: 0;
+			background: rgba(109, 109, 109, 1);
+		}
+	}
+	.mat-form-field-label {
+		font-family: 'Open Sans';
+		font-weight: 600;
+		font-size: 10px;
+		line-height: 14px;
+	}
+	.mat-form-field-infix {
+		width: 232px;
+		border-top: 14px solid transparent;
+	}
+	.mat-form-field-wrapper {
+		margin-bottom: -1.25em;
+	}
+	.mat-menu-item {
+		padding: 0px !important;
+	}
+	.mat-form-field-underline {
+		height: 2px;
+	}
+	.mat-form-field-flex {
+		padding: 6px 14px;
+	}
+}

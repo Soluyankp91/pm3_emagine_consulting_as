@@ -1,7 +1,7 @@
 <div [matMenuTriggerFor]="menu" (onMenuOpen)="openPanel()" (onMenuClose)="menuClosed()">
     <ng-container *ngIf="triggerButton" [ngTemplateOutlet]="triggerButton" [ngTemplateOutletContext]="{selectedOptions}"></ng-container>
 </div>
-<mat-menu #menu="matMenu">
+<mat-menu #menu="matMenu" backdropClass="app-contract-backdrop">
 	<div mat-menu-item (click)="$event.stopPropagation()">
 		<mat-form-field>
 			<mat-label>{{ label }}</mat-label>
