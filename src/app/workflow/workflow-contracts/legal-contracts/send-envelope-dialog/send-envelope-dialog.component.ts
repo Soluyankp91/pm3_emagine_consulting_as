@@ -14,7 +14,8 @@ export class SendEnvelopeDialogComponent implements OnInit {
 	constructor(
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
-			disableSendAllButton: boolean
+			disableSendAllButton: boolean,
+            showError?: boolean
 		},
 		private _dialogRef: MatDialogRef<SendEnvelopeDialogComponent>
 	) {}

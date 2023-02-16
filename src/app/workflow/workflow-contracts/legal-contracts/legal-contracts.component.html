@@ -30,7 +30,7 @@
             <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i" [formArrayName]="i">
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px" class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
                     <span fxFlex="20px" class="legal-contract--list-item u-w--100">
-                        <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement" class="black-checkbox">
+                        <mat-checkbox (change)="toggleSelection()" color="accent" formControlName="selected" name="selectedAgreement" class="black-checkbox">
                         </mat-checkbox>
                     </span>
                     <span fxFlex="auto" class="legal-contract--list-item u-w--100 text-truncate-ellipsis text-bold" appShowIfTruncated [matTooltip]="contract.value.name" matTooltipClass="white-tooltip">
@@ -39,7 +39,7 @@
                     <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="eLegalContractModeText[contract.value.validity]" matTooltipClass="white-tooltip">
                         <mat-icon class="legal-contract--mode" [svgIcon]="eLegalContractModeIcon[contract.value.validity]"></mat-icon>
                     </span>
-                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="contract.value.name" matTooltipClass="white-tooltip">
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="'Via email'" matTooltipClass="white-tooltip">
                         <mat-icon class="legal-contract--mode" svgIcon="via-email-icon"></mat-icon>
                     </span>
                     <span fxFlex="160px" fxFlex.lt-xl="50px" fxLayoutAlign="start center" fxLayoutAlign.lt-xl="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" emgCustomTooltip [contentTemplate]="statusTooltip">
@@ -146,20 +146,27 @@
     </ng-container>
     <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mt--15">
             <ng-container *ngIf="!readOnlyMode">
-                <button class="rates-and-fees--btn button-add" mat-flat-button (click)="addLegalContract()">
+                <button class="rates-and-fees--btn button-add" mat-flat-button (click)="redirectToCreateAgreement()">
                     <mat-icon>add</mat-icon>
                     Add agreement
-                    <!-- NB: open new browser windon with create-agreement page -->
                 </button>
             </ng-container>
             <div fxLayout="row" fxLayoutAlign="start start">
-                <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--12"
-                    appPreventDoubleClick>
-                    Download envelope
-                </button>
-                <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button (click)="sendAgreement()">
-                    Send agreement
-                </button>
+                <div [matTooltip]="downloadEnvelopeAvailable ? '': 'Select at least 1 agreement'" matTooltipClass="white-tooltip">
+                    <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--12"
+                        [disabled]="!downloadEnvelopeAvailable"
+                        appPreventDoubleClick (throttledClick)="downloadEnvelopes()">
+                        Download envelope
+                    </button>
+                </div>
+                <div [matTooltip]="sendAgreementAvailable ? '' : 'Selected agreement has no signed document'" matTooltipClass="white-tooltip">
+                    <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button
+                        [disabled]="!sendAgreementAvailable"
+                        appPreventDoubleClick
+                        (throttledClick)="sendAgreement()">
+                        Send agreement
+                    </button>
+                </div>
             </div>
         </div>
 </form>

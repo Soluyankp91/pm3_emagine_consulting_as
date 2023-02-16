@@ -2,6 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
@@ -46,6 +47,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	eLegalContractModeIcon = ELegalContractModeIcon;
 	eLegalContractModeText = ELegalContractModeText;
 	legalContractStatus = EnvelopeStatus;
+    // downloadEnvelopeAvailable = false;
+    // sendEnvelopeAvailable = false;
 	constructor(
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
@@ -54,7 +57,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _agreementService: AgreementServiceProxy,
 		private _legalContractService: LegalContractService,
 		private _overlay: Overlay,
-		private _dialog: MatDialog
+		private _dialog: MatDialog,
+        private _router: Router
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
@@ -70,6 +74,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			this.addLegalContract(item);
 		});
 	}
+
+    public toggleSelection() {
+
+    }
 
 	private _getClientAgreements() {
 		this._clientPeriodService
@@ -109,41 +117,43 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public sendAgreement() {
-		const agreementIds = this.clientLegalContractsForm.value.legalContracts
-			.map((x) => {
-				if (x.selected) {
-					return x.agreementId;
-				}
-			})
-			.filter(Boolean);
-		if (agreementIds.length > 1) {
-			let disableSendAllButton = false;
-			this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
-				next: () => {
-					this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-				},
-				error: (error) => {
-					if (error.status === 400) {
-						disableSendAllButton = true;
-					}
-					console.log(disableSendAllButton);
-					this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-				},
-			});
-		} else {
-			this._getSignersPreview(agreementIds);
-		}
+		let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
+        const agreementIds = selectedAgreements.map(x => x.agreementId);
+        let disableSendAllButton = false;
+        if (selectedAgreements.some(x => !x.hasSignedDocumentFile)) {
+            this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
+        } else {
+            if (agreementIds.length > 1) {
+                this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
+                    next: () => {
+                        this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+                    },
+                    error: (error) => {
+                        if (error.status === 400) {
+                            disableSendAllButton = true;
+                        }
+                        this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+                    },
+                });
+            } else {
+                this._getSignersPreview(agreementIds);
+            }
+        }
 	}
 
-	private _openSendEnvelopeDialog(disableSendAllButton: boolean, agreementIds: number[]) {
+	private _openSendEnvelopeDialog(disableSendAllButton: boolean, agreementIds: number[], showError = false) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			disableSendAllButton: disableSendAllButton,
+            showError: showError
 		};
 		const dialogRef = this._dialog.open(SendEnvelopeDialogComponent, MediumDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((singleEmail: boolean) => {
+            if (showError) {
+                return;
+            }
 			this._getSignersPreview(agreementIds, singleEmail);
 		});
 	}
@@ -241,9 +251,16 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._legalContractService.processDownloadDocument(url);
 	}
 
-	public openInDocuSign(agreementId: number) {}
+	public openInDocuSign(agreementId: number) {
+        // TODO: open docuSign in new tab once BE change response
+    }
 
-	public editAgreement(agreementId: number) {}
+	public editAgreement(agreementId: number) {
+        const routerUrl = this._router.serializeUrl(
+            this._router.createUrlTree([`/app/contracts/agreements/${agreementId}/settings`])
+        );
+        window.open(routerUrl, '_blank');
+    }
 
 	public openDeleteAgreementDialog(agreementId: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
@@ -283,7 +300,25 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.subscribe();
 	}
 
+    public redirectToCreateAgreement() {
+        const url = this._router.serializeUrl(
+            this._router.createUrlTree([`/app/contracts/agreements/create`])
+        );
+        window.open(url, '_blank');
+    }
+
+    public downloadEnvelopes() {
+
+    }
+
 	get legalContracts(): UntypedFormArray {
 		return this.clientLegalContractsForm.get('legalContracts') as UntypedFormArray;
 	}
+
+    get downloadEnvelopeAvailable() {
+        return this.legalContracts.value.some(x => x.selected);
+    }
+    get sendAgreementAvailable() {
+        return this.legalContracts.value.some(x => x.selected && x.hasSignedDocumentFile)
+    }
 }

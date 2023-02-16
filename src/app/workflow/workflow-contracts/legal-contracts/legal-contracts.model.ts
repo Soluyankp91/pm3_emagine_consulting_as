@@ -170,7 +170,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         ],
     }),
     new WorkflowAgreementDto({
-        agreementId: 1,
+        agreementId: 2,
         name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
         agreementStatus: EnvelopeStatus.Declined,
         validity: AgreementValidityState.Active,
