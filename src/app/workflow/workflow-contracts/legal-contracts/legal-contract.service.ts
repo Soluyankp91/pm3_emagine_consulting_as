@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { ApiException } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { AuthenticationResult } from '@azure/msal-browser';
 
 @Injectable({
 	providedIn: 'root',
@@ -16,13 +17,12 @@ export class LegalContractService {
 		this._httpClient = new HttpClient(handler);
 	}
 
-    getTokenBeforeCheck(agreementIds?: number[] | undefined): Observable<any> {
+    getTokenAndSignleEnvelopeCheck(agreementIds?: number[] | undefined): Observable<any> {
         return this._localHttpService.getTokenSilent().pipe(switchMap((response) => this.singleEnvelopeCheck(agreementIds, response.accessToken)));
     }
 
     singleEnvelopeCheck(agreementIds?: number[] | undefined, token?: string): Observable<void> {
         let url_ = this._baseUrl + "/api/Agreement/single-envelope-check?";
-        // let url_ = 'https://httpstat.us/400';
         if (agreementIds === null)
             throw new Error("The parameter 'agreementIds' cannot be null.");
         else if (agreementIds !== undefined)
@@ -68,6 +68,37 @@ export class LegalContractService {
             }));
         }
         return _observableOf<void>(null as any);
+    }
+
+    processDownloadDocument(fileUrl: string) {
+        this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+			this._httpClient
+				.get(fileUrl, {
+					headers: new HttpHeaders({
+						Authorization: `Bearer ${response.accessToken}`,
+					}),
+					responseType: 'blob',
+					observe: 'response',
+				})
+				.subscribe((data: HttpResponse<Blob>) => {
+					const blob = new Blob([data.body!], { type: data.body!.type });
+					const contentDispositionHeader = data.headers.get('Content-Disposition');
+					if (contentDispositionHeader !== null) {
+						const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+						const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+						const downloadlink = document.createElement('a');
+						downloadlink.href = window.URL.createObjectURL(blob);
+						downloadlink.download = contentDispositionFileName;
+						const nav = window.navigator as any;
+
+						if (nav.msSaveOrOpenBlob) {
+							nav.msSaveBlob(blob, contentDispositionFileName);
+						} else {
+							downloadlink.click();
+						}
+					}
+				});
+		});
     }
 
 }

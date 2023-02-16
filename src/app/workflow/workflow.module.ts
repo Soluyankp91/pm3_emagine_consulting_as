@@ -34,6 +34,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { RemoveAgreementDialogComponent } from './workflow-contracts/legal-contracts/remove-agreement-dialog/remove-agreement-dialog.component';
 import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contracts/send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
+import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -65,6 +66,7 @@ import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contra
   RemoveAgreementDialogComponent,
   SendEnvelopeDialogComponent,
   SignersPreviewDialogComponent,
+  RemoveOrUploadAgrementDialogComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],

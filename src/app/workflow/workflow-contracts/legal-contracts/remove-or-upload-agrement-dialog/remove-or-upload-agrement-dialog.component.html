@@ -1,0 +1,34 @@
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <span class="text-bold-800">
+            {{dialogConfig.header}}
+        </span>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
+    </div>
+    <h3>{{dialogConfig.title}}</h3>
+    <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--10">
+        <!-- {{data?.file | json}} -->
+        <mat-icon [svgIcon]="icon" class="u-mr--5"></mat-icon>
+        <span class="dark-grey-color text-600">
+            {{data?.file?.name}}
+        </span>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+        <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-420">
+            <mat-label>{{dialogConfig.formLabel}}</mat-label>
+            <textarea [disabled]="true" matInput autocomplete="new-password"
+                name="specialContractTerms" [formControl]="reasonForChange"
+                [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="4">
+            </textarea>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button class="dialog-btn dialog-btn__negative" appPreventDoubleClick (throttledClick)="confirm()">
+        {{dialogConfig.confirmButtonText}}
+    </button>
+</mat-dialog-actions>
+

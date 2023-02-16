@@ -85,7 +85,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		let dataToSend = {
 			agreementId: agreementId,
 			search: search,
-			clientId: this.contractClientForm.directClientId.value.clientId,
+			clientId: this.contractClientForm.directClientId.value,
 			agreementType: AgreementType.Frame,
 			validity: undefined,
 			legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
@@ -118,6 +118,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			.subscribe((result) => {
 				this.frameAgreements = result.items;
 				if (result.items.length === 1) {
+                    console.log('preselect');
 					this._checkAndPreselectFrameAgreement();
 				}
 			});
@@ -125,9 +126,12 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 
 	private _checkAndPreselectFrameAgreement() {
 		if (
-			this.contractClientForm.directClientId.value?.clientId &&
-			this.contractsMainForm.salesType.value?.id &&
-			this.contractsMainForm.deliveryType.value?.id
+			(this.contractClientForm.directClientId.value !== null &&
+			this.contractClientForm.directClientId.value !== undefined) &&
+			(this.contractsMainForm.salesType.value?.id !== null &&
+            this.contractsMainForm.salesType.value?.id !== undefined) &&
+			(this.contractsMainForm.deliveryType.value?.id !== null &&
+            this.contractsMainForm.deliveryType.value?.id !== undefined)
 		) {
 			if (this.frameAgreements.length === 1) {
 				this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });

@@ -351,7 +351,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.salesClientDataForm.startDate.value &&
 			(this.salesClientDataForm.endDate.value ||
 				this.salesClientDataForm.noEndDate.value) &&
-			this.salesClientDataForm.directClientIdValue.value &&
+			this.salesClientDataForm.directClientIdValue.value?.clientId &&
 			this.mainDataForm.salesTypeId.value &&
 			this.mainDataForm.deliveryTypeId.value
 		) {

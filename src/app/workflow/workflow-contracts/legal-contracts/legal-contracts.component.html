@@ -16,7 +16,7 @@
                 Status
             </span>
             <span fxFlex="80px" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
-                Date
+                Last updated
             </span>
             <span fxFlex="35px" fxLayoutAlign="center start" class="legal-contract--list-header text-truncate-ellipsis u-w--100">
                 By
@@ -33,22 +33,14 @@
                         <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement" class="black-checkbox">
                         </mat-checkbox>
                     </span>
-                    <span fxFlex="auto" class="legal-contract--list-item u-w--100 text-truncate-ellipsis text-bold">
+                    <span fxFlex="auto" class="legal-contract--list-item u-w--100 text-truncate-ellipsis text-bold" appShowIfTruncated [matTooltip]="contract.value.name" matTooltipClass="white-tooltip">
                         {{contract.value.name}}
                     </span>
-                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="eLegalContractModeText[contract.value.validity]" matTooltipClass="white-tooltip">
                         <mat-icon class="legal-contract--mode" [svgIcon]="eLegalContractModeIcon[contract.value.validity]"></mat-icon>
                     </span>
-                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100">
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="contract.value.name" matTooltipClass="white-tooltip">
                         <mat-icon class="legal-contract--mode" svgIcon="via-email-icon"></mat-icon>
-                        <ng-template #statusTooltip>
-                            <div fxLayout="row" fxLayoutAlign="start center">
-                                <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
-                                <span [fxHide]="false" fxHide.lt-xl>
-                                    {{eLegalContractStatusText[contract.value.agreementStatus]}}
-                                </span>
-                            </div>
-                        </ng-template>
                     </span>
                     <span fxFlex="160px" fxFlex.lt-xl="50px" fxLayoutAlign="start center" fxLayoutAlign.lt-xl="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" emgCustomTooltip [contentTemplate]="statusTooltip">
                         <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
@@ -81,46 +73,63 @@
                                 <button
                                     class="menu-item green-color"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="uploadSignedContract(contract.value, i)">
+                                    (click)="file.click()">
                                     <mat-icon svgIcon="legal-contract-upload"></mat-icon>
                                     Upload signed contract
                                 </button>
+                                <input
+                                    #file
+                                    type="file"
+                                    [accept]="'.pdf,.doc,.docx'"
+                                    (change)="onFileAdded($event.target, contract.value.agreementId)"
+                                    [style.display]="'none'"
+                                />
                                 <button
                                     class="menu-item green-color"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="downloadPdf(contract.value, i)">
+                                    appPreventDoubleClick (throttledClick)="downloadPdf(contract.value.agreementId)">
                                     <mat-icon svgIcon="download-pdf"></mat-icon>
                                     Download *.pdf
                                 </button>
                                 <button
                                     class="menu-item green-color"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="downloadDoc(contract.value, i)">
+                                    appPreventDoubleClick (throttledClick)="downloadDoc(contract.value.agreementId)">
                                     <mat-icon svgIcon="download-doc"></mat-icon>
                                     Download *.doc
                                 </button>
                                 <button
                                     class="menu-item green-color"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="openInDocuSign(contract.value, i)">
+                                    appPreventDoubleClick (throttledClick)="openInDocuSign(contract.value.agreementId)">
                                     <mat-icon svgIcon="open-in-docusign"></mat-icon>
                                     Open in DocuSign
                                 </button>
                                 <button
                                     class="menu-item green-color"
                                     mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="editAgreement(contract.value, i)">
+                                    appPreventDoubleClick (throttledClick)="editAgreement(contract.value.agreementId)">
                                     <mat-icon svgIcon="legal-contract-edit"></mat-icon>
                                     Edit
                                 </button>
-                                <button
-                                    class="menu-item menu-item--cancel"
-                                    mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="removeAgreement(contract.value, i)">
-                                    <mat-icon svgIcon="legal-contract-remove"></mat-icon>
-                                    {{legalContractStatus.Created || legalContractStatus.CreatedInDocuSign || legalContractStatus.Completed ||
-                                    legalContractStatus.Expired || legalContractStatus.Voided || legalContractStatus.Declined ? 'Delete' : 'Void'}}
-                                </button>
+                                <ng-container
+                                    *ngIf="contract.value.agreementStatus === legalContractStatus.Created || contract.value.agreementStatus === legalContractStatus.CreatedInDocuSign || contract.value.agreementStatus === legalContractStatus.Completed ||
+                                                                contract.value.agreementStatus === legalContractStatus.Expired || contract.value.agreementStatus === legalContractStatus.Voided || contract.value.agreementStatus === legalContractStatus.Declined; else voidAgreementOption">
+                                    <button class="menu-item red-color" mat-menu-item appPreventDoubleClick
+                                        (throttledClick)="openDeleteAgreementDialog(contract.value.agreementId)">
+                                        <mat-icon svgIcon="legal-contract-remove"></mat-icon>
+                                        Delete
+                                    </button>
+                                </ng-container>
+                                <ng-template #voidAgreementOption>
+                                    <button
+                                        class="menu-item red-color"
+                                        mat-menu-item
+                                        appPreventDoubleClick (throttledClick)="openVoidAgreementDialog(contract.value.agreementId)">
+                                        <mat-icon svgIcon="legal-contract-remove"></mat-icon>
+                                        Void
+                                    </button>
+                                </ng-template>
                             </mat-menu>
                         </div>
                     </ng-container>
@@ -140,6 +149,7 @@
                 <button class="rates-and-fees--btn button-add" mat-flat-button (click)="addLegalContract()">
                     <mat-icon>add</mat-icon>
                     Add agreement
+                    <!-- NB: open new browser windon with create-agreement page -->
                 </button>
             </ng-container>
             <div fxLayout="row" fxLayoutAlign="start start">

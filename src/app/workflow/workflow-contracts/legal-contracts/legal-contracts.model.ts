@@ -50,6 +50,12 @@ export enum ELegalContractModeIcon {
     "agreement-inactive-icon" = AgreementValidityState.Inactive
 }
 
+export enum ELegalContractModeText {
+    "Active" = AgreementValidityState.Active,
+    "New version available" = AgreementValidityState.ActiveOutdatedTemplate,
+    "Ended" = AgreementValidityState.Inactive
+}
+
 export const LegalContractsMockedData: WorkflowAgreementDto[] = [
     new WorkflowAgreementDto({
         agreementId: 2,
