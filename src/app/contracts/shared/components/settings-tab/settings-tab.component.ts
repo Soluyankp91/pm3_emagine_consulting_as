@@ -1,25 +1,24 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { getAllRouteParams } from '../../utils/allRouteParams';
+import { Observable } from 'rxjs';
+import { CreationTitleService } from '../../services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
-import { Tab } from '../../shared/entities/contracts.interfaces';
-import { CreationTitleService } from '../../shared/services/creation-title.service';
-import { getAllRouteParams } from '../../shared/utils/allRouteParams';
 
 @Component({
-	selector: 'app-agreement-editor',
-	templateUrl: './template-editor.component.html',
-	styleUrls: ['./template-editor.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-master-template-creation',
+	styleUrls: ['./settings-tab.component.scss'],
+	templateUrl: './settings-tab.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AgreementEditorComponent implements OnInit {
-    isEdit: boolean;
+export class SettingsTabComponent implements OnInit {
+	isEdit: boolean;
 	tabs: Tab[];
+	defaultName: string;
 
 	templateName$: Observable<string>;
 	tenants$: Observable<(LegalEntityDto & { code: string })[] | null>;
-
-	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
 		private readonly _router: Router,
@@ -29,14 +28,10 @@ export class AgreementEditorComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.isEdit = this._route.snapshot.data.isEdit;
-		this._setTabs();
+		this.defaultName = this._route.snapshot.data.defaultName;
 		this.templateName$ = this._creationTitleService.templateName$;
 		this.tenants$ = this._creationTitleService.tenants$;
-	}
-
-	ngOnDestroy(): void {
-		this._unSubscribe$.next();
-		this._unSubscribe$.complete();
+		this._setTabs();
 	}
 
 	private _setTabs() {
@@ -59,7 +54,7 @@ export class AgreementEditorComponent implements OnInit {
 		}
 		this.tabs = [
 			{
-				link: 'create',
+				link: '',
 				label: 'Settings',
 				icon: 'cog-icon',
 			},
