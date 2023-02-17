@@ -1,18 +1,15 @@
 @import 'mixins';
 @import 'variables';
+
 app-agreements {
+	display: block;
+	height: calc(100vh - 49px);
+
 	.table-cell {
 		@include table-cell(600);
 	}
 	.agreement-name-cell {
 		@include table-cell(700);
-	}
-	.table {
-		max-height: calc(100vh - 300px);
-		border-collapse: separate;
-		overflow: hidden;
-		flex: 1 1 0;
-		padding: 0px 14px 14px 0px;
 	}
 	.mat-column-language .mat-icon-button .mat-button-wrapper mat-icon {
 		font-size: 10px !important;
@@ -27,7 +24,7 @@ app-agreements {
 		height: 20px !important;
 	}
 	.select-column {
-		@include table-cell-width(88px);
+		@include table-cell-width(34px);
 	}
 	.language-column {
 		@include table-cell-width(30px);
@@ -91,10 +88,10 @@ app-agreements {
 		@include table-cell-width(40px);
 	}
 	.mat-cell:first-of-type {
-		padding-left: 50px;
+		padding-left: 0px;
 	}
 	.mat-header-cell:first-of-type {
-		padding-left: 50px;
+		padding-left: 0px;
 	}
 	.mat-header-cell:last-of-type {
 		padding-right: 0px;
@@ -104,9 +101,6 @@ app-agreements {
 	}
 	.table-section {
 		max-width: fit-content;
-	}
-	.mat-paginator {
-		max-width: 1300px;
 	}
 	.icon {
 		width: 8px;
@@ -127,11 +121,7 @@ app-agreements {
 		justify-content: space-between;
 		gap: 12px;
 	}
-
 	.table-and-preview-container {
 		display: flex;
-	}
-	.table-container {
-		flex-grow: 1;
 	}
 }

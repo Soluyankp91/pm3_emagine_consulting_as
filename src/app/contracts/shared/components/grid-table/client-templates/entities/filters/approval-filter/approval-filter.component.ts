@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {
 	ITemplatesService,
 	TEMPLATE_SERVICE_PROVIDER,
@@ -11,6 +11,8 @@ import { APPROVAL_FILTER_OPTIONS } from '../../client-template.constants';
 @Component({
 	selector: 'app-approval-filter',
 	templateUrl: './approval-filter.component.html',
+    styleUrls: ['./approval-filter.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class ApprovalFilterComponent {

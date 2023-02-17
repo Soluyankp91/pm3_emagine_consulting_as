@@ -1,13 +1,16 @@
 app-agreement-preview {
 	display: block;
+	width: 842px;
+	height: calc(100vh - 148px);
+
+	right: 0;
 	position: absolute;
 	z-index: 2;
-	width: 842px;
-	right: 0;
 	background-color: #fff;
-	height: calc(100vh - 148px);
+
 	border: 1px solid #e6e6e5;
 	box-shadow: 0px 0px 16px 0px #00000014;
+
 	.mat-tab-header {
 		width: 840px;
 	}

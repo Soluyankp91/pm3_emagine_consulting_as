@@ -28,18 +28,25 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		class: 'language-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'ID',
+		class: 'id-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Template Name',
+		class: 'template-name-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Client',
+		class: 'client-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -50,6 +57,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+		class: 'agreementType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -60,6 +68,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.RecipientTypesFilterComponent
 				),
 		},
+		class: 'recipientTypeId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -70,6 +79,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.LegalEntitiesFilterComponent
 				),
 		},
+		class: 'legalEntityId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -80,6 +90,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.SalesTypesFilterComponent
 				),
 		},
+		class: 'salesType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -90,6 +101,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.DeliveryTypesFilterComponent
 				),
 		},
+		class: 'deliveryType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -100,10 +112,12 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.EmploymentTypesFilterComponent
 				),
 		},
+		class: 'contractType-column',
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Last updated',
+		class: 'last-updated-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -114,6 +128,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.EmployeesFilterComponent
 				),
 		},
+		class: 'last-updated-by-employee-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -124,6 +139,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ClientModeFilterComponent
 				),
 		},
+		class: 'link-state-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -134,6 +150,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ApprovalFilterComponent
 				),
 		},
+		class: 'linkStateAccepted-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -143,6 +160,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			component: () =>
 				import('../../master-templates/filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
 		},
+		class: 'status-column',
 	},
 ];
 

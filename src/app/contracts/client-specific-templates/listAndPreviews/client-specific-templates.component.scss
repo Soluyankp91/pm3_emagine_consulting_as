@@ -1,52 +1,65 @@
-.table {
-	max-height: calc(100vh - 300px);
-	border-collapse: separate;
-	overflow: hidden;
-	flex: 1 1 0;
-	padding: 0px 14px 14px 0px;
-	max-width: 1300px;
-}
-.mat-cell:first-of-type {
-	padding: 0px;
-}
-.mat-header-cell:first-of-type {
-	padding: 0px;
-}
-.mat-header-cell:last-of-type {
-	padding-right: 8px;
-}
-.mat-cell:last-of-type {
-	padding-right: 8px;
-}
-.table-section {
-	max-width: fit-content;
-}
-.mat-paginator {
-	max-width: 1300px;
-}
-.icon {
-	width: 8px;
-}
-.country-icon {
-	width: 32px;
-	height: 32px;
-	border-radius: 50%;
-	background-size: cover;
-}
-.tenant-menu {
-	width: 213px;
-	display: flex;
-	align-items: center;
-}
-.date-row {
-	display: flex;
-	justify-content: space-between;
-	gap: 12px;
-}
+@import 'mixins';
+@import 'variables';
 
-.table-and-preview-container {
-	display: flex;
-}
-.table-container {
-	flex-grow: 1;
+app-client-specific-templates {
+	.select-column {
+		@include table-cell-width(34px);
+	}
+	.language-column {
+		@include table-cell-width(34px);
+	}
+	.id-column {
+		@include table-cell-width(60px);
+	}
+	.template-name-column {
+		@include table-cell-width(339px);
+	}
+	.client-column {
+		@include table-cell-width(178px);
+	}
+	.agreementType-column {
+		@include table-cell-width(56px);
+	}
+	.recipientTypeId-column {
+		@include table-cell-width(109px);
+	}
+	.legalEntityId-column {
+		@include table-cell-width(139px);
+	}
+	.salesType-column {
+		@include table-cell-width(141px);
+	}
+	.deliveryType-column {
+		@include table-cell-width(96px);
+	}
+	.contractType-column {
+		@include table-cell-width(98px);
+	}
+	.last-updated-column {
+		@include table-cell-width(96px);
+	}
+	.last-updated-by-employee-column {
+		@include table-cell-width(47px);
+	}
+	.link-state-column {
+		@include table-cell-width(68px);
+	}
+	.linkStateAccepted-column {
+		@include table-cell-width(77px);
+	}
+	.status-column {
+		@include table-cell-width(35px);
+	}
+	.actions-column {
+		@include table-cell-width(40px);
+	}
+	.mat-cell:first-of-type {
+		padding-left: 0px;
+	}
+	.mat-header-cell:first-of-type {
+		padding-left: 0px;
+	}
+	.table-and-preview-container {
+		display: flex;
+	}
 }

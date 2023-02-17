@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { take, pluck } from 'rxjs/operators';
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
@@ -11,6 +11,8 @@ import {
 @Component({
 	selector: 'app-is-enabled',
 	templateUrl: './is-enabled.component.html',
+	styleUrls: ['./is-enabled.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class IsEnabledComponent {

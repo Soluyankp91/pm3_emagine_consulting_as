@@ -70,7 +70,6 @@ import { CompareComponent } from './master-templates/template-editor/editor/comp
 import { FileComponent } from './master-templates/template-editor/editor/components/file/file.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
 import { MergeFieldsComponent } from './master-templates/template-editor/editor/components/merge-fields/merge-fields.component';
-import { ConsultantsFilterComponent } from './shared/components/grid-table/agreements/filters/consultants-filter/consultants-filter.component';
 import { SalesManagersFilterComponent } from './shared/components/grid-table/agreements/filters/sales-managers-filter/sales-managers-filter.component';
 import { ContractManagerFilterComponent } from './shared/components/grid-table/agreements/filters/contact-manager-filter/contract-manager-filter.component';
 import { AgreementModeComponent } from './shared/components/agreement-mode/agreement-mode.component';
@@ -140,7 +139,6 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		FileComponent,
 		SettingsComponent,
 		AgreementDevExpress,
-		ConsultantsFilterComponent,
 		SalesManagersFilterComponent,
 		ContractManagerFilterComponent,
 		AgreementModeComponent,

@@ -2,60 +2,85 @@
 
 emg-mat-grid {
 	@include table-header-cell;
-	.container {
-		display: block;
-		background-color: #faf9fb;
-	}
-	.table-container {
-		max-width: calc(100vw - 44px);
-		max-height: calc(100vh - 225px);
-		overflow-y: auto;
-	}
-	mat-chip.mat-chip.mat-standard-chip {
-		background-color: #fff;
-		border: 2px solid #17a297;
-	}
+	display: block;
+	padding-left: 50px;
+	background-color: #faf9fb;
 	.mat-chip-list-wrapper {
 		justify-content: flex-end;
 		align-items: center;
 		margin: 0;
 		padding-right: 37px;
 	}
+	.mat-table-container {
+		max-width: calc(100vw - 94px);
+		max-height: calc(100vh - 197px);
+		min-height: calc(100vh - 197px);
+		overflow-y: auto;
+	}
 	.mat-table {
-		background-color: #faf9fb;
 		width: fit-content;
+		background-color: #faf9fb;
 	}
 	.highlight {
 		background-color: #c5e8e5;
 	}
-	.paginator {
-		margin-left: auto;
-	}
 	.bottom-panel {
+		width: calc(100vw - 44px);
+
 		display: flex;
-	}
-	.selected-items-info {
-		padding: 16px 24px;
-		border-right: 1px solid #e7e3e8;
-		font-weight: 700;
-	}
-	.bottom-action-item {
-		cursor: pointer;
-		padding-left: 60px;
-		display: flex;
-		gap: 6px;
+		height: 48px;
+		justify-content: space-between;
 		align-items: center;
-		color: #17a297;
+
+		position: fixed;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+
+		background-color: #fff;
+
+		.bottom-actions {
+			display: flex;
+		}
+
+		.selected-items-info {
+			padding: 14px 24px 14px 50px;
+			border-right: 1px solid #e7e3e8;
+			font-weight: 700;
+		}
+		.bottom-action-item {
+			cursor: pointer;
+			padding-left: 60px;
+			display: flex;
+			gap: 6px;
+			align-items: center;
+			color: #17a297;
+			.bottom-panel-label {
+				@include bottom-panel-label;
+			}
+		}
+		.paginator {
+			flex-grow: 1;
+			.mat-paginator-container {
+				max-height: 48px !important;
+				min-height: 48px !important;
+			}
+			.mat-paginator-page-size-select {
+				margin: 0px 4px;
+			}
+		}
 	}
-	.bottom-panel-label {
-		@include bottom-panel-label;
-	}
-    .small-icon {
+	.small-icon {
 		@include small-icon;
+	}
+
+	mat-chip.mat-chip.mat-standard-chip {
+		background-color: #fff;
+		border: 2px solid #17a297;
 	}
 }
 .custom {
-    .small-icon {
+	.small-icon {
 		@include small-icon;
 	}
 }
