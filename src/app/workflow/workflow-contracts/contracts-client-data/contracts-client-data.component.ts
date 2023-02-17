@@ -118,7 +118,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			.subscribe((result) => {
 				this.frameAgreements = result.items;
 				if (result.items.length === 1) {
-                    console.log('preselect');
 					this._checkAndPreselectFrameAgreement();
 				}
 			});
