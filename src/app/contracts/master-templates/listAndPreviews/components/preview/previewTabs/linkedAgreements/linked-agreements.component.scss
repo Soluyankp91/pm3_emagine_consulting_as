@@ -38,4 +38,9 @@ app-linked-agreements {
 		max-width: 176px;
 		color: #b6b4b2;
 	}
+	.link {
+		display: flex;
+		gap: 7px;
+		cursor: pointer;
+	}
 }

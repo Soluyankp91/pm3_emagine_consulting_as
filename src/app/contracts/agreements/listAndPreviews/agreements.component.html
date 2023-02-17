@@ -2,68 +2,61 @@
     <mat-icon svgIcon="create-icon"  [ngStyle]="{'height': '50px', 'width': '50px'}"></mat-icon>
     <div>Create</div>
 </div>
-<ng-container *ngIf="table$ | async as table">
-    <emg-mat-grid
-        [displayedColumns]="displayedColumns"
-        [tableConfig]="table"
-        [selectedRowId]="currentRowId$ | async"
-        [cells]="cells"
-        rowIdProperty="agreementId"
-        (formControlChange)="onFormControlChange($event)"
-        (sortChange)="onSortChange($event)"
-        (pageChange)="onPageChange($event)"
-        (selectedRowIdChange)="currentRowId$.next($event)"
->
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.languageId}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.agreementId}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.agreementName}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.agreementType}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.recipientTypeId}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <emg-agreement-mode [agreementValidityState]="cell.mode"></emg-agreement-mode>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.startDate}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.endDate}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.saleManager | emptyStringHandle}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-            <p>{{cell.contractManager | emptyStringHandle}}</p>
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-
-        </ng-template>
-        <ng-template let-cell="element" #customCells>
-
-        </ng-template>
-
-
-
-    </emg-mat-grid>
-</ng-container>
+<main class="table-and-preview-container">
+	<section class="table-container">
+		<ng-container *ngIf="table$ | async as table">
+			<emg-mat-grid
+				[displayedColumns]="displayedColumns"
+				[tableConfig]="table"
+				[selectedRowId]="currentRowId$ | async"
+				[cells]="cells"
+				rowIdProperty="agreementId"
+				(formControlChange)="onFormControlChange($event)"
+				(sortChange)="onSortChange($event)"
+				(pageChange)="onPageChange($event)"
+				(selectedRowIdChange)="currentRowId$.next($event)">
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.languageId }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.agreementId }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.agreementName }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.agreementType }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.recipientTypeId }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<emg-agreement-mode [agreementValidityState]="cell.mode"></emg-agreement-mode>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.startDate | momentFormat }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.endDate | momentFormat }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.saleManager | emptyStringHandle }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<p>{{ cell.contractManager | emptyStringHandle }}</p>
+				</ng-template>
+				<ng-template let-cell="element" #customCells> </ng-template>
+				<ng-template let-cell="element" #customCells> </ng-template>
+				<ng-template let-cell="element" #customCells> </ng-template>
+				<ng-template let-cell="element" #customCells> </ng-template>
+				<ng-template let-cell="element" #customCells> </ng-template>
+			</emg-mat-grid>
+		</ng-container>
+	</section>
+	<ng-container *ngIf="currentRowId$ | async as currentRowId">
+		<app-agreement-preview [currentId]="currentRowId" (currentIdChange)="currentRowId$.next($event)"></app-agreement-preview>
+	</ng-container>
+</main>

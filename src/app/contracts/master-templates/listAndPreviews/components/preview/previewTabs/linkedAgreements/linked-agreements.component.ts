@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { SortDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
@@ -19,11 +20,11 @@ export class LinkedAgreementsComponent implements OnInit, OnDestroy {
 
 	searchControl = new FormControl<string>('');
 
-	displayedColumns = ['agreementStatus', 'mode', 'agreementId', 'recipientName', 'agreementName'];
+	displayedColumns = ['agreementStatus', 'mode', 'agreementId', 'recipientName', 'agreementName', 'agreementLink'];
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(private readonly _previewService: PreviewService) {}
+	constructor(private readonly _previewService: PreviewService, private readonly _router: Router) {}
 
 	ngOnInit(): void {
 		this._setAgreementLinksObservable();
@@ -39,6 +40,13 @@ export class LinkedAgreementsComponent implements OnInit, OnDestroy {
 
 	onSortChanges(sort: SortDto) {
 		this._previewService.updateAgreementSort(sort);
+	}
+
+	navigateToAgreement(agreementId: number) {
+		const url = this._router.serializeUrl(
+			this._router.createUrlTree(['/app/contracts/agreements'], { queryParams: { agreementId } })
+		);
+		window.open(url, '_blank');
 	}
 
 	private _setAgreementLinksObservable() {

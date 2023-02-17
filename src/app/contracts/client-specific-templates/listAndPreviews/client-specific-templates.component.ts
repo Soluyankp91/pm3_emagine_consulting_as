@@ -1,23 +1,32 @@
-import { Component, OnInit, Injector } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import * as moment from 'moment';
+import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import {
+	AgreementLanguage,
+	AgreementTemplateServiceProxy,
+	AgreementTemplatesListItemDto,
+	AgreementType,
+} from 'src/shared/service-proxies/service-proxies';
+import {
+	CLIENT_TEMPLATE_ACTIONS,
+	CLIENT_TEMPLATE_BOTTOM_ACTIONS,
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
 import { ClientMappedTemplatesListDto, MappedTableCells, ClientFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { combineLatest, fromEvent, Observable, ReplaySubject, Subject, Subscription, forkJoin } from 'rxjs';
+import { takeUntil, map, startWith, pairwise } from 'rxjs/operators';
 import { ClientTemplatesService } from './service/client-templates.service';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
-import { MASTER_TEMPLATE_ACTIONS } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
+import { DOCUMENT } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ClientTemplatePreviewComponent } from './preview/client-template-preview.component';
+import { tapOnce } from '../../shared/operators/tapOnceOperator';
 
 @Component({
 	selector: 'app-client-specific-templates',
@@ -26,20 +35,29 @@ import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 	providers: [GridHelpService],
 })
 export class ClientSpecificTemplatesComponent extends AppComponentBase implements OnInit {
+	@ViewChildren(ClientTemplatePreviewComponent, { read: ElementRef }) preview: QueryList<ElementRef>;
 	cells = this._gridHelpService.generateTableConfig(DISPLAYED_COLUMNS, CLIENT_TEMPLATE_HEADER_CELLS);
 
 	displayedColumns = DISPLAYED_COLUMNS;
-	actions = MASTER_TEMPLATE_ACTIONS;
+	actions = CLIENT_TEMPLATE_ACTIONS;
+	selectedItemsActions = CLIENT_TEMPLATE_BOTTOM_ACTIONS;
+
+	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
+
+	outsideClicksSub: Subscription;
 
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
-		private readonly route: ActivatedRoute,
-		private readonly router: Router,
+		private readonly _route: ActivatedRoute,
+		private readonly _router: Router,
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _injector: Injector,
 		private readonly _clientTemplatesService: ClientTemplatesService,
-		private readonly _contractService: ContractsService
+		private readonly _contractService: ContractsService,
+		private readonly _snackBar: MatSnackBar,
+		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injector);
 	}
@@ -49,12 +67,13 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	dataSource$ = this._clientTemplatesService.getContracts$();
 
 	ngOnInit(): void {
+		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();
 	}
 
 	navigateTo() {
-		this.router.navigate(['create'], { relativeTo: this.route });
+		this._router.navigate(['create'], { relativeTo: this._route });
 	}
 
 	onSortChange($event: Sort) {
@@ -67,6 +86,52 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 
 	onPageChange($event: PageEvent) {
 		this._clientTemplatesService.updatePage($event);
+	}
+
+	onAction($event: { row: AgreementTemplatesListItemDto; action: string }) {
+		switch ($event.action) {
+			case 'EDIT': {
+				this._router.navigate([`${$event.row.agreementTemplateId}`, 'settings'], { relativeTo: this._route });
+				break;
+			}
+			case 'DUPLICATE': {
+				const params: Params = {
+					id: $event.row.agreementTemplateId,
+				};
+				this._router.navigate(['create'], {
+					relativeTo: this._route,
+					queryParams: params,
+				});
+				break;
+			}
+			case 'COPY': {
+				navigator.clipboard.writeText(
+					this._document.location.protocol +
+						'//' +
+						this._document.location.host +
+						this._document.location.pathname +
+						`?templateId=${$event.row.agreementTemplateId}`
+				);
+				this._snackBar.open('Copied to clipboard', undefined, {
+					duration: 3000,
+				});
+			}
+		}
+	}
+
+	onSelectionAction($event: { selectedRows: AgreementTemplatesListItemDto[]; action: string }) {
+		switch ($event.action) {
+			case 'APPROVE': {
+				this.showMainSpinner();
+				const arr$: Observable<void>[] = [];
+				$event.selectedRows.forEach(({ agreementTemplateId }) => {
+					arr$.push(this._agreementTemplateServiceProxy.acceptLinkState(agreementTemplateId));
+				});
+				forkJoin(arr$).subscribe(() => {
+					this._clientTemplatesService.reloadTable();
+				});
+			}
+		}
 	}
 
 	private _initTable$() {
@@ -86,6 +151,9 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 					active: sort.active,
 				};
 				return tableConfig;
+			}),
+			tapOnce(() => {
+				this._subscribeOnOuterClicks();
 			})
 		);
 	}
@@ -104,9 +172,9 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
-				createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
+				createdDateUtc: item.createdDateUtc,
 				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
-				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
+				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				linkState: item.linkState,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
@@ -122,5 +190,35 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 			}
 			this.hideMainSpinner();
 		});
+	}
+
+	private _subscribeOnOuterClicks() {
+		this.currentRowId$
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				startWith(null),
+				pairwise(),
+				map(([previous, current]) => {
+					if (!previous && current) {
+						this.outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
+							if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
+								this.currentRowId$.next(null);
+							}
+						});
+					} else if (previous && !current) {
+						this.outsideClicksSub.unsubscribe();
+					}
+				})
+			)
+			.subscribe();
+	}
+
+	private _initPreselectedFilters() {
+		const templateId = this._route.snapshot.queryParams['templateId'];
+		if (templateId) {
+			this.currentRowId$.next(parseInt(templateId));
+			return this._clientTemplatesService.setIdFilter([templateId]);
+		}
+		this._clientTemplatesService.setIdFilter([]);
 	}
 }
