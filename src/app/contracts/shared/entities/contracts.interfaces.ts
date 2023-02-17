@@ -1,8 +1,9 @@
 import { SortDirection } from '@angular/material/sort';
+import * as moment from 'moment';
+import { Observable } from 'rxjs';
 import {
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
-	AgreementValidityState,
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
@@ -34,6 +35,7 @@ export interface MasterFiltersEnum {
 }
 export interface ClientFiltersEnum extends MasterFiltersEnum {
 	linkState: BaseEnumDto[];
+	linkStateAccepted: BaseEnumDto[];
 }
 export interface AgreementFiltersEnum {
 	language: BaseEnumDto[];
@@ -59,7 +61,7 @@ export interface PageDto {
 	pageIndex: number;
 	pageSize: number;
 }
-export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string];
+export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string, any];
 export interface BaseEnumDto {
 	id: number | string;
 	name: string;
@@ -86,29 +88,48 @@ export interface SettingsPageOptions {
 	signerRoles: EnumEntityTypeDto[];
 }
 
-export interface BaseMappedAgreementTemplatesListItemDto {
-	agreementTemplateId: number;
-	definition: string;
-	name: string;
-	note: string;
+export interface BaseAgreementTemplate {
 	agreementType: string;
 	recipientTypeId: string;
+
+	definition: string;
+	note: string;
 	language: string;
 	countryCode: string;
-	legalEntityIds: string[];
 	contractTypeIds: string[];
 	salesTypeIds: string[];
 	deliveryTypeIds: string[];
-	createdByLowerCaseInitials?: string;
-	createdDateUtc: string;
+
 	createdBy: string;
+	createdDateUtc: moment.Moment;
 	lastUpdatedBy: string;
+	lastUpdateDateUtc?: moment.Moment;
 	lastUpdatedByLowerCaseInitials?: string;
-	lastUpdateDateUtc?: string;
-	isEnabled: boolean;
+	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
 	duplicationSourceAgreementTemplateName?: string;
+	parentAgreementTemplateId?: number;
+	parentAgreementTemplateName?: string;
 }
+export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTemplate {
+	agreementTemplateId?: number;
+	clientName?: string;
+	name?: string;
+	legalEntityIds?: string[];
+	isEnabled?: boolean;
+}
+export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
+	agreementId?: number;
+	agreementName?: string;
+	actualRecipient$: Observable<any>;
+
+	agreementStatus?: EnvelopeStatus;
+	legalEntityId?: string;
+
+	startDate?: moment.Moment;
+	endDate?: moment.Moment;
+}
+export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;
 	linkState: AgreementTemplateParentChildLinkState;
@@ -121,7 +142,7 @@ export interface MasterTemplatePreview {
 
 export type MappedLog = AgreementTemplateMetadataLogListItemDto & {
 	profilePictureUrl: string;
-	date: string;
+	date: moment.Moment;
 	dayTime: string;
 };
 export const OperationsTypeMap = {

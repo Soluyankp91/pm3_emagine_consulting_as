@@ -9,6 +9,7 @@ import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.mod
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
+	AgreementAttachmentServiceProxy,
 	AgreementServiceProxy,
 	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateServiceProxy,
@@ -73,6 +74,8 @@ import { AgreementModeFilterComponent } from './shared/components/grid-table/agr
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
 import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
+import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
+import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -129,6 +132,8 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		StatusesFilterComponent,
 		ClientTemplateModeComponent,
 		SignersTableComponent,
+		ClientTemplatePreviewComponent,
+		AgreementPreviewComponent,
 	],
 	imports: [
 		CommonModule,
@@ -152,6 +157,7 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		AgreementTemplateServiceProxy,
 		MergeFieldsServiceProxy,
 		AgreementTemplateAttachmentServiceProxy,
+		AgreementAttachmentServiceProxy,
 		CreationTitleService,
 	],
 })

@@ -15,6 +15,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'lastUpdateDateUtc',
 	'lastUpdatedByLowerCaseInitials',
 	'linkState',
+	'linkStateAccepted',
 	'isEnabled',
 ];
 export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
@@ -126,6 +127,16 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	},
 	{
 		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'linkStateAccepted',
+			component: () =>
+				import('../../client-templates/entities/filters/approval-filter/approval-filter.component').then(
+					(it) => it.ApprovalFilterComponent
+				),
+		},
+	},
+	{
+		type: EHeaderCells.FILTER,
 		title: 'Status',
 		filter: {
 			formControlName: 'isEnabled',
@@ -157,6 +168,13 @@ export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 		actionIcon: 'copy-icon',
 	},
 ];
+export const CLIENT_TEMPLATE_BOTTOM_ACTIONS: Actions[] = [
+	{
+		label: 'Approve',
+		actionType: 'APPROVE',
+		actionIcon: 'approved-icon',
+	},
+];
 export const INITIAL_PAGE_INDEX = 0;
 export const MODE_FILTER_OPTIONS = [
 	{
@@ -177,6 +195,20 @@ export const MODE_FILTER_OPTIONS = [
 	},
 	{
 		id: 0,
+		name: 'Not applicable',
+	},
+];
+export const APPROVAL_FILTER_OPTIONS = [
+	{
+		id: true,
+		name: 'Approved',
+	},
+	{
+		id: false,
+		name: 'To approve',
+	},
+	{
+		id: null,
 		name: 'Not applicable',
 	},
 ];

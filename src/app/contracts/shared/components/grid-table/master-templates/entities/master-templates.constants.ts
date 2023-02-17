@@ -122,9 +122,13 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 ];
 export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	name: 'Name',
+	agreementName: 'Agreement name',
+	client: 'Client',
 	definition: 'Definition',
 	agreementType: 'Document type',
 	recipientTypeId: 'Recipient type',
+	actualRecipient: 'Actual recipient',
+	legalEntityId: 'Legal entity',
 	legalEntityIds: 'Legal entities',
 	salesTypeIds: 'Sales types',
 	deliveryTypeIds: 'Delivery types',
@@ -133,11 +137,15 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	note: 'Notes',
 	isEnabled: 'Status',
 	agreementTemplateId: 'ID',
+	agreementId: 'ID',
 	createdDateUtc: 'Created',
 	createdBy: 'by',
 	lastUpdateDateUtc: 'Last updated',
 	lastUpdatedBy: 'by',
+	startDate: 'Starting date',
+	endDate: 'Expiration date',
 	duplicationSourceAgreementTemplateId: 'Duplicated from',
+	parentAgreementTemplateId: 'Parent template',
 };
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];

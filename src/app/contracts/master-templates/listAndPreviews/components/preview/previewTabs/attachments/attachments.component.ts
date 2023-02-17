@@ -1,15 +1,17 @@
-import { Component, OnInit, TrackByFunction, Injector } from '@angular/core';
+import { Component, OnInit, TrackByFunction, Injector, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
+import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { PreviewService } from '../../../../services/preview.service';
+import { AgreementDetailsAttachmentDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	selector: 'app-attachments',
 	templateUrl: './attachments.component.html',
 	styleUrls: ['./attachments.component.scss'],
+	providers: [PREVIEW_SERVICE_PROVIDER],
 })
 export class AttachmentsComponent extends AppComponentBase implements OnInit {
 	attachments$: Observable<MappedAgreementTemplateDetailsAttachmentDto[]>;
@@ -20,8 +22,7 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 	trackById: TrackByFunction<string>;
 
 	constructor(
-		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
-		private readonly _previewService: PreviewService,
+		@Inject(PREVIEW_SERVICE_TOKEN) private readonly _previewService: BasePreview,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
@@ -33,18 +34,23 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 		this.trackById = this.createTrackByFn('agreementTemplateAttachmentId');
 	}
 
-	downloadAttachment(file: MappedAgreementTemplateDetailsAttachmentDto): void {
-		this._agreementTemplateAttachmentServiceProxy
-			.agreementTemplateAttachment(file.agreementTemplateAttachmentId as number)
-			.subscribe((d) => {
-				const blob = new Blob([d as any]);
-				const a = document.createElement('a');
-				const objectUrl = URL.createObjectURL(blob);
-				a.href = objectUrl;
-				a.download = file.name as string;
-				a.click();
-				URL.revokeObjectURL(objectUrl);
-			});
+	downloadAttachment(file: AgreementDetailsAttachmentDto | MappedAgreementTemplateDetailsAttachmentDto): void {
+		let attachmentId: number;
+		if ('agreementTemplateAttachmentId' in file) {
+			attachmentId = file.agreementTemplateAttachmentId;
+		}
+		if ('agreementAttachmentId' in file) {
+			attachmentId = file.agreementAttachmentId;
+		}
+		this._previewService.downloadAttachment(attachmentId).subscribe((d) => {
+			const blob = new Blob([d as any]);
+			const a = document.createElement('a');
+			const objectUrl = URL.createObjectURL(blob);
+			a.href = objectUrl;
+			a.download = file.name as string;
+			a.click();
+			URL.revokeObjectURL(objectUrl);
+		});
 	}
 
 	private _getIconName(fileName: string): string {
