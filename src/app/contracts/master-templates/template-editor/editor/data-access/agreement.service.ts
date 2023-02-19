@@ -5,17 +5,20 @@ import { throwError } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
-import { IDocumentItem, IDocumentVersion, WrappedValueDto } from '../entities';
+import { AgreementTemplateServiceProxy, CompleteTemplateDocumentFileDraftDto, StringWrappedValueDto } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class AgreementService {
 	baseUrl = `${environment.apiUrl}/api/AgreementTemplate`;
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(
+		private httpClient: HttpClient,
+		private _agreementTemplateService: AgreementTemplateServiceProxy
+		) {}
 
 	getTemplate(templateId: number) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/latest-template-version/true`;
-
+		
 		return this.httpClient
 			.get(endpoint, {
 				responseType: 'blob',
@@ -26,40 +29,6 @@ export class AgreementService {
 			);
 	}
 
-	saveAsDraftTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
-		const endpoint = `${this.baseUrl}/${templateId}/document-file/false`;
-		return this.httpClient.put(endpoint, fileContent);
-	}
-
-	completeTemplate(templateId: number, fileContent: WrappedValueDto<string>) {
-		const draftEndpoint = `${this.baseUrl}/${templateId}/document-file/false`;
-		const completeEndpoint = `${this.baseUrl}/${templateId}/document-file/complete-template/false`;
-
-		return this.httpClient.put(draftEndpoint, fileContent).pipe(
-			concatMap((res) =>
-				this.httpClient.patch(completeEndpoint, {
-					versionDescription: 'test version',
-					propagateChangesToDerivedTemplates: true,
-					markActiveAgreementsAsOutdated: true,
-				})
-			)
-		);
-	}
-
-	getSimpleList() {
-		const endpoint = `${this.baseUrl}/simple-list`;
-		return this.httpClient
-			.get<{ items: IDocumentItem[] }>(endpoint)
-			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
-	}
-
-	getTemplateVersions(templateId: number) {
-		const endpoint = `${this.baseUrl}/${templateId}/document-file/template-versions`;
-		return this.httpClient
-			.get<Array<IDocumentVersion>>(endpoint)
-			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
-	}
-
 	getTemplateByVersion(templateId: number, version: number) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/${version}`;
 		return this.httpClient
@@ -68,4 +37,36 @@ export class AgreementService {
 			})
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
+
+	saveAsDraftTemplate(templateId: number, fileContent: StringWrappedValueDto) {
+		return this._agreementTemplateService
+			.documentFilePUT2(templateId, false, fileContent)
+	}
+
+	completeTemplate(templateId: number, fileContent: StringWrappedValueDto) {
+		return this._agreementTemplateService
+			.documentFilePUT2(templateId, false, fileContent).pipe(
+				concatMap(() => 
+					this._agreementTemplateService.completeTemplate(templateId, false, CompleteTemplateDocumentFileDraftDto.fromJS({
+						versionDescription: 'test version',
+						propagateChangesToDerivedTemplates: true,
+						markActiveAgreementsAsOutdated: true,
+					}))
+				)
+			)
+	}
+
+	getSimpleList() {
+		return this._agreementTemplateService.simpleList2()
+			.pipe(
+				catchError((error: HttpErrorResponse) => throwError(error.error))
+			);
+	}
+
+	getTemplateVersions(templateId: number) {
+		return this._agreementTemplateService.templateVersions(templateId)
+			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
+	}
+
+	
 }

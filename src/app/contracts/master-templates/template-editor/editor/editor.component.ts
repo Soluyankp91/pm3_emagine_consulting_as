@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, finalize } from 'rxjs/operators';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { catchError, filter, map, switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
@@ -14,6 +14,7 @@ import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
 import { CompareSelectDocumentPopupComponent } from './components/compare-select-document-popup';
+import { AgreementTemplateDocumentFileVersionDto, SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	standalone: true,
@@ -41,8 +42,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	templateId: number | undefined;
 	hasUnsavedChanges$ = this._editorCoreService.hasUnsavedChanges$;
 	template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
-	documentList$ = new BehaviorSubject<Array<IDocumentItem>>([]);
-	templateVersions$ = new BehaviorSubject<Array<IDocumentVersion>>([]);
+	documentList$ = new BehaviorSubject<SimpleAgreementTemplatesListItemDto[]>([]);
+	templateVersions$ = new BehaviorSubject<AgreementTemplateDocumentFileVersionDto[]>([]);
 	mergeFields$ = new BehaviorSubject<IMergeField>({});
 
 	isLoading: boolean = false;
@@ -57,7 +58,18 @@ export class EditorComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.isLoading = true;
 		this.templateId = this._route.snapshot.params.id;
-		this.getTemplate()
+		this._agreementService
+			.getTemplate(this.templateId)
+			.pipe(catchError(() => of(null)))
+			.subscribe((tmp) => {
+				this.template$.next(tmp);
+				this.isLoading = false;
+				if (tmp) {
+					this._editorCoreService.loadDocument(tmp);
+				} else {
+					this._editorCoreService.newDocument();
+				}
+			});
 
 		this._agreementService.getTemplateVersions(this.templateId).subscribe((res) => {
 			this.templateVersions$.next(res || []);
@@ -73,36 +85,45 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	getTemplate() {
-		this._agreementService
-			.getTemplate(this.templateId)
-			.pipe(catchError(() => of(null)))
-			.subscribe((tmp) => {
-				this.template$.next(tmp);
-				this.isLoading = false;
-				if (tmp) {
-					this._editorCoreService.loadDocument(tmp);
-				} else {
-					this._editorCoreService.newDocument();
-				}
-			});
-	}
-
 	mergeSelectedField(field: string) {
 		this._editorCoreService.insertMergeField(field);
 	}
 
 	loadCompareTemplateByVersion(version: number) {
 		const tmpID = this.templateId;
-		this._agreementService.getTemplateByVersion(tmpID, version).subscribe((blob) => {
-			this._editorCoreService.compareTemplate(blob);
-		});
+		this.templateVersions$
+			.pipe(
+				switchMap((versions) => {
+					const selected = versions.find((v) => v.version === version);
+					return this._agreementService.getTemplateByVersion(tmpID, version).pipe(
+						map((template) => ({
+							template,
+							filename: 'Version ' + selected.version,
+						}))
+					);
+				})
+			)
+			.subscribe(({ template, filename }) => {
+				this._editorCoreService.compareTemplate(template, filename);
+			});
 	}
 
 	loadCompareDocumentTemplate(templateID: number) {
-		this._agreementService.getTemplate(templateID).subscribe((blob) => {
-			this._editorCoreService.compareTemplate(blob);
-		});
+		this.documentList$
+			.pipe(
+				switchMap((documents) => {
+					const selected = documents.find((v) => v.agreementTemplateId === templateID);
+					return this._agreementService.getTemplate(templateID).pipe(
+						map((template) => ({
+							template,
+							filename: selected.name,
+						}))
+					);
+				})
+			)
+			.subscribe(({ template, filename }) => {
+				this._editorCoreService.compareTemplate(template, filename);
+			});
 	}
 
 	saveAsDraft() {
@@ -118,12 +139,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.isLoading = true;
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			if (base64) {
-				this._agreementService[functionName](this.templateId, { value: base64 }).pipe(
-					finalize(() => {
-						this.hasUnsavedChanges$.next(false);
-						this.isLoading = false;
-					})
-				).subscribe();
+				this._agreementService[functionName](this.templateId, { value: base64 }).subscribe(() => {
+					this.hasUnsavedChanges$.next(false);
+					this.isLoading = false;
+				});
 			}
 		});
 	}

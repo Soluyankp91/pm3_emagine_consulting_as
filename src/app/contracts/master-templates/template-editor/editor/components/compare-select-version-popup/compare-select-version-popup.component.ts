@@ -10,9 +10,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DxButtonModule, DxListComponent, DxListModule, DxPopupModule, DxTemplateModule } from 'devextreme-angular';
-
 import { IDocumentVersion } from '../../entities';
 import { EditorCoreService } from '../../services';
+import { AgreementTemplateDocumentFileVersionDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	standalone: true,
@@ -28,7 +28,7 @@ export class CompareSelectVersionPopupComponent implements OnInit {
 
 	@ViewChild('listView') private _listView: DxListComponent;
 
-	@Input() dataSource: Array<IDocumentVersion> = [];
+	@Input() dataSource: Array<AgreementTemplateDocumentFileVersionDto> = [];
 
 	@Output() select: EventEmitter<number> = new EventEmitter();
 

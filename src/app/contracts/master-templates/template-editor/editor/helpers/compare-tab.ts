@@ -1,4 +1,5 @@
-// Not Used, but cool algorithm :)
+import { ICompareChanges } from "../entities";
+
 export function LCS(X, Y) {
 	const m = X.length;
 	const n = Y.length;
@@ -54,6 +55,7 @@ export function compareTexts(text1, text2) {
 
 	let text1Index = 0;
 	let text2Index = 0;
+
 	while (text1Index < text1Lines.length || text2Index < text2Lines.length) {
 		let text1Line = text1Lines[text1Index];
 		let text2Line = text2Lines[text2Index];
@@ -89,7 +91,7 @@ export function compareTexts(text1, text2) {
 		}
 	}
 
-	console.log(diff);
+	// console.log(diff);
 	return diff;
 }
 
@@ -111,7 +113,7 @@ export function highlightDifferencesConsole(diff) {
 	}
 }
 
-export function getDifferences(diff) {
+export function getDifferences(diff): ICompareChanges[] {
 	let currentLine = 1;
 	let changes = [];
 
@@ -151,6 +153,5 @@ export function getDifferences(diff) {
 			currentLine++;
 		}
 	}
-
 	return changes;
 }
