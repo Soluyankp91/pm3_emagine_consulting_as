@@ -17,7 +17,6 @@ import {
 } from '../entities';
 
 import { compareTexts, getDifferences } from '../helpers/compare-tab';
-import { ConfirmDialogComponent } from '../../../../shared/components/popUps/confirm-dialog/confirm-dialog.component';
 
 @Injectable()
 export class CompareService {
@@ -34,9 +33,8 @@ export class CompareService {
 	public isCompareMode: boolean = false;
 	private _currentDocumentName: string = '';
 	private _currentDocumentSnapshot: string = '';
-	private _comparedDocumentSnapshot: string = '';
 
-	constructor(@Inject(DOCUMENT) private document: Document) {}
+	constructor(@Inject(DOCUMENT) private _document: Document) {}
 
 	initialize(richInstance: RichEdit) {
 		this._instance = richInstance;
@@ -67,7 +65,7 @@ export class CompareService {
 		this._instance.openDocument(this._currentDocumentSnapshot, 'emagine_doc', DocumentFormatApi.OpenXml);
 		this._currentDocumentName = '';
 		this._currentDocumentSnapshot = '';
-		this._comparedDocumentSnapshot = '';
+	
 		if (this._tempInstance) {
 			this._tempInstance.dispose();
 			this._tempInstance = null;
@@ -201,7 +199,7 @@ export class CompareService {
 				return item;
 			}
 		});
-		
+
 		return changes;
 	}
 
@@ -278,9 +276,9 @@ export class CompareService {
 		options.height = '0px';
 		options.unit = 1;
 
-		let elem = this.document.createElement('div');
+		let elem = this._document.createElement('div');
 		this._disappearElement(elem);
-		this.document.body.appendChild(elem);
+		this._document.body.appendChild(elem);
 		return create(elem, options);
 	}
 

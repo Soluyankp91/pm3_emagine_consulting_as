@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, filter, map, switchMap, take } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
 import { RichEditorDirective } from './directives';
 import { RichEditorOptionsProvider } from './providers';
 import { AgreementService, MergeFieldsService } from './data-access';
-import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './entities';
+import { IMergeField, ITemplateSaveType } from './entities';
 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
