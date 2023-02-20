@@ -302,6 +302,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.creationMode.patchValue(this.modeControl$.value);
 					this._resetForm();
 				}
+                this.agreementFormGroup.markAsUntouched();
+                this.agreementFormGroup.markAsPristine();
 			});
 	}
 
@@ -551,7 +553,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _resetForm() {
 		this.agreementFormGroup.reset(this.agreementFormGroup.initialValue, { onlySelf: false });
-		this.agreementFormGroup.markAsUntouched();
 		this.preselectedFiles = [];
 	}
 }
