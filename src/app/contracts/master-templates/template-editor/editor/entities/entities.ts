@@ -107,7 +107,8 @@ export interface ICompareChanges {
 	isDone: boolean;
 	line: number;
 	text: string;
-	groupId: string;
+	groupId?: string;
+	insertedLine?: number;
 	type: 'delete' | 'insert' | 'replace';
 }
 

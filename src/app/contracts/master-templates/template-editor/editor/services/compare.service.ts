@@ -187,7 +187,7 @@ export class CompareService {
 		}
 
 		// COMPARE ALGORITHM
-		const diff = compareTexts(doc2Lines.join('\n'), doc1Lines.join('\n'));
+		const diff = compareTexts(doc1Lines, doc2Lines);
 		const changes = getDifferences(diff);
 
 		this._changes = changes.map((item, index, arr) => {
@@ -213,7 +213,7 @@ export class CompareService {
 	}
 
 	private _applyDiffsToTemplate(current: RichEdit, temp: RichEdit, changes: any[]) {
-		let insertCount = 1;
+		let insertCount = 0;
 
 		current.loadingPanel.show();
 		current.beginUpdate();
@@ -221,8 +221,7 @@ export class CompareService {
 		for (let i = 0; i < changes.length; i++) {
 			
 			if (changes[i].type === 'insert') {
-				const p = current.document.paragraphs.getByIndex(changes[i].line - 1);
-
+				const p = current.document.paragraphs.getByIndex(changes[i].line);
 				current.document.setCharacterProperties(p.interval, {
 					...p.properties,
 					...{ backColor: ICompareColors.CURRENT },
@@ -232,18 +231,21 @@ export class CompareService {
 			}
 
 			if (changes[i].type === 'delete') {
-				const p = current.document.paragraphs.getByIndex(changes[i].line - 1);
+				const p = current.document.paragraphs.getByIndex(changes[i].line);
 				const tempP = temp.document.paragraphs.getByIndex(changes[i].line - insertCount);
-				// console.log(p.interval);
-				// console.log(tempP.interval);
+
 				const chProperties = temp.document.getCharacterProperties(tempP?.interval);
 				const pProperties = temp.document.getParagraphProperties(tempP?.interval);
 
-				current.document.insertText(p.interval.start, changes[i].text);
-
-				const ap = current.document.paragraphs.getByIndex(changes[i].line - 1);
-				current.document.setParagraphProperties(ap.interval, pProperties);
-				current.document.setCharacterProperties(ap.interval, {
+				const ap = current.document.insertText(p?.interval?.start || 0, changes[i].text);
+				current.document.setParagraphProperties({
+					start: ap.start,
+					length: ap.length
+				}, pProperties);
+				current.document.setCharacterProperties({
+					start: ap.start,
+					length: ap.length
+				}, {
 					...chProperties,
 					...{ backColor: ICompareColors.INCOMING },
 				});
@@ -381,7 +383,7 @@ export class CompareService {
 		const selection = editor.selection.intervals[0];
 		let p = editor.document.paragraphs.find(selection)[0];
 
-		const groupId = this._changes.find((item) => item.line - 1 === p.index).groupId;
+		const groupId = this._changes.find((item) => item.line === p.index).groupId;
 		const group = this._changes.filter((item) => item.groupId === groupId);
 
 		let removedLastLine = 0;
@@ -389,7 +391,7 @@ export class CompareService {
 
 		group.forEach((item, index) => {
 			editor.beginUpdate();
-			let p = editor.document.paragraphs.getByIndex(item.line - 1);
+			let p = editor.document.paragraphs.getByIndex(item.line);
 			editor.document.setCharacterProperties(p.interval, {
 				...p.properties,
 				...{ backColor: 'auto' },
@@ -400,7 +402,7 @@ export class CompareService {
 		let index = 0;
 		group.forEach((item) => {
 			if (item.type === 'delete') {
-				let p = editor.document.paragraphs.getByIndex(item.line - 1 - index);
+				let p = editor.document.paragraphs.getByIndex(item.line - removedCount);
 				editor.document.deleteText(p.interval);
 				index++;
 				removedCount++;
@@ -436,7 +438,6 @@ export class CompareService {
 				return item;
 			});
 		
-		console.log(this._prevChangesState);
 		editor.history.endTransaction();
 	}
 
@@ -446,14 +447,14 @@ export class CompareService {
 		const selection = editor.selection.intervals[0];
 		let p = editor.document.paragraphs.find(selection)[0];
 
-		const groupId = this._changes.find((item) => item.line - 1 === p.index).groupId;
+		const groupId = this._changes.find((item) => item.line === p.index).groupId;
 		const group = this._changes.filter((item) => item.groupId === groupId);
 
 		let removedLastLine = 0;
 		let removedCount = 0;
 
 		group.forEach((item, index) => {
-			let p = editor.document.paragraphs.getByIndex(item.line - 1);
+			let p = editor.document.paragraphs.getByIndex(item.line);
 			editor.beginUpdate();
 			editor.document.setCharacterProperties(p.interval, {
 				...p.properties,
@@ -465,15 +466,13 @@ export class CompareService {
 		let index = 0;
 		group.forEach((item) => {
 			if (item.type === 'insert') {
-				let p = editor.document.paragraphs.getByIndex(item.line - 1 - index);
+				let p = editor.document.paragraphs.getByIndex(item.line - removedCount);
 				editor.document.deleteText(p.interval);
 				index++;
 				removedCount++;
 				removedLastLine = item.line;
 			}
 		});
-
-		editor.history.endTransaction();
 
 		this._prevChangesStateIndex++;
 		this._prevChangesState[this._prevChangesStateIndex] = this._changes.map(item => {
@@ -502,7 +501,7 @@ export class CompareService {
 
 				return item;
 			});
-
+		editor.history.endTransaction();
 		// editor.history.clear();
 	}
 
@@ -512,11 +511,11 @@ export class CompareService {
 		const selection = editor.selection.intervals[0];
 		let p = editor.document.paragraphs.find(selection)[0];
 
-		const groupId = this._changes.find((item) => item.line - 1 === p.index).groupId;
+		const groupId = this._changes.find((item) => item.line === p.index).groupId;
 		const group = this._changes.filter((item) => item.groupId === groupId);
 
 		group.forEach((item) => {
-			let p = editor.document.paragraphs.getByIndex(item.line - 1);
+			let p = editor.document.paragraphs.getByIndex(item.line);
 			editor.beginUpdate();
 			editor.document.setCharacterProperties(p.interval, {
 				...p.properties,
