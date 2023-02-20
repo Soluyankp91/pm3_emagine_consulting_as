@@ -1,6 +1,6 @@
 import { UntypedFormArray, UntypedFormGroup } from "@angular/forms";
 import * as moment from "moment";
-import { WorkflowAgreementDto, EnvelopeStatus, AgreementValidityState, EmployeeDto } from "src/shared/service-proxies/service-proxies";
+import { WorkflowAgreementDto, EnvelopeStatus, AgreementValidityState, EmployeeDto, EnvelopeProcessingPath } from "src/shared/service-proxies/service-proxies";
 
 export class ClientLegalContractsForm extends UntypedFormGroup {
     constructor() {
@@ -56,6 +56,18 @@ export enum ELegalContractModeText {
     "Ended" = AgreementValidityState.Inactive
 }
 
+export enum ELegalContractSourceIcon {
+    "via-email-icon" = EnvelopeProcessingPath.Email,
+    "via-docusign-icon" = EnvelopeProcessingPath.DocuSign,
+    "via-thirdparty-icon" = 3
+}
+
+export enum ELegalContractSourceText {
+    "Sent via email" = EnvelopeProcessingPath.Email,
+    "Sent via DocuSign" = EnvelopeProcessingPath.DocuSign,
+    "Receive from other party" = 3
+}
+
 export const LegalContractsMockedData: WorkflowAgreementDto[] = [
     new WorkflowAgreementDto({
         agreementId: 2,
@@ -69,6 +81,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.Email,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -85,12 +98,13 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
     }),
     new WorkflowAgreementDto({
-        agreementId: 1,
+        agreementId: 3,
         name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
         agreementStatus: EnvelopeStatus.Sent,
         validity: AgreementValidityState.Active,
@@ -101,6 +115,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: 3,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -117,6 +132,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -133,6 +149,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -149,6 +166,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -165,6 +183,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -181,6 +200,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: true,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -197,6 +217,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: true,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -213,6 +234,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -229,6 +251,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: true,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -245,6 +268,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
+        processingPath: undefined,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],

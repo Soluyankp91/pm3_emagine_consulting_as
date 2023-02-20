@@ -90,6 +90,14 @@ export class WorkflowModule {
 			'via-email-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-email-icon.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'via-docusign-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-docusign-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'via-thirdparty-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-thirdparty-icon.svg')
+		);
 		iconRegistry.addSvgIcon(
 			'download-doc',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-doc.svg')

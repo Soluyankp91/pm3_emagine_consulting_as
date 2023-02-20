@@ -39,8 +39,13 @@
                     <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="eLegalContractModeText[contract.value.validity]" matTooltipClass="white-tooltip">
                         <mat-icon class="legal-contract--mode" [svgIcon]="eLegalContractModeIcon[contract.value.validity]"></mat-icon>
                     </span>
-                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="'Via email'" matTooltipClass="white-tooltip">
-                        <mat-icon class="legal-contract--mode" svgIcon="via-email-icon"></mat-icon>
+                    <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" [matTooltip]="eLegalContractSourceText[contract.value.processingPath]" matTooltipClass="white-tooltip">
+                        <ng-container *ngIf="contract.value.processingPath !== null && contract.value.processingPath !== undefined; else noDataTemplate">
+                            <mat-icon class="legal-contract--mode" [svgIcon]="eLegalContractSourceIcon[contract.value.processingPath]"></mat-icon>
+                        </ng-container>
+                        <ng-template #noDataTemplate>
+                            -
+                        </ng-template>
                     </span>
                     <span fxFlex="160px" fxFlex.lt-xl="50px" fxLayoutAlign="start center" fxLayoutAlign.lt-xl="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100" emgCustomTooltip [contentTemplate]="statusTooltip">
                         <mat-icon class="legal-contract--status u-mr--5" [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
@@ -70,21 +75,14 @@
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
                             <mat-menu #legalContractMenu>
-                                <ng-container *ngIf="contract.value.agreementId">
+                                <ng-container *ngIf="contract.value.agreementStatus === legalContractStatus.Sent || contract.value.agreementStatus === legalContractStatus.WaitingForOthers || contract.value.agreementStatus === legalContractStatus.AboutToExpire || contract.value.agreementStatus === legalContractStatus.DeliveryFailure">
                                     <button
                                         class="menu-item green-color"
                                         mat-menu-item
-                                        (click)="file.click()">
+                                        (click)="openUploadSignedContractDialog(contract.value.agreementId)">
                                         <mat-icon svgIcon="legal-contract-upload"></mat-icon>
                                         Upload signed contract
                                     </button>
-                                    <input
-                                        #file
-                                        type="file"
-                                        [accept]="'.pdf,.doc,.docx'"
-                                        (change)="onFileAdded($event.target, contract.value.agreementId)"
-                                        [style.display]="'none'"
-                                    />
                                 </ng-container>
                                 <button
                                     class="menu-item green-color"
@@ -100,20 +98,26 @@
                                     <mat-icon svgIcon="download-doc"></mat-icon>
                                     Download *.doc
                                 </button>
-                                <button
-                                    class="menu-item green-color"
-                                    mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="openInDocuSign(contract.value.agreementId)">
-                                    <mat-icon svgIcon="open-in-docusign"></mat-icon>
-                                    Open in DocuSign
-                                </button>
-                                <button
-                                    class="menu-item green-color"
-                                    mat-menu-item
-                                    appPreventDoubleClick (throttledClick)="editAgreement(contract.value.agreementId)">
-                                    <mat-icon svgIcon="legal-contract-edit"></mat-icon>
-                                    Edit
-                                </button>
+                                <ng-container *ngIf="contract.value.agreementStatus !== legalContractStatus.Created">
+                                    <ng-container *ngIf="contract.value.processingPath === legalContractPath.DocuSign">
+                                        <button
+                                            class="menu-item green-color"
+                                            mat-menu-item
+                                            appPreventDoubleClick (throttledClick)="openInDocuSign(contract.value.docuSignUrl)">
+                                            <mat-icon svgIcon="open-in-docusign"></mat-icon>
+                                            Open in DocuSign
+                                        </button>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="contract.value.agreementStatus !== legalContractStatus.Completed || contract.value.processingPath == legalContractPath.Email">
+                                    <button
+                                        class="menu-item green-color"
+                                        mat-menu-item
+                                        appPreventDoubleClick (throttledClick)="editAgreement(contract.value.agreementId)">
+                                        <mat-icon svgIcon="legal-contract-edit"></mat-icon>
+                                        Edit
+                                    </button>
+                                </ng-container>
                                 <ng-container
                                     *ngIf="contract.value.agreementStatus === legalContractStatus.Created || contract.value.agreementStatus === legalContractStatus.CreatedInDocuSign || contract.value.agreementStatus === legalContractStatus.Completed ||
                                                                 contract.value.agreementStatus === legalContractStatus.Expired || contract.value.agreementStatus === legalContractStatus.Voided || contract.value.agreementStatus === legalContractStatus.Declined; else voidAgreementOption">

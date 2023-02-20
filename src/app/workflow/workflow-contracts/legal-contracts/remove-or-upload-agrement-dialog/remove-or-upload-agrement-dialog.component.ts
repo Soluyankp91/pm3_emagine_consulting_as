@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
 import { WFDocument } from 'src/app/workflow/shared/components/wf-documents/wf-documents.model';
 import { SendEnvelopeDialogComponent } from '../send-envelope-dialog/send-envelope-dialog.component';
 import { ERemoveOrOuploadDialogMode, RemoveOrUploadDialogConfig } from './remove-or-upload-agrement-dialog.model';
@@ -14,21 +15,25 @@ export class RemoveOrUploadAgrementDialogComponent implements OnInit {
 	@Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     reasonForChange = new FormControl<string>('');
-    dialogConfig = RemoveOrUploadDialogConfig[this.data.dialogMode]
+    dialogConfig = RemoveOrUploadDialogConfig[this.data.dialogMode];
+    dialogModes = ERemoveOrOuploadDialogMode;
     icon: string;
+    isFileUploading = false;
+    file: File;
+    isFileAdded = false;
 	constructor(
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
 			dialogMode: ERemoveOrOuploadDialogMode,
-            file?: File
+            hideReason?: boolean
 		},
 		private _dialogRef: MatDialogRef<SendEnvelopeDialogComponent>
 	) {}
 
 	ngOnInit(): void {
-        if (this.data?.file) {
-            this.icon = WFDocument.getIcon(this.data.file.name)
-        }
+        // if (this.data?.file) {
+        //     this.icon = WFDocument.getIcon(this.data.file.name)
+        // }
     }
 
 	reject() {
@@ -44,4 +49,14 @@ export class RemoveOrUploadAgrementDialogComponent implements OnInit {
 	private _closeInternal(): void {
 		this._dialogRef.close();
 	}
+
+    public fileAdded(files: FileUploaderFile[]) {
+        this.file = files[0].internalFile;
+        this.icon = WFDocument.getIcon(this.file.name);
+        this.isFileUploading = true;
+        setTimeout(() => {
+            this.isFileUploading = false;
+            this.isFileAdded = true;
+        }, 1500);
+    }
 }

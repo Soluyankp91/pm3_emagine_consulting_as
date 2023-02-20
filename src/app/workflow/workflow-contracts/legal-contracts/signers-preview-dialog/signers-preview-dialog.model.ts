@@ -24,7 +24,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -32,7 +33,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -40,7 +42,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -48,7 +51,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -61,7 +65,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -69,7 +74,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -77,7 +83,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -85,7 +92,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -98,7 +106,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -106,7 +115,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -114,7 +124,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -122,7 +133,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -135,7 +147,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -143,7 +156,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -151,7 +165,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -159,7 +174,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -172,7 +188,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -180,7 +197,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -188,7 +206,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -196,7 +215,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -209,7 +229,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -217,7 +238,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -225,7 +247,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -233,7 +256,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),new EnvelopePreviewDto({
@@ -245,7 +269,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -253,7 +278,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -261,7 +287,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -269,7 +296,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -282,7 +310,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -290,7 +319,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -298,7 +328,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -306,7 +337,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -319,7 +351,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -327,7 +360,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -335,7 +369,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -343,7 +378,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     }),
@@ -356,7 +392,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Client,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -364,7 +401,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Consultant,
                 roleId: 2,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -372,7 +410,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.InternalEmagine,
                 roleId: 3,
-                signOrder: 4
+                signOrder: 4,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             }),
             new RecipientPreviewDto({
                 agreementSignerId: 1,
@@ -380,7 +419,8 @@ export const RecipientMockedList: EnvelopePreviewDto[] = [
                 email: 'email@gmail.com',
                 signerType: SignerType.Supplier,
                 roleId: 1,
-                signOrder: 2
+                signOrder: 2,
+                externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1'
             })
         ]
     })

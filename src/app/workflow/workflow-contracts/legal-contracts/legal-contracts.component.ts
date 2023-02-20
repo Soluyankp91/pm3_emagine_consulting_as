@@ -4,6 +4,7 @@ import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angul
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
@@ -17,12 +18,15 @@ import {
 	SendEmailEnvelopeCommand,
 	SendDocuSignEnvelopeCommand,
 	FileParameter,
+    EnvelopeProcessingPath,
 } from 'src/shared/service-proxies/service-proxies';
 import { LegalContractService } from './legal-contract.service';
 import {
 	ClientLegalContractsForm,
 	ELegalContractModeIcon,
 	ELegalContractModeText,
+	ELegalContractSourceIcon,
+	ELegalContractSourceText,
 	ELegalContractStatusIcon,
 	ELegalContractStatusText,
 	LegalContractsMockedData,
@@ -47,8 +51,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	eLegalContractModeIcon = ELegalContractModeIcon;
 	eLegalContractModeText = ELegalContractModeText;
 	legalContractStatus = EnvelopeStatus;
-    // downloadEnvelopeAvailable = false;
-    // sendEnvelopeAvailable = false;
+    eLegalContractSourceText = ELegalContractSourceText;
+    eLegalContractSourceIcon = ELegalContractSourceIcon;
+    legalContractPath = EnvelopeProcessingPath;
+
 	constructor(
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
@@ -58,13 +64,15 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _legalContractService: LegalContractService,
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
-        private _router: Router
+        private _router: Router,
+        // private _internalLookupService: InternalLookupService
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
 	}
 
 	ngOnInit(): void {
+        // this._getEnvelopeProcessingPaths();
 		if (this.isClientContracts) {
 			this._getClientAgreements();
 		} else {
@@ -74,6 +82,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			this.addLegalContract(item);
 		});
 	}
+
+    // private _getEnvelopeProcessingPaths() {
+    //     this._internalLookupService.getEnvelopeProcessingPaths().subscribe((result) => (this.envelopeProcessingPaths = result));
+    // }
 
     public toggleSelection() {
 
@@ -108,6 +120,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			name: new UntypedFormControl(legalContract?.name ?? null),
 			agreementStatus: new UntypedFormControl(legalContract?.agreementStatus ?? null),
 			validity: new UntypedFormControl(legalContract?.validity ?? null),
+			processingPath: new UntypedFormControl(legalContract?.processingPath ?? null),
+			docuSignUrl: new UntypedFormControl(legalContract?.docuSignUrl ?? null),
 			lastUpdatedBy: new UntypedFormControl(legalContract?.lastUpdatedBy ?? null),
 			lastUpdateDateUtc: new UntypedFormControl(legalContract?.lastUpdateDateUtc ?? null),
 			hasSignedDocumentFile: new UntypedFormControl(legalContract?.hasSignedDocumentFile ?? null),
@@ -177,6 +191,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			hasBackdrop: false,
 			data: {
 				envelopePreviewList: envelopePreviewList,
+                singleEmail: singleEmail
 			},
 		});
 		dialogRef.componentInstance.onSendViaEmail.subscribe(() => {
@@ -203,25 +218,24 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService.sendDocusignEnvelope(input).subscribe(() => {});
 	}
 
-	onFileAdded($event: EventTarget | null, agreementId: number) {
-		if ($event) {
-			let files = ($event as HTMLInputElement).files as FileList;
-			const file = files[0] as File;
-			this._openUploadSignedContractDialog(agreementId, file);
-			($event as HTMLInputElement).value = '';
-		}
-	}
+	// onFileAdded($event: EventTarget | null, agreementId: number) {
+	// 	if ($event) {
+	// 		let files = ($event as HTMLInputElement).files as FileList;
+	// 		const file = files[0] as File;
+	// 		this._openUploadSignedContractDialog(agreementId, file);
+	// 		($event as HTMLInputElement).value = '';
+	// 	}
+	// }
 
-	private _openUploadSignedContractDialog(agreementId: number, file: File) {
+	public openUploadSignedContractDialog(agreementId: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
-			dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument,
-			file: file,
+			dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument
 		};
 		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((result: any) => {
+		dialogRef.componentInstance.onConfirmed.subscribe((file: File) => {
 			let fileInput: FileParameter;
 			fileInput = {
 				fileName: file.name,
@@ -251,8 +265,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._legalContractService.processDownloadDocument(url);
 	}
 
-	public openInDocuSign(agreementId: number) {
-        // TODO: open docuSign in new tab once BE change response
+	public openInDocuSign(docuSignUrl: string) {
+        window.open(docuSignUrl, '_blank');
     }
 
 	public editAgreement(agreementId: number) {

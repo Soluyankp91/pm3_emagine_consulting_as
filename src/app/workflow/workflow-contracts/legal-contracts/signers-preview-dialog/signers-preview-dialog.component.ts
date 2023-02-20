@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { EnvelopePreviewDto } from 'src/shared/service-proxies/service-proxies';
+import { EnvelopePreviewDto, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ESignerRole, ESignerTypeName, RecipientMockedList } from './signers-preview-dialog.model';
 
 @Component({
@@ -13,6 +13,7 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 	@Output() onSendViaEmail = new EventEmitter();
 	@Output() onSendViaDocuSign = new EventEmitter();
 	envelopePreviewList: EnvelopePreviewDto[];
+    signerType = SignerType;
 	signerTypeName = ESignerTypeName;
 	signerRole = ESignerRole;
 	constructor(
@@ -20,6 +21,7 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
 			envelopePreviewList: EnvelopePreviewDto[];
+            singleEmail: boolean
 		},
 		private _dialogRef: MatDialogRef<SignersPreviewDialogComponent>
 	) {

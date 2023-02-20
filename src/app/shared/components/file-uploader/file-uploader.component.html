@@ -13,9 +13,9 @@
         <ng-template #fileUpload>
             <button class="button-add" mat-flat-button>
                 <mat-icon>add</mat-icon>
-                Add Document
+                {{buttonText}}
             </button>
-            <span class="content-instructions">Upload or simply drag and drop file here</span>
+            <span class="content-instructions">{{uploaderHint}}</span>
         </ng-template>
     </div>
 </div>
