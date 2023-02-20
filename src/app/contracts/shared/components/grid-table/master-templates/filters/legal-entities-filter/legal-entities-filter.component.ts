@@ -1,5 +1,5 @@
 import { take, pluck, map, withLatestFrom } from 'rxjs/operators';
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
@@ -17,6 +17,7 @@ import { AgreementService } from 'src/app/contracts/agreements/listAndPreviews/s
 	selector: 'app-legal-entities-filter',
 	templateUrl: './legal-entities-filter.component.html',
 	styleUrls: ['./legal-entities-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class LegalEntitiesFilterComponent implements IFilter {
