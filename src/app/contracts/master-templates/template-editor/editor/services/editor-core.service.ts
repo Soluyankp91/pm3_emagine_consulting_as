@@ -12,22 +12,21 @@ import {
 	RichEdit,
 } from 'devexpress-richedit';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
-
-import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
 import { CharacterPropertiesApi } from 'devexpress-richedit/lib/model-api/character-properties';
 import { ParagraphPropertiesApi } from 'devexpress-richedit/lib/model-api/paragraph';
 import { ClientRichEdit } from 'devexpress-richedit/lib/client/client-rich-edit';
 
-import { RICH_EDITOR_OPTIONS } from '../providers';
 import { CompareService } from './compare.service';
 import { CommentService } from './comment.service';
-import { ICustomCommand, IMergeField, CUSTOM_CONTEXT_MENU_ITEMS } from '../entities';
+import { RICH_EDITOR_OPTIONS } from '../providers';
+import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
+import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
+import { take } from 'rxjs/operators';
 
 @Injectable()
 export class EditorCoreService {
 	afterViewInit$: ReplaySubject<void> = new ReplaySubject();
 	templateAsBase64$ = new BehaviorSubject<string>('');
-	isCompareMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	hasUnsavedChanges$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	public editor: RichEdit = null;
@@ -77,18 +76,18 @@ export class EditorCoreService {
 	}
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
-		if (!this.editor) throw ReferenceError('editor not initialized yet!, please call initialize().');
+		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
 		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml);
 	}
 
 	newDocument() {
-		if (!this.editor) throw ReferenceError('editor not initialized yet!, please call initialize().');
+		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
 		this.editor.newDocument();
 	}
 
-	compareTemplate(document: Blob) {
-		if (document) {
-			this._compareService.applyCompareTemplate(document);
+	compareTemplate(document: Blob, filename: string) {
+		if (document && filename) {
+			this._compareService.applyCompareTemplate(document, filename);
 		}
 	}
 
@@ -134,7 +133,7 @@ export class EditorCoreService {
 
 	private _registerDocumentEvents() {
 		this.editor.events.documentChanged.addHandler(() => {
-			if (!this._compareService.isCompareMode$.value) {
+			if (!this._compareService.isCompareMode) {
 				this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
 			}
 		});
@@ -155,12 +154,9 @@ export class EditorCoreService {
 
 	private _registerCustomEvents() {
 		this.editor.events.customCommandExecuted.addHandler((s, e) => {
-			console.log(e);
 			switch (e.commandName as ICustomCommand) {
 				case ICustomCommand.SelectDocument:
 					this.onCompareTemplate$.emit();
-					break;
-				case ICustomCommand.UploadDocument:
 					break;
 				case ICustomCommand.CompareVersion:
 					this.onCompareVersion$.emit();

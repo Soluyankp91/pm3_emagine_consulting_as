@@ -1,8 +1,7 @@
-import { ContextMenuCommandId, ContextMenuItem } from "devexpress-richedit";
-import { ICompareButtons } from ".";
-import { ICustomCommand } from "./entities";
+import { ContextMenuItem } from 'devexpress-richedit';
+import { ICompareButtonMap, ICustomCommand } from './entities';
 
-export const CompareButtons: ICompareButtons = {
+export const CompareButtons: ICompareButtonMap = {
 	[ICustomCommand.SelectDocument]: {
 		type: ICustomCommand.SelectDocument,
 		title: 'Select document',
@@ -18,6 +17,14 @@ export const CompareButtons: ICompareButtons = {
 		title: 'Compare to version',
 		icon: 'unselectall',
 	},
+	[ICustomCommand.ConfirmEdits]: {
+		type: ICustomCommand.ConfirmEdits,
+		title: 'Confirm edits',
+		icon: 'save',
+		beginGroup: true,
+	},
+	[ICustomCommand.UndoEdits]: { type: ICustomCommand.UndoEdits, title: 'Undo edits', icon: 'undo' },
+	[ICustomCommand.CancelCompare]: { type: ICustomCommand.CancelCompare, title: '', icon: 'clear', beginGroup: true },
 };
 
 export const CUSTOM_CONTEXT_MENU_ITEMS: Array<ContextMenuItem> = [
@@ -42,19 +49,6 @@ export const CUSTOM_CONTEXT_MENU_ITEMS: Array<ContextMenuItem> = [
 		visible: false,
 		beginGroup: false,
 	},
-];
-
-export const DEFAULT_CONTEXT_MENU_ITEM_IDS: Array<ContextMenuItem['id']> = [
-	ContextMenuCommandId.Copy,
-	ContextMenuCommandId.Cut,
-	ContextMenuCommandId.Paste,
-	ContextMenuCommandId.DecreaseParagraphIndent,
-	ContextMenuCommandId.IncreaseParagraphIndent,
-	ContextMenuCommandId.ShowFontDialog,
-	ContextMenuCommandId.ShowParagraphDialog,
-	ContextMenuCommandId.ShowBookmarkDialog,
-	ContextMenuCommandId.OpenHyperlink,
-	ContextMenuCommandId.SelectAll,
 ];
 
 export const COMPARE_TAB_CONTEXT_MENU_ITEM_IDS: Array<ContextMenuItem['id']> = [

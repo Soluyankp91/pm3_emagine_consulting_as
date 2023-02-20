@@ -39,7 +39,8 @@ export namespace TransformMergeFiels {
   
   export function updateMergeFields(rich: RichEdit): void {
     rich.beginUpdate();
-  
+    rich.history.beginTransaction();
+    
     const paragraphsCount = rich.document.paragraphs.count
   
     for (let i = 0; i < paragraphsCount; i++) {
@@ -80,10 +81,15 @@ export namespace TransformMergeFiels {
     }
   
     rich.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+
+    rich.history.endTransaction();
     rich.endUpdate();
   }
   
   function updateMultiMergeFileds(rich: RichEdit, index: number, lineIndex: number): void {
+    rich.beginUpdate();
+    rich.history.beginTransaction();
+
     const prgph = rich.document.paragraphs.getByIndex(lineIndex);
     const text = rich.document.getText(prgph.interval);
   
@@ -107,5 +113,8 @@ export namespace TransformMergeFiels {
         length: lastIndex - firstIndex + 1
       })
     }
+
+    rich.endUpdate();
+    rich.history.endTransaction();
   }
 }

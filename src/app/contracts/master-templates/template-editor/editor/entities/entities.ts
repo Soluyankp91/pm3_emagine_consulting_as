@@ -1,6 +1,10 @@
-import { RibbonButtonItem } from "devexpress-richedit";
+import { RibbonButtonItem } from 'devexpress-richedit';
 
 export enum ICustomCommand {
+	// Editor
+	DocumentSave = 'DOCUMENT_SAVED',
+	RibbonListChange = 'RIBBON_LIST_CHANGE',
+	RibbonTabChange = 'RIBBON_TAB_CHANGE',
 	// Merge fields
 	UpdateStyle = 'UPDATE_STYLE',
 	ShowMergeFieldPopup = 'SHOW_MERGE_FIELD_POPUP',
@@ -10,6 +14,10 @@ export enum ICustomCommand {
 	SelectDocument = 'COMPARE_TAB_SELECT_DOCUMENT',
 	UploadDocument = 'COMPARE_TAB_UPLOAD_DOCUMENT',
 	CompareVersion = 'COMPARE_TAB_COMPARE_VERSION',
+	ServiceOrder = 'COMPARE_TAB_SERVICE_ORDER',
+	ConfirmEdits = 'COMPARE_TAB_CONFIRM_EDITS',
+	CancelCompare = 'COMPARE_TAB_CANCEL_EDITS',
+	UndoEdits = 'COMPARE_TAB_UNDO_EDITS',
 	KeepCurrentVersion = 'KEEP_CURRENT_VERSION',
 	KeepNewVersion = 'KEEP_NEW_VERSION',
 	KeepBothVersions = 'KEEP_BOTH_VERSIONS',
@@ -30,6 +38,10 @@ export interface WrappedValueDto<TValue> {
 	value: TValue;
 }
 
+export enum ICompareColors {
+	CURRENT = '#FBF5D0',
+	INCOMING = '#DFF1FF',
+}
 export interface IDocumentCreator {
 	id: number;
 	name: string;
@@ -70,10 +82,34 @@ export interface ICompareTabOptions {
 	buttons: Array<RibbonButtonItem>;
 }
 
-export interface ICompareButton {
-	type: ICustomCommand.SelectDocument | ICustomCommand.UploadDocument | ICustomCommand.CompareVersion;
+export interface ICompareTabOptions {
+	id: string;
 	title: string;
-	icon: string;
+	buttons: Array<RibbonButtonItem>;
 }
 
-export type ICompareButtons = Record<ICompareButton['type'], ICompareButton>;
+export type ICompareButtons =
+	| ICustomCommand.SelectDocument
+	| ICustomCommand.UploadDocument
+	| ICustomCommand.CompareVersion
+	| ICustomCommand.ConfirmEdits
+	| ICustomCommand.UndoEdits
+	| ICustomCommand.CancelCompare;
+
+export interface ICompareButton {
+	type?: ICompareButtons;
+	title: string;
+	icon: string;
+	beginGroup?: boolean;
+}
+
+export interface ICompareChanges {
+	isDone: boolean;
+	line: number;
+	text: string;
+	groupId?: string;
+	insertedLine?: number;
+	type: 'delete' | 'insert' | 'replace';
+}
+
+export type ICompareButtonMap = Record<ICompareButton['type'], ICompareButton>;
