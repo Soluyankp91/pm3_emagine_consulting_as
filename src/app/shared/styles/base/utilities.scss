@@ -6,6 +6,7 @@ $sizes: (
     12: 12px,
     15: 15px,
     16: 16px,
+    18: 18px,
     20: 20px,
     24: 24px,
     25: 25px,
@@ -89,10 +90,22 @@ $sizes: (
     gap: 55px;
 }
 
+.u-mt--5__reverse {
+    margin-top: -5px !important;
+}
+
 .u-mt--10__reverse {
     margin-top: -10px !important;
 }
 
 .u-mt--a {
     margin-top: auto !important;
+}
+
+.u-h--50px {
+    height: 50px !important;
+}
+
+.u-pl--1 {
+    padding-left: 1px !important;
 }

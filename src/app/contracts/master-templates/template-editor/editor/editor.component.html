@@ -1,10 +1,19 @@
-<ng-container *ngIf="template$ | async as template" >
-  <ng-container *ngIf="mergeFields$ | async as mergeFields">
-    <app-richedit
-      [template]="template"
-      [mergeFields]="mergeFields"
-      (save)="onSave($event)"
-    >
-    </app-richedit>
-  </ng-container>
+<div richEditor class="editor"></div>
+
+<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
+</app-insert-merge-field-popup>
+<app-compare-select-version-popup
+   [dataSource]="templateVersions$ | async"
+   (select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
+<app-compare-select-document-popup
+   [dataSource]="documentList$ | async"
+   (select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
+<ng-container *ngIf="hasUnsavedChanges$ | async">
+   <div class="save-actions" [class.loading]="isLoading">
+      <button>cancel</button>
+
+      <button (click)="saveAsDraft()">Safe as a draft</button>
+
+      <button (click)="saveAsComplete()">complete</button>
+   </div>
 </ng-container>

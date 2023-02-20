@@ -13696,13 +13696,14 @@ export class WorkflowServiceProxy {
      * @param showUpcomingStepType (optional) 
      * @param showCompleted (optional) 
      * @param showDeleted (optional) 
+     * @param showWorkflowsWithProjectLinesMarkedAsPoMissing (optional) 
      * @param search (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
@@ -13764,6 +13765,10 @@ export class WorkflowServiceProxy {
             throw new Error("The parameter 'showDeleted' cannot be null.");
         else if (showDeleted !== undefined)
             url_ += "ShowDeleted=" + encodeURIComponent("" + showDeleted) + "&";
+        if (showWorkflowsWithProjectLinesMarkedAsPoMissing === null)
+            throw new Error("The parameter 'showWorkflowsWithProjectLinesMarkedAsPoMissing' cannot be null.");
+        else if (showWorkflowsWithProjectLinesMarkedAsPoMissing !== undefined)
+            url_ += "ShowWorkflowsWithProjectLinesMarkedAsPoMissing=" + encodeURIComponent("" + showWorkflowsWithProjectLinesMarkedAsPoMissing) + "&";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
         else if (search !== undefined)

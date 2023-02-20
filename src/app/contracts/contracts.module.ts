@@ -1,7 +1,7 @@
 import { AppCommonModule } from './../shared/common/app-common.module';
 import { ContractsRoutingModule } from './contracts-routing.module';
-import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
 import { AgreementsComponent } from './agreements/listAndPreviews/agreements.component';
@@ -33,8 +33,7 @@ import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialo
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
-import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { SettingsTabComponent } from './shared/components/settings-tab/settings-tab.component';
 import { MasterTemplateFilterHeaderComponent } from './master-templates/listAndPreviews/components/top-filters/top-filters.component';
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
@@ -64,12 +63,7 @@ import { ApprovalComponent } from './shared/components/approval/approval.compone
 import { EnabledComponent } from './shared/components/enabled/enabled.component';
 import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
 import { ClientModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
-import { ViewComponent } from './master-templates/template-editor/editor/components/view/view.component';
-import { FormatComponent } from './master-templates/template-editor/editor/components/format/format.component';
-import { CompareComponent } from './master-templates/template-editor/editor/components/compare/compare.component';
-import { FileComponent } from './master-templates/template-editor/editor/components/file/file.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
-import { MergeFieldsComponent } from './master-templates/template-editor/editor/components/merge-fields/merge-fields.component';
 import { SalesManagersFilterComponent } from './shared/components/grid-table/agreements/filters/sales-managers-filter/sales-managers-filter.component';
 import { ContractManagerFilterComponent } from './shared/components/grid-table/agreements/filters/contact-manager-filter/contract-manager-filter.component';
 import { AgreementModeComponent } from './shared/components/agreement-mode/agreement-mode.component';
@@ -78,11 +72,12 @@ import { AgreementService } from './agreements/listAndPreviews/services/agreemen
 import { StatusesFilterComponent } from './shared/components/grid-table/agreements/filters/statuses-filter/statuses-filter.component';
 import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
+import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
-import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 
 @NgModule({
 	declarations: [
@@ -101,7 +96,7 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		SalesTypesFilterComponent,
 		MasterTemplateFilterHeaderComponent,
 		CreateMasterTemplateComponent,
-		MasterTemplateCreationComponent,
+		SettingsTabComponent,
 		AutoNameComponent,
 		MatMenuSingleSelectComponent,
 		MultiSelectComponent,
@@ -123,7 +118,8 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		AttachmentsComponent,
 		LogsComponent,
 		LinkedClientTemplatesComponent,
-		ClientTemplateModeComponent,
+		ClientModeFilterComponent,
+		ClientModeFilterComponent,
 		CustomTooltipComponent,
 		LinkedAgreementsComponent,
 		AgreementStatusComponent,
@@ -131,18 +127,14 @@ import { SignersTableComponent } from './shared/components/signers-table/signers
 		EnabledComponent,
 		ApprovalFilterComponent,
 		AgreementModeFilterComponent,
-		ClientModeFilterComponent,
-		ViewComponent,
-		FormatComponent,
-		MergeFieldsComponent,
-		CompareComponent,
-		FileComponent,
 		SettingsComponent,
 		AgreementDevExpress,
 		SalesManagersFilterComponent,
 		ContractManagerFilterComponent,
 		AgreementModeComponent,
 		StatusesFilterComponent,
+		ClientTemplateModeComponent,
+		SignersTableComponent,
 		ClientTemplatePreviewComponent,
 		AgreementPreviewComponent,
 		TableArrayFormatPipe,

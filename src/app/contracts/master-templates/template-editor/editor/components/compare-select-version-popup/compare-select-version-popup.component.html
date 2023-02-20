@@ -1,0 +1,36 @@
+<div class="merge-field-tree-list">
+	<dx-popup
+		title="Compare document version"
+		[width]="450"
+		[height]="540"
+		[showTitle]="true"
+		[dragEnabled]="false"
+		[hideOnOutsideClick]="true"
+		[(visible)]="visibility"
+		[copyRootClassesToWrapper]="true"
+		(onHiding)="afterClosed()"
+		class="merge-field-insert-popup">
+		<div class="form">
+			<dx-list #listView [dataSource]="dataSource" [height]="400" (onItemClick)="selectItem($event)">
+				<div *dxTemplate="let data of 'item'">
+					<div>Version {{ data.version }} - {{ data.createdDateUtc | date : 'MM.dd.yyyy' }}</div>
+				</div>
+			</dx-list>
+		</div>
+		<div class="buttons-column button-group">
+			<div>
+				<dx-button
+					stylingMode="contained"
+					text="Compare"
+					[type]="selected ? 'default' : 'normal'"
+					[width]="120"
+					[disabled]="!selected"
+					(onClick)="applySelected()">
+				</dx-button>
+			</div>
+			<div>
+				<dx-button stylingMode="outlined" text="Close" type="normal" [width]="120" (onClick)="close()"> </dx-button>
+			</div>
+		</div>
+	</dx-popup>
+</div>

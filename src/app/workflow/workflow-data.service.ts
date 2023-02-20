@@ -1,7 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { map } from 'rxjs/operators';
+import { ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { IConsultantAnchor } from './workflow-period/workflow-period.model';
-import { WorkflowProgressStatus } from './workflow.model';
+import { MultiSortList, WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
@@ -38,8 +39,15 @@ export class WorkflowDataService {
 
     consultantsAddedToStep = new EventEmitter<{stepType: number, processTypeId: number, consultantNames: IConsultantAnchor[]}>();
 
+    preselectFrameAgreement = new EventEmitter();
+
     cancelForceEdit =  new EventEmitter<any>();
-    constructor() { }
+    isContractModuleEnabled: boolean;
+    isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
+
+    constructor(private _configurationService: ConfigurationServiceProxy) {
+        this._getContractModuleConfig();
+    }
 
     updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {
         for (const update in status) {
@@ -48,6 +56,29 @@ export class WorkflowDataService {
                 (this.workflowProgress[key] as any) = status[key];
             }
         }
+    }
+
+    private _getContractModuleConfig() {
+        this._configurationService.contractsEnabled().subscribe(result => this.isContractModuleEnabled = result);
+    }
+
+    sortMultiColumnSorting(sortingValuesArray: MultiSortList[]): MultiSortList[] {
+        return sortingValuesArray.sort((a, b) => {
+			if (a.order === null) {
+				return 1;
+			}
+			if (b.order === null) {
+				return -1;
+			}
+			if (a.order === b.order) {
+				return 0;
+			}
+			return a.order < b.order ? -1 : 1;
+		});
+    }
+
+    get contractModuleEnabled() {
+        return this.isContractModuleEnabled;
     }
 
     get getWorkflowProgress() {

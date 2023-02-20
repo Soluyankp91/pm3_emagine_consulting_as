@@ -116,6 +116,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             rateUnitType: new UntypedFormControl(null),
             currency: new UntypedFormControl(null),
             clientRate: new UntypedFormControl(null),
+            frameAgreementId: new UntypedFormControl(null),
 
             invoicingReferenceNumber: new UntypedFormControl(null),
             clientInvoicingRecipientIdValue: new UntypedFormControl(null),
@@ -158,6 +159,9 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     }
     get clientRate() {
         return this.get('clientRate');
+    }
+    get frameAgreementId() {
+        return this.get('frameAgreementId');
     }
     get invoicingReferenceNumber() {
         return this.get('invoicingReferenceNumber');
@@ -235,6 +239,17 @@ export enum LegalContractStatus {
     Done = 10
 }
 
+export class DocumentForm extends UntypedFormGroup {
+    constructor() {
+        super({
+            documents: new UntypedFormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as UntypedFormArray;
+    }
+}
 
 export enum ClientTimeReportingCaps {
     CapOnUnits = 1,

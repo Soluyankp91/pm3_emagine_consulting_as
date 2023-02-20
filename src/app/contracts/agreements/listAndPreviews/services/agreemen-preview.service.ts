@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { BaseMappedAgreementListItemDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
@@ -32,7 +30,7 @@ export class AgreementPreviewService extends BasePreview {
 		super(_contractService);
 	}
 
-	_mapEntityToSummary(row: AgreementDetailsDto, maps: MappedTableCells) {
+	mapEntityToSummary(row: AgreementDetailsDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementListItemDto>{
 			agreementName: row.name,
 			definition: row.definition,
@@ -54,12 +52,12 @@ export class AgreementPreviewService extends BasePreview {
 			note: row.note,
 
 			agreementId: row.agreementId,
-			createdDateUtc: moment(row.createdDateUtc).format('DD.MM.YYYY'),
+			createdDateUtc: row.createdDateUtc,
 			createdBy: row.createdBy?.name,
-			lastUpdateDateUtc: moment(row.lastUpdateDateUtc).format('DD.MM.YYYY'),
+			lastUpdateDateUtc: row.lastUpdateDateUtc,
 			lastUpdatedBy: row.lastUpdatedBy?.name,
-			startDate: moment(row.startDate).format('DD.MM.YYYY'),
-			endDate: moment(row.endDate).format('DD.MM.YYYY'),
+			startDate: row.startDate,
+			endDate: row.endDate,
 			validity: row.validity,
 			duplicationSourceAgreementId: row.duplicationSourceAgreementId,
 			duplicationSourceAgreementName: row.duplicationSourceAgreementName,

@@ -1,0 +1,39 @@
+trigger: 
+  - devel
+
+variables:
+  dockerRegistryServiceConnection: 'emaginesourcingacr-ado-pm3-connection'
+  imageRepository: 'pm3fe'
+  containerRegistry: 'emaginesourcingacr.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+pool: azure-scale-set
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    steps:
+    - checkout: self
+      submodules: true
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        command: 'login'
+
+    - script: |
+        docker pull $(containerRegistry)/$(imageRepository):builder || true
+
+        docker build --target builder --cache-from $(containerRegistry)/$(imageRepository):builder -t $(containerRegistry)/$(imageRepository):builder -f $(Build.SourcesDirectory)/Dockerfile $(Build.SourcesDirectory)
+
+        docker build  --cache-from $(containerRegistry)/$(imageRepository):builder -t $(containerRegistry)/$(imageRepository):latest -t $(containerRegistry)/$(imageRepository):$(tag) -f $(Build.SourcesDirectory)/Dockerfile $(Build.SourcesDirectory)
+         
+        docker push $(containerRegistry)/$(imageRepository):latest
+        docker push $(containerRegistry)/$(imageRepository):$(tag)
+        docker push $(containerRegistry)/$(imageRepository):builder
+      displayName: Pull latest for layer caching
+      continueOnError: true 

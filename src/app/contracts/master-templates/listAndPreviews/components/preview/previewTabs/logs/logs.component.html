@@ -11,7 +11,7 @@
 				<div class="log-items">
 					<ng-container *ngFor="let log of logs">
 						<div class="log-item">
-							<img class="profile-picture" [src]="log.profilePictureUrl" />
+							<img class="profile-picture" [ngSrc]="employeePhotoUrl + log.profilePictureUrl + '.jpg'" width="32" height="32" src (error)="setDefaultImage($event.target)" />
 							<ng-container *ngIf="log.operationType">
 								<div class="info-part">
 									<p class="action-description">
@@ -41,7 +41,7 @@
 									</ng-container>
 								</div>
 								<div class="date-part">
-									<span class="date">{{ log.date }}, </span>
+									<span class="date">{{ log.date | momentFormat }}, </span>
 									<span class="day-time">{{ log.dayTime }}</span>
 								</div>
 							</ng-container>

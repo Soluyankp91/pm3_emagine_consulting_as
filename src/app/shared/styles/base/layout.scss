@@ -263,14 +263,6 @@ html {
         width: 35px;
         height: 35px;
     }
-    &-responsive {
-        width: 48px;
-        height: 48px;
-        @media screen and (max-width: 1440px) {
-            width: 35px;
-            height: 35px;
-        }
-    }
     &--logout {
         width: 20px;
         height: 20px;
@@ -331,4 +323,15 @@ html {
 
 .width-fit-content {
     width: fit-content;
+}
+
+.emptyStateRow {
+    height: 50px;
+    width: 100%;
+    padding: 0 16px;
+    background-color: $white-color;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
 }

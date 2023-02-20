@@ -7,22 +7,22 @@ app-signers-table {
 		padding-left: 8px;
 		border-left: 1px solid rgba(0, 0, 0, 0.12);
 	}
-    .mat-header-cell:first-of-type {
-        padding-left: 8px;
-    }
+	.mat-header-cell:first-of-type {
+		padding-left: 8px;
+	}
 	.mat-cell:last-of-type {
 		padding-right: 8px;
 		border-right: 1px solid rgba(0, 0, 0, 0.12);
 	}
-    .mat-header-cell:last-of-type {
-        padding-right: 8px;
-    }
+	.mat-header-cell:last-of-type {
+		padding-right: 8px;
+	}
 	.mat-cell {
 		padding-left: 4px;
 	}
-    .mat-header-cell {
-        padding-left: 4px;
-    }
+	.mat-header-cell {
+		padding-left: 4px;
+	}
 	.signer-name-cell {
 		max-width: 182px;
 		min-width: 182px;
@@ -31,10 +31,10 @@ app-signers-table {
 		max-width: 68px;
 		min-width: 68px;
 	}
-    .delete-cell {
-        max-width: 38px;
+	.delete-cell {
+		max-width: 38px;
 		min-width: 38px;
-    }
+	}
 	.signer-type-cell,
 	.signing-role-cell {
 		max-width: 138px;
@@ -52,7 +52,7 @@ app-signers-table {
 		gap: 8.5px;
 	}
 	.signer-header {
-        margin-top: 33px;
+		margin-top: 33px;
 		font-size: 16px;
 		font-weight: 700;
 		color: #898785;
@@ -84,13 +84,12 @@ app-signers-table {
 			display: none;
 		}
 	}
-    .mat-form-field.mat-form-field-invalid {
-        .mat-form-field-underline {
+	.mat-form-field.mat-form-field-invalid {
+		.mat-form-field-underline {
 			opacity: 1;
-            bottom: 0;
+			bottom: 0;
 		}
-
-    }
+	}
 	.mat-form-field .mat-select .mat-select-arrow {
 		height: 5px;
 		width: 10px;

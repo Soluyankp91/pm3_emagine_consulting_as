@@ -1,4 +1,5 @@
 import { SortDirection } from '@angular/material/sort';
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import {
 	AgreementTemplateMetadataLogListItemDto,
@@ -40,8 +41,6 @@ export interface ClientFiltersEnum extends MasterFiltersEnum {
 export interface AgreementFiltersEnum {
 	language: BaseEnumDto[];
 	id: number[];
-	//consultantName ???
-	//companyName ???
 	legalEntityId: LegalEntityDto[];
 	agreementType: BaseEnumDto[];
 	recipientTypeId: EnumEntityTypeDto[];
@@ -107,9 +106,9 @@ export interface BaseAgreementTemplate {
 	deliveryTypeIds: string[];
 
 	createdBy: string;
-	createdDateUtc: string;
+	createdDateUtc: moment.Moment;
 	lastUpdatedBy: string;
-	lastUpdateDateUtc?: string;
+	lastUpdateDateUtc?: moment.Moment;
 	lastUpdatedByLowerCaseInitials?: string;
 	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
@@ -123,7 +122,7 @@ export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTe
 	name?: string;
 	legalEntityIds?: string[];
 	isEnabled?: boolean;
-    actionList?: Actions []
+	actionList?: Actions[];
 }
 export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	agreementId?: number;
@@ -137,9 +136,9 @@ export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	saleManager: string;
 	contractManager: string;
 
-	startDate?: string;
-	endDate?: string;
-    validity: AgreementValidityState;
+	startDate?: moment.Moment;
+	endDate?: moment.Moment;
+	validity: AgreementValidityState;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
@@ -154,7 +153,7 @@ export interface MasterTemplatePreview {
 
 export type MappedLog = AgreementTemplateMetadataLogListItemDto & {
 	profilePictureUrl: string;
-	date: string;
+	date: moment.Moment;
 	dayTime: string;
 };
 export const OperationsTypeMap = {
@@ -183,5 +182,5 @@ export interface MappedAgreementTableItem {
 	endDate: string;
 	saleManager: EmployeeDto;
 	contractManager: EmployeeDto;
-    actionList: Actions [];
+	actionList: Actions[];
 }

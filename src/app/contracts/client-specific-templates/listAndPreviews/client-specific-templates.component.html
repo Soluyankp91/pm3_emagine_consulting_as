@@ -109,45 +109,34 @@
 					</ng-template>
 				</ng-template>
 
-				<ng-template let-cell="element" #customCells
-					><div class="table-cell" [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc }}</div>
-					<ng-template #lastUpdateDateUtcTooltip>
-						<div>
-							<div class="date-row">
-								<div>Created</div>
-								<div>{{ cell.createdDateUtc }}</div>
-							</div>
-							<div class="date-row">
-								<div>Last updated</div>
-								<div>
-									{{ cell.lastUpdateDateUtc }}
-								</div>
-							</div>
-						</div>
-					</ng-template>
-				</ng-template>
-				<ng-template let-cell="element" #customCells>
-                    <div class="table-cell">
-                        <ng-container *ngIf="cell.lastUpdatedByLowerCaseInitials">
-                            <span class="fi fi-{{ cell.lastUpdatedByLowerCaseInitials.externalId | lowercase }} country-icon"></span>
-                            <ng-template #saleManagerTooltip>
+                <ng-template let-cell="element" #customCells
+                    ><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc | momentFormat }}</p>
+                    <ng-template #lastUpdateDateUtcTooltip>
+                        <div>
+                            <div class="date-row">
+                                <div>Created</div>
+                                <div>{{ cell.createdDateUtc | momentFormat }}</div>
+                            </div>
+                            <div class="date-row">
+                                <div>Last updated</div>
                                 <div>
-                                    {{ cell.lastUpdatedByLowerCaseInitials.name }}
+                                    {{ cell.lastUpdateDateUtc | momentFormat }}
                                 </div>
-                            </ng-template>
-                        </ng-container>
-                    </div>
-				</ng-template>
-				<ng-template let-cell="element" #customCells>
-					<div class="table-cell">
-						<emg-client-template-mode [linkState]="cell.linkState"></emg-client-template-mode>
-					</div>
-				</ng-template>
-				<ng-template let-cell="element" #customCells>
-					<div class="table-cell">
-						<emg-approval [linkStateAccepted]="cell.linkStateAccepted"></emg-approval>
-					</div>
-				</ng-template>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-template>
+                <ng-template let-cell="element" #customCells>
+                    <p>
+                        {{ cell.lastUpdatedByLowerCaseInitials }}
+                    </p></ng-template
+                >
+                <ng-template let-cell="element" #customCells>
+                    <emg-client-template-mode [linkState]="cell.linkState" [iconWidth]="23" [iconHeight]="16"></emg-client-template-mode>
+                </ng-template>
+                <ng-template let-cell="element" #customCells>
+                    <emg-approval [linkStateAccepted]="cell.linkStateAccepted" [iconWidth]="23" [iconHeight]="16"></emg-approval>
+                </ng-template>
 
 				<ng-template let-cell="element" #customCells>
 					<div class="table-cell">

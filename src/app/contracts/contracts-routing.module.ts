@@ -5,12 +5,12 @@ import { AgreementsComponent } from './agreements/listAndPreviews/agreements.com
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
 
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
-import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
+import { SettingsTabComponent } from './shared/components/settings-tab/settings-tab.component';
 import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
 import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
+import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 
 const routes: Routes = [
 	{
@@ -31,16 +31,28 @@ const routes: Routes = [
 						component: AgreementsComponent,
 					},
 					{
-						path: '',
-						component: MasterTemplateCreationComponent,
+						path: 'create',
+						component: SettingsTabComponent,
 						data: {
+							isEdit: false,
 							defaultName: 'New Agreement',
 						},
+
 						children: [
 							{
-								path: 'create',
+								path: '',
+								pathMatch: 'full',
 								component: SettingsComponent,
 							},
+						],
+					},
+					{
+						path: '',
+						component: SettingsTabComponent,
+						data: {
+							isEdit: true,
+						},
+						children: [
 							{
 								path: ':id/settings',
 								component: SettingsComponent,
@@ -62,16 +74,22 @@ const routes: Routes = [
 						component: ClientSpecificTemplatesComponent,
 					},
 					{
-						path: '',
-						component: MasterTemplateCreationComponent,
-						data: {
-							defaultName: 'New Client Specific Template',
-						},
+						path: 'create',
+						component: SettingsTabComponent,
+						data: { isEdit: false, defaultName: 'New Client Specific Template' },
 						children: [
 							{
-								path: 'create',
+								path: '',
+								pathMatch: 'full',
 								component: CreationComponent,
 							},
+						],
+					},
+					{
+						path: '',
+						component: SettingsTabComponent,
+						data: { isEdit: true },
+						children: [
 							{
 								path: ':id/settings',
 								component: CreationComponent,
@@ -93,16 +111,22 @@ const routes: Routes = [
 						component: MasterTemplatesComponent,
 					},
 					{
-						path: '',
-						component: MasterTemplateCreationComponent,
-						data: {
-							defaultName: 'New Master template',
-						},
+						path: 'create',
+						component: SettingsTabComponent,
+						data: { isEdit: false, defaultName: 'New Master Template' },
 						children: [
 							{
-								path: 'create',
+								path: '',
+								pathMatch: 'full',
 								component: CreateMasterTemplateComponent,
 							},
+						],
+					},
+					{
+						path: '',
+						component: SettingsTabComponent,
+						data: { isEdit: true },
+						children: [
 							{
 								path: ':id/settings',
 								component: CreateMasterTemplateComponent,
