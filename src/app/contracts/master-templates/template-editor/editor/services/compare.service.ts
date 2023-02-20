@@ -374,7 +374,7 @@ export class CompareService {
 		editor.history.beginTransaction();
 
 		const selection = editor.selection.intervals[0];
-		let p = editor.document.paragraphs.find(selection)[0];
+		const p = editor.document.paragraphs.find(selection)[0];
 
 		const groupId = this._changes.find((item) => item.line === p.index).groupId;
 		const group = this._changes.filter((item) => item.groupId === groupId);
@@ -401,33 +401,7 @@ export class CompareService {
 			}
 		});
 
-		this._prevChangesState.push(this._changes.map(item => {
-			if (item.groupId === groupId) {
-				return {
-					...item,
-					isDone: false
-				}
-			}
-
-			return item;
-		})); 
-
-		this._changes = this._changes
-			.map((item) => {
-				if (item.groupId === groupId) {
-					item.isDone = true
-				}
-
-				if (item.line > removedLastLine) {
-					return {
-						...item,
-						line: item.line - removedCount,
-					};
-				}
-
-				return item;
-			});
-		
+		this._recalculateChanges(groupId, 'delete', removedLastLine, removedCount);
 		editor.history.endTransaction();
 	}
 
@@ -435,7 +409,7 @@ export class CompareService {
 		editor.history.beginTransaction();
 
 		const selection = editor.selection.intervals[0];
-		let p = editor.document.paragraphs.find(selection)[0];
+		const p = editor.document.paragraphs.find(selection)[0];
 
 		const groupId = this._changes.find((item) => item.line === p.index).groupId;
 		const group = this._changes.filter((item) => item.groupId === groupId);
@@ -462,6 +436,34 @@ export class CompareService {
 			}
 		});
 
+		this._recalculateChanges(groupId, 'insert', removedLastLine, removedCount);
+		editor.history.endTransaction();
+	}
+
+	private _keepBoth(editor: RichEdit) {
+		editor.history.beginTransaction();
+
+		const selection = editor.selection.intervals[0];
+		const p = editor.document.paragraphs.find(selection)[0];
+
+		const groupId = this._changes.find((item) => item.line === p.index).groupId;
+		const group = this._changes.filter((item) => item.groupId === groupId);
+
+		group.forEach((item) => {
+			let p = editor.document.paragraphs.getByIndex(item.line);
+			editor.beginUpdate();
+			editor.document.setCharacterProperties(p.interval, {
+				...p.properties,
+				...{ backColor: 'auto' },
+			});
+			editor.endUpdate();
+		});
+		
+		this._recalculateChanges(groupId, 'both');
+		editor.history.endTransaction();
+	}
+
+	private _recalculateChanges(groupId: string, type: string, removedLastLine?: number, removedCount?: number) {
 		this._prevChangesState.push(this._changes.map(item => {
 			if (item.groupId === groupId) {
 				return {
@@ -473,7 +475,16 @@ export class CompareService {
 			return item;
 		})); 
 
-		this._changes = this._changes
+		if (type === 'both') {
+			this._changes = this._changes.map(item => {
+				if (item.groupId === groupId) {
+					item.isDone = true
+				}
+	
+				return item;
+			});
+		} else {
+			this._changes = this._changes
 			.map((item) => {
 				if (item.groupId === groupId) {
 					item.isDone = true
@@ -488,48 +499,6 @@ export class CompareService {
 
 				return item;
 			});
-
-		editor.history.endTransaction();
-	}
-
-	private _keepBoth(editor: RichEdit) {
-		editor.history.beginTransaction();
-
-		const selection = editor.selection.intervals[0];
-		let p = editor.document.paragraphs.find(selection)[0];
-
-		const groupId = this._changes.find((item) => item.line === p.index).groupId;
-		const group = this._changes.filter((item) => item.groupId === groupId);
-
-		group.forEach((item) => {
-			let p = editor.document.paragraphs.getByIndex(item.line);
-			editor.beginUpdate();
-			editor.document.setCharacterProperties(p.interval, {
-				...p.properties,
-				...{ backColor: 'auto' },
-			});
-			editor.endUpdate();
-		});
-
-		this._prevChangesState.push(this._changes.map(item => {
-			if (item.groupId === groupId) {
-				return {
-					...item,
-					isDone: false
-				}
-			}
-
-			return item;
-		})); 
-
-		this._changes = this._changes.map(item => {
-			if (item.groupId === groupId) {
-				item.isDone = true
-			}
-
-			return item;
-		});
-		
-		editor.history.endTransaction();
+		}
 	}
 }
