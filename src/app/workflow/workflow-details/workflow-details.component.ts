@@ -344,7 +344,7 @@ export class WorkflowDetailsComponent
                 if (result.workflowStatusId) {
                     this.workflowStatusId = result.workflowStatusId;
                     this.workflowStatusName = result.isDeleted ? 'Deleted workflow' : getWorkflowStatus(result.workflowStatusId);
-                    this.workflowStatusIcon =  result.isDeleted ? 'deleted-status' : getStatusIcon(result.workflowStatusId);
+                    this.workflowStatusIcon = result.isDeleted ? 'deleted-status' : getStatusIcon(result.workflowStatusId);
                 }
                 if (value) {
                     this.selectedIndex = 1;
