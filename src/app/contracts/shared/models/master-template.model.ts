@@ -17,6 +17,7 @@ export class MasterTemplateModel extends FormGroup {
 			note: new FormControl(null),
 			isSignatureRequired: new FormControl(null),
 			isEnabled: new FormControl(null),
+            isDefaultTemplate: new FormControl(null),
 			selectedInheritedFiles: new FormControl(null),
 			uploadedFiles: new FormControl(null),
 		});
@@ -95,6 +96,10 @@ export class MasterTemplateModel extends FormGroup {
 
 	get isEnabled() {
 		return this.get('isEnabled');
+	}
+
+    get isDefaultTemplate() {
+		return this.get('isDefaultTemplate');
 	}
 
 	get selectedInheritedFiles() {
