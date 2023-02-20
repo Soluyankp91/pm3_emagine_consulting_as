@@ -1,9 +1,7 @@
 import { Component, OnInit, Injector, Inject } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AgreementPreviewService } from 'src/app/contracts/agreements/listAndPreviews/services/agreemen-preview.service';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { MappedLog, OperationsTypeMap } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';

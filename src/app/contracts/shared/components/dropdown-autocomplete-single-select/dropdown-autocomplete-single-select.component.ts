@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, Self, ContentChild, TemplateRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, Self, ContentChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
@@ -11,6 +11,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 	selector: 'emg-dropdown-autocomplete-single-select',
 	templateUrl: './dropdown-autocomplete-single-select.component.html',
 	styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() options: Item[];
