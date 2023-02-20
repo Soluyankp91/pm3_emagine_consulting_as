@@ -43,7 +43,8 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { CreationTitleService } from 'src/app/contracts/shared/services/creation-title.service';
-import { CREATION_RADIO_BUTTONS } from 'src/app/contracts/shared/entities/contracts.constants';
+import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 @Component({
 	selector: 'app-creation',
 	templateUrl: './settings.component.html',
@@ -52,9 +53,12 @@ import { CREATION_RADIO_BUTTONS } from 'src/app/contracts/shared/entities/contra
 	encapsulation: ViewEncapsulation.None,
 })
 export class CreationComponent extends AppComponentBase implements OnInit, OnDestroy {
-	creationRadioButtons = CREATION_RADIO_BUTTONS;
+	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 
 	creationModes = AgreementCreationMode;
+
+	possibleDocumentTypes: BaseEnumDto[];
+	documentTypes$: Observable<BaseEnumDto[]>;
 
 	editMode: boolean = false;
 	currentAgreementId: number;
@@ -105,7 +109,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	ngOnInit(): void {
-        this._setOptions();
+		this._setDocumentType();
+		this._setOptions();
 		this._initClients();
 		this._subsribeOnLegEntitiesChanges();
 		const paramId = this._route.snapshot.params.id;
@@ -202,19 +207,44 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		}
 	}
 
-    private _setOptions() {
-      this.options$  = combineLatest([
-            this._contractsService.settingsPageOptions$(),
-            this._contractsService.getEnumMap$().pipe(take(1)),
-        ]).pipe(
-            tap(([{ legalEntities }, maps]) => {
-                this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
-            }),
-            map(([options]) => {
-                return options;
-            })
-        );
-    }
+	private _setDocumentType() {
+		this.documentTypes$ = this.clientTemplateFormGroup.recipientTypeId.valueChanges.pipe(
+			switchMap((recipientTypeId) => {
+				switch (recipientTypeId) {
+					case 1:
+						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
+					case 2:
+						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
+					case 3:
+						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[2], this.possibleDocumentTypes[4]]);
+					case 4:
+						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[3], this.possibleDocumentTypes[4]]);
+					default:
+						return of(null);
+				}
+			})
+		);
+	}
+
+	private _setOptions() {
+		this.options$ = combineLatest([
+			this._contractsService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
+			this._contractsService.getEnumMap$().pipe(take(1)),
+		]).pipe(
+			tap(([{ legalEntities }, maps]) => {
+				this.legalEntities = legalEntities.map(
+					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
+				);
+			}),
+			map(([options]) => {
+				return options;
+			})
+		);
+	}
 
 	private _subscribeOnModeReplay() {
 		this.creationModeControl.valueChanges.pipe(takeUntil(this._unSubscribe$), distinctUntilChanged()).subscribe((val) => {
