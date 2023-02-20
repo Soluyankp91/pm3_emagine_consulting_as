@@ -18,7 +18,7 @@ export class AgreementService {
 
 	getTemplate(templateId: number) {
 		const endpoint = `${this.baseUrl}/${templateId}/document-file/latest-template-version/true`;
-		
+		this._agreementTemplateService.latestTemplateVersion(templateId, true).subscribe(console.log)
 		return this.httpClient
 			.get(endpoint, {
 				responseType: 'blob',

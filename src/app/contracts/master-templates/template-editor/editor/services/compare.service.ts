@@ -26,7 +26,6 @@ export class CompareService {
 	private _tempInstance: RichEdit;
 	private _changes: ICompareChanges[] = [];
 	private _prevChangesState: Array<ICompareChanges[]> = [];
-	private _prevChangesStateIndex = -1;
 
 	private _ribbonSelectItems = this._getRibbonSelectionItems();
 	private _ribbonApplyChangesItems = this._getRibbonApplyChangeItems();
@@ -111,11 +110,7 @@ export class CompareService {
 				}
 				case ICustomCommand.UndoEdits: {
 					this._instance.history.undo();
-					if (this._prevChangesStateIndex > 0) {
-						this._prevChangesStateIndex--;
-						this._changes = this._prevChangesState[this._prevChangesStateIndex];
-						console.log(this._changes);
-					}
+					this._changes = this._prevChangesState.pop() || [];
 					break;
 				}
 				case ICustomCommand.ConfirmEdits:
@@ -399,19 +394,16 @@ export class CompareService {
 			editor.endUpdate();
 		});
 
-		let index = 0;
 		group.forEach((item) => {
 			if (item.type === 'delete') {
 				let p = editor.document.paragraphs.getByIndex(item.line - removedCount);
 				editor.document.deleteText(p.interval);
-				index++;
 				removedCount++;
 				removedLastLine = item.line;
 			}
 		});
 
-		this._prevChangesStateIndex++;
-		this._prevChangesState[this._prevChangesStateIndex] = this._changes.map(item => {
+		this._prevChangesState.push(this._changes.map(item => {
 			if (item.groupId === groupId) {
 				return {
 					...item,
@@ -420,7 +412,7 @@ export class CompareService {
 			}
 
 			return item;
-		});
+		})); 
 
 		this._changes = this._changes
 			.map((item) => {
@@ -438,6 +430,7 @@ export class CompareService {
 				return item;
 			});
 		
+		console.log(this._prevChangesState);
 		editor.history.endTransaction();
 	}
 
@@ -463,19 +456,16 @@ export class CompareService {
 			editor.endUpdate();
 		});
 
-		let index = 0;
 		group.forEach((item) => {
 			if (item.type === 'insert') {
 				let p = editor.document.paragraphs.getByIndex(item.line - removedCount);
 				editor.document.deleteText(p.interval);
-				index++;
 				removedCount++;
 				removedLastLine = item.line;
 			}
 		});
 
-		this._prevChangesStateIndex++;
-		this._prevChangesState[this._prevChangesStateIndex] = this._changes.map(item => {
+		this._prevChangesState.push(this._changes.map(item => {
 			if (item.groupId === groupId) {
 				return {
 					...item,
@@ -484,7 +474,7 @@ export class CompareService {
 			}
 
 			return item;
-		});
+		})); 
 
 		this._changes = this._changes
 			.map((item) => {
@@ -501,8 +491,9 @@ export class CompareService {
 
 				return item;
 			});
+
+		console.log(this._prevChangesState);
 		editor.history.endTransaction();
-		// editor.history.clear();
 	}
 
 	private _keepBoth(editor: RichEdit) {
@@ -524,8 +515,7 @@ export class CompareService {
 			editor.endUpdate();
 		});
 
-		this._prevChangesStateIndex++;
-		this._prevChangesState[this._prevChangesStateIndex] = this._changes.map(item => {
+		this._prevChangesState.push(this._changes.map(item => {
 			if (item.groupId === groupId) {
 				return {
 					...item,
@@ -534,7 +524,7 @@ export class CompareService {
 			}
 
 			return item;
-		});
+		})); 
 
 		this._changes = this._changes.map(item => {
 			if (item.groupId === groupId) {
@@ -543,6 +533,7 @@ export class CompareService {
 
 			return item;
 		});
+		console.log(this._prevChangesState);
 		
 		editor.history.endTransaction();
 	}
