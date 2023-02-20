@@ -31,12 +31,24 @@
 				<div class="label">{{ previewMap['recipientTypeId'] }}</div>
 				<div class="fw-700 flex-b-60">{{ summaryItem.recipientTypeId }}</div>
 			</div>
-			<ng-container *ngIf="summaryItem.actualRecipient$">
-				<div class="row-item">
-					<div class="label">{{ previewMap['actualRecipient'] }}</div>
-					<div class="fw-700 flex-b-60">{{ summaryItem.actualRecipient$ | async }}</div>
-				</div>
-			</ng-container>
+            <ng-container *ngIf="summaryItem.actualRecipient$">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['actualRecipient'] }}</div>
+                    <div class="fw-700 flex-b-60">{{ summaryItem.actualRecipient$ | async }}</div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="summaryItem.consultantName">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['consultantName']}}</div>
+                    <div class="fw-700 flex-b-60">{{ summaryItem.consultantName }}</div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="summaryItem.companyName">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['companyName']}}</div>
+                    <div class="fw-700 flex-b-60">{{ summaryItem.companyName }}</div>
+                </div>
+            </ng-container>
 
 			<mat-divider></mat-divider>
 			<ng-container *ngIf="summaryItem.legalEntityId">
@@ -45,6 +57,18 @@
 					<div class="fw-600 flex-b-60">{{ summaryItem.legalEntityId }}</div>
 				</div>
 			</ng-container>
+            <ng-container *ngIf="summaryItem.saleManager">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['saleManager']}}</div>
+                    <div class="fw-600 flex-b-60">{{ summaryItem.saleManager | emptyStringHandle }}</div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="summaryItem.contractManager">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['contractManager']}}</div>
+                    <div class="fw-600 flex-b-60">{{ summaryItem.contractManager | emptyStringHandle  }}</div>
+                </div>
+            </ng-container>
 			<ng-container *ngIf="summaryItem.legalEntityIds">
 				<div class="row-item">
 					<div class="label">{{ previewMap['legalEntityIds'] }}</div>

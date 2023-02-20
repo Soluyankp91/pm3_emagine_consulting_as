@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { DownloadFile } from '../../utils/download-file';
 import { FileUpload, FileUploadItem } from '../file-uploader/files';
 
 @Component({
@@ -37,15 +38,9 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	}
 
 	downloadAttachment(file: FileUploadItem): void {
-		this._agreementTemplateAttachmentServiceProxy.agreementTemplateAttachment(file[this.idProp] as number).subscribe((d) => {
-			const blob = new Blob([d as any]);
-			const a = document.createElement('a');
-			const objectUrl = URL.createObjectURL(blob);
-			a.href = objectUrl;
-			a.download = file.name;
-			a.click();
-			URL.revokeObjectURL(objectUrl);
-		});
+		this._agreementTemplateAttachmentServiceProxy
+			.agreementTemplateAttachment(file[this.idProp] as number)
+			.subscribe((d) => DownloadFile(d as any, file.name));
 	}
 
 	toggleCheckBox(file: FileUploadItem) {

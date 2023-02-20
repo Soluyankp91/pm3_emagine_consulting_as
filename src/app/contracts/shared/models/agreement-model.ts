@@ -92,6 +92,14 @@ export class AgreementModel extends FormGroup {
 		return this.get('language');
 	}
 
+    get startDate() {
+		return this.get('startDate');
+	}
+    
+    get endDate() {
+		return this.get('endDate');
+	}
+
 	get date() {
 		return this.get('date') as FormGroup;
 	}

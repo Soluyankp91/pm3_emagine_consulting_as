@@ -16,8 +16,9 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	language: 'Language',
 	id: 'ID',
 	agreementType: 'Type',
-	recipientTypeId: 'Recipients',
+	recipientTypeId: 'Recipient',
 	legalEntityIds: 'Legal entities',
+	legalEntityId: 'Legal entity',
 	salesTypeIds: 'Sales type',
 	deliveryTypeIds: 'Delivery type',
 	contractTypeIds: 'Contract type',
@@ -27,8 +28,8 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	lastUpdatedByLowerCaseInitials: 'By',
 	mode: 'Mode',
 	linkStateAccepted: 'Approval',
-	saleManager: 'Sales Manager',
-	contractManager: 'Contract Manager',
+	saleManager: 'SM',
+	contractManager: 'CM',
 };
 
 export const CREATION_RADIO_BUTTONS: { label: string; value: AgreementCreationMode }[] = [

@@ -59,7 +59,7 @@
 								<span>{{ options[1].agreementType[cell.agreementType] }} </span>
 								<span>{{ cell.clientName }} </span>
 								<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
-								<span>{{ cell.createdDateUtc | date : 'dd.MM.yyyy' }}</span>
+								<span>{{ cell.createdDateUtc | momentFormat }}</span>
 							</div>
 						</div>
 					</ng-template>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
+import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
@@ -32,6 +32,7 @@ import { tapOnce } from '../../shared/operators/tapOnceOperator';
 	selector: 'app-client-specific-templates',
 	styleUrls: ['./client-specific-templates.component.scss'],
 	templateUrl: './client-specific-templates.component.html',
+	encapsulation: ViewEncapsulation.None,
 	providers: [GridHelpService],
 })
 export class ClientSpecificTemplatesComponent extends AppComponentBase implements OnInit {
@@ -178,6 +179,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				linkState: item.linkState,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
+				actionList: this.actions,
 			};
 		});
 	}

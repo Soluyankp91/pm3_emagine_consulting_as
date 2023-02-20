@@ -38,8 +38,12 @@ export class AgreementPreviewService extends BasePreview {
 			agreementType: maps.agreementType[row.agreementType as AgreementType],
 			recipientTypeId: maps.recipientTypeId[row.recipientTypeId as number],
 			actualRecipient$: this._actualRecipient$(row.recipientTypeId, row.recipientId),
+			consultantName: row.consultantName,
+			companyName: row.companyName,
 
 			legalEntityId: maps.legalEntityIds[row.legalEntityId],
+			saleManager: row.saleManager ? row.saleManager.name : row.saleManager,
+			contractManager: row.contractManager ? row.contractManager.name : row.contractManager,
 			salesTypeIds: row.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 			deliveryTypeIds: row.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 			contractTypeIds: row.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
@@ -54,6 +58,7 @@ export class AgreementPreviewService extends BasePreview {
 			lastUpdatedBy: row.lastUpdatedBy?.name,
 			startDate: row.startDate,
 			endDate: row.endDate,
+			validity: row.validity,
 			duplicationSourceAgreementId: row.duplicationSourceAgreementId,
 			duplicationSourceAgreementName: row.duplicationSourceAgreementName,
 

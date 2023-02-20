@@ -13,6 +13,7 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 @Component({
 	selector: 'app-recipient-types-filter',
 	templateUrl: './recipient-types-filter.component.html',
+	styleUrls: ['./recipient-types-filter.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class RecipientTypesFilterComponent implements IFilter {

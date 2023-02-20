@@ -1,7 +1,7 @@
 import { ReplaySubject, Observable } from 'rxjs';
 import { startWith, switchMap, tap, take, pluck } from 'rxjs/operators';
 
-import { Component, EventEmitter, Output, Inject } from '@angular/core';
+import { Component, EventEmitter, Output, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmployeeDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import {
@@ -14,6 +14,8 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 @Component({
 	selector: 'app-employees-filter',
 	templateUrl: './employees-filter.component.html',
+	styleUrls: ['./employees-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class EmployeesFilterComponent {

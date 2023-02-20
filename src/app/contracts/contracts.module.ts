@@ -18,10 +18,10 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { EmployeesFilterComponent } from './shared/components/grid-table/master-templates/filters/employees-filter/employees-filter.component';
 import { AgreementTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-types-filter/agreement-types-filter.component';
-import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component';
-import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component';
-import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component';
-import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component';
+import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter.component';
+import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter.component';
+import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter.component';
+import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter.component';
 import { SalesTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/sales-types-filter/sales-types-filter.component';
 import { AutoNameComponent } from './shared/components/auto-name/auto-name.component';
 import { MatMenuSingleSelectComponent } from './shared/components/emagine-menu-single-select/emagine-menu-single-select.component';
@@ -45,7 +45,7 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
-import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
+import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled.component';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
@@ -76,6 +76,9 @@ import { EditorComponent } from './master-templates/template-editor/editor/edito
 import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
+import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
+import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
+
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -134,6 +137,9 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 		SignersTableComponent,
 		ClientTemplatePreviewComponent,
 		AgreementPreviewComponent,
+		TableArrayFormatPipe,
+		AgreementsTopFiltersComponent,
+		SignersTableComponent,
 	],
 	imports: [
 		CommonModule,
@@ -267,5 +273,52 @@ export class ContractsModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/duplicate-icon.svg')
 		);
 		iconRegistry.addSvgIcon('copy-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/copy-icon.svg'));
+
+		iconRegistry.addSvgIcon(
+			'avatar-placeholder',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/avatar-placeholder.svg')
+		);
+
+		iconRegistry.addSvgIcon(
+			'send-reminder-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/send-reminder-icon.svg')
+		);
+
+		iconRegistry.addSvgIcon(
+			'download-agreement-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-agreement-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'pdf-download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/pdf-download-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'doc-download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/doc-download-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'open-workflow-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/open-workflow-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'table-delete-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/table-delete-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-invalid-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-invalid-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-focused-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-focused-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'add-signer-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/add-signer-icon.svg')
+		);
 	}
 }

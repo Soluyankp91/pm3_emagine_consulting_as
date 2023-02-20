@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
+import { DownloadFile } from 'src/app/contracts/shared/utils/download-file';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AgreementDetailsAttachmentDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -42,15 +43,7 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 		if ('agreementAttachmentId' in file) {
 			attachmentId = file.agreementAttachmentId;
 		}
-		this._previewService.downloadAttachment(attachmentId).subscribe((d) => {
-			const blob = new Blob([d as any]);
-			const a = document.createElement('a');
-			const objectUrl = URL.createObjectURL(blob);
-			a.href = objectUrl;
-			a.download = file.name as string;
-			a.click();
-			URL.revokeObjectURL(objectUrl);
-		});
+		this._previewService.downloadAttachment(attachmentId).subscribe((d) => DownloadFile(d as any, file.name));
 	}
 
 	private _getIconName(fileName: string): string {

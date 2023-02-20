@@ -38,6 +38,11 @@
                 "output": "./"
               }
             ],
+            "stylePreprocessorOptions": {
+                "includePaths": [
+                    "./src/app/contracts/shared/styles"
+                ]
+            },
             "styles": [
               "node_modules/devextreme/dist/css/dx.light.css",
               "node_modules/devexpress-richedit/dist/dx.richedit.css",

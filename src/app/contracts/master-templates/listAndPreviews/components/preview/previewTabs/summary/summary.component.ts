@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { PREVIEW_LABEL_MAP } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
-import {
-	AgreementTemplate,
-} from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { AgreementTemplate } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 
 @Component({
@@ -27,7 +25,7 @@ export class SummaryComponent implements OnInit {
 	}
 
 	navigateToTemplate(templateId: any, isDuplicate: boolean) {
-        //need update on BackEnd
+		//need update on BackEnd
 		return;
 	}
 }

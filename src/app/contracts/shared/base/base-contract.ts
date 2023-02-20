@@ -26,7 +26,7 @@ export abstract class BaseContract {
 
 	private _sort$: BehaviorSubject<SortDto> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
 
-	getContracts$() {
+	getContracts$() : Observable<any> {
 		return combineLatest([
 			this.getTableFilters$(),
 			this.getSort$(),
@@ -67,7 +67,7 @@ export abstract class BaseContract {
 	}
 
 	updateTableFilters(data: any) {
-		this.tableFilters$.next(data);
+		this.tableFilters$.next({ ...this.tableFilters$.value, ...data });
 	}
 
 	updateTenantFilter(data: CountryDto[]) {

@@ -5,8 +5,16 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'language',
 	'agreementId',
 	'agreementName',
-	'agreementType',
+	'actualRecipientName',
 	'recipientTypeId',
+	'agreementType',
+	'legalEntityId',
+	'clientName',
+	'companyName',
+	'consultantName',
+	'salesTypeIds',
+	'deliveryTypeIds',
+	'contractTypeIds',
 	'mode',
 	'status',
 	'startDate',
@@ -24,14 +32,36 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		class: 'language-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'ID',
+		class: 'id-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Agreement name',
+		class: 'agreement-name-column',
+		sticky: true,
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Actual Recipient',
+		class: 'actual-recipient-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'recipientTypeId',
+			component: () =>
+				import('../../master-templates/filters/recipient-types-filter/recipient-types-filter.component').then(
+					(it) => it.RecipientTypesFilterComponent
+				),
+		},
+		class: 'recipientId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -42,16 +72,66 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+		class: 'agreementType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
-			formControlName: 'recipientTypeId',
+			formControlName: 'legalEntityId',
 			component: () =>
-				import(
-					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
-				).then((it) => it.RecipientTypesFilterComponent),
+				import('../../master-templates/filters/legal-entities-filter/legal-entities-filter.component').then(
+					(it) => it.LegalEntitiesFilterComponent
+				),
 		},
+		class: 'legalEntityId-column',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Client',
+		class: 'client-column',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Company name',
+		class: 'company-column',
+	},
+	{
+		type: EHeaderCells.SORT,
+		title: 'Consultant name',
+		class: 'consultant-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'salesTypeIds',
+			component: () =>
+				import('../../master-templates/filters/sales-types-filter/sales-types-filter.component').then(
+					(it) => it.SalesTypesFilterComponent
+				),
+		},
+		class: 'salesType-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'deliveryTypeIds',
+			component: () =>
+				import('../../master-templates/filters/delivery-types-filter/delivery-types-filter.component').then(
+					(it) => it.DeliveryTypesFilterComponent
+				),
+		},
+		class: 'deliveryType-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'contractTypeIds',
+			component: () =>
+				import('../../master-templates/filters/employment-types-filter/employment-types-filter.component').then(
+					(it) => it.EmploymentTypesFilterComponent
+				),
+		},
+		class: 'contractType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -62,6 +142,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementModeFilterComponent
 				),
 		},
+		class: 'mode-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -72,14 +153,17 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.StatusesFilterComponent
 				),
 		},
+		class: 'status-column',
 	},
 	{
 		type: EHeaderCells.SORT,
-		title: 'Start date',
+		title: 'Strt. date',
+		class: 'start-date-column',
 	},
 	{
 		type: EHeaderCells.SORT,
-		title: 'End date',
+		title: 'Exp. date',
+		class: 'end-date-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -90,6 +174,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.SalesManagersFilterComponent
 				),
 		},
+		class: 'saleManager-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -100,27 +185,62 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ContractManagerFilterComponent
 				),
 		},
+		class: 'contractManager-column',
 	},
 ];
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
-export const AGREEMENT_ACTIONS: Actions[] = [
+export const WORKFLOW_AGREEMENT_ACTIONS: Actions[] = [
+	{
+		label: 'Download *.pdf',
+		actionType: 'DOWNLOAD_PDF',
+		actionIcon: 'pdf-download-icon',
+	},
+	{
+		label: 'Download *.doc',
+		actionType: 'DOWNLOAD_DOC',
+		actionIcon: 'doc-download-icon',
+	},
+	{
+		label: 'Open workflow',
+		actionType: 'WORKFLOW_LINK',
+		actionIcon: 'open-workflow-icon',
+	},
+];
+export const NON_WORKFLOW_AGREEMENT_ACTIONS: Actions[] = [
+	{
+		label: 'Download *.pdf',
+		actionType: 'DOWNLOAD_PDF',
+		actionIcon: 'pdf-download-icon',
+	},
+	{
+		label: 'Download *.doc',
+		actionType: 'DOWNLOAD_DOC',
+		actionIcon: 'doc-download-icon',
+	},
 	{
 		label: 'Edit',
 		actionType: 'EDIT',
 		actionIcon: 'table-edit-icon',
 	},
 	{
-		label: 'Duplicate',
-		actionType: 'DUPLICATE',
-		actionIcon: 'duplicate-icon',
+		label: 'Delete',
+		actionType: 'DELETE',
+		actionIcon: 'table-delete-icon',
+	},
+];
+export const AGREEMENT_BOTTOM_ACTIONS: Actions[] = [
+	{
+		label: 'Send reminder',
+		actionType: 'REMINDER',
+		actionIcon: 'send-reminder-icon',
 	},
 	{
-		label: 'Copy link',
-		actionType: 'COPY',
-		actionIcon: 'copy-icon',
+		label: 'Download',
+		actionType: 'DOWNLOAD',
+		actionIcon: 'download-agreement-icon',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;

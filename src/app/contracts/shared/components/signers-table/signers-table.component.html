@@ -1,11 +1,12 @@
 <ng-container *ngIf="options$ | async as options">
 	<ng-container *ngIf="signerTableData.length">
+        <h3 class="signer-header">Signers</h3>
 		<mat-table [dataSource]="signerTableData">
 			<ng-container matColumnDef="signerType">
 				<mat-header-cell *matHeaderCellDef class="signer-type-cell">Signer type</mat-header-cell>
 				<mat-cell *matCellDef="let element; let i = index" class="signer-type-cell">
 					<ng-container [formGroup]="element">
-						<mat-form-field appearance="outline">
+						<mat-form-field appearance="fill">
 							<mat-select formControlName="signerType" (selectionChange)="onSignerTypeChange($event.value, i)">
 								<ng-container *ngFor="let signerType of options[0]">
 									<mat-option [value]="signerType.id">
@@ -13,20 +14,19 @@
 									</mat-option>
 								</ng-container>
 							</mat-select>
-							<mat-error>
-								<app-validator [control]="$any(formArray.at(i)).controls['signerType']"></app-validator>
-							</mat-error>
 						</mat-form-field>
 					</ng-container>
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="signerName">
-				<mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-				<mat-cell *matCellDef="let element; let i = index">
+				<mat-header-cell *matHeaderCellDef class="signer-name-cell">Name</mat-header-cell>
+				<mat-cell *matCellDef="let element; let i = index" class="signer-name-cell">
 					<ng-container [formGroup]="element">
 						<ng-container *ngIf="signerOptionsArr$[i].options$ | async as options">
 							<emg-dropdown-autocomplete-single-select
 								formControlName="signerId"
+                                appearance="fill"
+                                [displayError]="false"
 								[options]="options[1]"
 								[label]="options[0].label"
 								[width]="'178px'"
@@ -39,10 +39,10 @@
 				</mat-cell>
 			</ng-container>
 			<ng-container matColumnDef="signingRole">
-				<mat-header-cell *matHeaderCellDef> Signing role</mat-header-cell>
-				<mat-cell *matCellDef="let element; let i = index">
+				<mat-header-cell *matHeaderCellDef class="signing-role-cell"> Signing role</mat-header-cell>
+				<mat-cell *matCellDef="let element; let i = index" class="signing-role-cell">
 					<ng-container [formGroup]="element">
-						<mat-form-field appearance="outline">
+						<mat-form-field appearance="fill">
 							<mat-select formControlName="roleId">
 								<ng-container *ngFor="let signerRole of options[1]">
 									<mat-option [value]="signerRole.id">
@@ -50,9 +50,6 @@
 									</mat-option>
 								</ng-container>
 							</mat-select>
-							<mat-error>
-								<app-validator [control]="$any(formArray.at(i)).controls['roleId']"></app-validator>
-							</mat-error>
 						</mat-form-field>
 					</ng-container>
 				</mat-cell>
@@ -61,11 +58,8 @@
 				<mat-header-cell *matHeaderCellDef class="sequence-cell"> Sequence</mat-header-cell>
 				<mat-cell *matCellDef="let element; let i = index" class="sequence-cell">
 					<ng-container [formGroup]="element">
-						<mat-form-field appearance="outline">
+						<mat-form-field appearance="fill">
 							<input matInput type="number" formControlName="signOrder" />
-							<mat-error>
-								<app-validator [control]="$any(formArray.at(i)).controls['signOrder']"></app-validator>
-							</mat-error>
 						</mat-form-field>
 					</ng-container>
 				</mat-cell>
@@ -74,7 +68,7 @@
 				<mat-header-cell *matHeaderCellDef class="delete-cell"></mat-header-cell>
 				<mat-cell *matCellDef="let element; let i = index" class="delete-cell">
 					<button mat-icon-button (click)="deleteSigner(i)">
-						<mat-icon>delete</mat-icon>
+						<mat-icon>close</mat-icon>
 					</button>
 				</mat-cell>
 			</ng-container>
@@ -82,5 +76,8 @@
 			<mat-row *matRowDef="let row; columns: displayedSignerColumns"></mat-row>
 		</mat-table>
 	</ng-container>
-	<button type="button" mat-raised-button (click)="addSigner()">Add signer</button>
+    <div class="add-signer">
+        <mat-icon svgIcon="add-signer-icon" class="small-icon" (click)="addSigner()"></mat-icon>
+        <span class="add-signer-label">Add signer</span>
+    </div>
 </ng-container>

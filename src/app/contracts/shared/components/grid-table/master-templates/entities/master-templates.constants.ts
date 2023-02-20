@@ -49,9 +49,9 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'recipientTypeId',
 			component: () =>
-				import(
-					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
-				).then((it) => it.RecipientTypesFilterComponent),
+				import('../filters/recipient-types-filter/recipient-types-filter.component').then(
+					(it) => it.RecipientTypesFilterComponent
+				),
 		},
 	},
 	{
@@ -59,9 +59,9 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'legalEntityIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component'
-				).then((it) => it.LegalEntitiesFilterComponent),
+				import('../filters/legal-entities-filter/legal-entities-filter.component').then(
+					(it) => it.LegalEntitiesFilterComponent
+				),
 		},
 	},
 	{
@@ -79,9 +79,9 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'deliveryTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component'
-				).then((it) => it.DeliveryTypesFilterComponent),
+				import('../filters/delivery-types-filter/delivery-types-filter.component').then(
+					(it) => it.DeliveryTypesFilterComponent
+				),
 		},
 	},
 	{
@@ -89,9 +89,9 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'contractTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component'
-				).then((it) => it.EmploymentTypesFilterComponent),
+				import('../filters/employment-types-filter/employment-types-filter.component').then(
+					(it) => it.EmploymentTypesFilterComponent
+				),
 		},
 	},
 	{
@@ -113,10 +113,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		title: 'Status',
 		filter: {
 			formControlName: 'isEnabled',
-			component: () =>
-				import('../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component').then(
-					(it) => it.IsEnabledComponent
-				),
+			component: () => import('../filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
 		},
 	},
 ];
@@ -128,7 +125,11 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	agreementType: 'Document type',
 	recipientTypeId: 'Recipient type',
 	actualRecipient: 'Actual recipient',
+    consultantName: 'Consultant',
+    companyName: 'Company',
 	legalEntityId: 'Legal entity',
+    saleManager: 'Sales manager',
+    contractManager: 'Contract manager',
 	legalEntityIds: 'Legal entities',
 	salesTypeIds: 'Sales types',
 	deliveryTypeIds: 'Delivery types',

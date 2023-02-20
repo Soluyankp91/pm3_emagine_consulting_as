@@ -16,16 +16,42 @@
 					</mat-radio-group>
 					<mat-divider></mat-divider>
 				</ng-container>
-				<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
-					<ng-container *ngIf="templateOptions.options$ | async as options">
+				<ng-container *ngIf="duplicateOrInherit$ | async as dropdownInfo">
+					<ng-container *ngIf="dropdownInfo.options$ | async as templateOptions">
 						<emg-dropdown-autocomplete-single-select
-							[options]="$any(options)"
-							[outputProperty]="templateOptions.outputProperty"
-							[labelKey]="templateOptions.labelKey"
-							[unwrapFunction]="templateOptions.unwrapFunction"
-							[label]="templateOptions.label"
-							[formControlName]="templateOptions.formControlName"
-							(inputEmitter)="templateOptions.optionsChanged$.next($event)">
+							[options]="$any(templateOptions)"
+							[outputProperty]="dropdownInfo.outputProperty"
+							[unwrapFunction]="dropdownInfo.unwrapFunction"
+                            [labelKey]="dropdownInfo.labelKey"
+							[label]="dropdownInfo.label"
+							[formControlName]="dropdownInfo.formControlName"
+							(inputEmitter)="dropdownInfo.optionsChanged$.next($event)">
+                            <ng-template let-cell="option" #optionTemplate>
+                                <ng-container *ngIf="dropdownInfo.isDuplicate;else parentTemplate">
+                                    <div>
+                                        <div class="autocomplete-first-row">
+                                            {{ cell.agreementName }}
+                                        </div>
+                                        <div class="autocomplete-second-row">
+                                            {{ options[1].agreementType[cell.agreementType]}} ·
+                                            {{ cell.recipientName}} ·
+                                            {{ cell.countryName }} ·
+                                            {{ cell.startDate | momentFormat}}
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-template #parentTemplate>
+                                    <div>
+                                        <div class="autocomplete-first-row">
+                                            {{ cell.name }}, {{ options[1].language[cell.languageId] }}
+                                        </div>
+                                        <div class="autocomplete-second-row">
+                                            {{ options[1].agreementType[cell.agreementType]}} ·
+                                            {{ cell.createdDateUtc | momentFormat}}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ng-template>
 						</emg-dropdown-autocomplete-single-select
 					></ng-container>
 				</ng-container>
@@ -148,18 +174,20 @@
 						<mat-error><app-validator [control]="agreementFormGroup.language"></app-validator></mat-error>
 					</mat-form-field>
 				</div>
-				<mat-form-field appearance="fill" class="date-form-field">
+				<mat-form-field appearance="outline" class="date-form-field">
 					<mat-label>Start date - Expiration date</mat-label>
 					<mat-date-range-input
 						[rangePicker]="datePicker"
 						[comparisonStart]="agreementFormGroup.value.startDate"
-						[comparisonEnd]="agreementFormGroup.value.endDate">
+						[comparisonEnd]="agreementFormGroup.value.endDate"
+                        >
 						<input matStartDate placeholder="Start date" formControlName="startDate" />
 						<input matEndDate placeholder="End date" formControlName="endDate" />
 					</mat-date-range-input>
-					<mat-hint>MM/DD/YYYY - MM/DD/YYYY</mat-hint>
-					<mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-					<mat-date-range-picker #datePicker></mat-date-range-picker>
+					<mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+					<mat-date-range-picker #datePicker panelClass="app-contract-backdrop"></mat-date-range-picker>
+                    <mat-error><app-validator [control]="agreementFormGroup.startDate"></app-validator></mat-error>
+                    <mat-error><app-validator [control]="agreementFormGroup.endDate"></app-validator></mat-error>
 				</mat-form-field>
 				<mat-form-field appearance="outline" class="textarea-form-field">
 					<mat-label>Notes</mat-label>
@@ -173,6 +201,7 @@
 				</ng-container>
 			</div>
 			<div class="attachments-section">
+                <h3 class="template-settings-header">Attachments</h3>
 				<emg-file-selector
 					[inheritedFiles]="preselectedFiles"
 					idProp="agreementAttachmentId"
@@ -182,7 +211,7 @@
 		</div>
 		<div class="bottom-panel">
 			<button mat-button>Cancel</button>
-			<button mat-raised-button (click)="onSave()">Save</button>
+			<button mat-raised-button  (click)="onSave()">{{ editMode ? 'Save' : 'Next'}}</button>
 		</div>
 	</form>
 </ng-container>

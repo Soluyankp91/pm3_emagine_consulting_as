@@ -28,18 +28,25 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		class: 'language-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'ID',
+		class: 'id-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Template Name',
+		class: 'template-name-column',
+		sticky: true,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Client',
+		class: 'client-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -50,26 +57,29 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+		class: 'agreementType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'recipientTypeId',
 			component: () =>
-				import(
-					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
-				).then((it) => it.RecipientTypesFilterComponent),
+				import('../../master-templates/filters/recipient-types-filter/recipient-types-filter.component').then(
+					(it) => it.RecipientTypesFilterComponent
+				),
 		},
+		class: 'recipientTypeId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'legalEntityIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component'
-				).then((it) => it.LegalEntitiesFilterComponent),
+				import('../../master-templates/filters/legal-entities-filter/legal-entities-filter.component').then(
+					(it) => it.LegalEntitiesFilterComponent
+				),
 		},
+		class: 'legalEntityId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -80,30 +90,34 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.SalesTypesFilterComponent
 				),
 		},
+		class: 'salesType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'deliveryTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component'
-				).then((it) => it.DeliveryTypesFilterComponent),
+				import('../../master-templates/filters/delivery-types-filter/delivery-types-filter.component').then(
+					(it) => it.DeliveryTypesFilterComponent
+				),
 		},
+		class: 'deliveryType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'contractTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component'
-				).then((it) => it.EmploymentTypesFilterComponent),
+				import('../../master-templates/filters/employment-types-filter/employment-types-filter.component').then(
+					(it) => it.EmploymentTypesFilterComponent
+				),
 		},
+		class: 'contractType-column',
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Last updated',
+		class: 'last-updated-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -114,6 +128,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.EmployeesFilterComponent
 				),
 		},
+		class: 'last-updated-by-employee-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -124,6 +139,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ClientModeFilterComponent
 				),
 		},
+		class: 'link-state-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -134,6 +150,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ApprovalFilterComponent
 				),
 		},
+		class: 'linkStateAccepted-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -141,10 +158,9 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'isEnabled',
 			component: () =>
-				import('../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component').then(
-					(it) => it.IsEnabledComponent
-				),
+				import('../../master-templates/filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
 		},
+		class: 'status-column',
 	},
 ];
 

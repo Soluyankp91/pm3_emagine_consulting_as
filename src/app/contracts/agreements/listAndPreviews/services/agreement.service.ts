@@ -9,8 +9,12 @@ export class AgreementService extends BaseContract {
 	override tableFilters$ = new BehaviorSubject<AgreementFiltersEnum>({
 		language: [],
 		id: [],
+		legalEntityId: [],
 		agreementType: [],
 		recipientTypeId: [],
+		salesTypeIds: [],
+		deliveryTypeIds: [],
+		contractTypeIds: [],
 		mode: [],
 		status: [],
 		saleManager: [],
@@ -36,20 +40,20 @@ export class AgreementService extends BaseContract {
 			undefined, //consultantName
 			undefined, //companyName
 			undefined, //actualRecipientName
-			undefined, //legalEntities,
-			undefined,
+			tableFilters.legalEntityId.map((item) => item.id), //legalEntities
+			undefined, //tenantIds
 			tableFilters.agreementType.map((item) => item.id as number),
 			tableFilters.recipientTypeId.map((item) => item.id as number),
-			undefined, // salesTypes,
-			undefined, // deliveryTypes
-			undefined, // contractTypes
+			tableFilters.salesTypeIds.map((item) => item.id as number), // salesTypes,
+			tableFilters.deliveryTypeIds.map((item) => item.id as number), // deliveryTypes
+			tableFilters.contractTypeIds.map((item) => item.id as number), // contractTypes
 			tableFilters.mode.map((item) => item.id as number),
 			tableFilters.status.map((item) => item.id as number),
 			tableFilters.saleManager.map((saleManager) => saleManager.id as number),
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
 			search,
-            undefined, //isWorkflowRelated
-			page.pageIndex,
+			undefined,
+			page.pageIndex + 1,
 			page.pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''
 		);

@@ -13,6 +13,7 @@ import { EmployeeDto, LookupServiceProxy } from 'src/shared/service-proxies/serv
 @Component({
 	selector: 'app-contract-manager-filter',
 	templateUrl: './contract-manager-filter.component.html',
+	styleUrls: ['./contract-manager-filter.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class ContractManagerFilterComponent {

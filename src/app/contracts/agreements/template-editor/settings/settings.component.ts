@@ -122,9 +122,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._unSubscribe$.complete();
 	}
 
-    onModeControlChange(creationMode: AgreementCreationMode) {
-        this.modeControl$.next(creationMode);
-    }
+	onModeControlChange(creationMode: AgreementCreationMode) {
+		this.modeControl$.next(creationMode);
+	}
 
 	onSave() {
 		if (!this.agreementFormGroup.valid) {
@@ -135,6 +135,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			creationMode: this.creationModeControlReplay$.value,
 			...this.agreementFormGroup.getRawValue(),
 			isSignatureRequired: !!this.agreementFormGroup.isSignatureRequired,
+			signers: this.agreementFormGroup.signers.value ? this.agreementFormGroup.signers.value : [],
 		};
 		const uploadedFiles = toSend.uploadedFiles ? toSend.uploadedFiles : [];
 		const selectedInheritedFiles = toSend.selectedInheritedFiles ? toSend.selectedInheritedFiles : [];
@@ -301,6 +302,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.creationMode.patchValue(this.modeControl$.value);
 					this._resetForm();
 				}
+                this.agreementFormGroup.markAsUntouched();
+                this.agreementFormGroup.markAsPristine();
 			});
 	}
 
@@ -313,17 +316,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				})
 			)
 			.subscribe((creationMode) => {
-				this.agreementFormGroup.removeControl('parentAgreementTemplate', { emitEvent: false });
-				this.agreementFormGroup.removeControl('duplicationSourceAgreementId', { emitEvent: false });
+				this.agreementFormGroup.removeControl('parentAgreementTemplate');
+				this.agreementFormGroup.removeControl('duplicationSourceAgreementId');
 				if (creationMode === AgreementCreationMode.InheritedFromParent) {
-					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null), {
-						emitEvent: false,
-					});
+					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null));
 					this._subscribeOnParentChanges();
 				} else if (creationMode === AgreementCreationMode.Duplicated) {
-					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null), {
-						emitEvent: false,
-					});
+					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null));
 					this._subscribeOnDuplicateAgreementChanges();
 				}
 			});
@@ -332,6 +331,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _subscribeOnSignatureRequire() {
 		this.agreementFormGroup.isSignatureRequired.valueChanges.subscribe((isSignatureRequired) => {
 			if (isSignatureRequired) {
+				this.agreementFormGroup.signers.reset([]);
 				this.agreementFormGroup.signers.reset([]);
 			}
 		});
@@ -381,6 +381,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _subscribeOnDuplicateAgreementChanges() {
 		this.agreementFormGroup.controls['duplicationSourceAgreementId'].valueChanges
 			.pipe(
+				filter((val) => !!val),
 				distinctUntilChanged(),
 				takeUntil(
 					race([
@@ -438,7 +439,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			takeUntil(this._unSubscribe$),
 			switchMap((creationMode: AgreementCreationMode | null) => {
 				if (creationMode === AgreementCreationMode.Duplicated) {
-					return of({
+					return of<DuplicateOrParentOptions>({
 						options$: this.duplicateOptionsChanged$.pipe(
 							startWith(this.duplicateOptionsChanged$.value),
 							debounceTime(300),
@@ -450,12 +451,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						),
 						optionsChanged$: this.duplicateOptionsChanged$,
 						outputProperty: 'agreementId',
-						labelKey: 'agreementName',
+						isDuplicate: true,
 						label: 'Duplicate from',
+						labelKey: 'agreementName',
 						formControlName: 'duplicationSourceAgreementId',
 					});
 				} else if (creationMode === AgreementCreationMode.InheritedFromParent) {
-					return of({
+					return of<DuplicateOrParentOptions>({
 						options$: this.parentOptionsChanged$.pipe(
 							startWith(''),
 							debounceTime(300),
@@ -467,8 +469,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						),
 						optionsChanged$: this.parentOptionsChanged$,
 						outputProperty: 'agreementTemplateId',
-						labelKey: 'name',
+						isDuplicate: false,
 						label: 'Parent master template',
+						labelKey: 'name',
 						formControlName: 'parentAgreementTemplate',
 						unwrapFunction: this._unwrap,
 					});
@@ -537,11 +540,19 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				signers: agreement.signers,
 				selectedInheritedFiles: agreement.attachments,
 			});
+
+			this._disableFields();
 		});
 	}
 
+	private _disableFields() {
+		this.agreementFormGroup.agreementType.disable({ emitEvent: false });
+		this.agreementFormGroup.recipientTypeId.disable({ emitEvent: false });
+		this.agreementFormGroup.recipientId.disable({ emitEvent: false });
+	}
+
 	private _resetForm() {
-		this.agreementFormGroup.reset(undefined, { emitEvent: false });
+		this.agreementFormGroup.reset(this.agreementFormGroup.initialValue, { onlySelf: false });
 		this.preselectedFiles = [];
 	}
 }

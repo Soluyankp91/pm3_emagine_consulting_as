@@ -1,14 +1,17 @@
-import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, Self, ContentChild, TemplateRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, Self, ContentChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { RequiredValidator } from '../../validators/customRequireValidator';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-single-select',
 	templateUrl: './dropdown-autocomplete-single-select.component.html',
+	styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() options: Item[];
@@ -16,6 +19,8 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	@Input() outputProperty: string = 'id';
 	@Input() label: string = 'label';
 	@Input() width: string;
+    @Input() displayError: boolean = true;
+    @Input() appearance: MatFormFieldAppearance = 'outline';
 	@Input() unwrapFunction?: (arg: any) => {};
 
 	@Output() inputEmitter = new EventEmitter<string>();

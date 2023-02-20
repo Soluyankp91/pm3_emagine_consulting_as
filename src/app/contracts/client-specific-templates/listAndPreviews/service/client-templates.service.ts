@@ -41,7 +41,7 @@ export class ClientTemplatesService extends BaseContract {
 			tableFilters.salesTypeIds.map((item) => item.id as number),
 			tableFilters.deliveryTypeIds.map((item) => item.id as number),
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
-			undefined,
+			tableFilters.isEnabled.map((item) => item.id as any),
 			(tableFilters as ClientFiltersEnum).linkState.map((item) => item.id as number), //linkState
 			tableFilters.linkStateAccepted.map((item) => {
 				if (typeof item.id === 'object') {

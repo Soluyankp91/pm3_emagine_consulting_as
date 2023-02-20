@@ -10,6 +10,7 @@ export abstract class BasePreview {
 
 	protected _rowId$ = new BehaviorSubject<number | null>(null);
 	protected _newestFirst$ = new BehaviorSubject<boolean>(false);
+	protected _signingStatuses$ = new BehaviorSubject<boolean>(false);
 
 	protected _clientTemplateLinksSearch$?: BehaviorSubject<string | undefined>;
 	protected _clientTemplateLinksSort$?: BehaviorSubject<SortDto>;
@@ -85,7 +86,7 @@ export abstract class BasePreview {
 	abstract mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells): any;
 
 	abstract entityGet: (rowId: number) => Observable<any>;
-	abstract entityMetadataLog: (rowId: number, newestFirst: boolean) => Observable<any>;
+	abstract entityMetadataLog: (rowId: number, newestFirst: boolean, signingStatuses?: boolean) => Observable<any>;
 	abstract downloadAttachment: (attachmentId: number) => Observable<void>;
 
 	getClientTemplateLinksSort$?() {
