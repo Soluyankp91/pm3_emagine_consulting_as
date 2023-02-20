@@ -12,8 +12,9 @@ export type ParentTemplateDto = {
 };
 export type DuplicateOrParentOptions = {
 	label: string;
+    labelKey: string;
 	formControlName: string;
-	labelKey: string;
+	isDuplicate: boolean;
 	outputProperty: string;
 	options$: Observable<AgreementSimpleListItemDto[] | SimpleAgreementTemplatesListItemDto[] | undefined>;
 	optionsChanged$: BehaviorSubject<string>;

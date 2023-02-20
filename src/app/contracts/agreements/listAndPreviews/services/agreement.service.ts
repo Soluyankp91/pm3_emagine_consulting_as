@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
 import { AgreementFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
-import {
-	AgreementListItemDtoPaginatedList,
-	AgreementServiceProxy,
-	EnumEntityTypeDto,
-} from 'src/shared/service-proxies/service-proxies';
+import { AgreementListItemDtoPaginatedList, AgreementServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class AgreementService extends BaseContract {
@@ -56,8 +52,8 @@ export class AgreementService extends BaseContract {
 			tableFilters.saleManager.map((saleManager) => saleManager.id as number),
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
 			search,
-            undefined,
-			page.pageIndex,
+			undefined,
+			page.pageIndex + 1,
 			page.pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''
 		);

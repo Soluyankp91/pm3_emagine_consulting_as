@@ -13,8 +13,9 @@ emg-mat-grid {
 	}
 	.mat-table-container {
 		max-width: calc(100vw - 94px);
-		max-height: calc(100vh - 197px);
-		min-height: calc(100vh - 197px);
+        min-width: calc(100vw - 94px);
+		max-height: calc(100vh - 248px);
+		min-height: calc(100vh - 248px);
 		overflow-y: auto;
 	}
 	.mat-table {

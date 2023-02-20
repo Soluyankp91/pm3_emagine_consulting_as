@@ -5,10 +5,12 @@ import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { RequiredValidator } from '../../validators/customRequireValidator';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-single-select',
 	templateUrl: './dropdown-autocomplete-single-select.component.html',
+	styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
 })
 export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() options: Item[];
@@ -16,6 +18,8 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	@Input() outputProperty: string = 'id';
 	@Input() label: string = 'label';
 	@Input() width: string;
+    @Input() displayError: boolean = true;
+    @Input() appearance: MatFormFieldAppearance = 'outline';
 	@Input() unwrapFunction?: (arg: any) => {};
 
 	@Output() inputEmitter = new EventEmitter<string>();

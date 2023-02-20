@@ -2,6 +2,20 @@
 @import 'variables';
 
 app-client-specific-templates {
+	.table-cell {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 19px;
+		padding-left: 16px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.template-name-cell {
+		@include table-cell(700);
+	}
 	.select-column {
 		@include table-cell-width(34px);
 	}
@@ -61,5 +75,9 @@ app-client-specific-templates {
 	}
 	.table-and-preview-container {
 		display: flex;
+	}
+
+	.country-icon {
+		@include avatar-icon;
 	}
 }

@@ -1,10 +1,98 @@
-.delete-cell,
-.sequence-cell {
-    max-width: 64px;
-    min-width: 64px;
-}
-.signer-type-cell,
-.signing-role-cell {
-    max-width: 134px;
-    min-width: 134px;
+@import 'mixins';
+app-signers-table {
+	.mat-row {
+		height: 48px;
+	}
+	.mat-cell:first-of-type {
+		padding-left: 8px;
+		border-left: 1px solid rgba(0, 0, 0, 0.12);
+	}
+    .mat-header-cell:first-of-type {
+        padding-left: 8px;
+    }
+	.mat-cell:last-of-type {
+		padding-right: 8px;
+		border-right: 1px solid rgba(0, 0, 0, 0.12);
+	}
+    .mat-header-cell:last-of-type {
+        padding-right: 8px;
+    }
+	.mat-cell {
+		padding-left: 4px;
+	}
+    .mat-header-cell {
+        padding-left: 4px;
+    }
+	.signer-name-cell {
+		max-width: 182px;
+		min-width: 182px;
+	}
+	.sequence-cell {
+		max-width: 68px;
+		min-width: 68px;
+	}
+    .delete-cell {
+        max-width: 38px;
+		min-width: 38px;
+    }
+	.signer-type-cell,
+	.signing-role-cell {
+		max-width: 138px;
+		min-width: 138px;
+	}
+	.signer-header-cell {
+		font-size: 10px;
+		font-weight: 600;
+		color: #898785;
+	}
+	.add-signer {
+		display: flex;
+		align-items: center;
+		margin-top: 17px;
+		gap: 8.5px;
+	}
+	.signer-header {
+        margin-top: 33px;
+		font-size: 16px;
+		font-weight: 700;
+		color: #898785;
+	}
+	.add-signer-label {
+		font-size: 14px;
+		font-weight: 700;
+		color: #17a297;
+	}
+	.small-icon {
+		@include small-icon;
+	}
+
+	//mat-form-field
+	.mat-form-field .mat-form-field-wrapper {
+		padding-bottom: 0px;
+		height: 46px;
+		.mat-form-field-flex {
+			padding: 0px 8px;
+			height: 46px;
+		}
+		.mat-form-field-underline {
+			opacity: 0;
+		}
+		.mat-select-arrow-wrapper {
+			transform: none;
+		}
+		.mat-form-field-label-wrapper .mat-form-field-label {
+			display: none;
+		}
+	}
+    .mat-form-field.mat-form-field-invalid {
+        .mat-form-field-underline {
+			opacity: 1;
+            bottom: 0;
+		}
+
+    }
+	.mat-form-field .mat-select .mat-select-arrow {
+		height: 5px;
+		width: 10px;
+	}
 }

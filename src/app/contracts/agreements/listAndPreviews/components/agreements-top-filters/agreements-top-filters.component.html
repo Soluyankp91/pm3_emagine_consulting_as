@@ -1,80 +1,82 @@
 <div class="top-filters-container">
-	<div class="top-filters">
-		<ng-container [formGroup]="topFiltersFormGroup">
-			<div class="left-panel">
-				<div class="country-filter" *ngIf="tenantFilter$ | async as tenants">
-					<emg-multi-select [options]="tenants" [formControl]="tenantsIdsControl">
-						<ng-template #triggerButton let-selectedItems>
-							<ng-container *ngIf="!selectedItems.length; else itemsPresent">
-								<mat-icon
-									svgIcon="euro-union-icon"
-									class="country-filter-icon"
-									[style.width]="'32px !important'"
-									[style.height]="'32px !important'">
-								</mat-icon
-							></ng-container>
-							<ng-template #itemsPresent>
-								<div class="icons-container">
-									<div class="circle-counter">
-										<span>{{ selectedItems.length }}</span>
-									</div>
-									<div class="icon-container">
-										<mat-icon svgIcon="dropdown-icon"></mat-icon>
-									</div>
-								</div>
-							</ng-template>
-						</ng-template>
-						<ng-template #optionPrefix let-option>
-							<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
-						</ng-template>
-					</emg-multi-select>
-				</div>
-				<ng-container *ngIf="salesManagers$ | async as contractManagers">
-					<emg-dropdown-autocomplete-multiselect
-						[options]="contractManagers"
-						[idProperty]="'id'"
-						[label]="labelMap['saleManager']"
-						formControlName="saleManager"
-						(emitText)="this.freeTextEmitter.emit($event)">
-						<ng-template #triggerButton let-options="selectedOptions">
-							<ng-container *ngIf="!options.size; else selectedManagers">
-								<mat-icon
-									svgIcon="avatar-placeholder"
-									[style.width]="'32px !important'"
-									[style.height]="'32px !important'"></mat-icon>
-							</ng-container>
-							<ng-template #selectedManagers>
-								<span class="fi fi-{{ options.values().next().value.externalId | lowercase }} saleManager-icon"></span>
-							</ng-template> </ng-template
-					></emg-dropdown-autocomplete-multiselect>
-				</ng-container>
+	<div class="search-and-header-container">
+		<h3 class="table-header">Agreements</h3>
+		<div class="right-filters">
+			<div class="search-block">
 				<mat-form-field appearance="outline">
-					<mat-select formControlName="status" placeholder="Status" multiple [compareWith]="compareWith">
-						<ng-container *ngFor="let status of statusesOptions">
-							<mat-option [value]="status">
-								<emg-agreement-status class="icon" [agreementStatus]="status.id"></emg-agreement-status>
-								<span> {{ status.name }}</span>
-							</mat-option>
-						</ng-container>
-					</mat-select>
+					<mat-label>Search</mat-label>
+					<input matInput [formControl]="searchControl" placeholder="search" />
 				</mat-form-field>
-                <ng-container *ngIf="isDirty$ | async">
-                        <mat-divider [vertical]="true" class="vertical-divider"></mat-divider>
-                        <div class="clear-filter" (click)="resetFilters()">Clear all</div>
-                </ng-container>
 			</div>
-			<div class="right-panel">
-				<div class="search-block">
-					<mat-form-field appearance="outline">
-						<mat-label>Search</mat-label>
-						<input matInput [formControl]="searchControl" placeholder="search" />
-					</mat-form-field>
-				</div>
-				<div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
-					<mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
-					<div>Create</div>
-				</div>
+			<div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
+				<mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
+				<div>Create</div>
 			</div>
-		</ng-container>
+		</div>
 	</div>
+	<ng-container [formGroup]="topFiltersFormGroup">
+		<div class="left-filters">
+			<div class="country-filter" *ngIf="tenantFilter$ | async as tenants">
+				<emg-multi-select [options]="tenants" [formControl]="tenantsIdsControl">
+					<ng-template #triggerButton let-selectedItems>
+						<ng-container *ngIf="!selectedItems.length; else itemsPresent">
+							<mat-icon
+								svgIcon="euro-union-icon"
+								class="country-filter-icon"
+								[style.width]="'32px !important'"
+								[style.height]="'32px !important'">
+							</mat-icon
+						></ng-container>
+						<ng-template #itemsPresent>
+							<div class="icons-container">
+								<div class="circle-counter">
+									<span>{{ selectedItems.length }}</span>
+								</div>
+								<div class="icon-container">
+									<mat-icon svgIcon="dropdown-icon"></mat-icon>
+								</div>
+							</div>
+						</ng-template>
+					</ng-template>
+					<ng-template #optionPrefix let-option>
+						<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
+					</ng-template>
+				</emg-multi-select>
+			</div>
+			<ng-container *ngIf="salesManagers$ | async as contractManagers">
+				<emg-dropdown-autocomplete-multiselect
+					[options]="contractManagers"
+					[idProperty]="'id'"
+					[label]="labelMap['saleManager']"
+					formControlName="saleManager"
+					(emitText)="this.freeTextEmitter.emit($event)">
+					<ng-template #triggerButton let-options="selectedOptions">
+						<ng-container *ngIf="!options.size; else selectedManagers">
+							<mat-icon
+								svgIcon="avatar-placeholder"
+								[style.width]="'32px !important'"
+								[style.height]="'32px !important'"></mat-icon>
+						</ng-container>
+						<ng-template #selectedManagers>
+							<span
+								class="fi fi-{{ options.values().next().value.externalId | lowercase }} saleManager-icon"></span>
+						</ng-template> </ng-template
+				></emg-dropdown-autocomplete-multiselect>
+			</ng-container>
+			<mat-form-field appearance="outline">
+				<mat-select formControlName="status" placeholder="Status" multiple [compareWith]="compareWith">
+					<ng-container *ngFor="let status of statusesOptions">
+						<mat-option [value]="status">
+							<emg-agreement-status class="icon" [agreementStatus]="status.id"></emg-agreement-status>
+							<span> {{ status.name }}</span>
+						</mat-option>
+					</ng-container>
+				</mat-select>
+			</mat-form-field>
+			<ng-container *ngIf="isDirty$ | async">
+				<mat-divider [vertical]="true" class="vertical-divider"></mat-divider>
+				<div class="clear-filter" (click)="resetFilters()">Clear all</div>
+			</ng-container>
+		</div>
+	</ng-container>
 </div>

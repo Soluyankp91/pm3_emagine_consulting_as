@@ -106,10 +106,7 @@ app-agreements {
 		width: 8px;
 	}
 	.country-icon {
-		width: 18px;
-		height: 18px;
-		border-radius: 50%;
-		background-size: cover;
+		@include avatar-icon;
 	}
 	.tenant-menu {
 		width: 213px;

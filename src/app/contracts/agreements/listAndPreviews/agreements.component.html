@@ -1,5 +1,4 @@
 <app-agreements-top-filters></app-agreements-top-filters>
-<div class="table-and-preview-container">
     <ng-container *ngIf="table$ | async as table">
         <emg-mat-grid
             [displayedColumns]="displayedColumns"
@@ -106,28 +105,31 @@
                 <div class="table-cell">{{ cell.endDate }}</div>
             </ng-template>
             <ng-template let-cell="element" #customCells>
-                <ng-container *ngIf="cell.saleManager">
-                    <span class="fi fi-{{ cell.saleManager.externalId | lowercase }} country-icon"></span>
-                    <ng-template #saleManagerTooltip>
-                        <div>
-                            {{ cell.saleManager.name }}
-                        </div>
-                    </ng-template>
-                </ng-container>
+                <div class="table-cell">
+                    <ng-container *ngIf="cell.saleManager">
+                        <span class="fi fi-{{ cell.saleManager.externalId | lowercase }} country-icon"></span>
+                        <ng-template #saleManagerTooltip>
+                            <div>
+                                {{ cell.saleManager.name }}
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </div>
             </ng-template>
             <ng-template let-cell="element" #customCells>
-                <ng-container *ngIf="cell.contractManager">
-                    <span class="fi fi-{{ cell.contractManager.externalId | lowercase }} country-icon"></span>
-                    <ng-template #contractManagerTooltip>
-                        <div>
-                            {{ cell.contractManager.name }}
-                        </div>
-                    </ng-template>
-                </ng-container>
+                <div class="table-cell">
+                    <ng-container *ngIf="cell.contractManager">
+                        <span class="fi fi-{{ cell.contractManager.externalId | lowercase }} country-icon"></span>
+                        <ng-template #contractManagerTooltip>
+                            <div>
+                                {{ cell.contractManager.name }}
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </div>
             </ng-template>
         </emg-mat-grid>
     </ng-container>
     <ng-container *ngIf="currentRowId$ | async as currentRowId">
         <app-agreement-preview [currentId]="currentRowId" (currentIdChange)="currentRowId$.next($event)"></app-agreement-preview>
     </ng-container>
-</div>

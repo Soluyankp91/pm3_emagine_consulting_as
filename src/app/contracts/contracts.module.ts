@@ -287,30 +287,46 @@ export class ContractsModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/avatar-placeholder.svg')
 		);
 
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'send-reminder-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/send-reminder-icon.svg')
 		);
 
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'download-agreement-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-agreement-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'pdf-download-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/pdf-download-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'doc-download-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/doc-download-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'open-workflow-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/open-workflow-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'table-delete-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/table-delete-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-invalid-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-invalid-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-focused-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-focused-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'add-signer-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/add-signer-icon.svg')
 		);
 	}
 }
