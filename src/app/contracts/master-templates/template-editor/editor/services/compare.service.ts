@@ -202,8 +202,6 @@ export class CompareService {
 			}
 		});
 		
-		console.log(diff);
-		console.log(this._changes);
 		return changes;
 	}
 
@@ -430,7 +428,6 @@ export class CompareService {
 				return item;
 			});
 		
-		console.log(this._prevChangesState);
 		editor.history.endTransaction();
 	}
 
@@ -492,7 +489,6 @@ export class CompareService {
 				return item;
 			});
 
-		console.log(this._prevChangesState);
 		editor.history.endTransaction();
 	}
 
@@ -533,7 +529,6 @@ export class CompareService {
 
 			return item;
 		});
-		console.log(this._prevChangesState);
 		
 		editor.history.endTransaction();
 	}
