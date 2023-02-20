@@ -68,7 +68,7 @@ export interface PageDto {
 }
 export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string, any];
 export interface BaseEnumDto {
-	id: number | string;
+	id: number | string | boolean;
 	name: string;
 }
 export interface MappedTableCells {

@@ -18,11 +18,11 @@ import {
 export class IsEnabledComponent {
 	options = [
 		{
-			id: 1,
+			id: true,
 			name: 'Enabled',
 		},
 		{
-			id: 2,
+			id: false,
 			name: 'Disabled',
 		},
 	];
