@@ -1,10 +1,10 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STATUTES } from 'src/app/contracts/shared/components/grid-table/agreements/entities/agreements.constants';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { AgreementService } from '../../services/agreement.service';
-import { map, debounceTime, skip, tap, startWith, switchMap } from 'rxjs/operators';
+import { map, debounceTime, skip, tap, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { tapOnce } from 'src/app/contracts/shared/operators/tapOnceOperator';
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { EmployeeDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
@@ -16,8 +16,9 @@ import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperato
 	selector: 'app-agreements-top-filters',
 	templateUrl: './agreements-top-filters.component.html',
 	styleUrls: ['./agreements-top-filters.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AgreementsTopFiltersComponent implements OnInit {
+export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 	tenantFilter$ = this._contractsService.getTenants$();
 	preselectedTenants$ = this._agreementService.getTenants$();
 	salesManagers$: Observable<EmployeeDto[]>;
@@ -32,6 +33,8 @@ export class AgreementsTopFiltersComponent implements OnInit {
 
 	tenantsIdsControl = new FormControl([]);
 	searchControl = new FormControl('');
+
+	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
 		private readonly _router: Router,
@@ -49,6 +52,11 @@ export class AgreementsTopFiltersComponent implements OnInit {
 		this._setTopFiltersValue();
 		this._subscribeOnTenantChanges();
 		this._subscribeOnSearchChanges();
+	}
+
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	navigateTo() {
@@ -70,6 +78,7 @@ export class AgreementsTopFiltersComponent implements OnInit {
 		this._agreementService
 			.getTableFilters$()
 			.pipe(
+				takeUntil(this._unSubscribe$),
 				map(({ status, saleManager }: { status: BaseEnumDto[]; saleManager: BaseEnumDto[] }) => ({
 					status,
 					saleManager,
@@ -101,7 +110,7 @@ export class AgreementsTopFiltersComponent implements OnInit {
 	}
 
 	private _setTopFiltersValue() {
-		this.topFiltersFormGroup.valueChanges.subscribe((val) => {
+		this.topFiltersFormGroup.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((val) => {
 			this.topFiltersValue$.next(val);
 		});
 	}
@@ -116,19 +125,19 @@ export class AgreementsTopFiltersComponent implements OnInit {
 	}
 
 	private _subscribeOnTenantChanges() {
-		this.tenantsIdsControl.valueChanges.subscribe((tenants) => {
+		this.tenantsIdsControl.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((tenants) => {
 			this._agreementService.updateTenantFilter(tenants);
 		});
 	}
 
 	private _subscribeOnSearchChanges() {
-		this.searchControl.valueChanges.pipe(debounceTime(300)).subscribe((search) => {
+		this.searchControl.valueChanges.pipe(takeUntil(this._unSubscribe$), debounceTime(300)).subscribe((search) => {
 			this._agreementService.updateSearchFilter(search);
 		});
 	}
 
 	private _subscribeOnFilterChanges() {
-		this.topFiltersFormGroup.valueChanges.pipe(debounceTime(500)).subscribe((filters) => {
+		this.topFiltersFormGroup.valueChanges.pipe(takeUntil(this._unSubscribe$), debounceTime(500)).subscribe((filters) => {
 			this._agreementService.updateTableFilters(filters);
 		});
 	}
