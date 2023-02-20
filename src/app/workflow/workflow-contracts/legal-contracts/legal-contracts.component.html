@@ -70,20 +70,22 @@
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
                             <mat-menu #legalContractMenu>
-                                <button
-                                    class="menu-item green-color"
-                                    mat-menu-item
-                                    (click)="file.click()">
-                                    <mat-icon svgIcon="legal-contract-upload"></mat-icon>
-                                    Upload signed contract
-                                </button>
-                                <input
-                                    #file
-                                    type="file"
-                                    [accept]="'.pdf,.doc,.docx'"
-                                    (change)="onFileAdded($event.target, contract.value.agreementId)"
-                                    [style.display]="'none'"
-                                />
+                                <ng-container *ngIf="contract.value.agreementId">
+                                    <button
+                                        class="menu-item green-color"
+                                        mat-menu-item
+                                        (click)="file.click()">
+                                        <mat-icon svgIcon="legal-contract-upload"></mat-icon>
+                                        Upload signed contract
+                                    </button>
+                                    <input
+                                        #file
+                                        type="file"
+                                        [accept]="'.pdf,.doc,.docx'"
+                                        (change)="onFileAdded($event.target, contract.value.agreementId)"
+                                        [style.display]="'none'"
+                                    />
+                                </ng-container>
                                 <button
                                     class="menu-item green-color"
                                     mat-menu-item
