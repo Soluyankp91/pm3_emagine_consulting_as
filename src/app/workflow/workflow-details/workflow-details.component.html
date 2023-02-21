@@ -200,7 +200,7 @@
                 <ng-container *ngFor="let tab of clientPeriods; let i = index;">
                     <a mat-tab-link [routerLink]="tab.id" [state]="{typeId: tab.typeId}" [active]="rlaWorkflowTrack.isActive" routerLinkActive
                         #rlaWorkflowTrack="routerLinkActive">
-                        <div fxLayout="column" fxLayoutAlign="start start">
+                        <div fxLayout="column" fxLayoutAlign="start start" emgCustomTooltip [contentTemplate]="clientPeriods?.length > 5 ? periodTooltip : null">
                             <div fxLayout="row" fxLayoutAlign="center center">
                                 <span class="tab-header">
                                     <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
@@ -217,6 +217,22 @@
                                 {{tab.startDate | momentFormat: 'DD.MM'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM') : '...'}}
                             </span>
                         </div>
+                        <ng-template #periodTooltip>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <div fxLayout="row" fxLayoutAlign="center center">
+                                    <span class="tooltip-header">
+                                        <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
+                                        <span class="tooltip-header--name" [ngClass]="ePeriodClass[tab.typeId]">
+                                            {{tab.name}}
+                                        </span>
+                                        {{tab.fullDisplayId}}
+                                    </span>
+                                </div>
+                                <span class="tooltip-subheader">
+                                    {{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}
+                                </span>
+                            </div>
+                        </ng-template>
                     </a>
                 </ng-container>
 

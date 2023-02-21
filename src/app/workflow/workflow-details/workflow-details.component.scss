@@ -210,3 +210,42 @@
         background-color: rgba($color: $sand-color, $alpha: 0.5);
     }
 }
+
+.tooltip {
+    &-header {
+        display: flex;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 800;
+        line-height: 120%;
+        font-size: 14px;
+        color: $dark-grey-color;
+        mat-icon {
+            @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
+        }
+        &--name {
+            display: flex;
+            &.change-period {
+                color: #72A0F8;
+            }
+            &.start-period {
+                color: $green-color;
+            }
+            &.extend-period {
+                color: $purple-color;
+            }
+            &::after {
+                content: "•";
+                display: block;
+                color: $dark-grey-color;
+                margin: 0 5px;
+            }
+        }
+    }
+    &-subheader {
+        font-size: 12px;
+        color: $medium-grey-color;
+        font-family: 'Open Sans';
+        font-weight: 600;
+        line-height: 150%;
+    }
+}

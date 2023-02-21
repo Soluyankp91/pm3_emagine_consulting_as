@@ -234,8 +234,8 @@
                 </ng-container>
                 <ng-container matColumnDef="WorkflowId">
                     <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['WorkflowId'] === '' ? '' : 'WorkflowId'" [matSortDirection]="sortingValues['WorkflowId']" (matSortChange)="sortChanged($event)" mat-sort-header="WorkflowId" fxFlex="5%" fxLayoutAlign="start center">ID</mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowSequenceIdCode" matTooltipClass="white-tooltip">
+                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="start center">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowSequenceIdCode" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.workflowSequenceIdCode}}
                         </span>
                     </mat-cell>
