@@ -139,6 +139,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			creationMode: this.editMode ? this.currentTemplate.creationMode : this.agreementCreationMode.value,
 			attachments: this._agreementTemplateAttachmentDto(),
 			...this.masterTemplateFormGroup.getRawValue(),
+            isSignatureRequired: !!this.masterTemplateFormGroup.isSignatureRequired.value,
+            isEnabled: !!this.masterTemplateFormGroup.isEnabled.value,
+            isDefaultTemplate: !!this.masterTemplateFormGroup.isDefaultTemplate.value,
 		});
 
 		if (this.editMode) {
@@ -253,7 +256,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			language: template.language,
 			note: template.note,
 			isSignatureRequired: template.isSignatureRequired,
-			defaultTemplate: template.documentFileProvidedByClient,
+			isDefaultTemplate: template.isDefaultTemplate,
 			selectedInheritedFiles: null,
 			uploadedFiles: null,
 		});
@@ -451,8 +454,10 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					deliveryTypes: template.deliveryTypeIds,
 					contractTypes: template.contractTypeIds,
 					language: template.language,
+                    note: template.note,
 					isSignatureRequired: template.isSignatureRequired,
 					isEnabled: template.isEnabled,
+                    isDefaultTemplate: template.isDefaultTemplate,
 					selectedInheritedFiles: template.attachments,
 				});
 			});

@@ -522,7 +522,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 			this.preselectedFiles = agreement.attachments as FileUpload[];
 			this._cdr.detectChanges();
-
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,
