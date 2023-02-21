@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
 import { WFDocument } from 'src/app/workflow/shared/components/wf-documents/wf-documents.model';
@@ -14,7 +14,7 @@ import { ERemoveOrOuploadDialogMode, RemoveOrUploadDialogConfig } from './remove
 export class RemoveOrUploadAgrementDialogComponent implements OnInit {
 	@Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
-    reasonForChange = new FormControl<string>('');
+    reasonForChange = new FormControl<string>('', Validators.required);
     dialogConfig = RemoveOrUploadDialogConfig[this.data.dialogMode];
     dialogModes = ERemoveOrOuploadDialogMode;
     icon: string;
@@ -31,9 +31,7 @@ export class RemoveOrUploadAgrementDialogComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-        // if (this.data?.file) {
-        //     this.icon = WFDocument.getIcon(this.data.file.name)
-        // }
+
     }
 
 	reject() {

@@ -30,7 +30,7 @@
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
             <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-420">
                 <mat-label>{{dialogConfig.formLabel}}</mat-label>
-                <textarea [disabled]="true" matInput autocomplete="new-password"
+                <textarea required matInput autocomplete="new-password"
                     name="specialContractTerms" [formControl]="reasonForChange"
                     [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="4">
                 </textarea>
@@ -42,7 +42,7 @@
     <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>
-    <button mat-flat-button class="dialog-btn dialog-btn__negative" appPreventDoubleClick (throttledClick)="confirm()">
+    <button mat-flat-button class="dialog-btn dialog-btn__negative" appPreventDoubleClick (throttledClick)="confirm()" [disabled]="!data?.hideReason && reasonForChange.valid">
         {{dialogConfig.confirmButtonText}}
     </button>
 </mat-dialog-actions>

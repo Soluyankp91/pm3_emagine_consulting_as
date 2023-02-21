@@ -94,6 +94,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
 			startDate: undefined,
 			endDate: undefined,
+            recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
@@ -102,7 +103,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
-				dataToSend.clientId,
+				undefined, // dataToSend.clientId,
 				dataToSend.agreementType,
 				dataToSend.validity,
 				dataToSend.legalEntityId,
@@ -111,7 +112,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
-                [], //recipientClientIds
+                dataToSend.recipientClientIds,
                 undefined, //recipientConsultantId
                 undefined, //recipientSupplierId
 				dataToSend.pageNumber,

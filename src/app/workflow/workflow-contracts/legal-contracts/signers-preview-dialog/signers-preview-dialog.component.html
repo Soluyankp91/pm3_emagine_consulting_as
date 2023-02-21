@@ -20,32 +20,6 @@
                         <ng-container [ngTemplateOutlet]="recipientsList"
                                 [ngTemplateOutletContext]="{recipients: envelope.recipients}">
                         </ng-container>
-                        <!-- <div class="envelope-header u-pl--12 u-pr--12 u-mb--8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="5px">
-                            <span fxFlex="35px" class="u-w--100"></span>
-                            <span fxFlex="auto" class="u-w--100">Name</span>
-                            <span fxFlex="130px" class="u-w--100">Signer type</span>
-                            <span fxFlex="180px" class="u-w--100">Signing role</span>
-                            <span fxFlex="80px" class="u-w--100">Sequence</span>
-                        </div>
-                        <ng-container *ngFor="let recipient of envelope.recipients">
-                            <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                                <span fxFlex="35px" class="u-w--100">
-                                    img
-                                </span>
-                                <span fxFlex="auto" class="u-w--100">
-                                    {{recipient.name}}
-                                </span>
-                                <span fxFlex="130px" class="u-w--100">
-                                    {{signerTypeName[recipient.signerType]}}
-                                </span>
-                                <span fxFlex="180px" class="u-w--100">
-                                    {{signerRole[recipient.roleId]}}
-                                </span>
-                                <span fxFlex="80px" class="u-w--100">
-                                    {{recipient.signOrder}}
-                                </span>
-                            </div>
-                        </ng-container> -->
                         <mat-divider class="u-w--100 u-mt--16 u-mb--24 sand-color"></mat-divider>
                     </ng-container>
                 </ng-container>
@@ -53,33 +27,10 @@
                     <ng-container [ngTemplateOutlet]="recipientsList"
                             [ngTemplateOutletContext]="{recipients: envelopePreviewList[0].recipients}">
                     </ng-container>
-                    <!-- <div class="envelope-header u-pl--12 u-pr--12 u-mb--8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="5px">
-                        <span fxFlex="35px" class="u-w--100"></span>
-                        <span fxFlex="auto" class="u-w--100">Name</span>
-                        <span fxFlex="130px" class="u-w--100">Signer type</span>
-                        <span fxFlex="180px" class="u-w--100">Signing role</span>
-                        <span fxFlex="80px" class="u-w--100">Sequence</span>
-                    </div>
-                    <ng-container *ngFor="let recipient of envelopePreviewList[0].recipients">
-                        <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                            <span fxFlex="35px" class="u-w--100">
-                                img
-                            </span>
-                            <span fxFlex="auto" class="u-w--100">
-                                {{recipient.name}}
-                            </span>
-                            <span fxFlex="130px" class="u-w--100">
-                                {{signerTypeName[recipient.signerType]}}
-                            </span>
-                            <span fxFlex="180px" class="u-w--100">
-                                {{signerRole[recipient.roleId]}}
-                            </span>
-                            <span fxFlex="80px" class="u-w--100">
-                                {{recipient.signOrder}}
-                            </span>
-                        </div>
-                    </ng-container> -->
                 </ng-container>
+                <mat-checkbox color="accent" [formControl]="createDocuSignDraft" name="createDocuSignDraft" class="black-checkbox">
+                    Create DocuSign envelope draft only
+                </mat-checkbox>
             </div>
         </div>
     </ng-scrollbar>

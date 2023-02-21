@@ -109,7 +109,7 @@
                                         </button>
                                     </ng-container>
                                 </ng-container>
-                                <ng-container *ngIf="contract.value.agreementStatus !== legalContractStatus.Completed || contract.value.processingPath == legalContractPath.Email">
+                                <ng-container *ngIf="!(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath == legalContractPath.DocuSign)">
                                     <button
                                         class="menu-item green-color"
                                         mat-menu-item

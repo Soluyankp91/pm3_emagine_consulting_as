@@ -320,6 +320,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
             deliveryTypeId: this.mainDataForm.deliveryTypeId.value,
             startDate: this.salesClientDataForm.startDate.value,
             endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
+            recipientClientIds: [this.salesClientDataForm.directClientIdValue.value.clientId, this.salesClientDataForm.endClientIdValue.value.clientId].filter(Boolean),
             pageNumber: 1,
             pageSize: 1000,
             sort: ''
@@ -328,7 +329,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
-				dataToSend.clientId,
+				undefined, // dataToSend.clientId,
 				dataToSend.agreementType,
 				dataToSend.validity,
 				dataToSend.legalEntityId,
@@ -337,7 +338,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
-                [], //recipientClientIds
+                dataToSend.recipientClientIds,
                 undefined, //recipientConsultantId
                 undefined, //recipientSupplierId
 				dataToSend.pageNumber,
