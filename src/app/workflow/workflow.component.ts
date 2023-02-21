@@ -506,6 +506,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
 				this.includeTerminated,
 				this.includeDeleted,
+                true, //showWorkflowsWithProjectLinesMarkedAsPoMissing
 				searchFilter,
 				this.pageNumber,
 				this.deafultPageSize,
@@ -520,6 +521,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				let formattedData = result?.items!.map((x) => {
 					return {
 						workflowId: x.workflowId,
+                        workflowSequenceIdCode: x.workflowSequenceIdCode,
 						clientName: x.clientName,
 						startDate: x.startDate,
 						startDateOfOpenedPeriodOrLastClientPeriod: x.startDateOfOpenedPeriodOrLastClientPeriod,

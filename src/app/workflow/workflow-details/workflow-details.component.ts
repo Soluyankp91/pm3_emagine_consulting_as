@@ -42,6 +42,8 @@ import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.comp
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
+import { EPeriodClass } from './workflow-details.model';
+import { EProcessIcon } from '../workflow-period/workflow-period.model';
 
 @Component({
 	selector: 'app-workflow-details',
@@ -84,16 +86,17 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	endClientCrmId: number | undefined;
 	directClientCrmId: number | undefined;
 	workflowStatusMenuList = WorkflowStatusMenuList;
-
 	workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
-
 	workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
 	workflowPeriodStepTypes: { [key: string]: string };
 	individualConsultantActionsAvailable: boolean;
-
 	projectCategories: EnumEntityTypeDto[];
-
 	isNoteVisible = false;
+    workflowSequenceIdCode: string;
+
+    ePeriodClass = EPeriodClass;
+    ePeriodIcon = EProcessIcon;
+
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -228,6 +231,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 				this.directClientCrmId = result.directClientCrmId;
 				this.workflowConsultants = result.consultantNamesWithRequestUrls!;
 				this.workflowId = result.workflowId!;
+                this.workflowSequenceIdCode = result.workflowSequenceIdCode;
 				this.workflowConsultantsList = result.consultantNamesWithRequestUrls
 					?.map((x) => {
 						let result = '• ';

@@ -20,7 +20,7 @@
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
                 <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap">
-                    Workflow ID: {{workflowId | slice: 0:4}}...
+                    Workflow ID: {{workflowSequenceIdCode}}
                 </span>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
                     <span class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
@@ -184,29 +184,45 @@
                 <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
             </div>
         </ng-container>
-        <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs u-w--100">
-            <a mat-tab-link routerLink="overview" [active]="rlaWFOverview.isActive" routerLinkActive
-                #rlaWFOverview="routerLinkActive">
-                <div fxLayout="row" fxLayoutAlign="center center">
-                    <mat-icon class="u-mr--10" svgIcon="overview-icon"></mat-icon>
-                    <div fxLayout="column" fxLayoutAlign="center start">
-                        <span class="tab-header">Overview</span>
-                    </div>
-                </div>
-            </a>
-            <ng-container *ngFor="let tab of clientPeriods; let i = index;">
-                <a mat-tab-link [routerLink]="tab.id" [state]="{typeId: tab.typeId}" [active]="rlaWorkflowTrack.isActive" routerLinkActive
-                    #rlaWorkflowTrack="routerLinkActive">
-                    <div fxLayout="column" fxLayoutAlign="start start">
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <span class="tab-header">{{tab.name}}</span>
+        <div fxLayout="row" fxLayoutAlign="start start">
+            <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs form-width-300">
+                <a mat-tab-link routerLink="overview" class="overview-tab" [active]="rlaWFOverview.isActive" routerLinkActive
+                    #rlaWFOverview="routerLinkActive">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-icon class="u-mr--10" svgIcon="overview-icon"></mat-icon>
+                        <div fxLayout="column" fxLayoutAlign="center start">
+                            <span class="tab-header">Overview</span>
                         </div>
-                        <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
                     </div>
                 </a>
-            </ng-container>
+            </nav>
+            <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs period-tabs" [ngClass]="{'compressed-view': clientPeriods?.length > 5}">
+                <ng-container *ngFor="let tab of clientPeriods; let i = index;">
+                    <a mat-tab-link [routerLink]="tab.id" [state]="{typeId: tab.typeId}" [active]="rlaWorkflowTrack.isActive" routerLinkActive
+                        #rlaWorkflowTrack="routerLinkActive">
+                        <div fxLayout="column" fxLayoutAlign="start start">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <span class="tab-header">
+                                    <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
+                                    <span class="tab-header--name" [ngClass]="ePeriodClass[tab.typeId]">
+                                        {{tab.name}}
+                                    </span>
+                                    {{tab.fullDisplayId}}
+                                </span>
+                            </div>
+                            <span class="tab-subheader">
+                                {{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}
+                            </span>
+                            <span class="tab-subheader compressed">
+                                {{tab.startDate | momentFormat: 'DD.MM'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM') : '...'}}
+                            </span>
+                        </div>
+                    </a>
+                </ng-container>
 
-        </nav>
+            </nav>
+
+        </div>
         <div class="u-w--100">
             <router-outlet #outlet="outlet"></router-outlet>
         </div>
