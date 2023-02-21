@@ -135,7 +135,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			this.masterTemplateFormGroup.markAllAsTouched();
 			return;
 		}
-        console.log(this.masterTemplateFormGroup.isSignatureRequired);
 		const toSend = new SaveAgreementTemplateDto({
 			creationMode: this.editMode ? this.currentTemplate.creationMode : this.agreementCreationMode.value,
 			attachments: this._agreementTemplateAttachmentDto(),
