@@ -197,8 +197,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		dialogRef.componentInstance.onSendViaEmail.subscribe(() => {
 			this._sendViaEmail(agreementIds, singleEmail);
 		});
-		dialogRef.componentInstance.onSendViaDocuSign.subscribe(() => {
-			this._sendViaDocuSign(agreementIds, singleEmail);
+		dialogRef.componentInstance.onSendViaDocuSign.subscribe((createDocuSignDraft: boolean) => {
+			this._sendViaDocuSign(agreementIds, singleEmail, createDocuSignDraft);
 		});
 	}
 
@@ -210,22 +210,14 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService.sendEmailEnvelope(input).subscribe(() => {});
 	}
 
-	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean) {
+	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, createDocuSignDraft: boolean) {
 		let input = new SendDocuSignEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEnvelope: singleEnvelope,
+            createDraftOnly: createDocuSignDraft
 		});
 		this._agreementService.sendDocusignEnvelope(input).subscribe(() => {});
 	}
-
-	// onFileAdded($event: EventTarget | null, agreementId: number) {
-	// 	if ($event) {
-	// 		let files = ($event as HTMLInputElement).files as FileList;
-	// 		const file = files[0] as File;
-	// 		this._openUploadSignedContractDialog(agreementId, file);
-	// 		($event as HTMLInputElement).value = '';
-	// 	}
-	// }
 
 	public openUploadSignedContractDialog(agreementId: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
@@ -322,13 +314,12 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
     }
 
     public downloadEnvelopes() {
-
+        // TODO: call download API once BE implemeted
     }
 
 	get legalContracts(): UntypedFormArray {
 		return this.clientLegalContractsForm.get('legalContracts') as UntypedFormArray;
 	}
-
     get downloadEnvelopeAvailable() {
         return this.legalContracts.value.some(x => x.selected);
     }
