@@ -320,5 +320,9 @@ export class ContractsModule {
 			'add-signer-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/add-signer-icon.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'empty-table-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
+		);
 	}
 }
