@@ -47,7 +47,7 @@ import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/compon
 import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
-
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 
 @Component({
 	selector: 'app-settings',
@@ -57,12 +57,12 @@ import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.con
 	encapsulation: ViewEncapsulation.None,
 })
 export class CreateMasterTemplateComponent extends AppComponentBase implements OnInit, OnDestroy {
-    creationRadioButtons = MASTER_CREATION;
+	creationRadioButtons = MASTER_CREATION;
 
 	editMode = false;
 	currentTemplate: { [key: string]: any };
 
-    possibleDocumentTypes: BaseEnumDto[];
+	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
 
 	initialLoading = true;
@@ -120,8 +120,8 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			this._subscribeOnDirtyStatus();
 			this._subscribeOnCreationModeResolver();
 		}
-        this._setOptions();
-        this._setDocumentType();
+		this._setOptions();
+		this._setDocumentType();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		this._initMasterTemplateOptions();
@@ -222,36 +222,30 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		});
 	}
 
-    private _setOptions() {
-        this.options$ = combineLatest([
-            this._contractsService.settingsPageOptions$().pipe(
-                tap(({ agreementTypes }) => {
-                    this.possibleDocumentTypes = agreementTypes;
-                })
-            ),
-            this._contractsService.getEnumMap$().pipe(take(1)),
-        ]).pipe(
-            tap(([{ legalEntities }, maps]) => {
-                this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
-            })
-        );
-    }
+	private _setOptions() {
+		this.options$ = combineLatest([
+			this._contractsService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
+			this._contractsService.getEnumMap$().pipe(take(1)),
+		]).pipe(
+			tap(([{ legalEntities }, maps]) => {
+				this.legalEntities = legalEntities.map(
+					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
+				);
+			})
+		);
+	}
 
-    private _setDocumentType() {
-		this.documentTypes$ = this.masterTemplateFormGroup.recipientTypeId.valueChanges.pipe(
+	private _setDocumentType() {
+		this.documentTypes$ = (this.masterTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
-				switch (recipientTypeId) {
-					case 1:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
-					case 2:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
-					case 3:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[2], this.possibleDocumentTypes[4]]);
-					case 4:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[3], this.possibleDocumentTypes[4]]);
-					default:
-						return of(null);
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
 				}
+				return of(null);
 			})
 		);
 	}

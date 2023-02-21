@@ -23,6 +23,7 @@ import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/cont
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AgreementAttachmentDto,
@@ -215,20 +216,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _setDocumentType() {
-		this.documentTypes$ = this.agreementFormGroup.recipientTypeId.valueChanges.pipe(
+        this.documentTypes$ = (this.agreementFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
-				switch (recipientTypeId) {
-					case 1:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
-					case 2:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
-					case 3:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[2], this.possibleDocumentTypes[4]]);
-					case 4:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[3], this.possibleDocumentTypes[4]]);
-					default:
-						return of(null);
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
 				}
+				return of(null);
 			})
 		);
 	}

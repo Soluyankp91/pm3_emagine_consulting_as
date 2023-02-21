@@ -45,6 +45,7 @@ import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { CreationTitleService } from 'src/app/contracts/shared/services/creation-title.service';
 import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 @Component({
 	selector: 'app-creation',
 	templateUrl: './settings.component.html',
@@ -208,20 +209,12 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _setDocumentType() {
-		this.documentTypes$ = this.clientTemplateFormGroup.recipientTypeId.valueChanges.pipe(
+        this.documentTypes$ = (this.clientTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
-				switch (recipientTypeId) {
-					case 1:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
-					case 2:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[1], this.possibleDocumentTypes[4]]);
-					case 3:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[2], this.possibleDocumentTypes[4]]);
-					case 4:
-						return of([this.possibleDocumentTypes[0], this.possibleDocumentTypes[3], this.possibleDocumentTypes[4]]);
-					default:
-						return of(null);
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
 				}
+				return of(null);
 			})
 		);
 	}
