@@ -12,7 +12,7 @@ import { WorkflowContractsComponent } from './workflow-contracts/workflow-contra
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
 import { WorkflowFinancesComponent } from './workflow-finances/workflow-finances.component';
 import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview.component';
-import { WorkflowPeriodComponent, WorkflowPeriodResolver } from './workflow-period/workflow-period.component';
+import { WorkflowPeriodComponent } from './workflow-period/workflow-period.component';
 import { WorkflowSalesComponent } from './workflow-sales/workflow-sales.component';
 import { WorkflowSourcingComponent } from './workflow-sourcing/workflow-sourcing.component';
 import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
@@ -28,6 +28,7 @@ import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-
 import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
+import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
 
 @NgModule({
     declarations: [

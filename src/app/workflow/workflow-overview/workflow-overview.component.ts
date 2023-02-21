@@ -40,6 +40,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowDiallogAction, WorkflowProgressStatus, WorkflowTopSections } from '../workflow.model';
+import { FormatDate } from './workflow-overview.helper';
 import { EStepActionTooltip, IWFOverviewDocuments } from './workflow-overview.model';
 
 @Component({
@@ -153,7 +154,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
 	public getDocuments() {
-        const periodFilter = this.documentsPeriod.value === 'All' ? undefined : this.documentsPeriod.value;
+        const periodFilter = this.documentsPeriod.value === 'All' || this.documentsPeriod.value === null ? undefined : this.documentsPeriod.value;
 		this._workflowDocumentsService
 			.overviewAll(this.workflowId, periodFilter)
 			.subscribe((result) => {
@@ -206,9 +207,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			if (
 				oldestDateClientArray![0]!.endDate === undefined ||
 				oldestDateClientArray![0]!.endDate.toDate().getTime() <
-					this._formatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()
+                    FormatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()
 			) {
-				endDate = this._formatDate(startOfClientArray![0]?.startDate!.toDate()!);
+				endDate = FormatDate(startOfClientArray![0]?.startDate!.toDate()!);
 			}
 
 			this.viewOptions.start = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
@@ -246,15 +247,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			this.overviewGroups = groups;
 			this.overviewItems = items;
 		});
-	}
-
-	private _formatDate(date: any) {
-		var d = new Date(date),
-			month = d.getMonth() + 3,
-			day = d.getDate() - d.getDate(),
-			year = d.getFullYear();
-
-		return new Date(year, month, day);
 	}
 
 	private _formatItems(length: number, parent: GanttRowItem[], group: string) {
@@ -307,6 +299,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this._workflowService.clientPeriods(this.workflowId)
             .subscribe(result => {
                 this.periodId = result.clientPeriods?.length ? result.clientPeriods[0].id : '';
+                this.clientPeriods = result.clientPeriods;
                 this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
                 this._setWFProgress();
             })

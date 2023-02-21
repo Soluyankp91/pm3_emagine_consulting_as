@@ -197,7 +197,7 @@
                 </a>
             </nav>
             <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs period-tabs" [ngClass]="{'compressed-view': clientPeriods?.length > 5}">
-                <ng-container *ngFor="let tab of clientPeriods; let i = index;">
+                <ng-container *ngFor="let tab of clientPeriods; trackBy: trackById; let i = index;">
                     <a mat-tab-link [routerLink]="tab.id" [state]="{typeId: tab.typeId}" [active]="rlaWorkflowTrack.isActive" routerLinkActive
                         #rlaWorkflowTrack="routerLinkActive">
                         <div fxLayout="column" fxLayoutAlign="start start" emgCustomTooltip [contentTemplate]="clientPeriods?.length > 5 ? periodTooltip : null">

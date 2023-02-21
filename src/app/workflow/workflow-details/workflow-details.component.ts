@@ -42,7 +42,7 @@ import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.comp
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
-import { EPeriodClass } from './workflow-details.model';
+import { EPeriodClass, EPermissions } from './workflow-details.model';
 import { EProcessIcon } from '../workflow-period/workflow-period.model';
 
 @Component({
@@ -573,15 +573,15 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	get bottomToolbarVisible() {
 		if (
 			this.rlaWFOverview.isActive ||
-			(!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['StartEdit'] &&
-				!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] &&
-				!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion'])
+			(!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions![EPermissions.StartEdit] &&
+				!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions![EPermissions.Edit] &&
+				!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions![EPermissions.Completion])
 		) {
 			return false;
 		} else {
 			return (
-				(this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] ||
-					this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion']) &&
+				(this._workflowDataService.getWorkflowProgress.stepSpecificPermissions![EPermissions.Edit] ||
+					this._workflowDataService.getWorkflowProgress.stepSpecificPermissions![EPermissions.Completion]) &&
 				!this._workflowDataService.getWorkflowProgress.currentStepIsCompleted
 			);
 		}

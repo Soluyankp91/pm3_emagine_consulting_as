@@ -1,10 +1,10 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, NavigationStart, Resolve, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -46,6 +46,7 @@ import {
 	StepAnchorDto,
 	StepWithAnchorsDto,
 	SubItemDto,
+	WorkflowPeriodResolverDto,
 	WorkflowProcessWithAnchorsDto,
 } from './workflow-period.model';
 
@@ -80,7 +81,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 	clientPeriods: ClientPeriodDto[];
 	typeId: number;
 	topNavChanged = false;
-	private _routerEventsSubscription: Subscription;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -96,16 +96,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 		private _router: Router
 	) {
 		super(injector);
-		this._activatedRoute.data.pipe(takeUntil(this._unsubscribe)).subscribe((source) => {
-			let data: WorkflowPeriodDto = source['data'];
-			if (data?.workflowId) {
-				this.workflowId = data?.workflowId;
-			}
-			if (data?.periodId) {
-				this.periodId = data?.periodId;
-			}
-		});
-
+		this._initDataFromRoute();
 		this._workflowDataService.consultantsAddedToStep
 			.pipe(takeUntil(this._unsubscribe))
 			.subscribe((value: { stepType: number; processTypeId: number; consultantNames: IConsultantAnchor[] }) => {
@@ -114,20 +105,22 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 	}
 
 	ngOnInit(): void {
-		this._getSideMenu();
+		this._getSideMenu(false, true);
 		this._updateWorkflowProgressAfterTopTabChanged();
-		this._routerEventsSubscription = this._router.events.subscribe((evt) => {
-			if (evt instanceof NavigationStart) {
-				this.showMainSpinner();
-				this.topNavChanged = true;
-			}
-			if (evt instanceof NavigationEnd) {
-				const navigation = this._router.getCurrentNavigation();
-				this.typeId = navigation.extras.state?.typeId;
-				this._updateWorkflowProgressAfterTopTabChanged();
-				this._getSideMenu();
-			}
-		});
+		this._router.events
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((evt) => {
+                if (evt instanceof NavigationStart) {
+                    this.showMainSpinner();
+                    this.topNavChanged = true;
+                }
+                if (evt instanceof NavigationEnd) {
+                    const navigation = this._router.getCurrentNavigation();
+                    this.typeId = navigation.extras.state?.typeId;
+                    this._updateWorkflowProgressAfterTopTabChanged();
+                    this._getSideMenu(false, true);
+                }
+            });
 		this._getPeriodStepTypes();
 		this._workflowDataService.workflowSideSectionAdded.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
 			this._getSideMenu(value);
@@ -143,51 +136,193 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
-		this._routerEventsSubscription.unsubscribe();
 		this.hideMainSpinner();
 	}
 
-	private _updateWorkflowProgressAfterTopTabChanged() {
+	public changeStepSelection(step: StepWithAnchorsDto) {
+		this._scrollToService.scrollTo({ target: 'topOfTheWorkflow' });
+		this.selectedStepEnum = step.typeId!;
+		this.selectedStep = step;
+		if (this.topNavChanged) {
+			this._workflowDataService.resetStepState.emit({
+				isCompleted: this.selectedStep.status === WorkflowStepStatus.Completed,
+				editEnabledForcefuly: false,
+				fetchData: false,
+			});
+		}
+		this.changeAnchorSelection(step.menuAnchors[0]);
+		this._workflowDataService.updateWorkflowProgressStatus({
+			currentlyActiveStep: step.typeId,
+			stepSpecificPermissions: step.actionsPermissionsForCurrentUser,
+			currentStepIsCompleted: step.status === WorkflowStepStatus.Completed,
+		});
+	}
+
+	public changeSideSection(item: WorkflowProcessWithAnchorsDto, index: number) {
+		this.selectedAnchor = '';
+		this.sectionIndex = index;
+		this.selectedSideSection = item;
+		this.consultant = item.consultant!;
+		this._workflowDataService.updateWorkflowProgressStatus({ currentlyActiveSideSection: item.typeId! });
+		if (!this.isStatusUpdate) {
+			const firstitemInSection = this.sideMenuItems.find((x) => x.name === item.name)?.steps![0];
+			this.changeStepSelection(firstitemInSection!);
+		} else {
+			const stepToSelect = this.sideMenuItems
+				.find((x) => x.name === item.name)
+				?.steps!.find((x) => x.name === this.selectedStep.name);
+			this.changeStepSelection(stepToSelect!);
+		}
+		this.isStatusUpdate = false;
+		this._workflowDataService.workflowSideSectionChanged.emit({
+			consultant: item.consultant,
+			consultantPeriodId: item.consultantPeriodId,
+		});
+	}
+
+	deleteSideSection(item: WorkflowProcessWithAnchorsDto) {
+		this.menuDeleteTrigger.closeMenu();
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Delete ${this.detectNameOfSideSection(item.typeId)}`,
+			confirmationMessage: `Are you sure you want to delete ${item.name}? \n
+                The data, which has been filled until now - will be removed.`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Yes',
+			isNegative: true,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+			switch (item.typeId) {
+				case WorkflowProcessType.ChangeClientPeriod:
+				case WorkflowProcessType.ExtendClientPeriod:
+					return this.deleteClientPeriod(this.periodId!);
+				case WorkflowProcessType.StartConsultantPeriod:
+				case WorkflowProcessType.ChangeConsultantPeriod:
+				case WorkflowProcessType.ExtendConsultantPeriod:
+					return this.deleteConsultantPeriod(item.consultantPeriodId!);
+				case WorkflowProcessType.TerminateConsultant:
+					return this.deleteConsultantTermination(item?.consultant?.id!);
+				case WorkflowProcessType.TerminateWorkflow:
+					return this.deleteWorkflowTermination();
+			}
+		});
+	}
+
+	changeAnchorSelection(item: StepAnchorDto) {
+		this.selectedAnchor = item.anchor;
+	}
+
+	deleteWorkflowTermination() {
+		this.showMainSpinner();
+		this._workflowService
+			.terminationDelete(this.workflowId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => {
+				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: false, autoUpdate: true });
+				this._workflowDataService.workflowOverviewUpdated.emit(true);
+			});
+	}
+
+	deleteConsultantTermination(consultantId: number) {
+		this.showMainSpinner();
+		this._workflowService
+			.terminationConsultantDelete(this.workflowId, consultantId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => {
+				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: false, autoUpdate: true });
+				this._workflowDataService.workflowOverviewUpdated.emit(true);
+			});
+	}
+
+	deleteClientPeriod(clientPeriodId: string) {
+		this.showMainSpinner();
+		this._clientPeriodService
+			.clientPeriod(clientPeriodId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => {
+				this._workflowDataService.workflowTopSectionUpdated.emit(true);
+				this._workflowDataService.workflowOverviewUpdated.emit(true);
+			});
+	}
+
+	deleteConsultantPeriod(consultantPeriodId: string) {
+		this.showMainSpinner();
+		this._consultantPeriodService
+			.consultantPeriod(consultantPeriodId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => {
+				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: false, autoUpdate: true });
+				this._workflowDataService.workflowOverviewUpdated.emit(true);
+			});
+	}
+
+	detectNameOfSideSection(type: WorkflowProcessType | undefined) {
+		switch (type) {
+			case WorkflowProcessType.ChangeClientPeriod:
+			case WorkflowProcessType.ExtendClientPeriod:
+				return 'client period';
+			case WorkflowProcessType.StartConsultantPeriod:
+			case WorkflowProcessType.ChangeConsultantPeriod:
+			case WorkflowProcessType.ExtendConsultantPeriod:
+				return 'consultant period';
+			case WorkflowProcessType.TerminateConsultant:
+				return 'consultant termination';
+			case WorkflowProcessType.TerminateWorkflow:
+				return 'workflow termination';
+		}
+	}
+
+	scrollToSection(section?: string) {
+		const config: ScrollToConfigOptions = {
+			target: section!,
+			offset: -120,
+		};
+		this._scrollToService.scrollTo(config);
+	}
+
+    private _initDataFromRoute() {
+        this._activatedRoute.data.pipe(takeUntil(this._unsubscribe)).subscribe((source) => {
+			let data: WorkflowPeriodResolverDto = source['data'];
+			if (data?.workflowId) {
+				this.workflowId = data?.workflowId;
+			}
+			if (data?.periodId) {
+				this.periodId = data?.periodId;
+			}
+		});
+    }
+
+    private _updateWorkflowProgressAfterTopTabChanged() {
 		let newStatus = new WorkflowProgressStatus();
 		newStatus.currentlyActiveStep = WorkflowSteps.Sales;
 		newStatus.currentlyActivePeriodId = this.periodId;
 		if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Overview) {
 			newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
 		} else {
-			newStatus.currentlyActiveSection = this._detectTopLevelMenu(this.typeId);
+			newStatus.currentlyActiveSection = WorkflowTopSections[WorkflowTopSections[this.typeId]];
 		}
 		this._workflowDataService.updateWorkflowProgressStatus(newStatus);
-	}
-
-	private _detectTopLevelMenu(typeId: number) {
-		switch (typeId) {
-			case 1: // Start period
-				return WorkflowTopSections.StartPeriod;
-			case 2: // Change period
-				return WorkflowTopSections.ChangePeriod;
-			case 3: // Extend period
-				return WorkflowTopSections.ExtendPeriod;
-		}
 	}
 
 	private _getPeriodStepTypes() {
 		this._internalLookupService
 			.getWorkflowPeriodStepTypes()
-			.pipe(finalize(() => {}))
 			.subscribe((result) => {
 				this.workflowPeriodStepTypes = result;
 			});
 	}
 
-	private _getSideMenu(autoUpdate?: boolean) {
+	private _getSideMenu(autoUpdate?: boolean, initial?: boolean) {
 		this._workflowService
 			.clientPeriods(this.workflowId, this.periodId, true)
-			.pipe(finalize(() => {}))
 			.subscribe((result) => {
 				this.clientPeriods = result?.clientPeriods;
 				this.sideMenuItems = result?.clientPeriods![0]?.workflowProcesses!.map((side) => {
-					return new WorkflowProcessWithAnchorsDto({
-						typeId: side.typeId!,
+                    return new WorkflowProcessWithAnchorsDto({
+                        typeId: side.typeId!,
 						name: side.name!,
 						consultantPeriodId: side.consultantPeriodId!,
 						consultant: side.consultant!,
@@ -197,6 +332,10 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 						steps: side?.steps?.map((step) => this._mapStepIntoNewDto(step, side.typeId!)),
 					});
 				});
+                if (initial) {
+                    this.typeId = this.clientPeriods.find(item => item.id = this.periodId)?.typeId;
+                    this._updateWorkflowProgressAfterTopTabChanged();
+                }
 
 				if (autoUpdate) {
 					let sideMenuItemsLength = this.sideMenuItems.length;
@@ -384,165 +523,5 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 		}
 	}
 
-	public changeStepSelection(step: StepWithAnchorsDto) {
-		this._scrollToService.scrollTo({ target: 'topOfTheWorkflow' });
-		this.selectedStepEnum = step.typeId!;
-		this.selectedStep = step;
-		if (this.topNavChanged) {
-			this._workflowDataService.resetStepState.emit({
-				isCompleted: this.selectedStep.status === WorkflowStepStatus.Completed,
-				editEnabledForcefuly: false,
-				fetchData: false,
-			});
-		}
-		this.changeAnchorSelection(step.menuAnchors[0]);
-		this._workflowDataService.updateWorkflowProgressStatus({
-			currentlyActiveStep: step.typeId,
-			stepSpecificPermissions: step.actionsPermissionsForCurrentUser,
-			currentStepIsCompleted: step.status === WorkflowStepStatus.Completed,
-		});
-	}
-
-	public changeSideSection(item: WorkflowProcessWithAnchorsDto, index: number) {
-		this.selectedAnchor = '';
-		this.sectionIndex = index;
-		this.selectedSideSection = item;
-		this.consultant = item.consultant!;
-		this._workflowDataService.updateWorkflowProgressStatus({ currentlyActiveSideSection: item.typeId! });
-		if (!this.isStatusUpdate) {
-			const firstitemInSection = this.sideMenuItems.find((x) => x.name === item.name)?.steps![0];
-			this.changeStepSelection(firstitemInSection!);
-		} else {
-			const stepToSelect = this.sideMenuItems
-				.find((x) => x.name === item.name)
-				?.steps!.find((x) => x.name === this.selectedStep.name);
-			this.changeStepSelection(stepToSelect!);
-		}
-		this.isStatusUpdate = false;
-		this._workflowDataService.workflowSideSectionChanged.emit({
-			consultant: item.consultant,
-			consultantPeriodId: item.consultantPeriodId,
-		});
-	}
-
-	deleteSideSection(item: WorkflowProcessWithAnchorsDto) {
-		this.menuDeleteTrigger.closeMenu();
-		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
-			confirmationMessageTitle: `Delete ${this.detectNameOfSideSection(item.typeId)}`,
-			confirmationMessage: `Are you sure you want to delete ${item.name}? \n
-                The data, which has been filled until now - will be removed.`,
-			rejectButtonText: 'Cancel',
-			confirmButtonText: 'Yes',
-			isNegative: true,
-		};
-		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
-
-		dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-			switch (item.typeId) {
-				case WorkflowProcessType.ChangeClientPeriod:
-				case WorkflowProcessType.ExtendClientPeriod:
-					return this.deleteClientPeriod(this.periodId!);
-				case WorkflowProcessType.StartConsultantPeriod:
-				case WorkflowProcessType.ChangeConsultantPeriod:
-				case WorkflowProcessType.ExtendConsultantPeriod:
-					return this.deleteConsultantPeriod(item.consultantPeriodId!);
-				case WorkflowProcessType.TerminateConsultant:
-					return this.deleteConsultantTermination(item?.consultant?.id!);
-				case WorkflowProcessType.TerminateWorkflow:
-					return this.deleteWorkflowTermination();
-			}
-		});
-	}
-
-	changeAnchorSelection(item: StepAnchorDto) {
-		this.selectedAnchor = item.anchor;
-	}
-
-	deleteWorkflowTermination() {
-		this.showMainSpinner();
-		this._workflowService
-			.terminationDelete(this.workflowId)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: false, autoUpdate: true });
-				this._workflowDataService.workflowOverviewUpdated.emit(true);
-			});
-	}
-
-	deleteConsultantTermination(consultantId: number) {
-		this.showMainSpinner();
-		this._workflowService
-			.terminationConsultantDelete(this.workflowId, consultantId)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: false, autoUpdate: true });
-				this._workflowDataService.workflowOverviewUpdated.emit(true);
-			});
-	}
-
-	deleteClientPeriod(clientPeriodId: string) {
-		this.showMainSpinner();
-		this._clientPeriodService
-			.clientPeriod(clientPeriodId)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this._workflowDataService.workflowTopSectionUpdated.emit(true);
-				this._workflowDataService.workflowOverviewUpdated.emit(true);
-			});
-	}
-
-	deleteConsultantPeriod(consultantPeriodId: string) {
-		this.showMainSpinner();
-		this._consultantPeriodService
-			.consultantPeriod(consultantPeriodId)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: false, autoUpdate: true });
-				this._workflowDataService.workflowOverviewUpdated.emit(true);
-			});
-	}
-
-	detectNameOfSideSection(type: WorkflowProcessType | undefined) {
-		switch (type) {
-			case WorkflowProcessType.ChangeClientPeriod:
-			case WorkflowProcessType.ExtendClientPeriod:
-				return 'client period';
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				return 'consultant period';
-			case WorkflowProcessType.TerminateConsultant:
-				return 'consultant termination';
-			case WorkflowProcessType.TerminateWorkflow:
-				return 'workflow termination';
-		}
-	}
-
-	scrollToSection(section?: string) {
-		const config: ScrollToConfigOptions = {
-			target: section!,
-			offset: -120,
-		};
-		this._scrollToService.scrollTo(config);
-	}
 }
 
-export class WorkflowPeriodDto {
-	workflowId: string;
-	periodId: string;
-}
-
-@Injectable()
-export class WorkflowPeriodResolver implements Resolve<WorkflowPeriodDto> {
-	constructor() {}
-	resolve(route: ActivatedRouteSnapshot): WorkflowPeriodDto {
-		let workflowId = route.parent.params['id'];
-		let periodId = route.params['periodId'];
-		return {
-			workflowId: workflowId,
-			periodId: periodId,
-		};
-	}
-}

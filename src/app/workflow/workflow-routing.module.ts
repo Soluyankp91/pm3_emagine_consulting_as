@@ -2,8 +2,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
-import { WorkflowPeriodComponent, WorkflowPeriodResolver } from './workflow-period/workflow-period.component';
+import { WorkflowPeriodComponent } from './workflow-period/workflow-period.component';
 import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview.component';
+import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
 
 const routes: Routes = [
     {

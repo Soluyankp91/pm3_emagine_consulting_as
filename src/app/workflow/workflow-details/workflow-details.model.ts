@@ -3,3 +3,9 @@ export enum EPeriodClass {
     'change-period' = 2,
     'extend-period' = 3
 }
+
+export enum EPermissions {
+    StartEdit = 'StartEdit',
+    Edit = 'Edit',
+    Completion = 'Completion'
+}

@@ -1,12 +1,12 @@
 import { OverlayRef, Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { ComponentRef, Directive, ElementRef, HostListener, Input, TemplateRef } from '@angular/core';
+import { ComponentRef, Directive, ElementRef, HostListener, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import { CustomTooltipComponent } from './custom-tooltip.component';
 
 @Directive({
 	selector: '[emgCustomTooltip]',
 })
-export class CustomTooltipDirective {
+export class CustomTooltipDirective implements OnInit, OnDestroy {
 	@Input() showToolTip: boolean = true;
 	@Input(`emgCustomTooltip`) text: string;
 	@Input() contentTemplate: TemplateRef<any>;
