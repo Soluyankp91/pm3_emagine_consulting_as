@@ -21,7 +21,6 @@ export class FileDragAndDropDirective {
     ondragenter(event: any) {
         event.preventDefault();
         event.stopPropagation();
-        console.log('[dragenter]');
         this._highlight(this.highlightBgClr, this.borderClr);
     }
 
@@ -29,7 +28,6 @@ export class FileDragAndDropDirective {
     onDragOver(event: any) {
         event.preventDefault();
         event.stopPropagation();
-        console.log('[dragover]');
         this._highlight(this.highlightBgClr, this.borderClr);
     }
 
@@ -37,7 +35,6 @@ export class FileDragAndDropDirective {
     onDragLeave(event: any) {
         event.preventDefault();
         event.stopPropagation();
-        console.log('[dragleave]');
         this._highlight('', '');
     }
 

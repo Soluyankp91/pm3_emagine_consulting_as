@@ -506,7 +506,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
 				this.includeTerminated,
 				this.includeDeleted,
-                undefined,
+                undefined, // showWorkflowsWithProjectLinesMarkedAsPoMissing
 				searchFilter,
 				this.pageNumber,
 				this.deafultPageSize,
@@ -521,6 +521,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				let formattedData = result?.items!.map((x) => {
 					return {
 						workflowId: x.workflowId,
+                        workflowSequenceIdCode: x.workflowSequenceIdCode,
 						clientName: x.clientName,
 						startDate: x.startDate,
 						startDateOfOpenedPeriodOrLastClientPeriod: x.startDateOfOpenedPeriodOrLastClientPeriod,
@@ -546,6 +547,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				this.saveGridOptions();
 			});
 	}
+
+    openPeriod(workflowId: string, processId: string) {
+        this.router.navigateByUrl(`/app/workflow/${workflowId}/${processId}`)
+    }
 
 	pageChanged(event?: any): void {
 		this.pageNumber = event.pageIndex + 1;

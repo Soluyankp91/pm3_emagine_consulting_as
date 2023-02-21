@@ -88,7 +88,7 @@
                 z-index: 9999;
             }
             &.wrapper-overlay {
-                top: 0;
+                top: 60;
                 height: 100%;
             }
         }
@@ -167,13 +167,13 @@
     }
 
     &-controls {
-        position: fixed;
+        position: sticky;
         bottom: 0;
         z-index: 999;
         background-color: #fff;
         height: 60px;
-        width: calc(80% - 35px);
-        padding: 0 35px 0 15%;
+        width: 80%;
+        padding: 0 35px 0 270px;
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         clip-path: inset(-20px 0px -20px -20px);
         button {
@@ -199,7 +199,7 @@
         color: #FB9101;
         cursor: pointer;
     }
-    &.finished-status { 
+    &.finished-status {
         color: $purple-color;
     }
     &.deleted-status {
@@ -208,5 +208,44 @@
 
     &--menu-item-selected {
         background-color: rgba($color: $sand-color, $alpha: 0.5);
+    }
+}
+
+.tooltip {
+    &-header {
+        display: flex;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 800;
+        line-height: 120%;
+        font-size: 14px;
+        color: $dark-grey-color;
+        mat-icon {
+            @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
+        }
+        &--name {
+            display: flex;
+            &.change-period {
+                color: #72A0F8;
+            }
+            &.start-period {
+                color: $green-color;
+            }
+            &.extend-period {
+                color: $purple-color;
+            }
+            &::after {
+                content: "•";
+                display: block;
+                color: $dark-grey-color;
+                margin: 0 5px;
+            }
+        }
+    }
+    &-subheader {
+        font-size: 12px;
+        color: $medium-grey-color;
+        font-family: 'Open Sans';
+        font-weight: 600;
+        line-height: 150%;
     }
 }

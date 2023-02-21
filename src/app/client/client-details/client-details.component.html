@@ -12,11 +12,13 @@
                     </span>
                     <!-- FIXME: add country flag after mapping countryName -> countryCode -->
                     <!-- <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span> -->
-                    <span class="client-details--client-info__header" *ngIf="client?.address?.length">
-                        {{client.address}}
+
+                    <!-- FIXME: TMP fix after proxies update, will be implemeted in P30-874 -->
+                    <span class="client-details--client-info__header" *ngIf="client?.clientAddresses[0]?.address?.length">
+                        {{client?.clientAddresses[0]?.address?.length}}
                     </span>
-                    <span class="client-details--client-info__header" *ngIf="client?.address2?.length">
-                        {{client.address2}}
+                    <span class="client-details--client-info__header" *ngIf="client?.clientAddresses[0]?.address2?.length">
+                        {{client?.clientAddresses[0]?.address2?.length}}
                     </span>
                     <span class="client-details--client-info__header headerWithDot" *ngIf="client?.phone?.length">
                         {{client.phone}}

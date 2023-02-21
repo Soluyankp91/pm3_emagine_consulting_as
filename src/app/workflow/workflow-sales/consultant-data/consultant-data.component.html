@@ -189,9 +189,9 @@
                                                         <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
                                                             <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                 <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                                                <ng-container *ngIf="client?.clientId !== undefined">
+                                                                <ng-container *ngIf="client?.clientId !== undefined && client?.clientAddresses?.length">
                                                                     <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                        #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
+                                                                        #{{client.clientId}} | {{client.clientAddresses[0]?.city ?? ''}} {{client.clientAddresses[0]?.countryName ? ', ' + client.clientAddresses[0].countryName : ''}}
                                                                     </span>
                                                                 </ng-container>
                                                             </div>

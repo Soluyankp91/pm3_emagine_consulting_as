@@ -1,4 +1,5 @@
 import { ConsultantResultDto, EmployeeDto, StepType, WorkflowProcessType, WorkflowStepStatus } from "src/shared/service-proxies/service-proxies";
+import { WorkflowTopSections } from "../workflow.model";
 
 export class StepWithAnchorsDto {
     typeId?: StepType;
@@ -328,3 +329,8 @@ export const ContractTerminationSections: SubItemDto[] = [
         anchor: 'contractTerminationDocuments'
     }
 ];
+
+export class WorkflowPeriodResolverDto {
+	workflowId: string;
+	periodId: string;
+}

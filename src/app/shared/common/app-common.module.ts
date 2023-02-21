@@ -22,6 +22,7 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
 import { environment } from 'src/environments/environment';
 import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
+import { TooltipModule } from './ui/tooltip/tooltip.module';
 
 @NgModule({
 	declarations: [
@@ -49,6 +50,7 @@ import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 		NgScrollbarModule,
 		ScrollToModule.forRoot(),
 		NgOptimizedImage,
+        TooltipModule
 	],
 	exports: [
 		MaterialModule,
@@ -71,6 +73,7 @@ import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 		NgOptimizedImage,
 		ImgUrlPipe,
 		DisplayListPipe,
+        TooltipModule
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })

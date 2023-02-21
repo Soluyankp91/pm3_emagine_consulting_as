@@ -28,6 +28,7 @@ import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-
 import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
+import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
 
 @NgModule({
     declarations: [
@@ -66,7 +67,8 @@ import { DocumentsComponent } from './shared/components/wf-documents/wf-document
     ],
     exports: [],
     providers: [
-        WorkflowCreateResolver
+        WorkflowCreateResolver,
+        WorkflowPeriodResolver
     ],
 })
 export class WorkflowModule {}

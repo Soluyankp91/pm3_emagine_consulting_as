@@ -42,6 +42,7 @@ export class WorkflowDataService {
     preselectFrameAgreement = new EventEmitter();
 
     cancelForceEdit =  new EventEmitter<any>();
+    resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
     isContractModuleEnabled: boolean;
     isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
 
