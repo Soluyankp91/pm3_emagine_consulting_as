@@ -333,7 +333,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 					});
 				});
                 if (initial) {
-                    this.typeId = this.clientPeriods.find(item => item.id = this.periodId)?.typeId;
+                    this.typeId = this.clientPeriods.find(item => item.id === this.periodId)?.typeId;
                     this._updateWorkflowProgressAfterTopTabChanged();
                 }
 
