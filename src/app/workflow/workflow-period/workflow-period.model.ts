@@ -267,6 +267,10 @@ export const ContractConsultantDataSections: SubItemDto[] = [
         anchor: 'contractConsultantPayment'
     },
     {
+        name: 'Frame agreement',
+        anchor: 'contractConsultantFrameAgreement'
+    },
+    {
         name: 'Rates and fees',
         anchor: 'contractConsultantRatesFees'
     },

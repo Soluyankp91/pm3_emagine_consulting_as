@@ -43,7 +43,6 @@ export class WorkflowDataService {
 
     cancelForceEdit =  new EventEmitter<any>();
     isContractModuleEnabled: boolean;
-    isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
 
     constructor(private _configurationService: ConfigurationServiceProxy) {
         this._getContractModuleConfig();

@@ -6,8 +6,9 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { forkJoin, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
-import { ProjectLineDiallogMode } from '../../workflow.model';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowDataService } from '../../workflow-data.service';
+import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
 
@@ -34,6 +35,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
+    frameAgreements = new Array<AgreementSimpleListItemDto[]>();
+	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
 	constructor(
@@ -42,6 +45,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         private dialog: MatDialog,
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
+        private _agreementService: AgreementServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
 		super(injector);
 		this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
@@ -54,6 +59,71 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
+	}
+
+    getFrameAgreements(consultantId: number, consultantIndex: number, search: string = '') {
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.contractClientForm.directClientId.value,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
+			salesTypeId: this.contractsMainForm.salesType.value?.id,
+			contractTypeId: undefined,
+			deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
+			startDate: undefined,
+			endDate: undefined,
+            recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
+            recipientConsultantId: consultantId,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		this._agreementService
+			.simpleList(
+				dataToSend.agreementId,
+				dataToSend.search,
+				undefined, // dataToSend.clientId,
+				dataToSend.agreementType,
+				dataToSend.validity,
+				dataToSend.legalEntityId,
+				dataToSend.salesTypeId,
+				dataToSend.contractTypeId,
+				dataToSend.deliveryTypeId,
+				dataToSend.startDate,
+				dataToSend.endDate,
+                dataToSend.recipientClientIds,
+                dataToSend.recipientConsultantId, //recipientConsultantId
+                undefined, //recipientSupplierId
+				dataToSend.pageNumber,
+				dataToSend.pageSize,
+				dataToSend.sort
+			)
+			.subscribe((result) => {
+                this.frameAgreements[consultantIndex] = result.items;
+                console.log(this.frameAgreements);
+				if (result.items.length === 1) {
+					this._checkAndPreselectFrameAgreement(consultantIndex);
+				}
+			});
+	}
+
+    private _checkAndPreselectFrameAgreement(consultantIndex: number) {
+		if (
+			(this.contractClientForm.directClientId.value !== null &&
+			this.contractClientForm.directClientId.value !== undefined) &&
+			(this.contractsMainForm.salesType.value?.id !== null &&
+            this.contractsMainForm.salesType.value?.id !== undefined) &&
+			(this.contractsMainForm.deliveryType.value?.id !== null &&
+            this.contractsMainForm.deliveryType.value?.id !== undefined)
+		) {
+			if (this.frameAgreements[consultantIndex].length === 1) {
+				this.contractsConsultantsDataForm.consultants.controls.forEach(form => {
+                    form.get('frameAgreementId').setValue(this.frameAgreements[consultantIndex][0].agreementId, { emitEvent: false });
+                });
+			}
+		}
 	}
 
     private _getEnums() {
@@ -114,6 +184,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
             noSpecialPaymentTerms: new UntypedFormControl(
                 consultant?.noSpecialPaymentTerms ?? false
             ),
+            frameAgreementId: new UntypedFormControl(
+                consultant?.frameAgreementId ?? null
+            ),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			clientFees: new UntypedFormArray([]),
@@ -130,6 +203,12 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		consultant.periodConsultantSpecialRates?.forEach((rate: any) => {
 			this.addSpecialRateToConsultantData(consultantIndex, rate);
 		});
+        if (this.isContractModuleEnabled) {
+            this.frameAgreements.push([]);
+            if (consultant.employmentTypeId !== EmploymentTypes.FeeOnly && consultant.employmentTypeId !== EmploymentTypes.Recruitment) {
+                this.getFrameAgreements(consultant.consultantId, consultantIndex);
+            }
+        }
 		this.filteredConsultants.push(consultant.consultant!);
 	}
 

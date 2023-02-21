@@ -56,7 +56,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		private _internalLookupService: InternalLookupService,
 		private _agreementService: AgreementServiceProxy,
 		private _workflowDataService: WorkflowDataService,
-		private _clientPeriodService: ClientPeriodServiceProxy
 	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
