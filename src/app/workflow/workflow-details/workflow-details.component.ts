@@ -249,8 +249,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 					.join('\n');
 				if (result.workflowStatusId) {
 					this.workflowStatusId = result.workflowStatusId;
-					this.workflowStatusName = getWorkflowStatus(result.workflowStatusId);
-					this.workflowStatusIcon = getStatusIcon(result.workflowStatusId);
+					this.workflowStatusName = result.isDeleted ? 'Deleted workflow' : getWorkflowStatus(result.workflowStatusId);
+					this.workflowStatusIcon = result.isDeleted ? 'deleted-status' : getStatusIcon(result.workflowStatusId);
 				}
 				if (value) {
 					this._router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);

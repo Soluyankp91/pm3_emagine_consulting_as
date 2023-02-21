@@ -18,6 +18,7 @@ import {
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
+import { CREATION_RADIO_BUTTONS } from 'src/app/contracts/shared/entities/contracts.constants';
 import { MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
@@ -46,6 +47,7 @@ import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfac
 	encapsulation: ViewEncapsulation.None,
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
+	creationRadioButtons = CREATION_RADIO_BUTTONS;
 	creationModes = AgreementCreationMode;
 
 	agreementFormGroup = new AgreementModel();
@@ -119,6 +121,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
 	}
+
+    onModeControlChange(creationMode: AgreementCreationMode) {
+        this.modeControl$.next(creationMode);
+    }
 
 	onSave() {
 		if (!this.agreementFormGroup.valid) {

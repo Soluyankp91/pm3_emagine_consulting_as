@@ -31,7 +31,7 @@ export class FileUploaderComponent implements OnInit {
 
     ngOnInit() {
         this._files = [];
-        this.acceptedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jpg', 'jpeg', 'png', 'svg'];
+        this.acceptedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jpg', 'jpeg', 'png', 'svg', 'msg', 'eml'];
     }
 
     public uploadAll(url: string, id: number): Observable<void> {
