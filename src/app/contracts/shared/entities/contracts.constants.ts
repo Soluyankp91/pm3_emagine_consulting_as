@@ -32,7 +32,21 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	contractManager: 'CM',
 };
 
-export const CREATION_RADIO_BUTTONS: { label: string; value: AgreementCreationMode }[] = [
+export const MASTER_CREATION: { label: string; value: AgreementCreationMode }[] = [
+	{
+		label: 'Duplicate from other agreement',
+		value: AgreementCreationMode.Duplicated,
+	},
+	{
+		label: 'Agreement provided by other party',
+		value: AgreementCreationMode.ProvidedByOtherParty,
+	},
+	{
+		label: 'Create from scratch',
+		value: AgreementCreationMode.FromScratch,
+	},
+];
+export const CLIENT_AGREEMENTS_CREATION: { label: string; value: AgreementCreationMode }[] = [
 	{
 		label: 'Inherit from template',
 		value: AgreementCreationMode.InheritedFromParent,

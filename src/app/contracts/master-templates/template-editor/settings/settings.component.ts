@@ -44,8 +44,10 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
-import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
+import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 
 @Component({
 	selector: 'app-settings',
@@ -55,8 +57,13 @@ import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 	encapsulation: ViewEncapsulation.None,
 })
 export class CreateMasterTemplateComponent extends AppComponentBase implements OnInit, OnDestroy {
+	creationRadioButtons = MASTER_CREATION;
+
 	editMode = false;
 	currentTemplate: { [key: string]: any };
+
+	possibleDocumentTypes: BaseEnumDto[];
+	documentTypes$: Observable<BaseEnumDto[]>;
 
 	initialLoading = true;
 
@@ -74,14 +81,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	masterTemplateFormGroup = new MasterTemplateModel();
 
-	options$: Observable<[SettingsOptions, MappedTableCells]> = combineLatest([
-		this._contractsService.settingsPageOptions$(),
-		this._contractsService.getEnumMap$().pipe(take(1)),
-	]).pipe(
-		tap(([{ legalEntities }, maps]) => {
-			this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
-		})
-	);
+	options$: Observable<[SettingsOptions, MappedTableCells]>;
 
 	modeControl$ = new BehaviorSubject(AgreementCreationMode.FromScratch);
 	masterTemplateOptions$: Observable<SimpleAgreementTemplatesListItemDto[] | null>;
@@ -120,6 +120,8 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			this._subscribeOnDirtyStatus();
 			this._subscribeOnCreationModeResolver();
 		}
+		this._setOptions();
+		this._setDocumentType();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		this._initMasterTemplateOptions();
@@ -221,6 +223,34 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		return this._router.navigate(['../'], {
 			relativeTo: this._route,
 		});
+	}
+
+	private _setOptions() {
+		this.options$ = combineLatest([
+			this._contractsService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
+			this._contractsService.getEnumMap$().pipe(take(1)),
+		]).pipe(
+			tap(([{ legalEntities }, maps]) => {
+				this.legalEntities = legalEntities.map(
+					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
+				);
+			})
+		);
+	}
+
+	private _setDocumentType() {
+		this.documentTypes$ = (this.masterTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+			switchMap((recipientTypeId) => {
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
+				}
+				return of(null);
+			})
+		);
 	}
 
 	private _subscribeOnDuplicateControlChanges() {
