@@ -290,7 +290,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				switchMap(([, isDirty]) => {
 					if (isDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-							width: '280px',
+							width: '500px',
+                            height: '240px',
+                            backdropClass: 'backdrop-modal--wrapper',
 						});
 						return dialogRef.afterClosed();
 					}
