@@ -132,6 +132,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	onSave() {
+        
 		if (!this.agreementFormGroup.valid) {
 			this.agreementFormGroup.markAllAsTouched();
 			return;
@@ -216,7 +217,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _setDocumentType() {
-        this.documentTypes$ = (this.agreementFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+		this.documentTypes$ = (this.agreementFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
 				if (recipientTypeId) {
 					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
@@ -311,8 +312,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					if (isDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
 							width: '500px',
-                            height: '240px',
-                            backdropClass: 'backdrop-modal--wrapper',
+							height: '240px',
+							backdropClass: 'backdrop-modal--wrapper',
 						});
 						return dialogRef.afterClosed();
 					}
