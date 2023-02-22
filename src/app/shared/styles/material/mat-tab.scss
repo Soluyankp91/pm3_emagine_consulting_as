@@ -183,6 +183,11 @@ nav.workflow-content--tabs {
                     margin: 0 5px;
                 }
             }
+            &--id {
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
 
             &-detail {
                 font-weight: 600;

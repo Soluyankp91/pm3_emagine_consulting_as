@@ -44,6 +44,8 @@ import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-di
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
 import { EPeriodClass, EPermissions } from './workflow-details.model';
 import { EProcessIcon } from '../workflow-period/workflow-period.model';
+import {Clipboard} from '@angular/cdk/clipboard';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-workflow-details',
@@ -111,7 +113,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		private _clientPeriodService: ClientPeriodServiceProxy,
 		private _localHttpService: LocalHttpService,
 		private _httpClient: HttpClient,
-		private _router: Router
+		private _router: Router,
+        private _clipboard: Clipboard,
+        private _snackBar: MatSnackBar
 	) {
 		super(injector);
 	}
@@ -586,4 +590,12 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			);
 		}
 	}
+
+    copyPeriodId(event: Event, fullDisplayId: string) {
+        event.stopPropagation();
+        this._clipboard.copy(fullDisplayId);
+        this._snackBar.open('Copied to clipboard', undefined, {
+            duration: 3000,
+        });
+    }
 }

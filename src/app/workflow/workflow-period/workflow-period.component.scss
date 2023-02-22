@@ -36,7 +36,8 @@
             }
             &-consultant-name {
                 text-transform: none;
-                color: $dark-grey-color;
+                color: $medium-grey-color;
+                font-weight: 600
             }
             &-section {
                 @include fontOpenSans(12px, 700);
