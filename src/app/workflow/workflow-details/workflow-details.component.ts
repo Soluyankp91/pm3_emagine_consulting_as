@@ -42,7 +42,7 @@ import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.comp
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
-import { EPeriodClass, EPermissions } from './workflow-details.model';
+import { EPeriodAbbreviation, EPeriodClass, EPeriodName, EPermissions } from './workflow-details.model';
 import { EProcessIcon } from '../workflow-period/workflow-period.model';
 import {Clipboard} from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -98,6 +98,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     ePeriodClass = EPeriodClass;
     ePeriodIcon = EProcessIcon;
+    ePeriodAbbreviation = EPeriodAbbreviation;
+    ePeriodName = EPeriodName;
 
 	private _unsubscribe = new Subject();
 	constructor(
@@ -570,6 +572,14 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		}
 	}
 
+    public copyPeriodId(event: Event, fullDisplayId: string) {
+        event.stopPropagation();
+        this._clipboard.copy(fullDisplayId);
+        this._snackBar.open('Period ID copied to clipboard', undefined, {
+            duration: 3000,
+        });
+    }
+
 	get isProgressTrackVisible() {
 		return !environment.production;
 	}
@@ -590,12 +600,4 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			);
 		}
 	}
-
-    copyPeriodId(event: Event, fullDisplayId: string) {
-        event.stopPropagation();
-        this._clipboard.copy(fullDisplayId);
-        this._snackBar.open('Copied to clipboard', undefined, {
-            duration: 3000,
-        });
-    }
 }
