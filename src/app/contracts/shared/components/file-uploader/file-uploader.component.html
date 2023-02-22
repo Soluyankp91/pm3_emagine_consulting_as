@@ -1,7 +1,7 @@
 <ng-container *ngIf="uploadedFiles$ | async as files">
     <div class="loaded-files">
         <h4>Current master template</h4>
-        <ng-container *ngFor="let file of files">
+        <ng-container *ngFor="let file of files; trackBy: trackById">
             <div class="file-container">
                 <div class="file-item-left">
                     <mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>

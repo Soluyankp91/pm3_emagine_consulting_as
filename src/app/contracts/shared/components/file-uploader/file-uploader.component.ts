@@ -1,18 +1,22 @@
-import { Component, OnDestroy, OnInit, Self } from '@angular/core';
+import { Component, OnDestroy, OnInit, Self, TrackByFunction, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, forkJoin, of, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap, takeUntil } from 'rxjs/operators';
 import { NgControl } from '@angular/forms';
 import { FileUploadItem } from './files';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
 	selector: 'emg-file-uploader',
 	templateUrl: './file-uploader.component.html',
 	styleUrls: ['./file-uploader.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileUploaderComponent implements OnInit, OnDestroy {
+export class FileUploaderComponent extends AppComponentBase implements OnInit, OnDestroy {
 	uploadedFiles$: Observable<FileUploadItem[]>;
 	filesLoading$ = new BehaviorSubject<boolean>(false);
+
+	trackById: TrackByFunction<string>;
 
 	private _uploadedFiles$ = new Subject<FileUploadItem[]>();
 	private _unSubscribe$ = new Subject<void>();
@@ -21,8 +25,14 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
 	private onChange = (val: any) => {};
 	private onTouched = () => {};
 
-	constructor(private readonly _fileServiceProxy: FileServiceProxy, @Self() private readonly _ngControl: NgControl) {
+	constructor(
+		private readonly _fileServiceProxy: FileServiceProxy,
+		@Self() private readonly _ngControl: NgControl,
+		private readonly _injector: Injector
+	) {
+		super(_injector);
 		_ngControl.valueAccessor = this;
+		this.trackById = this.createTrackByFn('temporaryFileId');
 	}
 
 	ngOnInit(): void {

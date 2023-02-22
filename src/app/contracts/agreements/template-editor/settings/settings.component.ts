@@ -132,7 +132,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	onSave() {
-        console.log(this.agreementFormGroup.controls['uploadedFiles']);
 		if (!this.agreementFormGroup.valid) {
 			this.agreementFormGroup.markAllAsTouched();
 			return;
