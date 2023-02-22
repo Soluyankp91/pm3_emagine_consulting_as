@@ -19,7 +19,7 @@ export class CustomTooltipDirective implements OnDestroy {
 
 	@HostListener('mouseenter')
 	private _show(): void {
-		if (!this.showAlways && this.elementRef.nativeElement.scrollWidth <= this.elementRef.nativeElement.clientWidth) {
+		if (!this.showAlways && this._elementRef.nativeElement.scrollWidth <= this._elementRef.nativeElement.clientWidth) {
 			return;
 		}
 		this._createOverlay();
@@ -37,7 +37,7 @@ export class CustomTooltipDirective implements OnDestroy {
 
 	private _overlayRef: OverlayRef;
 
-	constructor(private _overlay: Overlay, private elementRef: ElementRef, private _viewContainerRef: ViewContainerRef) {}
+	constructor(private _overlay: Overlay, private _elementRef: ElementRef, private _viewContainerRef: ViewContainerRef) {}
 
 	ngOnDestroy() {
 		if (this._overlayRef) {
@@ -48,7 +48,7 @@ export class CustomTooltipDirective implements OnDestroy {
 	private _createOverlay() {
 		const position = this._overlay
 			.position()
-			.flexibleConnectedTo(this.elementRef)
+			.flexibleConnectedTo(this._elementRef)
 			.withPositions([
 				{
 					originX: 'end',

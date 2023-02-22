@@ -263,49 +263,61 @@ export const STATUTES = [
 	{
 		id: 1,
 		name: 'Created',
+		color: '#50BEE8',
 	},
 	{
 		id: 2,
 		name: 'Created in DocuSign',
+		color: '#0052B4',
 	},
 	{
 		id: 3,
 		name: 'Sent',
+		color: '#0052B4',
 	},
 	{
 		id: 4,
 		name: 'Viewed',
+		color: '#ED2939',
 	},
 	{
 		id: 5,
 		name: 'Delivery failure',
+		color: '#ED2939',
 	},
 	{
 		id: 6,
 		name: 'Voided',
+		color: '#ED2939',
 	},
 	{
 		id: 7,
 		name: 'Signed',
+		color: '#ED2939',
 	},
 	{
 		id: 8,
 		name: 'Declined',
+		color: '#ED2939',
 	},
 	{
 		id: 9,
 		name: 'Waiting for others',
+		color: '#9747FF',
 	},
 	{
 		id: 10,
 		name: 'Completed',
+		color: '#17A297',
 	},
 	{
 		id: 11,
 		name: 'About to expire',
+		color: '#F3AB20',
 	},
 	{
 		id: 12,
 		name: 'Expired',
+		color: '#ED2939',
 	},
 ];

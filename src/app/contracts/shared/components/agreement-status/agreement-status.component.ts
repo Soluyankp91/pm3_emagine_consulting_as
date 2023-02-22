@@ -12,5 +12,5 @@ export class AgreementStatusComponent {
 
 	envelopeStatuses = EnvelopeStatus;
 
-    statusEnum = STATUTES.reduce((acc, cur) => ({ ...acc, [cur.id]: cur.name }), {});
+    statusEnum = STATUTES.reduce((acc, cur) => ({ ...acc, [cur.id]: { name: cur.name, color: cur.color} }), {});
 }
