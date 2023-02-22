@@ -57,3 +57,8 @@
 .small-icon {
 	@include small-icon;
 }
+.spinner {
+	display: flex;
+	justify-content: center;
+	margin: 10px 0;
+}

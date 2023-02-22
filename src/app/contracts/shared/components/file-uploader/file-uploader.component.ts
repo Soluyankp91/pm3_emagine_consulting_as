@@ -1,129 +1,129 @@
-import {
-    Component,
-    OnInit,
-    forwardRef,
-    ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, Self } from '@angular/core';
 import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { Subject, Observable, forkJoin, of } from 'rxjs';
-import { switchMap, map, tap } from 'rxjs/operators';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Subject, Observable, forkJoin, of, BehaviorSubject } from 'rxjs';
+import { switchMap, map, tap, takeUntil } from 'rxjs/operators';
+import { NgControl } from '@angular/forms';
 import { FileUploadItem } from './files';
 
 @Component({
-    selector: 'emg-file-uploader',
-    templateUrl: './file-uploader.component.html',
-    styleUrls: ['./file-uploader.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => FileUploaderComponent),
-            multi: true,
-        },
-    ],
+	selector: 'emg-file-uploader',
+	templateUrl: './file-uploader.component.html',
+	styleUrls: ['./file-uploader.component.scss'],
 })
-export class FileUploaderComponent implements OnInit, ControlValueAccessor {
-    uploadedFiles$: Observable<FileUploadItem[]>;
-    private _uploadedFiles$ = new Subject<FileUploadItem[]>();
-    private files: FileUploadItem[] = [];
+export class FileUploaderComponent implements OnInit, OnDestroy {
+	uploadedFiles$: Observable<FileUploadItem[]>;
+	filesLoading$ = new BehaviorSubject<boolean>(false);
 
-    private onChange = (val: any) => {};
-    private onTouched = () => {};
+	private _uploadedFiles$ = new Subject<FileUploadItem[]>();
+	private _unSubscribe$ = new Subject<void>();
+	private _files: FileUploadItem[] = [];
 
-    constructor(
-        private readonly _fileServiceProxy: FileServiceProxy,
-    ) {}
+	private onChange = (val: any) => {};
+	private onTouched = () => {};
 
-    ngOnInit(): void {
-        this.initializeFileObs();
-    }
+	constructor(private readonly _fileServiceProxy: FileServiceProxy, @Self() private readonly _ngControl: NgControl) {
+		_ngControl.valueAccessor = this;
+	}
 
-    onFileAdded($event: EventTarget | null) {
-        if ($event) {
-            let files = ($event as HTMLInputElement).files as FileList;
-            const fileArray = [] as File[];
-            for (let i = 0; i < files.length; i++) {
-                fileArray.push(files.item(i) as File);
-            }
-            this._uploadedFiles$.next(fileArray);
-        }
-    }
+	ngOnInit(): void {
+		this.initializeFileObs();
+		this._subscribeOnLoading();
+	}
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
+	}
 
-    onFileDelete(fileToDelete: FileUploadItem) {
-        this._fileServiceProxy
-            .temporaryDELETE(fileToDelete.temporaryFileId)
-            .subscribe(() => {
-                this.files = this.files.filter(
-                    (file) =>
-                        file.temporaryFileId !== fileToDelete.temporaryFileId
-                );
-                this._uploadedFiles$.next([]);
-            });
-    }
+	onFileAdded($event: EventTarget | null) {
+		if ($event) {
+			let files = ($event as HTMLInputElement).files as FileList;
+			const fileArray = [] as File[];
+			for (let i = 0; i < files.length; i++) {
+				fileArray.push(files.item(i) as File);
+			}
+			this._uploadedFiles$.next(fileArray);
+		}
+	}
 
-    writeValue(value: any): void {
-        if (value === null) {
-            this._clearAllFiles();
-        }
-    }
+	onFileDelete(fileToDelete: FileUploadItem) {
+		this._fileServiceProxy.temporaryDELETE(fileToDelete.temporaryFileId).subscribe(() => {
+			this._files = this._files.filter((file) => file.temporaryFileId !== fileToDelete.temporaryFileId);
+			this._uploadedFiles$.next([]);
+		});
+	}
 
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
+	writeValue(value: any): void {
+		if (value === null) {
+			this._clearAllFiles();
+		}
+	}
 
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
+	registerOnChange(fn: any): void {
+		this.onChange = fn;
+	}
 
-    private initializeFileObs() {
-        this.uploadedFiles$ = this._uploadedFiles$.pipe(
-            switchMap((files) => {
-                if (!files.length) {
-                    return of([ ]);
-                }
-                let filesObservablesArr = files.map((file) =>
-                    this._fileServiceProxy
-                        .temporaryPOST({ data: file, fileName: file.name })
-                        .pipe(
-                            map(({ value }) => ({
-                                ...file,
-                                name: file.name,
-                                temporaryFileId: value,
-                                icon: this._getIconName(file.name),
-                            }))
-                        )
-                );
-                return forkJoin(filesObservablesArr);
-            }),
-            map((files) => {
-                this.files = [...this.files, ...files];
-                return this.files;
-            }),
-            tap((files) => {
-                if (files.length) {
-                    this.onChange(files);
-                    return;
-                }
-                this.onChange(null);
-            })
-        );
-    }
+	registerOnTouched(fn: any): void {
+		this.onTouched = fn;
+	}
 
-    private _getIconName(fileName: string): string {
-        let splittetFileName = fileName.split('.');
-        return splittetFileName[splittetFileName.length - 1];
-    }
+	private _subscribeOnLoading() {
+		this.filesLoading$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
+			if (isLoading) {
+				this._ngControl.control.setErrors({ loading: true });
+			} else {
+				this._ngControl.control.setErrors(null);
+			}
+		});
+	}
 
-    private _clearAllFiles() {
-        let observableArr: Observable<void>[] = [];
-        this.files.forEach((file: FileUploadItem) => {
-            observableArr.push(
-                this._fileServiceProxy.temporaryDELETE(file.temporaryFileId)
-            );
-        });
-        forkJoin(observableArr).subscribe(() => {
-            this.files = [];
-            this._uploadedFiles$.next([]);
-        });
-    }
+	private initializeFileObs() {
+		this.uploadedFiles$ = this._uploadedFiles$.pipe(
+			switchMap((files) => {
+				if (!files.length) {
+					return of([]);
+				}
+				let filesObservablesArr = files.map((file) =>
+					this._fileServiceProxy.temporaryPOST({ data: file, fileName: file.name }).pipe(
+						map(({ value }) => ({
+							...file,
+							name: file.name,
+							temporaryFileId: value,
+							icon: this._getIconName(file.name),
+						}))
+					)
+				);
+				this.filesLoading$.next(true);
+				return forkJoin(filesObservablesArr);
+			}),
+			tap(() => {
+				this.filesLoading$.next(false);
+			}),
+			map((files) => {
+				this._files = [...this._files, ...files];
+				return this._files;
+			}),
+			tap((files) => {
+				if (files.length) {
+					this.onChange(files);
+					return;
+				}
+				this.onChange(null);
+			})
+		);
+	}
+
+	private _getIconName(fileName: string): string {
+		let splittetFileName = fileName.split('.');
+		return splittetFileName[splittetFileName.length - 1];
+	}
+
+	private _clearAllFiles() {
+		this._files = [];
+		this._uploadedFiles$.next([]);
+		let observableArr: Observable<void>[] = [];
+		this._files.forEach((file: FileUploadItem) => {
+			observableArr.push(this._fileServiceProxy.temporaryDELETE(file.temporaryFileId));
+		});
+		forkJoin(observableArr).subscribe();
+	}
 }
