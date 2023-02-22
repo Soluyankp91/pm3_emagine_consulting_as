@@ -320,7 +320,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
             deliveryTypeId: this.mainDataForm.deliveryTypeId.value,
             startDate: this.salesClientDataForm.startDate.value,
             endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
-            recipientClientIds: [this.salesClientDataForm.directClientIdValue.value.clientId, this.salesClientDataForm.endClientIdValue.value.clientId].filter(Boolean),
+            recipientClientIds: [this.salesClientDataForm.directClientIdValue.value?.clientId, this.salesClientDataForm.endClientIdValue.value?.clientId].filter(Boolean),
             pageNumber: 1,
             pageSize: 1000,
             sort: ''
