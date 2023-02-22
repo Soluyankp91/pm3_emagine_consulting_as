@@ -18,11 +18,12 @@ import {
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { CREATION_RADIO_BUTTONS } from 'src/app/contracts/shared/entities/contracts.constants';
-import { MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AgreementAttachmentDto,
@@ -47,8 +48,11 @@ import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfac
 	encapsulation: ViewEncapsulation.None,
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
-	creationRadioButtons = CREATION_RADIO_BUTTONS;
+	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
+
+	possibleDocumentTypes: BaseEnumDto[];
+	documentTypes$: Observable<BaseEnumDto[]>;
 
 	agreementFormGroup = new AgreementModel();
 
@@ -101,6 +105,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	ngOnInit(): void {
 		this._initOptions();
 		this._setClientOptions();
+		this._setDocumentType();
 		this._subscribeOnSignatureRequire();
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
@@ -191,7 +196,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _initOptions() {
 		this.options$ = combineLatest([
-			this._contractService.settingsPageOptions$(),
+			this._contractService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
 			this._contractService.getEnumMap$().pipe(take(1)),
 		]);
 	}
@@ -204,6 +213,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				this.agreementFormGroup.controls['duplicationSourceAgreementId'].setValue(id);
 			}
 		});
+	}
+
+	private _setDocumentType() {
+        this.documentTypes$ = (this.agreementFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+			switchMap((recipientTypeId) => {
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
+				}
+				return of(null);
+			})
+		);
 	}
 
 	private _setClientOptions() {
@@ -304,8 +324,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.creationMode.patchValue(this.modeControl$.value);
 					this._resetForm();
 				}
-                this.agreementFormGroup.markAsUntouched();
-                this.agreementFormGroup.markAsPristine();
+				this.agreementFormGroup.markAsUntouched();
+				this.agreementFormGroup.markAsPristine();
 			});
 	}
 
@@ -524,7 +544,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 			this.preselectedFiles = agreement.attachments as FileUpload[];
 			this._cdr.detectChanges();
-
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,

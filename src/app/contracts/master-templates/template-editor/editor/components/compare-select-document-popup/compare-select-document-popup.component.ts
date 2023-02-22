@@ -10,9 +10,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DxButtonModule, DxListComponent, DxPopupModule, DxTemplateModule, DxListModule } from 'devextreme-angular';
-
 import { IDocumentItem } from '../../entities';
 import { EditorCoreService } from '../../services';
+import { SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	standalone: true,
@@ -28,7 +28,7 @@ export class CompareSelectDocumentPopupComponent implements OnInit {
 
 	@ViewChild('listView') private _listView: DxListComponent;
 
-	@Input() dataSource: Array<IDocumentItem> = [];
+	@Input() dataSource: Array<SimpleAgreementTemplatesListItemDto> = [];
 
 	@Output() select: EventEmitter<number> = new EventEmitter();
 

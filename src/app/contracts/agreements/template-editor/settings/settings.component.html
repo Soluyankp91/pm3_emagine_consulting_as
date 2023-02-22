@@ -58,19 +58,6 @@
 
 				<div class="form-row">
 					<mat-form-field appearance="outline" class="small-field">
-						<mat-label>Document type</mat-label>
-						<mat-select formControlName="agreementType" placeholder="Document type">
-							<ng-container *ngFor="let agreementType of options[0].agreementTypes">
-								<mat-option [value]="agreementType.id">
-									{{ agreementType.name }}
-								</mat-option>
-							</ng-container>
-						</mat-select>
-						<mat-error>
-							<app-validator [control]="agreementFormGroup.agreementType"></app-validator>
-						</mat-error>
-					</mat-form-field>
-					<mat-form-field appearance="outline" class="small-field">
 						<mat-label>Recipient type</mat-label>
 						<mat-select formControlName="recipientTypeId" placeholder="Recipient type">
 							<ng-container *ngFor="let recipientType of options[0].recipientTypes">
@@ -83,6 +70,21 @@
 							<app-validator [control]="agreementFormGroup.recipientTypeId"></app-validator>
 						</mat-error>
 					</mat-form-field>
+                    <ng-container *ngIf="documentTypes$ | async as agreementTypes">
+                        <mat-form-field appearance="outline" class="small-field">
+                            <mat-label>Document type</mat-label>
+                            <mat-select formControlName="agreementType" placeholder="Document type">
+                                <ng-container *ngFor="let agreementType of agreementTypes">
+                                    <mat-option [value]="agreementType.id">
+                                        {{ agreementType.name }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="agreementFormGroup.agreementType"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </ng-container>
 				</div>
 				<ng-container *ngIf="clientDropdown$ | async as clientOptions">
 					<ng-container *ngIf="clientOptions.options$ | async as options">
