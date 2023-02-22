@@ -21,7 +21,7 @@ export class AgreementService implements AgreementAbstractService {
 		}
 
 	getTemplate(agreementId: number) {
-		const endpoint = `${this._baseUrl}/${agreementId}/document-file/latest-template-version/true`;
+		const endpoint = `${this._baseUrl}/${agreementId}/document-file/latest-agreement-version/true`;
 
 		return this.httpClient
 			.get(endpoint, {

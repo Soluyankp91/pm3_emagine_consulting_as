@@ -225,6 +225,7 @@ export class CompareService {
 			if (changes[i].type === 'delete') {
 				let p = current.document.paragraphs.getByIndex(changes[i].line);
 				if (!p) {
+					current.document.insertParagraph(current.document.paragraphs.getByIndex(current.document.paragraphs.count - 1).interval.end);
 					p = current.document.paragraphs.getByIndex(current.document.paragraphs.count - 1);
 				}
 				const tempP = temp.document.paragraphs.getByIndex(changes[i].line - insertCount);
