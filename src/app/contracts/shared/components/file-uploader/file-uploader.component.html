@@ -1,21 +1,22 @@
-<div class="loaded-files" *ngIf="uploadedFiles$ | async as files">
-	<h4>Current master template</h4>
-
-	<ng-container *ngFor="let file of files">
-		<div class="file-container">
-			<div class="file-item-left">
-				<mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
-				<div class="file-label">{{ file.name }}</div>
-			</div>
-			<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
-				<mat-icon>more_horiz</mat-icon>
-			</button>
-			<mat-menu #menu="matMenu">
-				<button mat-menu-item type="button" (click)="onFileDelete(file)">Delete</button>
-			</mat-menu>
-		</div>
-	</ng-container>
-</div>
+<ng-container *ngIf="uploadedFiles$ | async as files">
+    <div class="loaded-files">
+        <h4>Current master template</h4>
+        <ng-container *ngFor="let file of files">
+            <div class="file-container">
+                <div class="file-item-left">
+                    <mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
+                    <div class="file-label">{{ file.name }}</div>
+                </div>
+                <button mat-icon-button type="button" [matMenuTriggerFor]="menu">
+                    <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item type="button" (click)="onFileDelete(file)">Delete</button>
+                </mat-menu>
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
 <ng-container *ngIf="filesLoading$ | async">
 	<div class="spinner">
 		<mat-spinner [diameter]="24"></mat-spinner>
