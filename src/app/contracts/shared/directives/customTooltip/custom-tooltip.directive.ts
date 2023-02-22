@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, ElementRef, HostListener, ViewContainerRef, OnDestroy, Injector } from '@angular/core';
+import { Directive, Input, ElementRef, HostListener, ViewContainerRef, OnDestroy, Injector } from '@angular/core';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { OverlayRef, Overlay } from '@angular/cdk/overlay';
 import { CustomTooltipComponent, TooltipData, TOOLTIP_DATA } from './custom-tooltip.component';
@@ -10,7 +10,7 @@ export class CustomTooltipDirective implements OnDestroy {
 	@Input('customTooltip') tooltipTemplate: TooltipData;
 	@Input('showAlways') showAlways: boolean = false;
 
-	@HostListener('mouseout')
+	@HostListener('mouseleave')
 	private _hide(): void {
 		if (this._overlayRef) {
 			this._overlayRef.detach();
@@ -31,13 +31,13 @@ export class CustomTooltipDirective implements OnDestroy {
 				},
 			],
 		});
-		const containerPortal = new ComponentPortal(CustomTooltipComponent, this.viewContainerRef, injector);
+		const containerPortal = new ComponentPortal(CustomTooltipComponent, this._viewContainerRef, injector);
 		this._overlayRef.attach(containerPortal);
 	}
 
 	private _overlayRef: OverlayRef;
 
-	constructor(private _overlay: Overlay, private elementRef: ElementRef, private viewContainerRef: ViewContainerRef) {}
+	constructor(private _overlay: Overlay, private elementRef: ElementRef, private _viewContainerRef: ViewContainerRef) {}
 
 	ngOnDestroy() {
 		if (this._overlayRef) {

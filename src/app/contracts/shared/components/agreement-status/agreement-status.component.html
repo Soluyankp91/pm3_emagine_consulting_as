@@ -1,45 +1,76 @@
-
-
 <ng-container [ngSwitch]="agreementStatus">
-    <ng-container *ngSwitchCase="envelopeStatuses.Created">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#50BEE8'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.CreatedInDocuSign">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Sent">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Viewed">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Voided">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Signed">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Declined">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.WaitingForOthers">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#9747FF'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Completed">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#17A297'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.AboutToExpire">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#F3AB20'}"></ng-container>
-    </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Expired">
-        <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Created">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#50BEE8', tooltip: statusEnum[envelopeStatuses.Created] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.CreatedInDocuSign">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{
+				color: '#0052B4',
+				tooltip: statusEnum[envelopeStatuses.CreatedInDocuSign]
+			}"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Sent">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#0052B4', tooltip: statusEnum[envelopeStatuses.Sent] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Viewed">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#ED2939', tooltip: statusEnum[envelopeStatuses.Viewed] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{
+				color: '#ED2939',
+				tooltip: statusEnum[envelopeStatuses.DeliveryFailure]
+			}"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Voided">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#ED2939', tooltip: statusEnum[envelopeStatuses.Voided] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Signed">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#ED2939', tooltip: statusEnum[envelopeStatuses.Signed] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Declined">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#ED2939', tooltip: statusEnum[envelopeStatuses.Declined] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.WaitingForOthers">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{
+				color: '#9747FF',
+				tooltip: statusEnum[envelopeStatuses.WaitingForOthers]
+			}"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Completed">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#17A297', tooltip: statusEnum[envelopeStatuses.Completed] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.AboutToExpire">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#F3AB20', tooltip: statusEnum[envelopeStatuses.AboutToExpire] }"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.Expired">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{ color: '#ED2939', tooltip: statusEnum[envelopeStatuses.Expired] }"></ng-container>
+	</ng-container>
 </ng-container>
-<ng-template #dot let-color="color">
-<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<rect width="8" height="8" rx="4" [attr.fill]="color" />
-</svg>
+<ng-template #dot let-color="color" let-tooltip="tooltip">
+	<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg" [customTooltip]="tooltip" [showAlways]="true">
+		<rect width="8" height="8" rx="4" [attr.fill]="color" />
+	</svg>
 </ng-template>

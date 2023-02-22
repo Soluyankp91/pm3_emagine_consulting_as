@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { EnvelopeStatus } from 'src/shared/service-proxies/service-proxies';
+import { STATUTES } from '../grid-table/agreements/entities/agreements.constants';
 
 @Component({
 	selector: 'emg-agreement-status',
@@ -11,5 +12,5 @@ export class AgreementStatusComponent {
 
 	envelopeStatuses = EnvelopeStatus;
 
-	constructor() {}
+    statusEnum = STATUTES.reduce((acc, cur) => ({ ...acc, [cur.id]: cur.name }), {});
 }
