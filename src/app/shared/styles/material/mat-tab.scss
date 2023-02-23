@@ -232,11 +232,6 @@ nav.workflow-content--tabs {
     }
 
     &.compressed-view {
-        .mat-tab-link {
-            // .tab-header--name {
-            //     display: none;
-            // }
-        }
         .tab-subheader{
             display: none;
             &.compressed {
