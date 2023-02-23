@@ -3,16 +3,17 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { IMergeField } from '../entities';
+import { MergeFieldsAbstractService } from './merge-fields-abstract';
 
 @Injectable()
-export class MergeFieldsService {
+export class AgreementMergeFieldsService implements MergeFieldsAbstractService {
 
 	constructor(
 		private _mergeFieldsService: MergeFieldsServiceProxy
 	) {}
 
 	getMergeFields(templateId: number): Observable<IMergeField> {
-		return this._mergeFieldsService.agreementTemplate(templateId).pipe(
+		return this._mergeFieldsService.agreement(templateId).pipe(
 			map((res) => res as IMergeField)
 		)
 	}

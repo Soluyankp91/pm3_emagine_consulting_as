@@ -9,35 +9,34 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DxButtonModule, DxListComponent, DxListModule, DxPopupModule, DxTemplateModule } from 'devextreme-angular';
-import { IDocumentVersion } from '../../entities';
+import { DxButtonModule, DxListComponent, DxPopupModule, DxTemplateModule, DxListModule } from 'devextreme-angular';
+import { IDocumentItem } from '../../entities';
 import { EditorCoreService } from '../../services';
-import { AgreementTemplateDocumentFileVersionDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	standalone: true,
-	selector: 'app-compare-select-version-popup',
-	templateUrl: './compare-select-version-popup.component.html',
-	styleUrls: ['./compare-select-version-popup.component.scss'],
+	selector: 'app-compare-select-document-popup',
+	templateUrl: './compare-select-document-popup.component.html',
+	styleUrls: ['./compare-select-document-popup.component.scss'],
 	imports: [CommonModule, DxTemplateModule, DxButtonModule, DxPopupModule, DxListModule],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompareSelectVersionPopupComponent implements OnInit {
+export class CompareSelectDocumentPopupComponent implements OnInit {
 	visibility: boolean = false;
 	selected: number | null = null;
 
 	@ViewChild('listView') private _listView: DxListComponent;
 
-	@Input() dataSource: Array<AgreementTemplateDocumentFileVersionDto> = [];
+	@Input() dataSource: Array<IDocumentItem> = [];
 
 	@Output() select: EventEmitter<number> = new EventEmitter();
 
-	constructor(private _cdr: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
+	constructor(private _chd: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
 
 	ngOnInit(): void {
-		this._editorCoreService.onCompareVersion$.subscribe(() => {
+		this._editorCoreService.onCompareTemplate$.subscribe(() => {
 			this.visibility = true;
-			this._cdr.detectChanges();
+			this._chd.detectChanges();
 		});
 	}
 
@@ -51,8 +50,8 @@ export class CompareSelectVersionPopupComponent implements OnInit {
 		this._listView.instance.unselectAll();
 	}
 
-	selectItem(event: Record<'itemData', IDocumentVersion>) {
-		this.selected = event.itemData.version || null;
+	selectItem(event: Record<'itemData', IDocumentItem>) {
+		this.selected = event.itemData.agreementTemplateId || null;
 	}
 
 	applySelected() {

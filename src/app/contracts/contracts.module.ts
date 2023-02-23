@@ -71,13 +71,12 @@ import { ClientTemplateModeComponent } from './shared/components/client-mode/cli
 import { AgreementService } from './agreements/listAndPreviews/services/agreement.service';
 import { StatusesFilterComponent } from './shared/components/grid-table/agreements/filters/statuses-filter/statuses-filter.component';
 import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
-import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
+import { EditorComponent } from './shared/editor/editor.component';
 
 @NgModule({
 	declarations: [
@@ -128,7 +127,6 @@ import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/comp
 		ApprovalFilterComponent,
 		AgreementModeFilterComponent,
 		SettingsComponent,
-		AgreementDevExpress,
 		SalesManagersFilterComponent,
 		ContractManagerFilterComponent,
 		AgreementModeComponent,
