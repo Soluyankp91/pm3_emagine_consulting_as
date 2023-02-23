@@ -9,10 +9,10 @@
 	(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
 <ng-container *ngIf="hasUnsavedChanges$ | async">
 	<div class="save-actions" [class.loading]="isLoading">
-		<button (click)="cancel()">cancel</button>
+		<button (click)="cancel()">Cancel</button>
 
-		<button (click)="saveAsDraft()">Safe as a draft</button>
+		<button (click)="saveAsDraft()">Save as a draft</button>
 
-		<button (click)="saveAsComplete()">complete</button>
+		<button (click)="saveAsComplete()">Complete</button>
 	</div>
 </ng-container>
