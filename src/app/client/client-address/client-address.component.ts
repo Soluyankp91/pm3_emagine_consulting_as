@@ -27,15 +27,14 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 	sorting = '';
 
 	clientDisplayColumns = [
-		'consultant',
-		'salesTypeId',
-		'deliveryTypeId',
-		'startDate',
-		'endDate',
-		'invoicing',
-		'manager',
-		'status',
-		'action',
+		'isMainAddress',
+        'country',
+        'streetAndNumber',
+        'city',
+        'isWorkplace',
+        'isInvoice',
+        'debitorNumber',
+        'action',
 	];
 	clientAddressData: MatTableDataSource<IClientAddress>;
 	private _unsubscribe = new Subject();
@@ -62,9 +61,19 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 			.contacts(this.clientId)
 			.pipe(finalize(() => (this.isDataLoading = false)))
 			.subscribe((result) => {
-				let mappedData: IClientAddress[] = result.map((x: ContactDto) => {
+				let mappedData: IClientAddress[] = result.map((x: any) => {
 					return {
-						address: x.email,
+                        isMainAddress: x.isMainAddress,
+						address: x.address,
+                        address2: x.address2,
+                        postCode: x.postCode,
+						country: x.country,
+						city: x.city,
+                        region: x.region,
+						isWorkplaceAddress: x.isWorkplaceAddress,
+						isInvoiceAddress: x.isInvoiceAddress,
+						debtorNumberForInvoiceAddress: x.debtorNumberForInvoiceAddress,
+						isHidden: x.isHidden,
 					};
 				});
 				this.clientAddressData = new MatTableDataSource<IClientAddress>(mappedData);
@@ -94,4 +103,16 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 			// confirmed
 		});
 	}
+
+    editAddress(row: any) {
+
+    }
+
+    toggleAddressHiddenState(row: any) {
+
+    }
+
+    deleteAddress(row: any) {
+
+    }
 }
