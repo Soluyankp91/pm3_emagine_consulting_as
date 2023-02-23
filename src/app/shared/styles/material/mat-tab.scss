@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 @import "/src/app/shared/styles/config/_sizes";
 
 nav.client-details--tabs {
@@ -97,8 +98,11 @@ mat-tab-group.client-documents--tabs {
     display: none;
 }
 
-.workflow-content--tabs {
-    .mat-tab-header {
+nav.workflow-content--tabs {
+    &.period-tabs {
+        width: calc(100% - 300px);
+    }
+    &.mat-tab-nav-bar {
         top: 50px;
         z-index: 1000;
         position: sticky;
@@ -107,7 +111,7 @@ mat-tab-group.client-documents--tabs {
         background-color: $white-color;
     }
 
-    .mat-tab-label-container {
+    .mat-tab-link-container {
         padding-top: 0 !important;
     }
 
@@ -117,11 +121,11 @@ mat-tab-group.client-documents--tabs {
         top: 0;
     }
 
-    .mat-tab-labels {
+    .mat-tab-links {
         padding-top: 5px;
     }
 
-    .wfPeriodLabel.mat-tab-label {
+    .mat-tab-link {
         position: relative;
         font-family: 'Open Sans', sans-serif !important;
         opacity: 1 !important;
@@ -141,7 +145,9 @@ mat-tab-group.client-documents--tabs {
             justify-content: space-between;
             height: 100%;
         }
-        &:first-of-type {
+        &.overview-tab {
+            box-sizing: border-box;
+            width: 300px;
             justify-content: flex-start;
             align-items: center;
             padding: 12px 53px;
@@ -150,12 +156,33 @@ mat-tab-group.client-documents--tabs {
             }
         }
         .tab-header {
+            display: flex;
             font-family: 'Open Sans', sans-serif;
             font-weight: 800;
             line-height: 120%;
             font-size: 14px;
             color: $dark-grey-color;
-
+            mat-icon {
+                @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
+            }
+            &--name {
+                display: flex;
+                &.change-period {
+                    color: #72A0F8;
+                }
+                &.start-period {
+                    color: $green-color;
+                }
+                &.extend-period {
+                    color: $purple-color;
+                }
+                &::after {
+                    content: "•";
+                    display: block;
+                    color: $dark-grey-color;
+                    margin: 0 5px;
+                }
+            }
 
             &-detail {
                 font-weight: 600;
@@ -170,6 +197,9 @@ mat-tab-group.client-documents--tabs {
             font-family: 'Open Sans';
             font-weight: 600;
             line-height: 150%;
+            &.compressed {
+                display: none;
+            }
         }
         &::before {
             content: "";
@@ -183,7 +213,7 @@ mat-tab-group.client-documents--tabs {
             background-color: #fff;
             box-shadow: 1px -6px 20px rgb(0 0 0 / 15%);
         }
-        &-active,
+        &.mat-tab-label-active,
         &:hover {
             background-color: $sand-25-color;
             color: $dark-grey-color;
@@ -194,10 +224,19 @@ mat-tab-group.client-documents--tabs {
                 content: unset;
             }
         }
+    }
 
-        &:first-of-type {
-            box-sizing: border-box;
-            width: 300px;
+    &.compressed-view {
+        .mat-tab-link {
+            .tab-header--name {
+                display: none;
+            }
+        }
+        .tab-subheader{
+            display: none;
+            &.compressed {
+                display: block;
+            }
         }
     }
 

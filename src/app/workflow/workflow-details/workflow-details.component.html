@@ -20,7 +20,7 @@
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
                 <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap">
-                    Workflow ID: {{workflowId | slice: 0:4}}...
+                    Workflow ID: {{workflowSequenceIdCode}}
                 </span>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
                     <span class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
@@ -100,7 +100,7 @@
             </div>
         </ng-container>
         <div fxFlex="10%" fxLayoutAlign="end center">
-            <ng-container *ngIf="selectedTabName === 'Overview'">
+            <ng-container *ngIf="rlaWFOverview.isActive">
                 <button mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
             </ng-container>
             <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
@@ -179,71 +179,99 @@
     </ng-container>
 
     <div class="workflow-content pos-relative u-w--100" id="workflowDetails">
-        <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
-            <mat-tab label="Overview" labelClass="wfPeriodLabel">
-                <ng-template mat-tab-label>
+        <ng-container *ngIf="isNoteVisible">
+            <div class="workflow-notes-wrapper wrapper-overlay">
+                <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+            </div>
+        </ng-container>
+        <div fxLayout="row" fxLayoutAlign="start start">
+            <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs form-width-300">
+                <a mat-tab-link routerLink="overview" class="overview-tab" [active]="rlaWFOverview.isActive" routerLinkActive
+                    #rlaWFOverview="routerLinkActive">
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <mat-icon class="u-mr--10" svgIcon="overview-icon"></mat-icon>
                         <div fxLayout="column" fxLayoutAlign="center start">
                             <span class="tab-header">Overview</span>
                         </div>
                     </div>
-                </ng-template>
-                <div class="workflow-form--panel pos-relative u-w--100">
-                    <ng-container *ngIf="clientPeriods?.length">
-                        <app-workflow-overview [periodId]="clientPeriods![0]?.id" [clientPeriods]="clientPeriods"></app-workflow-overview>
-                        <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
-                            <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+                </a>
+            </nav>
+            <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs period-tabs" [ngClass]="{'compressed-view': clientPeriods?.length > 5}">
+                <ng-container *ngFor="let tab of clientPeriods; trackBy: trackById; let i = index;">
+                    <a mat-tab-link [routerLink]="tab.id" [state]="{typeId: tab.typeId}" [active]="rlaWorkflowTrack.isActive" routerLinkActive
+                        #rlaWorkflowTrack="routerLinkActive">
+                        <div fxLayout="column" fxLayoutAlign="start start" emgCustomTooltip [contentTemplate]="clientPeriods?.length > 5 ? periodTooltip : null">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <span class="tab-header">
+                                    <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
+                                    <span class="tab-header--name" [ngClass]="ePeriodClass[tab.typeId]">
+                                        {{tab.name}}
+                                    </span>
+                                    {{tab.fullDisplayId}}
+                                </span>
+                            </div>
+                            <span class="tab-subheader">
+                                {{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}
+                            </span>
+                            <span class="tab-subheader compressed">
+                                {{tab.startDate | momentFormat: 'DD.MM'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM') : '...'}}
+                            </span>
                         </div>
-                    </ng-container>
-                </div>
-            </mat-tab>
-            <ng-container *ngFor="let tab of clientPeriods; let i = index;">
-                <mat-tab [label]="tab.name!" labelClass="wfPeriodLabel">
-                    <ng-template mat-tab-label>
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <span class="tab-header">{{tab.name}}</span>
-                        </div>
-                        <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
-                    </ng-template>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
-                        <div fxFlex="80%">
-                            <ng-container *ngIf="selectedIndex === i + 1">
-                                <app-workflow-period #workflowPeriod [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
-                            </ng-container>
-                        </div>
-                    </div>
-                </mat-tab>
-            </ng-container>
-        </mat-tab-group>
+                        <ng-template #periodTooltip>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <div fxLayout="row" fxLayoutAlign="center center">
+                                    <span class="tooltip-header">
+                                        <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
+                                        <span class="tooltip-header--name" [ngClass]="ePeriodClass[tab.typeId]">
+                                            {{tab.name}}
+                                        </span>
+                                        {{tab.fullDisplayId}}
+                                    </span>
+                                </div>
+                                <span class="tooltip-subheader">
+                                    {{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}
+                                </span>
+                            </div>
+                        </ng-template>
+                    </a>
+                </ng-container>
+
+            </nav>
+
+        </div>
+        <div class="u-w--100">
+            <router-outlet #outlet="outlet"></router-outlet>
+        </div>
         <div class="workflow-notes-wrapper">
-            <ng-container *ngIf="selectedTabName !== 'Overview'">
+            <ng-container *ngIf="!rlaWFOverview.isActive">
                 <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
             </ng-container>
         </div>
-        <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls" *ngIf="bottomToolbarVisible">
-            <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing">
-                <button mat-flat-button
-                        class="button-cancel mat-elevation-z0 u-mr--16"
-                        appPreventDoubleClick (throttledClick)="cancelForceEdit()">
-                    Cancel
-                </button>
-            </ng-container>
-            <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']">
-                <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16"
-                    appPreventDoubleClick
-                    (throttledClick)="saveOrCompleteStep(true)">
-                    {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
-                </button>
-            </ng-container>
-            <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']">
-                <button color="primary"
-                        class="button-accept mat-elevation-z0"
-                        mat-flat-button
-                        appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false, $event)">
-                        Complete step
-                </button>
-            </ng-container>
-        </div>
+        <ng-container *ngIf="bottomToolbarVisible">
+            <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls">
+                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing">
+                    <button mat-flat-button
+                            class="button-cancel mat-elevation-z0 u-mr--16"
+                            appPreventDoubleClick (throttledClick)="cancelForceEdit()">
+                        Cancel
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']">
+                    <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16"
+                        appPreventDoubleClick
+                        (throttledClick)="saveOrCompleteStep(true)">
+                        {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']">
+                    <button color="primary"
+                            class="button-accept mat-elevation-z0"
+                            mat-flat-button
+                            appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false, $event)">
+                            Complete step
+                    </button>
+                </ng-container>
+            </div>
+        </ng-container>
     </div>
 </div>

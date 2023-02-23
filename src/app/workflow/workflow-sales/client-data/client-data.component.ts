@@ -337,6 +337,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
+                [], // recipientClientIds
+                undefined, // recipientConsultantId
+                undefined, // recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort

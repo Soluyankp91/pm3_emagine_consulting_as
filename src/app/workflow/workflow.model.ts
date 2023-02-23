@@ -43,10 +43,11 @@ export interface IWorkflowProgressStatus {
 }
 
 export enum WorkflowTopSections {
-    Overview = 1,
-    StartPeriod = 2,
+    StartPeriod = 1,
+    ChangePeriod = 2,
     ExtendPeriod = 3,
-    ChangePeriod = 5
+    Overview = 4
+
 }
 
 export enum WorkflowSteps {

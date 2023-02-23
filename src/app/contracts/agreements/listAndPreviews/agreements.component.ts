@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, ReplaySubject } from 'rxjs';
+import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
+import { takeUntil, startWith, pairwise } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
 import { AgreementListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 import {
@@ -13,14 +14,17 @@ import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interf
 import { AgreementFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
+import { AgreementPreviewComponent } from './components/agreement-preview/agreement-preview.component';
 import { AgreementService } from './services/agreement.service';
 
 @Component({
 	selector: 'app-agreements',
 	templateUrl: './agreements.component.html',
+	styleUrls: ['./agreements.component.scss'],
 	providers: [GridHelpService],
 })
 export class AgreementsComponent implements OnInit {
+	@ViewChildren(AgreementPreviewComponent, { read: ElementRef }) preview: QueryList<ElementRef>;
 	cells = this._gridHelpService.generateTableConfig(DISPLAYED_COLUMNS, AGREEMENT_HEADER_CELLS);
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
@@ -28,6 +32,10 @@ export class AgreementsComponent implements OnInit {
 	dataSource$ : Observable<AgreementListItemDtoPaginatedList>  = this._agreementService.getContracts$();
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
+
+	private _outsideClicksSub: Subscription;
+
+	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
 		private readonly _router: Router,
@@ -40,6 +48,7 @@ export class AgreementsComponent implements OnInit {
 	ngOnInit(): void {
 		this._initTable$();
 		this._initPreselectedFilters();
+		this._subscribeOnOuterClicks();
 	}
 
 	onSortChange($event: Sort) {
@@ -85,5 +94,26 @@ export class AgreementsComponent implements OnInit {
 			return this._agreementService.setIdFilter([templateId]);
 		}
 		this._agreementService.setIdFilter([]);
+	}
+
+	private _subscribeOnOuterClicks() {
+		this.currentRowId$
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				startWith(null),
+				pairwise(),
+				map(([previous, current]) => {
+					if (!previous && current) {
+						this._outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
+							if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
+								this.currentRowId$.next(null);
+							}
+						});
+					} else if (previous && !current) {
+						this._outsideClicksSub.unsubscribe();
+					}
+				})
+			)
+			.subscribe();
 	}
 }

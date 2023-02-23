@@ -234,6 +234,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this.getSalesStepData();
 		});
 
+        this._workflowDataService.resetStepState.pipe(takeUntil(this._unsubscribe)).subscribe((value: {isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}) => {
+			this.isCompleted = value.isCompleted;
+			this.editEnabledForcefuly = value.editEnabledForcefuly;
+			this._workflowDataService.updateWorkflowProgressStatus({
+				currentStepIsCompleted: this.isCompleted,
+				currentStepIsForcefullyEditing: this.editEnabledForcefuly,
+			});
+            if (value.fetchData) {
+                this.getSalesStepData();
+            }
+		});
+
 		this.individualConsultantActionsAvailable = environment.dev;
 	}
 
@@ -305,6 +317,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		});
         this.getSalesStepData();
 	}
+
 
 	get canToggleEditMode() {
 		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;

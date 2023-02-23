@@ -110,14 +110,17 @@ export const AGREEMENT_ACTIONS: Actions[] = [
 	{
 		label: 'Edit',
 		actionType: 'EDIT',
+		actionIcon: 'table-edit-icon',
 	},
 	{
 		label: 'Duplicate',
 		actionType: 'DUPLICATE',
+		actionIcon: 'duplicate-icon',
 	},
 	{
 		label: 'Copy link',
 		actionType: 'COPY',
+		actionIcon: 'copy-icon',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;

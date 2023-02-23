@@ -17,6 +17,7 @@ export class ClientTemplatesService extends BaseContract {
 		contractTypeIds: [],
 		lastUpdatedByLowerCaseInitials: [],
 		linkState: [],
+		linkStateAccepted: [],
 		isEnabled: [],
 	});
 
@@ -27,7 +28,7 @@ export class ClientTemplatesService extends BaseContract {
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload<ClientFiltersEnum>) {
 		return this._agreementTemplateServiceProxy.list2(
 			true, //isClientTemplate,
-			undefined,
+			tableFilters.id ? tableFilters.id[0] : undefined,
 			search, //search
 			tenantIds.map((item) => item.id as number), // tenantId []
 			tableFilters.legalEntityIds.map((item) => item.id as number), //legalEntities []
@@ -42,7 +43,12 @@ export class ClientTemplatesService extends BaseContract {
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
 			undefined,
 			(tableFilters as ClientFiltersEnum).linkState.map((item) => item.id as number), //linkState
-			undefined, //linkStateAccepted
+			tableFilters.linkStateAccepted.map((item) => {
+				if (typeof item.id === 'object') {
+					return '' as any;
+				}
+				return item.id;
+			}),
 			page.pageIndex + 1, //pageIndex
 			page.pageSize, //pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''
