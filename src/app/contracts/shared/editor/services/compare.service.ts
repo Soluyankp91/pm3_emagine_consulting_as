@@ -200,7 +200,6 @@ export class CompareService {
 			}
 		});
 
-		console.log(changes);
 		return changes;
 	}
 
