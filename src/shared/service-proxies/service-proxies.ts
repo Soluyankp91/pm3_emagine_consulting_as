@@ -8755,6 +8755,122 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
+    valueUnitTypes(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/value-unit-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processValueUnitTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processValueUnitTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumEntityTypeDto[]>;
+        }));
+    }
+
+    protected processValueUnitTypes(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    periodUnitTypes(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/period-unit-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPeriodUnitTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPeriodUnitTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumEntityTypeDto[]>;
+        }));
+    }
+
+    protected processPeriodUnitTypes(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     salesTypes(): Observable<EnumEntityTypeDto[]> {
         let url_ = this.baseUrl + "/api/Enum/sales-types";
         url_ = url_.replace(/[?&]$/, "");
@@ -21659,8 +21775,7 @@ export class ConsultantContractsDataCommandDto implements IConsultantContractsDa
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -21694,8 +21809,11 @@ export class ConsultantContractsDataCommandDto implements IConsultantContractsDa
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
-            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
-            this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.specialContractTerms = _data["specialContractTerms"];
             this.noSpecialPaymentTerms = _data["noSpecialPaymentTerms"];
@@ -21741,8 +21859,11 @@ export class ConsultantContractsDataCommandDto implements IConsultantContractsDa
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
-        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
-        data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["specialContractTerms"] = this.specialContractTerms;
         data["noSpecialPaymentTerms"] = this.noSpecialPaymentTerms;
@@ -21781,8 +21902,7 @@ export interface IConsultantContractsDataCommandDto {
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -21807,8 +21927,7 @@ export class ConsultantContractsDataQueryDto implements IConsultantContractsData
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -21844,8 +21963,11 @@ export class ConsultantContractsDataQueryDto implements IConsultantContractsData
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
-            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
-            this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.specialContractTerms = _data["specialContractTerms"];
             this.noSpecialPaymentTerms = _data["noSpecialPaymentTerms"];
@@ -21893,8 +22015,11 @@ export class ConsultantContractsDataQueryDto implements IConsultantContractsData
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
-        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
-        data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["specialContractTerms"] = this.specialContractTerms;
         data["noSpecialPaymentTerms"] = this.noSpecialPaymentTerms;
@@ -21935,8 +22060,7 @@ export interface IConsultantContractsDataQueryDto {
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -22681,7 +22805,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     expectedWorkloadHours?: number | undefined;
     expectedWorkloadUnitId?: number | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcPaymentEntityId?: number | undefined;
     consultantRate?: ConsultantRateDto;
     noSpecialRate?: boolean;
@@ -22731,7 +22855,11 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.expectedWorkloadHours = _data["expectedWorkloadHours"];
             this.expectedWorkloadUnitId = _data["expectedWorkloadUnitId"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
-            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.pdcPaymentEntityId = _data["pdcPaymentEntityId"];
             this.consultantRate = _data["consultantRate"] ? ConsultantRateDto.fromJS(_data["consultantRate"]) : <any>undefined;
             this.noSpecialRate = _data["noSpecialRate"];
@@ -22789,7 +22917,11 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["expectedWorkloadHours"] = this.expectedWorkloadHours;
         data["expectedWorkloadUnitId"] = this.expectedWorkloadUnitId;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
-        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["pdcPaymentEntityId"] = this.pdcPaymentEntityId;
         data["consultantRate"] = this.consultantRate ? this.consultantRate.toJSON() : <any>undefined;
         data["noSpecialRate"] = this.noSpecialRate;
@@ -22840,7 +22972,7 @@ export interface IConsultantSalesDataDto {
     expectedWorkloadHours?: number | undefined;
     expectedWorkloadUnitId?: number | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcPaymentEntityId?: number | undefined;
     consultantRate?: ConsultantRateDto;
     noSpecialRate?: boolean;
@@ -23588,8 +23720,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     noSpecialContractTerms?: boolean;
     frameAgreementId?: number | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
-    clientTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     clientRate?: ClientRateDto;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
@@ -23620,8 +23751,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.frameAgreementId = _data["frameAgreementId"];
             this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
-            this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
-            this.clientTimeReportingCapCurrencyId = _data["clientTimeReportingCapCurrencyId"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
             this.noSpecialRate = _data["noSpecialRate"];
             if (Array.isArray(_data["periodClientSpecialRates"])) {
@@ -23660,8 +23794,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["frameAgreementId"] = this.frameAgreementId;
         data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
-        data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
-        data["clientTimeReportingCapCurrencyId"] = this.clientTimeReportingCapCurrencyId;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
         data["noSpecialRate"] = this.noSpecialRate;
         if (Array.isArray(this.periodClientSpecialRates)) {
@@ -23693,8 +23830,7 @@ export interface IContractsClientDataDto {
     noSpecialContractTerms?: boolean;
     frameAgreementId?: number | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
-    clientTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     clientRate?: ClientRateDto;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
@@ -26884,7 +27020,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     clientExtensionDeadlineId?: number | undefined;
     clientExtensionSpecificDate?: moment.Moment | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcInvoicingEntityId?: number | undefined;
     clientRate?: ClientRateDto;
     noInvoicingReferenceNumber?: boolean;
@@ -26936,7 +27072,11 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.clientExtensionDeadlineId = _data["clientExtensionDeadlineId"];
             this.clientExtensionSpecificDate = _data["clientExtensionSpecificDate"] ? moment(_data["clientExtensionSpecificDate"].toString()) : <any>undefined;
             this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
-            this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.pdcInvoicingEntityId = _data["pdcInvoicingEntityId"];
             this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
             this.noInvoicingReferenceNumber = _data["noInvoicingReferenceNumber"];
@@ -27000,7 +27140,11 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["clientExtensionDeadlineId"] = this.clientExtensionDeadlineId;
         data["clientExtensionSpecificDate"] = this.clientExtensionSpecificDate ? this.clientExtensionSpecificDate.toISOString() : <any>undefined;
         data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
-        data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["pdcInvoicingEntityId"] = this.pdcInvoicingEntityId;
         data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
         data["noInvoicingReferenceNumber"] = this.noInvoicingReferenceNumber;
@@ -27057,7 +27201,7 @@ export interface ISalesClientDataDto {
     clientExtensionDeadlineId?: number | undefined;
     clientExtensionSpecificDate?: moment.Moment | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcInvoicingEntityId?: number | undefined;
     clientRate?: ClientRateDto;
     noInvoicingReferenceNumber?: boolean;
@@ -28621,6 +28765,90 @@ export enum TerminationTime {
     AccordingToContract = 1,
     BeforeEndOfContract = 2,
     ContractDidNotStart = 3,
+}
+
+export class TimeReportingCapDto implements ITimeReportingCapDto {
+    id?: TimeReportingCapId;
+    timeReportingCapMaxValue?: number;
+    valueUnitId?: number;
+    periodUnitId?: number;
+
+    constructor(data?: ITimeReportingCapDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] ? TimeReportingCapId.fromJS(_data["id"]) : <any>undefined;
+            this.timeReportingCapMaxValue = _data["timeReportingCapMaxValue"];
+            this.valueUnitId = _data["valueUnitId"];
+            this.periodUnitId = _data["periodUnitId"];
+        }
+    }
+
+    static fromJS(data: any): TimeReportingCapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeReportingCapDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["timeReportingCapMaxValue"] = this.timeReportingCapMaxValue;
+        data["valueUnitId"] = this.valueUnitId;
+        data["periodUnitId"] = this.periodUnitId;
+        return data;
+    }
+}
+
+export interface ITimeReportingCapDto {
+    id?: TimeReportingCapId;
+    timeReportingCapMaxValue?: number;
+    valueUnitId?: number;
+    periodUnitId?: number;
+}
+
+export class TimeReportingCapId implements ITimeReportingCapId {
+    readonly value?: number;
+
+    constructor(data?: ITimeReportingCapId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): TimeReportingCapId {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeReportingCapId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface ITimeReportingCapId {
+    value?: number;
 }
 
 export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAttachmentFileInfoInputDto {
