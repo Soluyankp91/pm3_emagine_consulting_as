@@ -45,6 +45,8 @@ import {
 	EmployeeDto,
     WorkflowDocumentCommandDto,
     WorkflowDocumentServiceProxy,
+    TimeReportingCapDto,
+    TimeReportingCapId,
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
@@ -1060,6 +1062,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
 		input.salesClientData.invoicingReferencePersonIdValue =
 			this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
+
+        input.salesClientData.timeReportingCaps = new Array<TimeReportingCapDto>();
+        if (this.clientDataComponent.salesClientDataForm.timeReportingCaps?.value.length) {
+            for (let cap of this.clientDataComponent.salesClientDataForm.timeReportingCaps?.value) {
+                let capInput = new TimeReportingCapDto(cap);
+                capInput.id = new TimeReportingCapId(cap.id);
+                input.salesClientData.timeReportingCaps.push(capInput);
+            }
+        }
 		if (this.clientDataComponent?.salesClientDataForm.clientRates.value.length) {
 			input.salesClientData!.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
 			this.clientDataComponent?.salesClientDataForm.clientRates.value.forEach((rate: any) => {
@@ -1130,7 +1141,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
 			consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
 			consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
-			consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+            consultantInput.timeReportingCaps = new Array<TimeReportingCapDto>();
+            if (consultant.timeReportingCaps?.length) {
+                for (let cap of consultant.timeReportingCaps) {
+                    let capInput = new TimeReportingCapDto(cap);
+                    capInput.id = new TimeReportingCapId(cap.id);
+                    consultantInput.timeReportingCaps.push(capInput);
+                }
+            }
 
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
