@@ -27,7 +27,7 @@
                 <ng-container
                     *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.IndividualCap && contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.NoCap">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150"
+                        <!-- <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150"
                             [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Max value</mat-label>
                             <input [disabled]="readOnlyMode" autocomplete="off" matInput
@@ -36,7 +36,7 @@
                                 <app-validator
                                     [control]="contractClientForm.clientTimeReportingCapMaxValue"></app-validator>
                             </mat-error>
-                        </mat-form-field>
+                        </mat-form-field> -->
                         <ng-container
                             *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.NoCap">
                             <span class="workflow-darkblue--text">

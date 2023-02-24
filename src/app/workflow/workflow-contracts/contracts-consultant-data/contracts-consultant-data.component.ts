@@ -84,10 +84,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			consultantCapOnTimeReporting: new UntypedFormControl(
 				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId)
 			),
-			consultantCapOnTimeReportingValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue),
-			consultantCapOnTimeReportingCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantTimeReportingCapCurrencyId)
-			),
+			// consultantCapOnTimeReportingValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue),
+			// consultantCapOnTimeReportingCurrency: new UntypedFormControl(
+			// 	this.findItemById(this.currencies, consultant?.consultantTimeReportingCapCurrencyId)
+			// ),
 			consultantRateUnitType: new UntypedFormControl(
 				this.findItemById(this.currencies, consultant?.consultantRate?.rateUnitTypeId)
 			),

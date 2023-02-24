@@ -904,10 +904,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
 				{ emitEvent: false }
 			);
-			this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(
-				this.findItemById(this.currencies, data.clientData.clientTimeReportingCapCurrencyId),
-				{ emitEvent: false }
-			);
+			// this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(
+			// 	this.findItemById(this.currencies, data.clientData.clientTimeReportingCapCurrencyId),
+			// 	{ emitEvent: false }
+			// );
 			if (data.clientData.noSpecialContractTerms) {
 				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
 			}
@@ -957,7 +957,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		input.clientData.noSpecialContractTerms = this.clientDataComponent?.contractClientForm.noSpecialContractTerms?.value;
 		input.clientData.clientTimeReportingCapId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value?.id;
 		// input.clientData.clientTimeReportingCapMaxValue = this.clientDataComponent?.contractClientForm.clientTimeReportingCapMaxValue?.value;
-		input.clientData.clientTimeReportingCapCurrencyId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
+		// input.clientData.clientTimeReportingCapCurrencyId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
 		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.clientRate?.value;
 		input.clientData.pdcInvoicingEntityId = this.clientDataComponent?.contractClientForm.pdcInvoicingEntityId?.value;
 		input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
@@ -1127,8 +1127,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.consultantId = consultantInput.consultantId;
 		consultantData.nameOnly = consultantInput.nameOnly;
 		consultantData.consultantTimeReportingCapId = consultantInput.consultantCapOnTimeReporting?.id;
-		consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
-		consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
+		// consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
+		// consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
 		consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
 		consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 		consultantData.specialContractTerms = consultantInput.specialContractTerms;
