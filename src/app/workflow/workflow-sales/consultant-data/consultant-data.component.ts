@@ -255,6 +255,11 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			),
 		});
 		this.consultants.push(form);
+        if (consultant?.timeReportingCaps?.length) {
+            for (let cap of consultant?.timeReportingCaps) {
+                this.addConsultantCap(this.consultants.length - 1, cap);
+            }
+        }
 		if (consultant?.periodConsultantSpecialRates?.length) {
 			for (let rate of consultant?.periodConsultantSpecialRates) {
 				this.addConsultantSpecialRate(this.consultants.length - 1, rate);

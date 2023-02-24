@@ -511,6 +511,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				);
+                if (result?.salesClientData?.timeReportingCaps?.length) {
+                    for (let cap of result?.salesClientData?.timeReportingCaps) {
+                        this.clientDataComponent.addTimeReportingCap(cap);
+                    }
+                }
 				if (result?.salesClientData?.directClient?.clientId) {
 					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
                     this.clientDataComponent.initContactSubs();
