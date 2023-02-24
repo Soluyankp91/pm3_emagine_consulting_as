@@ -1,22 +1,25 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, mapTo, pluck, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
 import { RichEditorDirective } from './directives';
 import { RichEditorOptionsProvider } from './providers';
-import { AgreementTemplateService, MergeFieldsService } from './data-access';
 import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './entities';
 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
 import { CompareSelectDocumentPopupComponent } from './components/compare-select-document-popup';
-import { AgreementTemplateDocumentFileVersionDto, SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
+import { SaveUsPopupComponent } from './components/save-as-popup/save-us-popup.component';
+
 import { AgreementAbstractService } from './data-access/agreement-abstract.service';
 import { MergeFieldsAbstractService } from './data-access/merge-fields-abstract';
+import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
 	standalone: true,
@@ -25,7 +28,9 @@ import { MergeFieldsAbstractService } from './data-access/merge-fields-abstract'
 	styleUrls: ['./editor.component.scss'],
 	imports: [
 		CommonModule,
+		MatButtonModule,
 		RichEditorDirective,
+		SaveUsPopupComponent,
 		InsertMergeFieldPopupComponent,
 		CompareSelectVersionPopupComponent,
 		CompareSelectDocumentPopupComponent,
@@ -45,6 +50,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 	documentList$ = new BehaviorSubject<IDocumentItem[]>([]);
 	templateVersions$ = new BehaviorSubject<IDocumentVersion[]>([]);
 	mergeFields$ = new BehaviorSubject<IMergeField>({});
+	isAgreement$ = this._route.data.pipe(
+		pluck('isAgreement')
+	);
 
 	isLoading: boolean = false;
 
@@ -52,7 +60,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _route: ActivatedRoute,
 		private _agreementService: AgreementAbstractService,
 		private _mergeFieldsService: MergeFieldsAbstractService,
-		private _editorCoreService: EditorCoreService
+		private _editorCoreService: EditorCoreService,
+		private _dialog: MatDialog
 	) {}
 
 	ngOnInit(): void {
@@ -131,7 +140,17 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveAsComplete() {
-		this._saveFileAs(ITemplateSaveType.Complete);
+		this._dialog.open(SaveUsPopupComponent, {
+			data: {},
+			height: 'auto',
+			width: '500px',
+			maxWidth: '100%',
+			disableClose: true,
+			hasBackdrop: true,
+			backdropClass: 'backdrop-modal--wrapper',
+		}).afterClosed().subscribe(console.log);
+
+		// this._saveFileAs(ITemplateSaveType.Complete);
 	}
 
 	cancel() {
