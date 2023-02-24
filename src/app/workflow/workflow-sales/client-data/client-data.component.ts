@@ -13,7 +13,7 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { ClientRateTypes, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { ClientRateTypes, ETimeReportingCaps, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-client-data',
@@ -55,6 +55,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	isClientFeeEditing = false;
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialFeeFilter = new UntypedFormControl('');
+    eTimeReportingCaps = ETimeReportingCaps;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -602,6 +603,19 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		}
 	}
 
+    addTimeReportingCap(cap?: any) {
+		const form = this._fb.group({
+			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
+			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
+			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+		});
+		this.salesClientDataForm.timeReportingCaps.push(form);
+	}
+
+	removeTimeReportingCap(index: number) {
+		this.timeReportingCaps.removeAt(index);
+	}
+
     get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
 	}
@@ -613,5 +627,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
     get contractSigners(): UntypedFormArray {
 		return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
 	}
+
+    get timeReportingCaps(): UntypedFormArray {
+        return this.salesClientDataForm.get('timeReportingCaps') as UntypedFormArray;
+    }
 
 }

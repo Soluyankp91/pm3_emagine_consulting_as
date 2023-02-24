@@ -23,7 +23,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consult
 import { WorkflowDataService } from '../../workflow-data.service';
 import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
-import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { ClientRateTypes, ConsultantDiallogAction, ETimeReportingCaps, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-consultant-data',
@@ -67,7 +67,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
-
+    eTimeReportingCaps = ETimeReportingCaps;
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -233,6 +233,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			prodataToProdataInvoiceCurrency: new UntypedFormControl(
 				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null
 			),
+            timeReportingCaps: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
@@ -753,5 +754,26 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					this._workflowDataService.workflowOverviewUpdated.emit(true);
 				});
 		});
+	}
+
+    getConsultantCapControls(consultantIndex: number) {
+        return (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls;
+    }
+
+    addConsultantCap(consultantIndex: number, cap?: any) {
+		const form = this._fb.group({
+			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
+			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
+			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+		});
+		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
+	}
+
+    removeTimeReportingCap(index: number) {
+		this.timeReportingCaps.removeAt(index);
+	}
+
+    get timeReportingCaps(): UntypedFormArray {
+		return this.consultantsForm.get('timeReportingCaps') as UntypedFormArray;
 	}
 }

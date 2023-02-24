@@ -102,14 +102,6 @@ nav.workflow-content--tabs {
     &.period-tabs {
         width: calc(100% - 300px);
     }
-    &.mat-tab-nav-bar {
-        top: 50px;
-        z-index: 1000;
-        position: sticky;
-        position: -webkit-sticky;
-        border-bottom: 0;
-        background-color: $white-color;
-    }
 
     .mat-tab-link-container {
         padding-top: 0 !important;

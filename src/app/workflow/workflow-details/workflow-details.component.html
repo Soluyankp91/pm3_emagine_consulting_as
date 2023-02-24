@@ -184,7 +184,7 @@
                 <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
             </div>
         </ng-container>
-        <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxLayout="row" fxLayoutAlign="start start" class="sticky-nav">
             <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs form-width-300">
                 <a mat-tab-link routerLink="overview" class="overview-tab" [active]="rlaWFOverview.isActive" routerLinkActive
                     #rlaWFOverview="routerLinkActive">
