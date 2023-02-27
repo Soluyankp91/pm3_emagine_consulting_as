@@ -11,9 +11,9 @@
                 <mat-icon svgIcon="crown-icon"></mat-icon>
                 Main address
             </mat-checkbox>
-            <mat-hint>Main address will be synced to Hubspot</mat-hint>
+            <mat-hint class="address-hint medium-grey-color u-mt--5">Main address will be synced to Hubspot</mat-hint>
             <ng-container *ngIf="clientAddressForm.value.isMainAddress && !wasMainAddress">
-                <mat-hint>The existing Main address will be overridden</mat-hint>
+                <mat-hint class="address-hint warning-hint">The existing Main address will be overridden</mat-hint>
             </ng-container>
             <mat-form-field appearance="outline" class="form-width-300 formFieldNoMarginPadding filter-select u-mt--10">
                 <mat-label>Country</mat-label>

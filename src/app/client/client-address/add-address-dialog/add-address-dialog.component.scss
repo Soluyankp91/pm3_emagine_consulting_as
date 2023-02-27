@@ -25,3 +25,9 @@
         }
     }
 }
+.address-hint {
+    @include fontOpenSans(12px, 600);
+    &.warning-hint {
+        color: #FB9101;
+    }
+}

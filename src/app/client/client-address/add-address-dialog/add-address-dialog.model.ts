@@ -1,19 +1,5 @@
-import { FormControl, FormGroup, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { ClientAddressDto, CountryDto } from "src/shared/service-proxies/service-proxies";
-
-// interface IClientAddressForm {
-//     id: FormControl<number | null>;
-//     isMainAddress: FormControl<boolean>;
-//     country: FormControl<CountryDto>;
-//     address: FormControl<string | null>;
-//     address2: FormControl<string | null>;
-//     postCode: FormControl<string | null>;
-//     city: FormControl<string | null>;
-//     region: FormControl<string | null>;
-//     isWorkplaceAddress: FormControl<boolean | null>;
-//     isInvoiceAddress: FormControl<boolean | null>;
-//     debtorNumberForInvoiceAddress: FormControl<string | null>;
-// }
 
 export class ClientAddressForm extends UntypedFormGroup {
     constructor(address?: ClientAddressDto) {
