@@ -135,7 +135,6 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 		this._files = [];
 		this._uploadedFiles$.next([]);
 		forkJoin(observableArr)
-			.pipe()
 			.subscribe(() => {
 				this._files = [];
 				this._uploadedFiles$.next([]);

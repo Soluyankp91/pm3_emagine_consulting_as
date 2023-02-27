@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STATUTES } from 'src/app/contracts/shared/components/grid-table/agreements/entities/agreements.constants';

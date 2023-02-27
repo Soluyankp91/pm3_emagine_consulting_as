@@ -64,7 +64,6 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _contractService: ContractsService,
 		private readonly _injector: Injector,
-        private readonly _dialog: MatDialog,
 	) {
 		super(_injector);
 	}
