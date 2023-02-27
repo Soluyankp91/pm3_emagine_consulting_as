@@ -6,11 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AppConsts } from 'src/shared/AppConsts';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { ClientAddressDto, ClientAddressesServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AddAddressDialogComponent } from './add-address-dialog/add-address-dialog.component';
-import { IClientAddress } from './client-address.model';
 
 @Component({
 	selector: 'app-client-address',
@@ -20,22 +18,8 @@ import { IClientAddress } from './client-address.model';
 export class ClientAddressComponent extends AppComponentBase implements OnInit {
 	clientId: number;
 	isDataLoading = false;
-	// pageNumber = 1;
-	// deafultPageSize = AppConsts.grid.defaultPageSize;
-	// pageSizeOptions = [5, 10, 20, 50, 100];
-	// totalCount: number = 0;
-	// sorting = '';
     showHidden = false;
-	// clientDisplayColumns = [
-	// 	'isMainAddress',
-    //     'country',
-    //     'streetAndNumber',
-    //     'city',
-    //     'isWorkplace',
-    //     'isInvoice',
-    //     'debitorNumber',
-    //     'action',
-	// ];
+
 	clientAddressData: MatTableDataSource<ClientAddressDto>;
     hiddenClientAddressData: MatTableDataSource<ClientAddressDto>;
 	private _unsubscribe = new Subject();
@@ -66,11 +50,6 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 			});
 	}
 
-	// public sortChanged(event?: any): void {
-	// 	this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
-	// 	this.getClientAddresses();
-	// }
-
 	public addAddress() {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
@@ -81,33 +60,10 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 		});
 	}
 
-    // editAddress(row: ClientAddressDto) {
-
-    // }
-
-    // toggleAddressHiddenState(row: ClientAddressDto) {
-    //     row.isHidden = !row.isHidden;
-    //     this._updateClientAddress(row);
-    // }
-
-    // deleteAddress(row: ClientAddressDto) {
-    //     this.showMainSpinner();
-    //     this._clientAddressesService.clientAddressesDELETE(row.id)
-    //         .pipe(finalize(() => this.hideMainSpinner()))
-    //         .subscribe();
-    // }
-
-    // private _updateClientAddress(address: any) {
-    //     let input = new ClientAddressDto(address);
-    //     input.countryId = address.country?.id;
-    //     input.countryCode = address.country?.code;
-    //     input.countryName = address.country?.name;
-    //     this._clientAddressesService.clientAddressesPUT(this.clientId, input)
-    //         .pipe(finalize(() => this.hideMainSpinner()))
-    //         .subscribe(result => {
-    //             this.fillAddressTable(result);
-    //         });
-    // }
+    fillAddressTable(addresses: ClientAddressDto[]) {
+        this.clientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => !x.isHidden));
+        this.hiddenClientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => x.isHidden));
+    }
 
     private _addNewClientAddress(address: any) {
         let input = new ClientAddressDto(address);
@@ -119,10 +75,5 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
             .subscribe(result => {
                 this.fillAddressTable(result);
             });
-    }
-
-    fillAddressTable(addresses: ClientAddressDto[]) {
-        this.clientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => !x.isHidden));
-        this.hiddenClientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => x.isHidden));
     }
 }

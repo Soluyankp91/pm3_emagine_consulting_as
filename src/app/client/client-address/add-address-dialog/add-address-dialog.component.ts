@@ -25,9 +25,9 @@ export class AddAddressDialogComponent extends AppComponentBase implements OnIni
 		private _dialogRef: MatDialogRef<AddAddressDialogComponent>
 	) {
 		super(injector);
-        if (data?.address) {
-            this.wasMainAddress = data.address.isMainAddress;
-        }
+		if (data?.address) {
+			this.wasMainAddress = data.address.isMainAddress;
+		}
 		this.clientAddressForm = new ClientAddressForm(data?.address);
 	}
 
@@ -39,6 +39,15 @@ export class AddAddressDialogComponent extends AppComponentBase implements OnIni
 		this._closeInternal();
 	}
 
+	public reject() {
+		this._closeInternal();
+	}
+
+	public confirm() {
+		this.onConfirmed.emit(this.clientAddressForm.value);
+		this._closeInternal();
+	}
+
 	private _getCountries() {
 		this._enumService.countries().subscribe((result) => (this.countries = result));
 	}
@@ -46,12 +55,4 @@ export class AddAddressDialogComponent extends AppComponentBase implements OnIni
 	private _closeInternal(): void {
 		this._dialogRef.close();
 	}
-
-	public reject() {}
-
-	public confirm() {
-		this.onConfirmed.emit(this.clientAddressForm.value);
-		this._closeInternal();
-	}
-	compareWithCountryFn() {}
 }
