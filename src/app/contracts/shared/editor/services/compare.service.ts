@@ -222,13 +222,17 @@ export class CompareService {
 			}
 
 			if (changes[i].type === 'delete') {
-				const p = current.document.paragraphs.getByIndex(changes[i].line);
+				let p = current.document.paragraphs.getByIndex(changes[i].line);
+				if (!p) {
+					current.document.insertParagraph(current.document.paragraphs.getByIndex(current.document.paragraphs.count - 1).interval.end);
+					p = current.document.paragraphs.getByIndex(current.document.paragraphs.count - 1);
+				}
 				const tempP = temp.document.paragraphs.getByIndex(changes[i].line - insertCount);
 
 				const chProperties = temp.document.getCharacterProperties(tempP?.interval);
 				const pProperties = temp.document.getParagraphProperties(tempP?.interval);
 
-				const ap = current.document.insertText(p?.interval?.start || 0, changes[i].text);
+				const ap = current.document.insertText(p?.interval?.start, changes[i].text);
 				current.document.setParagraphProperties({
 					start: ap.start,
 					length: ap.length

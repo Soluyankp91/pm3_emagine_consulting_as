@@ -145,6 +145,9 @@
             "production": {
               "browserTarget": "PM3:build:production"
             },
+            "qa": {
+              "browserTarget": "PM3:build:qa"
+            },
             "development": {
               "browserTarget": "PM3:build:development"
             }

@@ -1,20 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
 import { RichEditorDirective } from './directives';
 import { RichEditorOptionsProvider } from './providers';
-import { AgreementService, MergeFieldsService } from './data-access';
-import { IMergeField, ITemplateSaveType } from './entities';
+import { AgreementTemplateService, MergeFieldsService } from './data-access';
+import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './entities';
 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
 import { CompareSelectDocumentPopupComponent } from './components/compare-select-document-popup';
 import { AgreementTemplateDocumentFileVersionDto, SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementAbstractService } from './data-access/agreement-abstract.service';
+import { MergeFieldsAbstractService } from './data-access/merge-fields-abstract';
 
 @Component({
 	standalone: true,
@@ -30,8 +32,6 @@ import { AgreementTemplateDocumentFileVersionDto, SimpleAgreementTemplatesListIt
 	],
 	providers: [
 		RichEditorOptionsProvider,
-		AgreementService,
-		MergeFieldsService,
 		CompareService,
 		CommentService,
 		EditorCoreService,
@@ -42,16 +42,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 	templateId: number | undefined;
 	hasUnsavedChanges$ = this._editorCoreService.hasUnsavedChanges$;
 	template$ = new BehaviorSubject<File | Blob | ArrayBuffer | string>(null);
-	documentList$ = new BehaviorSubject<SimpleAgreementTemplatesListItemDto[]>([]);
-	templateVersions$ = new BehaviorSubject<AgreementTemplateDocumentFileVersionDto[]>([]);
+	documentList$ = new BehaviorSubject<IDocumentItem[]>([]);
+	templateVersions$ = new BehaviorSubject<IDocumentVersion[]>([]);
 	mergeFields$ = new BehaviorSubject<IMergeField>({});
 
 	isLoading: boolean = false;
 
 	constructor(
 		private _route: ActivatedRoute,
-		private _agreementService: AgreementService,
-		private _mergeFieldsService: MergeFieldsService,
+		private _agreementService: AgreementAbstractService,
+		private _mergeFieldsService: MergeFieldsAbstractService,
 		private _editorCoreService: EditorCoreService
 	) {}
 
@@ -76,7 +76,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 
 		this._agreementService.getSimpleList().subscribe((res) => {
-			this.documentList$.next(res.items);
+			this.documentList$.next(res);
 		});
 
 		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
@@ -132,6 +132,15 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveAsComplete() {
 		this._saveFileAs(ITemplateSaveType.Complete);
+	}
+
+	cancel() {
+		this.template$.pipe(
+			tap(template => {
+				this._editorCoreService.loadDocument(template);
+			}),
+			take(1)
+		).subscribe()
 	}
 
 	private _saveFileAs(type: ITemplateSaveType) {

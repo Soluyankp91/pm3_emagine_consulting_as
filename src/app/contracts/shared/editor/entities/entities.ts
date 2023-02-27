@@ -1,4 +1,6 @@
 import { RibbonButtonItem } from 'devexpress-richedit';
+import { Moment } from 'moment';
+import { AgreementTemplateEditReason } from 'src/shared/service-proxies/service-proxies';
 
 export enum ICustomCommand {
 	// Editor
@@ -50,11 +52,15 @@ export interface IDocumentCreator {
 
 export type IMergeField = { [key: string]: string };
 
-export enum IDocumentCreationReason {}
+export enum IDocumentCreationReason {
+	UserEdit = 1,
+    ParentInheritance = 2,
+    InitialSourceCopy = 3,
+}
 
 export interface IDocumentVersion {
-	createdDateUtc: string;
-	creationReason: IDocumentCreationReason;
+	createdDateUtc?: Date | Moment;
+	creationReason?: AgreementTemplateEditReason | IDocumentCreationReason;
 	description: string;
 	isCurrent: boolean;
 	isDraft: boolean;
@@ -71,7 +77,7 @@ export interface IDocumentItem {
 	linkStateAccepted?: boolean | undefined;
 	currentVersion?: number | undefined;
 	languageId?: any;
-	createdDateUtc?: string;
+	createdDateUtc?: Date| Moment | string;
 	isEnabled?: boolean;
 	tenantIds?: number[] | undefined;
 }

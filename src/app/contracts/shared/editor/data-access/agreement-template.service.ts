@@ -6,18 +6,22 @@ import { catchError, concatMap, map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { AgreementTemplateServiceProxy, CompleteTemplateDocumentFileDraftDto, StringWrappedValueDto } from 'src/shared/service-proxies/service-proxies';
+import { IDocumentItem, IDocumentVersion } from '../entities';
+import { AgreementAbstractService } from './agreement-abstract.service';
 
 @Injectable()
-export class AgreementService {
-	baseUrl = `${environment.apiUrl}/api/AgreementTemplate`;
+export class AgreementTemplateService implements AgreementAbstractService {
+	private readonly _baseUrl = `${environment.apiUrl}/api/AgreementTemplate`;
 
 	constructor(
 		private httpClient: HttpClient,
 		private _agreementTemplateService: AgreementTemplateServiceProxy
-		) {}
+		) {
+
+		}
 
 	getTemplate(templateId: number) {
-		const endpoint = `${this.baseUrl}/${templateId}/document-file/latest-template-version/true`;
+		const endpoint = `${this._baseUrl}/${templateId}/document-file/latest-template-version/true`;
 
 		return this.httpClient
 			.get(endpoint, {
@@ -30,7 +34,7 @@ export class AgreementService {
 	}
 
 	getTemplateByVersion(templateId: number, version: number) {
-		const endpoint = `${this.baseUrl}/${templateId}/document-file/${version}`;
+		const endpoint = `${this._baseUrl}/${templateId}/document-file/${version}`;
 		return this.httpClient
 			.get(endpoint, {
 				responseType: 'blob',
@@ -59,14 +63,16 @@ export class AgreementService {
 	getSimpleList() {
 		return this._agreementTemplateService.simpleList2()
 			.pipe(
+				map(item => item.items as IDocumentItem[]),
 				catchError((error: HttpErrorResponse) => throwError(error.error))
 			);
 	}
 
 	getTemplateVersions(templateId: number) {
 		return this._agreementTemplateService.templateVersions(templateId)
-			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
+			.pipe(
+				map(item => item as IDocumentVersion[]),
+				catchError((error: HttpErrorResponse) => throwError(error.error))
+			);
 	}
-
-	
 }
