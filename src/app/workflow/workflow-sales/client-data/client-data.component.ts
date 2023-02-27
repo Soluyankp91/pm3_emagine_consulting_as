@@ -3,6 +3,7 @@ import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } f
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { forkJoin, merge, of, Subject } from 'rxjs';
@@ -622,6 +623,12 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	removeTimeReportingCap(index: number) {
 		this.timeReportingCaps.removeAt(index);
 	}
+
+    capSelectionChange(event: MatSelectChange) {
+        if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
+            this.timeReportingCaps.controls = [];
+        }
+    }
 
     get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;

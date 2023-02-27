@@ -210,7 +210,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantCapOnTimeReporting: new UntypedFormControl(
 				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)
 			), // ?? default value = no cap - id:4
-			// consultantTimeReportingCapMaxValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
 			consultantProdataEntity: new UntypedFormControl(
 				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
 			),
@@ -781,9 +780,15 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
 	}
 
-    removeTimeReportingCap(index: number) {
-		this.timeReportingCaps.removeAt(index);
+    removeTimeReportingCap(consultantIndex: number, index: number) {
+		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).removeAt(index);
 	}
+
+    capSelectionChange(event: MatSelectChange, consultantIndex: number) {
+        if (event.value === ETimeReportingCaps.NoCap) {
+            (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls = [];
+        }
+    }
 
     get timeReportingCaps(): UntypedFormArray {
 		return this.consultantsForm.get('timeReportingCaps') as UntypedFormArray;
