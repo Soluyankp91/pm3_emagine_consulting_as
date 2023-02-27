@@ -1130,6 +1130,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
 			consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
 			consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
+            // NB: commented after proxies update, feature implemented in P30-601
 			// consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
 
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;

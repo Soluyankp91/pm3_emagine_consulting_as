@@ -904,6 +904,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
 				{ emitEvent: false }
 			);
+            // NB: commented after proxies update, feature implemented in P30-601
 			// this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(
 			// 	this.findItemById(this.currencies, data.clientData.clientTimeReportingCapCurrencyId),
 			// 	{ emitEvent: false }
@@ -956,6 +957,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		input.clientData.specialContractTerms = this.clientDataComponent?.contractClientForm.specialContractTerms?.value;
 		input.clientData.noSpecialContractTerms = this.clientDataComponent?.contractClientForm.noSpecialContractTerms?.value;
 		input.clientData.clientTimeReportingCapId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value?.id;
+        // NB: commented after proxies update, feature implemented in P30-601
 		// input.clientData.clientTimeReportingCapMaxValue = this.clientDataComponent?.contractClientForm.clientTimeReportingCapMaxValue?.value;
 		// input.clientData.clientTimeReportingCapCurrencyId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
 		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.clientRate?.value;
@@ -1127,6 +1129,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.consultantId = consultantInput.consultantId;
 		consultantData.nameOnly = consultantInput.nameOnly;
 		consultantData.consultantTimeReportingCapId = consultantInput.consultantCapOnTimeReporting?.id;
+        // NB: commented after proxies update, feature implemented in P30-601
 		// consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
 		// consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
 		consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
