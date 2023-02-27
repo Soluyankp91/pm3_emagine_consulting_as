@@ -23,14 +23,6 @@
 				tooltip: statusEnum[envelopeStatuses.Sent].name
 			}"></ng-container>
 	</ng-container>
-	<ng-container *ngSwitchCase="envelopeStatuses.Viewed">
-		<ng-container
-			[ngTemplateOutlet]="dot"
-			[ngTemplateOutletContext]="{
-				color: statusEnum[envelopeStatuses.Viewed].color,
-				tooltip: statusEnum[envelopeStatuses.Viewed].name
-			}"></ng-container>
-	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
 		<ng-container
 			[ngTemplateOutlet]="dot"
@@ -45,14 +37,6 @@
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Voided].color,
 				tooltip: statusEnum[envelopeStatuses.Voided].name
-			}"></ng-container>
-	</ng-container>
-	<ng-container *ngSwitchCase="envelopeStatuses.Signed">
-		<ng-container
-			[ngTemplateOutlet]="dot"
-			[ngTemplateOutletContext]="{
-				color: statusEnum[envelopeStatuses.Signed].color,
-				tooltip: statusEnum[envelopeStatuses.Signed].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Declined">

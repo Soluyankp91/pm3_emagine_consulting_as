@@ -18,6 +18,7 @@ import { FileUpload, FileUploadItem } from '../file-uploader/files';
 })
 export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	@Input() inheritedFiles: FileUpload[] = [];
+	@Input() label = 'From master template';
 	@Input() idProp = 'agreementTemplateAttachmentId';
 
 	inheritedFilesModified: FileUploadItem[] = [];
@@ -29,10 +30,10 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	constructor(private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes['inheritedFiles'] && !changes['inheritedFiles'].firstChange) {
+		if (changes['inheritedFiles'].currentValue) {
 			const inheritedFiles = changes['inheritedFiles'].currentValue as FileUpload[];
 			this.inheritedFilesModified = inheritedFiles.map((file) => {
-				return this._modifyFileUpload(file, false);
+				return this._modifyFileUpload(file);
 			});
 		}
 	}
@@ -54,7 +55,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 				1
 			);
 		}
-
 		this._onChange([...this.selectedInheritedFiles]);
 	}
 
@@ -73,7 +73,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 				this.selectedInheritedFiles.push(originalFile);
 			}
 		});
-		this._onChange([...this.selectedInheritedFiles]);
 	}
 
 	registerOnChange(fn: any): void {
@@ -83,14 +82,14 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 		this.onTouched = fn;
 	}
 
-	private _modifyFileUpload(file: FileUpload, selected: boolean) {
+	private _modifyFileUpload(file: FileUpload) {
 		return Object.assign(
 			{},
 			{
 				...file,
 				name: file.name,
 				icon: this._getIconName(file.name),
-				selected: selected,
+				selected: false,
 			}
 		) as FileUploadItem;
 	}

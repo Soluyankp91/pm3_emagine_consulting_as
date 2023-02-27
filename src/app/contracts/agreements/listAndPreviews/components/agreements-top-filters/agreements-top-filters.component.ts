@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STATUTES } from 'src/app/contracts/shared/components/grid-table/agreements/entities/agreements.constants';
@@ -52,11 +52,14 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 		this._setTopFiltersValue();
 		this._subscribeOnTenantChanges();
 		this._subscribeOnSearchChanges();
+		this._subscribeOnTenantsOuterChanges();
+		this._subscribeSearchOuterChanges();
 	}
 
 	ngOnDestroy(): void {
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
+        this._agreementService.updateSearchFilter('');
 	}
 
 	navigateTo() {
@@ -124,8 +127,23 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	private _subscribeOnTenantsOuterChanges() {
+		this.preselectedTenants$.pipe(takeUntil(this._unSubscribe$)).subscribe((tenantIds) => {
+			this.tenantsIdsControl.patchValue(tenantIds, { emitEvent: false, emitModelToViewChange: true });
+		});
+	}
+
+	private _subscribeSearchOuterChanges() {
+		this._agreementService
+			.getSearch$()
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((search) => {
+				this.searchControl.patchValue(search, { emitEvent: false, emitModelToViewChange: true });
+			});
+	}
+
 	private _subscribeOnTenantChanges() {
-		this.tenantsIdsControl.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((tenants) => {
+		this.tenantsIdsControl.valueChanges.pipe(takeUntil(this._unSubscribe$), debounceTime(300)).subscribe((tenants) => {
 			this._agreementService.updateTenantFilter(tenants);
 		});
 	}

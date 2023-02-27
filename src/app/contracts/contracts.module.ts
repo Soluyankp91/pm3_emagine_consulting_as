@@ -78,6 +78,7 @@ import { ClientTemplatePreviewComponent } from './client-specific-templates/list
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
+import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -140,6 +141,7 @@ import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/comp
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
 		SignersTableComponent,
+  NotificationDialogComponent,
 	],
 	imports: [
 		CommonModule,

@@ -34,23 +34,27 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		},
 		class: 'language-column',
 		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'ID',
 		class: 'id-column',
 		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Agreement name',
 		class: 'agreement-name-column',
 		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Actual Recipient',
 		class: 'actual-recipient-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -62,6 +66,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'recipientId-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -73,6 +78,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'agreementType-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -86,19 +92,22 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		class: 'legalEntityId-column',
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Client',
 		class: 'client-column',
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Company name',
 		class: 'company-column',
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Consultant name',
 		class: 'consultant-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -143,6 +152,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'mode-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -156,14 +166,16 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		class: 'status-column',
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Strt. date',
 		class: 'start-date-column',
+        sort: true
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Exp. date',
 		class: 'end-date-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -175,6 +187,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'saleManager-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -186,10 +199,11 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'contractManager-column',
+        sort: true,
 	},
 ];
 
-export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
+export const PAGE_SIZE_OPTIONS: number[] = [20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const WORKFLOW_AGREEMENT_ACTIONS: Actions[] = [
@@ -276,11 +290,6 @@ export const STATUTES = [
 		color: '#0052B4',
 	},
 	{
-		id: 4,
-		name: 'Viewed',
-		color: '#ED2939',
-	},
-	{
 		id: 5,
 		name: 'Delivery failure',
 		color: '#ED2939',
@@ -288,11 +297,6 @@ export const STATUTES = [
 	{
 		id: 6,
 		name: 'Voided',
-		color: '#ED2939',
-	},
-	{
-		id: 7,
-		name: 'Signed',
 		color: '#ED2939',
 	},
 	{

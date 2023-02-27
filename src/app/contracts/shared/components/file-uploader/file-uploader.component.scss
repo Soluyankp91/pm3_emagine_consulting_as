@@ -20,6 +20,7 @@
 .button-labels {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 }
 .upload-tip {
 	color: #696964;
@@ -52,7 +53,9 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	
 	max-width: 446px;
+    min-width: 446px;
 }
 .small-icon {
 	@include small-icon;

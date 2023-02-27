@@ -18,7 +18,7 @@ export class SettingsTabComponent implements OnInit {
 	defaultName: string;
 
 	templateName$: Observable<string>;
-	tenants$: Observable<(LegalEntityDto & { code: string })[] | null>;
+	tenants$: Observable<(LegalEntityDto & { code: string })[]>;
 
 	constructor(
 		private readonly _router: Router,

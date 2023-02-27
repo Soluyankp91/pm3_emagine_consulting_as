@@ -2,7 +2,8 @@
 @import 'variables';
 
 app-agreements {
-	display: block;
+	display: flex;
+    flex-direction: column;
 	height: calc(100vh - 49px);
 
 	.table-cell {
