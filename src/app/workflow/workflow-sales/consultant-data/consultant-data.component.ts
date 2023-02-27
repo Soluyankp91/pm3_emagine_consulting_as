@@ -204,7 +204,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantCapOnTimeReporting: new UntypedFormControl(
 				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)
 			), // ?? default value = no cap - id:4
-			consultantTimeReportingCapMaxValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
+			consultantTimeReportingCapMaxValue: new UntypedFormControl(null),
 			consultantProdataEntity: new UntypedFormControl(
 				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
 			),

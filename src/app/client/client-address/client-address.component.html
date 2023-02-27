@@ -1,127 +1,24 @@
 <div class="client-workflow-track">
     <div fxLayout="column" fxLayoutAlign="start center" class="client-workflow--table u-w--100">
-        <div fxLayout="column" fxFlexFill>
-            <mat-table #table [dataSource]="clientAddressData" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
-                <ng-container matColumnDef="isMainAddress">
-                    <mat-header-cell *matHeaderCellDef fxFlex="200px"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="200px">
-                        <ng-container *ngIf="row.isMainAddress; else noDataTemplate">
-                            <div fxLayout="row" fxLayoutAlign="start center">
-                                <mat-icon svgIcon="crown-icon"></mat-icon>
-                                <span class="text-bold dark-grey-color u-ml--12">
-                                    Main address
-                                </span>
-                            </div>
-                        </ng-container>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="country">
-                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Country </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.country" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row?.country ?? '-'}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="streetAndNumber">
-                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Street + nr </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" matTooltipClass="white-tooltip" [matTooltip]="row?.address" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row?.address ?? '-'}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="city">
-                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> City </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.city" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.city ?? '-'}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="isWorkplace">
-                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Workplace </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.isWorkplaceAddress" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.isWorkplaceAddress}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="isInvoice">
-                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Invoice </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.isInvoiceAddress" matTooltipClass="white-tooltip">
-                            {{row?.isInvoiceAddress}}
-                            <!-- <ng-container *ngIf="row?.invoicingReferencePerson?.id">
-                                <img class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + row.invoicingReferencePerson.id + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
-                            </ng-container> -->
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="debitorNumber">
-                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Debitor number </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.debtorNumberForInvoiceAddress" matTooltipClass="white-tooltip">
-                            {{row?.debtorNumberForInvoiceAddress}}
-                            <!-- <ng-container *ngIf="row?.workflowEmployee?.externalId">
-                                <img class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + row.workflowEmployee.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
-                            </ng-container> -->
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="end center">
-                        <!-- <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip">
-                            <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
-                        </button> -->
-                        <button mat-icon-button [matMenuTriggerFor]="clientAddressMenu"
-                                class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
-                        <mat-menu #clientAddressMenu>
-                            <button
-                                class="menu-item green-color"
-                                mat-menu-item
-                                appPreventDoubleClick (throttledClick)="editAddress(row)">
-                                <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                                Edit
-                            </button>
-                            <button
-                                class="menu-item green-color"
-                                mat-menu-item
-                                appPreventDoubleClick (throttledClick)="toggleAddressHiddenState(row)">
-                                <mat-icon [svgIcon]="row.isHidden ? 'icon-show' : 'icon-hide'"></mat-icon>
-                                {{row.isHidden ? 'Show address' : 'Hide address'}}
-                            </button>
-                            <button
-                                class="menu-item menu-item--cancel"
-                                mat-menu-item
-                                appPreventDoubleClick (throttledClick)="deleteAddress(row)">
-                                <mat-icon svgIcon="close-icon"></mat-icon>
-                                Delete
-                            </button>
-                        </mat-menu>
-                    </mat-cell>
-                </ng-container>
-                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer"></mat-row>
-            </mat-table>
-            <div class="spinner-container" *ngIf="isDataLoading">
-                <mat-spinner [diameter]="50"></mat-spinner>
-            </div>
-            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
-                RESULTS NOT FOUND
-            </div>
+        <div fxLayout="row" fxLayoutAlign="end start" class="u-w--100">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" [(ngModel)]="showHidden"
+                labelPosition="before">
+                Show hidden
+            </mat-slide-toggle>
         </div>
-        <div class="pagination-container u-w--100">
-            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
-                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
-            </mat-paginator>
+        <address-table [clientId]="clientId" [isDataLoading]="isDataLoading" [dataSource]="clientAddressData" (onGetTable)="getClientAddresses()" (refreshTable)="fillAddressTable($event)"></address-table>
+        <div fxLayout="row" fxLayoutAlign="end start" class="u-w--100 u-mt--15">
+            <button class="button-add button-add--circled" mat-flat-button (click)="addAddress()">
+                <mat-icon svgIcon="add_icon_circled"></mat-icon>
+                Add address
+            </button>
         </div>
+        <ng-container *ngIf="showHidden">
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10 u-mb--10">
+                <h2 class="medium-grey-color text-600">Hidden</h2>
+            </div>
+            <address-table [hiddenAddresses]="true" [clientId]="clientId" [isDataLoading]="isDataLoading" [dataSource]="hiddenClientAddressData" (onGetTable)="getClientAddresses()" (refreshTable)="fillAddressTable($event)"></address-table>
+        </ng-container>
     </div>
-    <button class="button-add" mat-flat-button (click)="addAddress()">
-        <mat-icon>add</mat-icon>
-        Add address
-    </button>
 </div>
 
-<ng-template #noDataTemplate>-</ng-template>

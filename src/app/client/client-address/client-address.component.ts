@@ -8,7 +8,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAddressDto, ClientAddressesServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AddAddressDialogComponent } from './add-address-dialog/add-address-dialog.component';
 import { IClientAddress } from './client-address.model';
 
@@ -20,27 +20,28 @@ import { IClientAddress } from './client-address.model';
 export class ClientAddressComponent extends AppComponentBase implements OnInit {
 	clientId: number;
 	isDataLoading = false;
-	pageNumber = 1;
-	deafultPageSize = AppConsts.grid.defaultPageSize;
-	pageSizeOptions = [5, 10, 20, 50, 100];
-	totalCount: number = 0;
-	sorting = '';
-
-	clientDisplayColumns = [
-		'isMainAddress',
-        'country',
-        'streetAndNumber',
-        'city',
-        'isWorkplace',
-        'isInvoice',
-        'debitorNumber',
-        'action',
-	];
-	clientAddressData: MatTableDataSource<IClientAddress>;
+	// pageNumber = 1;
+	// deafultPageSize = AppConsts.grid.defaultPageSize;
+	// pageSizeOptions = [5, 10, 20, 50, 100];
+	// totalCount: number = 0;
+	// sorting = '';
+    showHidden = false;
+	// clientDisplayColumns = [
+	// 	'isMainAddress',
+    //     'country',
+    //     'streetAndNumber',
+    //     'city',
+    //     'isWorkplace',
+    //     'isInvoice',
+    //     'debitorNumber',
+    //     'action',
+	// ];
+	clientAddressData: MatTableDataSource<ClientAddressDto>;
+    hiddenClientAddressData: MatTableDataSource<ClientAddressDto>;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
-		private _clientService: ClientsServiceProxy,
+		private _clientAddressesService: ClientAddressesServiceProxy,
 		private _activatedRoute: ActivatedRoute,
 		private _overlay: Overlay,
 		private _dialog: MatDialog
@@ -51,68 +52,77 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 	ngOnInit(): void {
 		this._activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.clientId = +params.get('id')!;
-			this._getClientAddresses();
+			this.getClientAddresses();
 		});
 	}
 
-	private _getClientAddresses() {
+	getClientAddresses() {
 		this.isDataLoading = true;
-		this._clientService
-			.contacts(this.clientId)
+		this._clientAddressesService
+			.clientAddressesGET(this.clientId)
 			.pipe(finalize(() => (this.isDataLoading = false)))
 			.subscribe((result) => {
-				let mappedData: IClientAddress[] = result.map((x: any) => {
-					return {
-                        isMainAddress: x.isMainAddress,
-						address: x.address,
-                        address2: x.address2,
-                        postCode: x.postCode,
-						country: x.country,
-						city: x.city,
-                        region: x.region,
-						isWorkplaceAddress: x.isWorkplaceAddress,
-						isInvoiceAddress: x.isInvoiceAddress,
-						debtorNumberForInvoiceAddress: x.debtorNumberForInvoiceAddress,
-						isHidden: x.isHidden,
-					};
-				});
-				this.clientAddressData = new MatTableDataSource<IClientAddress>(mappedData);
+				this.fillAddressTable(result);
 			});
 	}
 
-	public pageChanged(event?: any): void {
-		this.pageNumber = event.pageIndex + 1;
-		this.deafultPageSize = event.pageSize;
-		this._getClientAddresses();
-	}
-
-	public sortChanged(event?: any): void {
-		this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
-		this._getClientAddresses();
-	}
+	// public sortChanged(event?: any): void {
+	// 	this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
+	// 	this.getClientAddresses();
+	// }
 
 	public addAddress() {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		// MediumDialogConfig.data = {
-
-		// };
 		const dialogRef = this._dialog.open(AddAddressDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
-			// confirmed
+		dialogRef.componentInstance.onConfirmed.subscribe((newAddress) => {
+            this._addNewClientAddress(newAddress);
 		});
 	}
 
-    editAddress(row: any) {
+    // editAddress(row: ClientAddressDto) {
 
+    // }
+
+    // toggleAddressHiddenState(row: ClientAddressDto) {
+    //     row.isHidden = !row.isHidden;
+    //     this._updateClientAddress(row);
+    // }
+
+    // deleteAddress(row: ClientAddressDto) {
+    //     this.showMainSpinner();
+    //     this._clientAddressesService.clientAddressesDELETE(row.id)
+    //         .pipe(finalize(() => this.hideMainSpinner()))
+    //         .subscribe();
+    // }
+
+    // private _updateClientAddress(address: any) {
+    //     let input = new ClientAddressDto(address);
+    //     input.countryId = address.country?.id;
+    //     input.countryCode = address.country?.code;
+    //     input.countryName = address.country?.name;
+    //     this._clientAddressesService.clientAddressesPUT(this.clientId, input)
+    //         .pipe(finalize(() => this.hideMainSpinner()))
+    //         .subscribe(result => {
+    //             this.fillAddressTable(result);
+    //         });
+    // }
+
+    private _addNewClientAddress(address: any) {
+        let input = new ClientAddressDto(address);
+        input.countryId = address.country?.id;
+        input.countryCode = address.country?.code;
+        input.countryName = address.country?.name;
+        this._clientAddressesService.clientAddressesPOST(this.clientId, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.fillAddressTable(result);
+            });
     }
 
-    toggleAddressHiddenState(row: any) {
-
-    }
-
-    deleteAddress(row: any) {
-
+    fillAddressTable(addresses: ClientAddressDto[]) {
+        this.clientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => !x.isHidden));
+        this.hiddenClientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => x.isHidden));
     }
 }

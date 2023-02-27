@@ -1,6 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { CountryDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AppComponentBase } from 'src/shared/app-component-base';
+import { ClientAddressDto, CountryDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ClientAddressForm } from './add-address-dialog.model';
 
 @Component({
@@ -8,13 +9,26 @@ import { ClientAddressForm } from './add-address-dialog.model';
 	templateUrl: './add-address-dialog.component.html',
 	styleUrls: ['./add-address-dialog.component.scss'],
 })
-export class AddAddressDialogComponent implements OnInit {
+export class AddAddressDialogComponent extends AppComponentBase implements OnInit {
 	@Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 	clientAddressForm: ClientAddressForm;
 	countries: CountryDto[];
-	constructor(private _enumService: EnumServiceProxy, private _dialogRef: MatDialogRef<AddAddressDialogComponent>) {
-		this.clientAddressForm = new ClientAddressForm();
+	wasMainAddress: boolean;
+	constructor(
+		injector: Injector,
+		@Inject(MAT_DIALOG_DATA)
+		public data: {
+			address: ClientAddressDto;
+		},
+		private _enumService: EnumServiceProxy,
+		private _dialogRef: MatDialogRef<AddAddressDialogComponent>
+	) {
+		super(injector);
+        if (data?.address) {
+            this.wasMainAddress = data.address.isMainAddress;
+        }
+		this.clientAddressForm = new ClientAddressForm(data?.address);
 	}
 
 	ngOnInit(): void {
@@ -34,5 +48,10 @@ export class AddAddressDialogComponent implements OnInit {
 	}
 
 	public reject() {}
-	public confirm() {}
+
+	public confirm() {
+		this.onConfirmed.emit(this.clientAddressForm.value);
+		this._closeInternal();
+	}
+	compareWithCountryFn() {}
 }

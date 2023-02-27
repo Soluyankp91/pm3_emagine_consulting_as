@@ -868,5 +868,11 @@ export class AppModule {
                 'assets/common/images/crown-icon.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'add_icon_circled',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/add_icon_circled.svg'
+            )
+        );
     }
 }

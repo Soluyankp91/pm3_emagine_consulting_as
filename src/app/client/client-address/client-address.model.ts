@@ -1,6 +1,9 @@
+import { CountryDto } from "src/shared/service-proxies/service-proxies";
+
 export interface IClientAddress {
+    id: number | null,
     isMainAddress: boolean;
-    country: string;
+    country: CountryDto;
     address: string;
     address2: string;
     city: string;

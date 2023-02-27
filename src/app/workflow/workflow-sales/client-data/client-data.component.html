@@ -1118,16 +1118,16 @@
 <ng-template #clientAdditionalInfo let-client="client">
     <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100" [ngClass]="{'u-mt--10__reverse': client?.clientId}">
         <ng-container
-            *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
+            *ngIf="client?.clientAddresses?.length">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
                 Address:
             </span>
             <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{client?.address ? client?.address + ', ' : ''}}
-                {{client?.address2 ? client?.address2 + ', ' : ''}}
-                {{client?.city ? client?.city + ', ' : ''}}
-                {{client?.countryName ? client?.countryName + ', ' : ''}}
-                {{client?.postCode ? client?.postCode : ''}}
+                {{client?.clientAddresses[0]?.address ? client?.clientAddresses[0]?.address + ', ' : ''}}
+                {{client?.clientAddresses[0]?.address2 ? client?.clientAddresses[0]?.address2 + ', ' : ''}}
+                {{client?.clientAddresses[0]?.city ? client?.clientAddresses[0]?.city + ', ' : ''}}
+                {{client?.clientAddresses[0]?.countryName ? client?.clientAddresses[0]?.countryName + ', ' : ''}}
+                {{client?.clientAddresses[0]?.postCode ? client?.clientAddresses[0]?.postCode : ''}}
             </span>
         </ng-container>
         <ng-container *ngIf="client?.clientId">

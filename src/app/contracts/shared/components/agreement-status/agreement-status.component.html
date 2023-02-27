@@ -10,18 +10,20 @@
     <ng-container *ngSwitchCase="envelopeStatuses.Sent">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#0052B4'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Viewed">
+    <!-- FIXME: commented after proxies update -->
+    <!-- <ng-container *ngSwitchCase="envelopeStatuses.Viewed">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
+    </ng-container> -->
     <ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
     </ng-container>
     <ng-container *ngSwitchCase="envelopeStatuses.Voided">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
     </ng-container>
-    <ng-container *ngSwitchCase="envelopeStatuses.Signed">
+    <!-- FIXME: commented after proxies update -->
+    <!-- <ng-container *ngSwitchCase="envelopeStatuses.Signed">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
-    </ng-container>
+    </ng-container> -->
     <ng-container *ngSwitchCase="envelopeStatuses.Declined">
         <ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{color:'#ED2939'}"></ng-container>
     </ng-container>

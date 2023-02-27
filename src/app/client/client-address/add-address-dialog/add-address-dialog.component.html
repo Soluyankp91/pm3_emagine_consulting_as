@@ -7,37 +7,37 @@
     </div>
     <form [formGroup]="clientAddressForm">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-            <mat-checkbox color="accent" formControlName="isMainAddress" name="isMainAddress" class="black-checkbox u-mr--10">
+            <mat-checkbox color="accent" formControlName="isMainAddress" name="isMainAddress" class="black-checkbox u-mr--10" [disabled]="wasMainAddress">
                 <mat-icon svgIcon="crown-icon"></mat-icon>
                 Main address
             </mat-checkbox>
             <mat-hint>Main address will be synced to Hubspot</mat-hint>
-            <ng-container *ngIf="clientAddressForm.value.isMainAddress">
+            <ng-container *ngIf="clientAddressForm.value.isMainAddress && !wasMainAddress">
                 <mat-hint>The existing Main address will be overridden</mat-hint>
             </ng-container>
             <mat-form-field appearance="outline" class="form-width-300 formFieldNoMarginPadding filter-select u-mt--10">
                 <mat-label>Country</mat-label>
-                <mat-select formControlName="country" placeholder="Country" [disableOptionCentering]="true">
+                <mat-select formControlName="country" placeholder="Country" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                     <mat-select-trigger>
-                        <span class="country-flag fi fi-{{clientAddressForm.value.country?.code | lowercase }} fis"></span>&nbsp;{{ clientAddressForm.value.country?.name }}
+                        <span class="country-flag fi fi-{{clientAddressForm.value.country?.code | lowercase }} fib"></span>&nbsp;{{ clientAddressForm.value.country?.name }}
                     </mat-select-trigger>
                     <mat-option *ngFor="let item of countries" [value]="item">
-                        {{ item.name }}
+                        <span class="country-flag fi fi-{{item?.code | lowercase }} fib"></span>&nbsp;{{ item.name }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">
                 <mat-label>Street + number</mat-label>
-                <input autocomplete="off" placeholder="Street + number" matInput name="streetAndNumber" formControlName="streetAndNumber">
+                <input autocomplete="off" placeholder="Street + number" matInput name="address" formControlName="address">
             </mat-form-field>
             <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">
                 <mat-label>Address line #2</mat-label>
-                <input autocomplete="off" placeholder="Address line #2" matInput name="addressLine2" formControlName="addressLine2">
+                <input autocomplete="off" placeholder="Address line #2" matInput name="address2" formControlName="address2">
             </mat-form-field>
             <div fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--10">
                     <mat-label>Zip code</mat-label>
-                    <input autocomplete="off" placeholder="Zip code" matInput name="zipCode" formControlName="zipCode">
+                    <input autocomplete="off" placeholder="Zip code" matInput name="postCode" formControlName="postCode">
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-290">
                     <mat-label>City</mat-label>
@@ -57,7 +57,7 @@
             <ng-container *ngIf="clientAddressForm.value.isInvoiceAddress">
                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-290">
                     <mat-label>Debitor number</mat-label>
-                    <input autocomplete="off" placeholder="Debitor number" matInput name="debitorNumber" formControlName="debitorNumber">
+                    <input autocomplete="off" placeholder="Debitor number" matInput name="debtorNumberForInvoiceAddress" formControlName="debtorNumberForInvoiceAddress">
                 </mat-form-field>
             </ng-container>
         </div>
