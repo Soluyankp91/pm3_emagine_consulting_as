@@ -43,6 +43,7 @@
     <div fxLayout="row" fxLayoutAlign="start start" >
         <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive-outline" [matMenuTriggerFor]="emailMenu">
             Send via email
+            <mat-icon class="green-color">arrow_drop_down</mat-icon>
             <mat-menu #emailMenu>
                 <ng-container *ngFor="let item of emailMenuItems; trackBy: trackById">
                     <button
@@ -58,6 +59,7 @@
         <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive"
             [matMenuTriggerFor]="docuSignMenu">
             Send via DocuSign
+            <mat-icon class="white-color">arrow_drop_down</mat-icon>
             <mat-menu #docuSignMenu>
                 <ng-container *ngFor="let item of docuSignMenuItems; trackBy: trackById">
                     <button

@@ -49,6 +49,7 @@ export class AgreementService extends BaseContract {
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
 			search,
             undefined, //isWorkflowRelated
+            undefined, // envelopeProcessingPath
 			page.pageIndex,
 			page.pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''
