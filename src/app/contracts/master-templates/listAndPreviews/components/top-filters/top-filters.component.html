@@ -2,26 +2,23 @@
 	<div class="left-panel">
 		<div class="country-filter" *ngIf="tenantFilter$ | async as tenants">
 			<emg-multi-select [options]="tenants" formControlName="tenantIds">
-				<ng-template #triggerButton let-selectedItems>
-					<ng-container *ngIf="!selectedItems.length; else itemsPresent">
-						<mat-icon
-							svgIcon="euro-union-icon"
-							class="country-filter-icon"
-							[style.width]="'32px !important'"
-							[style.height]="'32px !important'">
-						</mat-icon
-					></ng-container>
-					<ng-template #itemsPresent>
-						<div class="icons-container">
-							<div class="circle-counter">
-								<span>{{ selectedItems.length }}</span>
-							</div>
-							<div class="icon-container">
-								<mat-icon svgIcon="dropdown-icon"></mat-icon>
-							</div>
-						</div>
-					</ng-template>
-				</ng-template>
+                <ng-template #triggerButton let-selectedItems>
+                    <ng-container *ngIf="selectedItems.length; else noItems">
+                        <div class="icons-container">
+                            <emg-tenants [tenants]="selectedItems"></emg-tenants></div
+                    ></ng-container>
+                    <ng-template #noItems>
+                        <mat-icon
+                            svgIcon="euro-union-icon"
+                            class="country-filter-icon"
+                            [style.width]="'32px !important'"
+                            [style.height]="'32px !important'">
+                        </mat-icon>
+                    </ng-template>
+                </ng-template>
+                <ng-template #optionPrefix let-option>
+                    <span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
+                </ng-template>
 				<ng-template #optionPrefix let-option>
 					<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
 				</ng-template>
@@ -38,7 +35,6 @@
 		</div>
 		<div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
 			<mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
-			<div>Create</div>
 		</div>
 	</div>
 </div>

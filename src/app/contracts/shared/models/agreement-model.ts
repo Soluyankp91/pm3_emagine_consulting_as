@@ -14,8 +14,8 @@ export class AgreementModel extends FormGroup {
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
 			recipientId: new FormControl(null, [Validators.required]),
-			nameTemplate: new FormControl(null, [Validators.required]),
-			definition: new FormControl(null),
+			nameTemplate: new FormControl('', [Validators.required]),
+			definition: new FormControl(''),
 			legalEntityId: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
@@ -23,11 +23,11 @@ export class AgreementModel extends FormGroup {
 			language: new FormControl(null, [Validators.required]),
 			startDate: new FormControl(null, [Validators.required]),
 			endDate: new FormControl(null, [Validators.required]),
-			note: new FormControl(null),
-			isSignatureRequired: new FormControl(null),
+			note: new FormControl(''),
+			isSignatureRequired: new FormControl(false),
 			signers: new FormControl([]),
-			selectedInheritedFiles: new FormControl(null),
-			uploadedFiles: new FormControl(null),
+			selectedInheritedFiles: new FormControl([]),
+			uploadedFiles: new FormControl([]),
 		});
 	}
 
@@ -54,6 +54,10 @@ export class AgreementModel extends FormGroup {
 		delete updatedValue[name];
 		this.INITIAL_AGREEMENT_FORM_VALUE$.next(updatedValue);
 		super.removeControl(name, options);
+	}
+
+	reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
+		super.reset(this.initialValue, options);
 	}
 
 	get agreementType() {
@@ -92,11 +96,11 @@ export class AgreementModel extends FormGroup {
 		return this.get('language');
 	}
 
-    get startDate() {
+	get startDate() {
 		return this.get('startDate');
 	}
-    
-    get endDate() {
+
+	get endDate() {
 		return this.get('endDate');
 	}
 
@@ -112,6 +116,18 @@ export class AgreementModel extends FormGroup {
 		return this.get('signers');
 	}
 
+	get parentSelectedAttachmentIds() {
+		return this.get('parentSelectedAttachmentIds');
+	}
+
+	get selectedInheritedFiles() {
+		return this.get('selectedInheritedFiles');
+	}
+
+	get uploadedFiles() {
+		return this.get('uploadedFiles');
+	}
+
 	get initial$() {
 		return this.INITIAL_AGREEMENT_FORM_VALUE$.asObservable();
 	}
@@ -124,19 +140,19 @@ export class AgreementModel extends FormGroup {
 		agreementType: null,
 		recipientId: null,
 		recipientTypeId: null,
-		nameTemplate: null,
-		definition: null,
+		nameTemplate: '',
+		definition: '',
 		legalEntityId: null,
 		salesTypes: null,
 		deliveryTypes: null,
 		contractTypes: null,
 		language: null,
-		note: null,
+		note: '',
 		startDate: null,
 		endDate: null,
-		isSignatureRequired: null,
+		isSignatureRequired: false,
 		signers: [],
-		selectedInheritedFiles: null,
-		uploadedFiles: null,
+		selectedInheritedFiles: [],
+		uploadedFiles: [],
 	});
 }

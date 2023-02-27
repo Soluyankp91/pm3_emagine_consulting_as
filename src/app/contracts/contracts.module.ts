@@ -77,6 +77,7 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
 import { EditorComponent } from './shared/editor/editor.component';
+import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -138,6 +139,7 @@ import { EditorComponent } from './shared/editor/editor.component';
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
 		SignersTableComponent,
+		NotificationDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -318,7 +320,7 @@ export class ContractsModule {
 			'add-signer-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/add-signer-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'empty-table-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
 		);

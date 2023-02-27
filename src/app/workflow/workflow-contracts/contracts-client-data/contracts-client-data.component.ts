@@ -99,6 +99,9 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
+                undefined,
+                undefined,
+                undefined,
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort

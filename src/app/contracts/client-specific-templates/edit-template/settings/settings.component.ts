@@ -22,7 +22,6 @@ import {
 	switchMap,
 	startWith,
 	tap,
-	skip,
 	takeUntil,
 	debounceTime,
 	distinctUntilChanged,
@@ -62,22 +61,27 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	documentTypes$: Observable<BaseEnumDto[]>;
 
 	editMode: boolean = false;
+
 	currentAgreementId: number;
+	currentAgreementTemplate: AgreementTemplateDetailsDto;
+
+	currentDuplicatedTemplate: AgreementTemplateDetailsDto;
 
 	creationModeControl = new FormControl({
-		value: AgreementCreationMode.FromScratch,
+		value: AgreementCreationMode.InheritedFromParent,
 		disabled: true,
 	});
 
 	clientTemplateFormGroup = new ClientTemplatesModel();
 
+	attachmentsFromParent: FileUpload[] = [];
 	preselectedFiles: FileUpload[] = [];
 
 	legalEntities: LegalEntityDto[];
 
 	options$: Observable<SettingsOptions>;
 
-	modeControl$ = new BehaviorSubject(AgreementCreationMode.FromScratch);
+	modeControl$ = new BehaviorSubject(AgreementCreationMode.InheritedFromParent);
 
 	clientOptions$: Observable<ClientResultDto[]>;
 
@@ -91,7 +95,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
 
-	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.FromScratch);
+	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -113,6 +117,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._setDocumentType();
 		this._setOptions();
 		this._initClients();
+		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
@@ -161,29 +166,31 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this.clientTemplateFormGroup.markAllAsTouched();
 			return;
 		}
-		let creationMode = this.creationModeControlReplay$.value;
 		const toSend = {
 			...this.clientTemplateFormGroup.getRawValue(),
-			creationMode: creationMode,
+			creationMode: this.creationModeControlReplay$.value,
 			documentFileProvidedByClient: false,
 		};
-		const uploadedFiles = this.clientTemplateFormGroup.uploadedFiles?.value
-			? this.clientTemplateFormGroup.uploadedFiles?.value
-			: [];
-		const selectedInheritedFiles = this.clientTemplateFormGroup.selectedInheritedFiles?.value
-			? this.clientTemplateFormGroup.selectedInheritedFiles?.value
-			: [];
 
-		if (creationMode === AgreementCreationMode.InheritedFromParent && !this.editMode) {
-			toSend.parentSelectedAttachmentIds = selectedInheritedFiles.map((file: any) => file.agreementTemplateAttachmentId);
-			toSend.attachments = uploadedFiles.map((attachment: FileUpload) => {
-				return new AgreementTemplateAttachmentDto(attachment);
-			});
-		} else {
-			toSend.attachments = [...uploadedFiles, ...selectedInheritedFiles].map((attachment: FileUpload) => {
-				return new AgreementTemplateAttachmentDto(attachment);
-			});
+		if (this.creationModeControlReplay$.value === AgreementCreationMode.InheritedFromParent) {
+			toSend.parentSelectedAttachmentIds = this.clientTemplateFormGroup.parentSelectedAttachmentIds.value.map(
+				(file: FileUpload) => file.agreementTemplateAttachmentId
+			);
 		}
+		if (
+			this.creationModeControlReplay$.value === AgreementCreationMode.Duplicated &&
+			this.currentDuplicatedTemplate.parentAgreementTemplateId
+		) {
+			toSend.parentAgreementTemplateId = this.currentDuplicatedTemplate.parentAgreementTemplateId;
+			toSend.parentSelectedAttachmentIds = this.clientTemplateFormGroup.parentSelectedAttachmentIds.value.map(
+				(file: FileUpload) => file.agreementTemplateAttachmentId
+			);
+		}
+
+		toSend.attachments = this._createAttachments([
+			...this.clientTemplateFormGroup.selectedInheritedFiles.value,
+			...this.clientTemplateFormGroup.uploadedFiles.value,
+		]);
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
@@ -208,8 +215,20 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		}
 	}
 
+	private _createAttachments(files: FileUpload[]) {
+		return files.map((attachment: FileUpload) => new AgreementTemplateAttachmentDto(attachment));
+	}
+
+	private _subscribeOnTemplateNameChanges() {
+		this.clientTemplateFormGroup.controls['name'].valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((name: string) => {
+				this._creationTitleService.updateTemplateName(name);
+			});
+	}
+
 	private _setDocumentType() {
-        this.documentTypes$ = (this.clientTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+		this.documentTypes$ = (this.clientTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
 				if (recipientTypeId) {
 					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
@@ -295,35 +314,31 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			language: data.language,
 			note: data.note,
 			isSignatureRequired: data.isSignatureRequired,
+			parentSelectedAttachmentIds: data.attachmentsFromParent
+				? data.attachmentsFromParent.filter((attachement) => attachement.isSelected)
+				: [],
 			isEnabled: data.isEnabled,
 		});
-		this.preselectedFiles = [
-			...(data.attachments?.map((attachment) => ({
-				agreementTemplateAttachmentId: attachment.agreementTemplateAttachmentId,
-				name: attachment.name,
-			})) as FileUpload[]),
-			...(data.attachmentsFromParent
-				? data.attachmentsFromParent.map((attachment) => ({
-						agreementTemplateAttachmentId: attachment.agreementTemplateAttachmentId,
-						name: attachment.name,
-				  }))
-				: []),
-		];
-		this._cdr.detectChanges();
+		if (this.creationModeControl.value === this.creationModes.InheritedFromParent) {
+			this.attachmentsFromParent = data.attachments as FileUpload[];
+			this._cdr.detectChanges();
+		} else {
+			this.preselectedFiles = data.attachments as FileUpload[];
+			this._cdr.detectChanges();
+		}
 	}
 
 	private _subscribeOnCreationModeResolver(): void {
 		this.modeControl$
 			.pipe(
 				takeUntil(this._unSubscribe$),
-				skip(1),
 				withLatestFrom(this.dirtyStatus$),
 				switchMap(([, isDirty]) => {
 					if (isDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-                            width: '500px',
-                            height: '240px',
-                            backdropClass: 'backdrop-modal--wrapper',
+							width: '500px',
+							height: '240px',
+							backdropClass: 'backdrop-modal--wrapper',
 						});
 						return dialogRef.afterClosed();
 					}
@@ -393,13 +408,18 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe((creationMode) => {
 				this.clientTemplateFormGroup.removeControl('parentAgreementTemplateId', { emitEvent: false });
 				this.clientTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId', { emitEvent: false });
+				this.clientTemplateFormGroup.removeControl('parentSelectedAttachmentIds', { emitEvent: false });
 				if (creationMode === AgreementCreationMode.InheritedFromParent) {
 					this.clientTemplateFormGroup.addControl('parentAgreementTemplateId', new FormControl(null), {
 						emitEvent: false,
 					});
+					this.clientTemplateFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
 					this._subscribeOnParentTemplateChanges();
 				} else if (creationMode === AgreementCreationMode.Duplicated) {
 					this.clientTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', new FormControl(null), {
+						emitEvent: false,
+					});
+					this.clientTemplateFormGroup.addControl('parentSelectedAttachmentIds', new FormControl(null), {
 						emitEvent: false,
 					});
 					this._subscribeOnDuplicateTemplateChanges();
@@ -457,19 +477,24 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				switchMap((agreementTemplateId: number) => {
 					return this._apiServiceProxy.agreementTemplateGET(agreementTemplateId);
 				}),
+				tap((agreementTemplateDetailsDto) => {
+					this.attachmentsFromParent = agreementTemplateDetailsDto.attachmentsFromParent as FileUpload[];
+					this._cdr.detectChanges();
+				}),
 				tap((agreementTemplate) => {
 					this._setDataFromRetrievedTemplate(agreementTemplate);
 				}),
 				tap(() => {
 					this.hideMainSpinner();
 				}),
-				tap((AgreementTemplateDetailsDto) => {
+				tap((agreementTemplateDetailsDto) => {
 					const queryParams: Params = {
-						id: `${AgreementTemplateDetailsDto.agreementTemplateId}`,
+						id: `${agreementTemplateDetailsDto.agreementTemplateId}`,
 					};
 					this._router.navigate([], {
 						queryParams: queryParams,
 					});
+					this.currentDuplicatedTemplate = agreementTemplateDetailsDto;
 				})
 			)
 			.subscribe();
@@ -477,7 +502,9 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _preselectAgreementTemplate(agreementTemplateId: number) {
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
+			this.currentAgreementTemplate = agreementTemplate;
 			if (agreementTemplate.creationMode === 3) {
+				this.currentDuplicatedTemplate = agreementTemplate;
 				this._setDuplicateObs();
 				this.clientTemplateFormGroup.addControl(
 					'duplicationSourceAgreementTemplateId',
@@ -501,10 +528,18 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				this._subscribeOnParentTemplateChanges();
 				this.parentOptionsChanged$.next(String(agreementTemplate.parentAgreementTemplateId));
 			}
+			if (agreementTemplate.parentAgreementTemplateId) {
+				this.clientTemplateFormGroup.addControl(
+					'parentSelectedAttachmentIds',
+					new FormControl(agreementTemplate.attachmentsFromParent.filter((attachement) => attachement.isSelected))
+				);
+				this.attachmentsFromParent = agreementTemplate.attachmentsFromParent as FileUpload[];
+			}
 			this.creationModeControlReplay$.next(agreementTemplate.creationMode);
 			this.clientOptionsChanged$.next(String(agreementTemplate.clientId));
 
 			this.preselectedFiles = agreementTemplate.attachments as FileUpload[];
+
 			this._cdr.detectChanges();
 
 			this._disableFields();

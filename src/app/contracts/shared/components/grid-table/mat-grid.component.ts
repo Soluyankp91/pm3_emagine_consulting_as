@@ -57,6 +57,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Output() selectedRowIdChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
 	@Output() onSelectionAction = new EventEmitter();
+    @Output() resetAllFilters = new EventEmitter();
 
 	@ContentChildren('customCells', {
 		descendants: false,
@@ -148,7 +149,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	async loadFilters() {
 		await Promise.all(
 			this.cells
-				.filter((cell) => cell.headerCell.type !== 'sort')
+				.filter((cell) => cell.headerCell.type !== 'default')
 				.map(async (cell, index) => {
 					if (cell.headerCell.filter) {
 						const componentInstance = await cell.headerCell.filter.component();

@@ -30,23 +30,27 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		},
 		class: 'language-column',
 		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'ID',
 		class: 'id-column',
 		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Template Name',
 		class: 'template-name-column',
 		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Client',
 		class: 'client-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -58,6 +62,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'agreementType-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -69,6 +74,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'recipientTypeId-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -115,9 +121,10 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		class: 'contractType-column',
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Last updated',
 		class: 'last-updated-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -164,7 +171,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	},
 ];
 
-export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
+export const PAGE_SIZE_OPTIONS: number[] = [20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [

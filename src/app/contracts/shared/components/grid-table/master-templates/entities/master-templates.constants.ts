@@ -25,14 +25,17 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'ID',
+		sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Template Name',
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -43,6 +46,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -53,6 +57,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.RecipientTypesFilterComponent
 				),
 		},
+        sort: true
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -95,8 +100,9 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		},
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Last updated',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -125,11 +131,11 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	agreementType: 'Document type',
 	recipientTypeId: 'Recipient type',
 	actualRecipient: 'Actual recipient',
-    consultantName: 'Consultant',
-    companyName: 'Company',
+	consultantName: 'Consultant',
+	companyName: 'Company',
 	legalEntityId: 'Legal entity',
-    saleManager: 'Sales manager',
-    contractManager: 'Contract manager',
+	saleManager: 'Sales manager',
+	contractManager: 'Contract manager',
 	legalEntityIds: 'Legal entities',
 	salesTypeIds: 'Sales types',
 	deliveryTypeIds: 'Delivery types',
@@ -149,7 +155,7 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	parentAgreementTemplateId: 'Parent template',
 };
 
-export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
+export const PAGE_SIZE_OPTIONS: number[] = [20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const MASTER_TEMPLATE_ACTIONS: Actions[] = [

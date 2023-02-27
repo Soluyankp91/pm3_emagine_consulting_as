@@ -63,7 +63,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	}
 
 	writeValue(value: any): void {
-		if (value === null) {
+		if (!value || !value.length) {
 			this._clearAllFiles();
 		}
 	}
@@ -117,7 +117,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 					this.onChange(files);
 					return;
 				}
-				this.onChange(null);
+				this.onChange([]);
 			})
 		);
 	}
@@ -128,12 +128,16 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	}
 
 	private _clearAllFiles() {
-		this._files = [];
-		this._uploadedFiles$.next([]);
 		let observableArr: Observable<void>[] = [];
 		this._files.forEach((file: FileUploadItem) => {
 			observableArr.push(this._fileServiceProxy.temporaryDELETE(file.temporaryFileId));
 		});
-		forkJoin(observableArr).subscribe();
+		this._files = [];
+		this._uploadedFiles$.next([]);
+		forkJoin(observableArr)
+			.subscribe(() => {
+				this._files = [];
+				this._uploadedFiles$.next([]);
+			});
 	}
 }

@@ -65,8 +65,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
 
-	initialLoading = true;
-
 	legalEntities: LegalEntityDto[];
 
 	preselectedFiles: FileUpload[] = [];

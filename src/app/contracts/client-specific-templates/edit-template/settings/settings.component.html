@@ -3,19 +3,19 @@
 		<div class="page-container">
 			<div class="template-settings-section">
 				<h3 class="template-settings-header">Client template settings</h3>
-                <ng-container *ngIf="!editMode">
-                    <mat-radio-group [formControl]="creationModeControl" class="radio-button-group">
-                        <ng-container *ngFor="let radioButton of creationRadioButtons">
-                            <mat-radio-button
-                            class="option"
-                            [value]="radioButton.value"
-                            (click)="onModeControlChange(radioButton.value)"
-                            >{{ radioButton.label }}</mat-radio-button
-                        >
-                        </ng-container>
-                    </mat-radio-group>
-                    <mat-divider></mat-divider>
-                </ng-container>
+				<ng-container *ngIf="!editMode">
+					<mat-radio-group [formControl]="creationModeControl" class="radio-button-group">
+						<ng-container *ngFor="let radioButton of creationRadioButtons">
+							<mat-radio-button
+								class="option"
+								[value]="radioButton.value"
+								(click)="onModeControlChange(radioButton.value)"
+								>{{ radioButton.label }}</mat-radio-button
+							>
+						</ng-container>
+					</mat-radio-group>
+					<mat-divider></mat-divider>
+				</ng-container>
 				<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
 					<ng-container *ngIf="templateOptions.options$ | async as options">
 						<emg-dropdown-autocomplete-single-select
@@ -37,23 +37,21 @@
 								<mat-option [value]="recipientType.id">{{ recipientType.name }}</mat-option>
 							</ng-container>
 						</mat-select>
-						<mat-error
-							><app-validator [control]="clientTemplateFormGroup.recipientTypeId"></app-validator
-						></mat-error>
+						<mat-error><app-validator [control]="clientTemplateFormGroup.recipientTypeId"></app-validator></mat-error>
 					</mat-form-field>
-                    <ng-container *ngIf="documentTypes$ | async as agreementTypes">
-                        <mat-form-field appearance="outline" class="small-field">
-                            <mat-label>Document type</mat-label>
-                            <mat-select placeholder="Document type" formControlName="agreementType">
-                                <mat-option *ngFor="let aggreementType of agreementTypes" [value]="aggreementType.id">{{
-                                    aggreementType.name
-                                }}</mat-option>
-                            </mat-select>
-                            <mat-error
-                                ><app-validator [control]="clientTemplateFormGroup.agreementType"></app-validator
-                            ></mat-error>
-                        </mat-form-field>
-                    </ng-container>
+					<ng-container *ngIf="documentTypes$ | async as agreementTypes">
+						<mat-form-field appearance="outline" class="small-field">
+							<mat-label>Document type</mat-label>
+							<mat-select placeholder="Document type" formControlName="agreementType">
+								<mat-option *ngFor="let aggreementType of agreementTypes" [value]="aggreementType.id">{{
+									aggreementType.name
+								}}</mat-option>
+							</mat-select>
+							<mat-error
+								><app-validator [control]="clientTemplateFormGroup.agreementType"></app-validator
+							></mat-error>
+						</mat-form-field>
+					</ng-container>
 				</div>
 				<emg-dropdown-autocomplete-single-select
 					*ngIf="clientOptions$ | async as clientOptions"
@@ -74,9 +72,7 @@
 				<mat-form-field appearance="outline">
 					<mat-label> Definition(optional) </mat-label>
 					<input matInput type="text" formControlName="definition" placeholder="Definition" />
-					<mat-error
-						><app-validator [control]="clientTemplateFormGroup.definition"></app-validator
-					></mat-error>
+					<mat-error><app-validator [control]="clientTemplateFormGroup.definition"></app-validator></mat-error>
 				</mat-form-field>
 				<mat-form-field appearance="outline">
 					<mat-label>Internal legal entity</mat-label>
@@ -85,9 +81,7 @@
 							<mat-option [value]="legalEntity.id">{{ legalEntity.name }}</mat-option>
 						</ng-container>
 					</mat-select>
-					<mat-error
-						><app-validator [control]="clientTemplateFormGroup.legalEntities"></app-validator
-					></mat-error>
+					<mat-error><app-validator [control]="clientTemplateFormGroup.legalEntities"></app-validator></mat-error>
 				</mat-form-field>
 				<div class="form-row">
 					<mat-form-field appearance="outline" class="small-field">
@@ -97,9 +91,7 @@
 								{{ salesType.name }}</mat-option
 							>
 						</mat-select>
-						<mat-error
-							><app-validator [control]="clientTemplateFormGroup.salesTypes"></app-validator
-						></mat-error>
+						<mat-error><app-validator [control]="clientTemplateFormGroup.salesTypes"></app-validator></mat-error>
 					</mat-form-field>
 
 					<mat-form-field appearance="outline" class="small-field">
@@ -109,9 +101,7 @@
 								<mat-option [value]="deliveryType.id">{{ deliveryType.name }}</mat-option>
 							</ng-container>
 						</mat-select>
-						<mat-error
-							><app-validator [control]="clientTemplateFormGroup.deliveryTypes"></app-validator
-						></mat-error>
+						<mat-error><app-validator [control]="clientTemplateFormGroup.deliveryTypes"></app-validator></mat-error>
 					</mat-form-field>
 				</div>
 				<div class="form-row">
@@ -122,9 +112,7 @@
 								<mat-option [value]="contractType.id">{{ contractType.name }}</mat-option>
 							</ng-container>
 						</mat-select>
-						<mat-error
-							><app-validator [control]="clientTemplateFormGroup.contractTypes"></app-validator
-						></mat-error>
+						<mat-error><app-validator [control]="clientTemplateFormGroup.contractTypes"></app-validator></mat-error>
 					</mat-form-field>
 					<mat-form-field appearance="outline" class="small-field">
 						<mat-label> Language of text</mat-label>
@@ -133,9 +121,7 @@
 								language.name
 							}}</mat-option>
 						</mat-select>
-						<mat-error
-							><app-validator [control]="clientTemplateFormGroup.language"></app-validator
-						></mat-error>
+						<mat-error><app-validator [control]="clientTemplateFormGroup.language"></app-validator></mat-error>
 					</mat-form-field>
 				</div>
 				<mat-form-field appearance="outline" class="textarea-form-field">
@@ -148,6 +134,12 @@
 				<mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
 			</div>
 			<div class="attachments-section">
+				<ng-container *ngIf="clientTemplateFormGroup.parentSelectedAttachmentIds">
+					<emg-file-selector
+						[inheritedFiles]="attachmentsFromParent"
+                        label="Inherited from parent"
+						formControlName="parentSelectedAttachmentIds"></emg-file-selector>
+				</ng-container>
 				<emg-file-selector
 					[inheritedFiles]="preselectedFiles"
 					formControlName="selectedInheritedFiles"></emg-file-selector>
