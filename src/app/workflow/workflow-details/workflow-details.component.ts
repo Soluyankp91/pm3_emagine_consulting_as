@@ -44,7 +44,7 @@ import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-di
 import { BigDialogConfig, DialogConfig600, MediumDialogConfig } from 'src/shared/dialog.configs';
 import { EPeriodAbbreviation, EPeriodClass, EPeriodName, EPermissions } from './workflow-details.model';
 import { EProcessIcon } from '../workflow-period/workflow-period.model';
-import {Clipboard} from '@angular/cdk/clipboard';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
