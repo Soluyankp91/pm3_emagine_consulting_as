@@ -6,7 +6,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { forkJoin, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
@@ -29,6 +29,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	currencies: EnumEntityTypeDto[];
     consultantInsuranceOptions: { [key: string]: string };
 	filteredConsultants: ConsultantResultDto[] = [];
+    valueUnitTypes: EnumEntityTypeDto[];
+    periodUnitTypes: EnumEntityTypeDto[];
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
 	isConsultantRateEditing = false;
@@ -61,13 +63,17 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
             employmentTypes: this._internalLookupService.getEmploymentTypes(),
             consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
             currencies: this._internalLookupService.getCurrencies(),
-            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions()
+            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
+            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
         })
         .subscribe(result => {
             this.employmentTypes = result.employmentTypes;
             this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
             this.currencies = result.currencies;
             this.consultantInsuranceOptions = result.consultantInsuranceOptions;
+            this.valueUnitTypes = result.valueUnitTypes;
+            this.periodUnitTypes = result.periodUnitTypes;
         })
     }
 
@@ -81,13 +87,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			endDate: new UntypedFormControl(consultant?.endDate),
 			noEndDate: new UntypedFormControl(consultant?.noEndDate),
 			consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
-			consultantCapOnTimeReporting: new UntypedFormControl(
-				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId)
-			),
-			// consultantCapOnTimeReportingValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue),
-			// consultantCapOnTimeReportingCurrency: new UntypedFormControl(
-			// 	this.findItemById(this.currencies, consultant?.consultantTimeReportingCapCurrencyId)
-			// ),
+			consultantTimeReportingCapId: new UntypedFormControl(consultant?.consultantTimeReportingCapId),
 			consultantRateUnitType: new UntypedFormControl(
 				this.findItemById(this.currencies, consultant?.consultantRate?.rateUnitTypeId)
 			),
@@ -124,6 +124,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		consultant.projectLines?.forEach((project: any) => {
 			this.addProjectLinesToConsultantData(consultantIndex, project);
 		});
+        consultant.timeReportingCaps?.forEach(cap => {
+            this.addConsultantCap(consultantIndex, cap);
+        })
 		consultant.periodConsultantSpecialFees?.forEach((fee: any) => {
 			this.addClientFeesToConsultantData(consultantIndex, fee);
 		});
@@ -537,6 +540,28 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			.at(projectLineIndex)
 			.get('markedForLegacyDeletion')
 			?.setValue(!previousValue, { emitEvent: false });
+	}
+
+    getConsultantCapControls(consultantIndex: number) {
+        return (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls;
+    }
+
+    addConsultantCap(consultantIndex: number, cap?: TimeReportingCapDto) {
+		const form = this._fb.group({
+            id: new UntypedFormControl(cap?.id?.value ?? null),
+			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
+			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
+			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+		});
+		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
+	}
+
+    removeTimeReportingCap(consultantIndex: number, index: number) {
+		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).removeAt(index);
+	}
+
+    get timeReportingCaps(): UntypedFormArray {
+		return this.contractsConsultantsDataForm.get('timeReportingCaps') as UntypedFormArray;
 	}
 
     get consultants(): UntypedFormArray {

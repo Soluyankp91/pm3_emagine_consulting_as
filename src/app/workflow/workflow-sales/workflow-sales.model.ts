@@ -151,7 +151,6 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             // Client project
             clientTimeReportingCapId: new UntypedFormControl(false),
             timeReportingCaps: new UntypedFormArray([]),
-            // clientTimeReportingCapMaxValue: new UntypedFormControl(null)
         });
     }
 
