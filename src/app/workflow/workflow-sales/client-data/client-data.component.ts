@@ -48,6 +48,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	clientRateTypes = ClientRateTypes;
     frameAgreements: AgreementSimpleListItemDto[];
+    valueUnitTypes: EnumEntityTypeDto[];
+    periodUnitTypes: EnumEntityTypeDto[];
 
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
@@ -94,6 +96,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
 			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
 			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.legalEntities = result.legalEntities;
@@ -104,6 +108,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.invoiceFrequencies = result.invoiceFrequencies;
 			this.invoicingTimes = result.invoicingTimes;
 			this.clientTimeReportingCap = result.clientTimeReportingCap;
+            this.valueUnitTypes = result.valueUnitTypes;
+            this.periodUnitTypes = result.periodUnitTypes;
 		});
 	}
 

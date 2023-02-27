@@ -58,6 +58,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     currencies: EnumEntityTypeDto[];
     countries: CountryDto[];
     legalEntities: LegalEntityDto[];
+    valueUnitTypes: EnumEntityTypeDto[];
+    periodUnitTypes: EnumEntityTypeDto[];
 	filteredAccountManagers: EmployeeDto[] = [];
 	filteredConsultantClientAddresses: ClientResultDto[] = [];
 	filteredConsultantCountries: EnumEntityTypeDto[];
@@ -106,7 +108,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             rateUnitTypes: this._internalLookupService.getUnitTypes(),
             invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
             invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-            currencies: this._internalLookupService.getCurrencies()
+            currencies: this._internalLookupService.getCurrencies(),
+            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
         })
         .subscribe(result => {
             this.employmentTypes = result.employmentTypes;
@@ -119,6 +123,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             this.invoiceFrequencies = result.invoiceFrequencies;
             this.invoicingTimes = result.invoicingTimes;
             this.currencies = result.currencies;
+            this.valueUnitTypes = result.valueUnitTypes;
+            this.periodUnitTypes = result.periodUnitTypes;
         });
     }
 

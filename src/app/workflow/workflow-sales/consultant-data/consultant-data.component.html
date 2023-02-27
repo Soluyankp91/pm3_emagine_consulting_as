@@ -333,7 +333,7 @@
                                                             <mat-label>Unit</mat-label>
                                                             <mat-select [disabled]="readOnlyMode" required formControlName="valueUnitId"
                                                                 [disableOptionCentering]="true">
-                                                                <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
+                                                                <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
                                                                     <mat-option [value]="item.id">
                                                                         {{ item.name }}
                                                                     </mat-option>
@@ -347,7 +347,7 @@
                                                             <mat-label>Period</mat-label>
                                                             <mat-select [disabled]="readOnlyMode" required formControlName="periodUnitId"
                                                                 [disableOptionCentering]="true">
-                                                                <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
+                                                                <ng-container *ngFor="let item of periodUnitTypes; trackBy: trackById">
                                                                     <mat-option [value]="item.id">
                                                                         {{ item.name }}
                                                                     </mat-option>
