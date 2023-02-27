@@ -122,5 +122,13 @@ export class WorkflowModule {
 			'open-in-docusign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/open-in-docusign.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'create-docusign-draft',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/create-docusign-draft.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'send-via-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
+		);
 	}
 }

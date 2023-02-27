@@ -13,6 +13,46 @@ export enum ESignerRole {
 	'Receive copy of contract' = 3,
 }
 
+export enum EDocuSignMenuOption {
+    SendViaDocuSign = 1,
+    CreateDocuSignDraft = 2
+}
+
+export const DocuSignMenuItems = [
+    {
+        id: 1,
+        name: 'Send via DocuSign',
+        icon: 'send-via-docusign',
+        option: EDocuSignMenuOption.SendViaDocuSign,
+    },
+    {
+        id: 2,
+        name: 'Create DocuSign envelope draft',
+        icon: 'create-docusign-draft',
+        option: EDocuSignMenuOption.CreateDocuSignDraft,
+    }
+]
+
+export enum EEmailMenuOption {
+    EditableDocFile = 1,
+    AsPdfFile = 2
+}
+
+export const EmailMenuItems = [
+    {
+        id: 1,
+        name: 'In editable *.docx format',
+        icon: 'download-doc',
+        option: EEmailMenuOption.EditableDocFile,
+    },
+    {
+        id: 2,
+        name: 'As *.pdf file',
+        icon: 'download-pdf',
+        option: EEmailMenuOption.AsPdfFile,
+    }
+]
+
 
 export const RecipientMockedList: EnvelopePreviewDto[] = [
     new EnvelopePreviewDto({

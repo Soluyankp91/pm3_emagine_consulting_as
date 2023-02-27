@@ -41,13 +41,34 @@
         Cancel
     </button>
     <div fxLayout="row" fxLayoutAlign="start start" >
-        <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive-outline"
-            appPreventDoubleClick (throttledClick)="sendViaEmail()">
+        <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive-outline" [matMenuTriggerFor]="emailMenu">
             Send via email
+            <mat-menu #emailMenu>
+                <ng-container *ngFor="let item of emailMenuItems; trackBy: trackById">
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        appPreventDoubleClick (throttledClick)="sendViaEmail(item.option)">
+                        <mat-icon [svgIcon]="item.icon"></mat-icon>
+                        {{item.name}}
+                    </button>
+                </ng-container>
+            </mat-menu>
         </button>
         <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive"
-            appPreventDoubleClick (throttledClick)="sendViaDocuSign()">
+            [matMenuTriggerFor]="docuSignMenu">
             Send via DocuSign
+            <mat-menu #docuSignMenu>
+                <ng-container *ngFor="let item of docuSignMenuItems; trackBy: trackById">
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        appPreventDoubleClick (throttledClick)="sendViaDocuSign(item.option)">
+                        <mat-icon [svgIcon]="item.icon"></mat-icon>
+                        {{item.name}}
+                    </button>
+                </ng-container>
+            </mat-menu>
         </button>
     </div>
 </mat-dialog-actions>

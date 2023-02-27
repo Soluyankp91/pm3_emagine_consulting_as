@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { EnvelopePreviewDto, SignerType } from 'src/shared/service-proxies/service-proxies';
-import { ESignerRole, ESignerTypeName, RecipientMockedList } from './signers-preview-dialog.model';
+import { DocuSignMenuItems, EDocuSignMenuOption, EEmailMenuOption, EmailMenuItems, ESignerRole, ESignerTypeName, RecipientMockedList } from './signers-preview-dialog.model';
 
 @Component({
 	selector: 'app-signers-preview-dialog',
@@ -11,13 +11,15 @@ import { ESignerRole, ESignerTypeName, RecipientMockedList } from './signers-pre
 	styleUrls: ['./signers-preview-dialog.component.scss'],
 })
 export class SignersPreviewDialogComponent extends AppComponentBase implements OnInit {
-	@Output() onSendViaEmail = new EventEmitter();
-	@Output() onSendViaDocuSign = new EventEmitter<boolean>();
+	@Output() onSendViaEmail = new EventEmitter<{option: EEmailMenuOption}>();
+	@Output() onSendViaDocuSign = new EventEmitter<{createDraft: boolean, option: EDocuSignMenuOption}>();
 	envelopePreviewList: EnvelopePreviewDto[];
     signerType = SignerType;
 	signerTypeName = ESignerTypeName;
 	signerRole = ESignerRole;
     createDocuSignDraft = new FormControl<boolean>(false);
+    docuSignMenuItems = DocuSignMenuItems;
+    emailMenuItems = EmailMenuItems;
 	constructor(
 		injector: Injector,
 		@Inject(MAT_DIALOG_DATA)
@@ -38,13 +40,13 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 		this._closeInternal();
 	}
 
-	public sendViaEmail() {
-		this.onSendViaEmail.emit();
+	public sendViaEmail(option: EEmailMenuOption) {
+		this.onSendViaEmail.emit({option: option});
 		this._closeInternal();
 	}
 
-	public sendViaDocuSign() {
-		this.onSendViaDocuSign.emit(this.createDocuSignDraft.value);
+	public sendViaDocuSign(option: EDocuSignMenuOption) {
+		this.onSendViaDocuSign.emit({createDraft: this.createDocuSignDraft.value, option: option});
 		this._closeInternal();
 	}
 
