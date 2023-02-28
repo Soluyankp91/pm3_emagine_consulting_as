@@ -2,7 +2,10 @@ import { Component, OnInit, TrackByFunction, Injector, Inject } from '@angular/c
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
-import { AttachmentPreview, MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
+import {
+	AttachmentPreview,
+	MappedAgreementTemplateDetailsAttachmentDto,
+} from 'src/app/contracts/shared/components/file-uploader/files';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 import { DownloadFile } from 'src/app/contracts/shared/utils/download-file';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -33,15 +36,23 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 		this.trackById = this.createTrackByFn('agreementTemplateAttachmentId');
 	}
 
+	downloadParentAttachment(file: MappedAgreementTemplateDetailsAttachmentDto): void {
+		this._previewService
+			.downloadTemplateAttachment(file.agreementTemplateAttachmentId)
+			.subscribe((d) => DownloadFile(d as any, file.name));
+	}
+
 	downloadAttachment(file: AgreementDetailsAttachmentDto | MappedAgreementTemplateDetailsAttachmentDto): void {
-		let attachmentId: number;
 		if ('agreementTemplateAttachmentId' in file) {
-			attachmentId = file.agreementTemplateAttachmentId;
+			this._previewService
+				.downloadTemplateAttachment(file.agreementTemplateAttachmentId)
+				.subscribe((d) => DownloadFile(d as any, file.name));
 		}
 		if ('agreementAttachmentId' in file) {
-			attachmentId = file.agreementAttachmentId;
+			this._previewService
+				.downloadAgreementAttachment(file.agreementAttachmentId)
+				.subscribe((d) => DownloadFile(d as any, file.name));
 		}
-		this._previewService.downloadAttachment(attachmentId).subscribe((d) => DownloadFile(d as any, file.name));
 	}
 
 	private _getIconName(fileName: string): string {

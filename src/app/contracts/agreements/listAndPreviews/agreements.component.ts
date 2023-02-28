@@ -1,5 +1,4 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation, Injector } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';

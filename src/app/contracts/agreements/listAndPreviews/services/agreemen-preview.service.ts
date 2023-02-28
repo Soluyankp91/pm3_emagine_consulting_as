@@ -16,7 +16,8 @@ import {
 
 @Injectable()
 export class AgreementPreviewService extends BasePreview {
-	downloadAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
+    downloadAgreementAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
+	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
 	entityGet = this._agreementServiceProxy.agreementGET.bind(this._agreementServiceProxy);
 	entityMetadataLog = this._agreementServiceProxy.logs.bind(this._agreementServiceProxy);
 

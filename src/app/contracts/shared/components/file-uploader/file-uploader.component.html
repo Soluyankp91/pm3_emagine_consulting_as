@@ -5,7 +5,9 @@
 	<ng-container *ngFor="let preselectedFile of preselectedFilesModified; trackBy: trackByAgreementTemplateAttachmentId">
 		<div class="file-container">
 			<div class="file-item-left">
-				<mat-icon *ngIf="preselectedFile.icon" [svgIcon]="preselectedFile.icon"></mat-icon>
+                <ng-container *ngIf="preselectedFile.icon">
+                    <mat-icon [svgIcon]="preselectedFile.icon"></mat-icon>
+                </ng-container>
 				<div class="file-label" [customTooltip]="file.name">{{ preselectedFile.name }}</div>
 			</div>
 			<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
