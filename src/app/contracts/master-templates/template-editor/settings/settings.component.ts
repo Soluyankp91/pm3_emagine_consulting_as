@@ -180,13 +180,14 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	private _onCreationModeChange() {
 		let mode = this.agreementCreationMode.value;
+		this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
 		if (mode === AgreementCreationMode.FromScratch) {
-			this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
 			this._router.navigate([], {
 				relativeTo: this._route,
 				queryParams: {},
 			});
-		} else {
+		}
+		if (mode === AgreementCreationMode.Duplicated) {
 			this.masterTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', this.duplicateTemplateControl);
 		}
 	}
@@ -308,7 +309,12 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.subscribe((discard) => {
 				if (discard) {
 					this.agreementCreationMode.setValue(this.modeControl$.value);
-					if (!(this.modeControl$.value === this.creationModes.FromScratch)) {
+					if (
+						!(
+							this.modeControl$.value === this.creationModes.FromScratch ||
+							this.modeControl$.value === this.creationModes.ProvidedByOtherParty
+						)
+					) {
 						this._onCreationModeChange();
 						this._resetForm();
 						this.creationChange$.next('');
