@@ -57,7 +57,7 @@ export class AgreementService extends BaseContract {
 			undefined, //companyName
 			undefined, //actualRecipientName
 			tableFilters.legalEntityId.map((item) => item.id), //legalEntities
-			undefined, //tenantIds
+			tenantIds.map((tenant) => tenant.id), //tenantIds
 			tableFilters.agreementType.map((item) => item.id as number),
 			tableFilters.recipientTypeId.map((item) => item.id as number),
 			tableFilters.salesTypeIds.map((item) => item.id as number), // salesTypes,

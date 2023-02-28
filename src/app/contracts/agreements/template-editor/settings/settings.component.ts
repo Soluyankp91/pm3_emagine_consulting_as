@@ -190,10 +190,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			);
 		}
 
-		toSend.attachments = this._createAttachments([
-			...this.agreementFormGroup.uploadedFiles.value,
-			...this.agreementFormGroup.selectedInheritedFiles.value,
-		]);
+		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
 		this.showMainSpinner();

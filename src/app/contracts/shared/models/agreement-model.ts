@@ -26,8 +26,7 @@ export class AgreementModel extends FormGroup {
 			note: new FormControl(''),
 			isSignatureRequired: new FormControl(false),
 			signers: new FormControl([]),
-			selectedInheritedFiles: new FormControl([]),
-			uploadedFiles: new FormControl([]),
+			attachments: new FormControl([]),
 		});
 	}
 
@@ -120,12 +119,8 @@ export class AgreementModel extends FormGroup {
 		return this.get('parentSelectedAttachmentIds');
 	}
 
-	get selectedInheritedFiles() {
-		return this.get('selectedInheritedFiles');
-	}
-
-	get uploadedFiles() {
-		return this.get('uploadedFiles');
+	get attachments() {
+		return this.get('attachments');
 	}
 
 	get initial$() {
@@ -152,7 +147,6 @@ export class AgreementModel extends FormGroup {
 		endDate: null,
 		isSignatureRequired: false,
 		signers: [],
-		selectedInheritedFiles: [],
-		uploadedFiles: [],
+		attachments: [],
 	});
 }

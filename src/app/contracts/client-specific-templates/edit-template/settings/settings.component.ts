@@ -187,10 +187,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			);
 		}
 
-		toSend.attachments = this._createAttachments([
-			...this.clientTemplateFormGroup.selectedInheritedFiles.value,
-			...this.clientTemplateFormGroup.uploadedFiles.value,
-		]);
+		toSend.attachments = this._createAttachments(this.clientTemplateFormGroup.attachments.value);
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy

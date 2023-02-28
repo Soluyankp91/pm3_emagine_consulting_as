@@ -1,10 +1,22 @@
-import { Component, OnDestroy, OnInit, Self, TrackByFunction, Injector, ChangeDetectionStrategy } from '@angular/core';
-import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import {
+	Component,
+	OnDestroy,
+	OnInit,
+	Self,
+	TrackByFunction,
+	Injector,
+	ChangeDetectionStrategy,
+	Input,
+	OnChanges,
+	SimpleChanges,
+} from '@angular/core';
+import { AgreementTemplateAttachmentServiceProxy, FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, forkJoin, of, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap, takeUntil } from 'rxjs/operators';
 import { NgControl } from '@angular/forms';
-import { FileUploadItem } from './files';
+import { FileUpload, FileUploadItem } from './files';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { DownloadFile } from '../../utils/download-file';
 
 @Component({
 	selector: 'emg-file-uploader',
@@ -12,11 +24,16 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 	styleUrls: ['./file-uploader.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileUploaderComponent extends AppComponentBase implements OnInit, OnDestroy {
+export class FileUploaderComponent extends AppComponentBase implements OnInit, OnChanges, OnDestroy {
+	@Input() preselectedFiles: FileUpload[];
+    @Input() idProp = 'agreementTemplateAttachmentId';
+
+	preselectedFilesModified: FileUploadItem[];
 	uploadedFiles$: Observable<FileUploadItem[]>;
 	filesLoading$ = new BehaviorSubject<boolean>(false);
 
-	trackById: TrackByFunction<string>;
+	trackByTemporaryFileId: TrackByFunction<string>;
+	trackByAgreementTemplateAttachmentId: TrackByFunction<string>;
 
 	private _uploadedFiles$ = new Subject<FileUploadItem[]>();
 	private _unSubscribe$ = new Subject<void>();
@@ -25,23 +42,41 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	private onChange = (val: any) => {};
 	private onTouched = () => {};
 
+	get uploadedFilesLength() {
+		return this._files.length;
+	}
+
 	constructor(
 		private readonly _fileServiceProxy: FileServiceProxy,
+		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
 		@Self() private readonly _ngControl: NgControl,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
 		_ngControl.valueAccessor = this;
-		this.trackById = this.createTrackByFn('temporaryFileId');
+		this.trackByTemporaryFileId = this.createTrackByFn('temporaryFileId');
+		this.trackByAgreementTemplateAttachmentId = this.createTrackByFn('trackByAgreementTemplateAttachmentId');
 	}
 
 	ngOnInit(): void {
 		this.initializeFileObs();
 		this._subscribeOnLoading();
 	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes['preselectedFiles'].currentValue) {
+			this._setPreselectedFilesModified();
+		}
+	}
 	ngOnDestroy(): void {
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
+	}
+
+	downloadAttachment(file: FileUploadItem): void {
+		this._agreementTemplateAttachmentServiceProxy
+			.agreementTemplateAttachment(file[this.idProp] as number)
+			.subscribe((d) => DownloadFile(d as any, file.name));
 	}
 
 	onFileAdded($event: EventTarget | null) {
@@ -55,7 +90,17 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 		}
 	}
 
-	onFileDelete(fileToDelete: FileUploadItem) {
+	onPreselectedFileDelete(preselectedFile: FileUploadItem) {
+		this.preselectedFiles.splice(
+			this.preselectedFiles.findIndex(
+				(file) => file[this.idProp] === preselectedFile[this.idProp]
+			),
+			1
+		);
+		this._setPreselectedFilesModified();
+	}
+
+	onUploadedFileDelete(fileToDelete: FileUploadItem) {
 		this._fileServiceProxy.temporaryDELETE(fileToDelete.temporaryFileId).subscribe(() => {
 			this._files = this._files.filter((file) => file.temporaryFileId !== fileToDelete.temporaryFileId);
 			this._uploadedFiles$.next([]);
@@ -74,6 +119,15 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 
 	registerOnTouched(fn: any): void {
 		this.onTouched = fn;
+	}
+
+	private _setPreselectedFilesModified() {
+		this.preselectedFilesModified = this.preselectedFiles.map((file) => ({
+			...file,
+			name: file.name,
+			icon: this._getIconName(file.name),
+		}));
+		this.onChange([...this.preselectedFiles, ...this._files]);
 	}
 
 	private _subscribeOnLoading() {
@@ -114,10 +168,10 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 			}),
 			tap((files) => {
 				if (files.length) {
-					this.onChange(files);
+					this.onChange([...this.preselectedFiles, ...files]);
 					return;
 				}
-				this.onChange([]);
+				this.onChange([...this.preselectedFiles]);
 			})
 		);
 	}
@@ -134,10 +188,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 		});
 		this._files = [];
 		this._uploadedFiles$.next([]);
-		forkJoin(observableArr)
-			.subscribe(() => {
-				this._files = [];
-				this._uploadedFiles$.next([]);
-			});
+
+		forkJoin(observableArr).subscribe();
 	}
 }
