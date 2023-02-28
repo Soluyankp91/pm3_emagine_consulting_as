@@ -94,6 +94,7 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 
 	writeValue(values: any[]): void {
 		this.selectedOptions.clear();
+        this.inputControl.setValue('');
 		values?.forEach((setValueOption) => {
 			this.initialOptions.forEach((option) => {
 				if (setValueOption.id === option.id) {
