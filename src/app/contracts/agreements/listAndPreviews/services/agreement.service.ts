@@ -14,7 +14,7 @@ const TENANT_OPTION_KEY = 'ContractsTENANTS_3';
 export class AgreementService extends BaseContract {
 	override tenantOptionKey: string = TENANT_OPTION_KEY;
 	override tableFilters$ = new BehaviorSubject<AgreementFiltersEnum>({
-		language: [],
+		languageId: [],
 		id: [],
 		legalEntityId: [],
 		agreementType: [],
@@ -51,7 +51,7 @@ export class AgreementService extends BaseContract {
 		return this._agreementService.list(
 			tableFilters.id[0], //agreementId
 			undefined, //agreement name
-			tableFilters.language.map((item) => item.id as number),
+			tableFilters.languageId.map((item) => item.id as number),
 			undefined, //clientName
 			undefined, //consultantName
 			undefined, //companyName

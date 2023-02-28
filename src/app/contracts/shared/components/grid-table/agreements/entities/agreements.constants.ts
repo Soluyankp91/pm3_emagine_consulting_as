@@ -2,7 +2,7 @@ import { Actions } from 'src/app/contracts/shared/entities/contracts.interfaces'
 import { EHeaderCells, IHeaderCell } from '../../mat-grid.interfaces';
 
 export const DISPLAYED_COLUMNS: string[] = [
-	'language',
+	'languageId',
 	'agreementId',
 	'agreementName',
 	'actualRecipientName',
@@ -26,7 +26,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
-			formControlName: 'language',
+			formControlName: 'languageId',
 			component: () =>
 				import('../../master-templates/filters/agreement-languages-filter/agreement-filter.component').then(
 					(it) => it.AgreementLanguagesFilterComponent
