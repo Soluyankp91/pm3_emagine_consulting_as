@@ -77,6 +77,7 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
 import { EditorComponent } from './shared/editor/editor.component';
+import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.component';
 
 @NgModule({
 	declarations: [
@@ -137,7 +138,7 @@ import { EditorComponent } from './shared/editor/editor.component';
 		AgreementPreviewComponent,
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
-		SignersTableComponent,
+		SignersTableComponent
 	],
 	imports: [
 		CommonModule,
@@ -149,6 +150,7 @@ import { EditorComponent } from './shared/editor/editor.component';
 
 		// Standalone
 		EditorComponent,
+		EditorPreviewComponent
 	],
 	providers: [
 		ContractsService,

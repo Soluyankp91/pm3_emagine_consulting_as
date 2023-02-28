@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, map, mapTo, pluck, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, filter, map, mapTo, pluck, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
@@ -13,7 +13,7 @@ import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
 import { CompareSelectDocumentPopupComponent } from './components/compare-select-document-popup';
-import { SaveUsPopupComponent } from './components/save-as-popup/save-us-popup.component';
+import { SaveAsPopupComponent } from './components/save-as-popup/save-as-popup.component';
 
 import { AgreementAbstractService } from './data-access/agreement-abstract.service';
 import { MergeFieldsAbstractService } from './data-access/merge-fields-abstract';
@@ -30,7 +30,7 @@ import { MatButtonModule } from '@angular/material/button';
 		CommonModule,
 		MatButtonModule,
 		RichEditorDirective,
-		SaveUsPopupComponent,
+		SaveAsPopupComponent,
 		InsertMergeFieldPopupComponent,
 		CompareSelectVersionPopupComponent,
 		CompareSelectDocumentPopupComponent,
@@ -67,6 +67,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.isLoading = true;
 		this.templateId = this._route.snapshot.params.id;
+		
 		this._agreementService
 			.getTemplate(this.templateId)
 			.pipe(catchError(() => of(null)))
@@ -74,6 +75,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this.template$.next(tmp);
 				this.isLoading = false;
 				if (tmp) {
+					console.log(tmp)
 					this._editorCoreService.loadDocument(tmp);
 				} else {
 					this._editorCoreService.newDocument();
@@ -140,7 +142,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveAsComplete() {
-		this._dialog.open(SaveUsPopupComponent, {
+		this._dialog.open(SaveAsPopupComponent, {
 			data: {},
 			height: 'auto',
 			width: '500px',
@@ -148,15 +150,18 @@ export class EditorComponent implements OnInit, OnDestroy {
 			disableClose: true,
 			hasBackdrop: true,
 			backdropClass: 'backdrop-modal--wrapper',
-		}).afterClosed().subscribe(console.log);
-
-		// this._saveFileAs(ITemplateSaveType.Complete);
+		}).afterClosed().pipe(
+			filter(res => !!res),
+		).subscribe(() => {
+			this._saveFileAs(ITemplateSaveType.Complete);
+		});
 	}
 
 	cancel() {
 		this.template$.pipe(
 			tap(template => {
 				this._editorCoreService.loadDocument(template);
+				this.hasUnsavedChanges$.next(false);
 			}),
 			take(1)
 		).subscribe()

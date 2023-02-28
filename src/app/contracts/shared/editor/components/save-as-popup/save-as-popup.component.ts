@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	EventEmitter,
 	Inject,
-	Input,
 	OnInit,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -19,19 +17,19 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
 	standalone: true,
-	selector: 'app-save-us-popup',
-	templateUrl: './save-us-popup.component.html',
-	styleUrls: ['./save-us-popup.component.scss'],
+	selector: 'app-save-as-popup',
+	templateUrl: './save-as-popup.component.html',
+	styleUrls: ['./save-as-popup.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [CommonModule, MatDialogModule, MatIconModule, MatButtonModule, MatFormFieldModule, ReactiveFormsModule, TextFieldModule, MatInputModule, MatCheckboxModule],
 })
-export class SaveUsPopupComponent implements OnInit {
+export class SaveAsPopupComponent implements OnInit {
 	constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: {
             isNew: boolean
         },
-        private _dialogRef: MatDialogRef<SaveUsPopupComponent>,
+        private _dialogRef: MatDialogRef<SaveAsPopupComponent>,
 		private _fb: FormBuilder
     ) {}
 	
@@ -56,6 +54,10 @@ export class SaveUsPopupComponent implements OnInit {
 		} else {
 
 		}
+	}
+
+	submit() {
+		this._dialogRef.close(true)
 	}
 
     close(): void {

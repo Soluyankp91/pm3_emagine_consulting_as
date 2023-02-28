@@ -8,6 +8,8 @@ import {
 	OnChanges,
 	SimpleChanges,
 } from '@angular/core';
+import { AgreementTemplateService } from 'src/app/contracts/shared/editor/data-access';
+import { AgreementAbstractService } from 'src/app/contracts/shared/editor/data-access/agreement-abstract.service';
 import { PreviewService } from '../../services/preview.service';
 
 @Component({
@@ -16,7 +18,10 @@ import { PreviewService } from '../../services/preview.service';
 	styleUrls: ['./preview.component.scss'],
 	encapsulation: ViewEncapsulation.None,
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	providers: [PreviewService],
+	providers: [PreviewService, {
+		provide: AgreementAbstractService,
+		useClass: AgreementTemplateService
+	}],
 })
 export class PreviewTabsComponent implements OnChanges {
 	@Input() currentId: number | null;
