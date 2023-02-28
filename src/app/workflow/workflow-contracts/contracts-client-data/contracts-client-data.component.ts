@@ -19,9 +19,6 @@ import { forkJoin, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { ETimeReportingCaps } from '../../workflow-sales/workflow-sales.model';
-import { MatSelectChange } from '@angular/material/select';
-
 @Component({
 	selector: 'app-contracts-client-data',
 	templateUrl: './contracts-client-data.component.html',
