@@ -247,7 +247,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				filter((val: number | null | undefined) => !!val),
-				distinctUntilChanged(),
 				tap((agreementTemplateId) => {
 					const queryParams: Params = {
 						parentTemplateId: `${agreementTemplateId}`,
