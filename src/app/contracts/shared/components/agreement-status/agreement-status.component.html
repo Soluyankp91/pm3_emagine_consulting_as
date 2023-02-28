@@ -81,7 +81,8 @@
 	</ng-container>
 </ng-container>
 <ng-template #dot let-color="color" let-tooltip="tooltip">
-	<svg
+    <div class="icon-and-text">
+        <svg
 		width="8"
 		height="8"
 		viewBox="0 0 8 8"
@@ -91,4 +92,8 @@
 		[showAlways]="true">
 		<rect width="8" height="8" rx="4" [attr.fill]="color" />
 	</svg>
+    <ng-container *ngIf="displayText">
+        <span> {{ tooltip }}</span>
+    </ng-container>
+    </div>
 </ng-template>

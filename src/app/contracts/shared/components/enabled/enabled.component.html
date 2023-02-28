@@ -2,21 +2,22 @@
 	<ng-container *ngSwitchCase="true">
 		<ng-container
 			[ngTemplateOutlet]="dot"
-			[ngTemplateOutletContext]="{ color: '#17A297', tooltip: enabledTooltip }"></ng-container>
-		<ng-template #enabledTooltip> Enabled </ng-template>
+			[ngTemplateOutletContext]="{ color: '#17A297', tooltipText: 'Enabled' }"></ng-container>
 	</ng-container>
 
 	<ng-container *ngSwitchCase="false">
-		<ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{ color: '#B6B4B2', tooltip: disabledTooltip }">
+		<ng-container [ngTemplateOutlet]="dot" [ngTemplateOutletContext]="{ color: '#B6B4B2', tooltipText: 'Disabled' }">
 		</ng-container>
-		<ng-template #disabledTooltip> Disabled </ng-template>
 	</ng-container>
 </ng-container>
 
-<ng-template #dot let-color="color" let-tooltip="tooltip">
-	<div [customTooltip]="tooltip" [showAlways]="true">
+<ng-template #dot let-color="color" let-tooltipText="tooltipText">
+	<div [customTooltip]="tooltipText" [showAlways]="true">
 		<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect width="8" height="8" rx="4" [attr.fill]="color" />
 		</svg>
+		<ng-container *ngIf="displayText">
+			<span> {{ tooltipText }}</span>
+		</ng-container>
 	</div>
 </ng-template>

@@ -7,6 +7,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core
 })
 export class EnabledComponent {
 	@Input() isEnabled: boolean;
+    @Input() displayText: boolean = false;
 
 	constructor() {}
 }
