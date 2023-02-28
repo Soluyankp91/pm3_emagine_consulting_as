@@ -39,7 +39,7 @@ export interface ClientFiltersEnum extends MasterFiltersEnum {
 	linkStateAccepted: BaseEnumDto[];
 }
 export interface AgreementFiltersEnum {
-	language: BaseEnumDto[];
+	languageId: BaseEnumDto[];
 	id: number[];
 	legalEntityId: LegalEntityDto[];
 	agreementType: BaseEnumDto[];

@@ -8,5 +8,10 @@ export type FileUpload = object & {
 export type FileUploadItem = FileUpload & {
 	icon?: string;
 	selected?: boolean;
+    isUsedByDescendants?: boolean;
 };
 export type MappedAgreementTemplateDetailsAttachmentDto = AgreementTemplateDetailsAttachmentDto & { icon: string };
+export type AttachmentPreview = {
+	attachments: MappedAgreementTemplateDetailsAttachmentDto [];
+	attachmentsFromParent: MappedAgreementTemplateDetailsAttachmentDto [];
+};

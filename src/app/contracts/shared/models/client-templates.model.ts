@@ -18,8 +18,7 @@ export class ClientTemplatesModel extends FormGroup {
 			note: new FormControl('', []),
 			isSignatureRequired: new FormControl(false, []),
 			isEnabled: new FormControl(false, []),
-			selectedInheritedFiles: new FormControl([]),
-			uploadedFiles: new FormControl([]),
+			attachments: new FormControl([]),
 		});
 	}
 	get agreementType() {
@@ -82,11 +81,8 @@ export class ClientTemplatesModel extends FormGroup {
 		return this.get('parentSelectedAttachmentIds');
 	}
 
-	get selectedInheritedFiles() {
-		return this.get('selectedInheritedFiles');
-	}
-	get uploadedFiles() {
-		return this.get('uploadedFiles');
+	get attachments() {
+		return this.get('attachments');
 	}
 
 	get initialValue() {
@@ -108,8 +104,7 @@ export class ClientTemplatesModel extends FormGroup {
 		note: '',
 		isSignatureRequired: false,
 		isEnabled: false,
-		selectedInheritedFiles: [],
-		uploadedFiles: [],
+        attachments: []
 	});
 
 	addControl(

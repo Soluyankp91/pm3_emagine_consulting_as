@@ -140,10 +140,7 @@
                         label="Inherited from parent"
 						formControlName="parentSelectedAttachmentIds"></emg-file-selector>
 				</ng-container>
-				<emg-file-selector
-					[inheritedFiles]="preselectedFiles"
-					formControlName="selectedInheritedFiles"></emg-file-selector>
-				<emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
+				<emg-file-uploader [preselectedFiles]="preselectedFiles" [label]="'Current client template'" formControlName="attachments"></emg-file-uploader>
 			</div>
 		</div>
 		<div class="bottom-panel">

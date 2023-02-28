@@ -2,7 +2,7 @@ import { Component, OnInit, TrackByFunction, Injector, Inject } from '@angular/c
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
-import { MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
+import { AttachmentPreview, MappedAgreementTemplateDetailsAttachmentDto } from 'src/app/contracts/shared/components/file-uploader/files';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 import { DownloadFile } from 'src/app/contracts/shared/utils/download-file';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -15,10 +15,8 @@ import { AgreementDetailsAttachmentDto } from 'src/shared/service-proxies/servic
 	providers: [PREVIEW_SERVICE_PROVIDER],
 })
 export class AttachmentsComponent extends AppComponentBase implements OnInit {
-	attachments$: Observable<MappedAgreementTemplateDetailsAttachmentDto[]>;
+	attachments$: Observable<AttachmentPreview>;
 	loading$: Observable<boolean>;
-
-	mappedAttachments: MappedAgreementTemplateDetailsAttachmentDto[];
 
 	trackById: TrackByFunction<string>;
 
@@ -53,18 +51,24 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 
 	private _setAttachmentObservable() {
 		this.attachments$ = this._previewService.attachments$.pipe(
-			map((attachments) => {
-				return attachments?.map(
-					(attachment) =>
-						<MappedAgreementTemplateDetailsAttachmentDto>{
-							...attachment,
-							icon: this._getIconName(attachment.name as string),
-						}
-				) as MappedAgreementTemplateDetailsAttachmentDto[];
+			map(({ attachments, attachmentsFromParent }) => {
+				return {
+					attachments: this._mapAttachments(attachments),
+					attachmentsFromParent: this._mapAttachments(attachmentsFromParent),
+				};
 			})
 		);
 	}
 
+	private _mapAttachments(attachments: any[]) {
+		return attachments?.map(
+			(attachment) =>
+				<MappedAgreementTemplateDetailsAttachmentDto>{
+					...attachment,
+					icon: this._getIconName(attachment.name as string),
+				}
+		);
+	}
 	private _setLoadingObservable() {
 		this.loading$ = this._previewService.contentLoading$;
 	}

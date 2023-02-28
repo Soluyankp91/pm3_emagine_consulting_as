@@ -146,8 +146,7 @@
 			<mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
 		</div>
 		<div class="attachments-section">
-			<emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
-			<emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
+			<emg-file-uploader [preselectedFiles]="preselectedFiles" formControlName="attachments"></emg-file-uploader>
 		</div>
 	</div>
 	<button mat-button (click)="onSave()">Next</button>

@@ -15,11 +15,10 @@ export class MasterTemplateModel extends FormGroup {
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
 			note: new FormControl(null),
-			isSignatureRequired: new FormControl(null),
-			isEnabled: new FormControl(null),
-            isDefaultTemplate: new FormControl(null),
-			selectedInheritedFiles: new FormControl(null),
-			uploadedFiles: new FormControl(null),
+			isSignatureRequired: new FormControl(false),
+			isEnabled: new FormControl(false),
+            isDefaultTemplate: new FormControl(false),
+			attachments: new FormControl([]),
 		});
 	}
 
@@ -102,12 +101,8 @@ export class MasterTemplateModel extends FormGroup {
 		return this.get('isDefaultTemplate');
 	}
 
-	get selectedInheritedFiles() {
-		return this.get('selectedInheritedFiles');
-	}
-
-	get uploadedFiles() {
-		return this.get('uploadedFiles');
+	get attachments() {
+		return this.get('attachments');
 	}
 
 	get initial$() {
@@ -128,9 +123,9 @@ export class MasterTemplateModel extends FormGroup {
 		contractTypes: null,
 		language: null,
 		note: null,
-		isSignatureRequired: null,
-		isEnabled: null,
-		selectedInheritedFiles: null,
-		uploadedFiles: null,
+		isSignatureRequired: false,
+        isDefaultTemplate: false,
+		isEnabled: false,
+        attachments: [],
 	});
 }
