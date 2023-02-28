@@ -150,7 +150,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 
             // Client project
             clientTimeReportingCapId: new UntypedFormControl(false),
-            clientTimeReportingCapMaxValue: new UntypedFormControl(null)
+            timeReportingCaps: new UntypedFormArray([]),
         });
     }
 
@@ -276,14 +276,11 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get noClientExtensionOption() {
         return this.get('noClientExtensionOption');
     }
-
-    // Client Porject
-
     get clientTimeReportingCapId() {
         return this.get('clientTimeReportingCapId');
     }
-    get clientTimeReportingCapMaxValue() {
-        return this.get('clientTimeReportingCapMaxValue');
+    get timeReportingCaps() {
+        return this.get('timeReportingCaps') as UntypedFormArray;
     }
 
 }
@@ -425,4 +422,11 @@ export enum EProjectTypes {
     VMSlowMargin = 6,
     NearshoreVMShighMargin = 7,
     NearshoreVMSlowMargin = 8
+}
+
+export enum ETimeReportingCaps {
+    CapOnUnits = 1,
+    CapOnValue = 2,
+    IndividualCap = 3,
+    NoCap = 4
 }

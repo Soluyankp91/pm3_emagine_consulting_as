@@ -571,10 +571,12 @@
                     </div>
                 </ng-container>
 
+                <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">
                         <mat-label>Shared cap on time reporting</mat-label>
                         <mat-select [disabled]="readOnlyMode" required formControlName="clientTimeReportingCapId"
+                            (selectionChange)="capSelectionChange($event)"
                             [disableOptionCentering]="true">
                             <ng-container *ngFor="let item of clientTimeReportingCap; trackBy: trackById">
                                 <mat-option [value]="item.id">
@@ -586,46 +588,69 @@
                             <app-validator [control]="salesClientDataForm.clientTimeReportingCapId"></app-validator>
                         </mat-error>
                     </mat-form-field>
-                </div>
-                <!--not visible if 'Individual cap' Id = 3 'No cap' id = 4 -->
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100"
-                    [fxHide]="salesClientDataForm.clientTimeReportingCapId?.value === 3 || salesClientDataForm.clientTimeReportingCapId?.value === 4">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150"
-                        [ngClass]="{'disabled-input': readOnlyMode}">
-                        <mat-label>Max value</mat-label>
-                        <input [disabled]="readOnlyMode"
-                            [required]="salesClientDataForm.clientTimeReportingCapId?.value !== 3 && salesClientDataForm.clientTimeReportingCapId?.value !== 4"
-                            autocomplete="off" matInput formControlName="clientTimeReportingCapMaxValue" type="number">
-                        <mat-error>
-                            <app-validator [control]="salesClientDataForm.clientTimeReportingCapMaxValue"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
-                    <span class="workflow-step-readonly--blue-text-bold">
-                        <ng-container [ngSwitch]="salesClientDataForm.clientTimeReportingCapId?.value">
-                            <ng-container *ngSwitchCase="1">
-                                <!-- Cap on units -->
-                                <ng-container [ngSwitch]="salesClientDataForm.rateUnitTypeId?.value">
-                                    <ng-container *ngSwitchCase="1">
-                                        <!-- Per hour -->
-                                        hours
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="2">
-                                        <!-- Per day -->
-                                        days
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="4">
-                                        <!-- Per month -->
-                                        months
-                                    </ng-container>
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <ng-container *ngIf="salesClientDataForm.clientTimeReportingCapId?.value !== eTimeReportingCaps.IndividualCap && salesClientDataForm.clientTimeReportingCapId?.value !== eTimeReportingCaps.NoCap">
+                            <ng-container formArrayName="timeReportingCaps" class="u-w--100">
+                                <ng-container *ngFor="let cap of salesClientDataForm.timeReportingCaps.controls; trackBy: trackByItem; index as i"
+                                    [formArrayName]="i">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-110"
+                                            [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-label>Max value</mat-label>
+                                            <input [disabled]="readOnlyMode"
+                                                required
+                                                autocomplete="off" matInput formControlName="timeReportingCapMaxValue" type="number">
+                                            <mat-error>
+                                                <app-validator [control]="cap.get('timeReportingCapMaxValue')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-100">
+                                            <mat-label>Unit</mat-label>
+                                            <mat-select [disabled]="readOnlyMode" required formControlName="valueUnitId"
+                                                [disableOptionCentering]="true">
+                                                <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
+                                                    <mat-option [value]="item.id">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="cap.get('valueUnitId')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
+                                            <mat-label>Period</mat-label>
+                                            <mat-select [disabled]="readOnlyMode" required formControlName="periodUnitId"
+                                                [disableOptionCentering]="true">
+                                                <ng-container *ngFor="let item of periodUnitTypes; trackBy: trackById">
+                                                    <mat-option [value]="item.id">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="cap.get('periodUnitId')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <ng-container *ngIf="!readOnlyMode">
+                                            <button mat-icon-button type="button" appPreventDoubleClick
+                                                (throttledClick)="removeTimeReportingCap(i)"
+                                                class="small-icon-button u-mt--5">
+                                                <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                            </button>
+                                        </ng-container>
+                                    </div>
                                 </ng-container>
                             </ng-container>
-                            <ng-container *ngSwitchCase="2">
-                                <!-- Cap on value -->
-                                {{salesClientDataForm.clientCurrency?.value?.name ?
-                                salesClientDataForm.clientCurrency?.value?.name : '-'}}
+                            <ng-container *ngIf="!readOnlyMode">
+                                <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
+                                    (throttledClick)="addTimeReportingCap()">
+                                    <mat-icon>add</mat-icon>
+                                    Add Cap value
+                                </button>
                             </ng-container>
                         </ng-container>
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>

@@ -43,6 +43,8 @@ export class InternalLookupService {
     hubspotClientUrl: string;
     legalEntities: LegalEntityDto[] = [];
     syncStateStatuses: { [key: string]: string };
+    valueUnitTypes: EnumEntityTypeDto[] = [];
+    periodUnitTypes: EnumEntityTypeDto[] = [];
 
     constructor(private _enumService: EnumServiceProxy) {
     }
@@ -744,6 +746,42 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.syncStateStatuses = response;
                         observer.next(this.syncStateStatuses);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getValueUnitTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.valueUnitTypes.length) {
+                observer.next(this.valueUnitTypes);
+                observer.complete();
+            } else {
+                this._enumService.valueUnitTypes()
+                    .subscribe(response => {
+                        this.valueUnitTypes = response;
+                        observer.next(this.valueUnitTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getPeriodUnitTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.periodUnitTypes.length) {
+                observer.next(this.periodUnitTypes);
+                observer.complete();
+            } else {
+                this._enumService.periodUnitTypes()
+                    .subscribe(response => {
+                        this.periodUnitTypes = response;
+                        observer.next(this.periodUnitTypes);
                         observer.complete();
                     }, error => {
                         observer.error(error);
