@@ -36,12 +36,6 @@ export class AttachmentsComponent extends AppComponentBase implements OnInit {
 		this.trackById = this.createTrackByFn('agreementTemplateAttachmentId');
 	}
 
-	downloadParentAttachment(file: MappedAgreementTemplateDetailsAttachmentDto): void {
-		this._previewService
-			.downloadTemplateAttachment(file.agreementTemplateAttachmentId)
-			.subscribe((d) => DownloadFile(d as any, file.name));
-	}
-
 	downloadAttachment(file: AgreementDetailsAttachmentDto | MappedAgreementTemplateDetailsAttachmentDto): void {
 		if ('agreementTemplateAttachmentId' in file) {
 			this._previewService
