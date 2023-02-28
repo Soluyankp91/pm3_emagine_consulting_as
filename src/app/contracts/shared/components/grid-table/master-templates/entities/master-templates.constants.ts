@@ -46,7 +46,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -57,7 +57,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.RecipientTypesFilterComponent
 				),
 		},
-        sort: true
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -102,7 +102,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Last updated',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -143,6 +143,7 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	language: 'Language',
 	note: 'Notes',
 	isEnabled: 'Status',
+    agreementStatus: 'Status',
 	agreementTemplateId: 'ID',
 	agreementId: 'ID',
 	createdDateUtc: 'Created',
@@ -153,6 +154,7 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	endDate: 'Expiration date',
 	duplicationSourceAgreementTemplateId: 'Duplicated from',
 	parentAgreementTemplateId: 'Parent template',
+	duplicationSourceAgreementName: 'Duplicated from',
 };
 
 export const PAGE_SIZE_OPTIONS: number[] = [20, 50, 100];

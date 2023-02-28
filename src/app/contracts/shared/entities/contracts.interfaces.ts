@@ -139,6 +139,9 @@ export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	startDate?: moment.Moment;
 	endDate?: moment.Moment;
 	validity: AgreementValidityState;
+
+    duplicationSourceAgreementId: number;
+    duplicationSourceAgreementName: string
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
