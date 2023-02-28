@@ -18,10 +18,8 @@ export enum ELegalContractStatusIcon {
     "legal-contract--status__created" = EnvelopeStatus.Created,
     "legal-contract--status__createdInDocuSign" = EnvelopeStatus.CreatedInDocuSign,
     "legal-contract--status__sent" = EnvelopeStatus.Sent,
-    // "legal-contract--status__viewed" = EnvelopeStatus.Viewed,
     "legal-contract--status__deliveryFailure" = EnvelopeStatus.DeliveryFailure,
     "legal-contract--status__voided" = EnvelopeStatus.Voided,
-    // "legal-contract--status__signed" = EnvelopeStatus.Signed,
     "legal-contract--status__declined" = EnvelopeStatus.Declined,
     "legal-contract--status__waitingForOthers" = EnvelopeStatus.WaitingForOthers,
     "legal-contract--status__completed" = EnvelopeStatus.Completed,
@@ -33,10 +31,8 @@ export enum ELegalContractStatusText {
     "Created" = EnvelopeStatus.Created,
     "Created in DocuSign" = EnvelopeStatus.CreatedInDocuSign,
     "Sent" = EnvelopeStatus.Sent,
-    // "Viewed" = EnvelopeStatus.Viewed,
     "Delivery failure" = EnvelopeStatus.DeliveryFailure,
     "Voided" = EnvelopeStatus.Voided,
-    // "Signed" = EnvelopeStatus.Signed,
     "Declined" = EnvelopeStatus.Declined,
     "Waiting for others" = EnvelopeStatus.WaitingForOthers,
     "Completed" = EnvelopeStatus.Completed,
@@ -59,7 +55,7 @@ export enum ELegalContractModeText {
 export enum ELegalContractSourceIcon {
     "via-email-icon" = EnvelopeProcessingPath.Email,
     "via-docusign-icon" = EnvelopeProcessingPath.DocuSign,
-    "via-thirdparty-icon" = 3
+    "via-thirdparty-icon" = EnvelopeProcessingPath.ReceiveFromOtherParty
 }
 
 export enum ELegalContractSourceText {
@@ -82,6 +78,23 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
         processingPath: EnvelopeProcessingPath.Email,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
+    new WorkflowAgreementDto({
+        agreementId: 2,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.Created,
+        validity: AgreementValidityState.Active,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -115,28 +128,28 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
-        processingPath: 3,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
     }),
-    // new WorkflowAgreementDto({
-    //     agreementId: 1,
-    //     name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
-    //     agreementStatus: EnvelopeStatus.Viewed,
-    //     validity: AgreementValidityState.Active,
-    //     lastUpdatedBy: new EmployeeDto({
-    //         externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
-    //         id: 51291,
-    //         name: 'Sergii Laba',
-    //     }),
-    //     lastUpdateDateUtc: moment(),
-    //     hasSignedDocumentFile: false,
-    //     processingPath: EnvelopeProcessingPath.DocuSign,
-    //     inEditByEmployeeDtos: [
-    //         new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
-    //     ],
-    // }),
+    new WorkflowAgreementDto({
+        agreementId: 3,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.Sent,
+        validity: AgreementValidityState.Active,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.Email,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
     new WorkflowAgreementDto({
         agreementId: 1,
         name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
@@ -171,23 +184,40 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
     }),
-    // new WorkflowAgreementDto({
-    //     agreementId: 1,
-    //     name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
-    //     agreementStatus: EnvelopeStatus.Signed,
-    //     validity: AgreementValidityState.Active,
-    //     lastUpdatedBy: new EmployeeDto({
-    //         externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
-    //         id: 51291,
-    //         name: 'Sergii Laba',
-    //     }),
-    //     lastUpdateDateUtc: moment(),
-    //     hasSignedDocumentFile: false,
-    //     processingPath: EnvelopeProcessingPath.DocuSign,
-    //     inEditByEmployeeDtos: [
-    //         new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
-    //     ],
-    // }),
+    new WorkflowAgreementDto({
+        agreementId: 1,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.Voided,
+        validity: AgreementValidityState.Active,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.ReceiveFromOtherParty,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
+    new WorkflowAgreementDto({
+        agreementId: 1,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.Voided,
+        validity: AgreementValidityState.Active,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.Email,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
     new WorkflowAgreementDto({
         agreementId: 2,
         name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
@@ -225,6 +255,23 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
     new WorkflowAgreementDto({
         agreementId: 1,
         name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.WaitingForOthers,
+        validity: AgreementValidityState.ActiveOutdatedTemplate,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: true,
+        processingPath: EnvelopeProcessingPath.ReceiveFromOtherParty,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
+    new WorkflowAgreementDto({
+        agreementId: 1,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
         agreementStatus: EnvelopeStatus.Completed,
         validity: AgreementValidityState.Inactive,
         lastUpdatedBy: new EmployeeDto({
@@ -235,6 +282,40 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
         processingPath: EnvelopeProcessingPath.DocuSign,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
+    new WorkflowAgreementDto({
+        agreementId: 1,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.Completed,
+        validity: AgreementValidityState.Inactive,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.Email,
+        inEditByEmployeeDtos: [
+            new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
+        ],
+    }),
+    new WorkflowAgreementDto({
+        agreementId: 1,
+        name: 'JN Data A/S, Robertsen Oscar, 01.02.23',
+        agreementStatus: EnvelopeStatus.Completed,
+        validity: AgreementValidityState.Inactive,
+        lastUpdatedBy: new EmployeeDto({
+            externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1',
+            id: 51291,
+            name: 'Sergii Laba',
+        }),
+        lastUpdateDateUtc: moment(),
+        hasSignedDocumentFile: false,
+        processingPath: EnvelopeProcessingPath.ReceiveFromOtherParty,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],
@@ -268,7 +349,7 @@ export const LegalContractsMockedData: WorkflowAgreementDto[] = [
         }),
         lastUpdateDateUtc: moment(),
         hasSignedDocumentFile: false,
-        processingPath: undefined,
+        processingPath: EnvelopeProcessingPath.DocuSign,
         inEditByEmployeeDtos: [
             new EmployeeDto({ externalId: 'ee5a16fc-d9c9-4ae0-994b-6b796cd5cfe1', id: 51291, name: 'Sergii Laba' }),
         ],

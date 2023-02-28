@@ -104,29 +104,33 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
 		const agreementIds = selectedAgreements.map((x) => x.agreementId);
 		let disableSendAllButton = false;
-		if (selectedAgreements.some((x) => !x.hasSignedDocumentFile)) {
-			this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
-		} else {
-			if (agreementIds.length > 1) {
-                this.showMainSpinner();
-				this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
-					next: () => {
-						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-					},
-					error: (error) => {
-						if (error.status === 400) {
-							disableSendAllButton = true;
-						}
-						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-					},
-                    complete: () => {
-                        this.hideMainSpinner();
-                    },
-				});
-			} else {
-				this._getSignersPreview(agreementIds);
-			}
-		}
+
+        // NB: TMP
+        this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+
+		// if (selectedAgreements.some((x) => !x.hasSignedDocumentFile)) {
+		// 	this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
+		// } else {
+		// 	if (agreementIds.length > 1) {
+        //         this.showMainSpinner();
+		// 		this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
+		// 			next: () => {
+		// 				this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+		// 			},
+		// 			error: (error) => {
+		// 				if (error.status === 400) {
+		// 					disableSendAllButton = true;
+		// 				}
+		// 				this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+		// 			},
+        //             complete: () => {
+        //                 this.hideMainSpinner();
+        //             },
+		// 		});
+		// 	} else {
+		// 		this._getSignersPreview(agreementIds);
+		// 	}
+		// }
 	}
 
 	public openUploadSignedContractDialog(agreementId: number) {
@@ -159,6 +163,12 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}/false`;
         this._processDownloadDocument(url);
 	}
+
+    public downloadFile(agreementId: number) {
+        this.showMainSpinner();
+		const url = `${this.apiUrl}/api/Agreement/${agreementId}/signed-document`;
+        this._processDownloadDocument(url);
+    }
 
 	public openInDocuSign(docuSignUrl: string) {
 		window.open(docuSignUrl, '_blank');
@@ -283,28 +293,29 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 				singleEmail: singleEmail,
 			},
 		});
-		dialogRef.componentInstance.onSendViaEmail.subscribe((result: {option: EEmailMenuOption}) => {
-			this._sendViaEmail(agreementIds, singleEmail);
+		dialogRef.componentInstance.onSendViaEmail.subscribe((option: EEmailMenuOption) => {
+			this._sendViaEmail(agreementIds, singleEmail, option);
 		});
-		dialogRef.componentInstance.onSendViaDocuSign.subscribe((result: {createDraft: boolean, option: EDocuSignMenuOption}) => {
-			this._sendViaDocuSign(agreementIds, singleEmail, result.createDraft);
+		dialogRef.componentInstance.onSendViaDocuSign.subscribe((option: EDocuSignMenuOption) => {
+			this._sendViaDocuSign(agreementIds, singleEmail, option);
 		});
 	}
 
-	private _sendViaEmail(agreementIds: number[], singleEmail: boolean) {
+	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption) {
 		let input = new SendEmailEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEmail: singleEmail,
+            convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile
 		});
 		this._agreementService.sendEmailEnvelope(input).subscribe(() => {});
 	}
 
-	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, createDocuSignDraft: boolean) {
+	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
         this.showMainSpinner();
 		let input = new SendDocuSignEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEnvelope: singleEnvelope,
-			createDraftOnly: createDocuSignDraft,
+			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
 		});
 		this._agreementService.sendDocusignEnvelope(input).subscribe(() => this.hideMainSpinner());
 	}
@@ -327,7 +338,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _deleteAgreement(agreementId: number, reason?: string) {
-		// TODO: call delete API once implemented
+		// TODO: call delete API once BE implemented
+
 	}
 
 	get legalContracts(): UntypedFormArray {

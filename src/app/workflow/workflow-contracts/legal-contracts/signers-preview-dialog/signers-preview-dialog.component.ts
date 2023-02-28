@@ -11,13 +11,12 @@ import { DocuSignMenuItems, EDocuSignMenuOption, EEmailMenuOption, EmailMenuItem
 	styleUrls: ['./signers-preview-dialog.component.scss'],
 })
 export class SignersPreviewDialogComponent extends AppComponentBase implements OnInit {
-	@Output() onSendViaEmail = new EventEmitter<{option: EEmailMenuOption}>();
-	@Output() onSendViaDocuSign = new EventEmitter<{createDraft: boolean, option: EDocuSignMenuOption}>();
+	@Output() onSendViaEmail = new EventEmitter<EEmailMenuOption>();
+	@Output() onSendViaDocuSign = new EventEmitter<EDocuSignMenuOption>();
 	envelopePreviewList: EnvelopePreviewDto[];
     signerType = SignerType;
 	signerTypeName = ESignerTypeName;
 	signerRole = ESignerRole;
-    createDocuSignDraft = new FormControl<boolean>(false);
     docuSignMenuItems = DocuSignMenuItems;
     emailMenuItems = EmailMenuItems;
 	constructor(
@@ -41,12 +40,12 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 	}
 
 	public sendViaEmail(option: EEmailMenuOption) {
-		this.onSendViaEmail.emit({option: option});
+		this.onSendViaEmail.emit(option);
 		this._closeInternal();
 	}
 
 	public sendViaDocuSign(option: EDocuSignMenuOption) {
-		this.onSendViaDocuSign.emit({createDraft: this.createDocuSignDraft.value, option: option});
+		this.onSendViaDocuSign.emit(option);
 		this._closeInternal();
 	}
 

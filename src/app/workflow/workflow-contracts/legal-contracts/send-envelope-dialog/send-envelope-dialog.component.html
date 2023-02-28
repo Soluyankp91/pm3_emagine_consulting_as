@@ -17,7 +17,7 @@
     <ng-template #chooseEnvelopeType>
         <h3>Choose which type of the envelope you want to send:</h3>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-            <mat-radio-group [formControl]="singleEmail">
+            <mat-radio-group [formControl]="singleEmail" color="primary">
                 <mat-radio-button [value]="false">Send each agreement in a Separate Envelope</mat-radio-button>
                 <mat-radio-button [disabled]="data.disableSendAllButton" [value]="true">Send all agreements in Single Envelope</mat-radio-button>
             </mat-radio-group>
