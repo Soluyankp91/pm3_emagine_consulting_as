@@ -24,7 +24,7 @@ import { DownloadFilesService } from 'src/app/contracts/shared/services/download
 export class PreviewService extends BasePreview {
 	entityGet = this._agreementTemplateServiceProxy.agreementTemplateGET.bind(this._agreementTemplateServiceProxy);
 	entityMetadataLog = this._agreementTemplateServiceProxy.metadataLog.bind(this._agreementTemplateServiceProxy);
-	downloadAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
+	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
 
 	protected _clientTemplateLinksSearch$ = new BehaviorSubject<string | undefined>('');
 	protected _clientTemplateLinksSort$ = new BehaviorSubject<SortDto>({
