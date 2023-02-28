@@ -1,6 +1,6 @@
 <div class="loaded-files">
 	<ng-container *ngIf="uploadedFilesLength || preselectedFilesModified.length">
-		<h4>Current master template</h4>
+		<h4>{{ label }}</h4>
 	</ng-container>
 	<ng-container *ngFor="let preselectedFile of preselectedFilesModified; trackBy: trackByAgreementTemplateAttachmentId">
 		<div class="file-container">

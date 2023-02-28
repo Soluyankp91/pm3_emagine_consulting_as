@@ -44,7 +44,10 @@ export abstract class BasePreview {
 			return this.entityGet(rowId);
 		}),
 		map((template) => {
-			return template.attachments;
+			return {
+				attachments: template.attachments,
+				attachmentsFromParent: template.attachmentsFromParent,
+			};
 		}),
 		tap(() => {
 			this.contentLoading$.next(false);
@@ -87,7 +90,7 @@ export abstract class BasePreview {
 
 	abstract entityGet: (rowId: number) => Observable<any>;
 	abstract entityMetadataLog: (rowId: number, newestFirst: boolean, signingStatuses?: boolean) => Observable<any>;
-	abstract downloadAttachment: (attachmentId: number) => Observable<void>;
+	abstract downloadAttachment: (attachmentId: number) => Observable<Blob>;
 
 	getClientTemplateLinksSort$?() {
 		return this._clientTemplateLinksSort$.asObservable();

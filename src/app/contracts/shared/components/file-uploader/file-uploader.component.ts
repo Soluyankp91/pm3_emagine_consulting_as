@@ -26,7 +26,8 @@ import { DownloadFile } from '../../utils/download-file';
 })
 export class FileUploaderComponent extends AppComponentBase implements OnInit, OnChanges, OnDestroy {
 	@Input() preselectedFiles: FileUpload[];
-    @Input() idProp = 'agreementTemplateAttachmentId';
+	@Input() label: string = 'Current master template';
+	@Input() idProp = 'agreementTemplateAttachmentId';
 
 	preselectedFilesModified: FileUploadItem[];
 	uploadedFiles$: Observable<FileUploadItem[]>;
@@ -92,9 +93,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 
 	onPreselectedFileDelete(preselectedFile: FileUploadItem) {
 		this.preselectedFiles.splice(
-			this.preselectedFiles.findIndex(
-				(file) => file[this.idProp] === preselectedFile[this.idProp]
-			),
+			this.preselectedFiles.findIndex((file) => file[this.idProp] === preselectedFile[this.idProp]),
 			1
 		);
 		this._setPreselectedFilesModified();

@@ -3,9 +3,9 @@ import { map } from 'rxjs/operators';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { BaseMappedAgreementListItemDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { DownloadFilesService } from 'src/app/contracts/shared/services/download-files.service';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
-	AgreementAttachmentServiceProxy,
 	AgreementDetailsDto,
 	AgreementLanguage,
 	AgreementServiceProxy,
@@ -16,13 +16,13 @@ import {
 
 @Injectable()
 export class AgreementPreviewService extends BasePreview {
-	downloadAttachment = this._agreementAttachmentServiceProxy.agreementAttachment.bind(this._agreementAttachmentServiceProxy);
+	downloadAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
 	entityGet = this._agreementServiceProxy.agreementGET.bind(this._agreementServiceProxy);
 	entityMetadataLog = this._agreementServiceProxy.logs.bind(this._agreementServiceProxy);
 
 	constructor(
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
-		private readonly _agreementAttachmentServiceProxy: AgreementAttachmentServiceProxy,
+		private readonly _downloadFilesService: DownloadFilesService,
 		private readonly _lookupService: LookupServiceProxy,
 		private readonly _enumService: EnumServiceProxy,
 		protected readonly _contractService: ContractsService

@@ -10,3 +10,7 @@ export type FileUploadItem = FileUpload & {
 	selected?: boolean;
 };
 export type MappedAgreementTemplateDetailsAttachmentDto = AgreementTemplateDetailsAttachmentDto & { icon: string };
+export type AttachmentPreview = {
+	attachments: MappedAgreementTemplateDetailsAttachmentDto [];
+	attachmentsFromParent: MappedAgreementTemplateDetailsAttachmentDto [];
+};
