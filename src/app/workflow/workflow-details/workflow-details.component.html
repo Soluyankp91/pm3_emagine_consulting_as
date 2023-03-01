@@ -184,7 +184,7 @@
                 <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
             </div>
         </ng-container>
-        <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxLayout="row" fxLayoutAlign="start start" class="sticky-nav">
             <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs form-width-300">
                 <a mat-tab-link routerLink="overview" class="overview-tab" [active]="rlaWFOverview.isActive" routerLinkActive
                     #rlaWFOverview="routerLinkActive">
@@ -205,9 +205,11 @@
                                 <span class="tab-header">
                                     <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
                                     <span class="tab-header--name" [ngClass]="ePeriodClass[tab.typeId]">
-                                        {{tab.name}}
+                                        {{clientPeriods?.length > 5 ? ePeriodAbbreviation[tab.typeId] : ePeriodName[tab.typeId]}}
                                     </span>
-                                    {{tab.fullDisplayId}}
+                                    <span (click)="$event.preventDefault(); copyPeriodId($event, tab.fullDisplayId)" class="tab-header--id" [matTooltip]="'Copy period id'" matTooltipClass="white-tooltip">
+                                        {{tab.fullDisplayId}}
+                                    </span>
                                 </span>
                             </div>
                             <span class="tab-subheader">
@@ -225,7 +227,9 @@
                                         <span class="tooltip-header--name" [ngClass]="ePeriodClass[tab.typeId]">
                                             {{tab.name}}
                                         </span>
-                                        {{tab.fullDisplayId}}
+                                        <span class="tooltip-header--id">
+                                            {{tab.fullDisplayId}}
+                                        </span>
                                     </span>
                                 </div>
                                 <span class="tooltip-subheader">

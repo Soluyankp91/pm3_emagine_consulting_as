@@ -249,3 +249,12 @@
         line-height: 150%;
     }
 }
+
+.sticky-nav {
+    top: 50px;
+    z-index: 1000;
+    position: sticky;
+    position: -webkit-sticky;
+    border-bottom: 0;
+    background-color: $white-color;
+}

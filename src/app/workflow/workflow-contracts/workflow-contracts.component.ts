@@ -37,6 +37,8 @@ import {
 	WorkflowTerminationContractDataQueryDto,
     WorkflowDocumentCommandDto,
     WorkflowDocumentServiceProxy,
+    TimeReportingCapDto,
+    TimeReportingCapId,
 } from 'src/shared/service-proxies/service-proxies';
 import {} from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
@@ -892,10 +894,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 		if (data?.clientData !== undefined) {
 			this.clientDataComponent?.contractClientForm.patchValue(data.clientData, { emitEvent: false });
-			this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.setValue(
-				this.findItemById(this.clientTimeReportingCap, data.clientData.clientTimeReportingCapId),
-				{ emitEvent: false }
-			);
+            if (data?.clientData?.timeReportingCaps?.length) {
+                for (let cap of data?.clientData?.timeReportingCaps) {
+                    this.clientDataComponent.addTimeReportingCap(cap);
+                }
+            }
 			this.clientDataComponent?.contractClientForm.rateUnitType?.setValue(
 				this.findItemById(this.rateUnitTypes, data.clientData.clientRate?.rateUnitTypeId),
 				{ emitEvent: false }
@@ -904,11 +907,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
 				{ emitEvent: false }
 			);
-            // NB: commented after proxies update, feature implemented in P30-601
-			// this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(
-			// 	this.findItemById(this.currencies, data.clientData.clientTimeReportingCapCurrencyId),
-			// 	{ emitEvent: false }
-			// );
 			if (data.clientData.noSpecialContractTerms) {
 				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
 			}
@@ -956,10 +954,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		input.clientData = new ContractsClientDataDto();
 		input.clientData.specialContractTerms = this.clientDataComponent?.contractClientForm.specialContractTerms?.value;
 		input.clientData.noSpecialContractTerms = this.clientDataComponent?.contractClientForm.noSpecialContractTerms?.value;
-		input.clientData.clientTimeReportingCapId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value?.id;
-        // NB: commented after proxies update, feature implemented in P30-601
-		// input.clientData.clientTimeReportingCapMaxValue = this.clientDataComponent?.contractClientForm.clientTimeReportingCapMaxValue?.value;
-		// input.clientData.clientTimeReportingCapCurrencyId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
+		input.clientData.clientTimeReportingCapId = this.clientDataComponent?.contractClientForm.clientTimeReportingCapId?.value;
+        input.clientData.timeReportingCaps = new Array<TimeReportingCapDto>();
+        if (this.clientDataComponent.contractClientForm.timeReportingCaps?.value.length) {
+            for (let cap of this.clientDataComponent.contractClientForm.timeReportingCaps?.value) {
+                let capInput = new TimeReportingCapDto(cap);
+                capInput.id = new TimeReportingCapId(cap.id);
+                input.clientData.timeReportingCaps.push(capInput);
+            }
+        }
 		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.clientRate?.value;
 		input.clientData.pdcInvoicingEntityId = this.clientDataComponent?.contractClientForm.pdcInvoicingEntityId?.value;
 		input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
@@ -1128,10 +1131,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.employmentTypeId = consultantInput.consultantType?.id;
 		consultantData.consultantId = consultantInput.consultantId;
 		consultantData.nameOnly = consultantInput.nameOnly;
-		consultantData.consultantTimeReportingCapId = consultantInput.consultantCapOnTimeReporting?.id;
-        // NB: commented after proxies update, feature implemented in P30-601
-		// consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
-		// consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
+		consultantData.consultantTimeReportingCapId = consultantInput.consultantTimeReportingCapId;
+		consultantData.timeReportingCaps = new Array<TimeReportingCapDto>();
+        if (consultantInput.timeReportingCaps?.length) {
+            for (let cap of consultantInput.timeReportingCaps) {
+                let capInput = new TimeReportingCapDto(cap);
+                capInput.id = new TimeReportingCapId(cap.id);
+                consultantData.timeReportingCaps.push(capInput);
+            }
+        }
 		consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
 		consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 		consultantData.specialContractTerms = consultantInput.specialContractTerms;

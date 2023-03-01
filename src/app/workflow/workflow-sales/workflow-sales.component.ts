@@ -45,6 +45,8 @@ import {
 	EmployeeDto,
     WorkflowDocumentCommandDto,
     WorkflowDocumentServiceProxy,
+    TimeReportingCapDto,
+    TimeReportingCapId,
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
@@ -510,6 +512,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				);
+                if (result?.salesClientData?.timeReportingCaps?.length) {
+                    for (let cap of result?.salesClientData?.timeReportingCaps) {
+                        this.clientDataComponent.addTimeReportingCap(cap);
+                    }
+                }
 				if (result?.salesClientData?.directClient?.clientId) {
 					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
                     this.clientDataComponent.initContactSubs();
@@ -1080,6 +1087,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         input.salesClientData.clientInvoicingRecipientAddressId = this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientAddress.value.id;
 		input.salesClientData.invoicingReferencePersonIdValue =
 			this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
+
+        input.salesClientData.timeReportingCaps = new Array<TimeReportingCapDto>();
+        if (this.clientDataComponent.salesClientDataForm.timeReportingCaps?.value.length) {
+            for (let cap of this.clientDataComponent.salesClientDataForm.timeReportingCaps?.value) {
+                let capInput = new TimeReportingCapDto(cap);
+                capInput.id = new TimeReportingCapId(cap.id);
+                input.salesClientData.timeReportingCaps.push(capInput);
+            }
+        }
 		if (this.clientDataComponent?.salesClientDataForm.clientRates.value.length) {
 			input.salesClientData!.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
 			this.clientDataComponent?.salesClientDataForm.clientRates.value.forEach((rate: any) => {
@@ -1150,8 +1166,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
 			consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
 			consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
-            // NB: commented after proxies update, feature implemented in P30-601
-			// consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+            consultantInput.timeReportingCaps = new Array<TimeReportingCapDto>();
+            if (consultant.timeReportingCaps?.length) {
+                for (let cap of consultant.timeReportingCaps) {
+                    let capInput = new TimeReportingCapDto(cap);
+                    capInput.id = new TimeReportingCapId(cap.id);
+                    consultantInput.timeReportingCaps.push(capInput);
+                }
+            }
 
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;

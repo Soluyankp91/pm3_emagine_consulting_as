@@ -9,3 +9,15 @@ export enum EPermissions {
     Edit = 'Edit',
     Completion = 'Completion'
 }
+
+export enum EPeriodAbbreviation {
+    'S' = 1,
+    'C' = 2,
+    'E' = 3
+}
+
+export enum EPeriodName {
+    'Start' = 1,
+    'Change' = 2,
+    'Extend' = 3
+}

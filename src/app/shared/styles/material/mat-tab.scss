@@ -102,14 +102,6 @@ nav.workflow-content--tabs {
     &.period-tabs {
         width: calc(100% - 300px);
     }
-    &.mat-tab-nav-bar {
-        top: 50px;
-        z-index: 1000;
-        position: sticky;
-        position: -webkit-sticky;
-        border-bottom: 0;
-        background-color: $white-color;
-    }
 
     .mat-tab-link-container {
         padding-top: 0 !important;
@@ -183,6 +175,11 @@ nav.workflow-content--tabs {
                     margin: 0 5px;
                 }
             }
+            &--id {
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
 
             &-detail {
                 font-weight: 600;
@@ -227,11 +224,6 @@ nav.workflow-content--tabs {
     }
 
     &.compressed-view {
-        .mat-tab-link {
-            .tab-header--name {
-                display: none;
-            }
-        }
         .tab-subheader{
             display: none;
             &.compressed {
