@@ -4,6 +4,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import {
     AgreementServiceProxy,
 	AgreementSimpleListItemDto,
+	AgreementSimpleListItemDtoPaginatedList,
 	AgreementType,
 	AgreementValidityState,
 	ClientPeriodServiceProxy,
@@ -17,11 +18,11 @@ import {
     WorkflowAgreementsDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsMainForm } from '../workflow-contracts.model';
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { finalize } from 'rxjs/operators';
+import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -46,9 +47,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientSpecialFeeFilter = new UntypedFormControl('');
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
-	frameAgreements: AgreementSimpleListItemDto[];
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
-
+    filteredFrameAgreements: AgreementSimpleListItemDto[];
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -59,6 +59,38 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
+        this.contractClientForm.frameAgreementId.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                startWith(''),
+                switchMap((value: any) => {
+                    let dataToSend = {
+                        recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
+                        search: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.agreementId) {
+                        dataToSend.search = value.agreementId ? value.agreementName : value;
+                    }
+                    if (dataToSend.recipientClientIds?.length) {
+                        return this.getFrameAgreements(false, dataToSend.search);
+                    } else {
+                        return of([]);
+                    }
+                }))
+            .subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+                if (list?.items?.length) {
+                    this.filteredFrameAgreements = list.items;
+                } else {
+                    this.filteredFrameAgreements = [
+                        new AgreementSimpleListItemDto({
+                            agreementName: 'No records found',
+                            agreementId: undefined,
+                        }),
+                    ];
+                }
+            });
 	}
 
 	ngOnInit(): void {
@@ -80,17 +112,30 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		});
 	}
 
-	getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+    getInitialFrameAgreements() {
+        this.getFrameAgreements(true)
+            .subscribe((result) => {
+                this.filteredFrameAgreements = result.items;
+                if (result.totalCount === 1) {
+                    this._checkAndPreselectFrameAgreement();
+                }
+                if (result.totalCount === 0) {
+                    this.contractClientForm.frameAgreementId.setValue('');
+                }
+            });
+    }
+
+	getFrameAgreements(isInitial = false, search: string = '') {
 		let dataToSend = {
-			agreementId: agreementId,
+			agreementId: undefined,
 			search: search,
 			clientId: this.contractClientForm.directClientId.value,
 			agreementType: AgreementType.Frame,
 			validity: undefined,
-			legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
-			salesTypeId: this.contractsMainForm.salesType.value?.id,
+			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
 			contractTypeId: undefined,
-			deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
 			startDate: undefined,
 			endDate: undefined,
             recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
@@ -98,7 +143,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			pageSize: 1000,
 			sort: '',
 		};
-		this._agreementService
+		return this._agreementService
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
@@ -117,13 +162,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
-			)
-			.subscribe((result) => {
-				this.frameAgreements = result.items;
-				if (result.items.length === 1) {
-					this._checkAndPreselectFrameAgreement();
-				}
-			});
+			);
 	}
 
 	private _checkAndPreselectFrameAgreement() {
@@ -135,8 +174,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			(this.contractsMainForm.deliveryType.value?.id !== null &&
             this.contractsMainForm.deliveryType.value?.id !== undefined)
 		) {
-			if (this.frameAgreements.length === 1) {
-				this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+			if (this.filteredFrameAgreements.length === 1) {
+				this.contractClientForm.frameAgreementId.setValue(this.filteredFrameAgreements[0].agreementId, { emitEvent: false });
 			}
 		}
 	}

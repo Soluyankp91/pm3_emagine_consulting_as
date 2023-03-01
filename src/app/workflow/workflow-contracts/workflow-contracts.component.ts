@@ -935,7 +935,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
         if (this.isContractModuleEnabled) {
-            this.clientDataComponent?.getFrameAgreements();
+            this.clientDataComponent?.getFrameAgreements(true);
         }
 	}
 

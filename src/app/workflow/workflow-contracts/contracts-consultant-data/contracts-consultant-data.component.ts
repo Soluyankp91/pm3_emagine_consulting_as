@@ -4,9 +4,10 @@ import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormContr
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { forkJoin, Subject } from 'rxjs';
+import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementSimpleListItemDtoPaginatedList, AgreementType, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
@@ -35,7 +36,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
-    frameAgreements = new Array<AgreementSimpleListItemDto[]>();
+    filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 
 	private _unsubscribe = new Subject();
@@ -61,17 +62,30 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this._unsubscribe.complete();
 	}
 
-    getFrameAgreements(consultantId: number, consultantIndex: number, search: string = '') {
+    getInitialFrameAgreements(consultantId: number, consultantIndex: number) {
+        this.getFrameAgreements(consultantId, consultantIndex, true)
+            .subscribe((result) => {
+                this.filteredFrameAgreements[consultantIndex] = result.items;
+                if (result.items.length === 1) {
+                    this._checkAndPreselectFrameAgreement(consultantIndex);
+                }
+                if (result.items.length === 0) {
+                    this.consultants.at(consultantIndex).get('frameAgreementId').setValue('');
+                }
+            });
+    }
+
+    getFrameAgreements(consultantId: number, consultantIndex: number, isInitial = false, search: string = '') {
 		let dataToSend = {
 			agreementId: undefined,
 			search: search,
 			clientId: this.contractClientForm.directClientId.value,
 			agreementType: AgreementType.Frame,
 			validity: undefined,
-			legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
-			salesTypeId: this.contractsMainForm.salesType.value?.id,
+			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
 			contractTypeId: undefined,
-			deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
 			startDate: undefined,
 			endDate: undefined,
             recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
@@ -80,7 +94,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			pageSize: 1000,
 			sort: '',
 		};
-		this._agreementService
+		return this._agreementService
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
@@ -99,14 +113,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
-			)
-			.subscribe((result) => {
-                this.frameAgreements[consultantIndex] = result.items;
-                console.log(this.frameAgreements);
-				if (result.items.length === 1) {
-					this._checkAndPreselectFrameAgreement(consultantIndex);
-				}
-			});
+			);
 	}
 
     private _checkAndPreselectFrameAgreement(consultantIndex: number) {
@@ -118,9 +125,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			(this.contractsMainForm.deliveryType.value?.id !== null &&
             this.contractsMainForm.deliveryType.value?.id !== undefined)
 		) {
-			if (this.frameAgreements[consultantIndex].length === 1) {
+			if (this.filteredFrameAgreements[consultantIndex].length === 1) {
 				this.contractsConsultantsDataForm.consultants.controls.forEach(form => {
-                    form.get('frameAgreementId').setValue(this.frameAgreements[consultantIndex][0].agreementId, { emitEvent: false });
+                    form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0].agreementId, { emitEvent: false });
                 });
 			}
 		}
@@ -204,13 +211,47 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			this.addSpecialRateToConsultantData(consultantIndex, rate);
 		});
         if (this.isContractModuleEnabled) {
-            this.frameAgreements.push([]);
+            this.filteredFrameAgreements.push([]);
             if (consultant.employmentTypeId !== EmploymentTypes.FeeOnly && consultant.employmentTypeId !== EmploymentTypes.Recruitment) {
-                this.getFrameAgreements(consultant.consultantId, consultantIndex);
+                this.getInitialFrameAgreements(consultant.consultantId, consultantIndex);
+                this.manageFrameAgreementAutocomplete(consultant.consultantId, consultantIndex);
             }
         }
 		this.filteredConsultants.push(consultant.consultant!);
 	}
+
+    manageFrameAgreementAutocomplete(consultantId: number, consultantIndex: number) {
+        let arrayControl = this.consultants.at(consultantIndex);
+		arrayControl!
+			.get('frameAgreementId')!
+			.valueChanges.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+                startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						search: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.agreementId) {
+						toSend.search = value.agreementId ? value.agreementName : value;
+					}
+					return this.getFrameAgreements(consultantId, consultantIndex, false, toSend.search);
+				})
+			)
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+                if (list?.items?.length) {
+					this.filteredFrameAgreements[consultantIndex] = list.items;
+				} else {
+					this.filteredFrameAgreements[consultantIndex] = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
+				}
+            });
+    }
 
     selectConsultantSpecialRate(
 		consultantIndex: number,

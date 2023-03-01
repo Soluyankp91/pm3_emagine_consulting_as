@@ -237,25 +237,35 @@
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
+                                        <mat-form-field appearance="outline"
+                                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
+                                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
                                             <mat-label>Frame agreement</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" formControlName="frameAgreementId"
-                                                [disableOptionCentering]="true">
-                                                <ng-container *ngFor="let item of frameAgreements[consultantIndex]; trackBy: trackByAgreementId">
-                                                    <mat-option [value]="item.agreementId">
+                                            <input [disabled]="readOnlyMode" required #frameAgreementInput type="text"
+                                                matInput [matAutocomplete]="frameAgreementAutocomplete"
+                                                formControlName="frameAgreementId" appPreventDoubleClick
+                                                (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
+                                                <span matSuffix class="shevron"></span>
+                                            <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
+                                                [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                <ng-container *ngFor="let item of filteredFrameAgreements[consultantIndex]; trackBy: trackById">
+                                                    <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                                         <div class="multilineDropdown-option--row">
                                                             <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                 <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
-                                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                    {{item.countryName}}
-                                                                    {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
-                                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
-                                                                </span>
+                                                                <ng-container *ngIf="item?.agreementId !== undefined">
+                                                                    <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                                        {{item.countryName}}
+                                                                        {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
+                                                                        {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                                    </span>
+                                                                </ng-container>
                                                             </div>
                                                         </div>
                                                     </mat-option>
                                                 </ng-container>
-                                            </mat-select>
+                                            </mat-autocomplete>
                                             <mat-error>
                                                 <app-validator [control]="consultant.get('frameAgreementId')"></app-validator>
                                             </mat-error>
