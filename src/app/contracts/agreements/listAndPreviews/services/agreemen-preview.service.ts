@@ -65,6 +65,7 @@ export class AgreementPreviewService extends BasePreview {
 
 			parentAgreementTemplateId: row.parentAgreementTemplateId,
 			parentAgreementTemplateName: row.parentAgreementTemplateName,
+            parentAgreementTemplateIsMasterTemplate: row.parentAgreementTemplateIsMasterTemplate
 		};
 	}
 

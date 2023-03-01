@@ -24,8 +24,53 @@ export class SummaryComponent implements OnInit {
 		this.loading$ = this._previewService.contentLoading$;
 	}
 
-	navigateToTemplate(templateId: any, isDuplicate: boolean) {
-		//need update on BackEnd
-		return;
+	navigateToDuplicatedTemplate(summaryItem: AgreementTemplate) {
+		let url: string;
+		if ('duplicationSourceAgreementId' in summaryItem) {
+			url = this._router.serializeUrl(
+				this._router.createUrlTree(['/app/contracts/agreements'], {
+					queryParams: { agreementId: summaryItem.duplicationSourceAgreementId },
+				})
+			);
+		}
+		if ('duplicationSourceAgreementTemplateId' in summaryItem) {
+			const currentUrl = this._router.url;
+			const isMasterTemplates = currentUrl.includes('/master-templates');
+			const isClientTemplates = currentUrl.includes('/client-specific-templates');
+			let urlCommand: string;
+			if (isMasterTemplates) {
+				urlCommand = '/app/contracts/master-templates';
+			}
+			if (isClientTemplates) {
+				urlCommand = '/app/contracts/client-specific-templates';
+			}
+			url = this._router.serializeUrl(
+				this._router.createUrlTree([urlCommand], {
+					queryParams: { templateId: summaryItem.duplicationSourceAgreementTemplateId },
+				})
+			);
+		}
+		window.open(url, '_blank');
+	}
+
+	navigateToParentTemplate(summaryItem: AgreementTemplate) {
+		const currentUrl = this._router.url;
+		const isAgreements = currentUrl.includes('/agreements');
+		let urlCommand: string;
+		if (isAgreements) {
+			if (summaryItem.parentAgreementTemplateIsMasterTemplate) {
+				urlCommand = '/app/contracts/master-templates';
+			} else {
+				urlCommand = '/app/contracts/client-specific-templates';
+			}
+		} else {
+			urlCommand = '/app/contracts/master-templates';
+		}
+        const url = this._router.serializeUrl(
+            this._router.createUrlTree([urlCommand], {
+                queryParams: { templateId: summaryItem.parentAgreementTemplateId },
+            })
+        );
+        window.open(url, '_blank');
 	}
 }
