@@ -17,6 +17,7 @@ import { NgControl } from '@angular/forms';
 import { FileUpload, FileUploadItem } from './files';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { DownloadFile } from '../../utils/download-file';
+import { DownloadFilesService } from '../../services/download-files.service';
 
 @Component({
 	selector: 'emg-file-uploader',
@@ -49,7 +50,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 
 	constructor(
 		private readonly _fileServiceProxy: FileServiceProxy,
-		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
+		private readonly _downloadFilesService: DownloadFilesService,
 		@Self() private readonly _ngControl: NgControl,
 		private readonly _injector: Injector
 	) {
@@ -75,9 +76,16 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	}
 
 	downloadAttachment(file: FileUploadItem): void {
-		this._agreementTemplateAttachmentServiceProxy
-			.agreementTemplateAttachment(file[this.idProp] as number)
-			.subscribe((d) => DownloadFile(d as any, file.name));
+		if (this.idProp === 'agreementTemplateAttachmentId') {
+			this._downloadFilesService
+				.agreementTemplateAttachment(file.agreementTemplateAttachmentId)
+				.subscribe((d) => DownloadFile(d as any, file.name));
+		}
+		if (this.idProp === 'agreementAttachmentId') {
+			this._downloadFilesService
+				.agreementAttachment(file.agreementAttachmentId)
+				.subscribe((d) => DownloadFile(d as any, file.name));
+		}
 	}
 
 	onFileAdded($event: EventTarget | null) {
@@ -85,6 +93,9 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 			let files = ($event as HTMLInputElement).files as FileList;
 			const fileArray = [] as File[];
 			for (let i = 0; i < files.length; i++) {
+				if (files[i].type != 'application/msword' && files[i].type !== 'application/pdf') {
+					continue;
+				}
 				fileArray.push(files.item(i) as File);
 			}
 			this._uploadedFiles$.next(fileArray);
@@ -177,7 +188,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
+		return splittetFileName[splittetFileName.length - 1].toLowerCase();
 	}
 
 	private _clearAllFiles() {

@@ -1,6 +1,6 @@
 import { Component, forwardRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { DownloadFilesService } from '../../services/download-files.service';
 import { DownloadFile } from '../../utils/download-file';
 import { FileUpload, FileUploadItem } from '../file-uploader/files';
 
@@ -27,7 +27,7 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	private _onChange = (val: any) => {};
 	private onTouched = () => {};
 
-	constructor(private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy) {}
+	constructor(private readonly _downloadFilesService: DownloadFilesService) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes['inheritedFiles'].currentValue) {
@@ -39,7 +39,7 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	}
 
 	downloadAttachment(file: FileUploadItem): void {
-		this._agreementTemplateAttachmentServiceProxy
+		this._downloadFilesService
 			.agreementTemplateAttachment(file[this.idProp] as number)
 			.subscribe((d) => DownloadFile(d as any, file.name));
 	}
@@ -102,6 +102,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
+		return splittetFileName[splittetFileName.length - 1].toLowerCase();
 	}
 }

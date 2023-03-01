@@ -675,5 +675,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _resetForm() {
 		this.agreementFormGroup.reset();
 		this.preselectedFiles = [];
+        this.attachmentsFromParent = [];
 	}
 }

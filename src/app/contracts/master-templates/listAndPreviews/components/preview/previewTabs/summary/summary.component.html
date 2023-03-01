@@ -41,10 +41,12 @@
 				<div class="fw-700 flex-b-60">{{ summaryItem.recipientTypeId }}</div>
 			</div>
             <ng-container *ngIf="summaryItem.actualRecipient$">
-                <div class="row-item">
-                    <div class="label">{{ previewMap['actualRecipient'] }}</div>
-                    <div class="fw-700 flex-b-60">{{ summaryItem.actualRecipient$ | async }}</div>
-                </div>
+                <ng-container *ngIf="summaryItem.actualRecipient$ | async as actualRecipient">
+                    <div class="row-item">
+                        <div class="label">{{ previewMap['actualRecipient'] }}</div>
+                        <div class="fw-700 flex-b-60">{{ actualRecipient }}</div>
+                    </div>
+                </ng-container>
             </ng-container>
             <ng-container *ngIf="summaryItem.consultantName">
                 <div class="row-item">
