@@ -9,7 +9,8 @@ import { pluck, take } from 'rxjs/operators';
 @Component({
 	selector: 'app-agreement-mode-filter',
 	templateUrl: './mode-filter.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	styleUrls: ['./mode-filter.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class AgreementModeFilterComponent {

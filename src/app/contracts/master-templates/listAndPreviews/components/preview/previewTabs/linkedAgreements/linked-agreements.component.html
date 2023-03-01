@@ -26,7 +26,10 @@
 						<ng-container matColumnDef="mode">
 							<mat-header-cell class="header-cell" *matHeaderCellDef mat-sort-header> Mode </mat-header-cell>
 							<mat-cell *matCellDef="let template">
-								<emg-agreement-mode [agreementValidityState]="template.mode" [iconWidth]="20" [iconHeight]="16"></emg-agreement-mode>
+								<emg-agreement-mode
+									[agreementValidityState]="template.mode"
+									[iconWidth]="20"
+									[iconHeight]="16"></emg-agreement-mode>
 							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="agreementId">
@@ -53,7 +56,17 @@
 								(click)="$event.stopPropagation()">
 								Agreement name</mat-header-cell
 							>
-							<mat-cell *matCellDef="let template">{{ template.agreementName }}</mat-cell>
+							<mat-cell *matCellDef="let template">
+								{{ template.agreementName }}
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="agreementLink">
+							<mat-header-cell class="header-cell" *matHeaderCellDef mat-sort-header> </mat-header-cell>
+							<mat-cell *matCellDef="let template">
+								<div class="link" (click)="navigateToAgreement(template.agreementId)">
+									<mat-icon svgIcon="right-arrow"></mat-icon>
+								</div>
+							</mat-cell>
 						</ng-container>
 						<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
@@ -62,14 +75,13 @@
 			</ng-container>
 		</div>
 		<ng-template #noItems>
-            <div class="no-items">
-                <div>
-                    <mat-icon svgIcon="no-items-icon"></mat-icon>
-                </div>
-                <div>There are no linked
-                    agreements for this template</div>
-            </div>
-        </ng-template>
+			<div class="no-items">
+				<div>
+					<mat-icon svgIcon="no-items-icon"></mat-icon>
+				</div>
+				<div>There are no linked agreements for this template</div>
+			</div>
+		</ng-template>
 	</ng-container>
 </ng-container>
 <ng-template #loading>

@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { DownloadFilesService } from '../../services/download-files.service';
+import { DownloadFile } from '../../utils/download-file';
 import { FileUpload, FileUploadItem } from '../file-uploader/files';
 
 @Component({
@@ -17,6 +18,7 @@ import { FileUpload, FileUploadItem } from '../file-uploader/files';
 })
 export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	@Input() inheritedFiles: FileUpload[] = [];
+	@Input() label = 'From master template';
 	@Input() idProp = 'agreementTemplateAttachmentId';
 
 	inheritedFilesModified: FileUploadItem[] = [];
@@ -25,27 +27,21 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	private _onChange = (val: any) => {};
 	private onTouched = () => {};
 
-	constructor(private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy) {}
+	constructor(private readonly _downloadFilesService: DownloadFilesService) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes['inheritedFiles'] && !changes['inheritedFiles'].firstChange) {
+		if (changes['inheritedFiles'].currentValue) {
 			const inheritedFiles = changes['inheritedFiles'].currentValue as FileUpload[];
 			this.inheritedFilesModified = inheritedFiles.map((file) => {
-				return this._modifyFileUpload(file, false);
+				return this._modifyFileUpload(file);
 			});
 		}
 	}
 
 	downloadAttachment(file: FileUploadItem): void {
-		this._agreementTemplateAttachmentServiceProxy.agreementTemplateAttachment(file[this.idProp] as number).subscribe((d) => {
-			const blob = new Blob([d as any]);
-			const a = document.createElement('a');
-			const objectUrl = URL.createObjectURL(blob);
-			a.href = objectUrl;
-			a.download = file.name;
-			a.click();
-			URL.revokeObjectURL(objectUrl);
-		});
+		this._downloadFilesService
+			.agreementTemplateAttachment(file[this.idProp] as number)
+			.subscribe((d) => DownloadFile(d as any, file.name));
 	}
 
 	toggleCheckBox(file: FileUploadItem) {
@@ -59,7 +55,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 				1
 			);
 		}
-
 		this._onChange([...this.selectedInheritedFiles]);
 	}
 
@@ -78,7 +73,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 				this.selectedInheritedFiles.push(originalFile);
 			}
 		});
-		this._onChange([...this.selectedInheritedFiles]);
 	}
 
 	registerOnChange(fn: any): void {
@@ -88,14 +82,14 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 		this.onTouched = fn;
 	}
 
-	private _modifyFileUpload(file: FileUpload, selected: boolean) {
+	private _modifyFileUpload(file: FileUpload) {
 		return Object.assign(
 			{},
 			{
 				...file,
 				name: file.name,
 				icon: this._getIconName(file.name),
-				selected: selected,
+				selected: false,
 			}
 		) as FileUploadItem;
 	}
@@ -108,6 +102,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
+		return splittetFileName[splittetFileName.length - 1].toLowerCase();
 	}
 }

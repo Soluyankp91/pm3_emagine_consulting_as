@@ -13,11 +13,13 @@ export const CREATIONS_TABS: Tab[] = [
 ];
 
 export const FILTER_LABEL_MAP: { [key: string]: string } = {
+    languageId: 'Language',
 	language: 'Language',
 	id: 'ID',
 	agreementType: 'Type',
-	recipientTypeId: 'Recipients',
+	recipientTypeId: 'Recipient',
 	legalEntityIds: 'Legal entities',
+	legalEntityId: 'Legal entity',
 	salesTypeIds: 'Sales type',
 	deliveryTypeIds: 'Delivery type',
 	contractTypeIds: 'Contract type',
@@ -26,11 +28,26 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
 	mode: 'Mode',
-	saleManager: 'Sales Manager',
-	contractManager: 'Contract Manager',
+	linkStateAccepted: 'Approval',
+	saleManager: 'SM',
+	contractManager: 'CM',
 };
 
-export const CREATION_RADIO_BUTTONS: { label: string; value: AgreementCreationMode }[] = [
+export const MASTER_CREATION: { label: string; value: AgreementCreationMode }[] = [
+	{
+		label: 'Duplicate from other agreement',
+		value: AgreementCreationMode.Duplicated,
+	},
+	{
+		label: 'Agreement provided by other party',
+		value: AgreementCreationMode.ProvidedByOtherParty,
+	},
+	{
+		label: 'Create from scratch',
+		value: AgreementCreationMode.FromScratch,
+	},
+];
+export const CLIENT_AGREEMENTS_CREATION: { label: string; value: AgreementCreationMode }[] = [
 	{
 		label: 'Inherit from template',
 		value: AgreementCreationMode.InheritedFromParent,

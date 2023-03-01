@@ -1,4 +1,6 @@
 import { SortDirection } from '@angular/material/sort';
+import * as moment from 'moment';
+import { Observable } from 'rxjs';
 import {
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
@@ -34,12 +36,17 @@ export interface MasterFiltersEnum {
 }
 export interface ClientFiltersEnum extends MasterFiltersEnum {
 	linkState: BaseEnumDto[];
+	linkStateAccepted: BaseEnumDto[];
 }
 export interface AgreementFiltersEnum {
-	language: BaseEnumDto[];
+	languageId: BaseEnumDto[];
 	id: number[];
+	legalEntityId: LegalEntityDto[];
 	agreementType: BaseEnumDto[];
 	recipientTypeId: EnumEntityTypeDto[];
+	salesTypeIds: EnumEntityTypeDto[];
+	deliveryTypeIds: EnumEntityTypeDto[];
+	contractTypeIds: EnumEntityTypeDto[];
 	mode: BaseEnumDto[];
 	status: BaseEnumDto[];
 	saleManager: EmployeeDto[];
@@ -49,6 +56,7 @@ export interface AgreementFiltersEnum {
 export interface Actions {
 	label: string;
 	actionType: string;
+	actionIcon: string;
 }
 export interface SortDto {
 	active: string;
@@ -58,9 +66,9 @@ export interface PageDto {
 	pageIndex: number;
 	pageSize: number;
 }
-export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string];
+export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string, any];
 export interface BaseEnumDto {
-	id: number | string;
+	id: number | string | boolean;
 	name: string;
 }
 export interface MappedTableCells {
@@ -85,29 +93,59 @@ export interface SettingsPageOptions {
 	signerRoles: EnumEntityTypeDto[];
 }
 
-export interface BaseMappedAgreementTemplatesListItemDto {
-	agreementTemplateId: number;
-	definition: string;
-	name: string;
-	note: string;
+export interface BaseAgreementTemplate {
 	agreementType: string;
 	recipientTypeId: string;
+
+	definition: string;
+	note: string;
 	language: string;
 	countryCode: string;
-	legalEntityIds: string[];
 	contractTypeIds: string[];
 	salesTypeIds: string[];
 	deliveryTypeIds: string[];
-	createdByLowerCaseInitials?: string;
-	createdDateUtc: string;
+
 	createdBy: string;
+	createdDateUtc: moment.Moment;
 	lastUpdatedBy: string;
+	lastUpdateDateUtc?: moment.Moment;
 	lastUpdatedByLowerCaseInitials?: string;
-	lastUpdateDateUtc?: string;
-	isEnabled: boolean;
+	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
 	duplicationSourceAgreementTemplateName?: string;
+	parentAgreementTemplateId?: number;
+	parentAgreementTemplateName?: string;
 }
+export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTemplate {
+	agreementTemplateId?: number;
+	clientName?: string;
+	name?: string;
+	legalEntityIds?: string[];
+	isEnabled?: boolean;
+	actionList?: Actions[];
+}
+export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
+	agreementId?: number;
+	agreementName?: string;
+	actualRecipient$?: Observable<any>;
+	consultantName: string;
+	companyName: string;
+
+	agreementStatus?: EnvelopeStatus;
+	legalEntityId?: string;
+	saleManager: string;
+	contractManager: string;
+
+	startDate?: moment.Moment;
+	endDate?: moment.Moment;
+	validity: AgreementValidityState;
+
+    duplicationSourceAgreementId: number;
+    duplicationSourceAgreementName: string;
+
+    parentAgreementTemplateIsMasterTemplate: boolean;
+}
+export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;
 	linkState: AgreementTemplateParentChildLinkState;
@@ -120,7 +158,7 @@ export interface MasterTemplatePreview {
 
 export type MappedLog = AgreementTemplateMetadataLogListItemDto & {
 	profilePictureUrl: string;
-	date: string;
+	date: moment.Moment;
 	dayTime: string;
 };
 export const OperationsTypeMap = {
@@ -128,3 +166,26 @@ export const OperationsTypeMap = {
 	[LogOperationType.Update]: 'changed',
 	[LogOperationType.Delete]: 'deleted',
 };
+
+export interface MappedAgreementTableItem {
+	language: string;
+	agreementId: number;
+	agreementName: string;
+	actualRecipientName: string;
+	recipientTypeId: string;
+	agreementType: string;
+	legalEntityId: string;
+	clientName: string;
+	companyName: string;
+	consultantName: string;
+	salesTypeIds: string[];
+	deliveryTypeIds: string[];
+	contractTypeIds: string[];
+	mode: AgreementValidityState;
+	status: EnvelopeStatus;
+	startDate: string;
+	endDate: string;
+	saleManager: EmployeeDto;
+	contractManager: EmployeeDto;
+	actionList: Actions[];
+}

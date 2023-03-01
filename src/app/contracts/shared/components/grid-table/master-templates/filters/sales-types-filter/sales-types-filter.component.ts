@@ -1,5 +1,5 @@
 import { take, pluck } from 'rxjs/operators';
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
@@ -13,6 +13,8 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 @Component({
 	selector: 'app-sales-types-filter',
 	templateUrl: './sales-types-filter.component.html',
+	styleUrls: ['sales-types-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class SalesTypesFilterComponent implements IFilter {

@@ -1,5 +1,7 @@
-<button mat-icon-button [matMenuTriggerFor]="menu" (onMenuOpen)="openPanel()" (onMenuClose)="menuClosed()">{{ label }}</button>
-<mat-menu #menu="matMenu">
+<div [matMenuTriggerFor]="menu" (menuOpened)="openPanel()" (onMenuClose)="menuClosed()">
+    <ng-container *ngIf="triggerButton" [ngTemplateOutlet]="triggerButton" [ngTemplateOutletContext]="{selectedOptions}"></ng-container>
+</div>
+<mat-menu #menu="matMenu" backdropClass="app-contract-backdrop">
 	<div mat-menu-item (click)="$event.stopPropagation()">
 		<mat-form-field>
 			<mat-label>{{ label }}</mat-label>
@@ -7,11 +9,13 @@
 				type="text"
 				matInput
 				[matAutocomplete]="autoName"
+                matAutocompletePosition="auto"
 				[formControl]="inputControl"
-				#trigger="matAutocompleteTrigger" />
-			<mat-autocomplete #autoName="matAutocomplete">
-				<mat-option>
-					<mat-checkbox (click)="$event.stopPropagation()" (change)="toggleSelectAll()" [checked]="selectedAll">
+				#trigger="matAutocompleteTrigger"
+                />
+			<mat-autocomplete #autoName="matAutocomplete" >
+				<mat-option >
+					<mat-checkbox [indeterminate]="selectedAll" (click)="$event.stopPropagation()" (change)="toggleSelectAll()" [checked]="selectedAll">
 						{{ selectedAll ? 'Clear all' : 'Select all' }}
 					</mat-checkbox>
 				</mat-option>

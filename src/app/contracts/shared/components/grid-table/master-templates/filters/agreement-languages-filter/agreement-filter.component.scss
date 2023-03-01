@@ -1,6 +1,14 @@
-.flag {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-size: cover;
+app-agreement-filter {
+    .flag {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-size: cover;
+    }
+    .mat-icon-button .mat-button-wrapper mat-icon.three-lines {
+        font-size: 12px !important;
+        line-height: 12px !important;
+        width: 12px !important;
+        height: 12px !important;
+    }
 }

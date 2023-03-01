@@ -1,4 +1,4 @@
-import { Component, OnInit, Self, DoCheck } from '@angular/core';
+import { Component, OnInit, Self, DoCheck, ViewEncapsulation } from '@angular/core';
 import {
 	NgControl,
 	ControlValueAccessor,
@@ -19,6 +19,7 @@ import { ContractsService } from '../../services/contracts.service';
 	selector: 'app-signers-table',
 	templateUrl: './signers-table.component.html',
 	styleUrls: ['./signers-table.component.scss'],
+	encapsulation: ViewEncapsulation.None,
 })
 export class SignersTableComponent implements OnInit, DoCheck, ControlValueAccessor {
 	formArray: FormArray;
@@ -48,9 +49,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 	ngDoCheck(): void {
 		if (this.ngControl.control?.touched) {
 			this.formArray.markAllAsTouched();
-			this.formArray.updateValueAndValidity({
-				emitEvent: false,
-			});
+			this.formArray.updateValueAndValidity();
 		}
 	}
 
@@ -94,10 +93,10 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 		signers.forEach((signerDto, index) => {
 			this.formArray.push(
 				new FormGroup({
-					signerType: new FormControl(signerDto.signerType as SignerType),
-					signerId: new FormControl(signerDto.signerId as number),
-					roleId: new FormControl(signerDto.roleId as number),
-					signOrder: new FormControl(signerDto.signOrder as number),
+					signerType: new FormControl(signerDto.signerType as SignerType, [Validators.required]),
+					signerId: new FormControl(signerDto.signerId as number, [Validators.required]),
+					roleId: new FormControl(signerDto.roleId as number, [Validators.required]),
+					signOrder: new FormControl(signerDto.signOrder as number, [Validators.required]),
 				}),
 				{ emitEvent: false }
 			);
@@ -161,6 +160,11 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 	_subscribeOnFormArray() {
 		this.formArray.valueChanges.subscribe((value) => {
 			this.onChange(value);
+			if (this.formArray.controls.every((control) => control.valid)) {
+				this.ngControl.control.setErrors(null);
+			} else {
+				this.ngControl.control.setErrors({ required: true });
+			}
 		});
 	}
 }

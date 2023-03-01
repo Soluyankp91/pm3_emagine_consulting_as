@@ -4,6 +4,8 @@
 	}
 	& .toggle-button {
 		width: fit-content !important;
+        line-height: unset !important;
+        position: unset !important;
 	}
 	& .icon__margin {
 		margin-right: 3px;

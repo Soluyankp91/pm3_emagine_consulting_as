@@ -1,15 +1,15 @@
 <ng-container *ngIf="tenants">
 	<ng-container *ngIf="tenants.length <= countryLimit; else beyondLimit">
-		<div [style.margin-right.px]="-(tenants.length - 1) * 20">
+		<div [style.margin-right.px]="-(tenants.length - 1) * 16">
 			<span
 				*ngFor="let tenant of tenants; let i = index; trackByLegalEntity"
 				class="fi fi-{{ tenant.code | lowercase }} tenant"
-				[style.right.px]="20 * i"></span>
+				[style.right.px]="16 * i"></span>
 		</div>
 	</ng-container>
 	<ng-template #beyondLimit>
 		<div>
-			<div [customTooltip]="tooltip" class="circle-counter flex">
+			<div [customTooltip]="tooltip" [showAlways]="true" class="circle-counter flex">
 				{{ tenants.length }}
 			</div>
 			<ng-template #tooltip>

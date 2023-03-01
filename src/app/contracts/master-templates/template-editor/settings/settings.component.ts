@@ -44,8 +44,10 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
-import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
+import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 
 @Component({
 	selector: 'app-settings',
@@ -55,10 +57,13 @@ import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 	encapsulation: ViewEncapsulation.None,
 })
 export class CreateMasterTemplateComponent extends AppComponentBase implements OnInit, OnDestroy {
+	creationRadioButtons = MASTER_CREATION;
+
 	editMode = false;
 	currentTemplate: { [key: string]: any };
 
-	initialLoading = true;
+	possibleDocumentTypes: BaseEnumDto[];
+	documentTypes$: Observable<BaseEnumDto[]>;
 
 	legalEntities: LegalEntityDto[];
 
@@ -74,14 +79,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	masterTemplateFormGroup = new MasterTemplateModel();
 
-	options$: Observable<[SettingsOptions, MappedTableCells]> = combineLatest([
-		this._contractsService.settingsPageOptions$(),
-		this._contractsService.getEnumMap$().pipe(take(1)),
-	]).pipe(
-		tap(([{ legalEntities }, maps]) => {
-			this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
-		})
-	);
+	options$: Observable<[SettingsOptions, MappedTableCells]>;
 
 	modeControl$ = new BehaviorSubject(AgreementCreationMode.FromScratch);
 	masterTemplateOptions$: Observable<SimpleAgreementTemplatesListItemDto[] | null>;
@@ -120,6 +118,8 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			this._subscribeOnDirtyStatus();
 			this._subscribeOnCreationModeResolver();
 		}
+		this._setOptions();
+		this._setDocumentType();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		this._initMasterTemplateOptions();
@@ -137,12 +137,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		}
 		const toSend = new SaveAgreementTemplateDto({
 			creationMode: this.editMode ? this.currentTemplate.creationMode : this.agreementCreationMode.value,
-			attachments: this._agreementTemplateAttachmentDto(),
 			...this.masterTemplateFormGroup.getRawValue(),
+			attachments: this._agreementTemplateAttachmentDto(),
 		});
 
 		if (this.editMode) {
-			toSend.duplicationSourceAgreementTemplateId = this.currentTemplate.duplicationSourceAgreementTemplateId;
 			this.showMainSpinner();
 			this._apiServiceProxy
 				.agreementTemplatePATCH(this._templateId, toSend)
@@ -158,7 +157,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		}
 		this.showMainSpinner();
 		this._apiServiceProxy
-			.agreementTemplatePOST(new SaveAgreementTemplateDto(new SaveAgreementTemplateDto(toSend)))
+			.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				map((result) => result.agreementTemplateId),
@@ -174,26 +173,21 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {
-		const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
-			? this.masterTemplateFormGroup.uploadedFiles?.value
-			: [];
-		const selectedInheritedFiles = this.masterTemplateFormGroup.selectedInheritedFiles?.value
-			? this.masterTemplateFormGroup.selectedInheritedFiles?.value
-			: [];
-		return [...uploadedFiles, ...selectedInheritedFiles].map((attachment: FileUpload) => {
+		return this.masterTemplateFormGroup.attachments.value.map((attachment: FileUpload) => {
 			return new AgreementTemplateAttachmentDto(attachment);
 		});
 	}
 
 	private _onCreationModeChange() {
 		let mode = this.agreementCreationMode.value;
+		this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
 		if (mode === AgreementCreationMode.FromScratch) {
-			this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
 			this._router.navigate([], {
 				relativeTo: this._route,
 				queryParams: {},
 			});
-		} else {
+		}
+		if (mode === AgreementCreationMode.Duplicated) {
 			this.masterTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', this.duplicateTemplateControl);
 		}
 	}
@@ -220,12 +214,39 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		});
 	}
 
+	private _setOptions() {
+		this.options$ = combineLatest([
+			this._contractsService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
+			this._contractsService.getEnumMap$().pipe(take(1)),
+		]).pipe(
+			tap(([{ legalEntities }, maps]) => {
+				this.legalEntities = legalEntities.map(
+					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
+				);
+			})
+		);
+	}
+
+	private _setDocumentType() {
+		this.documentTypes$ = (this.masterTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+			switchMap((recipientTypeId) => {
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
+				}
+				return of(null);
+			})
+		);
+	}
+
 	private _subscribeOnDuplicateControlChanges() {
 		this.duplicateTemplateControl.valueChanges
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				filter((val: number | null | undefined) => !!val),
-				distinctUntilChanged(),
 				tap((agreementTemplateId) => {
 					const queryParams: Params = {
 						parentTemplateId: `${agreementTemplateId}`,
@@ -253,7 +274,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			language: template.language,
 			note: template.note,
 			isSignatureRequired: template.isSignatureRequired,
-			defaultTemplate: template.documentFileProvidedByClient,
+			isDefaultTemplate: template.isDefaultTemplate,
 			selectedInheritedFiles: null,
 			uploadedFiles: null,
 		});
@@ -275,7 +296,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				switchMap(() => {
 					if (this.isFormDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-							width: '280px',
+							width: '500px',
+							height: '240px',
+							backdropClass: 'backdrop-modal--wrapper',
 						});
 						return dialogRef.afterClosed();
 					}
@@ -285,7 +308,12 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.subscribe((discard) => {
 				if (discard) {
 					this.agreementCreationMode.setValue(this.modeControl$.value);
-					if (!(this.modeControl$.value === this.creationModes.FromScratch)) {
+					if (
+						!(
+							this.modeControl$.value === this.creationModes.FromScratch ||
+							this.modeControl$.value === this.creationModes.ProvidedByOtherParty
+						)
+					) {
 						this._onCreationModeChange();
 						this._resetForm();
 						this.creationChange$.next('');
@@ -451,8 +479,10 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					deliveryTypes: template.deliveryTypeIds,
 					contractTypes: template.contractTypeIds,
 					language: template.language,
+					note: template.note,
 					isSignatureRequired: template.isSignatureRequired,
 					isEnabled: template.isEnabled,
+					isDefaultTemplate: template.isDefaultTemplate,
 					selectedInheritedFiles: template.attachments,
 				});
 			});

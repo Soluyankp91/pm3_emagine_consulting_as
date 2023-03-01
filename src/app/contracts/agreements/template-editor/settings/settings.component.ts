@@ -18,11 +18,15 @@ import {
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { CreationTitleService } from 'src/app/contracts/shared/services/creation-title.service';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import {
 	AgreementAttachmentDto,
 	AgreementCreationMode,
@@ -46,10 +50,17 @@ import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfac
 	encapsulation: ViewEncapsulation.None,
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
+	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
+
+	possibleDocumentTypes: BaseEnumDto[];
+	documentTypes$: Observable<BaseEnumDto[]>;
+
+	legalEntities: LegalEntityDto[];
 
 	agreementFormGroup = new AgreementModel();
 
+	attachmentsFromParent: FileUpload[] = [];
 	preselectedFiles: FileUpload[] = [];
 
 	options$: Observable<[SettingsPageOptions, MappedTableCells]>;
@@ -57,10 +68,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	clientOptionsChanged$ = new BehaviorSubject('');
 
 	creationMode = new FormControl<AgreementCreationMode>({
-		value: AgreementCreationMode.FromScratch,
+		value: AgreementCreationMode.InheritedFromParent,
 		disabled: true,
 	});
-	modeControl$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.FromScratch);
+	modeControl$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 	dirtyStatus$: Observable<boolean>;
 	clientDropdown$: Observable<{
 		options$: Observable<SupplierResultDto[] | ConsultantResultDto[] | ClientResultDto[] | LegalEntityDto[]>;
@@ -72,11 +83,14 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
 
-	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.FromScratch);
+	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 
 	editMode: boolean = false;
 
 	currentAgreementId: number;
+	currentAgreement: AgreementDetailsDto;
+
+	currentDuplicatedTemplate: AgreementDetailsDto;
 
 	currentAgreementTemplate: AgreementDetailsDto;
 	private _unSubscribe$ = new Subject<void>();
@@ -91,7 +105,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _router: Router,
 		private readonly _route: ActivatedRoute,
 		private readonly _injector: Injector,
-		private readonly _cdr: ChangeDetectorRef
+		private readonly _cdr: ChangeDetectorRef,
+		private readonly _creationTitleService: CreationTitleService
 	) {
 		super(_injector);
 	}
@@ -99,7 +114,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	ngOnInit(): void {
 		this._initOptions();
 		this._setClientOptions();
+		this._setDocumentType();
 		this._subscribeOnSignatureRequire();
+		this._subscribeOnTemplateNameChanges();
+		this._subsribeOnLegEntitiesChanges();
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
 			this.editMode = true;
@@ -120,6 +138,28 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._unSubscribe$.complete();
 	}
 
+	onModeControlChange(creationMode: AgreementCreationMode) {
+		this.modeControl$.next(creationMode);
+	}
+
+	navigateBack() {
+		if (this.editMode) {
+			this._router.navigate([`../../`], {
+				relativeTo: this._route,
+			});
+		} else {
+			this._router.navigate([`../`], {
+				relativeTo: this._route,
+			});
+		}
+	}
+
+	navigateToEditor(templateId: number) {
+		this._router.navigate([`../${templateId}/editor`], {
+			relativeTo: this._route,
+		});
+	}
+
 	onSave() {
 		if (!this.agreementFormGroup.valid) {
 			this.agreementFormGroup.markAllAsTouched();
@@ -128,26 +168,31 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		const toSend = {
 			creationMode: this.creationModeControlReplay$.value,
 			...this.agreementFormGroup.getRawValue(),
-			isSignatureRequired: !!this.agreementFormGroup.isSignatureRequired,
 		};
-		const uploadedFiles = toSend.uploadedFiles ? toSend.uploadedFiles : [];
-		const selectedInheritedFiles = toSend.selectedInheritedFiles ? toSend.selectedInheritedFiles : [];
-		const signers = toSend.signers ? toSend.signers : [];
+
 		if (this.creationModeControlReplay$.value === 2) {
 			toSend.parentAgreementTemplateId =
 				toSend.parentAgreementTemplate.agreementTemplateId || this.currentAgreementTemplate.parentAgreementTemplateId;
 			toSend.parentAgreementTemplateVersion =
 				toSend.parentAgreementTemplate.currentVersion || this.currentAgreementTemplate.parentAgreementTemplateVersion;
-			toSend.parentSelectedAttachmentIds = selectedInheritedFiles.map(
-				(file: FileUpload) => file.agreementTemplateAttachmentId
-			);
-			toSend.attachments = uploadedFiles.map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
-		} else if (this.creationModeControlReplay$.value === 3) {
-			toSend.attachments = [...uploadedFiles, ...selectedInheritedFiles].map(
-				(attachment: FileUpload) => new AgreementAttachmentDto(attachment)
+			toSend.parentSelectedAttachmentIds = this.agreementFormGroup.parentSelectedAttachmentIds.value.map(
+				(file: any) => file.agreementTemplateAttachmentId
 			);
 		}
-		toSend.signers = signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
+
+		if (
+			this.creationModeControlReplay$.value === AgreementCreationMode.Duplicated &&
+			this.currentDuplicatedTemplate.parentAgreementTemplateId
+		) {
+			toSend.parentAgreementTemplateId = this.currentDuplicatedTemplate.parentAgreementTemplateId;
+			toSend.parentSelectedAttachmentIds = this.agreementFormGroup.parentSelectedAttachmentIds.value.map(
+				(file: FileUpload) => file.agreementTemplateAttachmentId
+			);
+		}
+
+		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
+
+		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
@@ -166,8 +211,35 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe();
+				.subscribe(({ agreementId }) => {
+					this.navigateToEditor(agreementId);
+				});
 		}
+	}
+
+	private _createAttachments(files: FileUpload[]) {
+		return files.map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
+	}
+
+	private _subscribeOnTemplateNameChanges() {
+		this.agreementFormGroup.nameTemplate.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((name: string) => {
+			this._creationTitleService.updateTemplateName(name);
+		});
+	}
+
+	private _subsribeOnLegEntitiesChanges() {
+		this.agreementFormGroup.legalEntityId.valueChanges.subscribe((legalEntity: number) => {
+			if (legalEntity) {
+				let entity = this.legalEntities.filter((extendedEntity) => legalEntity === extendedEntity.id);
+				let modifiedEntities = entity.map((entity) => ({
+					...entity,
+					code: MapFlagFromTenantId(entity.id as number),
+				})) as (LegalEntityDto & { code: string })[];
+				this._creationTitleService.updateTenants(modifiedEntities);
+				return;
+			}
+			this._creationTitleService.updateTenants([]);
+		});
 	}
 
 	private _subscribeOnModeReplay() {
@@ -184,9 +256,19 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _initOptions() {
 		this.options$ = combineLatest([
-			this._contractService.settingsPageOptions$(),
+			this._contractService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
 			this._contractService.getEnumMap$().pipe(take(1)),
-		]);
+		]).pipe(
+			tap(([{ legalEntities }, maps]) => {
+				this.legalEntities = legalEntities.map(
+					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
+				);
+			})
+		);
 	}
 
 	private _subscribeOnQueryParams() {
@@ -197,6 +279,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				this.agreementFormGroup.controls['duplicationSourceAgreementId'].setValue(id);
 			}
 		});
+	}
+
+	private _setDocumentType() {
+		this.documentTypes$ = (this.agreementFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+			switchMap((recipientTypeId) => {
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
+				}
+				return of(null);
+			})
+		);
 	}
 
 	private _setClientOptions() {
@@ -283,7 +376,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				switchMap(([, isDirty]) => {
 					if (isDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-							width: '280px',
+							width: '500px',
+							height: '240px',
+							backdropClass: 'backdrop-modal--wrapper',
 						});
 						return dialogRef.afterClosed();
 					}
@@ -295,6 +390,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.creationMode.patchValue(this.modeControl$.value);
 					this._resetForm();
 				}
+				this.agreementFormGroup.markAsUntouched();
+				this.agreementFormGroup.markAsPristine();
 			});
 	}
 
@@ -307,17 +404,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				})
 			)
 			.subscribe((creationMode) => {
-				this.agreementFormGroup.removeControl('parentAgreementTemplate', { emitEvent: false });
-				this.agreementFormGroup.removeControl('duplicationSourceAgreementId', { emitEvent: false });
+				this.agreementFormGroup.removeControl('parentAgreementTemplate');
+				this.agreementFormGroup.removeControl('duplicationSourceAgreementId');
+				this.agreementFormGroup.removeControl('parentSelectedAttachmentIds');
 				if (creationMode === AgreementCreationMode.InheritedFromParent) {
-					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null), {
-						emitEvent: false,
-					});
+					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null));
+					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
 					this._subscribeOnParentChanges();
 				} else if (creationMode === AgreementCreationMode.Duplicated) {
-					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null), {
-						emitEvent: false,
-					});
+					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null));
+					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
 					this._subscribeOnDuplicateAgreementChanges();
 				}
 			});
@@ -325,7 +421,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _subscribeOnSignatureRequire() {
 		this.agreementFormGroup.isSignatureRequired.valueChanges.subscribe((isSignatureRequired) => {
-			if (isSignatureRequired) {
+			if (!isSignatureRequired) {
 				this.agreementFormGroup.signers.reset([]);
 			}
 		});
@@ -335,6 +431,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.agreementFormGroup.controls['parentAgreementTemplate'].valueChanges
 			.pipe(
 				filter((val) => !!val),
+				distinctUntilChanged(),
 				takeUntil(
 					race([
 						this.creationMode.valueChanges.pipe(
@@ -353,7 +450,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.hideMainSpinner();
 				}),
 				tap((agreementTemplateDetailsDto) => {
-					this.preselectedFiles = agreementTemplateDetailsDto.attachments as FileUpload[];
+					this.attachmentsFromParent = [
+						...(agreementTemplateDetailsDto.attachments as FileUpload[]),
+						...(agreementTemplateDetailsDto.attachmentsFromParent
+							? (agreementTemplateDetailsDto.attachmentsFromParent as FileUpload[])
+							: []),
+					];
+					this._cdr.detectChanges();
 				}),
 				tap((agreementTemplateDetailsDto) => {
 					this.agreementFormGroup.patchValue({
@@ -367,7 +470,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementTemplateDetailsDto.language,
 						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
 						note: agreementTemplateDetailsDto.note,
+						parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
+							? agreementTemplateDetailsDto.attachmentsFromParent.filter((attachement) => attachement.isSelected)
+							: [],
+						legalEntityId: null,
+						recipientId: null,
+						startDate: null,
+						endDate: null,
 					});
+					this.agreementFormGroup.markAsUntouched();
 				})
 			)
 			.subscribe();
@@ -375,6 +486,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _subscribeOnDuplicateAgreementChanges() {
 		this.agreementFormGroup.controls['duplicationSourceAgreementId'].valueChanges
 			.pipe(
+				filter((val) => !!val),
 				distinctUntilChanged(),
 				takeUntil(
 					race([
@@ -400,10 +512,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this._router.navigate([], {
 						queryParams: queryParams,
 					});
+					this.currentDuplicatedTemplate = agreementDetailsDto;
+					this._cdr.detectChanges();
 				}),
 				tap((agreementDetailsDto) => {
 					this.preselectedFiles = agreementDetailsDto.attachments as FileUpload[];
 					this.clientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
+					this.attachmentsFromParent = agreementDetailsDto.attachmentsFromParent
+						? (agreementDetailsDto.attachmentsFromParent as FileUpload[])
+						: [];
+					this._cdr.detectChanges();
 				}),
 				tap((agreementDetailsDto) => {
 					this.agreementFormGroup.patchValue({
@@ -421,7 +539,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementDetailsDto.language,
 						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
 						note: agreementDetailsDto.note,
+						parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
+							? agreementDetailsDto.attachmentsFromParent.filter((attachement) => attachement.isSelected)
+							: [],
 						signers: agreementDetailsDto.signers,
+						selectedInheritedFiles: [],
 					});
 				})
 			)
@@ -432,7 +554,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			takeUntil(this._unSubscribe$),
 			switchMap((creationMode: AgreementCreationMode | null) => {
 				if (creationMode === AgreementCreationMode.Duplicated) {
-					return of({
+					return of<DuplicateOrParentOptions>({
 						options$: this.duplicateOptionsChanged$.pipe(
 							startWith(this.duplicateOptionsChanged$.value),
 							debounceTime(300),
@@ -444,12 +566,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						),
 						optionsChanged$: this.duplicateOptionsChanged$,
 						outputProperty: 'agreementId',
-						labelKey: 'agreementName',
+						isDuplicate: true,
 						label: 'Duplicate from',
+						labelKey: 'agreementName',
 						formControlName: 'duplicationSourceAgreementId',
 					});
 				} else if (creationMode === AgreementCreationMode.InheritedFromParent) {
-					return of({
+					return of<DuplicateOrParentOptions>({
 						options$: this.parentOptionsChanged$.pipe(
 							startWith(''),
 							debounceTime(300),
@@ -461,8 +584,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						),
 						optionsChanged$: this.parentOptionsChanged$,
 						outputProperty: 'agreementTemplateId',
-						labelKey: 'name',
+						isDuplicate: false,
 						label: 'Parent master template',
+						labelKey: 'name',
 						formControlName: 'parentAgreementTemplate',
 						unwrapFunction: this._unwrap,
 					});
@@ -475,7 +599,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _preselectAgreement(agreementId: number) {
 		this._apiServiceProxy.agreementGET(agreementId).subscribe((agreement) => {
+			this.currentAgreement = agreement;
 			if (agreement.creationMode === 3) {
+				this.currentDuplicatedTemplate = agreement;
 				this._setDuplicateObs();
 				this.agreementFormGroup.addControl(
 					'duplicationSourceAgreementId',
@@ -495,14 +621,19 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					new FormControl({
 						value: agreement.parentAgreementTemplateId,
 						disabled: true,
-					}),
-					{
-						emitEvent: false,
-					}
+					})
 				);
 				this._subscribeOnParentChanges();
 				this.parentOptionsChanged$.next(String(agreement.parentAgreementTemplateId));
 			}
+			if (agreement.parentAgreementTemplateId) {
+				this.agreementFormGroup.addControl(
+					'parentSelectedAttachmentIds',
+					new FormControl(agreement.attachmentsFromParent.filter((attachement) => attachement.isSelected))
+				);
+				this.attachmentsFromParent = agreement.attachmentsFromParent as FileUpload[];
+			}
+
 			this.creationModeControlReplay$.next(agreement.creationMode);
 
 			this.agreementFormGroup.recipientId.setValue(agreement.recipientId);
@@ -513,7 +644,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 			this.preselectedFiles = agreement.attachments as FileUpload[];
 			this._cdr.detectChanges();
-
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,
@@ -531,11 +661,20 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				signers: agreement.signers,
 				selectedInheritedFiles: agreement.attachments,
 			});
+
+			this._disableFields();
 		});
 	}
 
+	private _disableFields() {
+		this.agreementFormGroup.agreementType.disable({ emitEvent: false });
+		this.agreementFormGroup.recipientTypeId.disable({ emitEvent: false });
+		this.agreementFormGroup.recipientId.disable({ emitEvent: false });
+	}
+
 	private _resetForm() {
-		this.agreementFormGroup.reset(undefined, { emitEvent: false });
+		this.agreementFormGroup.reset();
 		this.preselectedFiles = [];
+        this.attachmentsFromParent = [];
 	}
 }

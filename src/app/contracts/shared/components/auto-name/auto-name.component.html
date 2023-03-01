@@ -1,7 +1,6 @@
 <mat-form-field
-    class="example-full-width"
-    appearance="fill"
-    [style.width.px]="382"
+    class="full-width"
+    appearance="outline"
 >
     <mat-label>{{ label }}</mat-label>
     <input
@@ -26,7 +25,6 @@
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>
-<mat-divider></mat-divider>
 <mat-checkbox
     [disabled]="!textControl.valid && !textControl.disabled"
     [checked]="showSample"

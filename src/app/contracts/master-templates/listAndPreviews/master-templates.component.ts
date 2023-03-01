@@ -28,7 +28,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import * as moment from 'moment';
 import {
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,
@@ -37,6 +36,7 @@ import {
 import { PreviewTabsComponent } from './components/preview/preview.component';
 import { tapOnce } from '../../shared/operators/tapOnceOperator';
 import { DOCUMENT } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -74,7 +74,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _router: Router,
 		private readonly _injetor: Injector,
 		private readonly _cdr: ChangeDetectorRef,
-		@Inject(DOCUMENT) private document: Document
+		private readonly _snackBar: MatSnackBar,
+		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injetor);
 		this.trackById = this.createTrackByFn('id');
@@ -90,6 +91,11 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
 	}
+
+    resetAllTopFilters() {
+        this._masterTemplatesService.updateSearchFilter('');
+        this._masterTemplatesService.updateTenantFilter([]);
+    }
 
 	onSortChange($event: Sort) {
 		this._masterTemplatesService.updateSort($event);
@@ -120,7 +126,16 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				break;
 			}
 			case 'COPY': {
-				navigator.clipboard.writeText(this.document.location.href + `?templateId=${$event.row.agreementTemplateId}`);
+				navigator.clipboard.writeText(
+					this._document.location.protocol +
+						'//' +
+						this._document.location.host +
+						this._document.location.pathname +
+						`?templateId=${$event.row.agreementTemplateId}`
+				);
+				this._snackBar.open('Copied to clipboard', undefined, {
+					duration: 3000,
+				});
 			}
 		}
 	}
@@ -165,10 +180,11 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
-				createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
+				createdDateUtc: item.createdDateUtc,
 				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
-				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
+				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				isEnabled: item.isEnabled,
+				actionList: this.actions,
 			};
 		});
 	}

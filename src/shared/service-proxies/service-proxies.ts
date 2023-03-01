@@ -17477,6 +17477,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     contractManager?: EmployeeDto;
     consultantName?: string | undefined;
     companyName?: string | undefined;
+    parentAgreementTemplateIsMasterTemplate?: boolean | undefined;
 
     constructor(data?: IAgreementDetailsDto) {
         if (data) {
@@ -17557,6 +17558,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
             this.contractManager = _data["contractManager"] ? EmployeeDto.fromJS(_data["contractManager"]) : <any>undefined;
             this.consultantName = _data["consultantName"];
             this.companyName = _data["companyName"];
+            this.parentAgreementTemplateIsMasterTemplate = _data["parentAgreementTemplateIsMasterTemplate"];
         }
     }
 
@@ -17637,6 +17639,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         data["contractManager"] = this.contractManager ? this.contractManager.toJSON() : <any>undefined;
         data["consultantName"] = this.consultantName;
         data["companyName"] = this.companyName;
+        data["parentAgreementTemplateIsMasterTemplate"] = this.parentAgreementTemplateIsMasterTemplate;
         return data;
     }
 }
@@ -17686,6 +17689,7 @@ export interface IAgreementDetailsDto {
     contractManager?: EmployeeDto;
     consultantName?: string | undefined;
     companyName?: string | undefined;
+    parentAgreementTemplateIsMasterTemplate?: boolean | undefined;
 }
 
 export class AgreementDetailsSignerDto implements IAgreementDetailsSignerDto {

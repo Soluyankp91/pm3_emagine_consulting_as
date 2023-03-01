@@ -4,7 +4,6 @@
 		<ng-container *ngIf="table$ | async as table">
 			<emg-mat-grid
 				[displayedColumns]="displayedColumns"
-				[actionsList]="actions"
 				[tableConfig]="table"
 				[selectedRowId]="currentRowId$ | async"
 				[cells]="cells"
@@ -13,6 +12,7 @@
 				(formControlChange)="onFormControlChange($event)"
 				(pageChange)="onPageChange($event)"
 				(selectedRowIdChange)="currentRowId$.next($event)"
+                (resetAllFilters)="resetAllTopFilters()"
 				(onAction)="onAction($event)">
 				<ng-template let-cell="element" #customCells>
 					<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
@@ -94,17 +94,17 @@
 				>
 
 				<ng-template let-cell="element" #customCells
-					><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc }}</p>
+					><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc | momentFormat }}</p>
 					<ng-template #lastUpdateDateUtcTooltip>
 						<div>
 							<div class="date-row">
 								<div>Created</div>
-								<div>{{ cell.createdDateUtc }}</div>
+								<div>{{ cell.createdDateUtc | momentFormat}}</div>
 							</div>
 							<div class="date-row">
 								<div>Last updated</div>
 								<div>
-									{{ cell.lastUpdateDateUtc }}
+									{{ cell.lastUpdateDateUtc | momentFormat}}
 								</div>
 							</div>
 						</div>

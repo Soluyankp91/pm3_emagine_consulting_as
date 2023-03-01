@@ -5,9 +5,10 @@ import {
 	OnInit,
 	ViewEncapsulation,
 	ChangeDetectionStrategy,
-	ChangeDetectorRef,
 	ContentChild,
 	TemplateRef,
+	ChangeDetectorRef,
+	AfterContentInit,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IDropdownItem } from './emagine-menu-multi-select.interfaces';
@@ -26,7 +27,7 @@ import { cloneDeep, isEqual } from 'lodash';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	encapsulation: ViewEncapsulation.None,
 })
-export class MultiSelectComponent implements OnInit, ControlValueAccessor {
+export class MultiSelectComponent implements OnInit, AfterContentInit, ControlValueAccessor {
 	@Input() idProperty: string | number = 'id';
 	@Input() displayedProperty: string = 'name';
 	@Input() set options(options: any[]) {
@@ -49,17 +50,21 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 
 	private _options: IDropdownItem[];
 
-	constructor(private readonly cdr: ChangeDetectorRef) {}
+	constructor(private readonly _cdr: ChangeDetectorRef) {}
 
 	ngOnInit(): void {
 		this.unselectAll();
+	}
+
+	ngAfterContentInit(): void {
+		this._cdr.detectChanges();
 	}
 
 	toggleSelect(toggledItem: IDropdownItem) {
 		toggledItem.selected = !toggledItem.selected;
 		const { selected, ...baseItem } = toggledItem;
 		if (toggledItem.selected) {
-			this.selectedItems.push(baseItem);
+			this.selectedItems = [...this.selectedItems, baseItem];
 		} else {
 			this.selectedItems = this.selectedItems.filter((i) => !isEqual(i, baseItem));
 		}
@@ -85,7 +90,7 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 		let optionsToPreselect: (string | number)[] = preselectedItems.map((item) => item.id);
 		this.selectedItems = [];
 		this.unselectAll();
-		if (!preselectedItems || !preselectedItems.length) {
+		if (!preselectedItems) {
 			return;
 		}
 		optionsToPreselect.forEach((preselectedItem) => {
@@ -93,14 +98,17 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 			if (foundedOption) {
 				foundedOption.selected = true;
 				const { selected, ...baseItem } = foundedOption;
-				this.selectedItems.push(baseItem);
+				this.selectedItems = [...this.selectedItems, baseItem];
 			}
 		});
+		this.options = [...this.options];
+		this._cdr.detectChanges();
 	}
 
 	private unselectAll() {
-		this._options.forEach((option) => {
+		this._options.map((option) => {
 			(option as IDropdownItem).selected = false;
+			return option;
 		});
 	}
 }

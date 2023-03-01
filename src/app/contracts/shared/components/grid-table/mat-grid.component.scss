@@ -1,18 +1,18 @@
+@import 'mixins';
+
 emg-mat-grid {
-	.column-filter {
-		font-family: Open Sans, sans-serif;
-		font-size: 14px;
-		font-weight: 500;
-	}
+	@include table-header-cell;
+
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	background-color: #faf9fb;
 	.container {
-		max-height: calc(100vh - 225px);
-		overflow-y: auto;
-		display: block;
-		background-color: #faf9fb;
-	}
-	mat-chip.mat-chip.mat-standard-chip {
-		background-color: #fff;
-		border: 2px solid #17a297;
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+
+		padding-left: 50px;
 	}
 	.mat-chip-list-wrapper {
 		justify-content: flex-end;
@@ -20,10 +20,109 @@ emg-mat-grid {
 		margin: 0;
 		padding-right: 37px;
 	}
+	.mat-table-container {
+		display: flex;
+		flex-grow: 1;
+		overflow: auto;
+		height: 450px;
+	}
+	.no-items-table-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.hidden-table {
+		display: none;
+	}
 	.mat-table {
+		width: fit-content;
 		background-color: #faf9fb;
 	}
 	.highlight {
 		background-color: #c5e8e5;
+	}
+	.bottom-panel {
+		width: calc(100vw - 44px);
+
+		display: flex;
+		height: 48px;
+		justify-content: space-between;
+		align-items: center;
+
+		background-color: #fff;
+
+		.bottom-actions {
+			display: flex;
+		}
+		.fixed-container {
+            display: flex;
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			z-index: 2;
+			width: 100%;
+            padding-left: 43px;
+		}
+
+		.selected-items-info {
+			padding: 14px 24px 14px 50px;
+			border-right: 1px solid #e7e3e8;
+			font-weight: 700;
+		}
+		.bottom-action-item {
+			cursor: pointer;
+			padding-left: 60px;
+			display: flex;
+			gap: 6px;
+			align-items: center;
+			color: #17a297;
+			.bottom-panel-label {
+				@include bottom-panel-label;
+			}
+		}
+		.paginator {
+			flex-grow: 1;
+			.mat-paginator-container {
+				max-height: 48px !important;
+				min-height: 48px !important;
+			}
+			.mat-paginator-page-size-select {
+				margin: 0px 4px;
+			}
+		}
+	}
+	.small-icon {
+		@include small-icon;
+	}
+
+	mat-chip.mat-chip.mat-standard-chip {
+		background-color: #fff;
+		border: 2px solid #17a297;
+	}
+	.no-items {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.empty-table-icon {
+		width: 24px;
+		height: 32px;
+	}
+	.no-items-text {
+		max-width: 333px;
+		text-align: center;
+		margin-top: 16px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #b6b4b2;
+		.highlighted-reset-filters {
+			color: #17a297;
+			cursor: pointer;
+		}
+	}
+}
+.custom {
+	.small-icon {
+		@include small-icon;
 	}
 }

@@ -15,6 +15,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'lastUpdateDateUtc',
 	'lastUpdatedByLowerCaseInitials',
 	'linkState',
+	'linkStateAccepted',
 	'isEnabled',
 ];
 export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
@@ -27,18 +28,29 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		class: 'language-column',
+		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'ID',
+		class: 'id-column',
+		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Template Name',
+		class: 'template-name-column',
+		sticky: true,
+        sort: true,
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Client',
+		class: 'client-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -49,26 +61,31 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+		class: 'agreementType-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'recipientTypeId',
 			component: () =>
-				import(
-					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
-				).then((it) => it.RecipientTypesFilterComponent),
+				import('../../master-templates/filters/recipient-types-filter/recipient-types-filter.component').then(
+					(it) => it.RecipientTypesFilterComponent
+				),
 		},
+		class: 'recipientTypeId-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'legalEntityIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component'
-				).then((it) => it.LegalEntitiesFilterComponent),
+				import('../../master-templates/filters/legal-entities-filter/legal-entities-filter.component').then(
+					(it) => it.LegalEntitiesFilterComponent
+				),
 		},
+		class: 'legalEntityId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -79,30 +96,35 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.SalesTypesFilterComponent
 				),
 		},
+		class: 'salesType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'deliveryTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component'
-				).then((it) => it.DeliveryTypesFilterComponent),
+				import('../../master-templates/filters/delivery-types-filter/delivery-types-filter.component').then(
+					(it) => it.DeliveryTypesFilterComponent
+				),
 		},
+		class: 'deliveryType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'contractTypeIds',
 			component: () =>
-				import(
-					'../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component'
-				).then((it) => it.EmploymentTypesFilterComponent),
+				import('../../master-templates/filters/employment-types-filter/employment-types-filter.component').then(
+					(it) => it.EmploymentTypesFilterComponent
+				),
 		},
+		class: 'contractType-column',
 	},
 	{
-		type: EHeaderCells.SORT,
+		type: EHeaderCells.DEFAULT,
 		title: 'Last updated',
+		class: 'last-updated-column',
+        sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -113,6 +135,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.EmployeesFilterComponent
 				),
 		},
+		class: 'last-updated-by-employee-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -123,6 +146,18 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.ClientModeFilterComponent
 				),
 		},
+		class: 'link-state-column',
+	},
+	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'linkStateAccepted',
+			component: () =>
+				import('../../client-templates/entities/filters/approval-filter/approval-filter.component').then(
+					(it) => it.ApprovalFilterComponent
+				),
+		},
+		class: 'linkStateAccepted-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -130,24 +165,37 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		filter: {
 			formControlName: 'isEnabled',
 			component: () =>
-				import('../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component').then(
-					(it) => it.IsEnabledComponent
-				),
+				import('../../master-templates/filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
 		},
+		class: 'status-column',
 	},
 ];
 
-export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
+export const PAGE_SIZE_OPTIONS: number[] = [20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 	{
 		label: 'Edit',
 		actionType: 'EDIT',
+		actionIcon: 'table-edit-icon',
 	},
 	{
 		label: 'Duplicate',
 		actionType: 'DUPLICATE',
+		actionIcon: 'duplicate-icon',
+	},
+	{
+		label: 'Copy Link',
+		actionType: 'COPY',
+		actionIcon: 'copy-icon',
+	},
+];
+export const CLIENT_TEMPLATE_BOTTOM_ACTIONS: Actions[] = [
+	{
+		label: 'Approve',
+		actionType: 'APPROVE',
+		actionIcon: 'approved-icon',
 	},
 ];
 export const INITIAL_PAGE_INDEX = 0;
@@ -170,6 +218,20 @@ export const MODE_FILTER_OPTIONS = [
 	},
 	{
 		id: 0,
+		name: 'Not applicable',
+	},
+];
+export const APPROVAL_FILTER_OPTIONS = [
+	{
+		id: true,
+		name: 'Approved',
+	},
+	{
+		id: false,
+		name: 'To approve',
+	},
+	{
+		id: null,
 		name: 'Not applicable',
 	},
 ];

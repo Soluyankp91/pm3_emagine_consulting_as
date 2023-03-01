@@ -5,32 +5,28 @@ import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 
 @Injectable()
 export class ErrorDialogService {
-    private opened = false;
+	private opened = false;
 
-    constructor(
-        private dialog: MatDialog,
-        private _spinnerService: NgxSpinnerService
-        ) { }
+	constructor(private dialog: MatDialog, private _spinnerService: NgxSpinnerService) {}
 
-    openDialog(message: string, header: string, status?: number): void {
+	openDialog(message: string, header: string, status?: number): void {
+		if (!this.opened) {
+			this._spinnerService.hide();
+			this.opened = true;
+			const dialogRef = this.dialog.open(ErrorDialogComponent, {
+				data: { message, header, status },
+				minHeight: '320px',
+				height: 'auto',
+				width: '500px',
+				maxWidth: '100%',
+				disableClose: true,
+				hasBackdrop: true,
+				backdropClass: 'backdrop-modal--wrapper',
+			});
 
-        if (!this.opened) {
-            this._spinnerService.hide();
-            this.opened = true;
-            const dialogRef = this.dialog.open(ErrorDialogComponent, {
-                data: { message, header, status },
-                minHeight: '150px',
-                height: 'auto',
-                width: '500px',
-                maxWidth: '100%',
-                disableClose: true,
-                hasBackdrop: true,
-                backdropClass: 'backdrop-modal--wrapper'
-            });
-
-            dialogRef.afterClosed().subscribe(() => {
-                this.opened = false;
-            });
-        }
-    }
+			dialogRef.afterClosed().subscribe(() => {
+				this.opened = false;
+			});
+		}
+	}
 }

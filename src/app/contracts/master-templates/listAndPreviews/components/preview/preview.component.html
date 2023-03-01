@@ -7,10 +7,14 @@
 		</mat-tab>
 		<mat-tab label="Preview"></mat-tab>
 		<mat-tab label="Attachments">
-			<ng-template matTabContent><app-attachments></app-attachments></ng-template>
+			<ng-template matTabContent>
+				<app-attachments></app-attachments>
+			</ng-template>
 		</mat-tab>
 		<mat-tab label="Log">
-			<ng-template matTabContent><app-logs></app-logs></ng-template>
+			<ng-template matTabContent>
+				<app-logs></app-logs>
+			</ng-template>
 		</mat-tab>
 		<mat-tab>
 			<ng-template mat-tab-label>
@@ -28,9 +32,9 @@
 					<mat-icon svgIcon="agreement-links"></mat-icon>
 				</button>
 			</ng-template>
-            <ng-template matTabContent>
-                <app-linked-agreements></app-linked-agreements>
-            </ng-template>
+			<ng-template matTabContent>
+				<app-linked-agreements></app-linked-agreements>
+			</ng-template>
 		</mat-tab>
 		<mat-tab disabled>
 			<ng-template mat-tab-label>

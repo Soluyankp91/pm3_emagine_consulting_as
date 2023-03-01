@@ -1,9 +1,9 @@
 <div class="logs-container">
 	<ng-container *ngIf="logs$ | async as logs; else loading">
 		<ng-container *ngIf="logs.length">
-			<div class="filter" (click)="emitFilter(); $event.stopPropagation()">
+			<div class="filter" (click)="emitNewestFirst(); $event.stopPropagation()">
 				<mat-icon [svgIcon]="newestFirst ? 'desc-arrow' : 'asc-arrow'" class="sort-icon"></mat-icon>
-				<p class="filter-label">{{ newestFirst ? 'Newest first' : 'Oldest first' }}</p>
+				<p class="filter-label">Oldest first</p>
 			</div>
 		</ng-container>
 		<ng-container *ngIf="!(loading$ | async); else loading">
@@ -21,15 +21,15 @@
 										<ng-container *ngSwitchCase="1">
 											<ng-container *ngIf="log.newValue"
 												><p class="additional-info">
-													{{ log.newValue | truncateTextCustom : 20 }}
+													{{ log.newValue }}
 												</p></ng-container
 											>
 										</ng-container>
 										<ng-container *ngSwitchCase="2">
 											<ng-container *ngIf="log.oldValue && log.newValue">
 												<p class="additional-info">
-													From {{ log.oldValue | truncateTextCustom : 20 }} to
-													{{ log.newValue | truncateTextCustom : 20 }}
+													From {{ log.oldValue  }} to
+													{{ log.newValue  }}
 												</p>
 											</ng-container>
 										</ng-container>
@@ -41,7 +41,7 @@
 									</ng-container>
 								</div>
 								<div class="date-part">
-									<span class="date">{{ log.date }}, </span>
+									<span class="date">{{ log.date | momentFormat }}, </span>
 									<span class="day-time">{{ log.dayTime }}</span>
 								</div>
 							</ng-container>

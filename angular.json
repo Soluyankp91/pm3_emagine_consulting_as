@@ -38,6 +38,11 @@
                 "output": "./"
               }
             ],
+            "stylePreprocessorOptions": {
+                "includePaths": [
+                    "./src/app/contracts/shared/styles"
+                ]
+            },
             "styles": [
               "node_modules/devextreme/dist/css/dx.light.css",
               "node_modules/devexpress-richedit/dist/dx.richedit.css",
@@ -139,6 +144,9 @@
           "configurations": {
             "production": {
               "browserTarget": "PM3:build:production"
+            },
+            "qa": {
+              "browserTarget": "PM3:build:qa"
             },
             "development": {
               "browserTarget": "PM3:build:development"

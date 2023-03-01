@@ -4,6 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve --host 0.0.0.0 --port 4200",
+        "start-qa": "ng serve  --host 0.0.0.0 --port 4200 --configuration qa",
         "qa": "ng build --configuration=qa",
         "dev": "ng build --configuration=development",
         "docker-tests": "ng build --configuration=docker-tests",
@@ -36,6 +37,7 @@
         "devexpress-richedit": "^22.2.3",
         "devextreme": "22.2.3",
         "devextreme-angular": "22.2.3",
+        "diff": "^5.1.0",
         "flag-icons": "^6.6.3",
         "html2canvas": "^1.4.1",
         "jszip": "^3.10.1",
@@ -55,6 +57,7 @@
         "@angular-devkit/build-angular": "^14.2.6",
         "@angular/cli": "^14.2.6",
         "@angular/compiler-cli": "^14.2.7",
+        "@types/diff": "^5.0.2",
         "@types/jasmine": "~3.8.0",
         "@types/lodash": "^4.14.188",
         "@types/lodash-es": "^4.17.6",

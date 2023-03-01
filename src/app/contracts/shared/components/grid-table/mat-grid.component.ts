@@ -1,4 +1,4 @@
-import { startWith, pairwise, takeUntil, debounceTime } from 'rxjs/operators';
+import { startWith, pairwise, takeUntil } from 'rxjs/operators';
 import { Subject, merge, of } from 'rxjs';
 import {
 	Component,
@@ -46,16 +46,18 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() cells: IColumn[];
 	@Input() selection: boolean = true;
 	@Input() actions: boolean = true;
-	@Input() actionsList: Actions[] = [];
+	@Input() selectedItemsActions: Actions[] = [];
 	@Input() selectedRowId: number | null;
 	@Input() rowIdProperty: string = 'agreementTemplateId';
+	@Input() sticky: boolean;
 
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
 	@Output() formControlChange = new EventEmitter();
 	@Output() selectedRowIdChange = new EventEmitter();
-	@Output() selectionChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
+	@Output() onSelectionAction = new EventEmitter();
+    @Output() resetAllFilters = new EventEmitter();
 
 	@ContentChildren('customCells', {
 		descendants: false,
@@ -101,6 +103,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	ngOnChanges(changes: SimpleChanges): void {
 		const displayedColumns = changes['displayedColumns'];
 		const displayedColumnsCopy = [...this.displayedColumns];
+		const tableConfig = changes['tableConfig'];
+		if (tableConfig) {
+			this.selectionModel.clear();
+		}
 		if (displayedColumns && this.selection) {
 			displayedColumnsCopy.unshift('select');
 		}
@@ -115,7 +121,6 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		await this.loadFilters();
 
 		//await for filters to be inited then subscribe to formControls:
-		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();
 	}
@@ -144,7 +149,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	async loadFilters() {
 		await Promise.all(
 			this.cells
-				.filter((cell) => cell.headerCell.type !== 'sort')
+				.filter((cell) => cell.headerCell.type !== 'default')
 				.map(async (cell, index) => {
 					if (cell.headerCell.filter) {
 						const componentInstance = await cell.headerCell.filter.component();
@@ -184,10 +189,8 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		this.onAction.emit({ action: actionType, row });
 	}
 
-	private _subscribeOnSelectionChange() {
-		this.selectionModel.changed.pipe(takeUntil(this._unSubscribe$), debounceTime(500)).subscribe((changeModel) => {
-			this.selectionChange.emit(changeModel.source.selected);
-		});
+	chooseSelectionAction(actionType: string) {
+		this.onSelectionAction.emit({ action: actionType, selectedRows: this.selectionModel.selected });
 	}
 
 	private _subscribeOnFormControlChanges() {

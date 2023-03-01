@@ -3,15 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AgreementsComponent } from './agreements/listAndPreviews/agreements.component';
 import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
-import { ClientSpecificComponent } from './client-specific-templates/edit-template/client-specific.component';
+
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
-import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
+import { SettingsTabComponent } from './shared/components/settings-tab/settings-tab.component';
 import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
-import { AgreementEditorComponent } from './agreements/template-editor/template-editor.component';
-import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { EditorComponent } from './shared/editor/editor.component';
+import { AgreementTemplateService, MergeFieldsService } from './shared/editor/data-access';
+import { AgreementService } from './shared/editor/data-access/agreement.service';
+import { AgreementAbstractService } from './shared/editor/data-access/agreement-abstract.service';
+import { MergeFieldsAbstractService } from './shared/editor/data-access/merge-fields-abstract';
+import { AgreementMergeFieldsService } from './shared/editor/data-access/agreement-merge-fields';
 
 const routes: Routes = [
 	{
@@ -32,20 +35,45 @@ const routes: Routes = [
 						component: AgreementsComponent,
 					},
 					{
-						path: '',
-						component: AgreementEditorComponent,
+						path: 'create',
+						component: SettingsTabComponent,
+						data: {
+							isEdit: false,
+							defaultName: 'New Agreement',
+						},
+
 						children: [
 							{
-								path: 'create',
+								path: '',
+								pathMatch: 'full',
 								component: SettingsComponent,
 							},
+						],
+					},
+					{
+						path: '',
+						component: SettingsTabComponent,
+						data: {
+							isEdit: true,
+						},
+						children: [
 							{
 								path: ':id/settings',
 								component: SettingsComponent,
 							},
 							{
 								path: ':id/editor',
-								component: AgreementDevExpress,
+								component: EditorComponent,
+								providers: [
+									{
+										provide: AgreementAbstractService,
+										useClass: AgreementService
+									},
+									{
+										provide: MergeFieldsAbstractService,
+										useClass: AgreementMergeFieldsService
+									}
+								]
 							},
 						],
 					},
@@ -60,16 +88,39 @@ const routes: Routes = [
 						component: ClientSpecificTemplatesComponent,
 					},
 					{
-						path: '',
-						component: ClientSpecificComponent,
+						path: 'create',
+						component: SettingsTabComponent,
+						data: { isEdit: false, defaultName: 'New Client Specific Template' },
 						children: [
 							{
-								path: 'create',
+								path: '',
+								pathMatch: 'full',
 								component: CreationComponent,
 							},
+						],
+					},
+					{
+						path: '',
+						component: SettingsTabComponent,
+						data: { isEdit: true },
+						children: [
 							{
 								path: ':id/settings',
 								component: CreationComponent,
+							},
+							{
+								path: ':id/editor',
+								component: EditorComponent,
+								providers: [
+									{
+										provide: AgreementAbstractService,
+										useClass: AgreementTemplateService
+									},
+									{
+										provide: MergeFieldsAbstractService,
+										useClass: MergeFieldsService
+									}
+								]
 							},
 						],
 					},
@@ -78,39 +129,48 @@ const routes: Routes = [
 			{
 				path: 'master-templates',
 				children: [
-                    {
+					{
 						path: '',
 						pathMatch: 'full',
 						component: MasterTemplatesComponent,
 					},
-                    {
+					{
 						path: 'create',
-						component: MasterTemplateCreationComponent,
-                        data: { isEdit: false },
+						component: SettingsTabComponent,
+						data: { isEdit: false, defaultName: 'New Master Template' },
 						children: [
 							{
 								path: '',
-                                pathMatch: 'full',
+								pathMatch: 'full',
 								component: CreateMasterTemplateComponent,
 							},
 						],
-                        
 					},
-                    {
-                        path: '',
-                        component: MasterTemplateCreationComponent,
-                        data: { isEdit: true },
-                        children: [
-                            {
+					{
+						path: '',
+						component: SettingsTabComponent,
+						data: { isEdit: true },
+						children: [
+							{
 								path: ':id/settings',
 								component: CreateMasterTemplateComponent,
 							},
 							{
 								path: ':id/editor',
 								component: EditorComponent,
+								providers: [
+									{
+										provide: AgreementAbstractService,
+										useClass: AgreementTemplateService
+									},
+									{
+										provide: MergeFieldsAbstractService,
+										useClass: MergeFieldsService
+									}
+								]
 							},
-                        ]
-                    },
+						],
+					},
 				],
 			},
 		],
