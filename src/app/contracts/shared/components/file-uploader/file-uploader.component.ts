@@ -85,6 +85,9 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 			let files = ($event as HTMLInputElement).files as FileList;
 			const fileArray = [] as File[];
 			for (let i = 0; i < files.length; i++) {
+                if(files[i].type != 'application/msword' && files[i].type !== 'application/pdf') {
+                    continue;
+                }
 				fileArray.push(files.item(i) as File);
 			}
 			this._uploadedFiles$.next(fileArray);
@@ -177,7 +180,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
+		return splittetFileName[splittetFileName.length - 1].toLowerCase();
 	}
 
 	private _clearAllFiles() {

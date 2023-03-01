@@ -102,6 +102,6 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1];
+		return splittetFileName[splittetFileName.length - 1].toLowerCase();
 	}
 }
