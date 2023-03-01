@@ -1,11 +1,14 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAddressDto, ClientAddressesServiceProxy, ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientContactForm } from './client-contacts.model';
 
 @Component({
     selector: 'app-client-contacts',
@@ -29,18 +32,24 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
         'title',
         'email',
         'phone',
+        'address',
         'lastCamLogin',
         'owner'
     ];
+    clientAddresses: ClientAddressDto[];
+    clientContactForm: ClientContactForm;
     clientContactsDataSource: MatTableDataSource<ContactDto> = new MatTableDataSource<ContactDto>();
 
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
         private _clientService: ClientsServiceProxy,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private _fb: UntypedFormBuilder,
+        private _clientAddressesService: ClientAddressesServiceProxy
     ) {
         super(injector);
+        this.clientContactForm = new ClientContactForm();
     }
 
     ngOnInit(): void {
@@ -48,6 +57,7 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
+            this._getClientAddresses();
             this.getClientContacts();
         });
     }
@@ -60,13 +70,12 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
     getClientContacts() {
         this.isDataLoading = true;
         this._clientService.contacts(this.clientId, false)
-                .pipe(finalize(() => {
-                    this.isDataLoading = false;
-                }))
-                .subscribe(result => {
-                    this.clientContactsDataSource = new MatTableDataSource<ContactDto>(result);
-                    this.totalCount = result.length;
-                });
+            .pipe(finalize(() => {
+                this.isDataLoading = false;
+            }))
+            .subscribe(result => {
+                this.fillContactForm(result);
+            });
     }
 
     pageChanged(event?: any): void {
@@ -88,16 +97,36 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
         }
     }
 
-    detectStatusColor(statusValue: number) {
-        switch (statusValue) {
-            case 1:
-                return 'deleted-status';
-            case 2:
-                return 'active-status';
-            case 3:
-                return 'inactive-status';
-            default:
-                return '';
-        }
+    private _getClientAddresses() {
+        this._clientAddressesService.clientAddressesGET(this.clientId)
+            .subscribe(result => {
+                this.clientAddresses = result;
+            })
+    }
+
+    fillContactForm(result: ContactDto[]) {
+        result.forEach(row => {
+            this.addClientAddress(row.clientAddress);
+        });
+        this.clientContactsDataSource = new MatTableDataSource<ContactDto>(result);
+        this.totalCount = result.length;
+    }
+
+    addClientAddress(address: ClientAddressDto) {
+        const form = this._fb.group({
+            address: new UntypedFormControl(address?.id)
+        })
+        this.addresses.push(form);
+    }
+
+    selectContactAddress(event: MatSelectChange, row: ContactDto) {
+        this.showMainSpinner();
+        this._clientService.contactAddress(row.id, event.value)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe();
+    }
+
+    get addresses(): UntypedFormArray {
+        return this.clientContactForm.get('addresses') as UntypedFormArray;
     }
 }

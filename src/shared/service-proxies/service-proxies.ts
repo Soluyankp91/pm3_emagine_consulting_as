@@ -6728,6 +6728,61 @@ export class ClientsServiceProxy {
     }
 
     /**
+     * @param clientAddressId (optional) 
+     * @return Success
+     */
+    contactAddress(contactId: number, clientAddressId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/contact-address/{contactId}?";
+        if (contactId === undefined || contactId === null)
+            throw new Error("The parameter 'contactId' must be defined.");
+        url_ = url_.replace("{contactId}", encodeURIComponent("" + contactId));
+        if (clientAddressId === null)
+            throw new Error("The parameter 'clientAddressId' cannot be null.");
+        else if (clientAddressId !== undefined)
+            url_ += "clientAddressId=" + encodeURIComponent("" + clientAddressId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContactAddress(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContactAddress(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processContactAddress(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     camImpersonationUrl(clientId: number): Observable<string> {
@@ -23798,6 +23853,7 @@ export class ContactDto implements IContactDto {
     jobTitle?: string | undefined;
     mobilePhone?: string | undefined;
     phone?: string | undefined;
+    clientAddress?: ClientAddressDto;
     tenant?: Tenant;
     legacyContactId?: LegacyContactId;
     isDeleted?: boolean;
@@ -23824,6 +23880,7 @@ export class ContactDto implements IContactDto {
             this.jobTitle = _data["jobTitle"];
             this.mobilePhone = _data["mobilePhone"];
             this.phone = _data["phone"];
+            this.clientAddress = _data["clientAddress"] ? ClientAddressDto.fromJS(_data["clientAddress"]) : <any>undefined;
             this.tenant = _data["tenant"] ? Tenant.fromJS(_data["tenant"]) : <any>undefined;
             this.legacyContactId = _data["legacyContactId"] ? LegacyContactId.fromJS(_data["legacyContactId"]) : <any>undefined;
             this.isDeleted = _data["isDeleted"];
@@ -23850,6 +23907,7 @@ export class ContactDto implements IContactDto {
         data["jobTitle"] = this.jobTitle;
         data["mobilePhone"] = this.mobilePhone;
         data["phone"] = this.phone;
+        data["clientAddress"] = this.clientAddress ? this.clientAddress.toJSON() : <any>undefined;
         data["tenant"] = this.tenant ? this.tenant.toJSON() : <any>undefined;
         data["legacyContactId"] = this.legacyContactId ? this.legacyContactId.toJSON() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
@@ -23869,6 +23927,7 @@ export interface IContactDto {
     jobTitle?: string | undefined;
     mobilePhone?: string | undefined;
     phone?: string | undefined;
+    clientAddress?: ClientAddressDto;
     tenant?: Tenant;
     legacyContactId?: LegacyContactId;
     isDeleted?: boolean;

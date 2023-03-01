@@ -21,9 +21,11 @@
                     <mat-select-trigger>
                         <span class="country-flag fi fi-{{clientAddressForm.value.country?.code | lowercase }} fib"></span>&nbsp;{{ clientAddressForm.value.country?.name }}
                     </mat-select-trigger>
-                    <mat-option *ngFor="let item of countries" [value]="item">
-                        <span class="country-flag fi fi-{{item?.code | lowercase }} fib"></span>&nbsp;{{ item.name }}
-                    </mat-option>
+                    <ng-container *ngFor="let item of countries; trackBy: trackById">
+                        <mat-option [value]="item">
+                            <span class="country-flag fi fi-{{item?.code | lowercase }} fib"></span>&nbsp;{{ item.name }}
+                        </mat-option>
+                    </ng-container>
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">

@@ -874,5 +874,11 @@ export class AppModule {
                 'assets/common/images/add_icon_circled.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'percentage-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/percentage-icon.svg'
+            )
+        );
     }
 }
