@@ -141,7 +141,9 @@ export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	validity: AgreementValidityState;
 
     duplicationSourceAgreementId: number;
-    duplicationSourceAgreementName: string
+    duplicationSourceAgreementName: string;
+
+    parentAgreementTemplateIsMasterTemplate: boolean;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
