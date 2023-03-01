@@ -1,14 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, filter, map, mapTo, pluck, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, filter, map, mapTo, pluck, skip, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
 import { RichEditorDirective } from './directives';
 import { RichEditorOptionsProvider } from './providers';
-import { IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './entities';
+import { IComment, IDocumentItem, IDocumentVersion, IMergeField, ITemplateSaveType } from './entities';
 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
@@ -19,6 +19,9 @@ import { AgreementAbstractService } from './data-access/agreement-abstract.servi
 import { MergeFieldsAbstractService } from './data-access/merge-fields-abstract';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { CommentSidebarComponent } from './components/comment-sidebar/comment-sidebar.component';
+import { TemplateCommentService } from './data-access/template-comments.service';
+import { inOutPaneAnimation } from './entities/animations';
 
 
 @Component({
@@ -34,13 +37,16 @@ import { MatButtonModule } from '@angular/material/button';
 		InsertMergeFieldPopupComponent,
 		CompareSelectVersionPopupComponent,
 		CompareSelectDocumentPopupComponent,
+		CommentSidebarComponent
 	],
 	providers: [
 		RichEditorOptionsProvider,
 		CompareService,
 		CommentService,
+		TemplateCommentService,
 		EditorCoreService,
 	],
+	animations: [inOutPaneAnimation],
 })
 export class EditorComponent implements OnInit, OnDestroy {
 	_destroy$ = new Subject();
@@ -54,11 +60,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 		pluck('isAgreement')
 	);
 
+	commentSidebarEnabled$ = this._editorCoreService.commentSidebarEnabled$;
+	comments$ = new BehaviorSubject<IComment[]>([]);
+	currentTemplateVersion: number | undefined;
+
 	isLoading: boolean = false;
 
 	constructor(
 		private _route: ActivatedRoute,
 		private _agreementService: AgreementAbstractService,
+		private _commentService: TemplateCommentService,
 		private _mergeFieldsService: MergeFieldsAbstractService,
 		private _editorCoreService: EditorCoreService,
 		private _dialog: MatDialog
@@ -75,7 +86,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this.template$.next(tmp);
 				this.isLoading = false;
 				if (tmp) {
-					console.log(tmp)
 					this._editorCoreService.loadDocument(tmp);
 				} else {
 					this._editorCoreService.newDocument();
@@ -83,6 +93,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			});
 
 		this._agreementService.getTemplateVersions(this.templateId).subscribe((res) => {
+			this.currentTemplateVersion = res || res.length ? res[res.length - 1].version : 1;
 			this.templateVersions$.next(res || []);
 		});
 
@@ -93,6 +104,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
 			this._editorCoreService.applyMergeFields(res);
 			this.mergeFields$.next(res);
+		});
+
+		this.templateVersions$.pipe(skip(1), take(1)).subscribe((versions) => {
+			let tmpID = this.templateId;
+			let version = versions.length ? versions[versions.length - 1].version : 1;
+			this.loadCommentsByTemplateVersion(tmpID, version);
 		});
 	}
 
@@ -137,8 +154,42 @@ export class EditorComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	saveAsDraft() {
-		this._saveFileAs(ITemplateSaveType.Draft);
+	loadCommentsByTemplateVersion(templateID: number, version: number) {
+		this._editorCoreService.afterViewInit$
+			.pipe(switchMap(() => this._commentService.getByTemplateID(templateID, version)))
+			.subscribe((comments) => {
+				console.log(comments);
+				this.comments$.next(comments);
+				this._editorCoreService.insertComments(comments);
+			});
+	}
+
+	createComment({ body, interval }) {
+		let tmpID = this.templateId;
+		let version = this.currentTemplateVersion;
+
+		this._commentService.createComment(tmpID, version, body).subscribe((commentID) => {
+			this._editorCoreService.registerCommentThread(interval, commentID);
+			this.loadCommentsByTemplateVersion(tmpID, version);
+			this.saveAsDraft();
+		});
+	}
+
+	deleteComment(entityID: number) {
+		this._commentService.deleteComment(entityID).subscribe(() => {
+			this.comments$.next(this.comments$.value.filter((c) => c.id !== entityID));
+			this._editorCoreService.deleteComment(entityID);
+		});
+	}
+
+	editComment({ body, entityID }) {
+		this._commentService.editComment(entityID, body).subscribe(() => {
+			this._editorCoreService.applyCommentChanges(entityID);
+		});
+	}
+
+	saveAsDraft(cb?: () => void) {
+		this._saveFileAs(ITemplateSaveType.Draft, cb);
 	}
 
 	saveAsComplete() {
@@ -167,7 +218,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		).subscribe()
 	}
 
-	private _saveFileAs(type: ITemplateSaveType) {
+	private _saveFileAs(type: ITemplateSaveType, callback?: () => void) {
 		let functionName = type === ITemplateSaveType.Draft ? 'saveAsDraftTemplate' : 'completeTemplate';
 		this.isLoading = true;
 		this._editorCoreService.setTemplateAsBase64((base64) => {
@@ -175,6 +226,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this._agreementService[functionName](this.templateId, { value: base64 }).subscribe(() => {
 					this.hasUnsavedChanges$.next(false);
 					this.isLoading = false;
+					if (callback && typeof callback === 'function') {
+						callback();
+					}
 				});
 			}
 		});

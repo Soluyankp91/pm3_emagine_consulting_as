@@ -36,7 +36,7 @@ export class EditorPreviewComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   private _loadTemplate(templateId: number) {
-      this._templateService.getTemplate(templateId).pipe(
+      this._templateService.getTemplate(templateId, false).pipe(
         tap(template => this._rich.openDocument(template, 'emagine_doc', DocumentFormatApi.OpenXml))
       ).subscribe()
   }

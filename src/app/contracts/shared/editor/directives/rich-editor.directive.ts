@@ -20,6 +20,7 @@ import { ICustomCommand } from '../entities';
 	selector: '[richEditor]',
 })
 export class RichEditorDirective implements AfterViewInit, OnDestroy {
+	private _commentModeEnabled = false;
 	private _subscriptions: Array<Subscription> = [];
 	editor: RichEdit = null;
 
@@ -43,13 +44,31 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 
 	private _handleRibbonListChange() {
 		this.editor.events.customCommandExecuted.addHandler((s, e) => {
-			if (e.commandName === ICustomCommand.RibbonListChange) {
-				this._subscriptions.forEach((sub) => sub.unsubscribe());
-				this._registerTabChangeEvent();
-			}
-
-			if (e.commandName === ICustomCommand.DocumentSave) {
-				this.saved.emit();
+			switch (e.commandName) {
+				case ICustomCommand.ToggleCommentMode: {
+					this._updateCommentView(e.parameter);
+					break;
+				}
+				case ICustomCommand.SelectionHighlight: {
+					this._updateCommentView(true);
+					break;
+				}
+				case ICustomCommand.RibbonListChange: {
+					this._subscriptions.forEach((sub) => sub.unsubscribe());
+					this._registerTabChangeEvent();
+					break;
+				}
+				case ICustomCommand.RibbonTabChange: {
+					this.editor.events.customCommandExecuted._fireEvent(this.editor, {
+						commandName: ICustomCommand.ToggleCommentMode,
+						parameter: false,
+					});
+					break;
+				}
+				case ICustomCommand.DocumentSave: {
+					this.saved.emit();
+					break;
+				}
 			}
 		});
 	}
@@ -63,6 +82,22 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 			});
 		});
 		this._subscriptions.push(sub);
+	}
+
+	private _updateCommentView(commentEnabled: boolean) {
+		if (this._commentModeEnabled !== commentEnabled) {
+			this._commentModeEnabled = commentEnabled;
+			let diffCount = 300;
+			let rulerElem: HTMLElement = this._elementRef.nativeElement.querySelector('.dxreRuler');
+			let pageElem: HTMLElement = this._elementRef.nativeElement.querySelector('.dxreView');
+			let currentLeft = parseInt(rulerElem.style.left);
+
+			let left = `${commentEnabled ? currentLeft - diffCount / 2 : currentLeft + diffCount / 2}px`;
+			let maxWidth = `calc(100% - ${commentEnabled ? diffCount : 0}px)`;
+
+			pageElem.style.maxWidth = maxWidth;
+			rulerElem.style.left = left;
+		}
 	}
 
 	ngOnDestroy(): void {

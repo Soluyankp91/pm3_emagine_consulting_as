@@ -1,4 +1,14 @@
 <div richEditor class="editor" (saved)="saveAsComplete()"></div>
+<div class="comment-sidebar">
+	<app-comment-sidebar
+		@inOutPaneAnimation
+		*ngIf="commentSidebarEnabled$ | async"
+		[entities]="comments$ | async"
+		(created)="createComment($event)"
+		(deleted)="deleteComment($event)"
+		(edited)="editComment($event)">
+	</app-comment-sidebar>
+</div>
 <app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
 </app-insert-merge-field-popup>
 <app-compare-select-version-popup

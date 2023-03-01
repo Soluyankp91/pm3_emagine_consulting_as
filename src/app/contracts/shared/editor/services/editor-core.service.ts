@@ -20,14 +20,16 @@ import { CompareService } from './compare.service';
 import { CommentService } from './comment.service';
 import { RICH_EDITOR_OPTIONS } from '../providers';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
-import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
+import { CUSTOM_CONTEXT_MENU_ITEMS, IComment, ICustomCommand, IMergeField } from '../entities';
 import { take } from 'rxjs/operators';
+import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
 @Injectable()
 export class EditorCoreService {
 	afterViewInit$: ReplaySubject<void> = new ReplaySubject();
 	templateAsBase64$ = new BehaviorSubject<string>('');
 	hasUnsavedChanges$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	commentSidebarEnabled$ = this._commentService.selectEnabled$;
 
 	public editor: RichEdit = null;
 	public editorNative: ClientRichEdit = null;
@@ -70,9 +72,10 @@ export class EditorCoreService {
 		this._registerDocumentEvents();
 		this._registerCustomEvents();
 		this._initCompareTab();
+		this._initComments();
 		this._registerCustomContextMenuItems();
-		this.afterViewInit$.next();
-		this.afterViewInit$.complete();
+		// this.afterViewInit$.next();
+		// this.afterViewInit$.complete();
 	}
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
@@ -102,9 +105,25 @@ export class EditorCoreService {
 		this.editor.mailMergeOptions.setDataSource([fields]);
 	}
 
+	insertComments(comments: Array<IComment>) {
+		this._commentService.cleanUpDocument(comments);
+	}
+
 	insertMergeField(field: string) {
 		const position = this.editor.selection.active;
 		this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
+	}
+
+	registerCommentThread(interval: IntervalApi, commentID: number) {
+		this._commentService.applyHighlight(interval, commentID);
+	}
+
+	deleteComment(commentID: number) {
+		this._commentService.deleteHighlight(commentID);
+	}
+
+	applyCommentChanges(commentID: number) {
+		this._commentService.highlightSelected(commentID);
 	}
 
 	destroy() {
@@ -132,9 +151,18 @@ export class EditorCoreService {
 	}
 
 	private _registerDocumentEvents() {
+		this.editor.events.documentLoaded.addHandler(() => {
+			this.afterViewInit$.next();
+			this.afterViewInit$.complete();
+		});
+		
 		this.editor.events.documentChanged.addHandler(() => {
 			if (!this._compareService.isCompareMode) {
 				this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
+			}
+
+			if (this._commentService.commentModeEnabled) {
+				this.hasUnsavedChanges$.next(false);
 			}
 		});
 
@@ -150,6 +178,10 @@ export class EditorCoreService {
 
 	private _initCompareTab() {
 		this._compareService.initialize(this.editor);
+	}
+
+	private _initComments() {
+		this._commentService.initialize(this.editor);
 	}
 
 	private _registerCustomEvents() {
@@ -170,6 +202,13 @@ export class EditorCoreService {
 					break;
 				case ICustomCommand.FormatPainter:
 					this._formatPainter();
+					break;
+				case ICustomCommand.SelectionHighlight: {
+					this._commentService.toggleCreateMode();
+					break;
+				}
+				case ICustomCommand.ToggleCommentMode:
+					this._commentService.toggleHighlightState(e.parameter);
 					break;
 			}
 		});

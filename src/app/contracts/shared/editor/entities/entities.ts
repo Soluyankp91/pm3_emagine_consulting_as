@@ -24,6 +24,8 @@ export enum ICustomCommand {
 	KeepNewVersion = 'KEEP_NEW_VERSION',
 	KeepBothVersions = 'KEEP_BOTH_VERSIONS',
 	ToggleCompareMode = 'TOGGLE_COMPARE_MODE',
+	ToggleCommentMode = 'TOGGLE_COMMENT_MODE',
+	SelectionHighlight = 'SELECTION_HIGHLIGHT',
 }
 
 export enum IContextMenuType {
@@ -52,11 +54,7 @@ export interface IDocumentCreator {
 
 export type IMergeField = { [key: string]: string };
 
-export enum IDocumentCreationReason {
-	UserEdit = 1,
-    ParentInheritance = 2,
-    InitialSourceCopy = 3,
-}
+export enum IDocumentCreationReason {}
 
 export interface IDocumentVersion {
 	createdDateUtc?: Date | Moment;
@@ -119,3 +117,16 @@ export interface ICompareChanges {
 }
 
 export type ICompareButtonMap = Record<ICompareButton['type'], ICompareButton>;
+
+export interface IComment {
+	id: any;
+	text: string;
+	parentId: number | null;
+	date_created: string;
+	createdBy: {
+		id: number;
+		externalId: string;
+		name: string;
+	};
+}
+

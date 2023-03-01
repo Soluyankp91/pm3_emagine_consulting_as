@@ -49,6 +49,14 @@ export const CUSTOM_CONTEXT_MENU_ITEMS: Array<ContextMenuItem> = [
 		visible: false,
 		beginGroup: false,
 	},
+	{
+		id: ICustomCommand.SelectionHighlight,
+		text: 'Highlight',
+		disabled: true,
+		visible: false,
+		beginGroup: false,
+		icon: 'rename',
+	},
 ];
 
 export const COMPARE_TAB_CONTEXT_MENU_ITEM_IDS: Array<ContextMenuItem['id']> = [

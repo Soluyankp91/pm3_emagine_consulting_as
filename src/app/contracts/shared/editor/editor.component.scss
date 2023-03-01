@@ -37,9 +37,31 @@
 :host {
 	padding: 20px 60px;
 	display: block;
+	position: relative;
+	overflow: hidden;
+
+	.comment-sidebar {
+		display: block;
+		width: 294px;
+		height: calc(100vh - 334px);
+		position: absolute;
+		right: 57px;
+		top: 112px;
+		overflow: hidden;
+	}
 }
 ::ng-deep {
 	.editor {
+		background-color: #f7f7f7;
+		
+		.dxreRuler {
+			transition: left 0.2s ease;
+		}
+		.dxreView {
+			max-width: 100%;
+			transition: max-width 0.2s ease;
+		}
+
 		&.painter-format {
 			.dxreColumn {
 				cursor: -webkit-image-set(
