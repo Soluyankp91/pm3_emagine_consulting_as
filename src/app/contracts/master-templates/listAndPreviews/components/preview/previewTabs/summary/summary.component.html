@@ -158,19 +158,10 @@
 					<div class="fw-600 flex-b-60">{{ summaryItem.endDate | momentFormat }}</div>
 				</div>
 			</ng-container>
-            <ng-container *ngIf="summaryItem.duplicationSourceAgreementTemplateId">
-				<div class="row-item">
-					<div class="label">{{ previewMap['duplicationSourceAgreementTemplateId'] }}</div>
-					<div class="fw-600 flex-b-60 link" (click)="navigateToTemplate(summaryItem, true)">
-						<span>{{ summaryItem.duplicationSourceAgreementTemplateName }}</span>
-						<mat-icon svgIcon="right-arrow"></mat-icon>
-					</div>
-				</div>
-			</ng-container>
             <ng-container *ngIf="summaryItem.duplicationSourceAgreementId">
 				<div class="row-item">
 					<div class="label">{{ previewMap['duplicationSourceAgreementName'] }}</div>
-					<div class="fw-600 flex-b-60 link" (click)="navigateToTemplate(summaryItem, true)">
+					<div class="fw-600 flex-b-60 link" (click)="navigateToDuplicatedTemplate(summaryItem)">
 						<span>{{ summaryItem.duplicationSourceAgreementName }}</span>
 						<mat-icon svgIcon="right-arrow"></mat-icon>
 					</div>
@@ -179,7 +170,7 @@
 			<ng-container *ngIf="summaryItem.duplicationSourceAgreementTemplateId">
 				<div class="row-item">
 					<div class="label">{{ previewMap['duplicationSourceAgreementTemplateId'] }}</div>
-					<div class="fw-600 flex-b-60 link" (click)="navigateToTemplate(summaryItem, true)">
+					<div class="fw-600 flex-b-60 link" (click)="navigateToDuplicatedTemplate(summaryItem)">
 						<span>{{ summaryItem.duplicationSourceAgreementTemplateName }}</span>
 						<mat-icon svgIcon="right-arrow"></mat-icon>
 					</div>
@@ -188,7 +179,7 @@
 			<ng-container *ngIf="summaryItem.parentAgreementTemplateId">
 				<div class="row-item">
 					<div class="label">{{ previewMap['parentAgreementTemplateId'] }}</div>
-					<div class="fw-600 flex-b-60 link" (click)="navigateToTemplate(summaryItem, false)">
+					<div class="fw-600 flex-b-60 link" (click)="navigateToParentTemplate(summaryItem)">
 						<span>{{ summaryItem.parentAgreementTemplateName }}</span>
 						<mat-icon svgIcon="right-arrow"></mat-icon>
 					</div>

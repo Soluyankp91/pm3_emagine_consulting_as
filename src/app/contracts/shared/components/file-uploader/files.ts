@@ -2,6 +2,7 @@ import { AgreementTemplateDetailsAttachmentDto } from 'src/shared/service-proxie
 
 export type FileUpload = object & {
 	temporaryFileId?: string;
+    agreementAttachmentId?: number;
 	agreementTemplateAttachmentId?: number;
 	name: string;
 };
