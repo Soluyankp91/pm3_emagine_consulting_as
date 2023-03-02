@@ -9,7 +9,8 @@
         <div fxLayout="row" fxLayoutAlign="center start">
             <div class="signers-preview--dialog-content">
                 <p class="signers-preview--dialog-content__header">
-                    {{data.singleEmail ? 'You are sending group of agreements:' : 'You are sending seperate agreements:'}}
+                    {{data.singleEmail ? 'You are sending group of agreements:' :
+                    'You are sending seperate agreements:'}}
                 </p>
                 <ng-container *ngFor="let envelope of envelopePreviewList">
                     <div fxLayout="row" fxLayoutAlign="start center" class="envelope-title u-mb--16">
@@ -18,35 +19,35 @@
                     </div>
                     <ng-container *ngIf="!data.singleEmail">
                         <ng-container [ngTemplateOutlet]="recipientsList"
-                                [ngTemplateOutletContext]="{recipients: envelope.recipients}">
+                            [ngTemplateOutletContext]="{recipients: envelope.recipients}">
                         </ng-container>
                         <mat-divider class="u-w--100 u-mt--16 u-mb--24 sand-color"></mat-divider>
                     </ng-container>
                 </ng-container>
                 <ng-container *ngIf="data.singleEmail">
                     <ng-container [ngTemplateOutlet]="recipientsList"
-                            [ngTemplateOutletContext]="{recipients: envelopePreviewList[0].recipients}">
+                        [ngTemplateOutletContext]="{recipients: envelopePreviewList[0].recipients}">
                     </ng-container>
                 </ng-container>
             </div>
         </div>
     </ng-scrollbar>
 </mat-dialog-content>
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center" class="signers-preview--dialog--actions u-w--100">
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center"
+    class="signers-preview--dialog--actions u-w--100">
     <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__outlined"
         appPreventDoubleClick (throttledClick)="close()">
         Cancel
     </button>
-    <div fxLayout="row" fxLayoutAlign="start start" >
-        <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive-outline" [matMenuTriggerFor]="emailMenu">
+    <div fxLayout="row" fxLayoutAlign="start start">
+        <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive-outline"
+            [matMenuTriggerFor]="emailMenu">
             Send via email
             <mat-icon class="green-color">arrow_drop_down</mat-icon>
             <mat-menu #emailMenu>
                 <ng-container *ngFor="let item of emailMenuItems; trackBy: trackById">
-                    <button
-                        class="menu-item green-color"
-                        mat-menu-item
-                        appPreventDoubleClick (throttledClick)="sendViaEmail(item.option)">
+                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                        (throttledClick)="sendViaEmail(item.option)">
                         <mat-icon [svgIcon]="item.icon"></mat-icon>
                         {{item.name}}
                     </button>
@@ -59,10 +60,8 @@
             <mat-icon class="white-color">arrow_drop_down</mat-icon>
             <mat-menu #docuSignMenu>
                 <ng-container *ngFor="let item of docuSignMenuItems; trackBy: trackById">
-                    <button
-                        class="menu-item green-color"
-                        mat-menu-item
-                        appPreventDoubleClick (throttledClick)="sendViaDocuSign(item.option)">
+                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                        (throttledClick)="sendViaDocuSign(item.option)">
                         <mat-icon [svgIcon]="item.icon"></mat-icon>
                         {{item.name}}
                     </button>
@@ -83,9 +82,13 @@
     <ng-container *ngFor="let recipient of recipients">
         <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
             <span fxFlex="35px" fxLayoutAlign="center center" class="u-w--100">
-                <ng-container *ngIf="recipient.signerType === signerType.InternalEmagine || recipient.signerType === signerType.Consultant; then recipientImage; else noImage"></ng-container>
+                <ng-container
+                    *ngIf="recipient.signerType === signerType.InternalEmagine || recipient.signerType === signerType.Consultant; then recipientImage; else noImage"></ng-container>
                 <ng-template #recipientImage>
-                    <img class="border-rounded-50 image-thumbnail-small" [ngClass]="recipient.signerType === signerType.InternalEmagine ? 'internal-emagin' : 'consutlant'" [ngSrc]="(recipient.signerType === signerType.InternalEmagine ? employeePhotoUrl : consultantPhotoUrl) + recipient.externalId! + '.jpg'"  width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                    <img class="border-rounded-50 image-thumbnail-small"
+                        [ngClass]="recipient.signerType === signerType.InternalEmagine ? 'internal-emagin' : 'consutlant'"
+                        [ngSrc]="(recipient.signerType === signerType.InternalEmagine ? employeePhotoUrl : consultantPhotoUrl) + recipient.externalId! + '.jpg'"
+                        width="35" height="35" src (error)="setDefaultImage($event.target)" />
                 </ng-template>
                 <ng-template #noImage>
                     -
@@ -106,4 +109,3 @@
         </div>
     </ng-container>
 </ng-template>
-

@@ -66,8 +66,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
 		private _router: Router
-	)
-	{
+	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
 	}
@@ -78,9 +77,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		} else {
 			this._getConsultantAgreements();
 		}
-		LegalContractsMockedData.forEach((item) => {
-			this.addLegalContract(item);
-		});
+		// NB: needed for tests
+		// LegalContractsMockedData.forEach((item) => {
+		// 	this.addLegalContract(item);
+		// });
 	}
 
 	addLegalContract(legalContract?: WorkflowAgreementDto) {
@@ -105,32 +105,33 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		const agreementIds = selectedAgreements.map((x) => x.agreementId);
 		let disableSendAllButton = false;
 
-        // NB: TMP
-        this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-
-		// if (selectedAgreements.some((x) => !x.hasSignedDocumentFile)) {
-		// 	this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
-		// } else {
-		// 	if (agreementIds.length > 1) {
-        //         this.showMainSpinner();
-		// 		this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
-		// 			next: () => {
-		// 				this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-		// 			},
-		// 			error: (error) => {
-		// 				if (error.status === 400) {
-		// 					disableSendAllButton = true;
-		// 				}
-		// 				this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-		// 			},
-        //             complete: () => {
-        //                 this.hideMainSpinner();
-        //             },
-		// 		});
-		// 	} else {
-		// 		this._getSignersPreview(agreementIds);
-		// 	}
-		// }
+		if (
+			selectedAgreements.some(
+				(x) => x.agreementStatus !== EnvelopeStatus.Created && x.agreementStatus !== EnvelopeStatus.CreatedInDocuSign
+			)
+		) {
+			this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
+		} else {
+			if (agreementIds.length > 1) {
+				this.showMainSpinner();
+				this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
+					next: () => {
+						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+					},
+					error: (error) => {
+						if (error.status === 400) {
+							disableSendAllButton = true;
+						}
+						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+					},
+					complete: () => {
+						this.hideMainSpinner();
+					},
+				});
+			} else {
+				this._getSignersPreview(agreementIds);
+			}
+		}
 	}
 
 	public openUploadSignedContractDialog(agreementId: number) {
@@ -138,6 +139,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument,
+			hideReason: true,
 		};
 		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
@@ -152,23 +154,23 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public downloadPdf(agreementId: number) {
-        this.showMainSpinner();
+		this.showMainSpinner();
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/pdf`;
-        this._processDownloadDocument(url);
+		this._processDownloadDocument(url);
 	}
 
 	public downloadDoc(agreementId: number) {
-        this.showMainSpinner();
+		this.showMainSpinner();
 		const getDraftIfAvailable = false; // NB: hardcoded false as for now, BE requirement
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}/false`;
-        this._processDownloadDocument(url);
+		this._processDownloadDocument(url);
 	}
 
-    public downloadFile(agreementId: number) {
-        this.showMainSpinner();
+	public downloadFile(agreementId: number) {
+		this.showMainSpinner();
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/signed-document`;
-        this._processDownloadDocument(url);
-    }
+		this._processDownloadDocument(url);
+	}
 
 	public openInDocuSign(docuSignUrl: string) {
 		window.open(docuSignUrl, '_blank');
@@ -186,11 +188,12 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			dialogMode: ERemoveOrOuploadDialogMode.Delete,
+			hideReason: true,
 		};
 		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((reason: string) => {
-			this._deleteAgreement(agreementId, reason);
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this._deleteAgreement(agreementId);
 		});
 	}
 
@@ -213,28 +216,29 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public downloadEnvelopes() {
-        this.showMainSpinner();
-        let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
+		this.showMainSpinner();
+		let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
 		const agreementIds = selectedAgreements.map((x) => x.agreementId);
-        let url = `${this.apiUrl}/api/Agreement/signed-documents?`;
-        if (agreementIds?.length > 0) {
-            for (let id of agreementIds) {
-                url += `agreementIds=${id}&`;
-            }
-            url = url.replace(/[?&]$/, "");
-        } else {
-            return;
-        }
+		let url = `${this.apiUrl}/api/Agreement/signed-documents?`;
+		if (agreementIds?.length > 0) {
+			for (let id of agreementIds) {
+				url += `agreementIds=${id}&`;
+			}
+			url = url.replace(/[?&]$/, '');
+		} else {
+			return;
+		}
 		this._processDownloadDocument(url);
 	}
 
-    private _processDownloadDocument(url: string) {
-        this._legalContractService.getTokenAndDownloadDocument(url)
-        .pipe(finalize(() => this.hideMainSpinner()))
-        .subscribe((data: HttpResponse<Blob>) => {
-            this._legalContractService.processResponseAfterDownload(data);
-        });
-    }
+	private _processDownloadDocument(url: string) {
+		this._legalContractService
+			.getTokenAndDownloadDocument(url)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe((data: HttpResponse<Blob>) => {
+				this._legalContractService.processResponseAfterDownload(data);
+			});
+	}
 
 	private _getClientAgreements() {
 		this._clientPeriodService.clientAgreements(this.periodId).subscribe((result: WorkflowAgreementsDto) => {
@@ -270,7 +274,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _getSignersPreview(agreementIds: number[], singleEmail = true) {
-        this.showMainSpinner();
+		this.showMainSpinner();
 		this._agreementService
 			.envelopeRecipientsPreview(agreementIds, singleEmail)
 			.pipe(finalize(() => this.hideMainSpinner()))
@@ -287,7 +291,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			panelClass: 'signers-preview--modal',
 			autoFocus: false,
 			hasBackdrop: true,
-            backdropClass: 'backdrop-modal--wrapper',
+			backdropClass: 'backdrop-modal--wrapper',
 			data: {
 				envelopePreviewList: envelopePreviewList,
 				singleEmail: singleEmail,
@@ -305,13 +309,13 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		let input = new SendEmailEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEmail: singleEmail,
-            convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile
+			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
 		this._agreementService.sendEmailEnvelope(input).subscribe(() => {});
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
-        this.showMainSpinner();
+		this.showMainSpinner();
 		let input = new SendDocuSignEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEnvelope: singleEnvelope,
@@ -321,7 +325,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _uploadSignedContract(agreementId: number, file: FileParameter) {
-        this.showMainSpinner();
+		this.showMainSpinner();
 		const forceUpdate = false; // NB: hardcoded false as for now, BE requirement
 		this._agreementService
 			.uploadSigned(agreementId, forceUpdate, file)
@@ -337,9 +341,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.subscribe();
 	}
 
-	private _deleteAgreement(agreementId: number, reason?: string) {
-		// TODO: call delete API once BE implemented
-
+	private _deleteAgreement(agreementId: number) {
+		this.showMainSpinner();
+		this._agreementService.agreementDELETE(agreementId);
 	}
 
 	get legalContracts(): UntypedFormArray {
@@ -349,6 +353,11 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		return this.legalContracts.value.some((x) => x.selected);
 	}
 	get sendAgreementAvailable() {
-		return this.legalContracts.value.some((x) => x.selected && x.hasSignedDocumentFile);
+		return this.legalContracts.value
+			.filter((x) => x.selected)
+			.some(
+				(item) =>
+					item.agreementStatus === EnvelopeStatus.Created || item.agreementStatus === EnvelopeStatus.CreatedInDocuSign
+			);
 	}
 }

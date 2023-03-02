@@ -3,7 +3,8 @@
         <span class="text-bold-800">
             {{data?.showError ? 'Send agreement' : 'Envelope type'}}
         </span>
-        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
+                svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
     <ng-container *ngIf="data?.showError; else chooseEnvelopeType">
         <p>
@@ -19,7 +20,8 @@
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
             <mat-radio-group [formControl]="singleEmail" color="primary">
                 <mat-radio-button [value]="false">Send each agreement in a Separate Envelope</mat-radio-button>
-                <mat-radio-button [disabled]="data.disableSendAllButton" [value]="true">Send all agreements in Single Envelope</mat-radio-button>
+                <mat-radio-button [disabled]="data.disableSendAllButton" [value]="true">Send all agreements in Single
+                    Envelope</mat-radio-button>
             </mat-radio-group>
             <ng-container *ngIf="data.disableSendAllButton">
                 <div fxLayout="row" fxLayoutAlign="start start">
@@ -34,12 +36,13 @@
 </mat-dialog-content>
 <mat-dialog-actions class="confirmation-dialog--actions">
     <ng-container *ngIf="!data?.showError">
-        <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+        <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick
+            (throttledClick)="reject()">
             Cancel
         </button>
     </ng-container>
-    <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="data?.showError ? reject() : confirm()">
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick
+        (throttledClick)="data?.showError ? reject() : confirm()">
         {{data?.showError ? 'Close' : 'Next' }}
     </button>
 </mat-dialog-actions>
-

@@ -31,7 +31,6 @@ import { DocumentsComponent } from './shared/components/wf-documents/wf-document
 import { LegalContractsComponent } from './workflow-contracts/legal-contracts/legal-contracts.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { RemoveAgreementDialogComponent } from './workflow-contracts/legal-contracts/remove-agreement-dialog/remove-agreement-dialog.component';
 import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contracts/send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
 import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
@@ -63,10 +62,9 @@ import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/lega
 		ToggleEditModeComponent,
 		DocumentsComponent,
 		LegalContractsComponent,
-  RemoveAgreementDialogComponent,
-  SendEnvelopeDialogComponent,
-  SignersPreviewDialogComponent,
-  RemoveOrUploadAgrementDialogComponent,
+		SendEnvelopeDialogComponent,
+		SignersPreviewDialogComponent,
+		RemoveOrUploadAgrementDialogComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
@@ -90,11 +88,11 @@ export class WorkflowModule {
 			'via-email-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-email-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'via-docusign-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-docusign-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'via-thirdparty-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-thirdparty-icon.svg')
 		);
@@ -122,11 +120,11 @@ export class WorkflowModule {
 			'open-in-docusign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/open-in-docusign.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'create-docusign-draft',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/create-docusign-draft.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'send-via-docusign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
 		);

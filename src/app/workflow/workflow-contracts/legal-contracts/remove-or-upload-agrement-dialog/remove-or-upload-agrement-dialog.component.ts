@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
@@ -11,28 +11,24 @@ import { ERemoveOrOuploadDialogMode, RemoveOrUploadDialogConfig } from './remove
 	templateUrl: './remove-or-upload-agrement-dialog.component.html',
 	styleUrls: ['./remove-or-upload-agrement-dialog.component.scss'],
 })
-export class RemoveOrUploadAgrementDialogComponent implements OnInit {
+export class RemoveOrUploadAgrementDialogComponent {
 	@Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
-    reasonForChange = new FormControl<string>('', Validators.required);
-    dialogConfig = RemoveOrUploadDialogConfig[this.data.dialogMode];
-    dialogModes = ERemoveOrOuploadDialogMode;
-    icon: string;
-    isFileUploading = false;
-    file: File;
-    isFileAdded = false;
+	reasonForChange = new FormControl<string>('', Validators.required);
+	dialogConfig = RemoveOrUploadDialogConfig[this.data.dialogMode];
+	dialogModes = ERemoveOrOuploadDialogMode;
+	icon: string;
+	isFileUploading = false;
+	file: File;
+	isFileAdded = false;
 	constructor(
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
-			dialogMode: ERemoveOrOuploadDialogMode,
-            hideReason?: boolean
+			dialogMode: ERemoveOrOuploadDialogMode;
+			hideReason?: boolean;
 		},
 		private _dialogRef: MatDialogRef<SendEnvelopeDialogComponent>
 	) {}
-
-	ngOnInit(): void {
-
-    }
 
 	reject() {
 		this.onRejected.emit();
@@ -48,13 +44,13 @@ export class RemoveOrUploadAgrementDialogComponent implements OnInit {
 		this._dialogRef.close();
 	}
 
-    public fileAdded(files: FileUploaderFile[]) {
-        this.file = files[0].internalFile;
-        this.icon = WFDocument.getIcon(this.file.name);
-        this.isFileUploading = true;
-        setTimeout(() => {
-            this.isFileUploading = false;
-            this.isFileAdded = true;
-        }, 1500);
-    }
+	public fileAdded(files: FileUploaderFile[]) {
+		this.file = files[0].internalFile;
+		this.icon = WFDocument.getIcon(this.file.name);
+		this.isFileUploading = true;
+		setTimeout(() => {
+			this.isFileUploading = false;
+			this.isFileAdded = true;
+		}, 1500);
+	}
 }

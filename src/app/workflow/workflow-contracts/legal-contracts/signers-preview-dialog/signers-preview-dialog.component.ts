@@ -1,9 +1,15 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { EnvelopePreviewDto, SignerType } from 'src/shared/service-proxies/service-proxies';
-import { DocuSignMenuItems, EDocuSignMenuOption, EEmailMenuOption, EmailMenuItems, ESignerRole, ESignerTypeName, RecipientMockedList } from './signers-preview-dialog.model';
+import {
+	DocuSignMenuItems,
+	EDocuSignMenuOption,
+	EEmailMenuOption,
+	EmailMenuItems,
+	ESignerRole,
+	ESignerTypeName,
+} from './signers-preview-dialog.model';
 
 @Component({
 	selector: 'app-signers-preview-dialog',
@@ -14,23 +20,24 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 	@Output() onSendViaEmail = new EventEmitter<EEmailMenuOption>();
 	@Output() onSendViaDocuSign = new EventEmitter<EDocuSignMenuOption>();
 	envelopePreviewList: EnvelopePreviewDto[];
-    signerType = SignerType;
+	signerType = SignerType;
 	signerTypeName = ESignerTypeName;
 	signerRole = ESignerRole;
-    docuSignMenuItems = DocuSignMenuItems;
-    emailMenuItems = EmailMenuItems;
+	docuSignMenuItems = DocuSignMenuItems;
+	emailMenuItems = EmailMenuItems;
 	constructor(
 		injector: Injector,
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
 			envelopePreviewList: EnvelopePreviewDto[];
-            singleEmail: boolean
+			singleEmail: boolean;
 		},
 		private _dialogRef: MatDialogRef<SignersPreviewDialogComponent>
 	) {
 		super(injector);
-		// this.envelopePreviewList = data.envelopePreviewList;
-        this.envelopePreviewList = RecipientMockedList;
+		this.envelopePreviewList = data.envelopePreviewList;
+		// NB: needed for tests
+		// this.envelopePreviewList = RecipientMockedList;
 	}
 
 	ngOnInit(): void {}
