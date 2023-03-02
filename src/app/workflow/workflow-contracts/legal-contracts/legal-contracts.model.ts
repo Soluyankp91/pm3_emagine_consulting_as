@@ -64,6 +64,8 @@ export enum ELegalContractSourceText {
     "Receive from other party" = 3
 }
 
+// NB: needed for tests
+
 export const LegalContractsMockedData: WorkflowAgreementDto[] = [
     new WorkflowAgreementDto({
         agreementId: 2,
