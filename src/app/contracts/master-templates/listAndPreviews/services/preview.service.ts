@@ -13,7 +13,7 @@ import {
 	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateChildAgreementDto,
 	AgreementTemplateChildTemplateDto,
-	AgreementTemplateDetailsDto,
+	AgreementTemplateDetailsPreviewDto,
 	AgreementTemplateServiceProxy,
 	AgreementType,
 } from 'src/shared/service-proxies/service-proxies';
@@ -22,7 +22,7 @@ import { DownloadFilesService } from 'src/app/contracts/shared/services/download
 
 @Injectable()
 export class PreviewService extends BasePreview {
-	entityGet = this._agreementTemplateServiceProxy.agreementTemplateGET.bind(this._agreementTemplateServiceProxy);
+	entityGet = this._agreementTemplateServiceProxy.preview2.bind(this._agreementTemplateServiceProxy);
 	entityMetadataLog = this._agreementTemplateServiceProxy.metadataLog.bind(this._agreementTemplateServiceProxy);
 	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
 
@@ -131,7 +131,7 @@ export class PreviewService extends BasePreview {
 		this._agreementsLinksSort$.next(sort);
 	}
 
-	mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
+	mapEntityToSummary(row: AgreementTemplateDetailsPreviewDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementTemplatesListItemDto>{
 			name: row.name,
 			clientName: row.clientName,

@@ -528,7 +528,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						agreementType: agreementDetailsDto.agreementType,
 						recipientTypeId: agreementDetailsDto.recipientTypeId,
 						recipientId: agreementDetailsDto.recipientId,
-						nameTemplate: agreementDetailsDto.name,
+						nameTemplate: agreementDetailsDto.nameTemplate,
 						definition: agreementDetailsDto.definition,
 						legalEntityId: agreementDetailsDto.legalEntityId,
 						salesTypes: agreementDetailsDto.salesTypeIds,
@@ -647,7 +647,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,
-				nameTemplate: agreement.name,
+				nameTemplate: agreement.nameTemplate,
 				definition: agreement.definition,
 				legalEntityId: agreement.legalEntityId,
 				salesTypes: agreement.salesTypeIds,

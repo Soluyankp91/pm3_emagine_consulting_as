@@ -6,7 +6,7 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { DownloadFilesService } from 'src/app/contracts/shared/services/download-files.service';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
-	AgreementDetailsDto,
+	AgreementDetailsPreviewDto,
 	AgreementLanguage,
 	AgreementServiceProxy,
 	AgreementType,
@@ -18,7 +18,7 @@ import {
 export class AgreementPreviewService extends BasePreview {
     downloadAgreementAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
 	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
-	entityGet = this._agreementServiceProxy.agreementGET.bind(this._agreementServiceProxy);
+	entityGet = this._agreementServiceProxy.preview.bind(this._agreementServiceProxy);
 	entityMetadataLog = this._agreementServiceProxy.logs.bind(this._agreementServiceProxy);
 
 	constructor(
@@ -31,7 +31,7 @@ export class AgreementPreviewService extends BasePreview {
 		super(_contractService);
 	}
 
-	mapEntityToSummary(row: AgreementDetailsDto, maps: MappedTableCells) {
+	mapEntityToSummary(row: AgreementDetailsPreviewDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementListItemDto>{
 			agreementName: row.name,
 			definition: row.definition,

@@ -1542,6 +1542,110 @@ export class AgreementServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    agreementDELETE(agreementId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementDELETE(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementDELETE(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementDELETE(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    preview(agreementId: number): Observable<AgreementDetailsPreviewDto> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/preview";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPreview(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPreview(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AgreementDetailsPreviewDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AgreementDetailsPreviewDto>;
+        }));
+    }
+
+    protected processPreview(response: HttpResponseBase): Observable<AgreementDetailsPreviewDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AgreementDetailsPreviewDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AgreementDetailsPreviewDto>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -3210,6 +3314,60 @@ export class AgreementTemplateServiceProxy {
             }));
         }
         return _observableOf<AgreementTemplateDetailsDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    preview2(agreementTemplateId: number): Observable<AgreementTemplateDetailsPreviewDto> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/preview";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPreview2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPreview2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AgreementTemplateDetailsPreviewDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AgreementTemplateDetailsPreviewDto>;
+        }));
+    }
+
+    protected processPreview2(response: HttpResponseBase): Observable<AgreementTemplateDetailsPreviewDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AgreementTemplateDetailsPreviewDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AgreementTemplateDetailsPreviewDto>(null as any);
     }
 
     /**
@@ -17434,6 +17592,258 @@ export interface IAgreementDetailsAttachmentDto {
 
 export class AgreementDetailsDto implements IAgreementDetailsDto {
     agreementId?: number;
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
+    creationMode?: AgreementCreationMode;
+    parentAgreementTemplateId?: number | undefined;
+    parentAgreementTemplateVersion?: number | undefined;
+    parentAgreementTemplateName?: string | undefined;
+    duplicationSourceAgreementId?: number | undefined;
+    duplicationSourceAgreementName?: string | undefined;
+    agreementType?: AgreementType;
+    recipientTypeId?: number;
+    recipientId?: number;
+    nameTemplate?: string | undefined;
+    definition?: string | undefined;
+    legalEntityId?: number;
+    contractTypeIds?: number[] | undefined;
+    salesTypeIds?: number[] | undefined;
+    deliveryTypeIds?: number[] | undefined;
+    language?: AgreementLanguage;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment | undefined;
+    note?: string | undefined;
+    receiveAgreementsFromOtherParty?: boolean;
+    isSignatureRequired?: boolean;
+    signers?: AgreementDetailsSignerDto[] | undefined;
+    attachments?: AgreementDetailsAttachmentDto[] | undefined;
+    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    isLocked?: boolean;
+    isWorkflowRelated?: boolean;
+    saleManager?: EmployeeDto;
+    contractManager?: EmployeeDto;
+    consultantName?: string | undefined;
+    companyName?: string | undefined;
+
+    constructor(data?: IAgreementDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementId = _data["agreementId"];
+            this.clientPeriodId = _data["clientPeriodId"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
+            this.creationMode = _data["creationMode"];
+            this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
+            this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
+            this.parentAgreementTemplateName = _data["parentAgreementTemplateName"];
+            this.duplicationSourceAgreementId = _data["duplicationSourceAgreementId"];
+            this.duplicationSourceAgreementName = _data["duplicationSourceAgreementName"];
+            this.agreementType = _data["agreementType"];
+            this.recipientTypeId = _data["recipientTypeId"];
+            this.recipientId = _data["recipientId"];
+            this.nameTemplate = _data["nameTemplate"];
+            this.definition = _data["definition"];
+            this.legalEntityId = _data["legalEntityId"];
+            if (Array.isArray(_data["contractTypeIds"])) {
+                this.contractTypeIds = [] as any;
+                for (let item of _data["contractTypeIds"])
+                    this.contractTypeIds!.push(item);
+            }
+            if (Array.isArray(_data["salesTypeIds"])) {
+                this.salesTypeIds = [] as any;
+                for (let item of _data["salesTypeIds"])
+                    this.salesTypeIds!.push(item);
+            }
+            if (Array.isArray(_data["deliveryTypeIds"])) {
+                this.deliveryTypeIds = [] as any;
+                for (let item of _data["deliveryTypeIds"])
+                    this.deliveryTypeIds!.push(item);
+            }
+            this.language = _data["language"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.note = _data["note"];
+            this.receiveAgreementsFromOtherParty = _data["receiveAgreementsFromOtherParty"];
+            this.isSignatureRequired = _data["isSignatureRequired"];
+            if (Array.isArray(_data["signers"])) {
+                this.signers = [] as any;
+                for (let item of _data["signers"])
+                    this.signers!.push(AgreementDetailsSignerDto.fromJS(item));
+            }
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(AgreementDetailsAttachmentDto.fromJS(item));
+            }
+            if (Array.isArray(_data["attachmentsFromParent"])) {
+                this.attachmentsFromParent = [] as any;
+                for (let item of _data["attachmentsFromParent"])
+                    this.attachmentsFromParent!.push(ParentAgreementTemplateDetailsAttachmentDto.fromJS(item));
+            }
+            this.isLocked = _data["isLocked"];
+            this.isWorkflowRelated = _data["isWorkflowRelated"];
+            this.saleManager = _data["saleManager"] ? EmployeeDto.fromJS(_data["saleManager"]) : <any>undefined;
+            this.contractManager = _data["contractManager"] ? EmployeeDto.fromJS(_data["contractManager"]) : <any>undefined;
+            this.consultantName = _data["consultantName"];
+            this.companyName = _data["companyName"];
+        }
+    }
+
+    static fromJS(data: any): AgreementDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementId"] = this.agreementId;
+        data["clientPeriodId"] = this.clientPeriodId;
+        data["consultantPeriodId"] = this.consultantPeriodId;
+        data["creationMode"] = this.creationMode;
+        data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
+        data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
+        data["parentAgreementTemplateName"] = this.parentAgreementTemplateName;
+        data["duplicationSourceAgreementId"] = this.duplicationSourceAgreementId;
+        data["duplicationSourceAgreementName"] = this.duplicationSourceAgreementName;
+        data["agreementType"] = this.agreementType;
+        data["recipientTypeId"] = this.recipientTypeId;
+        data["recipientId"] = this.recipientId;
+        data["nameTemplate"] = this.nameTemplate;
+        data["definition"] = this.definition;
+        data["legalEntityId"] = this.legalEntityId;
+        if (Array.isArray(this.contractTypeIds)) {
+            data["contractTypeIds"] = [];
+            for (let item of this.contractTypeIds)
+                data["contractTypeIds"].push(item);
+        }
+        if (Array.isArray(this.salesTypeIds)) {
+            data["salesTypeIds"] = [];
+            for (let item of this.salesTypeIds)
+                data["salesTypeIds"].push(item);
+        }
+        if (Array.isArray(this.deliveryTypeIds)) {
+            data["deliveryTypeIds"] = [];
+            for (let item of this.deliveryTypeIds)
+                data["deliveryTypeIds"].push(item);
+        }
+        data["language"] = this.language;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["note"] = this.note;
+        data["receiveAgreementsFromOtherParty"] = this.receiveAgreementsFromOtherParty;
+        data["isSignatureRequired"] = this.isSignatureRequired;
+        if (Array.isArray(this.signers)) {
+            data["signers"] = [];
+            for (let item of this.signers)
+                data["signers"].push(item.toJSON());
+        }
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        if (Array.isArray(this.attachmentsFromParent)) {
+            data["attachmentsFromParent"] = [];
+            for (let item of this.attachmentsFromParent)
+                data["attachmentsFromParent"].push(item.toJSON());
+        }
+        data["isLocked"] = this.isLocked;
+        data["isWorkflowRelated"] = this.isWorkflowRelated;
+        data["saleManager"] = this.saleManager ? this.saleManager.toJSON() : <any>undefined;
+        data["contractManager"] = this.contractManager ? this.contractManager.toJSON() : <any>undefined;
+        data["consultantName"] = this.consultantName;
+        data["companyName"] = this.companyName;
+        return data;
+    }
+}
+
+export interface IAgreementDetailsDto {
+    agreementId?: number;
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
+    creationMode?: AgreementCreationMode;
+    parentAgreementTemplateId?: number | undefined;
+    parentAgreementTemplateVersion?: number | undefined;
+    parentAgreementTemplateName?: string | undefined;
+    duplicationSourceAgreementId?: number | undefined;
+    duplicationSourceAgreementName?: string | undefined;
+    agreementType?: AgreementType;
+    recipientTypeId?: number;
+    recipientId?: number;
+    nameTemplate?: string | undefined;
+    definition?: string | undefined;
+    legalEntityId?: number;
+    contractTypeIds?: number[] | undefined;
+    salesTypeIds?: number[] | undefined;
+    deliveryTypeIds?: number[] | undefined;
+    language?: AgreementLanguage;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment | undefined;
+    note?: string | undefined;
+    receiveAgreementsFromOtherParty?: boolean;
+    isSignatureRequired?: boolean;
+    signers?: AgreementDetailsSignerDto[] | undefined;
+    attachments?: AgreementDetailsAttachmentDto[] | undefined;
+    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    isLocked?: boolean;
+    isWorkflowRelated?: boolean;
+    saleManager?: EmployeeDto;
+    contractManager?: EmployeeDto;
+    consultantName?: string | undefined;
+    companyName?: string | undefined;
+}
+
+export class AgreementDetailsPreviewAttachmentDto implements IAgreementDetailsPreviewAttachmentDto {
+    agreementAttachmentId?: number;
+    name?: string | undefined;
+
+    constructor(data?: IAgreementDetailsPreviewAttachmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementAttachmentId = _data["agreementAttachmentId"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): AgreementDetailsPreviewAttachmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementDetailsPreviewAttachmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementAttachmentId"] = this.agreementAttachmentId;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IAgreementDetailsPreviewAttachmentDto {
+    agreementAttachmentId?: number;
+    name?: string | undefined;
+}
+
+export class AgreementDetailsPreviewDto implements IAgreementDetailsPreviewDto {
+    agreementId?: number;
     contractNumber?: string | undefined;
     clientPeriodId?: string | undefined;
     consultantPeriodId?: string | undefined;
@@ -17459,9 +17869,9 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     note?: string | undefined;
     receiveAgreementsFromOtherParty?: boolean;
     isSignatureRequired?: boolean;
-    signers?: AgreementDetailsSignerDto[] | undefined;
-    attachments?: AgreementDetailsAttachmentDto[] | undefined;
-    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    signers?: AgreementDetailsPreviewSignerDto[] | undefined;
+    attachments?: AgreementDetailsPreviewAttachmentDto[] | undefined;
+    attachmentsFromParent?: AgreementDetailsPreviewTemplateAttachmentDto[] | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
@@ -17479,7 +17889,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     companyName?: string | undefined;
     parentAgreementTemplateIsMasterTemplate?: boolean | undefined;
 
-    constructor(data?: IAgreementDetailsDto) {
+    constructor(data?: IAgreementDetailsPreviewDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -17531,17 +17941,17 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
             if (Array.isArray(_data["signers"])) {
                 this.signers = [] as any;
                 for (let item of _data["signers"])
-                    this.signers!.push(AgreementDetailsSignerDto.fromJS(item));
+                    this.signers!.push(AgreementDetailsPreviewSignerDto.fromJS(item));
             }
             if (Array.isArray(_data["attachments"])) {
                 this.attachments = [] as any;
                 for (let item of _data["attachments"])
-                    this.attachments!.push(AgreementDetailsAttachmentDto.fromJS(item));
+                    this.attachments!.push(AgreementDetailsPreviewAttachmentDto.fromJS(item));
             }
             if (Array.isArray(_data["attachmentsFromParent"])) {
                 this.attachmentsFromParent = [] as any;
                 for (let item of _data["attachmentsFromParent"])
-                    this.attachmentsFromParent!.push(ParentAgreementTemplateDetailsAttachmentDto.fromJS(item));
+                    this.attachmentsFromParent!.push(AgreementDetailsPreviewTemplateAttachmentDto.fromJS(item));
             }
             this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
@@ -17562,9 +17972,9 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         }
     }
 
-    static fromJS(data: any): AgreementDetailsDto {
+    static fromJS(data: any): AgreementDetailsPreviewDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AgreementDetailsDto();
+        let result = new AgreementDetailsPreviewDto();
         result.init(data);
         return result;
     }
@@ -17644,7 +18054,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     }
 }
 
-export interface IAgreementDetailsDto {
+export interface IAgreementDetailsPreviewDto {
     agreementId?: number;
     contractNumber?: string | undefined;
     clientPeriodId?: string | undefined;
@@ -17671,9 +18081,9 @@ export interface IAgreementDetailsDto {
     note?: string | undefined;
     receiveAgreementsFromOtherParty?: boolean;
     isSignatureRequired?: boolean;
-    signers?: AgreementDetailsSignerDto[] | undefined;
-    attachments?: AgreementDetailsAttachmentDto[] | undefined;
-    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    signers?: AgreementDetailsPreviewSignerDto[] | undefined;
+    attachments?: AgreementDetailsPreviewAttachmentDto[] | undefined;
+    attachmentsFromParent?: AgreementDetailsPreviewTemplateAttachmentDto[] | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
@@ -17690,6 +18100,98 @@ export interface IAgreementDetailsDto {
     consultantName?: string | undefined;
     companyName?: string | undefined;
     parentAgreementTemplateIsMasterTemplate?: boolean | undefined;
+}
+
+export class AgreementDetailsPreviewSignerDto implements IAgreementDetailsPreviewSignerDto {
+    agreementSignerId?: number;
+    signerType?: SignerType;
+    signerId?: number;
+    roleId?: number;
+    signOrder?: number;
+
+    constructor(data?: IAgreementDetailsPreviewSignerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementSignerId = _data["agreementSignerId"];
+            this.signerType = _data["signerType"];
+            this.signerId = _data["signerId"];
+            this.roleId = _data["roleId"];
+            this.signOrder = _data["signOrder"];
+        }
+    }
+
+    static fromJS(data: any): AgreementDetailsPreviewSignerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementDetailsPreviewSignerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementSignerId"] = this.agreementSignerId;
+        data["signerType"] = this.signerType;
+        data["signerId"] = this.signerId;
+        data["roleId"] = this.roleId;
+        data["signOrder"] = this.signOrder;
+        return data;
+    }
+}
+
+export interface IAgreementDetailsPreviewSignerDto {
+    agreementSignerId?: number;
+    signerType?: SignerType;
+    signerId?: number;
+    roleId?: number;
+    signOrder?: number;
+}
+
+export class AgreementDetailsPreviewTemplateAttachmentDto implements IAgreementDetailsPreviewTemplateAttachmentDto {
+    agreementTemplateAttachmentId?: number;
+    name?: string | undefined;
+
+    constructor(data?: IAgreementDetailsPreviewTemplateAttachmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementTemplateAttachmentId = _data["agreementTemplateAttachmentId"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): AgreementDetailsPreviewTemplateAttachmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementDetailsPreviewTemplateAttachmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementTemplateAttachmentId"] = this.agreementTemplateAttachmentId;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IAgreementDetailsPreviewTemplateAttachmentDto {
+    agreementTemplateAttachmentId?: number;
+    name?: string | undefined;
 }
 
 export class AgreementDetailsSignerDto implements IAgreementDetailsSignerDto {
@@ -18726,6 +19228,231 @@ export interface IAgreementTemplateDetailsAttachmentDto {
 
 export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto {
     agreementTemplateId?: number;
+    isEnabled?: boolean;
+    creationMode?: AgreementCreationMode;
+    parentAgreementTemplateId?: number | undefined;
+    parentAgreementTemplateName?: string | undefined;
+    duplicationSourceAgreementTemplateId?: number | undefined;
+    duplicationSourceAgreementTemplateName?: string | undefined;
+    agreementType?: AgreementType;
+    recipientTypeId?: number;
+    clientId?: number | undefined;
+    clientName?: string | undefined;
+    documentFileProvidedByClient?: boolean | undefined;
+    name?: string | undefined;
+    agreementNameTemplate?: string | undefined;
+    definition?: string | undefined;
+    legalEntityIds?: number[] | undefined;
+    contractTypeIds?: number[] | undefined;
+    salesTypeIds?: number[] | undefined;
+    deliveryTypeIds?: number[] | undefined;
+    language?: AgreementLanguage;
+    note?: string | undefined;
+    isSignatureRequired?: boolean;
+    receiveAgreementsFromOtherParty?: boolean;
+    attachments?: AgreementTemplateDetailsAttachmentDto[] | undefined;
+    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    isDefaultTemplate?: boolean;
+
+    constructor(data?: IAgreementTemplateDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementTemplateId = _data["agreementTemplateId"];
+            this.isEnabled = _data["isEnabled"];
+            this.creationMode = _data["creationMode"];
+            this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
+            this.parentAgreementTemplateName = _data["parentAgreementTemplateName"];
+            this.duplicationSourceAgreementTemplateId = _data["duplicationSourceAgreementTemplateId"];
+            this.duplicationSourceAgreementTemplateName = _data["duplicationSourceAgreementTemplateName"];
+            this.agreementType = _data["agreementType"];
+            this.recipientTypeId = _data["recipientTypeId"];
+            this.clientId = _data["clientId"];
+            this.clientName = _data["clientName"];
+            this.documentFileProvidedByClient = _data["documentFileProvidedByClient"];
+            this.name = _data["name"];
+            this.agreementNameTemplate = _data["agreementNameTemplate"];
+            this.definition = _data["definition"];
+            if (Array.isArray(_data["legalEntityIds"])) {
+                this.legalEntityIds = [] as any;
+                for (let item of _data["legalEntityIds"])
+                    this.legalEntityIds!.push(item);
+            }
+            if (Array.isArray(_data["contractTypeIds"])) {
+                this.contractTypeIds = [] as any;
+                for (let item of _data["contractTypeIds"])
+                    this.contractTypeIds!.push(item);
+            }
+            if (Array.isArray(_data["salesTypeIds"])) {
+                this.salesTypeIds = [] as any;
+                for (let item of _data["salesTypeIds"])
+                    this.salesTypeIds!.push(item);
+            }
+            if (Array.isArray(_data["deliveryTypeIds"])) {
+                this.deliveryTypeIds = [] as any;
+                for (let item of _data["deliveryTypeIds"])
+                    this.deliveryTypeIds!.push(item);
+            }
+            this.language = _data["language"];
+            this.note = _data["note"];
+            this.isSignatureRequired = _data["isSignatureRequired"];
+            this.receiveAgreementsFromOtherParty = _data["receiveAgreementsFromOtherParty"];
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(AgreementTemplateDetailsAttachmentDto.fromJS(item));
+            }
+            if (Array.isArray(_data["attachmentsFromParent"])) {
+                this.attachmentsFromParent = [] as any;
+                for (let item of _data["attachmentsFromParent"])
+                    this.attachmentsFromParent!.push(ParentAgreementTemplateDetailsAttachmentDto.fromJS(item));
+            }
+            this.isDefaultTemplate = _data["isDefaultTemplate"];
+        }
+    }
+
+    static fromJS(data: any): AgreementTemplateDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementTemplateDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementTemplateId"] = this.agreementTemplateId;
+        data["isEnabled"] = this.isEnabled;
+        data["creationMode"] = this.creationMode;
+        data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
+        data["parentAgreementTemplateName"] = this.parentAgreementTemplateName;
+        data["duplicationSourceAgreementTemplateId"] = this.duplicationSourceAgreementTemplateId;
+        data["duplicationSourceAgreementTemplateName"] = this.duplicationSourceAgreementTemplateName;
+        data["agreementType"] = this.agreementType;
+        data["recipientTypeId"] = this.recipientTypeId;
+        data["clientId"] = this.clientId;
+        data["clientName"] = this.clientName;
+        data["documentFileProvidedByClient"] = this.documentFileProvidedByClient;
+        data["name"] = this.name;
+        data["agreementNameTemplate"] = this.agreementNameTemplate;
+        data["definition"] = this.definition;
+        if (Array.isArray(this.legalEntityIds)) {
+            data["legalEntityIds"] = [];
+            for (let item of this.legalEntityIds)
+                data["legalEntityIds"].push(item);
+        }
+        if (Array.isArray(this.contractTypeIds)) {
+            data["contractTypeIds"] = [];
+            for (let item of this.contractTypeIds)
+                data["contractTypeIds"].push(item);
+        }
+        if (Array.isArray(this.salesTypeIds)) {
+            data["salesTypeIds"] = [];
+            for (let item of this.salesTypeIds)
+                data["salesTypeIds"].push(item);
+        }
+        if (Array.isArray(this.deliveryTypeIds)) {
+            data["deliveryTypeIds"] = [];
+            for (let item of this.deliveryTypeIds)
+                data["deliveryTypeIds"].push(item);
+        }
+        data["language"] = this.language;
+        data["note"] = this.note;
+        data["isSignatureRequired"] = this.isSignatureRequired;
+        data["receiveAgreementsFromOtherParty"] = this.receiveAgreementsFromOtherParty;
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        if (Array.isArray(this.attachmentsFromParent)) {
+            data["attachmentsFromParent"] = [];
+            for (let item of this.attachmentsFromParent)
+                data["attachmentsFromParent"].push(item.toJSON());
+        }
+        data["isDefaultTemplate"] = this.isDefaultTemplate;
+        return data;
+    }
+}
+
+export interface IAgreementTemplateDetailsDto {
+    agreementTemplateId?: number;
+    isEnabled?: boolean;
+    creationMode?: AgreementCreationMode;
+    parentAgreementTemplateId?: number | undefined;
+    parentAgreementTemplateName?: string | undefined;
+    duplicationSourceAgreementTemplateId?: number | undefined;
+    duplicationSourceAgreementTemplateName?: string | undefined;
+    agreementType?: AgreementType;
+    recipientTypeId?: number;
+    clientId?: number | undefined;
+    clientName?: string | undefined;
+    documentFileProvidedByClient?: boolean | undefined;
+    name?: string | undefined;
+    agreementNameTemplate?: string | undefined;
+    definition?: string | undefined;
+    legalEntityIds?: number[] | undefined;
+    contractTypeIds?: number[] | undefined;
+    salesTypeIds?: number[] | undefined;
+    deliveryTypeIds?: number[] | undefined;
+    language?: AgreementLanguage;
+    note?: string | undefined;
+    isSignatureRequired?: boolean;
+    receiveAgreementsFromOtherParty?: boolean;
+    attachments?: AgreementTemplateDetailsAttachmentDto[] | undefined;
+    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    isDefaultTemplate?: boolean;
+}
+
+export class AgreementTemplateDetailsPreviewAttachmentDto implements IAgreementTemplateDetailsPreviewAttachmentDto {
+    agreementTemplateAttachmentId?: number;
+    name?: string | undefined;
+
+    constructor(data?: IAgreementTemplateDetailsPreviewAttachmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementTemplateAttachmentId = _data["agreementTemplateAttachmentId"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): AgreementTemplateDetailsPreviewAttachmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementTemplateDetailsPreviewAttachmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementTemplateAttachmentId"] = this.agreementTemplateAttachmentId;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IAgreementTemplateDetailsPreviewAttachmentDto {
+    agreementTemplateAttachmentId?: number;
+    name?: string | undefined;
+}
+
+export class AgreementTemplateDetailsPreviewDto implements IAgreementTemplateDetailsPreviewDto {
+    agreementTemplateId?: number;
+    currentAgreementTemplateDocumentFileVersion?: number | undefined;
     creationMode?: AgreementCreationMode;
     isEnabled?: boolean;
     parentAgreementTemplateId?: number | undefined;
@@ -18748,8 +19475,8 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
     note?: string | undefined;
     isSignatureRequired?: boolean;
     receiveAgreementsFromOtherParty?: boolean;
-    attachments?: AgreementTemplateDetailsAttachmentDto[] | undefined;
-    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    attachments?: AgreementTemplateDetailsPreviewAttachmentDto[] | undefined;
+    attachmentsFromParent?: AgreementTemplateDetailsPreviewAttachmentDto[] | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
@@ -18759,7 +19486,7 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
     linkStateAccepted?: boolean | undefined;
     isDefaultTemplate?: boolean;
 
-    constructor(data?: IAgreementTemplateDetailsDto) {
+    constructor(data?: IAgreementTemplateDetailsPreviewDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -18771,6 +19498,7 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
     init(_data?: any) {
         if (_data) {
             this.agreementTemplateId = _data["agreementTemplateId"];
+            this.currentAgreementTemplateDocumentFileVersion = _data["currentAgreementTemplateDocumentFileVersion"];
             this.creationMode = _data["creationMode"];
             this.isEnabled = _data["isEnabled"];
             this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
@@ -18812,12 +19540,12 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
             if (Array.isArray(_data["attachments"])) {
                 this.attachments = [] as any;
                 for (let item of _data["attachments"])
-                    this.attachments!.push(AgreementTemplateDetailsAttachmentDto.fromJS(item));
+                    this.attachments!.push(AgreementTemplateDetailsPreviewAttachmentDto.fromJS(item));
             }
             if (Array.isArray(_data["attachmentsFromParent"])) {
                 this.attachmentsFromParent = [] as any;
                 for (let item of _data["attachmentsFromParent"])
-                    this.attachmentsFromParent!.push(ParentAgreementTemplateDetailsAttachmentDto.fromJS(item));
+                    this.attachmentsFromParent!.push(AgreementTemplateDetailsPreviewAttachmentDto.fromJS(item));
             }
             this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
@@ -18830,9 +19558,9 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
         }
     }
 
-    static fromJS(data: any): AgreementTemplateDetailsDto {
+    static fromJS(data: any): AgreementTemplateDetailsPreviewDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AgreementTemplateDetailsDto();
+        let result = new AgreementTemplateDetailsPreviewDto();
         result.init(data);
         return result;
     }
@@ -18840,6 +19568,7 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["agreementTemplateId"] = this.agreementTemplateId;
+        data["currentAgreementTemplateDocumentFileVersion"] = this.currentAgreementTemplateDocumentFileVersion;
         data["creationMode"] = this.creationMode;
         data["isEnabled"] = this.isEnabled;
         data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
@@ -18900,8 +19629,9 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
     }
 }
 
-export interface IAgreementTemplateDetailsDto {
+export interface IAgreementTemplateDetailsPreviewDto {
     agreementTemplateId?: number;
+    currentAgreementTemplateDocumentFileVersion?: number | undefined;
     creationMode?: AgreementCreationMode;
     isEnabled?: boolean;
     parentAgreementTemplateId?: number | undefined;
@@ -18924,8 +19654,8 @@ export interface IAgreementTemplateDetailsDto {
     note?: string | undefined;
     isSignatureRequired?: boolean;
     receiveAgreementsFromOtherParty?: boolean;
-    attachments?: AgreementTemplateDetailsAttachmentDto[] | undefined;
-    attachmentsFromParent?: ParentAgreementTemplateDetailsAttachmentDto[] | undefined;
+    attachments?: AgreementTemplateDetailsPreviewAttachmentDto[] | undefined;
+    attachmentsFromParent?: AgreementTemplateDetailsPreviewAttachmentDto[] | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
