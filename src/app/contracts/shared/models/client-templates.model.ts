@@ -1,5 +1,6 @@
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { DEFINITION_MAX_SIZE, NAME_TEMPLATE_MAX_SIZE, NOTES_MAX_SIZE } from '../entities/contracts.constants';
 
 export class ClientTemplatesModel extends FormGroup {
 	constructor() {
@@ -7,15 +8,15 @@ export class ClientTemplatesModel extends FormGroup {
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
 			clientId: new FormControl(null, [Validators.required]),
-			name: new FormControl('', [Validators.required]),
-			agreementNameTemplate: new FormControl('', [Validators.required]),
-			definition: new FormControl('', []),
+			name: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			agreementNameTemplate: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			definition: new FormControl('', [Validators.maxLength(DEFINITION_MAX_SIZE)]),
 			legalEntities: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
-			note: new FormControl('', []),
+			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			isSignatureRequired: new FormControl(false, []),
 			isEnabled: new FormControl(false, []),
 			attachments: new FormControl([]),

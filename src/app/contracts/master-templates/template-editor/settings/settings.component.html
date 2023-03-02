@@ -76,6 +76,7 @@
 			<mat-form-field appearance="outline" floatLabel="never">
 				<mat-label> Definition </mat-label>
 				<input matInput type="text" formControlName="definition" placeholder="Definition" />
+                <mat-error><app-validator [control]="masterTemplateFormGroup.definition"></app-validator></mat-error>
 			</mat-form-field>
 			<div></div>
 			<mat-form-field appearance="outline" floatLabel="never">
@@ -136,6 +137,7 @@
 			<mat-form-field [style.width.px]="564" appearance="outline" class="text-area">
 				<mat-label>Notes</mat-label>
 				<textarea matInput formControlName="note" rows="7" [style.resize]="'none'"></textarea>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.note"></app-validator></mat-error>
 			</mat-form-field>
 			<div></div>
 			<mat-checkbox formControlName="isSignatureRequired">Signature required</mat-checkbox>

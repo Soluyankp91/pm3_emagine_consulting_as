@@ -105,6 +105,7 @@
 				<mat-form-field appearance="outline">
 					<mat-label>Definition(optional)</mat-label>
 					<input matInput type="text" formControlName="definition" placeholder="Definition" />
+                    <mat-error><app-validator [control]="agreementFormGroup.definition"></app-validator></mat-error>
 				</mat-form-field>
 				<mat-form-field appearance="outline">
 					<mat-label>Internal legal entity</mat-label>
@@ -192,6 +193,7 @@
 				<mat-form-field appearance="outline" class="textarea-form-field">
 					<mat-label>Notes</mat-label>
 					<textarea matInput formControlName="note" [cdkTextareaAutosize]="false" class="text-area"></textarea>
+                    <mat-error><app-validator [control]="agreementFormGroup.note"></app-validator></mat-error>
 				</mat-form-field>
 				<mat-checkbox formControlName="isSignatureRequired">
 					<mat-label>Signature required</mat-label>
