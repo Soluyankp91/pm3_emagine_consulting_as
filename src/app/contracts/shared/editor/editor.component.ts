@@ -193,19 +193,23 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveAsComplete() {
-		this._dialog.open(SaveAsPopupComponent, {
-			data: {},
-			height: 'auto',
-			width: '500px',
-			maxWidth: '100%',
-			disableClose: true,
-			hasBackdrop: true,
-			backdropClass: 'backdrop-modal--wrapper',
-		}).afterClosed().pipe(
-			filter(res => !!res),
-		).subscribe(() => {
-			this._saveFileAs(ITemplateSaveType.Complete);
-		});
+		// FOR NEW VERSIONING
+
+		// this._dialog.open(SaveAsPopupComponent, {
+		// 	data: {},
+		// 	height: 'auto',
+		// 	width: '500px',
+		// 	maxWidth: '100%',
+		// 	disableClose: true,
+		// 	hasBackdrop: true,
+		// 	backdropClass: 'backdrop-modal--wrapper',
+		// }).afterClosed().pipe(
+		// 	filter(res => !!res),
+		// ).subscribe(() => {
+		// 	this._saveFileAs(ITemplateSaveType.Complete);
+		// });
+		
+		this._saveFileAs(ITemplateSaveType.Complete);
 	}
 
 	cancel() {
