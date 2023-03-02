@@ -23,7 +23,6 @@ export abstract class AppComponentBase {
     momentFormatType = AppConsts.momentFormatType;
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
-
     imageType = EProfileImageLinkTypes;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);

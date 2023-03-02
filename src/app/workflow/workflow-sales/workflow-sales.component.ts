@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -68,6 +68,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	@ViewChild('clientDataComponent', { static: false }) clientDataComponent: ClientDataComponent;
 	@ViewChild('consutlantDataComponent', { static: false }) consutlantDataComponent: ConsultantDataComponent;
 	@ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
+    @ViewChild('submitFormBtn', { static: false, read: ElementRef }) submitFormBtn: ElementRef;
 
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
@@ -252,9 +253,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	validateSalesForm() {
+        this.clientDataComponent?.submitForm();
 		this.clientDataComponent?.salesClientDataForm.markAllAsTouched();
+        this.mainDataComponent?.submitForm();
 		this.mainDataComponent?.salesMainDataForm.markAllAsTouched();
+        this.consutlantDataComponent?.submitForm();
 		this.consutlantDataComponent?.consultantsForm.markAllAsTouched();
+        this.submitSalesTerminationForm();
 		this.salesTerminateConsultantForm.markAllAsTouched();
 		switch (this.activeSideSection.typeId) {
 			case WorkflowProcessType.StartClientPeriod:
@@ -1294,4 +1299,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				break;
 		}
 	}
+
+    submitSalesTerminationForm() {
+        if (this.submitFormBtn) {
+            this.submitFormBtn.nativeElement.click();
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -22,6 +22,7 @@ import { ClientRateTypes, ETimeReportingCaps, WorkflowSalesClientDataForm, Workf
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
     @Input() mainDataForm: WorkflowSalesMainForm;
     @Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
@@ -628,6 +629,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
         if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
             this.timeReportingCaps.controls = [];
         }
+    }
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
     }
 
     get clientRates(): UntypedFormArray {

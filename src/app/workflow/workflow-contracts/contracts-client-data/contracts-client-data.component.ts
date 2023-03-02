@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
@@ -25,6 +25,7 @@ import { WorkflowDataService } from '../../workflow-data.service';
 	styleUrls: ['../workflow-contracts.component.scss'],
 })
 export class ContractsClientDataComponent extends AppComponentBase implements OnInit {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
@@ -279,6 +280,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	removeTimeReportingCap(index: number) {
 		this.timeReportingCaps.removeAt(index);
 	}
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
+    }
 
     get clientRates(): UntypedFormArray {
 		return this.contractClientForm.get('clientRates') as UntypedFormArray;

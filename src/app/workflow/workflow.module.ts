@@ -29,46 +29,42 @@ import { ContractsClientDataComponent } from './workflow-contracts/contracts-cli
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
 import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { OnSubmitErrorStateMatcher } from 'src/shared/utils/custom-errorStateMatcher';
 
 @NgModule({
-    declarations: [
-        WorkflowComponent,
-        WorkflowSalesComponent,
-        WorkflowDetailsComponent,
-        WorkflowContractsComponent,
-        WorkflowOverviewComponent,
-        WorkflowFinancesComponent,
-        WorkflowConsultantActionsDialogComponent,
-        WorkflowActionsDialogComponent,
-        CreateWorkflowDialogComponent,
-        WorkflowSourcingComponent,
-        WorkflowPeriodComponent,
-        AddOrEditProjectLineDialogComponent,
-        GanttChartComponent,
-        WorkflowNotesComponent,
-        RateAndFeesWarningsDialogComponent,
-        MainDataComponent,
-        ClientDataComponent,
-        ConsultantDataComponent,
-        ContractsConsultantDataComponent,
-        ContractsMainDataComponent,
-        ContractsSyncDataComponent,
-        ContractsClientDataComponent,
-        ToggleEditModeComponent,
-        DocumentsComponent
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        WorkflowRoutingModule,
-        AppCommonModule,
-        NgxGanttModule
-    ],
-    exports: [],
-    providers: [
-        WorkflowCreateResolver,
-        WorkflowPeriodResolver
-    ],
+	declarations: [
+		WorkflowComponent,
+		WorkflowSalesComponent,
+		WorkflowDetailsComponent,
+		WorkflowContractsComponent,
+		WorkflowOverviewComponent,
+		WorkflowFinancesComponent,
+		WorkflowConsultantActionsDialogComponent,
+		WorkflowActionsDialogComponent,
+		CreateWorkflowDialogComponent,
+		WorkflowSourcingComponent,
+		WorkflowPeriodComponent,
+		AddOrEditProjectLineDialogComponent,
+		GanttChartComponent,
+		WorkflowNotesComponent,
+		RateAndFeesWarningsDialogComponent,
+		MainDataComponent,
+		ClientDataComponent,
+		ConsultantDataComponent,
+		ContractsConsultantDataComponent,
+		ContractsMainDataComponent,
+		ContractsSyncDataComponent,
+		ContractsClientDataComponent,
+		ToggleEditModeComponent,
+		DocumentsComponent,
+	],
+	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
+	exports: [],
+	providers: [
+		WorkflowCreateResolver,
+		WorkflowPeriodResolver,
+		{ provide: ErrorStateMatcher, useClass: OnSubmitErrorStateMatcher },
+	],
 })
 export class WorkflowModule {}
