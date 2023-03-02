@@ -29,8 +29,9 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 		private _dialogRef: MatDialogRef<SignersPreviewDialogComponent>
 	) {
 		super(injector);
-		// this.envelopePreviewList = data.envelopePreviewList;
-        this.envelopePreviewList = RecipientMockedList;
+		this.envelopePreviewList = data.envelopePreviewList;
+        // NB: needed for tests
+        // this.envelopePreviewList = RecipientMockedList;
 	}
 
 	ngOnInit(): void {}

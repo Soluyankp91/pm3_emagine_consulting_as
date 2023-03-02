@@ -78,9 +78,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		} else {
 			this._getConsultantAgreements();
 		}
-		LegalContractsMockedData.forEach((item) => {
-			this.addLegalContract(item);
-		});
+        // NB: needed for tests
+		// LegalContractsMockedData.forEach((item) => {
+		// 	this.addLegalContract(item);
+		// });
 	}
 
 	addLegalContract(legalContract?: WorkflowAgreementDto) {
@@ -104,33 +105,29 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
 		const agreementIds = selectedAgreements.map((x) => x.agreementId);
 		let disableSendAllButton = false;
-
-        // NB: TMP
-        this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-
-		// if (selectedAgreements.some((x) => !x.hasSignedDocumentFile)) {
-		// 	this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
-		// } else {
-		// 	if (agreementIds.length > 1) {
-        //         this.showMainSpinner();
-		// 		this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
-		// 			next: () => {
-		// 				this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-		// 			},
-		// 			error: (error) => {
-		// 				if (error.status === 400) {
-		// 					disableSendAllButton = true;
-		// 				}
-		// 				this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
-		// 			},
-        //             complete: () => {
-        //                 this.hideMainSpinner();
-        //             },
-		// 		});
-		// 	} else {
-		// 		this._getSignersPreview(agreementIds);
-		// 	}
-		// }
+		if (selectedAgreements.some((x) => !x.hasSignedDocumentFile)) {
+			this._openSendEnvelopeDialog(disableSendAllButton, agreementIds, true);
+		} else {
+			if (agreementIds.length > 1) {
+                this.showMainSpinner();
+				this._legalContractService.getTokenAndSignleEnvelopeCheck(agreementIds).subscribe({
+					next: () => {
+						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+					},
+					error: (error) => {
+						if (error.status === 400) {
+							disableSendAllButton = true;
+						}
+						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
+					},
+                    complete: () => {
+                        this.hideMainSpinner();
+                    },
+				});
+			} else {
+				this._getSignersPreview(agreementIds);
+			}
+		}
 	}
 
 	public openUploadSignedContractDialog(agreementId: number) {
