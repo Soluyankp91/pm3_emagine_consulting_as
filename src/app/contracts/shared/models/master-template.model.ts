@@ -1,20 +1,21 @@
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { DEFINITION_MAX_SIZE, NAME_TEMPLATE_MAX_SIZE, NOTES_MAX_SIZE } from '../entities/contracts.constants';
 
 export class MasterTemplateModel extends FormGroup {
 	constructor() {
 		super({
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
-			name: new FormControl(null, [Validators.required]),
-			agreementNameTemplate: new FormControl(''),
-			definition: new FormControl(null),
+			name: new FormControl(null, [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			agreementNameTemplate: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			definition: new FormControl(null, [Validators.maxLength(DEFINITION_MAX_SIZE)]),
 			legalEntities: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
-			note: new FormControl(null),
+			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			isSignatureRequired: new FormControl(false),
 			isEnabled: new FormControl(false),
             isDefaultTemplate: new FormControl(false),

@@ -115,7 +115,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 	}
 
 	private _initValidators() {
-		let validators = [Validators.required];
+		let validators = [this.control.validator];
 
 		this.textControl.setValidators(validators);
 		this.textControl.updateValueAndValidity();
