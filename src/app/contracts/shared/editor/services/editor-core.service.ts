@@ -21,7 +21,6 @@ import { CommentService } from './comment.service';
 import { RICH_EDITOR_OPTIONS } from '../providers';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
 import { CUSTOM_CONTEXT_MENU_ITEMS, IComment, ICustomCommand, IMergeField } from '../entities';
-import { take } from 'rxjs/operators';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
 @Injectable()
@@ -74,8 +73,6 @@ export class EditorCoreService {
 		this._initCompareTab();
 		this._initComments();
 		this._registerCustomContextMenuItems();
-		// this.afterViewInit$.next();
-		// this.afterViewInit$.complete();
 	}
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {

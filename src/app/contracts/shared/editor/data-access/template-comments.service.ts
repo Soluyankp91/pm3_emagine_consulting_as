@@ -8,11 +8,11 @@ import { environment } from 'src/environments/environment';
 export class TemplateCommentService {
 	baseUrl = `${environment.apiUrl}/api/AgreementTemplateComment`;
 
-	constructor(private httpClient: HttpClient) {}
+	constructor(private _httpClient: HttpClient) {}
 
 	getByTemplateID(templateID: number, version: number) {
 		const endpoint = `${this.baseUrl}/${templateID}/${version}`;
-		return this.httpClient
+		return this._httpClient
 			.get<Array<IComment>>(endpoint)
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
@@ -25,14 +25,14 @@ export class TemplateCommentService {
 			params = params.set('parentCommentId', parentID);
 		}
 
-		return this.httpClient
+		return this._httpClient
 			.put<number>(endpoint, body, { params })
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
 
 	deleteComment(commentID: number) {
 		const endpoint = `${this.baseUrl}/${commentID}`;
-		return this.httpClient.delete(endpoint).pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
+		return this._httpClient.delete(endpoint).pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
 
 	editComment(commentID: number, text: string) {

@@ -23,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [CommonModule, MatDialogModule, MatIconModule, MatButtonModule, MatFormFieldModule, ReactiveFormsModule, TextFieldModule, MatInputModule, MatCheckboxModule],
 })
-export class SaveAsPopupComponent implements OnInit {
+export class SaveAsPopupComponent {
 	constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: {
@@ -44,9 +44,6 @@ export class SaveAsPopupComponent implements OnInit {
 		propogate: [''],
 		markActive: ['']
 	});
-
-    ngOnInit(): void {
-    }
 
 	generateViewData(isNew: boolean) {
 		if (isNew) {

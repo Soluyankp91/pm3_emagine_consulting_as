@@ -5,36 +5,8 @@ import { RibbonItemType, RibbonTabType, RichEdit } from 'devexpress-richedit';
 import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
-import { IComment, ICustomCommand } from '../entities';
+import { IComment, ICustomCommand, IHighlightState, InitialState, SidebarViewMode, TEXT_PRE_CONTENT, TEXT_SEPARATOR } from '../entities';
 import { distinctUntilChanged, pluck, take } from 'rxjs/operators';
-
-export enum SidebarViewMode {
-	Create,
-	View,
-	Edit,
-}
-
-export interface IHighlightState {
-	comments: IComment[];
-	enabled: boolean;
-	viewMode: SidebarViewMode;
-	commentIDs: number[];
-	selected: number[];
-	interval: IntervalApi | null;
-}
-
-const InitialState: IHighlightState = {
-	comments: [],
-	enabled: false,
-	viewMode: SidebarViewMode.View,
-	commentIDs: [],
-	selected: [],
-	interval: null,
-};
-
-const TEXT_SEPARATOR = '◬';
-const TEXT_PRE_CONTENT = 'DOCVARIABLE highlight ';
-
 @Injectable()
 export class CommentService {
 	private _editor: RichEdit;

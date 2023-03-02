@@ -1,4 +1,5 @@
 import { RibbonButtonItem } from 'devexpress-richedit';
+import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { Moment } from 'moment';
 import { AgreementTemplateEditReason } from 'src/shared/service-proxies/service-proxies';
 
@@ -130,3 +131,18 @@ export interface IComment {
 	};
 }
 
+
+export enum SidebarViewMode {
+	Create,
+	View,
+	Edit,
+}
+
+export interface IHighlightState {
+	comments: IComment[];
+	enabled: boolean;
+	viewMode: SidebarViewMode;
+	commentIDs: number[];
+	selected: number[];
+	interval: IntervalApi | null;
+}

@@ -42,7 +42,7 @@
 				</div>
 				<span class="comment-author">{{ comment.createdBy?.name || 'Unknown' }}</span>
 				<ng-container *ngIf="comment.date_created; else mockDateTmp">
-					<div class="comment-date">{{ comment.date_created | date : 'dd.MM.yyyy, h:mm' }}</div>
+					<div class="comment-date">{{ comment.date_created | momentFormat }}</div>
 				</ng-container>
 				<div class="comment-text">{{ comment.text }}</div>
 			</div>

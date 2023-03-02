@@ -10,28 +10,32 @@ import { AgreementAbstractService } from '../editor/data-access/agreement-abstra
   selector: 'app-editor-preview',
   template: '<div></div>',
 })
-export class EditorPreviewComponent implements OnInit, AfterViewInit, OnChanges {
+export class EditorPreviewComponent implements AfterViewInit, OnChanges {
   @Input() templateId: number;
 
   private _rich: RichEdit;
 
-  constructor(private element: ElementRef, private _templateService: AgreementAbstractService) { }
+  constructor(private _element: ElementRef, private _templateService: AgreementAbstractService) { }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+      if (changes.templateId?.currentValue) {
+          this._loadTemplate(changes.templateId?.currentValue)
+      }
   }
 
   ngAfterViewInit(): void {
       const options: Options = createOptions();
       this._setupOptions(options);
 
-      this._rich = create(this.element.nativeElement.firstElementChild, options);
+      this._rich = create(this._element.nativeElement.firstElementChild, options);
       this._rich.showHorizontalRuler = false;
       this._rich.readOnly = true;
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-      if (changes.templateId?.currentValue) {
-          this._loadTemplate(changes.templateId?.currentValue)
+  ngOnDestroy() {
+      if (this._rich) {
+        this._rich.dispose();
+        this._rich = null;
       }
   }
 
@@ -49,10 +53,5 @@ export class EditorPreviewComponent implements OnInit, AfterViewInit, OnChanges 
       options.readOnly = true;
   }
 
-  ngOnDestroy() {
-      if (this._rich) {
-        this._rich.dispose();
-        this._rich = null;
-      }
-  }
+  
 }

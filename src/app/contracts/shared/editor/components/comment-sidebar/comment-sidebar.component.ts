@@ -8,8 +8,9 @@ import { map, takeUntil } from 'rxjs/operators';
 import { DxButtonModule, DxDropDownButtonModule } from 'devextreme-angular';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
-import { CommentService, SidebarViewMode } from '../../services';
-import { IComment } from '../../entities';
+import { CommentService } from '../../services';
+import { IComment, SidebarViewMode } from '../../entities';
+import { AppCommonModule } from 'src/app/shared/common/app-common.module';
 
 type CommentEntityMap = Record<IComment['id'], IComment>;
 
@@ -23,12 +24,12 @@ enum CommentEvents {
 	selector: 'app-comment-sidebar',
 	templateUrl: './comment-sidebar.component.html',
 	styleUrls: ['./comment-sidebar.component.scss'],
-	imports: [NgIf, NgForOf, NgTemplateOutlet, ReactiveFormsModule, AsyncPipe, DatePipe, DxButtonModule, DxDropDownButtonModule],
+	imports: [NgIf, NgForOf, NgTemplateOutlet, ReactiveFormsModule, AsyncPipe, AppCommonModule, DxButtonModule, DxDropDownButtonModule],
 })
 export class CommentSidebarComponent implements OnInit, OnDestroy {
 	entityMap$: BehaviorSubject<CommentEntityMap> = new BehaviorSubject({});
 
-	displayedEntities$ = combineLatest([this.entityMap$, this.commentService.state$]).pipe(
+	displayedEntities$ = combineLatest([this.entityMap$, this._commentService.state$]).pipe(
 		map(([map, { selected }]) => selected.map((id) => map[id] || null).filter((i) => !!i))
 	);
 
@@ -52,10 +53,10 @@ export class CommentSidebarComponent implements OnInit, OnDestroy {
 		message: new FormControl('', [Validators.required]),
 	});
 
-	constructor(private commentService: CommentService) {}
+	constructor(private _commentService: CommentService) {}
 
 	ngOnInit(): void {
-		this.commentService.state$.pipe(takeUntil(this._destroyed)).subscribe((state) => {
+		this._commentService.state$.pipe(takeUntil(this._destroyed)).subscribe((state) => {
 			this.selectedViewMode = state.viewMode;
 			this._selectedInterval = state.interval;
 		});
@@ -76,7 +77,7 @@ export class CommentSidebarComponent implements OnInit, OnDestroy {
 
 	switchEditMode(entity: IComment) {
 		this.commentForm.setValue({ entity_id: entity.id, message: entity.text });
-		this.commentService.setViewMode(SidebarViewMode.Edit);
+		this._commentService.setViewMode(SidebarViewMode.Edit);
 	}
 
 	applyComment() {
@@ -93,7 +94,7 @@ export class CommentSidebarComponent implements OnInit, OnDestroy {
 	}
 
 	cancelComment() {
-		this.commentService.cancelCreatHighlight();
+		this._commentService.cancelCreatHighlight();
 	}
 
 	private _mapEntityList(list: IComment[]): CommentEntityMap {

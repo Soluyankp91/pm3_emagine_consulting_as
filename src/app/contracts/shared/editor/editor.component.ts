@@ -1,7 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, filter, map, mapTo, pluck, skip, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, pluck, skip, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
@@ -17,11 +17,12 @@ import { SaveAsPopupComponent } from './components/save-as-popup/save-as-popup.c
 
 import { AgreementAbstractService } from './data-access/agreement-abstract.service';
 import { MergeFieldsAbstractService } from './data-access/merge-fields-abstract';
-import { MatDialog } from '@angular/material/dialog';
+
 import { MatButtonModule } from '@angular/material/button';
 import { CommentSidebarComponent } from './components/comment-sidebar/comment-sidebar.component';
 import { TemplateCommentService } from './data-access/template-comments.service';
 import { inOutPaneAnimation } from './entities/animations';
+import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
 
 @Component({
@@ -71,8 +72,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _agreementService: AgreementAbstractService,
 		private _commentService: TemplateCommentService,
 		private _mergeFieldsService: MergeFieldsAbstractService,
-		private _editorCoreService: EditorCoreService,
-		private _dialog: MatDialog
+		private _editorCoreService: EditorCoreService
 	) {}
 
 	ngOnInit(): void {
@@ -158,13 +158,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._editorCoreService.afterViewInit$
 			.pipe(switchMap(() => this._commentService.getByTemplateID(templateID, version)))
 			.subscribe((comments) => {
-				console.log(comments);
 				this.comments$.next(comments);
 				this._editorCoreService.insertComments(comments);
 			});
 	}
 
-	createComment({ body, interval }) {
+	createComment({ body, interval }: {body: string, interval: IntervalApi}) {
 		let tmpID = this.templateId;
 		let version = this.currentTemplateVersion;
 
@@ -182,7 +181,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	editComment({ body, entityID }) {
+	editComment({ body, entityID }: {body: string, entityID: number}) {
 		this._commentService.editComment(entityID, body).subscribe(() => {
 			this._editorCoreService.applyCommentChanges(entityID);
 		});
