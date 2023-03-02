@@ -9,9 +9,28 @@ export function MapClientAddressList(addresses: ClientAddressDto[]): IClientAddr
 }
 
 export function PackAddressIntoNewDto(address: ClientAddressDto): IClientAddress {
+    if (address === null || address === undefined) {
+        return null;
+    }
+    let displayAddress = '';
+    if (address.address) {
+        displayAddress += address.address;
+    }
+    if (address.city) {
+        if (address.address) {
+            displayAddress += ', '
+        }
+        displayAddress += address.city;
+    }
+    if (address.countryCode) {
+        if (address.address || address.city) {
+            displayAddress += ' | ';
+        }
+        displayAddress += address.countryCode;
+    }
     return {
         id: address.id,
-        displayValue: address.address,
+        displayValue: displayAddress,
         addressType: MapAddressType(address.isInvoiceAddress, address.isWorkplaceAddress, address.isMainAddress)
     }
 }

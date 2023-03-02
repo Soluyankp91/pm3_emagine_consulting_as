@@ -24,7 +24,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consult
 import { WorkflowDataService } from '../../workflow-data.service';
 import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
-import { MapClientAddressList } from '../workflow-sales.helpers';
+import { MapClientAddressList, PackAddressIntoNewDto } from '../workflow-sales.helpers';
 import { ClientRateTypes, ConsultantDiallogAction, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
@@ -192,7 +192,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 			consultantWorkplace: new UntypedFormControl(null),
 			consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
-            onsiteClientAddress: new UntypedFormControl(consultant?.onsiteClientAddressId ?? null),
+            onsiteClientAddress: new UntypedFormControl(PackAddressIntoNewDto(consultant?.onsiteClientAddress) ?? null),
 			consultantWorkplaceEmagineOffice: new UntypedFormControl(
 				this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
 			),
