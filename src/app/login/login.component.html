@@ -1,7 +1,26 @@
-<div class="login" fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
-    <div fxLayout="column" fxLayoutAlign="center center">
-        <img src="../../assets/common/images/login-image.svg" />
-        <p>Log in with your Microsoft account</p>
-        <button color="primary" class="mat-elevation-z0" mat-raised-button appPreventDoubleClick (throttledClick)="loginPopup()">LOGIN</button>
+<div class="login" fxLayout="row" fxLayoutAlign="start start" fxFlexFill>
+    <mat-icon class="login-vector top" svgIcon="login-top-vector"></mat-icon>
+    <mat-icon class="login-vector bottom" svgIcon="login-bottom-vector"></mat-icon>
+    <div fxFlex="70%" fxLayout="column" fxLayoutAlign="center start" class="login-main u-h--100">
+        <mat-icon class="login-icon" svgIcon="login-logo"></mat-icon>
+        <div class="login-main--content">
+            <h1>Welcome to PM3</h1>
+            <p>Hope You have a good and productive day!</p>
+            <button color="primary" mat-flat-button appPreventDoubleClick (throttledClick)="loginPopup()">
+                <mat-icon svgIcon="microsoft-icon"></mat-icon>
+                Sign in with Microsoft
+            </button>
+        </div>
+    </div>
+    <div fxFlex="30%" fxLayout="column" fxLayoutAlign="center center" class="login-side u-h--100">
+        <div class="login-values--container">
+            <h2 class="u-mb--30">Remember our values</h2>
+            <ng-container *ngFor="let value of pmValues; trackBy: trackById">
+                <div fxLayout="row" fxLayoutAlign="start center" class="login-values">
+                    <mat-icon class="login-values--icon" [svgIcon]="value.icon"></mat-icon>
+                    <span class="login-values--name">{{value.name}}</span>
+                </div>
+            </ng-container>
+        </div>
     </div>
 </div>

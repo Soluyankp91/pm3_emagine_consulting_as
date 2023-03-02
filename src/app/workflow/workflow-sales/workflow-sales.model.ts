@@ -289,7 +289,7 @@ export class WorkflowSalesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        })
+        });
 
     }
     get consultants() {

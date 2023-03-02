@@ -319,7 +319,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
         let dataToSend = {
             agreementId: agreementId,
             search: search,
-            clientId: this.salesClientDataForm.directClientIdValue.value.clientId,
+            clientId: this.salesClientDataForm.directClientIdValue.value?.clientId,
             agreementType: AgreementType.Frame,
             validity: undefined,
             legalEntityId: this.salesClientDataForm.pdcInvoicingEntityId.value,

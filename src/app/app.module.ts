@@ -862,5 +862,53 @@ export class AppModule {
                 'assets/common/images/chevron-green-big.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'login-top-vector',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/logn-top-vector.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'login-bottom-vector',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/logn-bottom-vector.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'login-logo',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/login-logo.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'dedicated-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/dedicated-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'responsible-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/responsible-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'genuine-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/genuine-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'confident-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/confident-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'microsoft-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/microsoft-icon.svg'
+            )
+        );
     }
 }

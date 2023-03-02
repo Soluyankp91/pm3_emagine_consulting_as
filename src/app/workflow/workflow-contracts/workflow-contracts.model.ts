@@ -128,7 +128,6 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             noSpecialContractTerms: new UntypedFormControl(null),
             clientRates: new UntypedFormArray([]),
             clientFees: new UntypedFormArray([]),
-
         });
     }
 

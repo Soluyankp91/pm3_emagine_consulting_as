@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
@@ -13,6 +12,29 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class LoginComponent implements OnInit, OnDestroy {
     isIframe = false;
     loginDisplay = false;
+    pmValues = [
+        {
+            id: 1,
+            icon: 'dedicated-icon',
+            name: 'Dedicated'
+        },
+        {
+            id: 2,
+            icon: 'responsible-icon',
+            name: 'Responsible'
+        },
+        {
+            id: 3,
+            icon: 'genuine-icon',
+            name: 'Genuine'
+        },
+        {
+            id: 4,
+            icon: 'confident-icon',
+            name: 'Confident'
+        }
+    ];
+
     private readonly _destroying$ = new Subject<void>();
     constructor(
         @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -91,5 +113,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._destroying$.next(undefined);
         this._destroying$.complete();
     }
+
+    trackById(index: number, item: any) {
+		return item.id;
+	}
 
 }
