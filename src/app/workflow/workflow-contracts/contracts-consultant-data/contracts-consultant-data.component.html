@@ -1182,6 +1182,15 @@
                                 </ng-container>
                             </div>
                         </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantLegalContracts">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">8</span>
+                                <h2 class="workflow-section--header">Legal contracts</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <legal-contracts-list #legalContracts [periodId]="periodId" [isClientContracts]="false" [readOnlyMode]="readOnlyMode"></legal-contracts-list>
+                            </div>
+                        </div>
                     </ng-container>
                 </div>
             </div>

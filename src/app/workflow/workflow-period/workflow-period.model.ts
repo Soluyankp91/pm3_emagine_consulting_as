@@ -277,6 +277,10 @@ export const ContractConsultantDataSections: SubItemDto[] = [
     {
         name: 'Project lines',
         anchor: 'contractConsultantProjectLines'
+    },
+    {
+        name: 'Legal contracts',
+        anchor: 'contractConsultantLegalContracts'
     }
 ];
 
