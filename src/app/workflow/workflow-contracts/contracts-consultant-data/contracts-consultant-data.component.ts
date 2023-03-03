@@ -20,7 +20,6 @@ import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '.
 })
 export class ContractsConsultantDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() readOnlyMode: boolean;
-	@Input() periodId: string;
 	@Input() contractsMainForm: any;
 	@Input() contractClientForm: any;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
