@@ -443,7 +443,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					this.showMainSpinner();
 				}),
 				switchMap((agreementTemplateId: number) => {
-					return this._apiServiceProxy.agreementTemplateGET(agreementTemplateId);
+					return this._apiServiceProxy.preview2(agreementTemplateId);
 				}),
 				tap((agreementTemplate: AgreementTemplateDetailsDto) => {
 					this._setDataFromRetrievedTemplate(agreementTemplate);
@@ -472,7 +472,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					this.showMainSpinner();
 				}),
 				switchMap((agreementTemplateId: number) => {
-					return this._apiServiceProxy.agreementTemplateGET(agreementTemplateId);
+					return this._apiServiceProxy.preview2(agreementTemplateId);
 				}),
 				tap((agreementTemplateDetailsDto) => {
 					this.attachmentsFromParent = agreementTemplateDetailsDto.attachmentsFromParent as FileUpload[];
