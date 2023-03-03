@@ -444,7 +444,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.showMainSpinner();
 				}),
 				switchMap(({ agreementTemplateId }) => {
-					return this._apiServiceProxy2.agreementTemplateGET(agreementTemplateId);
+					return this._apiServiceProxy2.preview2(agreementTemplateId);
 				}),
 				tap(() => {
 					this.hideMainSpinner();
@@ -471,7 +471,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
 						note: agreementTemplateDetailsDto.note,
 						parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
-							? agreementTemplateDetailsDto.attachmentsFromParent.filter((attachement) => attachement.isSelected)
+							? agreementTemplateDetailsDto.attachmentsFromParent
 							: [],
 						legalEntityId: null,
 						recipientId: null,
@@ -500,7 +500,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.showMainSpinner();
 				}),
 				switchMap((duplicationSourceAgreementId) => {
-					return this._apiServiceProxy.agreementGET(duplicationSourceAgreementId);
+					return this._apiServiceProxy.preview(duplicationSourceAgreementId);
 				}),
 				tap(() => {
 					this.hideMainSpinner();
@@ -528,7 +528,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						agreementType: agreementDetailsDto.agreementType,
 						recipientTypeId: agreementDetailsDto.recipientTypeId,
 						recipientId: agreementDetailsDto.recipientId,
-						nameTemplate: agreementDetailsDto.name,
+						nameTemplate: agreementDetailsDto.nameTemplate,
 						definition: agreementDetailsDto.definition,
 						legalEntityId: agreementDetailsDto.legalEntityId,
 						salesTypes: agreementDetailsDto.salesTypeIds,
@@ -540,7 +540,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
 						note: agreementDetailsDto.note,
 						parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
-							? agreementDetailsDto.attachmentsFromParent.filter((attachement) => attachement.isSelected)
+							? agreementDetailsDto.attachmentsFromParent
 							: [],
 						signers: agreementDetailsDto.signers,
 						selectedInheritedFiles: [],
@@ -647,7 +647,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,
-				nameTemplate: agreement.name,
+				nameTemplate: agreement.nameTemplate,
 				definition: agreement.definition,
 				legalEntityId: agreement.legalEntityId,
 				salesTypes: agreement.salesTypeIds,

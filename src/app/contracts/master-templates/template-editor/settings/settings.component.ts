@@ -386,7 +386,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					return EMPTY;
 				}
 				this.showMainSpinner();
-				return this._apiServiceProxy.agreementTemplateGET(parentTemplateId);
+				return this._apiServiceProxy.preview2(parentTemplateId);
 			}),
 			tap(() => {
 				if (this.agreementCreationMode.value === this.creationModes.FromScratch) {

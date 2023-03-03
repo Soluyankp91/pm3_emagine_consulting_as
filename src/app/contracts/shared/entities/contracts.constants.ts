@@ -65,3 +65,6 @@ export const CLIENT_AGREEMENTS_CREATION: { label: string; value: AgreementCreati
 		value: AgreementCreationMode.FromScratch,
 	},
 ];
+export const DEFINITION_MAX_SIZE = 4000;
+export const NOTES_MAX_SIZE = 4000;
+export const NAME_TEMPLATE_MAX_SIZE = 500;

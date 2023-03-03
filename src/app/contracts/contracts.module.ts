@@ -77,6 +77,7 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
 import { EditorComponent } from './shared/editor/editor.component';
+import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.component';
 import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
 import { DownloadFilesService } from './shared/services/download-files.service';
 
@@ -139,7 +140,6 @@ import { DownloadFilesService } from './shared/services/download-files.service';
 		AgreementPreviewComponent,
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
-		SignersTableComponent,
 		NotificationDialogComponent,
 	],
 	imports: [
@@ -152,6 +152,7 @@ import { DownloadFilesService } from './shared/services/download-files.service';
 
 		// Standalone
 		EditorComponent,
+		EditorPreviewComponent
 	],
 	providers: [
 		ContractsService,

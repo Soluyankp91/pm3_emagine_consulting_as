@@ -1,6 +1,7 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SignerType } from 'src/shared/service-proxies/service-proxies';
+import { DEFINITION_MAX_SIZE, NAME_TEMPLATE_MAX_SIZE, NOTES_MAX_SIZE } from '../entities/contracts.constants';
 
 export type SignerFormGroup = FormGroup<{
 	signerType: FormControl<null | SignerType>;
@@ -14,8 +15,8 @@ export class AgreementModel extends FormGroup {
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
 			recipientId: new FormControl(null, [Validators.required]),
-			nameTemplate: new FormControl('', [Validators.required]),
-			definition: new FormControl(''),
+			nameTemplate: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			definition: new FormControl('', [Validators.maxLength(DEFINITION_MAX_SIZE)]),
 			legalEntityId: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
@@ -23,7 +24,7 @@ export class AgreementModel extends FormGroup {
 			language: new FormControl(null, [Validators.required]),
 			startDate: new FormControl(null, [Validators.required]),
 			endDate: new FormControl(null, [Validators.required]),
-			note: new FormControl(''),
+			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			isSignatureRequired: new FormControl(false),
 			signers: new FormControl([]),
 			attachments: new FormControl([]),
@@ -75,6 +76,10 @@ export class AgreementModel extends FormGroup {
 		return this.get('nameTemplate');
 	}
 
+	get definition() {
+		return this.get('definition');
+	}
+
 	get legalEntityId() {
 		return this.get('legalEntityId');
 	}
@@ -110,6 +115,10 @@ export class AgreementModel extends FormGroup {
 	get isSignatureRequired() {
 		return this.get('isSignatureRequired');
 	}
+
+    get note() {
+        return this.get('note');
+    }
 
 	get signers() {
 		return this.get('signers');

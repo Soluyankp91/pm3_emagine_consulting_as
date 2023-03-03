@@ -116,7 +116,6 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	ngOnInit(): void {
 		this._setDocumentType();
 		this._setOptions();
-		this._initClients();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		const paramId = this._route.snapshot.params.id;
@@ -131,6 +130,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._subscribeOnCreationModeResolver();
 			this._subscribeOnCreationMode();
 			this._subscribeOnQueryParams();
+            this._initClients();
 		}
 	}
 
@@ -443,7 +443,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					this.showMainSpinner();
 				}),
 				switchMap((agreementTemplateId: number) => {
-					return this._apiServiceProxy.agreementTemplateGET(agreementTemplateId);
+					return this._apiServiceProxy.preview2(agreementTemplateId);
 				}),
 				tap((agreementTemplate: AgreementTemplateDetailsDto) => {
 					this._setDataFromRetrievedTemplate(agreementTemplate);
@@ -472,7 +472,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					this.showMainSpinner();
 				}),
 				switchMap((agreementTemplateId: number) => {
-					return this._apiServiceProxy.agreementTemplateGET(agreementTemplateId);
+					return this._apiServiceProxy.preview2(agreementTemplateId);
 				}),
 				tap((agreementTemplateDetailsDto) => {
 					this.attachmentsFromParent = agreementTemplateDetailsDto.attachmentsFromParent as FileUpload[];
@@ -558,6 +558,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				isEnabled: agreementTemplate.isEnabled,
 				selectedInheritedFiles: agreementTemplate.attachments,
 			});
+
+            this._initClients();
 		});
 	}
 
