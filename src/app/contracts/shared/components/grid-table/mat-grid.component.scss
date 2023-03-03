@@ -2,9 +2,18 @@
 
 emg-mat-grid {
 	@include table-header-cell;
-	display: block;
-	padding-left: 50px;
+
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
 	background-color: #faf9fb;
+	.container {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+
+		padding-left: 50px;
+	}
 	.mat-chip-list-wrapper {
 		justify-content: flex-end;
 		align-items: center;
@@ -12,20 +21,19 @@ emg-mat-grid {
 		padding-right: 37px;
 	}
 	.mat-table-container {
-		max-width: calc(100vw - 94px);
-		min-width: calc(100vw - 94px);
-		max-height: calc(100vh - 248px);
-		min-height: calc(100vh - 248px);
-		overflow-y: auto;
+		display: flex;
+		flex-grow: 1;
+		overflow: auto;
+		height: 450px;
 	}
 	.no-items-table-container {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
-    .hidden-table {
-        display: none;
-    }
+	.hidden-table {
+		display: none;
+	}
 	.mat-table {
 		width: fit-content;
 		background-color: #faf9fb;
@@ -41,15 +49,19 @@ emg-mat-grid {
 		justify-content: space-between;
 		align-items: center;
 
-		position: fixed;
-		right: 0;
-		bottom: 0;
-		z-index: 1;
-
 		background-color: #fff;
 
 		.bottom-actions {
 			display: flex;
+		}
+		.fixed-container {
+            display: flex;
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			z-index: 2;
+			width: 100%;
+            padding-left: 43px;
 		}
 
 		.selected-items-info {
@@ -98,7 +110,7 @@ emg-mat-grid {
 	}
 	.no-items-text {
 		max-width: 333px;
-        text-align: center;
+		text-align: center;
 		margin-top: 16px;
 		font-size: 14px;
 		font-weight: 600;

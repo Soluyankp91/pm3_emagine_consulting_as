@@ -25,6 +25,7 @@ import {
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { AgreementFiltersEnum, MappedAgreementTableItem, MappedTableCells } from '../../shared/entities/contracts.interfaces';
 import { ContractsService } from '../../shared/services/contracts.service';
+import { DownloadFilesService } from '../../shared/services/download-files.service';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { DownloadFile } from '../../shared/utils/download-file';
 import { AgreementPreviewComponent } from './components/agreement-preview/agreement-preview.component';
@@ -62,7 +63,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 		private readonly _agreementService: AgreementService,
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _contractService: ContractsService,
-		private readonly _injector: Injector
+        private readonly _downloadFilesService: DownloadFilesService,
+		private readonly _injector: Injector,
 	) {
 		super(_injector);
 	}
@@ -89,9 +91,12 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	onAction($event: { row: AgreementListItemDto; action: string }) {
 		switch ($event.action) {
 			case 'DOWNLOAD_PDF':
+				this._downloadFilesService.pdf($event.row.agreementId).subscribe((d) => {
+					DownloadFile(d as any, `${$event.row.agreementId}.pdf`);
+				});
 				break;
 			case 'DOWNLOAD_DOC':
-				this._agreementServiceProxy.latestAgreementVersion($event.row.agreementId, true).subscribe((d) => {
+				this._downloadFilesService.latestAgreementVersion($event.row.agreementId, true).subscribe((d) => {
 					DownloadFile(d as any, `${$event.row.agreementId}.doc`);
 				});
 				break;
@@ -113,9 +118,14 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 			case 'DOWNLOAD':
 				this._agreementServiceProxy
 					.signedDocuments($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
-					.subscribe((d) => DownloadFile(d as any, 'signed-documents'));
+					.subscribe((d) => DownloadFile(d as any, 'signed-documents.pdf'));
 				break;
 		}
+	}
+
+	resetAllTopFilters() {
+		this._agreementService.updateSearchFilter('');
+		this._agreementService.updateTenantFilter([]);
 	}
 
 	private _initTable$() {

@@ -8,43 +8,36 @@
 					<input matInput [formControl]="searchControl" placeholder="search" />
 				</mat-form-field>
 			</div>
-			<div class="add-button" (click)="navigateTo()" >
+			<div class="add-button" (click)="navigateTo()">
 				<mat-icon svgIcon="create-icon" class="create-icon"></mat-icon>
-				<div>Create</div>
 			</div>
 		</div>
 	</div>
 	<ng-container [formGroup]="topFiltersFormGroup">
 		<div class="left-filters">
-            <ng-container  *ngIf="tenantFilter$ | async as tenants">
-                <div class="country-filter">
-                    <emg-multi-select [options]="tenants" [formControl]="tenantsIdsControl">
-                        <ng-template #triggerButton let-selectedItems>
-                            <ng-container *ngIf="!selectedItems.length; else itemsPresent">
-                                <mat-icon
-                                    svgIcon="euro-union-icon"
-                                    class="country-filter-icon"
-                                    [style.width]="'32px !important'"
-                                    [style.height]="'32px !important'">
-                                </mat-icon
-                            ></ng-container>
-                            <ng-template #itemsPresent>
-                                <div class="icons-container">
-                                    <div class="circle-counter">
-                                        <span>{{ selectedItems.length }}</span>
-                                    </div>
-                                    <div class="icon-container">
-                                        <mat-icon svgIcon="dropdown-icon"></mat-icon>
-                                    </div>
-                                </div>
-                            </ng-template>
-                        </ng-template>
-                        <ng-template #optionPrefix let-option>
-                            <span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
-                        </ng-template>
-                    </emg-multi-select>
-                </div>
-            </ng-container>
+			<ng-container *ngIf="tenantFilter$ | async as tenants">
+				<div class="country-filter">
+					<emg-multi-select [options]="tenants" [formControl]="tenantsIdsControl">
+						<ng-template #triggerButton let-selectedItems>
+							<ng-container *ngIf="selectedItems.length; else noItems">
+								<div class="icons-container">
+									<emg-tenants [tenants]="selectedItems"></emg-tenants></div
+							></ng-container>
+							<ng-template #noItems>
+								<mat-icon
+									svgIcon="euro-union-icon"
+									class="country-filter-icon"
+									[style.width]="'32px !important'"
+									[style.height]="'32px !important'">
+								</mat-icon>
+							</ng-template>
+						</ng-template>
+						<ng-template #optionPrefix let-option>
+							<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
+						</ng-template>
+					</emg-multi-select>
+				</div>
+			</ng-container>
 			<ng-container *ngIf="salesManagers$ | async as contractManagers">
 				<emg-dropdown-autocomplete-multiselect
 					[options]="contractManagers"

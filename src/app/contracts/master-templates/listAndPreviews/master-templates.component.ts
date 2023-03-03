@@ -92,6 +92,11 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._unSubscribe$.complete();
 	}
 
+    resetAllTopFilters() {
+        this._masterTemplatesService.updateSearchFilter('');
+        this._masterTemplatesService.updateTenantFilter([]);
+    }
+
 	onSortChange($event: Sort) {
 		this._masterTemplatesService.updateSort($event);
 	}

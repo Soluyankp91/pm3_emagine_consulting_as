@@ -27,6 +27,8 @@ import { DOCUMENT } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClientTemplatePreviewComponent } from './preview/client-template-preview.component';
 import { tapOnce } from '../../shared/operators/tapOnceOperator';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
 
 @Component({
 	selector: 'app-client-specific-templates',
@@ -58,6 +60,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		private readonly _contractService: ContractsService,
 		private readonly _snackBar: MatSnackBar,
 		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+		private readonly _dialog: MatDialog,
 		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injector);
@@ -71,6 +74,11 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();
+	}
+
+	resetAllTopFilters() {
+		this._clientTemplatesService.updateSearchFilter('');
+		this._clientTemplatesService.updateTenantFilter([]);
 	}
 
 	navigateTo() {
@@ -123,14 +131,27 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	onSelectionAction($event: { selectedRows: AgreementTemplatesListItemDto[]; action: string }) {
 		switch ($event.action) {
 			case 'APPROVE': {
-				this.showMainSpinner();
-				const arr$: Observable<void>[] = [];
-				$event.selectedRows.forEach(({ agreementTemplateId }) => {
-					arr$.push(this._agreementTemplateServiceProxy.acceptLinkState(agreementTemplateId));
-				});
-				forkJoin(arr$).subscribe(() => {
-					this._clientTemplatesService.reloadTable();
-				});
+				if ($event.selectedRows.find((row) => !(row.linkStateAccepted === false))) {
+					let dialogRef = this._dialog.open(NotificationDialogComponent, {
+						width: '500px',
+						height: '240px',
+						backdropClass: 'backdrop-modal--wrapper',
+						data: {
+							label: 'Approve',
+							message: 'Invalid templates were selected. You can approve only templates marked as “To approve”.',
+						},
+					});
+					dialogRef.afterClosed().subscribe();
+				} else {
+					this.showMainSpinner();
+					const arr$: Observable<void>[] = [];
+					$event.selectedRows.forEach(({ agreementTemplateId }) => {
+						arr$.push(this._agreementTemplateServiceProxy.acceptLinkState(agreementTemplateId));
+					});
+					forkJoin(arr$).subscribe(() => {
+						this._clientTemplatesService.reloadTable();
+					});
+				}
 			}
 		}
 	}

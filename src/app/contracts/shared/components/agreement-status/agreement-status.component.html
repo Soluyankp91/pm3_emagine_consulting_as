@@ -23,14 +23,6 @@
 				tooltip: statusEnum[envelopeStatuses.Sent].name
 			}"></ng-container>
 	</ng-container>
-	<ng-container *ngSwitchCase="envelopeStatuses.Viewed">
-		<ng-container
-			[ngTemplateOutlet]="dot"
-			[ngTemplateOutletContext]="{
-				color: statusEnum[envelopeStatuses.Viewed].color,
-				tooltip: statusEnum[envelopeStatuses.Viewed].name
-			}"></ng-container>
-	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
 		<ng-container
 			[ngTemplateOutlet]="dot"
@@ -45,14 +37,6 @@
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Voided].color,
 				tooltip: statusEnum[envelopeStatuses.Voided].name
-			}"></ng-container>
-	</ng-container>
-	<ng-container *ngSwitchCase="envelopeStatuses.Signed">
-		<ng-container
-			[ngTemplateOutlet]="dot"
-			[ngTemplateOutletContext]="{
-				color: statusEnum[envelopeStatuses.Signed].color,
-				tooltip: statusEnum[envelopeStatuses.Signed].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Declined">
@@ -97,7 +81,8 @@
 	</ng-container>
 </ng-container>
 <ng-template #dot let-color="color" let-tooltip="tooltip">
-	<svg
+    <div class="icon-and-text">
+        <svg
 		width="8"
 		height="8"
 		viewBox="0 0 8 8"
@@ -107,4 +92,8 @@
 		[showAlways]="true">
 		<rect width="8" height="8" rx="4" [attr.fill]="color" />
 	</svg>
+    <ng-container *ngIf="displayText">
+        <span> {{ tooltip }}</span>
+    </ng-container>
+    </div>
 </ng-template>

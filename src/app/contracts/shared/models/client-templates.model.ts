@@ -1,5 +1,6 @@
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { DEFINITION_MAX_SIZE, NAME_TEMPLATE_MAX_SIZE, NOTES_MAX_SIZE } from '../entities/contracts.constants';
 
 export class ClientTemplatesModel extends FormGroup {
 	constructor() {
@@ -7,19 +8,18 @@ export class ClientTemplatesModel extends FormGroup {
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
 			clientId: new FormControl(null, [Validators.required]),
-			name: new FormControl(null, [Validators.required]),
-			agreementNameTemplate: new FormControl(null, [Validators.required]),
-			definition: new FormControl(null, []),
+			name: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			agreementNameTemplate: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			definition: new FormControl('', [Validators.maxLength(DEFINITION_MAX_SIZE)]),
 			legalEntities: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
-			note: new FormControl(null, []),
-			isSignatureRequired: new FormControl(null, []),
-			isEnabled: new FormControl(null, []),
-			selectedInheritedFiles: new FormControl(),
-			uploadedFiles: new FormControl(),
+			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
+			isSignatureRequired: new FormControl(false, []),
+			isEnabled: new FormControl(false, []),
+			attachments: new FormControl([]),
 		});
 	}
 	get agreementType() {
@@ -77,11 +77,13 @@ export class ClientTemplatesModel extends FormGroup {
 	get isEnabled() {
 		return this.get('isEnabled');
 	}
-	get selectedInheritedFiles() {
-		return this.get('selectedInheritedFiles');
+
+	get parentSelectedAttachmentIds() {
+		return this.get('parentSelectedAttachmentIds');
 	}
-	get uploadedFiles() {
-		return this.get('uploadedFiles');
+
+	get attachments() {
+		return this.get('attachments');
 	}
 
 	get initialValue() {
@@ -92,19 +94,18 @@ export class ClientTemplatesModel extends FormGroup {
 		agreementType: null,
 		recipientTypeId: null,
 		clientId: null,
-		name: null,
-		agreementNameTemplate: null,
-		definition: null,
+		name: '',
+		agreementNameTemplate: '',
+		definition: '',
 		legalEntities: null,
 		salesTypes: null,
 		deliveryTypes: null,
 		contractTypes: null,
 		language: null,
-		note: null,
-		isSignatureRequired: null,
-		isEnabled: null,
-		selectedInheritedFiles: null,
-		uploadedFiles: null,
+		note: '',
+		isSignatureRequired: false,
+		isEnabled: false,
+        attachments: []
 	});
 
 	addControl(
@@ -134,5 +135,9 @@ export class ClientTemplatesModel extends FormGroup {
 
 	get initial$() {
 		return this.INITIAL_CLIENT_TEMPLATE_FORM_VALUE$.asObservable();
+	}
+
+	reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
+		super.reset(this.initialValue, options);
 	}
 }

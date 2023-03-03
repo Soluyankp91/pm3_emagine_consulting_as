@@ -12,6 +12,7 @@
 				(formControlChange)="onFormControlChange($event)"
 				(pageChange)="onPageChange($event)"
 				(selectedRowIdChange)="currentRowId$.next($event)"
+                (resetAllFilters)="resetAllTopFilters()"
 				(onAction)="onAction($event)">
 				<ng-template let-cell="element" #customCells>
 					<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>

@@ -15,6 +15,7 @@
 				(onAction)="onAction($event)"
 				(onSelectionAction)="onSelectionAction($event)"
 				(pageChange)="onPageChange($event)"
+                (resetAllFilters)="resetAllTopFilters()"
 				(selectedRowIdChange)="currentRowId$.next($event)">
 				<ng-template let-cell="element" #customCells>
 					<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>

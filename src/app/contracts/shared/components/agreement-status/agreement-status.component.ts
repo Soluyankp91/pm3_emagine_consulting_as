@@ -5,10 +5,12 @@ import { STATUTES } from '../grid-table/agreements/entities/agreements.constants
 @Component({
 	selector: 'emg-agreement-status',
 	templateUrl: './agreement-status.component.html',
+    styleUrls: ['./agreement-status.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AgreementStatusComponent {
 	@Input() agreementStatus: EnvelopeStatus;
+    @Input() displayText: boolean = false;
 
 	envelopeStatuses = EnvelopeStatus;
 

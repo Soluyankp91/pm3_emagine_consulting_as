@@ -1,5 +1,5 @@
 <ng-container *ngIf="inheritedFilesModified.length">
-    <h4>From master template</h4>
+    <h4>{{label}}</h4>
     <div *ngFor="let file of inheritedFilesModified" class="file-container">
         <mat-checkbox
             *ngIf="file.selected !== undefined"
@@ -11,16 +11,16 @@
                     *ngIf="file.icon"
                     [svgIcon]="file.icon"
                 ></mat-icon>
-                <div class="file-label">{{ file.name }}</div>
+                <div class="file-label" [customTooltip]="file.name">{{ file.name }}</div>
             </div>
-            <button mat-icon-button type="button" [matMenuTriggerFor]="menu">
-                <mat-icon>more_horiz</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="downloadAttachment(file)">
-                    Download
-                </button>
-            </mat-menu>
         </mat-checkbox>
+        <button mat-icon-button type="button" [matMenuTriggerFor]="menu">
+            <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="downloadAttachment(file)">
+                Download
+            </button>
+        </mat-menu>
     </div>
 </ng-container>

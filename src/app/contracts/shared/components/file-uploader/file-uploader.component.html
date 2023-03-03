@@ -1,38 +1,69 @@
-<ng-container *ngIf="uploadedFiles$ | async as files">
-    <div class="loaded-files">
-        <h4>Current master template</h4>
-        <ng-container *ngFor="let file of files; trackBy: trackById">
-            <div class="file-container">
-                <div class="file-item-left">
-                    <mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
-                    <div class="file-label">{{ file.name }}</div>
-                </div>
-                <button mat-icon-button type="button" [matMenuTriggerFor]="menu">
-                    <mat-icon>more_horiz</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item type="button" (click)="onFileDelete(file)">Delete</button>
-                </mat-menu>
-            </div>
-        </ng-container>
-    </div>
-</ng-container>
-<ng-container *ngIf="filesLoading$ | async">
-	<div class="spinner">
-		<mat-spinner [diameter]="24"></mat-spinner>
-	</div>
-</ng-container>
+<div class="loaded-files">
+	<ng-container *ngIf="uploadedFilesLength || preselectedFilesModified.length">
+		<h4>{{ label }}</h4>
+	</ng-container>
+	<ng-container *ngFor="let preselectedFile of preselectedFilesModified; trackBy: trackByAgreementTemplateAttachmentId">
+		<div class="file-container">
+			<div class="file-item-left">
+                <ng-container *ngIf="preselectedFile.icon">
+                    <mat-icon [svgIcon]="preselectedFile.icon"></mat-icon>
+                </ng-container>
+				<div class="file-label" [customTooltip]="file.name">{{ preselectedFile.name }}</div>
+			</div>
+			<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
+				<mat-icon>more_horiz</mat-icon>
+			</button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item (click)="downloadAttachment(preselectedFile)">Download</button>
+				<ng-container *ngIf="!preselectedFile.isUsedByDescendants">
+					<button mat-menu-item type="button" (click)="onPreselectedFileDelete(preselectedFile)">Delete</button>
+				</ng-container>
+			</mat-menu>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="uploadedFiles$ | async as files">
+		<ng-container *ngFor="let file of files; trackBy: trackByTemporaryFileId">
+			<div class="file-container">
+				<div class="file-item-left">
+					<mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
+					<div class="file-label" [customTooltip]="file.name">{{ file.name }}</div>
+				</div>
+				<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
+					<mat-icon>more_horiz</mat-icon>
+				</button>
+				<mat-menu #menu="matMenu">
+					<button mat-menu-item type="button" (click)="onUploadedFileDelete(file)">Delete</button>
+				</mat-menu>
+			</div>
+		</ng-container>
+	</ng-container>
+</div>
+
 <div class="file-uploader" appNewFileUploader (filesEmitter)="onFileAdded($event)">
 	<div (click)="file.click()">
 		<button mat-button type="button" class="add-attachment-cell">
 			<div class="button-labels">
 				<div class="add-button">
-					<mat-icon svgIcon="add-signer-icon" class="small-icon"></mat-icon>
+					<ng-container *ngIf="filesLoading$ | async; else default">
+						<div class="spinner">
+							<mat-spinner [diameter]="16"></mat-spinner>
+						</div>
+					</ng-container>
+					<ng-template #default>
+						<mat-icon svgIcon="add-signer-icon" class="small-icon"></mat-icon>
+					</ng-template>
 					<span class="add-label"> Add attachment</span>
 				</div>
 				<div class="upload-tip">Upload or drag and drop file here</div>
 			</div>
 		</button>
 	</div>
-	<input #file multiple type="file" [accept]="'.pdf,.doc'" (change)="onFileAdded($event.target)" [style.display]="'none'" />
+	<input
+		#file
+		multiple
+		type="file"
+		[accept]="'.pdf,.doc'"
+		[disabled]="filesLoading$ | async"
+		(change)="onFileAdded($event.target)"
+		[style.display]="'none'" />
 </div>

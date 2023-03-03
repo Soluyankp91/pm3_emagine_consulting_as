@@ -78,6 +78,8 @@ import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
 import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
 import { EditorComponent } from './shared/editor/editor.component';
 import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.component';
+import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
+import { DownloadFilesService } from './shared/services/download-files.service';
 
 @NgModule({
 	declarations: [
@@ -138,7 +140,7 @@ import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.c
 		AgreementPreviewComponent,
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
-		SignersTableComponent
+		NotificationDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -165,6 +167,7 @@ import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.c
 		AgreementTemplateAttachmentServiceProxy,
 		AgreementAttachmentServiceProxy,
 		CreationTitleService,
+        DownloadFilesService,
 	],
 })
 export class ContractsModule {
@@ -320,7 +323,7 @@ export class ContractsModule {
 			'add-signer-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/add-signer-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'empty-table-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
 		);

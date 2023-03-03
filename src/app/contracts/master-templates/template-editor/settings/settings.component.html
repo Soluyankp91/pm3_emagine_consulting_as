@@ -76,6 +76,7 @@
 			<mat-form-field appearance="outline" floatLabel="never">
 				<mat-label> Definition </mat-label>
 				<input matInput type="text" formControlName="definition" placeholder="Definition" />
+                <mat-error><app-validator [control]="masterTemplateFormGroup.definition"></app-validator></mat-error>
 			</mat-form-field>
 			<div></div>
 			<mat-form-field appearance="outline" floatLabel="never">
@@ -136,6 +137,7 @@
 			<mat-form-field [style.width.px]="564" appearance="outline" class="text-area">
 				<mat-label>Notes</mat-label>
 				<textarea matInput formControlName="note" rows="7" [style.resize]="'none'"></textarea>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.note"></app-validator></mat-error>
 			</mat-form-field>
 			<div></div>
 			<mat-checkbox formControlName="isSignatureRequired">Signature required</mat-checkbox>
@@ -146,8 +148,7 @@
 			<mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
 		</div>
 		<div class="attachments-section">
-			<emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
-			<emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
+			<emg-file-uploader [preselectedFiles]="preselectedFiles" formControlName="attachments"></emg-file-uploader>
 		</div>
 	</div>
 	<button mat-button (click)="onSave()">Next</button>

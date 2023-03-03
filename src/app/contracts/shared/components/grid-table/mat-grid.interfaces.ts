@@ -15,6 +15,7 @@ export interface IHeaderCell {
 	};
 	class?: string;
 	sticky?: boolean;
+	sort?: boolean;
 }
 
 export interface IColumn {
@@ -34,7 +35,7 @@ export interface ITableConfig {
 }
 
 export enum EHeaderCells {
-	SORT = 'sort',
+	DEFAULT = 'default',
 	FILTER = 'filter',
 }
 export enum ETableCells {

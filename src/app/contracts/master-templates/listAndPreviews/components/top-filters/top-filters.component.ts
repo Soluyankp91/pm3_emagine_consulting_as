@@ -37,18 +37,42 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 		this.initFilters();
 		this._subscribeOnTenantChanged();
 		this._subscribeOnTextChanged();
-		this.pageHeader =
-			this._templatesService instanceof MasterTemplatesService ? 'Master Templates' : 'Client Specific Templates';
+		this._subscribeOnTenantsOuterChanges();
+        this._subscribeSearchOuterChanges();
+        this._setPageHeader();
 	}
 
 	ngOnDestroy(): void {
-        this._templatesService.updateSearchFilter('');
+		this._templatesService.updateSearchFilter('');
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
 	}
 
 	navigateTo() {
 		this._router.navigate(['create'], { relativeTo: this._route });
+	}
+
+	private _setPageHeader() {
+		this.pageHeader =
+			this._templatesService instanceof MasterTemplatesService ? 'Master Templates' : 'Client Specific Templates';
+	}
+
+	private _subscribeOnTenantsOuterChanges() {
+		this.preselectedTenants$.pipe(takeUntil(this._unSubscribe$)).subscribe((tenantIds) => {
+			this.topFiltersFormGroup.controls['tenantIds'].patchValue(tenantIds, {
+				emitEvent: false,
+				emitModelToViewChange: true,
+			});
+		});
+	}
+
+	private _subscribeSearchOuterChanges() {
+		this._templatesService
+			.getSearch$()
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((search) => {
+				this.topFiltersFormGroup.controls['search'].patchValue(search, { emitEvent: false, emitModelToViewChange: true });
+			});
 	}
 
 	private _subscribeOnTenantChanged() {

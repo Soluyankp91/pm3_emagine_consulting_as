@@ -65,8 +65,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
 
-	initialLoading = true;
-
 	legalEntities: LegalEntityDto[];
 
 	preselectedFiles: FileUpload[] = [];
@@ -139,15 +137,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		}
 		const toSend = new SaveAgreementTemplateDto({
 			creationMode: this.editMode ? this.currentTemplate.creationMode : this.agreementCreationMode.value,
-			attachments: this._agreementTemplateAttachmentDto(),
 			...this.masterTemplateFormGroup.getRawValue(),
-            isSignatureRequired: !!this.masterTemplateFormGroup.isSignatureRequired.value,
-            isEnabled: !!this.masterTemplateFormGroup.isEnabled.value,
-            isDefaultTemplate: !!this.masterTemplateFormGroup.isDefaultTemplate.value,
+			attachments: this._agreementTemplateAttachmentDto(),
 		});
 
 		if (this.editMode) {
-			toSend.duplicationSourceAgreementTemplateId = this.currentTemplate.duplicationSourceAgreementTemplateId;
 			this.showMainSpinner();
 			this._apiServiceProxy
 				.agreementTemplatePATCH(this._templateId, toSend)
@@ -163,7 +157,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		}
 		this.showMainSpinner();
 		this._apiServiceProxy
-			.agreementTemplatePOST(new SaveAgreementTemplateDto(new SaveAgreementTemplateDto(toSend)))
+			.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				map((result) => result.agreementTemplateId),
@@ -179,26 +173,21 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {
-		const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
-			? this.masterTemplateFormGroup.uploadedFiles?.value
-			: [];
-		const selectedInheritedFiles = this.masterTemplateFormGroup.selectedInheritedFiles?.value
-			? this.masterTemplateFormGroup.selectedInheritedFiles?.value
-			: [];
-		return [...uploadedFiles, ...selectedInheritedFiles].map((attachment: FileUpload) => {
+		return this.masterTemplateFormGroup.attachments.value.map((attachment: FileUpload) => {
 			return new AgreementTemplateAttachmentDto(attachment);
 		});
 	}
 
 	private _onCreationModeChange() {
 		let mode = this.agreementCreationMode.value;
+		this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
 		if (mode === AgreementCreationMode.FromScratch) {
-			this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
 			this._router.navigate([], {
 				relativeTo: this._route,
 				queryParams: {},
 			});
-		} else {
+		}
+		if (mode === AgreementCreationMode.Duplicated) {
 			this.masterTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', this.duplicateTemplateControl);
 		}
 	}
@@ -258,7 +247,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				filter((val: number | null | undefined) => !!val),
-				distinctUntilChanged(),
 				tap((agreementTemplateId) => {
 					const queryParams: Params = {
 						parentTemplateId: `${agreementTemplateId}`,
@@ -308,9 +296,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				switchMap(() => {
 					if (this.isFormDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-                            width: '500px',
-                            height: '240px',
-                            backdropClass: 'backdrop-modal--wrapper',
+							width: '500px',
+							height: '240px',
+							backdropClass: 'backdrop-modal--wrapper',
 						});
 						return dialogRef.afterClosed();
 					}
@@ -320,7 +308,12 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.subscribe((discard) => {
 				if (discard) {
 					this.agreementCreationMode.setValue(this.modeControl$.value);
-					if (!(this.modeControl$.value === this.creationModes.FromScratch)) {
+					if (
+						!(
+							this.modeControl$.value === this.creationModes.FromScratch ||
+							this.modeControl$.value === this.creationModes.ProvidedByOtherParty
+						)
+					) {
 						this._onCreationModeChange();
 						this._resetForm();
 						this.creationChange$.next('');
@@ -393,7 +386,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					return EMPTY;
 				}
 				this.showMainSpinner();
-				return this._apiServiceProxy.agreementTemplateGET(parentTemplateId);
+				return this._apiServiceProxy.preview2(parentTemplateId);
 			}),
 			tap(() => {
 				if (this.agreementCreationMode.value === this.creationModes.FromScratch) {
@@ -486,10 +479,10 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					deliveryTypes: template.deliveryTypeIds,
 					contractTypes: template.contractTypeIds,
 					language: template.language,
-                    note: template.note,
+					note: template.note,
 					isSignatureRequired: template.isSignatureRequired,
 					isEnabled: template.isEnabled,
-                    isDefaultTemplate: template.isDefaultTemplate,
+					isDefaultTemplate: template.isDefaultTemplate,
 					selectedInheritedFiles: template.attachments,
 				});
 			});

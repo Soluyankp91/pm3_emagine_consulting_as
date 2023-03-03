@@ -39,7 +39,7 @@ export interface ClientFiltersEnum extends MasterFiltersEnum {
 	linkStateAccepted: BaseEnumDto[];
 }
 export interface AgreementFiltersEnum {
-	language: BaseEnumDto[];
+	languageId: BaseEnumDto[];
 	id: number[];
 	legalEntityId: LegalEntityDto[];
 	agreementType: BaseEnumDto[];
@@ -139,6 +139,11 @@ export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	startDate?: moment.Moment;
 	endDate?: moment.Moment;
 	validity: AgreementValidityState;
+
+    duplicationSourceAgreementId: number;
+    duplicationSourceAgreementName: string;
+
+    parentAgreementTemplateIsMasterTemplate: boolean;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
