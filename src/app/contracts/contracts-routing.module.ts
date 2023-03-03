@@ -64,6 +64,9 @@ const routes: Routes = [
 							{
 								path: ':id/editor',
 								component: EditorComponent,
+								data: {
+									isAgreement: true
+								},
 								providers: [
 									{
 										provide: AgreementAbstractService,

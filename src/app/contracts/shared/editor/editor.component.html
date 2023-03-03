@@ -1,4 +1,14 @@
 <div richEditor class="editor" (saved)="saveAsComplete()"></div>
+<div class="comment-sidebar">
+	<app-comment-sidebar
+		@inOutPaneAnimation
+		*ngIf="commentSidebarEnabled$ | async"
+		[entities]="comments$ | async"
+		(created)="createComment($event)"
+		(deleted)="deleteComment($event)"
+		(edited)="editComment($event)">
+	</app-comment-sidebar>
+</div>
 <app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
 </app-insert-merge-field-popup>
 <app-compare-select-version-popup
@@ -7,12 +17,13 @@
 <app-compare-select-document-popup
 	[dataSource]="documentList$ | async"
 	(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
+
 <ng-container *ngIf="hasUnsavedChanges$ | async">
 	<div class="save-actions" [class.loading]="isLoading">
-		<button (click)="cancel()">Cancel</button>
+		<button mat-button color="accent" (click)="cancel()">Cancel</button>
 
-		<button (click)="saveAsDraft()">Save and draft</button>
+		<button mat-stroked-button color="primary" (click)="saveAsDraft()">Save as a new version</button>
 
-		<button (click)="saveAsComplete()">Complete</button>
+		<button [disabled]="isAgreement$ | async" mat-flat-button color="primary" (click)="saveAsComplete()">Save</button>
 	</div>
 </ng-container>

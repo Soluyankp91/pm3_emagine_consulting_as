@@ -1,4 +1,5 @@
 import { ContextMenuItem } from 'devexpress-richedit';
+import { IHighlightState, SidebarViewMode } from '.';
 import { ICompareButtonMap, ICustomCommand } from './entities';
 
 export const CompareButtons: ICompareButtonMap = {
@@ -49,6 +50,14 @@ export const CUSTOM_CONTEXT_MENU_ITEMS: Array<ContextMenuItem> = [
 		visible: false,
 		beginGroup: false,
 	},
+	{
+		id: ICustomCommand.SelectionHighlight,
+		text: 'Highlight',
+		disabled: true,
+		visible: false,
+		beginGroup: false,
+		icon: 'rename',
+	},
 ];
 
 export const COMPARE_TAB_CONTEXT_MENU_ITEM_IDS: Array<ContextMenuItem['id']> = [
@@ -56,3 +65,15 @@ export const COMPARE_TAB_CONTEXT_MENU_ITEM_IDS: Array<ContextMenuItem['id']> = [
 	ICustomCommand.KeepNewVersion,
 	ICustomCommand.KeepBothVersions,
 ];
+
+export const InitialState: IHighlightState = {
+	comments: [],
+	enabled: false,
+	viewMode: SidebarViewMode.View,
+	commentIDs: [],
+	selected: [],
+	interval: null,
+};
+
+export const TEXT_SEPARATOR = '◬';
+export const TEXT_PRE_CONTENT = 'DOCVARIABLE highlight ';
