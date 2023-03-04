@@ -50,6 +50,24 @@
 		overflow: hidden;
 	}
 }
+
+.versions {
+	display: flex;
+	justify-content: flex-end;
+	position: fixed;
+    top: 93px;
+    right: 57px;
+    z-index: 1;
+}
+
+.current {
+	color: #17a297;
+	font-weight: 700;
+	position: fixed;
+	top: 111px;
+    right: 271px;
+}
+
 ::ng-deep {
 	.editor {
 		background-color: #f7f7f7;
@@ -60,6 +78,35 @@
 		.dxreView {
 			max-width: 100%;
 			transition: max-width 0.2s ease;
+		}
+
+		.dx-tabpanel > .dx-tabpanel-tabs .dx-tabs {
+			.dx-tab {
+				.dx-tab-content {
+					color: black;
+					
+					.dx-tab-text {
+						font-weight: 600;
+					}
+				}
+				
+				&:nth-child(7) {
+					.dx-tab-content {
+						color: #17a297 !important;
+						display: block;
+						background: white;
+						padding: 3px;
+					}
+				}
+				&:nth-child(8) {
+					.dx-tab-content {
+						color: #17a297 !important;
+						display: block;
+						background: white;
+						padding: 3px;
+					}
+				}
+			}
 		}
 
 		&.painter-format {

@@ -4,7 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve --host 0.0.0.0 --port 4200",
-        "start-qa": "ng serve  --host 0.0.0.0 --port 4200 --configuration qa",
+        "start-qa": "ng serve --port 4200 --configuration qa",
         "qa": "ng build --configuration=qa",
         "dev": "ng build --configuration=development",
         "docker-tests": "ng build --configuration=docker-tests",

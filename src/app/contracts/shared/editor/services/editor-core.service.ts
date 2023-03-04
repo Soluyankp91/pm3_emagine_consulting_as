@@ -39,7 +39,7 @@ export class EditorCoreService {
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
 		private _compareService: CompareService,
-		private _commentService: CommentService
+		private _commentService: CommentService,
 	) {}
 
 	set mergeFields(fields: IMergeField) {
@@ -145,6 +145,14 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.ShowInsertMergeFieldDialog);
 		fileTab.removeItem(FileTabItemId.ExportDocument);
 		homeTab.removeItem(HomeTabItemId.Paste);
+
+		this.editor.updateRibbon((ribbon) => {
+			const merge = ribbon.getTab(RibbonTabType.MailMerge);
+			merge.title = 'Merge Fields';
+			
+			ribbon.removeTab(RibbonTabType.MailMerge);
+			ribbon.insertTab(merge, 6)
+		});
 	}
 
 	private _registerDocumentEvents() {
