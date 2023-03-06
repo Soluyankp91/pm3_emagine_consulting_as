@@ -28,7 +28,6 @@ export class FileUploaderComponent implements OnInit {
     public maxFileSize = false;
     public acceptedFileType = true;
     public duplicatedFile = false;
-    // public acceptedTypes: string[] = [];
     constructor(
         private _tokenService: LocalHttpService
     ) {}
