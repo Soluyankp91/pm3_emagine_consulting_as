@@ -49,6 +49,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	isClientFeeEditing = false;
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
     filteredFrameAgreements: AgreementSimpleListItemDto[];
+    selectedFrameAgreementId: number | null;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -82,6 +83,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
             .subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
                 if (list?.items?.length) {
                     this.filteredFrameAgreements = list.items;
+                    if (this.selectedFrameAgreementId) {
+                        this.contractClientForm.frameAgreementId.setValue(list.items.find(x => x.agreementId === this.selectedFrameAgreementId), {emitEvent: false});
+                        this.selectedFrameAgreementId = null;
+                    }
                 } else {
                     this.filteredFrameAgreements = [
                         new AgreementSimpleListItemDto({
@@ -116,10 +121,11 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
         this.getFrameAgreements(true)
             .subscribe((result) => {
                 this.filteredFrameAgreements = result.items;
-                if (result.totalCount === 1) {
+                if (this.selectedFrameAgreementId !== null) {
+                    this.contractClientForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
+                } else if (result.totalCount === 1) {
                     this._checkAndPreselectFrameAgreement();
-                }
-                if (result.totalCount === 0) {
+                } else if (result?.totalCount === 0) {
                     this.contractClientForm.frameAgreementId.setValue('');
                 }
             });
@@ -175,7 +181,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
             this.contractsMainForm.deliveryType.value?.id !== undefined)
 		) {
 			if (this.filteredFrameAgreements.length === 1) {
-				this.contractClientForm.frameAgreementId.setValue(this.filteredFrameAgreements[0].agreementId, { emitEvent: false });
+				this.contractClientForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
 			}
 		}
 	}

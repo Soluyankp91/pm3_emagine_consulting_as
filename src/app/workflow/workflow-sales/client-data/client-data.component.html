@@ -495,7 +495,7 @@
                                 (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
-                                [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
                                 (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                 <ng-container *ngFor="let item of filteredFrameAgreements; trackBy: trackById">
                                     <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
@@ -1151,7 +1151,7 @@
 
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon u-ml--10" mat-icon-button (click)="openClientInNewTab(client?.clientId)"
-                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip" type="button">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
             </button>
         </ng-container>
@@ -1159,7 +1159,7 @@
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon" mat-icon-button (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
-                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
+                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip" type="button">
                 <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
             </button>
         </ng-container>
