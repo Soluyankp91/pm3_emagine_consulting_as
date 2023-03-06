@@ -4,6 +4,7 @@ import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastSe
 import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { PmValues } from './entities/login.entities';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -12,28 +13,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class LoginComponent implements OnInit, OnDestroy {
     isIframe = false;
     loginDisplay = false;
-    pmValues = [
-        {
-            id: 1,
-            icon: 'dedicated-icon',
-            name: 'Dedicated'
-        },
-        {
-            id: 2,
-            icon: 'responsible-icon',
-            name: 'Responsible'
-        },
-        {
-            id: 3,
-            icon: 'genuine-icon',
-            name: 'Genuine'
-        },
-        {
-            id: 4,
-            icon: 'confident-icon',
-            name: 'Confident'
-        }
-    ];
+    pmValues = PmValues;
 
     private readonly _destroying$ = new Subject<void>();
     constructor(
