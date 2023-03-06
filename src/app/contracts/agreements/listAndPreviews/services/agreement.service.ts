@@ -51,6 +51,7 @@ export class AgreementService extends BaseContract {
             undefined, //isWorkflowRelated
 			page.pageIndex,
 			page.pageSize,
+            undefined, // pageSize
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''
 		);
 	}

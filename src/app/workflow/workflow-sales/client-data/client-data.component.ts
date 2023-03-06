@@ -11,10 +11,11 @@ import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { MapClientAddressList } from '../workflow-sales.helpers';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientAddressDto, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { ClientRateTypes, ETimeReportingCaps, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { ClientRateTypes, EClientSelectionType, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-client-data',
@@ -50,6 +51,11 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	clientRateTypes = ClientRateTypes;
     frameAgreements: AgreementSimpleListItemDto[];
+
+    directClientAddresses: IClientAddress[];
+    endClientAddresses: IClientAddress[];
+    invoicingRecipientsAddresses: IClientAddress[];
+    eClientSelectionType = EClientSelectionType;
     valueUnitTypes: EnumEntityTypeDto[];
     periodUnitTypes: EnumEntityTypeDto[];
 
@@ -71,7 +77,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
         private _agreementService: AgreementServiceProxy,
-        private _workflowDataService: WorkflowDataService
+        private _workflowDataService: WorkflowDataService,
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -383,8 +389,29 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
         this.initContactSubs();
+        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
 		this.onDirectClientSelected.emit(event);
 	}
+
+    clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
+        this.getClientAddresses(event.option.value?.clientAddresses, clientType);
+        this.focusToggleMethod('auto');
+    }
+
+    getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
+        switch (clientType) {
+            case EClientSelectionType.DirectClient:
+                this.directClientAddresses = MapClientAddressList(clientAddresses);
+                break;
+            case EClientSelectionType.EndClient:
+                this.endClientAddresses = MapClientAddressList(clientAddresses);
+                break;
+            case EClientSelectionType.InvoicingRecipient:
+                this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
+                break;
+        }
+    }
+
 
     initContactSubs() {
         this.salesClientDataForm.clientContactProjectManager.setValue('');
