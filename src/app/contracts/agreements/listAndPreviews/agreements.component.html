@@ -1,136 +1,159 @@
 <app-agreements-top-filters></app-agreements-top-filters>
-<ng-container *ngIf="table$ | async as table">
-	<emg-mat-grid
-		[displayedColumns]="displayedColumns"
-		[tableConfig]="table"
-		[selectedRowId]="currentRowId$ | async"
-		[cells]="cells"
-		[sticky]="true"
-		[selectedItemsActions]="selectedItemsActions"
-		rowIdProperty="agreementId"
-		(formControlChange)="onFormControlChange($event)"
-		(onAction)="onAction($event)"
-		(onSelectionAction)="onSelectionAction($event)"
-		(sortChange)="onSortChange($event)"
-		(pageChange)="onPageChange($event)"
-		(resetAllFilters)="resetAllTopFilters()"
-		(selectedRowIdChange)="currentRowId$.next($event)">
-		<ng-template let-cell="element" #customCells>
-			<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="cell.agreementId">{{ cell.agreementId }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="agreement-name-cell" [customTooltip]="cell.agreementName">{{ cell.agreementName }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="cell.actualRecipientName">
-				{{ cell.actualRecipientName | emptyStringHandle }}
-			</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="cell.recipientTypeId">{{ cell.recipientTypeId }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="cell.agreementType">{{ cell.agreementType }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="cell.legalEntityId">{{ cell.legalEntityId }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">{{ cell.clientName | emptyStringHandle }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">{{ cell.companyName | emptyStringHandle }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">{{ cell.consultantName | emptyStringHandle }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="salesTypeIdsTooltip" [showAlways]="!!(cell.salesTypeIds.length - 1)">
-				{{ cell.salesTypeIds | tableArrayFormat }}
-			</div>
-			<ng-template #salesTypeIdsTooltip>
-				<div>
-					<ng-container *ngFor="let saleType of cell.salesTypeIds">
-						<div class="tooltip-menu">
-							<span>{{ saleType }}</span>
-						</div>
-					</ng-container>
+<div class="table-and-preview-container">
+	<ng-container *ngIf="table$ | async as table">
+		<emg-mat-grid
+			[displayedColumns]="displayedColumns"
+			[tableConfig]="table"
+			[selectedRowId]="currentRowId$ | async"
+			[cells]="cells"
+			[sticky]="true"
+			[selectedItemsActions]="selectedItemsActions"
+			rowIdProperty="agreementId"
+			(formControlChange)="onFormControlChange($event)"
+			(onAction)="onAction($event)"
+			(onSelectionAction)="onSelectionAction($event)"
+			(sortChange)="onSortChange($event)"
+			(pageChange)="onPageChange($event)"
+			(resetAllFilters)="resetAllTopFilters()"
+			(selectedRowIdChange)="currentRowId$.next($event)">
+			<ng-template let-cell="element" #customCells>
+				<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell" [customTooltip]="cell.agreementId">{{ cell.agreementId }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="agreement-name-cell" [customTooltip]="cell.agreementName">{{ cell.agreementName }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell" [customTooltip]="cell.actualRecipientName">
+					{{ cell.actualRecipientName | emptyStringHandle }}
 				</div>
 			</ng-template>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="deliveryTypeIdsTooltip" [showAlways]="!!(cell.deliveryTypeIds.length - 1)">
-				{{ cell.deliveryTypeIds | tableArrayFormat }}
-			</div>
-			<ng-template #deliveryTypeIdsTooltip>
-				<div>
-					<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds">
-						<div class="tooltip-menu">
-							<span>{{ deliveryType }}</span>
-						</div>
-					</ng-container>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell" [customTooltip]="cell.recipientTypeId">{{ cell.recipientTypeId }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell" [customTooltip]="cell.agreementType" [showAlways]="true">
+					{{ cell.agreementType | strInitials }}
 				</div>
 			</ng-template>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell" [customTooltip]="contractTypeIdsTooltip" [showAlways]="!!(cell.contractTypeIds.length - 1)">
-				{{ cell.contractTypeIds | tableArrayFormat }}
-			</div>
-			<ng-template #contractTypeIdsTooltip>
-				<div>
-					<ng-container *ngFor="let contractType of cell.contractTypeIds">
-						<div class="tooltip-menu">
-							<span>{{ contractType }}</span>
-						</div>
-					</ng-container>
-				</div>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell" [customTooltip]="cell.legalEntityId">{{ cell.legalEntityId }}</div>
 			</ng-template>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">{{ cell.clientName | emptyStringHandle }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">{{ cell.companyName | emptyStringHandle }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">{{ cell.consultantName | emptyStringHandle }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell" [customTooltip]="salesTypeIdsTooltip" [showAlways]="!!(cell.salesTypeIds.length - 1)">
+					{{ cell.salesTypeIds | tableArrayFormat }}
+				</div>
+				<ng-template #salesTypeIdsTooltip>
+					<div>
+						<ng-container *ngFor="let saleType of cell.salesTypeIds">
+							<div class="tooltip-menu">
+								<span>{{ saleType }}</span>
+							</div>
+						</ng-container>
+					</div>
+				</ng-template>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div
+					class="table-cell"
+					[customTooltip]="deliveryTypeIdsTooltip"
+					[showAlways]="!!(cell.deliveryTypeIds.length - 1)">
+					{{ cell.deliveryTypeIds | tableArrayFormat }}
+				</div>
+				<ng-template #deliveryTypeIdsTooltip>
+					<div>
+						<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds">
+							<div class="tooltip-menu">
+								<span>{{ deliveryType }}</span>
+							</div>
+						</ng-container>
+					</div>
+				</ng-template>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div
+					class="table-cell"
+					[customTooltip]="contractTypeIdsTooltip"
+					[showAlways]="!!(cell.contractTypeIds.length - 1)">
+					{{ cell.contractTypeIds | tableArrayFormat }}
+				</div>
+				<ng-template #contractTypeIdsTooltip>
+					<div>
+						<ng-container *ngFor="let contractType of cell.contractTypeIds">
+							<div class="tooltip-menu">
+								<span>{{ contractType }}</span>
+							</div>
+						</ng-container>
+					</div>
+				</ng-template>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
 				<emg-agreement-mode [agreementValidityState]="cell.mode"></emg-agreement-mode>
-			</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">
-				<emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
-			</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">{{ cell.startDate }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">{{ cell.endDate }}</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">
-				<ng-container *ngIf="cell.saleManager">
-					<span class="fi fi-{{ cell.saleManager.externalId | lowercase }} country-icon"></span>
-					<ng-template #saleManagerTooltip>
-						<div>
-							{{ cell.saleManager.name }}
-						</div>
-					</ng-template>
-				</ng-container>
-			</div>
-		</ng-template>
-		<ng-template let-cell="element" #customCells>
-			<div class="table-cell">
-				<ng-container *ngIf="cell.contractManager">
-					<span class="fi fi-{{ cell.contractManager.externalId | lowercase }} country-icon"></span>
-					<ng-template #contractManagerTooltip>
-						<div>
-							{{ cell.contractManager.name }}
-						</div>
-					</ng-template>
-				</ng-container>
-			</div>
-		</ng-template>
-	</emg-mat-grid>
-</ng-container>
-<ng-container *ngIf="currentRowId$ | async as currentRowId">
-	<app-agreement-preview [currentId]="currentRowId" (currentIdChange)="currentRowId$.next($event)"></app-agreement-preview>
-</ng-container>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">
+					<emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
+				</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">{{ cell.startDate | momentFormat }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">{{ cell.endDate | momentFormat }}</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">
+					<ng-container *ngIf="cell.saleManager; else nullData">
+						<img
+							class="profile-picture"
+							[ngSrc]="employeePhotoUrl + cell.saleManager.externalId + '.jpg'"
+							width="24"
+							height="24"
+							src
+							(error)="setDefaultImage($event.target)" />
+						<ng-template #saleManagerTooltip>
+							<div>
+								{{ cell.saleManager.name }}
+							</div>
+						</ng-template>
+					</ng-container>
+				</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">
+					<ng-container *ngIf="cell.contractManager; else nullData">
+						<img
+							class="profile-picture"
+							[ngSrc]="employeePhotoUrl + cell.contractManager.externalId + '.jpg'"
+							width="24"
+							height="24"
+							src
+							(error)="setDefaultImage($event.target)" />
+						<ng-template #contractManagerTooltip>
+							<div>
+								{{ cell.contractManager.name }}
+							</div>
+						</ng-template>
+					</ng-container>
+				</div>
+			</ng-template>
+		</emg-mat-grid>
+	</ng-container>
+	<ng-container *ngIf="currentRowId$ | async as currentRowId">
+		<app-agreement-preview [currentId]="currentRowId" (currentIdChange)="currentRowId$.next($event)"></app-agreement-preview>
+	</ng-container>
+	<ng-template #nullData>
+		<div class="null-data">-</div>
+	</ng-template>
+</div>

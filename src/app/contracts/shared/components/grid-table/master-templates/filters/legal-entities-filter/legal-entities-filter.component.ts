@@ -12,16 +12,18 @@ import {
 import { Observable } from 'rxjs';
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 import { AgreementService } from 'src/app/contracts/agreements/listAndPreviews/services/agreement.service';
+import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 
+export type ExtendedLegalEntity = LegalEntityDto & { prefix: string };
 @Component({
 	selector: 'app-legal-entities-filter',
 	templateUrl: './legal-entities-filter.component.html',
 	styleUrls: ['./legal-entities-filter.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class LegalEntitiesFilterComponent implements IFilter {
-	legalEntities$: Observable<LegalEntityDto[]>;
+	legalEntities$: Observable<ExtendedLegalEntity[]>;
 	filterFormControl: FormControl;
 
 	labelMap = FILTER_LABEL_MAP;
@@ -35,12 +37,13 @@ export class LegalEntitiesFilterComponent implements IFilter {
 		if (_templatesService instanceof AgreementService) {
 			this.tableFilter = 'legalEntityId';
 		}
-		this.legalEntities$ = this.contractsService.getLegalEntities$().pipe(
-			withLatestFrom(this.contractsService.getEnumMap$()),
-			map(([legalEntities, maps]) =>
-				legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] })
-			)
-		);
+		this.legalEntities$ = this.contractsService
+			.getLegalEntities$()
+			.pipe(
+				map((legalEntities: LegalEntityDto[]) =>
+					legalEntities.map((i) => Object.assign({ prefix: MapTenantCountryCode(i.tenantName) }, i))
+				)
+			);
 		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))

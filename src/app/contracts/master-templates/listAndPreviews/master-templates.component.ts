@@ -12,6 +12,7 @@ import {
 	ElementRef,
 	QueryList,
 	Inject,
+	ViewEncapsulation,
 } from '@angular/core';
 import { Observable, Subject, combineLatest, Subscription, BehaviorSubject, ReplaySubject, fromEvent } from 'rxjs';
 import { map, takeUntil, pairwise, startWith } from 'rxjs/operators';
@@ -42,6 +43,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 	templateUrl: './master-templates.component.html',
 	styleUrls: ['./master-templates.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	encapsulation: ViewEncapsulation.None,
 	providers: [GridHelpService],
 })
 export class MasterTemplatesComponent extends AppComponentBase implements OnInit, OnDestroy {
@@ -92,10 +94,10 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._unSubscribe$.complete();
 	}
 
-    resetAllTopFilters() {
-        this._masterTemplatesService.updateSearchFilter('');
-        this._masterTemplatesService.updateTenantFilter([]);
-    }
+	resetAllTopFilters() {
+		this._masterTemplatesService.updateSearchFilter('');
+		this._masterTemplatesService.updateTenantFilter([]);
+	}
 
 	onSortChange($event: Sort) {
 		this._masterTemplatesService.updateSort($event);
@@ -172,9 +174,9 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 			return <BaseMappedAgreementTemplatesListItemDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
-				agreementType: maps.agreementType[item.agreementType as AgreementType],
-				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				agreementType: maps.agreementType[item.agreementType],
+				recipientTypeId: maps.recipientTypeId[item.recipientTypeId],
+				language: GetCountryCodeByLanguage(maps.language[item.language]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),

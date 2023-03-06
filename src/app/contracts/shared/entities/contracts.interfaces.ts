@@ -183,8 +183,8 @@ export interface MappedAgreementTableItem {
 	contractTypeIds: string[];
 	mode: AgreementValidityState;
 	status: EnvelopeStatus;
-	startDate: string;
-	endDate: string;
+	startDate: moment.Moment;
+	endDate: moment.Moment;
 	saleManager: EmployeeDto;
 	contractManager: EmployeeDto;
 	actionList: Actions[];
