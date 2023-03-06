@@ -13,6 +13,7 @@ export class EditorObserverService {
 
 	constructor(private _httpClient: HttpClient) {}
 
+    // use this only for agreements :)
     startObserve(agreementId?: number, clientPeriodId?: number,) {
         let endpoint = `${this.baseUrl}`;
 

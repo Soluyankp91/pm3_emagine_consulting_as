@@ -54,12 +54,18 @@ export class TemplatePdfPreviewComponent implements OnChanges {
 	}
 
 	private _loadTemplate(templateId: number) {
-		this._templateService.getTemplatePDF(templateId).subscribe((blob: Blob) => {
-			this._blobToBase64(blob, (dataURL: string) => {
+		this._templateService.getTemplatePDF(templateId).subscribe((blob: Blob | null) => {
+			if (blob) {
+				this._blobToBase64(blob, (dataURL: string) => {
+					this.loading$.next(false);
+					this.source$.next(dataURL);
+					this._cdr.detectChanges();
+				});
+			} else {
 				this.loading$.next(false);
-				this.source$.next(dataURL);
+				this.source$.next(null);
 				this._cdr.detectChanges();
-			});
+			}
 		});
 	}
 

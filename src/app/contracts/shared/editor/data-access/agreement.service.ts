@@ -1,11 +1,12 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, ViewContainerRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { EMPTY, of, throwError } from 'rxjs';
-import { catchError, filter, map, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
+import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
 import { AgreementServiceProxy, CompleteTemplateDocumentFileDraftDto, StringWrappedValueDto } from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
@@ -17,17 +18,15 @@ export class AgreementService implements AgreementAbstractService {
 	private readonly _baseUrl = `${environment.apiUrl}/api/Agreement`;
 
 	constructor(
-		private httpClient: HttpClient,
+		private _httpClient: HttpClient,
 		private _dialog: MatDialog,
 		private _agreementService: AgreementServiceProxy
-		) {
-
-		}
+		) {}
 
 	getTemplate(agreementId: number, isComplete: boolean = true) {
 		const endpoint = `${this._baseUrl}/${agreementId}/document-file/latest-agreement-version/${isComplete}`;
 
-		return this.httpClient
+		return this._httpClient
 			.get(endpoint, {
 				responseType: 'blob',
 			})
@@ -39,13 +38,12 @@ export class AgreementService implements AgreementAbstractService {
 
 	getTemplateByVersion(agreementId: number, version: number) {
 		const endpoint = `${this._baseUrl}/${agreementId}/document-file/${version}`;
-		return this.httpClient
+		return this._httpClient
 			.get(endpoint, {
 				responseType: 'blob',
 			})
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
-
 
 	getSimpleList() {
 		return this._agreementService.simpleList()
@@ -78,7 +76,7 @@ export class AgreementService implements AgreementAbstractService {
 	
 	saveDraftAsDraftTemplate(agreementId: number, force: boolean, fileContent: StringWrappedValueDto) {
 		const endpoint = `${this._baseUrl}/${agreementId}/document-file/${force}`;
-		return this.httpClient.put(endpoint, fileContent).pipe(
+		return this._httpClient.put(endpoint, fileContent).pipe(
 			catchError(({error}: HttpErrorResponse) => {
 				if (error.error.code === 'contracts.documents.draft.locked') {
 					const ref = this._dialog.open(ConfirmPopupComponent, {
@@ -127,11 +125,18 @@ export class AgreementService implements AgreementAbstractService {
 				})
 
 				return ref.afterClosed().pipe(
-					filter(res => !!res),
-					switchMap(res => this.saveDraftAsCompleteTemplate(
-						templateId,
-						res
-					))
+					switchMap(res => {
+						if (res) {
+							return this.saveDraftAsCompleteTemplate(
+								templateId,
+								res
+							).pipe(
+								mapTo({})
+							)
+						} else {
+							return of(null);
+						}
+					})
 				);
 			}),
 		)
@@ -139,13 +144,14 @@ export class AgreementService implements AgreementAbstractService {
 
 	getTemplatePDF(agreementId: number) {
 		const endpoint = `${this._baseUrl}/${agreementId}/document-file/pdf`;
-		return this.httpClient
+		return this._httpClient
 			.get(endpoint, {
 				responseType: 'blob',
+				context: manualErrorHandlerEnabledContextCreator(true),
 			})
 			.pipe(
 				map((res) => res),
-				catchError((error: HttpErrorResponse) => throwError(error.error))
+				catchError((error: HttpErrorResponse) => of(null))
 			);
 	}
 }

@@ -47,7 +47,7 @@ export class SaveAsPopupComponent implements OnInit {
 		versionDescription: new FormControl(this.data.document.isCurrent ? this.data.document.description : ''),
 		propagateChangesToDerivedTemplates: new FormControl(false),
 		markActiveAgreementsAsOutdated: new FormControl(false),
-		fileContentBase64: new FormControl(this.data.base64)
+		fileContent: new FormControl(this.data.base64)
 	});
 
 	ngOnInit(): void {

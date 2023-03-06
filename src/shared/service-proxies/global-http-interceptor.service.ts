@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ErrorDialogService } from "src/app/shared/common/errors/error-dialog.service";
 import { MsalService } from "@azure/msal-angular";
+import { MANUAL_ERROR_HANDLER_ENABLED } from "./http-context-tokens";
 
 @Injectable()
 export class GlobalHttpInterceptorService implements HttpInterceptor {
@@ -20,6 +21,10 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError((error) => {
+                if (req.context.get(MANUAL_ERROR_HANDLER_ENABLED) === true) {
+					return throwError(error);
+				}
+
                 let handled: boolean = false;
                 let message: string = '';
                 let header: string = '';

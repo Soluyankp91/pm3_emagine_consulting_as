@@ -3,7 +3,7 @@ import { Injectable, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { EMPTY, of, throwError } from 'rxjs';
-import { catchError, filter, map, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { AgreementTemplateServiceProxy, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
@@ -129,6 +129,8 @@ export class AgreementTemplateService implements AgreementAbstractService {
 							return this.saveDraftAsCompleteTemplate(
 								templateId,
 								res
+							).pipe(
+								mapTo({})
 							)
 						} else {
 							return of(null);
