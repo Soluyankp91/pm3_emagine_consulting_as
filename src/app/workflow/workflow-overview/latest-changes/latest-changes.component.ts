@@ -24,12 +24,6 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
               return this._workflowService.history(params.id);
             }),
           );
-        // this._workflowService.history(this.workflowId).subscribe(result => {
-        //     if (result.items) {
-        //         this.workflowHistory = result.items;
-        //         this.historyTotalCount = result.totalCount;
-        //     }
-        // })
     }
 
 	getLatestChanges() {}

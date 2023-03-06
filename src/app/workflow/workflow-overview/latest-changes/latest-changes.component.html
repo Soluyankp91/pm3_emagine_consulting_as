@@ -10,12 +10,12 @@
             </ng-container>
         </mat-select>
     </mat-form-field>
-    <ng-container *ngIf="(workflowHistory$ | async)?.items as workflowHistory">
-        <div fxLayout="row" fxLayoutAlign="start center">
+    <ng-container *ngIf="(workflowHistory$ | async)?.items as workflowHistory; else noLatestChanges">
+        <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--header">
             <div fxFlex="120px">
                 Changed Date
             </div>
-            <div fxFlex="100px">
+            <div fxFlex="250px">
                 Event
             </div>
             <div fxFlex="200px">
@@ -40,45 +40,42 @@
         <ng-container *ngFor="let item of workflowHistory; trackBy: trackByOperationId;">
             <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--row">
                 <div fxFlex="120px">
-                    <span class="dark-grey-color">{{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
-                    <span class="medium-grey-color">{{item.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
+                    <span class="dark-grey-color u-mr--5">{{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
+                    <span class="medium-grey-color text-600">{{item.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
                 </div>
-                <div fxFlex="100px">
-                    Update
+                <div fxFlex="250px" class="dark-grey-color text-bold">
+                    {{item.eventName}}
                 </div>
 
-                <div fxFlex="200px">
+                <div fxFlex="200px" class="dark-grey-color text-600">
                     Changed field
                 </div>
 
-                <div fxFlex>
+                <div fxFlex class="dark-grey-color text-600">
                     Old value
                 </div>
 
-                <div fxFlex>
+                <div fxFlex class="dark-grey-color text-600">
                     New value
                 </div>
 
-                <div fxFlex="100px">
+                <div fxFlex="100px" class="dark-grey-color text-600">
                     Period
                 </div>
 
-                <div fxFlex="100px">
+                <div fxFlex="100px" class="dark-grey-color text-600">
                     PeriodId
                 </div>
 
                 <div fxFlex="70px" fxLayoutAlign="center center">
-                    <img class="workflow-overview--history-img u-mr--16" [matTooltip]="item.initiatedBy?.name" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                    <img class="border-rounded-50" [matTooltip]="item.initiatedBy?.name" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                 </div>
-                <!-- <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" matTooltipClass="white-tooltip" fxFlex="40%" appShowIfTruncated>
-                    {{item.eventName}}
-                </span>
-                <span class="workflow-overview--history-grey-text text-truncate-ellipsis" [matTooltip]="item.initiatedBy?.name!" matTooltipClass="white-tooltip" fxFlex="30%" appShowIfTruncated>
-                    {{item.initiatedBy?.name}}
-                </span> -->
             </div>
         </ng-container>
-
     </ng-container>
-
+    <ng-template #noLatestChanges>
+        <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--row">
+            No latest changes yet
+        </div>
+    </ng-template>
 </div>
