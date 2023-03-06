@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, merge, of, Subject } from 'rxjs';
@@ -19,6 +19,7 @@ import { WorkflowDataService } from '../../workflow-data.service';
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
     @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
 	@Input() periodId: string | undefined;
     @Input() readOnlyMode: boolean;
@@ -557,6 +558,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             }
         }
         return workflowDocumentsCommandDto;
+    }
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
     }
 
     get commissionedUsers() {

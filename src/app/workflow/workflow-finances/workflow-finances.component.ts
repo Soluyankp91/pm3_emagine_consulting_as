@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
@@ -17,6 +17,9 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 })
 export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
+    @ViewChild('submitClientFormBtn', { read: ElementRef }) submitClientFormBtn: ElementRef;
+    @ViewChild('submitConsultantFormBtn', { read: ElementRef }) submitConsultantFormBtn: ElementRef;
+
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
@@ -93,6 +96,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     validateFinanceForm() {
+        this.submitForms();
         this.financesClientForm.markAllAsTouched();
         this.financesConsultantsForm.markAllAsTouched();
         switch (this.activeSideSection.typeId) {
@@ -341,12 +345,18 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         this.financesConsultantsForm.consultants.push(form);
     }
 
+    removeConsultant(index: number) {
+        this.consultants.removeAt(index);
+    }
+
+    submitForms() {
+        this.submitClientFormBtn.nativeElement.click();
+        this.submitConsultantFormBtn.nativeElement.click();
+    }
+
     get consultants(): UntypedFormArray {
         return this.financesConsultantsForm.get('consultants') as UntypedFormArray;
     }
 
-    removeConsultant(index: number) {
-        this.consultants.removeAt(index);
-    }
 
 }

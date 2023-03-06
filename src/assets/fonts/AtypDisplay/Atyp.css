@@ -1,0 +1,17 @@
+@font-face {
+    font-family: "Atyp";
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Medium";
+    src: url("AtypDisplay-Medium.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Atyp";
+    font-weight: normal;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Regular";
+    src: url("AtypDisplay-Regular.woff2") format("woff2");
+}

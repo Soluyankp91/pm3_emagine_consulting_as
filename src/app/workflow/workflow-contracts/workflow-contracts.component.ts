@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { forkJoin, Subject } from 'rxjs';
@@ -76,6 +76,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     @ViewChild('consultantDataComponent', { static: false }) consultantDataComponent: ContractsConsultantDataComponent;
     @ViewChild('syncDataComponent', { static: false }) syncDataComponent: ContractsSyncDataComponent;
     @ViewChild('terminationDocuments', { static: false }) terminationDocuments: DocumentsComponent;
+    @ViewChild('submitFormBtn', { static: false, read: ElementRef }) submitFormBtn: ElementRef;
 
 	workflowSideSections = WorkflowProcessType;
 	consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
@@ -217,6 +218,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	validateContractForm() {
+        this.mainDataComponent?.submitForm();
+        this.clientDataComponent?.submitForm();
+        this.consultantDataComponent?.submitForm();
+        this.submitTerminationConsultantForm();
 		this.mainDataComponent?.contractsMainForm.markAllAsTouched();
 		this.clientDataComponent?.contractClientForm.markAllAsTouched();
 		this.syncDataComponent?.contractsSyncDataForm.markAllAsTouched();
@@ -1222,6 +1227,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 		return consultantData;
 	}
+
+    submitTerminationConsultantForm() {
+        if (this.submitFormBtn) {
+            this.submitFormBtn.nativeElement.click();
+        }
+    }
 
     get canToggleEditMode() {
 		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;

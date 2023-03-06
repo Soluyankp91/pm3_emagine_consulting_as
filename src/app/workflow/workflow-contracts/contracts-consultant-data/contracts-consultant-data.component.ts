@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -17,6 +17,7 @@ import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '.
 	styleUrls: ['../workflow-contracts.component.scss'],
 })
 export class ContractsConsultantDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
 	@Input() contractsMainForm: any;
 	@Input() contractClientForm: any;
@@ -559,6 +560,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
     removeTimeReportingCap(consultantIndex: number, index: number) {
 		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).removeAt(index);
 	}
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
+    }
 
     get timeReportingCaps(): UntypedFormArray {
 		return this.contractsConsultantsDataForm.get('timeReportingCaps') as UntypedFormArray;

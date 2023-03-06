@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -33,6 +33,7 @@ import { ClientRateTypes, ConsultantDiallogAction, ETimeReportingCaps, IClientAd
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class ConsultantDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() isCompleted: boolean;
@@ -808,6 +809,10 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         if (event.value === ETimeReportingCaps.NoCap) {
             (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls = [];
         }
+    }
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
     }
 
     get timeReportingCaps(): UntypedFormArray {

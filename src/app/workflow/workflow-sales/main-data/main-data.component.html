@@ -336,6 +336,7 @@
                                                     <span [ngClass]="{'isPanelOpen': recipientAutocomplete.isOpen}" matSuffix class="shevron"></span>
                                                 <mat-autocomplete #recipientAutocomplete="matAutocomplete"
                                                     [displayWith]="displayRecipientFn"
+                                                    [panelWidth]="400"
                                                     (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
                                                     (closed)="focusToggleMethod('auto')">
                                                     <ng-container>
@@ -742,4 +743,5 @@
             </div>
         </div>
     </ng-template>
+    <button #submitFormBtn class="display-none" type="submit">Hidden button to set form submitted</button>
 </form>
