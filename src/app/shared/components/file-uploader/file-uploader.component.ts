@@ -4,6 +4,7 @@ import { FileUploaderFile, FileUploaderHelper } from './file-uploader.model';
 import { FileDragAndDropEvent } from './file-drag-and-drop.directive';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
+const DefaultAcceptedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jpg', 'jpeg', 'png', 'svg', 'msg', 'eml'];
 @Component({
   selector: 'app-file-uploader',
   templateUrl: './file-uploader.component.html',
@@ -20,18 +21,19 @@ export class FileUploaderComponent implements OnInit {
     @Input() isCreationMode: boolean = true;
     @Input() withoutDisplay: boolean = true;
     @Input() isFileUploading: boolean;
+    @Input() buttonText: string;
+    @Input() acceptedTypes: string[] = DefaultAcceptedTypes;
+    @Input() uploaderHint: string = 'Upload or simply drag and drop file here';
     public _files: FileUploaderFile[] = [];
     public maxFileSize = false;
     public acceptedFileType = true;
     public duplicatedFile = false;
-    public acceptedTypes: string[] = [];
     constructor(
         private _tokenService: LocalHttpService
     ) {}
 
     ngOnInit() {
         this._files = [];
-        this.acceptedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jpg', 'jpeg', 'png', 'svg'];
     }
 
     public uploadAll(url: string, id: number): Observable<void> {

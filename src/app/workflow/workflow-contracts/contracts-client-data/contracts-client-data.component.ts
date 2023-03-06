@@ -4,7 +4,10 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import {
     AgreementServiceProxy,
 	AgreementSimpleListItemDto,
+	AgreementSimpleListItemDtoPaginatedList,
 	AgreementType,
+	AgreementValidityState,
+	ClientPeriodServiceProxy,
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
 	EnumEntityTypeDto,
@@ -12,12 +15,14 @@ import {
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
 	PeriodConsultantSpecialRateDto,
+    WorkflowAgreementsDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsMainForm } from '../workflow-contracts.model';
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
+import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -28,7 +33,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	@Input() readOnlyMode: boolean;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
-    @Input() contractsMainForm: WorkflowContractsMainForm;
+	@Input() contractsMainForm: WorkflowContractsMainForm;
+    @Input() periodId: string;
 	contractClientForm: WorkflowContractsClientDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	clientTimeReportingCap: EnumEntityTypeDto[];
@@ -38,21 +44,58 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
 
-    clientSpecialFeeFilter = new UntypedFormControl('');
+	clientSpecialFeeFilter = new UntypedFormControl('');
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
-    frameAgreements: AgreementSimpleListItemDto[];
-    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
-
+	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+    filteredFrameAgreements: AgreementSimpleListItemDto[];
 	private _unsubscribe = new Subject();
-	constructor(injector: Injector, private _fb: UntypedFormBuilder, private _internalLookupService: InternalLookupService, private _agreementService: AgreementServiceProxy, private _workflowDataService: WorkflowDataService) {
+	constructor(
+		injector: Injector,
+		private _fb: UntypedFormBuilder,
+		private _internalLookupService: InternalLookupService,
+		private _agreementService: AgreementServiceProxy,
+		private _workflowDataService: WorkflowDataService,
+	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
+        this.contractClientForm.frameAgreementId.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                startWith(''),
+                switchMap((value: any) => {
+                    let dataToSend = {
+                        recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
+                        search: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.agreementId) {
+                        dataToSend.search = value.agreementId ? value.agreementName : value;
+                    }
+                    if (dataToSend.recipientClientIds?.length) {
+                        return this.getFrameAgreements(false, dataToSend.search);
+                    } else {
+                        return of([]);
+                    }
+                }))
+            .subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+                if (list?.items?.length) {
+                    this.filteredFrameAgreements = list.items;
+                } else {
+                    this.filteredFrameAgreements = [
+                        new AgreementSimpleListItemDto({
+                            agreementName: 'No records found',
+                            agreementId: undefined,
+                        }),
+                    ];
+                }
+            });
 	}
 
 	ngOnInit(): void {
-        this._getEnums();
-    }
+		this._getEnums();
+	}
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -69,28 +112,42 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		});
 	}
 
-    getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
-        let dataToSend = {
-            agreementId: agreementId,
-            search: search,
-            clientId: this.contractClientForm.directClientId.value.clientId,
-            agreementType: AgreementType.Frame,
-            validity: undefined,
-            legalEntityId: this.contractClientForm.pdcInvoicingEntityId.value,
-            salesTypeId: this.contractsMainForm.salesType.value?.id,
-            contractTypeId: undefined,
-            deliveryTypeId: this.contractsMainForm.deliveryType.value?.id,
-            startDate: undefined,
-            endDate: undefined,
-            pageNumber: 1,
-            pageSize: 1000,
-            sort: ''
-        }
-        this._agreementService
+    getInitialFrameAgreements() {
+        this.getFrameAgreements(true)
+            .subscribe((result) => {
+                this.filteredFrameAgreements = result.items;
+                if (result.totalCount === 1) {
+                    this._checkAndPreselectFrameAgreement();
+                }
+                if (result.totalCount === 0) {
+                    this.contractClientForm.frameAgreementId.setValue('');
+                }
+            });
+    }
+
+	getFrameAgreements(isInitial = false, search: string = '') {
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.contractClientForm.directClientId.value,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
+			startDate: undefined,
+			endDate: undefined,
+            recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		return this._agreementService
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
-				dataToSend.clientId,
+				undefined, // dataToSend.clientId,
 				dataToSend.agreementType,
 				dataToSend.validity,
 				dataToSend.legalEntityId,
@@ -99,32 +156,29 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
-                undefined,
-                undefined,
-                undefined,
+                dataToSend.recipientClientIds,
+                undefined, //recipientConsultantId
+                undefined, //recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
-			)
-			.subscribe((result) => {
-				this.frameAgreements = result.items;
-                if (result.items.length === 1) {
-                    this._checkAndPreselectFrameAgreement();
-                }
-			});
-    }
+			);
+	}
 
-    private _checkAndPreselectFrameAgreement() {
-        if (
-			this.contractClientForm.directClientId.value?.clientId &&
-			this.contractsMainForm.salesType.value?.id &&
-			this.contractsMainForm.deliveryType.value?.id
+	private _checkAndPreselectFrameAgreement() {
+		if (
+			(this.contractClientForm.directClientId.value !== null &&
+			this.contractClientForm.directClientId.value !== undefined) &&
+			(this.contractsMainForm.salesType.value?.id !== null &&
+            this.contractsMainForm.salesType.value?.id !== undefined) &&
+			(this.contractsMainForm.deliveryType.value?.id !== null &&
+            this.contractsMainForm.deliveryType.value?.id !== undefined)
 		) {
-            if (this.frameAgreements.length === 1) {
-                this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
-            }
+			if (this.filteredFrameAgreements.length === 1) {
+				this.contractClientForm.frameAgreementId.setValue(this.filteredFrameAgreements[0].agreementId, { emitEvent: false });
+			}
 		}
-    }
+	}
 
 	selectClientRate(rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
 		const clientRate = new PeriodClientSpecialRateDto();
@@ -261,11 +315,16 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
 	}
 
-    get clientRates(): UntypedFormArray {
+
+
+
+
+	get clientRates(): UntypedFormArray {
 		return this.contractClientForm.get('clientRates') as UntypedFormArray;
 	}
 
-    get clientFees(): UntypedFormArray {
+	get clientFees(): UntypedFormArray {
 		return this.contractClientForm.get('clientFees') as UntypedFormArray;
 	}
+
 }

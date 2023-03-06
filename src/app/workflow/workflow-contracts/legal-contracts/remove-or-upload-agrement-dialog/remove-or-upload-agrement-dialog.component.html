@@ -1,0 +1,47 @@
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <span class="text-bold-800">
+            {{dialogConfig.header}}
+        </span>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
+                svgIcon="dialog-close-icon"></mat-icon></button>
+    </div>
+    <p class="text-600 dark-grey-color">{{dialogConfig.title}}</p>
+    <ng-container *ngIf="data?.dialogMode === dialogModes.UploadNewDocument">
+        <ng-container *ngIf="!isFileAdded; else displayFile">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--20">
+                <app-file-uploader (filesAdded)="fileAdded($event)" [withoutDisplay]="true"
+                    [buttonText]="'Upload agreement'" [acceptedTypes]="['.pdf', '.doc', '.docx']"
+                    [uploaderHint]="'Upload or drag and drop file here'" [acceptOnlyOneFile]="true"
+                    [isFileUploading]="isFileUploading" class="u-w--100" #fileUploader></app-file-uploader>
+            </div>
+        </ng-container>
+        <ng-template #displayFile>
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--40">
+                <mat-icon [svgIcon]="icon" class="u-mr--5"></mat-icon>
+                <span class="dark-grey-color text-bold">
+                    {{file?.name}}
+                </span>
+            </div>
+        </ng-template>
+    </ng-container>
+    <ng-container *ngIf="!data?.hideReason">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+            <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input form-width-420">
+                <mat-label>{{dialogConfig.formLabel}}</mat-label>
+                <textarea required matInput autocomplete="new-password" name="specialContractTerms"
+                    [formControl]="reasonForChange" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="4">
+                </textarea>
+            </mat-form-field>
+        </div>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button class="dialog-btn dialog-btn__negative" appPreventDoubleClick (throttledClick)="confirm()"
+        [disabled]="!data?.hideReason && reasonForChange.valid">
+        {{dialogConfig.confirmButtonText}}
+    </button>
+</mat-dialog-actions>

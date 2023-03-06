@@ -506,7 +506,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
 				this.includeTerminated,
 				this.includeDeleted,
-                undefined,
+                undefined, // showWorkflowsWithProjectLinesMarkedAsPoMissing
 				searchFilter,
 				this.pageNumber,
 				this.deafultPageSize,

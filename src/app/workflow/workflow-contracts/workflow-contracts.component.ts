@@ -935,7 +935,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
         if (this.isContractModuleEnabled) {
-            this.clientDataComponent?.getFrameAgreements();
+            this.clientDataComponent?.getFrameAgreements(true);
         }
 	}
 
@@ -1133,7 +1133,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 		consultantData.specialContractTerms = consultantInput.specialContractTerms;
 		consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
-
+        consultantData.frameAgreementId = consultantInput.frameAgreementId;
 		consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 		if (consultantInput.clientFees?.length) {
 			for (let specialFee of consultantInput.clientFees) {

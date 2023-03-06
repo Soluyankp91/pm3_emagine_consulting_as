@@ -67,7 +67,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
-
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,

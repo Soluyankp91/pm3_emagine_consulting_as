@@ -154,18 +154,22 @@ export abstract class AppComponentBase {
 
 	// TODO: move all others trackBy methods here
 	trackById(index: number, item: any) {
-		return item.id;
+		return item?.id;
+	}
+
+    trackByAgreementId(index: number, item: any) {
+		return item?.agreementId;
 	}
 
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
-		return item.documentStorageGuid;
+		return item?.documentStorageGuid;
 	}
 
     trackByItem(index: number, item: any) {
         return item;
     }
     trackByOperationId(index: number, item: WorkflowHistoryDto) {
-        return item.operationId;
+        return item?.operationId;
     }
 
 	displayConsultantNameFn(option: any) {
