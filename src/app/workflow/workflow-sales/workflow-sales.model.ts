@@ -95,7 +95,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             // Client
             differentEndClient: new UntypedFormControl(true),
             directClientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
+            directClientAddress: new UntypedFormControl(null),
             endClientIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['clientId'])),
+            endClientAddress: new UntypedFormControl(null),
             clientContactProjectManager: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
             // PDC Invoicing Entity (client)
 
@@ -104,7 +106,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false, Validators.required),
             invoicingReferenceNumber: new UntypedFormControl(null),
             clientInvoicingRecipientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
-
+            clientInvoicingRecipientAddress: new UntypedFormControl(null),
             // Client Invoicing Reference Person
             invoicePaperworkContactIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
@@ -161,8 +163,14 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get directClientIdValue() {
         return this.get('directClientIdValue');
     }
+    get directClientAddress() {
+        return this.get('directClientAddress');
+    }
     get endClientIdValue() {
         return this.get('endClientIdValue');
+    }
+    get endClientAddress() {
+        return this.get('endClientAddress');
     }
     get clientContactProjectManager() {
         return this.get('clientContactProjectManager');
@@ -180,6 +188,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');
+    }
+    get clientInvoicingRecipientAddress() {
+        return this.get('clientInvoicingRecipientAddress');
     }
     get invoicePaperworkContactIdValue() {
         return this.get('invoicePaperworkContactIdValue');
@@ -422,6 +433,19 @@ export enum EProjectTypes {
     VMSlowMargin = 6,
     NearshoreVMShighMargin = 7,
     NearshoreVMSlowMargin = 8
+}
+
+export interface IClientAddress {
+    id: number;
+    displayValue: string;
+    addressType: string;
+}
+
+export enum EClientSelectionType {
+    DirectClient = 1,
+    EndClient = 2,
+    InvoicingRecipient = 3,
+    ClientOffice = 4
 }
 
 export enum ETimeReportingCaps {

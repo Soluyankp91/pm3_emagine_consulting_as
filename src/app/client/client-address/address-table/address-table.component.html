@@ -1,0 +1,108 @@
+<div fxLayout="column" fxFlexFill class="u-w--100">
+    <mat-table #table [dataSource]="dataSource" class="white-table u-w--100" [ngClass]="{'hidden-header': hiddenAddresses}" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+        <ng-container matColumnDef="isMainAddress">
+            <mat-header-cell *matHeaderCellDef fxFlex="200px"></mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="200px">
+                <ng-container *ngIf="row.isMainAddress; else noDataTemplate">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon svgIcon="crown-icon"></mat-icon>
+                        <span class="text-bold dark-grey-color u-ml--12">
+                            Main address
+                        </span>
+                    </div>
+                </ng-container>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="country">
+            <mat-header-cell *matHeaderCellDef fxFlex="150px"> Country </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="150px">
+                <span class="text-truncate-ellipsis" [ngClass]="{'text-bold': row.isMainAddress}" [matTooltip]="row?.country" matTooltipClass="white-tooltip" appShowIfTruncated>
+                    <span class="country-flag fi fi-{{row?.countryCode | lowercase }} fib"></span>&nbsp;{{row?.countryName ?? '-'}}
+                </span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="streetAndNumber">
+            <mat-header-cell *matHeaderCellDef fxFlex="250px"> Street + nr </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="250px">
+                <span class="text-truncate-ellipsis" [ngClass]="{'text-bold': row.isMainAddress}" matTooltipClass="white-tooltip" [matTooltip]="row?.address" matTooltipClass="white-tooltip" appShowIfTruncated>
+                    {{row?.address ?? '-'}}
+                </span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="city">
+            <mat-header-cell *matHeaderCellDef fxFlex="300px"> City </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="300px">
+                <span class="text-truncate-ellipsis" [ngClass]="{'text-bold': row.isMainAddress}" [matTooltip]="row.city" matTooltipClass="white-tooltip" appShowIfTruncated>
+                    {{row.city ?? '-'}}
+                </span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="isWorkplace">
+            <mat-header-cell *matHeaderCellDef fxFlex="80px" fxLayoutAlign="center center"> Workplace </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="80px" fxLayoutAlign="center center">
+                <span class="text-truncate-ellipsis flex-items-center">
+                    <mat-icon [svgIcon]="row?.isWorkplaceAddress ? 'checkmark_icon' : 'empty_icon'"></mat-icon>
+                </span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="isInvoice">
+            <mat-header-cell *matHeaderCellDef fxFlex="80px" fxLayoutAlign="center center"> Invoice </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="80px" fxLayoutAlign="center center">
+                <span class="text-truncate-ellipsis flex-items-center">
+                    <mat-icon [svgIcon]="row?.isInvoiceAddress ? 'checkmark_icon' : 'empty_icon'"></mat-icon>
+                </span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="debitorNumber">
+            <mat-header-cell *matHeaderCellDef fxFlex> Debitor number </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex>
+                <span class="text-truncate-ellipsis flex-items-center" [ngClass]="{'text-bold': row.isMainAddress}" [matTooltip]="row?.debtorNumberForInvoiceAddress" matTooltipClass="white-tooltip" appShowIfTruncated>
+                    {{row?.debtorNumberForInvoiceAddress}}
+                </span>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef fxFlex="80px"></mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="80px" fxLayoutAlign="end center">
+                <button mat-icon-button [matMenuTriggerFor]="clientAddressMenu"
+                        class="three-dots-actions-btn"><mat-icon svgIcon="3-dots"></mat-icon></button>
+                <mat-menu #clientAddressMenu>
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        appPreventDoubleClick (throttledClick)="addOrEditAddress(row)">
+                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                        Edit
+                    </button>
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        appPreventDoubleClick (throttledClick)="toggleAddressHiddenState(row)">
+                        <mat-icon [svgIcon]="row.isHidden ? 'icon-show' : 'icon-hide'"></mat-icon>
+                        {{row.isHidden ? 'Show address' : 'Hide address'}}
+                    </button>
+                    <div (click)="$event.stopPropagation()" [matTooltip]="'It is not possible to delete an address, which is being used on Workflows'" matTooltipClass="white-tooltip">
+                        <button
+                            class="menu-item menu-item--cancel"
+                            mat-menu-item
+                            [disabled]="row.isMainAddress"
+                            appPreventDoubleClick (throttledClick)="deleteAddress(row)">
+                            <mat-icon svgIcon="close-icon"></mat-icon>
+                            Delete
+                        </button>
+                    </div>
+                </mat-menu>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayColumns;" [ngClass]="{'hidden-row' :row.isHidden}"></mat-row>
+    </mat-table>
+    <div class="spinner-container" *ngIf="isDataLoading">
+        <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+    <div class="results-not-found" *ngIf="dataSource?.data?.length === 0 && !isDataLoading">
+        RESULTS NOT FOUND
+    </div>
+</div>
+
+<ng-template #noDataTemplate>-</ng-template>

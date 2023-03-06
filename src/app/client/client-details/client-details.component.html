@@ -10,22 +10,19 @@
                     <span class="client-details--client-info__header client-id">
                         #{{client.clientId}}
                     </span>
-                    <!-- FIXME: add country flag after mapping countryName -> countryCode -->
-                    <!-- <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span> -->
-
-                    <!-- FIXME: TMP fix after proxies update, will be implemeted in P30-874 -->
-                    <span class="client-details--client-info__header" *ngIf="client?.clientAddresses[0]?.address?.length">
-                        {{client?.clientAddresses[0]?.address?.length}}
+                    <span class="client-details--client-info__header">
+                        {{clientAddressDisplay}}
                     </span>
-                    <span class="client-details--client-info__header" *ngIf="client?.clientAddresses[0]?.address2?.length">
-                        {{client?.clientAddresses[0]?.address2?.length}}
-                    </span>
-                    <span class="client-details--client-info__header headerWithDot" *ngIf="client?.phone?.length">
-                        {{client.phone}}
-                    </span>
-                    <span class="client-details--client-info__header headerWithDot" *ngIf="client?.website?.length">
-                        {{client.website}}
-                    </span>
+                    <ng-container *ngIf="client?.phone?.length">
+                        <span class="client-details--client-info__header headerWithDot">
+                            {{client.phone}}
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="client?.website?.length">
+                        <span class="client-details--client-info__header headerWithDot">
+                            {{client.website}}
+                        </span>
+                    </ng-container>
                 </div>
             </div>
             <div fxLayout="row" fxLayoutAlign="end center" class="client-details--search">
@@ -53,13 +50,17 @@
                 #rlaDocuments="routerLinkActive">
                 Documents
             </a>
+            <a mat-tab-link routerLink="wf-responsible" [active]="rlaWfResponsible.isActive" routerLinkActive
+                #rlaWfResponsible="routerLinkActive">
+                WF responsible
+            </a>
             <a mat-tab-link routerLink="contacts" [active]="rlaContacts.isActive" routerLinkActive
                 #rlaContacts="routerLinkActive">
                 Client contacts
             </a>
-            <a mat-tab-link routerLink="wf-responsible" [active]="rlaWfResponsible.isActive" routerLinkActive
-                #rlaWfResponsible="routerLinkActive">
-                WF responsible
+            <a mat-tab-link routerLink="address" [active]="rlaAddress.isActive" routerLinkActive
+                #rlaAddress="routerLinkActive">
+                Client addresses
             </a>
         </nav>
         <div class="u-w--100 nav-tab--content-wrapper">

@@ -43,7 +43,7 @@
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline"
-                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
+                                    class="formFieldNoMarginPadding disabled-input autocompleteWithShevron form-width-450"
                                     [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
                                     [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
                                     <mat-label>Consultant Name</mat-label>
@@ -84,7 +84,7 @@
                                     </mat-error>
                                 </mat-form-field>
                                 <mat-form-field appearance="outline"
-                                    class="client-and-consultant-autocomplete formFieldNoMarginPadding filter-select disabled-input"
+                                    class="form-width-450 formFieldNoMarginPadding filter-select disabled-input"
                                     [fxHide]="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11">
                                     <mat-label>Consultant Name only</mat-label>
                                     <input [disabled]="true" type="text" matInput formControlName="nameOnly"

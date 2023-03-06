@@ -862,5 +862,23 @@ export class AppModule {
                 'assets/common/images/chevron-green-big.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'crown-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/crown-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'add_icon_circled',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/add_icon_circled.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'percentage-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/percentage-icon.svg'
+            )
+        );
     }
 }

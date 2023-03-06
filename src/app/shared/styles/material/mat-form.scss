@@ -513,12 +513,12 @@
                 &-name {
                     @include fontOpenSans(14px, 700);
                     line-height: 140%;
-                    color: #4A4E60;
+                    color: $dark-grey-color;
                 }
                 &-info {
-                    @include fontOpenSans(13px, 600);
+                    @include fontOpenSans(10px, 600);
                     line-height: 140%;
-                    color: #4A4E60;
+                    color: $medium-grey-color;
                 }
             }
         }
@@ -685,10 +685,6 @@ input[type=number] {
     color: $red-message-color;
 }
 
-.client-and-consultant-autocomplete {
-    width: 450px;
-}
-
 
 .wf-responsible-person-autocomplete.mat-form-field-appearance-outline {
     width: 450px;
@@ -740,4 +736,27 @@ input[type=number] {
 
 .add-rates-button--dropdown.mat-form-field-appearance-fill .mat-form-field-flex > .mat-form-field-infix {
     padding: 0 10px !important;
+}
+
+.invisible-input {
+    &.mat-form-field-appearance-fill {
+
+        .mat-form-field-flex {
+            background-color: #fff !important;
+        }
+        .mat-select-arrow-wrapper {
+            opacity: 0;
+        }
+    }
+    &:hover,
+    &.mat-focused {
+        &.mat-form-field-appearance-fill {
+            .mat-form-field-flex {
+                background-color: #faf9fb !important;
+            }
+            .mat-select-arrow-wrapper {
+                opacity: 1;
+            }
+        }
+    }
 }

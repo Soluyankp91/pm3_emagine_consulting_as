@@ -1,0 +1,33 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.confirmation-dialog {
+    &--header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        span {
+            font-size: 30px;
+        }
+        &-close-icon {
+            cursor: pointer;
+        }
+    }
+    &--content {
+        padding: 30px;
+    }
+    &--actions{
+        justify-content: space-between;
+        border-top: 1px solid $sand-color;
+        &-cancel {
+            padding: 0 !important;
+        }
+    }
+}
+.address-hint {
+    @include fontOpenSans(12px, 600);
+    &.warning-hint {
+        color: #FB9101;
+    }
+}

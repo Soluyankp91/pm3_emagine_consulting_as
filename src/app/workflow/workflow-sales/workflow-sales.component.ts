@@ -56,7 +56,8 @@ import { EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
-import { ClientRateTypes, EProjectTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
+import { PackAddressIntoNewDto } from './workflow-sales.helpers';
+import { ClientRateTypes, EClientSelectionType, EProjectTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
 
 @Component({
 	selector: 'app-workflow-sales',
@@ -519,10 +520,26 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				if (result?.salesClientData?.directClient?.clientId) {
 					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
                     this.clientDataComponent.initContactSubs();
+                    this.clientDataComponent.getClientAddresses(result?.salesClientData?.directClient?.clientAddresses, EClientSelectionType.DirectClient);
 				}
+                if (result?.salesClientData?.directClientAddressId) {
+                    this.clientDataComponent.salesClientDataForm.directClientAddress.setValue(PackAddressIntoNewDto(result?.salesClientData?.directClientAddress), {emitEvent: false});
+                }
 				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {
 					emitEvent: false,
 				});
+                if (result?.salesClientData?.endClient?.clientId) {
+                    this.clientDataComponent.getClientAddresses(result?.salesClientData?.endClient?.clientAddresses, EClientSelectionType.EndClient);
+                }
+                if (result?.salesClientData?.endClientAddressId) {
+                    this.clientDataComponent.salesClientDataForm.endClientAddress.setValue(PackAddressIntoNewDto(result?.salesClientData?.endClientAddress), {emitEvent: false});
+                }
+                if (result?.salesClientData?.clientInvoicingRecipient?.clientId) {
+                    this.clientDataComponent.getClientAddresses(result?.salesClientData?.clientInvoicingRecipient?.clientAddresses, EClientSelectionType.InvoicingRecipient);
+                }
+                if (result?.salesClientData?.clientInvoicingRecipientAddressId) {
+                    this.clientDataComponent.salesClientDataForm.clientInvoicingRecipientAddress.setValue(PackAddressIntoNewDto(result?.salesClientData?.clientInvoicingRecipientAddress), {emitEvent: false});
+                }
                 this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.setValue(result.salesClientData.clientContactProjectManager);
 				if (result?.noEndDate) {
 					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
@@ -1048,7 +1065,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         input.salesClientData.clientContactProjectManager = this.clientDataComponent?.salesClientDataForm.clientContactProjectManager.value;
 		input.salesClientData.directClientIdValue =
 			this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value?.clientId;
+        input.salesClientData.directClientAddressId = this.clientDataComponent?.salesClientDataForm.directClientAddress.value.id;
 		input.salesClientData.endClientIdValue = this.clientDataComponent?.salesClientDataForm.endClientIdValue?.value?.clientId;
+        input.salesClientData.endClientAddressId = this.clientDataComponent?.salesClientDataForm.endClientAddress.value.id;
 		input.salesClientData.clientRate = new ClientRateDto(this.clientDataComponent?.salesClientDataForm.value);
 		input.salesClientData.clientRate!.isTimeBasedRate =
 			this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
@@ -1065,6 +1084,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			: true;
 		input.salesClientData.clientInvoicingRecipientIdValue =
 			this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
+        input.salesClientData.clientInvoicingRecipientAddressId = this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientAddress.value.id;
 		input.salesClientData.invoicingReferencePersonIdValue =
 			this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
 
@@ -1156,6 +1176,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             }
 
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
+			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
 			consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
 			consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
 			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
