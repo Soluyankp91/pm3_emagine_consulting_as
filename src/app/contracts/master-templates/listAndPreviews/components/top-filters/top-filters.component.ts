@@ -43,7 +43,6 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this._templatesService.updateSearchFilter('');
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
 	}

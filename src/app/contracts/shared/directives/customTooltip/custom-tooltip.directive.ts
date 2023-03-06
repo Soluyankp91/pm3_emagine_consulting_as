@@ -55,8 +55,8 @@ export class CustomTooltipDirective implements OnDestroy {
 					originY: 'bottom',
 					overlayX: 'start',
 					overlayY: 'top',
-					offsetX: -20,
-					offsetY: 0,
+					offsetX: -15,
+					offsetY: 10,
 				},
 			]);
 

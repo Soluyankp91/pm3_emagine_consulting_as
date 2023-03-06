@@ -32,7 +32,6 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	saleManager: 'SM',
 	contractManager: 'CM',
 };
-
 export const MASTER_CREATION: { label: string; value: AgreementCreationMode }[] = [
 	{
 		label: 'Duplicate from other agreement',

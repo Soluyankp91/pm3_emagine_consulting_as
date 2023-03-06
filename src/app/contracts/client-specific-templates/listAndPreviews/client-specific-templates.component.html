@@ -1,6 +1,6 @@
-<app-template-filter-header> </app-template-filter-header>
-<main class="table-and-preview-container">
-	<section class="table-container">
+<div class="page-container">
+	<app-template-filter-header> </app-template-filter-header>
+	<div class="table-and-preview-container">
 		<ng-container *ngIf="table$ | async as table">
 			<emg-mat-grid
 				#table
@@ -15,7 +15,7 @@
 				(onAction)="onAction($event)"
 				(onSelectionAction)="onSelectionAction($event)"
 				(pageChange)="onPageChange($event)"
-                (resetAllFilters)="resetAllTopFilters()"
+				(resetAllFilters)="resetAllTopFilters()"
 				(selectedRowIdChange)="currentRowId$.next($event)">
 				<ng-template let-cell="element" #customCells>
 					<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
@@ -34,7 +34,7 @@
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
-					<div class="table-cell" [customTooltip]="cell.agreementType">{{ cell.agreementType }}</div></ng-template
+					<div class="table-cell" [customTooltip]="cell.agreementType" [showAlways]="true">{{ cell.agreementType | strInitials }}</div></ng-template
 				>
 
 				<ng-template let-cell="element" #customCells>
@@ -45,7 +45,7 @@
 					<div
 						class="table-cell"
 						[customTooltip]="legalEntityIdsTooltip"
-						[showAlways]="!!(cell.salesTypeIds.length - 1)">
+						[showAlways]="!!(cell.legalEntityIds.length - 1)">
 						{{ cell.legalEntityIds | tableArrayFormat }}
 					</div>
 					<ng-template #legalEntityIdsTooltip>
@@ -111,7 +111,7 @@
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells
-					><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc | momentFormat }}</p>
+					><div class="table-cell" [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc | momentFormat }}</div>
 					<ng-template #lastUpdateDateUtcTooltip>
 						<div>
 							<div class="date-row">
@@ -128,18 +128,29 @@
 					</ng-template>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<p>
-						{{ cell.lastUpdatedByLowerCaseInitials }}
-					</p></ng-template
+                    <div class="table-cell">
+						<img
+							class="profile-picture"
+							[ngSrc]="employeePhotoUrl + cell.externalId + '.jpg'"
+							src
+							width="24"
+							height="24"
+							(error)="setDefaultImage($event.target)" /></div
+				>
+                </ng-template
 				>
 				<ng-template let-cell="element" #customCells>
-					<emg-client-template-mode
+                    <div class="table-cell">
+                        <emg-client-template-mode
 						[linkState]="cell.linkState"
 						[iconWidth]="23"
 						[iconHeight]="16"></emg-client-template-mode>
+                    </div>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-					<emg-approval [linkStateAccepted]="cell.linkStateAccepted" [iconWidth]="23" [iconHeight]="16"></emg-approval>
+                    <div class="table-cell">
+                        <emg-approval [linkStateAccepted]="cell.linkStateAccepted" [iconWidth]="23" [iconHeight]="16"></emg-approval>
+                    </div>
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
@@ -149,10 +160,10 @@
 				</ng-template>
 			</emg-mat-grid>
 		</ng-container>
-	</section>
-	<ng-container *ngIf="currentRowId$ | async as currentRowId">
-		<app-client-template-preview
-			[currentId]="currentRowId"
-			(currentIdChange)="currentRowId$.next($event)"></app-client-template-preview>
-	</ng-container>
-</main>
+		<ng-container *ngIf="currentRowId$ | async as currentRowId">
+			<app-client-template-preview
+				[currentId]="currentRowId"
+				(currentIdChange)="currentRowId$.next($event)"></app-client-template-preview>
+		</ng-container>
+	</div>
+</div>

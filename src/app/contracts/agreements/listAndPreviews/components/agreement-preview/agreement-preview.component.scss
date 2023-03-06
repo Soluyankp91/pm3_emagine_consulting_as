@@ -1,4 +1,4 @@
 @import 'mixins';
 app-agreement-preview {
-	@include preview-layout(150px);
+	@include preview-layout();
 }

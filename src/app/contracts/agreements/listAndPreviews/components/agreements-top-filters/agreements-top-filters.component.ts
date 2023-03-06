@@ -59,7 +59,6 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
-        this._agreementService.updateSearchFilter('');
 	}
 
 	navigateTo() {

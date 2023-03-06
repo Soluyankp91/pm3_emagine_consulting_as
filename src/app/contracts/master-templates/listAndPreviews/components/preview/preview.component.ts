@@ -1,6 +1,5 @@
 import {
 	Component,
-	ViewEncapsulation,
 	Input,
 	Output,
 	EventEmitter,
@@ -16,7 +15,6 @@ import { PreviewService } from '../../services/preview.service';
 	selector: 'app-preview-tabs',
 	templateUrl: './preview.component.html',
 	styleUrls: ['./preview.component.scss'],
-	encapsulation: ViewEncapsulation.None,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [PreviewService, {
 		provide: AgreementAbstractService,

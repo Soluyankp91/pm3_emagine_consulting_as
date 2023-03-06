@@ -20,7 +20,6 @@ import {
 	TemplateRef,
 	Injector,
 	TrackByFunction,
-	ViewEncapsulation,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -38,7 +37,6 @@ import { FILTER_LABEL_MAP } from '../../entities/contracts.constants';
 	styleUrls: ['./mat-grid.component.scss'],
 	templateUrl: './mat-grid.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
 })
 export class MatGridComponent extends AppComponentBase implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 	@Input() displayedColumns: string[];
@@ -57,7 +55,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Output() selectedRowIdChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
 	@Output() onSelectionAction = new EventEmitter();
-    @Output() resetAllFilters = new EventEmitter();
+	@Output() resetAllFilters = new EventEmitter();
 
 	@ContentChildren('customCells', {
 		descendants: false,

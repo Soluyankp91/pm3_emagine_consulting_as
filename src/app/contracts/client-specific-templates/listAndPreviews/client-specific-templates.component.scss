@@ -2,16 +2,26 @@
 @import 'variables';
 
 app-client-specific-templates {
+	display: flex;
+	height: calc(100vh - 49px);
+
+	@include table-header-cell;
 	.table-cell {
-		font-family: 'Open Sans';
-		font-style: normal;
-		font-weight: 600;
-		font-size: 14px;
-		line-height: 19px;
-		padding-left: 16px;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		@include table-cell(600);
+	}
+	.table-and-preview-container {
+		display: flex;
+		position: relative;
+		flex-grow: 1;
+	}
+	.page-container {
+		flex-grow: 1;
+
+		display: flex;
+		flex-direction: column;
+
+		margin-top: 20px;
+		gap: 20px;
 	}
 	.template-name-cell {
 		@include table-cell(700);
@@ -26,10 +36,10 @@ app-client-specific-templates {
 		@include table-cell-width(60px);
 	}
 	.template-name-column {
-		@include table-cell-width(339px);
+		@include table-cell-width(500px);
 	}
 	.client-column {
-		@include table-cell-width(178px);
+		@include table-cell-width(190px); // +18
 	}
 	.agreementType-column {
 		@include table-cell-width(56px);
@@ -56,28 +66,36 @@ app-client-specific-templates {
 		@include table-cell-width(47px);
 	}
 	.link-state-column {
-		@include table-cell-width(68px);
+		@include table-cell-width(57px);
+		justify-content: center;
 	}
 	.linkStateAccepted-column {
-		@include table-cell-width(77px);
+		@include table-cell-width(65px);
+		justify-content: center;
 	}
 	.status-column {
-		@include table-cell-width(35px);
+		@include table-cell-width(57px); // +10
+		justify-content: center;
 	}
 	.actions-column {
-		@include table-cell-width(40px);
+		@include table-cell-width(36px);
 	}
 	.mat-cell:first-of-type {
-		padding-left: 0px;
+		padding: 0px;
 	}
 	.mat-header-cell:first-of-type {
-		padding-left: 0px;
+		padding: 0px;
 	}
-	.table-and-preview-container {
-		display: flex;
+	.mat-header-cell:last-of-type {
+		padding-right: 0px;
 	}
-
+	.mat-cell:last-of-type {
+		padding-right: 0px;
+	}
+	.profile-picture {
+		@include profile-picture;
+	}
 	.country-icon {
-		@include avatar-icon;
+		@include medium-icon;
 	}
 }

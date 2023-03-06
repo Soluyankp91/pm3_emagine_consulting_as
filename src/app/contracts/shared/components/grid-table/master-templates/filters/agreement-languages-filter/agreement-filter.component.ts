@@ -15,7 +15,6 @@ import { AgreementService } from 'src/app/contracts/agreements/listAndPreviews/s
 	styleUrls: ['./agreement-filter.component.scss'],
 	templateUrl: './agreement-filter.component.html',
 	providers: [TEMPLATE_SERVICE_PROVIDER],
-    encapsulation: ViewEncapsulation.None
 })
 export class AgreementLanguagesFilterComponent implements IFilter {
 	agreementLanguages$ = this.contractsService.getAgreementLanguages$();

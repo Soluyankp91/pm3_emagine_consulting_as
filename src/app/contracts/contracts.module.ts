@@ -80,6 +80,7 @@ import { EditorComponent } from './shared/editor/editor.component';
 import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.component';
 import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
 import { DownloadFilesService } from './shared/services/download-files.service';
+import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 
 @NgModule({
 	declarations: [
@@ -141,6 +142,7 @@ import { DownloadFilesService } from './shared/services/download-files.service';
 		TableArrayFormatPipe,
 		AgreementsTopFiltersComponent,
 		NotificationDialogComponent,
+		StrInitialsPipe,
 	],
 	imports: [
 		CommonModule,
@@ -152,7 +154,7 @@ import { DownloadFilesService } from './shared/services/download-files.service';
 
 		// Standalone
 		EditorComponent,
-		EditorPreviewComponent
+		EditorPreviewComponent,
 	],
 	providers: [
 		ContractsService,
@@ -167,7 +169,7 @@ import { DownloadFilesService } from './shared/services/download-files.service';
 		AgreementTemplateAttachmentServiceProxy,
 		AgreementAttachmentServiceProxy,
 		CreationTitleService,
-        DownloadFilesService,
+		DownloadFilesService,
 	],
 })
 export class ContractsModule {
@@ -182,6 +184,10 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'close-button-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/close-button-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'close-button-icon-grey',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/close-button-icon-grey.svg')
 		);
 		iconRegistry.addSvgIcon('plus-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/plus-icon.svg'));
 		iconRegistry.addSvgIcon(

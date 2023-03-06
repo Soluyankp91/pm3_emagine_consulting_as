@@ -1,16 +1,18 @@
 <div class="container">
-	<mat-chip-list>
-		<mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName" (click)="closeFilter(chip.formControl)">
-			<mat-icon svgIcon="close-button-icon"> </mat-icon>
-			<span>{{ chip.label }}</span>
-		</mat-chip>
-		<span *ngIf="matChips.length > 0">
-			<mat-chip (click)="closeAllFilters()">
-				<mat-icon svgIcon="close-button-icon"></mat-icon>
-				<p>Reset all Filters</p>
-			</mat-chip>
-		</span>
-	</mat-chip-list>
+    <ng-container *ngIf="matChips.length">
+        <mat-chip-list class="mat-chip-list">
+            <mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName">
+                <mat-icon svgIcon="close-button-icon" class="close-button-icon" (click)="closeFilter(chip.formControl)"> </mat-icon>
+                <span class="chip-label">{{ chip.label }}</span>
+            </mat-chip>
+            <ng-container *ngIf="matChips.length">
+                <span class="close-filters">
+                    <mat-icon svgIcon="close-button-icon-grey" class="close-button-icon" (click)="closeAllFilters()"></mat-icon>
+                    <p class="reset-all-filters-label">Reset all Filters</p>
+                </span>
+            </ng-container>
+        </mat-chip-list>
+    </ng-container>
 	<div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !tableConfig.items.length }">
 		<mat-table
 			matSort
@@ -46,7 +48,7 @@
 						<mat-header-cell
 							*matHeaderCellDef
 							mat-sort-header
-                            [disabled]="!item.headerCell.sort"
+							[disabled]="!item.headerCell.sort"
 							class="table-header-cell {{ item.class | lowercase }} ">
 							{{ item.headerCell.title }}
 						</mat-header-cell>
@@ -54,7 +56,7 @@
 					<ng-container *ngSwitchCase="headerCellEnum.FILTER">
 						<mat-header-cell *matHeaderCellDef class="{{ item.class }}">
 							<ng-container #filterContainer></ng-container>
-							<span mat-sort-header  [disabled]="!item.headerCell.sort"></span>
+							<span mat-sort-header [disabled]="!item.headerCell.sort"></span>
 						</mat-header-cell>
 					</ng-container>
 				</ng-container>
@@ -85,7 +87,7 @@
 				</ng-container>
 			</ng-container>
 
-			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+			<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
 			<mat-row
 				*matRowDef="let row; columns: displayedColumns"
 				[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
