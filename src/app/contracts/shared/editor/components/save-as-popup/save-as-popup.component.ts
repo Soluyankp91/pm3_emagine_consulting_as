@@ -52,7 +52,9 @@ export class SaveAsPopupComponent implements OnInit {
 
 	ngOnInit(): void {
 		if (!this.data.document.isCurrent) {
-			this.config.title = 'Save as a new version'
+			this.config.title = 'Save as a new version';
+			this.config.subtitle = '';
+			this.config.warning = '';
 		}
 
 		if (this.data.isAgreement) {

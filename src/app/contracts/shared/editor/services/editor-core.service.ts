@@ -123,6 +123,11 @@ export class EditorCoreService {
 		this._commentService.highlightSelected(commentID);
 	}
 
+	removeUnsavedChanges() {
+		this.editor.hasUnsavedChanges = false;
+		this.hasUnsavedChanges$.next(false);
+	}
+
 	destroy() {
 		this.editor = null;
 	}

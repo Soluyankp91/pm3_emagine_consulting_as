@@ -1,0 +1,39 @@
+<ng-template [ngIf]="loading$ | async" [ngIfThen]="loadingTmp" [ngIfElse]="contentTmp"> </ng-template>
+
+<ng-template #contentTmp>
+	<ng-container *ngIf="source$ | async as source; else noDataTmp">
+		<div class="pdf-wrapper">
+			<pdf-viewer
+				[src]="source"
+				[rotation]="0"
+				[original-size]="false"
+				[show-all]="true"
+				[fit-to-page]="false"
+				[zoom]="1"
+				[zoom-scale]="'page-width'"
+				[stick-to-page]="false"
+				[render-text]="true"
+				[external-link-target]="'blank'"
+				[autoresize]="true"
+				[show-borders]="false">
+			</pdf-viewer>
+		</div>
+
+		<div class="action-bar">
+			<button (click)="toggleFullScreen()" class="action-button mat-mini-fab">
+				<mat-icon>crop_free</mat-icon>
+			</button>
+			<button (click)="toggleEdit()" class="action-button mat-mini-fab">
+				<mat-icon>edit</mat-icon>
+			</button>
+		</div>
+	</ng-container>
+</ng-template>
+
+<ng-template #noDataTmp>
+	<span>no data</span>
+</ng-template>
+
+<ng-template #loadingTmp>
+	<div class="spinner-container"><mat-spinner [diameter]="32"></mat-spinner></div>
+</ng-template>

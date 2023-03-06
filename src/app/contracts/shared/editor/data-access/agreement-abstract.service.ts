@@ -12,4 +12,5 @@ export abstract class AgreementAbstractService {
 	abstract saveDraftAndCompleteTemplate(id: number, fileContent: StringWrappedValueDto, selectedDocument: IDocumentItem): Observable<any>;
 	abstract getSimpleList(): Observable<IDocumentItem[]>;
 	abstract getTemplateVersions(id: number): Observable<IDocumentVersion[]>;
+	abstract getTemplatePDF(id: number): Observable<Blob>;
 }

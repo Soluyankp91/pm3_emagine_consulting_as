@@ -103,7 +103,7 @@ export class AgreementTemplateService implements AgreementAbstractService {
 
 	saveDraftAsCompleteTemplate(templateId: number, body: UpdateCompletedTemplateDocumentFileDto) {
 		return this._agreementTemplateService
-			.updateCompleted(templateId, body).pipe(
+			.completeTemplate(templateId, false, body).pipe(
 				catchError(error => of(null))
 			);
 	}
@@ -137,5 +137,14 @@ export class AgreementTemplateService implements AgreementAbstractService {
 				);
 			}),
 		)
+	}
+
+	getTemplatePDF(id: number) {
+		const endpoint = `${this._baseUrl}/${id}/document-file/pdf`;
+		return this.httpClient
+			.get(endpoint, {
+				responseType: 'blob',
+			})
+			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
 	}
 }

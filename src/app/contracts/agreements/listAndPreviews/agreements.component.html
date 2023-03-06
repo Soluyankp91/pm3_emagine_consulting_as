@@ -3,7 +3,7 @@
 	<emg-mat-grid
 		[displayedColumns]="displayedColumns"
 		[tableConfig]="table"
-		[selectedRowId]="currentRowId$ | async"
+		[selectedRowId]="(currentRowInfo$ | async)?.id"
 		[cells]="cells"
 		[sticky]="true"
 		[selectedItemsActions]="selectedItemsActions"
@@ -14,7 +14,7 @@
 		(sortChange)="onSortChange($event)"
 		(pageChange)="onPageChange($event)"
 		(resetAllFilters)="resetAllTopFilters()"
-		(selectedRowIdChange)="currentRowId$.next($event)">
+		(selectedRowIdChange)="onSelectRowId($event, table.items)">
 		<ng-template let-cell="element" #customCells>
 			<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
 		</ng-template>
@@ -131,6 +131,9 @@
 		</ng-template>
 	</emg-mat-grid>
 </ng-container>
-<ng-container *ngIf="currentRowId$ | async as currentRowId">
-	<app-agreement-preview [currentId]="currentRowId" (currentIdChange)="currentRowId$.next($event)"></app-agreement-preview>
+<ng-container *ngIf="currentRowInfo$ | async as currentRowInfo">
+	<app-agreement-preview
+		[currentId]="currentRowInfo.id"
+		[fileName]="currentRowInfo.name"
+		(currentIdChange)="currentRowInfo$.next($event)"></app-agreement-preview>
 </ng-container>

@@ -136,4 +136,16 @@ export class AgreementService implements AgreementAbstractService {
 			}),
 		)
 	}
+
+	getTemplatePDF(agreementId: number) {
+		const endpoint = `${this._baseUrl}/${agreementId}/document-file/pdf`;
+		return this.httpClient
+			.get(endpoint, {
+				responseType: 'blob',
+			})
+			.pipe(
+				map((res) => res),
+				catchError((error: HttpErrorResponse) => throwError(error.error))
+			);
+	}
 }

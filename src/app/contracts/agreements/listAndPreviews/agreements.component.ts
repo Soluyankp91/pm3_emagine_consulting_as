@@ -50,7 +50,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 
 	dataSource$: Observable<AgreementListItemDtoPaginatedList> = this._agreementService.getContracts$();
 
-	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
+	currentRowInfo$: ReplaySubject<{ name: string; id: number } | null> = new ReplaySubject(1);
 
 	private _outsideClicksSub: Subscription;
 
@@ -123,6 +123,15 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 		}
 	}
 
+	onSelectRowId(selectionRowID: number, rows: AgreementListItemDto[]) {
+		if (selectionRowID) {
+			let rowData = rows.find((r) => r.agreementId === selectionRowID);
+			this.currentRowInfo$.next({ id: rowData.agreementId, name: rowData.agreementName });
+		} else {
+			this.currentRowInfo$.next(null);
+		}
+	}
+
 	resetAllTopFilters() {
 		this._agreementService.updateSearchFilter('');
 		this._agreementService.updateTenantFilter([]);
@@ -151,7 +160,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	private _initPreselectedFilters() {
 		const templateId = this._route.snapshot.queryParams['agreementId'];
 		if (templateId) {
-			this.currentRowId$.next(parseInt(templateId));
+			this.currentRowInfo$.next({ id: parseInt(templateId), name: 'unknown' });
 			return this._agreementService.setIdFilter([templateId]);
 		}
 		this._agreementService.setIdFilter([]);
@@ -186,7 +195,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	}
 
 	private _subscribeOnOuterClicks() {
-		this.currentRowId$
+		this.currentRowInfo$
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				startWith(null),
@@ -195,7 +204,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 					if (!previous && current) {
 						this._outsideClicksSub = fromEvent(document, 'click').subscribe((e: Event) => {
 							if (!this.preview.get(0)?.nativeElement.contains(e.target)) {
-								this.currentRowId$.next(null);
+								this.currentRowInfo$.next(null);
 							}
 						});
 					} else if (previous && !current) {

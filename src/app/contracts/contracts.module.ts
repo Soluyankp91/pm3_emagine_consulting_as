@@ -80,6 +80,7 @@ import { EditorComponent } from './shared/editor/editor.component';
 import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.component';
 import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
 import { DownloadFilesService } from './shared/services/download-files.service';
+import { TemplatePdfPreviewComponent } from './shared/template-pdf-preview/template-pdf-preview.component';
 
 @NgModule({
 	declarations: [
@@ -152,7 +153,8 @@ import { DownloadFilesService } from './shared/services/download-files.service';
 
 		// Standalone
 		EditorComponent,
-		EditorPreviewComponent
+		EditorPreviewComponent,
+		TemplatePdfPreviewComponent
 	],
 	providers: [
 		ContractsService,

@@ -8,7 +8,9 @@
         </button>
     </div>
 
-    <p class="subtitle">{{config.subtitle}}</p>
+    <ng-container *ngIf="config.subtitle">
+        <p class="subtitle">{{config.subtitle}}</p>
+    </ng-container>
 
     <form *ngIf="form" [formGroup]="form">
         <mat-form-field appearance="outline" class="textarea-form-field">
@@ -26,10 +28,12 @@
             </mat-checkbox>
         </ng-container>
 
-        <div class="warn">
-            <mat-icon>warning</mat-icon>
-            <p>Any significant changes should be promoted to a new version via Draft mode.</p>
-        </div>
+        <ng-container *ngIf="config.warning">
+            <div class="warn">
+                <mat-icon>warning</mat-icon>
+                <p>Any significant changes should be promoted to a new version via Draft mode.</p>
+            </div>
+        </ng-container>
     </form>
 </mat-dialog-content>
 

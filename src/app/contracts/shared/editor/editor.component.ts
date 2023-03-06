@@ -29,9 +29,8 @@ import { AppCommonModule } from 'src/app/shared/common/app-common.module';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CompleteTemplateDocumentFileDraftDto, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
-import { alert } from 'devextreme/ui/dialog';
 import { EditorObserverService } from './data-access/editor-observer.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	standalone: true,
@@ -75,6 +74,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	
 	selectedVersion: IDocumentVersion = null;
 	versions: IDocumentVersion[] = [];
+	isLatestVersionSelected$ = new BehaviorSubject(false);
+
 
 	commentSidebarEnabled$ = this._editorCoreService.commentSidebarEnabled$;
 	comments$ = new BehaviorSubject<IComment[]>([]);
@@ -90,9 +91,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _mergeFieldsService: MergeFieldsAbstractService,
 		private _editorCoreService: EditorCoreService,
 		private _dialog: MatDialog,
-		private _vcf: ViewContainerRef,
 		private chd: ChangeDetectorRef,
-		private _ngZone: NgZone,
+		private _snackBar: MatSnackBar,
 		private _editorObserverService: EditorObserverService
 	) {}
 
@@ -129,18 +129,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	// loadTemplateVersions() {
-	// 	this.templateVersions$.pipe(skip(1), take(1)).subscribe((versions) => {
-	// 		let tmpID = this.templateId;
-	// 		let version = versions.length ? versions[versions.length - 1].version : 1;
-	// 		this.selectedVersion = versions.find(item => item.isCurrent);
-	// 		this.selectedVersionControl.setValue(version);
-
-	// 		this.loadTemplate(this.templateId, version);
-	// 		this.loadCommentsByTemplateVersion(tmpID, version);
-	// 	});
-	// }
-
 	loadTemplate(templateId: number, version: number) {
 		this.isLoading = true;
 
@@ -155,9 +143,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this.isLoading = false;
 
 				if (tmp) {
+					if (version === this.versions[this.versions.length -1].version) {
+						this.isLatestVersionSelected$.next(true);
+					} else {
+						this.isLatestVersionSelected$.next(false);
+					}
+
 					this._editorCoreService.loadDocument(tmp);
 					this.selectedVersion = this.versions[version - 1];
 					this.chd.detectChanges();
+
 				} else {
 					this._editorCoreService.newDocument();
 					this.selectedVersion = null;
@@ -275,50 +270,58 @@ export class EditorComponent implements OnInit, OnDestroy {
 				false, 
 				StringWrappedValueDto.fromJS({value: base64})
 			).subscribe(() => {
-				alert('Success', 'Successfully saved');
-				this.isLoading = false;
-				this.chd.detectChanges();
+				this.getTemplateVersions(this.templateId);
+				this.cleanUp();
 			})
 		})
 	}
 
 	saveCurrentAsComplete(isAgreement: boolean) {
 		this.isLoading = true;
-
-		this._dialog.open(SaveAsPopupComponent, {
-			data: {
-				document: this.selectedVersion,
-				isAgreement
-			},
-			height: 'auto',
-			width: '500px',
-			maxWidth: '100%',
-			disableClose: true,
-			hasBackdrop: true,
-			backdropClass: 'backdrop-modal--wrapper',
-		}).afterClosed().pipe(
-			map(res => {
-				if (res) {
-					return res;
-				} else {
-					this.isLoading = false;
-					this.chd.detectChanges();
-					return null;
-				}
-			}),
-			filter(res => !!res),
-			switchMap((res: CompleteTemplateDocumentFileDraftDto) => 
-				this._agreementService.saveCurrentAsCompleteTemplate(
-					this.templateId, 
-					res
-				).pipe(
-					tap(() => this.getTemplateVersions(this.templateId))
-				))
-		).subscribe(() => {
-			alert('Success', 'Successfully saved');
-			this.isLoading = false;
-			this.chd.detectChanges();
-		});
+		if (isAgreement) {
+			this._editorCoreService.setTemplateAsBase64(base64 => {
+				this._agreementService.saveDraftAsDraftTemplate(
+					this.templateId, false, StringWrappedValueDto.fromJS({value: base64})
+				)
+				.subscribe(() => {
+					this.getTemplateVersions(this.templateId);
+					this.cleanUp();
+				})
+			})
+		} else {
+			this._dialog.open(SaveAsPopupComponent, {
+				data: {
+					document: this.selectedVersion,
+					isAgreement
+				},
+				height: 'auto',
+				width: '500px',
+				maxWidth: '100%',
+				disableClose: true,
+				hasBackdrop: true,
+				backdropClass: 'backdrop-modal--wrapper',
+			}).afterClosed().pipe(
+				map(res => {
+					if (res) {
+						return res;
+					} else {
+						this.isLoading = false;
+						this.chd.detectChanges();
+						return null;
+					}
+				}),
+				filter(res => !!res),
+				switchMap((res: CompleteTemplateDocumentFileDraftDto) => 
+					this._agreementService.saveCurrentAsCompleteTemplate(
+						this.templateId, 
+						res
+					).pipe(
+						tap(() => this.getTemplateVersions(this.templateId))
+					))
+			).subscribe(() => {
+				this.cleanUp();
+			});
+		}
 	}
 
 	saveDraftAsDraft() {
@@ -329,9 +332,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this.templateId, false, StringWrappedValueDto.fromJS({value: base64})
 			)
 			.subscribe(() => {
-				alert('Success', 'Successfully saved');
-				this.isLoading = false;
-				this.chd.detectChanges();
+				this.cleanUp();
 			})
 		})
 	}
@@ -347,11 +348,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 			)
 			.subscribe((res) => {
 				if (res) {
-					alert('Success', 'Successfully saved');
-					this.getTemplateVersions(this.templateId)
+					this.showSnackbar();
+					this.getTemplateVersions(this.templateId);
 				}
 				
 				this.isLoading = false;
+				this.hasUnsavedChanges$.next(false);
 				this.chd.detectChanges();
 			})
 		})
@@ -365,5 +367,19 @@ export class EditorComponent implements OnInit, OnDestroy {
 			}),
 			take(1)
 		).subscribe()
+	}
+
+	cleanUp() {
+		this.showSnackbar();
+		this.isLoading = false;
+		this._editorCoreService.removeUnsavedChanges();
+		this.chd.detectChanges();
+	}
+
+	showSnackbar() {
+		this._snackBar.open('Successdully saved!', '', {
+			duration: 2500,
+			panelClass: 'green-panel'
+		});
 	}
 }
