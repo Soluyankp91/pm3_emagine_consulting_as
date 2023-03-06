@@ -29,6 +29,7 @@ import { ContractsClientDataComponent } from './workflow-contracts/contracts-cli
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
 import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
+import { LatestChangesComponent } from './workflow-overview/latest-changes/latest-changes.component';
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolv
         ContractsSyncDataComponent,
         ContractsClientDataComponent,
         ToggleEditModeComponent,
-        DocumentsComponent
+        DocumentsComponent,
+        LatestChangesComponent
     ],
     imports: [
         CommonModule,
