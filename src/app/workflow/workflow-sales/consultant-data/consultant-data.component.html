@@ -356,7 +356,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantRatesFees">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">4</span>
@@ -663,7 +662,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantPayment">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
@@ -1095,6 +1093,7 @@
 
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon u-ml--10" mat-icon-button
+                type="button"
                 (click)="openClientInNewTab(client?.clientId)"
                 [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
@@ -1103,6 +1102,7 @@
 
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon" mat-icon-button
+                type="button"
                 (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
                 [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">

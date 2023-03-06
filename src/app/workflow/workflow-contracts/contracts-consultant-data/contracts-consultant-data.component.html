@@ -42,57 +42,59 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline"
-                                    class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
-                                    [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
-                                    [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
-                                    <mat-label>Consultant Name</mat-label>
-                                    <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
-                                        formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
-                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                        placeholder="Consultant name">
-                                        <span matSuffix class="shevron"></span>
-                                    <mat-autocomplete #consultantAutocomplete="matAutocomplete"
-                                        [displayWith]="displayNameFn">
-                                        <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
-                                            <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
-                                                appPreventDoubleClick>
-                                                <div class="multilineDropdown-option--row">
-                                                    <ng-container *ngIf="item?.id !== undefined">
-                                                        <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
-                                                    </ng-container>
-                                                    <div
-                                                        class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                        <span class="multilineDropdown-option--column-client-name">{{
-                                                            item?.name }}</span>
+                                <ng-container *ngIf="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11; else nameOnlyConsutlant">
+                                    <mat-form-field appearance="outline"
+                                        class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
+                                        [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}">
+                                        <mat-label>Consultant Name</mat-label>
+                                        <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
+                                            formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
+                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                            placeholder="Consultant name">
+                                            <span matSuffix class="shevron"></span>
+                                        <mat-autocomplete #consultantAutocomplete="matAutocomplete"
+                                            [displayWith]="displayNameFn">
+                                            <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
+                                                <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
+                                                    appPreventDoubleClick>
+                                                    <div class="multilineDropdown-option--row">
                                                         <ng-container *ngIf="item?.id !== undefined">
-                                                            <span
-                                                                class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                {{item?.companyName ? item.companyName + ' | ' : ''}}
-                                                                {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
-                                                                {{item?.legacyId}}
-                                                            </span>
+                                                            <img class="image-thumbnail-small border-rounded-50 u-mr--10"
+                                                                [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                                         </ng-container>
+                                                        <div
+                                                            class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                            <span class="multilineDropdown-option--column-client-name">{{
+                                                                item?.name }}</span>
+                                                            <ng-container *ngIf="item?.id !== undefined">
+                                                                <span
+                                                                    class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                    {{item?.companyName ? item.companyName + ' | ' : ''}}
+                                                                    {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
+                                                                    {{item?.legacyId}}
+                                                                </span>
+                                                            </ng-container>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-autocomplete>
-                                    <mat-error>
-                                        <app-validator [control]="consultant.get('consultant')"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                                <mat-form-field appearance="outline"
-                                    class="client-and-consultant-autocomplete formFieldNoMarginPadding filter-select disabled-input"
-                                    [fxHide]="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11">
-                                    <mat-label>Consultant Name only</mat-label>
-                                    <input [disabled]="true" type="text" matInput formControlName="nameOnly"
-                                        placeholder="Consultant name only">
-                                    <mat-error>
-                                        <app-validator [control]="consultant.get('nameOnly')"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('consultant')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </ng-container>
+                                <ng-template #nameOnlyConsutlant>
+                                    <mat-form-field appearance="outline"
+                                        class="client-and-consultant-autocomplete formFieldNoMarginPadding filter-select disabled-input">
+                                        <mat-label>Consultant Name only</mat-label>
+                                        <input [disabled]="true" type="text" matInput formControlName="nameOnly"
+                                            placeholder="Consultant name only">
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('nameOnly')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </ng-template>
                             </div>
                             <app-consultant-information [onlyAdditionalInfo]="true"
                                 [consultantData]="consultant?.value?.consultant"></app-consultant-information>
@@ -227,9 +229,62 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantRatesFees">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantFrameAgreement">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
+                                <h2 class="workflow-section--header">Frame agreement</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <mat-form-field appearance="outline"
+                                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
+                                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
+                                            <mat-label>Frame agreement</mat-label>
+                                            <input [disabled]="readOnlyMode" required #frameAgreementInput type="text"
+                                                matInput [matAutocomplete]="frameAgreementAutocomplete"
+                                                formControlName="frameAgreementId" appPreventDoubleClick
+                                                (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
+                                                <span matSuffix class="shevron"></span>
+                                            <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
+                                                [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                <ng-container *ngFor="let item of filteredFrameAgreements[consultantIndex]; trackBy: trackById">
+                                                    <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
+                                                        <div class="multilineDropdown-option--row">
+                                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                                <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                                <ng-container *ngIf="item?.agreementId !== undefined">
+                                                                    <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                                        {{item.countryName}}
+                                                                        {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
+                                                                        {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                                    </span>
+                                                                </ng-container>
+                                                            </div>
+                                                        </div>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                            <mat-error>
+                                                <app-validator [control]="consultant.get('frameAgreementId')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-container>
+                                <ng-template #noFrameAgreementsTemplate>
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                        class="emptyStateRow">
+                                        <span class="light-grey-color text-600">
+                                            Coming soon - with the contracts module..
+                                        </span>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantRatesFees">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">6</span>
                                 <h2 class="workflow-section--header">Consultant rates and fees</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -820,7 +875,7 @@
                         </div>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantProjectLines">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                <span class="workflow-section--number">6</span>
+                                <span class="workflow-section--number">7</span>
                                 <h2 class="workflow-section--header">Project lines</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -1125,6 +1180,15 @@
                                         </button>
                                     </div>
                                 </ng-container>
+                            </div>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantLegalContracts">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">8</span>
+                                <h2 class="workflow-section--header">Legal contracts</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <legal-contracts-list #legalContracts [periodId]="consultant.value.consultantPeriodId" [isClientContracts]="false" [readOnlyMode]="readOnlyMode"></legal-contracts-list>
                             </div>
                         </div>
                     </ng-container>

@@ -3,9 +3,14 @@
 
 app-agreements {
 	display: flex;
-    flex-direction: column;
+	flex-direction: column;
 	height: calc(100vh - 49px);
 
+	.table-and-preview-container {
+		display: flex;
+		position: relative;
+		flex-grow: 1;
+	}
 	.table-cell {
 		@include table-cell(600);
 	}
@@ -69,9 +74,11 @@ app-agreements {
 	}
 	.mode-column {
 		@include table-cell-width(60px);
+        justify-content: center;
 	}
 	.status-column {
 		@include table-cell-width(63px);
+        justify-content: center;
 	}
 	.start-date-column {
 		@include table-cell-width(90px);
@@ -83,7 +90,7 @@ app-agreements {
 		@include table-cell-width(48px);
 	}
 	.contractManager-column {
-		@include table-cell-width(40px);
+		@include table-cell-width(48px);
 	}
 	.actions-column {
 		@include table-cell-width(40px);
@@ -107,7 +114,7 @@ app-agreements {
 		width: 8px;
 	}
 	.country-icon {
-		@include avatar-icon;
+		@include medium-icon;
 	}
 	.tenant-menu {
 		width: 213px;
@@ -121,5 +128,8 @@ app-agreements {
 	}
 	.table-and-preview-container {
 		display: flex;
+	}
+	.profile-picture {
+		@include profile-picture;
 	}
 }

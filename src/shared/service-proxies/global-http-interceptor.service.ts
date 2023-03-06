@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from "@angular/core";
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse, HttpResponse, HttpContextToken } from '@angular/common/http';
 import { Observable, of, throwError } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { ErrorDialogService } from "src/app/shared/common/errors/error-dialog.se
 import { MsalService } from "@azure/msal-angular";
 import { MANUAL_ERROR_HANDLER_ENABLED } from "./http-context-tokens";
 
+export const BYPASS_LOG = new HttpContextToken(() => false);
 @Injectable()
 export class GlobalHttpInterceptorService implements HttpInterceptor {
 
@@ -19,6 +20,9 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (req.context.get(BYPASS_LOG)) {
+            return next.handle(req);
+        }
         return next.handle(req).pipe(
             catchError((error) => {
                 if (req.context.get(MANUAL_ERROR_HANDLER_ENABLED) === true) {

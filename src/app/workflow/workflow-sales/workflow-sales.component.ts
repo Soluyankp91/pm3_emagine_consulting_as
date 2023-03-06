@@ -601,6 +601,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				result?.salesClientData?.contractSigners?.forEach((signer: ContractSignerDto) => {
 					this.clientDataComponent?.addSignerToForm(signer);
 				});
+                this.clientDataComponent.selectedFrameAgreementId = result.salesClientData.frameAgreementId ?? null;
 				if (result.consultantSalesData?.length) {
 					result.consultantSalesData?.forEach((consultant) => {
 						this.consutlantDataComponent?.addConsultantForm(consultant);
@@ -621,7 +622,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
                 if (this.isContractModuleEnabled) {
-                    this.clientDataComponent?.getFrameAgreements();
+                    this.clientDataComponent?.getPrimaryFrameAgreements();
                 }
 			});
 	}
@@ -1080,6 +1081,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				input.salesClientData!.contractSigners?.push(signerInput);
 			});
 		}
+        input.salesClientData.frameAgreementId = this.clientDataComponent.salesClientDataForm.frameAgreementId.value?.agreementId;
 		input.consultantSalesData = new Array<ConsultantSalesDataDto>();
 		if (this.consutlantDataComponent?.consultants.value?.length) {
 			this.consutlantDataComponent?.consultants.value.forEach((consultant: any) => {

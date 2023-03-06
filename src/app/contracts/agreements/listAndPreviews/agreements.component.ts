@@ -1,8 +1,7 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation, Injector } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation, Injector, OnDestroy } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as moment from 'moment';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, startWith, pairwise } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
@@ -38,7 +37,7 @@ import { AgreementService } from './services/agreement.service';
 	providers: [GridHelpService],
 	encapsulation: ViewEncapsulation.None,
 })
-export class AgreementsComponent extends AppComponentBase implements OnInit {
+export class AgreementsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChildren(AgreementPreviewComponent, { read: ElementRef }) preview: QueryList<ElementRef>;
 	cells = this._gridHelpService.generateTableConfig(DISPLAYED_COLUMNS, AGREEMENT_HEADER_CELLS);
 	displayedColumns = DISPLAYED_COLUMNS;
@@ -49,7 +48,6 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	selectedItemsActions = AGREEMENT_BOTTOM_ACTIONS;
 
 	dataSource$: Observable<AgreementListItemDtoPaginatedList> = this._agreementService.getContracts$();
-
 	currentRowInfo$: ReplaySubject<{ name: string; id: number } | null> = new ReplaySubject(1);
 
 	private _outsideClicksSub: Subscription;
@@ -63,8 +61,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 		private readonly _agreementService: AgreementService,
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _contractService: ContractsService,
-        private readonly _downloadFilesService: DownloadFilesService,
-		private readonly _injector: Injector,
+		private readonly _downloadFilesService: DownloadFilesService,
+		private readonly _injector: Injector
 	) {
 		super(_injector);
 	}
@@ -74,6 +72,10 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 		this._initPreselectedFilters();
 		this._subscribeOnOuterClicks();
 		this._subscribeOnLoading();
+	}
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	onSortChange($event: Sort) {
@@ -184,8 +186,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				mode: item.validity,
 				status: item.status,
-				startDate: moment(item.startDate).format('DD.MM.YYYY'),
-				endDate: moment(item.endDate).format('DD.MM.YYYY'),
+				startDate: item.startDate,
+				endDate: item.endDate,
 				saleManager: item.salesManager ? item.salesManager : null,
 				contractManager: item.contractManager ? item.contractManager : null,
 				isWorkflowRelated: item.isWorkflowRelated,
@@ -216,7 +218,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit {
 	}
 
 	private _subscribeOnLoading() {
-		this._agreementService.contractsLoading$$.subscribe((isLoading) => {
+		this._agreementService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 			} else {

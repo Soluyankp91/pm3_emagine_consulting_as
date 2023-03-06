@@ -3,7 +3,6 @@ import {
 	forwardRef,
 	Input,
 	OnInit,
-	ViewEncapsulation,
 	ChangeDetectionStrategy,
 	ContentChild,
 	TemplateRef,
@@ -25,7 +24,6 @@ import { cloneDeep, isEqual } from 'lodash';
 		},
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
 })
 export class MultiSelectComponent implements OnInit, AfterContentInit, ControlValueAccessor {
 	@Input() idProperty: string | number = 'id';

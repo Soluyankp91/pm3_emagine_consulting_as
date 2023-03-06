@@ -2,4 +2,7 @@
 	<ng-template #triggerButton>
 		<div class="table-header-cell">{{ labelMap[tableFilter] }}</div>
 	</ng-template>
+	<ng-template let-option #optionPrefix>
+		<emg-enabled [isEnabled]="option.id"></emg-enabled>
+	</ng-template>
 </emg-multi-select>

@@ -25,16 +25,19 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementLanguagesFilterComponent
 				),
 		},
+		class: 'language-column',
 		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'ID',
+		class: 'id-column',
 		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Template Name',
+		class: 'template-name-column',
 		sort: true,
 	},
 	{
@@ -46,6 +49,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.AgreementTypesFilterComponent
 				),
 		},
+		class: 'agreementType-column',
 		sort: true,
 	},
 	{
@@ -57,6 +61,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.RecipientTypesFilterComponent
 				),
 		},
+		class: 'recipientTypeId-column',
 		sort: true,
 	},
 	{
@@ -68,6 +73,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.LegalEntitiesFilterComponent
 				),
 		},
+		class: 'legalEntityId-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -78,6 +84,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.SalesTypesFilterComponent
 				),
 		},
+		class: 'salesType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -88,6 +95,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.DeliveryTypesFilterComponent
 				),
 		},
+		class: 'deliveryType-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -98,11 +106,13 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.EmploymentTypesFilterComponent
 				),
 		},
+		class: 'contractType-column',
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Last updated',
 		sort: true,
+		class: 'last-updated-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -113,6 +123,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 					(it) => it.EmployeesFilterComponent
 				),
 		},
+		class: 'last-updated-by-employee-column',
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -121,6 +132,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'isEnabled',
 			component: () => import('../filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
 		},
+		class: 'status-column',
 	},
 ];
 export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
@@ -143,7 +155,7 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	language: 'Language',
 	note: 'Notes',
 	isEnabled: 'Status',
-    agreementStatus: 'Status',
+	agreementStatus: 'Status',
 	agreementTemplateId: 'ID',
 	agreementId: 'ID',
 	createdDateUtc: 'Created',

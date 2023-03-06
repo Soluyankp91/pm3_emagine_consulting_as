@@ -1,4 +1,4 @@
 @import 'mixins';
 app-client-template-preview {
-	@include preview-layout(115px);
+	@include preview-layout();
 }
