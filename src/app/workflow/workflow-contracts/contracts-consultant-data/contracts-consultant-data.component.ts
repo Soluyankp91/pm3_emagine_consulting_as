@@ -38,7 +38,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantFeeEditing = false;
     filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
-
+    selectedFrameAgreementList = new Array<null | number>();
 	private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -66,10 +66,11 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         this.getFrameAgreements(consultantId, consultantIndex, true)
             .subscribe((result) => {
                 this.filteredFrameAgreements[consultantIndex] = result.items;
-                if (result.items.length === 1) {
+                if (this.selectedFrameAgreementList[consultantIndex] !== null) {
+                    this.consultants?.at(consultantIndex)?.get('frameAgreementId').setValue(this.selectedFrameAgreementList[consultantIndex]);
+                } else if (result.totalCount === 1) {
                     this._checkAndPreselectFrameAgreement(consultantIndex);
-                }
-                if (result.items.length === 0) {
+                } else if (result?.totalCount === 0) {
                     this.consultants?.at(consultantIndex)?.get('frameAgreementId').setValue('');
                 }
             });
@@ -127,7 +128,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		) {
 			if (this.filteredFrameAgreements[consultantIndex].length === 1) {
 				this.contractsConsultantsDataForm.consultants.controls.forEach(form => {
-                    form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0].agreementId, { emitEvent: false });
+                    form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0], { emitEvent: false });
                 });
 			}
 		}

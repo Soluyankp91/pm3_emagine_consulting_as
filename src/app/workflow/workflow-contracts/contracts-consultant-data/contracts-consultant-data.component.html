@@ -247,7 +247,7 @@
                                                 (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
                                                 <span matSuffix class="shevron"></span>
                                             <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
-                                                [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                                [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
                                                 (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                                 <ng-container *ngFor="let item of filteredFrameAgreements[consultantIndex]; trackBy: trackById">
                                                     <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">

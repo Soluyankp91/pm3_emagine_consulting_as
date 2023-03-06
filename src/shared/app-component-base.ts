@@ -6,8 +6,9 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
-import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
+import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
 import { EProfileImageLinkTypes } from "./AppEnums";
+import { MomentFormatPipe } from "./common/pipes/moment-format.pipe";
 
 export enum NotifySeverity {
 	Info = 1,
@@ -23,7 +24,7 @@ export abstract class AppComponentBase {
     momentFormatType = AppConsts.momentFormatType;
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
-
+    private _momentFormatPipe: MomentFormatPipe;
     imageType = EProfileImageLinkTypes;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
@@ -197,6 +198,10 @@ export abstract class AppComponentBase {
 			return option?.supplierName;
 		}
 	}
+
+    displayAgreementNameFn(option: AgreementSimpleListItemDto) {
+        return `${option?.agreementName}, ${option.countryName} ${option.countryName ? '•' : '' + this._momentFormatPipe.transform(option.startDate)} ${option.startDate !== null && option.startDate !== undefined ? '-' : '' + this._momentFormatPipe.transform(option.endDate)}`;
+    }
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;

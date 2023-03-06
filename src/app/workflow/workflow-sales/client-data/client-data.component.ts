@@ -56,6 +56,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialFeeFilter = new UntypedFormControl('');
     filteredFrameAgreements: AgreementSimpleListItemDto[];
+
+    selectedFrameAgreementId: number | null;
+
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -330,6 +333,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
                 if (list?.items?.length) {
 					this.filteredFrameAgreements = list.items;
+                    if (this.selectedFrameAgreementId) {
+                        this.salesClientDataForm.frameAgreementId.setValue(list.items.find(x => x.agreementId === this.selectedFrameAgreementId), {emitEvent: false});
+                        this.selectedFrameAgreementId = null;
+                    }
 				} else {
 					this.filteredFrameAgreements = [
 						new AgreementSimpleListItemDto({
@@ -345,10 +352,11 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
         this.getFrameAgreements(true)
         .subscribe((result) => {
             this.filteredFrameAgreements = result.items;
-            if (result?.totalCount === 1) {
+            if (this.selectedFrameAgreementId !== null) {
+                this.salesClientDataForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
+            } else if (result?.totalCount === 1) {
                 this._checkAndPreselectFrameAgreement();
-            }
-            if (result?.totalCount === 0) {
+            } else if (result?.totalCount === 0) {
                 this.salesClientDataForm.frameAgreementId.setValue('');
             }
         });
@@ -404,7 +412,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.mainDataForm.deliveryTypeId.value
 		) {
             if (this.filteredFrameAgreements.length === 1) {
-                this.salesClientDataForm.frameAgreementId.setValue(this.filteredFrameAgreements[0].agreementId, { emitEvent: false });
+                this.salesClientDataForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
             }
 		}
     }

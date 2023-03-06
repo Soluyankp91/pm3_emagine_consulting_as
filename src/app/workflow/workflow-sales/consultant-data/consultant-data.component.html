@@ -1093,6 +1093,7 @@
 
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon u-ml--10" mat-icon-button
+                type="button"
                 (click)="openClientInNewTab(client?.clientId)"
                 [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
@@ -1101,6 +1102,7 @@
 
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon" mat-icon-button
+                type="button"
                 (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
                 [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
