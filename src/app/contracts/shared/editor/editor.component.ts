@@ -278,8 +278,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveCurrentAsComplete(isAgreement: boolean) {
 		this.isLoading = true;
-		if (isAgreement) {
-			this._editorCoreService.setTemplateAsBase64(base64 => {
+
+		this._editorCoreService.setTemplateAsBase64(base64 => {
+			if (isAgreement) {
 				this._agreementService.saveDraftAsDraftTemplate(
 					this.templateId, false, StringWrappedValueDto.fromJS({value: base64})
 				)
@@ -287,41 +288,46 @@ export class EditorComponent implements OnInit, OnDestroy {
 					this.getTemplateVersions(this.templateId);
 					this.cleanUp();
 				})
-			})
-		} else {
-			this._dialog.open(SaveAsPopupComponent, {
-				data: {
-					document: this.selectedVersion,
-					isAgreement
-				},
-				height: 'auto',
-				width: '500px',
-				maxWidth: '100%',
-				disableClose: true,
-				hasBackdrop: true,
-				backdropClass: 'backdrop-modal--wrapper',
-			}).afterClosed().pipe(
-				map(res => {
-					if (res) {
-						return res;
-					} else {
-						this.isLoading = false;
-						this.chd.detectChanges();
-						return null;
-					}
-				}),
-				filter(res => !!res),
-				switchMap((res: CompleteTemplateDocumentFileDraftDto) => 
-					this._agreementService.saveCurrentAsCompleteTemplate(
-						this.templateId, 
-						res
-					).pipe(
-						tap(() => this.getTemplateVersions(this.templateId))
-					))
-			).subscribe(() => {
-				this.cleanUp();
-			});
-		}
+			} else {
+				this._dialog.open(SaveAsPopupComponent, {
+					data: {
+						document: this.selectedVersion,
+						base64,
+						isAgreement
+					},
+					height: 'auto',
+					width: '500px',
+					maxWidth: '100%',
+					disableClose: true,
+					hasBackdrop: true,
+					backdropClass: 'backdrop-modal--wrapper',
+				}).afterClosed().pipe(
+					map(res => {
+						if (res) {
+							return res;
+						} else {
+							this.isLoading = false;
+							this.chd.detectChanges();
+							return null;
+						}
+					}),
+					filter(res => !!res),
+					switchMap((res: CompleteTemplateDocumentFileDraftDto) => 
+						this._agreementService.saveCurrentAsCompleteTemplate(
+							this.templateId, 
+							res
+						).pipe(
+							tap(() => {
+								if (isAgreement) {
+									this.getTemplateVersions(this.templateId);
+								}
+							})
+						))
+				).subscribe(() => {
+					this.cleanUp();
+				});
+			}
+		})
 	}
 
 	saveDraftAsDraft() {
