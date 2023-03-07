@@ -1,4 +1,4 @@
-import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector, ChangeDetectorRef } from '@angular/core';
+import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -47,7 +47,6 @@ import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfac
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
-	encapsulation: ViewEncapsulation.None,
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
@@ -59,6 +58,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	legalEntities: LegalEntityDto[];
 
 	agreementFormGroup = new AgreementModel();
+
+	noExpirationDateControl = new FormControl(false);
 
 	attachmentsFromParent: FileUpload[] = [];
 	preselectedFiles: FileUpload[] = [];
@@ -118,6 +119,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subscribeOnSignatureRequire();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
+		this._subscribeOnNoExpirationDates();
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
 			this.editMode = true;
@@ -219,6 +221,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _createAttachments(files: FileUpload[]) {
 		return files.map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
+	}
+
+	private _subscribeOnNoExpirationDates() {
+		this.noExpirationDateControl.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((val) => {
+			if (val) {
+				this.agreementFormGroup.endDate.reset(null);
+				this.agreementFormGroup.endDate.disable({ emitEvent: false });
+			} else {
+				this.agreementFormGroup.enable({ emitEvent: false });
+			}
+		});
 	}
 
 	private _subscribeOnTemplateNameChanges() {
@@ -644,6 +657,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 			this.preselectedFiles = agreement.attachments as FileUpload[];
 			this._cdr.detectChanges();
+
+			if (!agreement.endDate) {
+				this.noExpirationDateControl.setValue(true);
+			}
+
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,
@@ -675,6 +693,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _resetForm() {
 		this.agreementFormGroup.reset();
 		this.preselectedFiles = [];
-        this.attachmentsFromParent = [];
+		this.attachmentsFromParent = [];
 	}
 }

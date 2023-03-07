@@ -58,7 +58,7 @@
 						</ng-template> </ng-template
 				></emg-dropdown-autocomplete-multiselect>
 			</ng-container>
-			<mat-form-field appearance="outline">
+			<mat-form-field appearance="outline" class="flex-basis-200">
 				<mat-select formControlName="status" placeholder="Status" multiple [compareWith]="compareWith">
 					<ng-container *ngFor="let status of statusesOptions">
 						<mat-option [value]="status">

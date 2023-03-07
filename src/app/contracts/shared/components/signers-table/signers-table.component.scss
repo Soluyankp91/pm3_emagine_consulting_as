@@ -24,21 +24,19 @@ app-signers-table {
 		padding-left: 4px;
 	}
 	.signer-name-cell {
-		max-width: 182px;
-		min-width: 182px;
+		flex-basis: calc(31.56% + 4px);
 	}
 	.sequence-cell {
-		max-width: 68px;
-		min-width: 68px;
+		flex-basis: calc(11.34% + 4px);
 	}
 	.delete-cell {
-		max-width: 38px;
-		min-width: 38px;
+		flex-basis: calc(3.9% + 12px);
 	}
-	.signer-type-cell,
+	.signer-type-cell {
+		flex-basis: calc(23.75% + 8px);
+	}
 	.signing-role-cell {
-		max-width: 138px;
-		min-width: 138px;
+		flex-basis: calc(23.75% + 4px);
 	}
 	.signer-header-cell {
 		font-size: 10px;

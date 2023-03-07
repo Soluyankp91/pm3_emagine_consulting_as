@@ -18,7 +18,6 @@ import {
 	OnInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
-	ViewEncapsulation,
 	OnDestroy,
 	Injector,
 } from '@angular/core';
@@ -54,7 +53,6 @@ import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/rele
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
 })
 export class CreateMasterTemplateComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = MASTER_CREATION;
@@ -168,7 +166,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			});
 	}
 
-	onCancel() {
+	navigateBack() {
 		this._navigateOnAction();
 	}
 

@@ -18,7 +18,6 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	@Input() labelKey: string = 'name';
 	@Input() outputProperty: string = 'id';
 	@Input() label: string = 'label';
-	@Input() width: string;
     @Input() displayError: boolean = true;
     @Input() appearance: MatFormFieldAppearance = 'outline';
 	@Input() unwrapFunction?: (arg: any) => {};
