@@ -122,6 +122,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 						if (error.status === 400) {
 							disableSendAllButton = true;
 						}
+                        this.hideMainSpinner();
 						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
 					},
 					complete: () => {
@@ -211,7 +212,21 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public redirectToCreateAgreement() {
-		const url = this._router.serializeUrl(this._router.createUrlTree([`/app/contracts/agreements/create`]));
+		const url = this._router.serializeUrl(
+			this._router.createUrlTree([`/app/contracts/agreements/create`],
+            this.isClientContracts ?
+            {
+                queryParams: {
+                    clientPeriodId: this.periodId
+                }
+            } :
+            {
+                queryParams: {
+                    consultantPeriodId: this.periodId
+                }
+            }
+            )
+		);
 		window.open(url, '_blank');
 	}
 

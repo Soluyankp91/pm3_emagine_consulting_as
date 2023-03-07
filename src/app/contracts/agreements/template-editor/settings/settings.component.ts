@@ -93,6 +93,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	currentDuplicatedTemplate: AgreementDetailsDto;
 
 	currentAgreementTemplate: AgreementDetailsDto;
+    clientPeriodId: string;
+    consultantPeriodId: string;
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -119,6 +121,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		const paramId = this._route.snapshot.params.id;
+		const clientPeriodId = this._route.snapshot.queryParams.clientPeriodId;
+		const consultantPeriodId = this._route.snapshot.queryParams.consultantPeriodId;
 		if (paramId) {
 			this.editMode = true;
 			this.currentAgreementId = paramId;
@@ -130,6 +134,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subscribeOnModeReplay();
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
+		}
+        if (clientPeriodId) {
+			this.clientPeriodId = clientPeriodId;
+		}
+		if (consultantPeriodId) {
+			this.consultantPeriodId = consultantPeriodId;
 		}
 	}
 
@@ -157,6 +167,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	navigateToEditor(templateId: number) {
 		this._router.navigate([`../${templateId}/editor`], {
 			relativeTo: this._route,
+			queryParams: this.clientPeriodId
+				? {
+						clientPeriodId: this.clientPeriodId,
+				  }
+				: {
+						consultantPeriodId: this.consultantPeriodId,
+				  },
 		});
 	}
 
@@ -193,6 +210,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
+        toSend.clientPeriodId = this.clientPeriodId ?? undefined;
+        toSend.consultantPeriodId = this.consultantPeriodId ?? undefined;
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy

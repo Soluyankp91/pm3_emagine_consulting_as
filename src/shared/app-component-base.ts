@@ -199,8 +199,12 @@ export abstract class AppComponentBase {
 	}
 
     displayAgreementNameFn(option: AgreementSimpleListItemDto) {
-        let momentFormatPipe = new MomentFormatPipe();
-        return `${option?.agreementName}, ${option?.countryName} ${option?.countryName ? '•' : '' + option?.startDate !== null && option?.startDate !== undefined ? '' : momentFormatPipe.transform(option?.startDate)} ${option?.startDate !== null && option?.startDate !== undefined ? '-' : '' + momentFormatPipe.transform(option?.endDate)}`;
+        if (option?.agreementId) {
+            let momentFormatPipe = new MomentFormatPipe();
+            return `${option?.agreementName}, ${option?.countryName} ${option?.countryName ? '•' : ''} ${momentFormatPipe.transform(option?.startDate)} ${option?.startDate !== null && option?.startDate !== undefined ? '-' : ''} ${momentFormatPipe.transform(option?.endDate)}`;
+        } else {
+            return '';
+        }
     }
 
 	compareWithFn(listOfItems: any, selectedItem: any) {

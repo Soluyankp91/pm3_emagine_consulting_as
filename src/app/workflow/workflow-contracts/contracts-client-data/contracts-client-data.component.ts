@@ -83,7 +83,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
             .subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
                 if (list?.items?.length) {
                     this.filteredFrameAgreements = list.items;
-                    console.log('ss');
                     if (this.selectedFrameAgreementId) {
                         this.contractClientForm.frameAgreementId.setValue(list.items.find(x => x.agreementId === this.selectedFrameAgreementId), {emitEvent: false});
                         this.selectedFrameAgreementId = null;
@@ -123,7 +122,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
             .subscribe((result) => {
                 this.filteredFrameAgreements = result.items;
                 if (this.selectedFrameAgreementId !== null) {
-                    console.log('call');
                     this.contractClientForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
                 } else if (result.totalCount === 1) {
                     this._checkAndPreselectFrameAgreement();

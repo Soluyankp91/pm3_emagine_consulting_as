@@ -241,7 +241,7 @@
                                             class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
                                             [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
                                             <mat-label>Frame agreement</mat-label>
-                                            <input [disabled]="readOnlyMode" required #frameAgreementInput type="text"
+                                            <input [disabled]="readOnlyMode" #frameAgreementInput type="text"
                                                 matInput [matAutocomplete]="frameAgreementAutocomplete"
                                                 formControlName="frameAgreementId" appPreventDoubleClick
                                                 (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
@@ -257,8 +257,10 @@
                                                                 <ng-container *ngIf="item?.agreementId !== undefined">
                                                                     <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
                                                                         {{item.countryName}}
-                                                                        {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
-                                                                        {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
+                                                                        {{item.countryName ? '•' : ''}}
+                                                                        {{item.startDate | momentFormat}}
+                                                                        {{item.startDate !== null && item.startDate !== undefined ? '-' : ''}}
+                                                                        {{item.endDate | momentFormat}}
                                                                     </span>
                                                                 </ng-container>
                                                             </div>
