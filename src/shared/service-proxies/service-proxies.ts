@@ -25994,7 +25994,7 @@ export interface IExtendConsultantPeriodDto {
 }
 
 export class FileDef implements IFileDef {
-    base64Content?: string | undefined;
+    content?: string | undefined;
     fileName?: string | undefined;
 
     constructor(data?: IFileDef) {
@@ -26008,7 +26008,7 @@ export class FileDef implements IFileDef {
 
     init(_data?: any) {
         if (_data) {
-            this.base64Content = _data["base64Content"];
+            this.content = _data["content"];
             this.fileName = _data["fileName"];
         }
     }
@@ -26022,14 +26022,14 @@ export class FileDef implements IFileDef {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["base64Content"] = this.base64Content;
+        data["content"] = this.content;
         data["fileName"] = this.fileName;
         return data;
     }
 }
 
 export interface IFileDef {
-    base64Content?: string | undefined;
+    content?: string | undefined;
     fileName?: string | undefined;
 }
 
@@ -30020,7 +30020,7 @@ export class UpdateCompletedTemplateDocumentFileDto implements IUpdateCompletedT
     versionDescription?: string | undefined;
     propagateChangesToDerivedTemplates?: boolean | undefined;
     markActiveAgreementsAsOutdated?: boolean;
-    fileContentBase64?: string | undefined;
+    fileContent?: string | undefined;
 
     constructor(data?: IUpdateCompletedTemplateDocumentFileDto) {
         if (data) {
@@ -30036,7 +30036,7 @@ export class UpdateCompletedTemplateDocumentFileDto implements IUpdateCompletedT
             this.versionDescription = _data["versionDescription"];
             this.propagateChangesToDerivedTemplates = _data["propagateChangesToDerivedTemplates"];
             this.markActiveAgreementsAsOutdated = _data["markActiveAgreementsAsOutdated"];
-            this.fileContentBase64 = _data["fileContentBase64"];
+            this.fileContent = _data["fileContent"];
         }
     }
 
@@ -30052,7 +30052,7 @@ export class UpdateCompletedTemplateDocumentFileDto implements IUpdateCompletedT
         data["versionDescription"] = this.versionDescription;
         data["propagateChangesToDerivedTemplates"] = this.propagateChangesToDerivedTemplates;
         data["markActiveAgreementsAsOutdated"] = this.markActiveAgreementsAsOutdated;
-        data["fileContentBase64"] = this.fileContentBase64;
+        data["fileContent"] = this.fileContent;
         return data;
     }
 }
@@ -30061,7 +30061,7 @@ export interface IUpdateCompletedTemplateDocumentFileDto {
     versionDescription?: string | undefined;
     propagateChangesToDerivedTemplates?: boolean | undefined;
     markActiveAgreementsAsOutdated?: boolean;
-    fileContentBase64?: string | undefined;
+    fileContent?: string | undefined;
 }
 
 export class UpdateDocuSignEnvelopeStatusCommand implements IUpdateDocuSignEnvelopeStatusCommand {

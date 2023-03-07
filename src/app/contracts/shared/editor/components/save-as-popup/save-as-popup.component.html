@@ -8,26 +8,32 @@
         </button>
     </div>
 
-    <p class="subtitle">{{config.subtitle}}</p>
+    <ng-container *ngIf="config.subtitle">
+        <p class="subtitle">{{config.subtitle}}</p>
+    </ng-container>
 
-    <form [formGroup]="form">
+    <form *ngIf="form" [formGroup]="form">
         <mat-form-field appearance="outline" class="textarea-form-field">
             <mat-label>Version description</mat-label>
-            <textarea formContorlName="description" [cdkTextareaAutosize]="false" matInput class="text-area"></textarea>
+            <textarea [formControlName]="'versionDescription'" [cdkTextareaAutosize]="false" matInput class="text-area"></textarea>
         </mat-form-field>
 
-        <mat-checkbox color="primary" name="" formContorlName="propogate" class="u-w--100 u-mr--16">
-            Propagate changes to all derived templates
-        </mat-checkbox>
+        <ng-container *ngIf="!data.isAgreement">
+            <mat-checkbox [formControlName]="'propagateChangesToDerivedTemplates'" color="primary" class="u-w--100 u-mr--16">
+                Propagate changes to all derived templates
+            </mat-checkbox>
+    
+            <mat-checkbox [formControlName]="'markActiveAgreementsAsOutdated'" color="primary" class="u-w--100 u-mr--16">
+                Mark active agreements based on this templates as outdated
+            </mat-checkbox>
+        </ng-container>
 
-        <mat-checkbox color="primary" name="" formContorlName="propogate" class="u-w--100 u-mr--16">
-            Mark active agreements based on this templates as outdated
-        </mat-checkbox>
-
-        <div class="warn">
-            <mat-icon>warning</mat-icon>
-            <p>Any significant changes should be promoted to a new version via Draft mode.</p>
-        </div>
+        <ng-container *ngIf="config.warning">
+            <div class="warn">
+                <mat-icon>warning</mat-icon>
+                <p>Any significant changes should be promoted to a new version via Draft mode.</p>
+            </div>
+        </ng-container>
     </form>
 </mat-dialog-content>
 

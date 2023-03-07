@@ -15,7 +15,10 @@ import { AgreementPreviewService } from '../../services/agreemen-preview.service
 })
 export class AgreementPreviewComponent implements OnChanges {
 	@Input() currentId: number | null;
+	@Input() fileName: string | null;
+
 	@Output() currentIdChange = new EventEmitter();
+	
 	constructor(private readonly _agreementPreviewService: AgreementPreviewService) {}
 
 	ngOnChanges(changes: SimpleChanges): void {

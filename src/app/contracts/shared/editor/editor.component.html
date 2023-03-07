@@ -1,3 +1,16 @@
+<div class="versions">
+	<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+		<mat-label>
+			{{selectedVersion?.isCurrent ? 'Current' : 'Draft'}}
+		</mat-label>
+		<mat-select [formControl]="selectedVersionControl" placeholder="version">
+			<mat-option *ngFor="let template of templateVersions$ | async" [value]="template.version">
+				<b>Version {{ template.version }}</b> - {{template.createdDateUtc | momentFormat}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+</div>
+
 <div richEditor class="editor" (saved)="saveAsComplete()"></div>
 <div class="comment-sidebar">
 	<app-comment-sidebar
@@ -18,12 +31,49 @@
 	[dataSource]="documentList$ | async"
 	(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
 
-<ng-container *ngIf="hasUnsavedChanges$ | async">
-	<div class="save-actions" [class.loading]="isLoading">
-		<button mat-button color="accent" (click)="cancel()">Cancel</button>
+	<!-- *ngIf="hasUnsavedChanges$ | async" -->
+<ng-container *ngIf="isLatestVersionSelected$ | async">
 
-		<button mat-stroked-button color="primary" (click)="saveAsDraft()">Save as a new version</button>
+	<ng-container *ngIf="selectedVersion?.isCurrent">
+		<div class="save-actions">
+			<button mat-button color="accent" (click)="cancel()">
+				Cancel
+			</button>
+	
+			<ng-container *ngIf="!(isAgreement$ | async)">
+				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
+					Save as a new version
+				</button>
+			</ng-container>
 
-		<button [disabled]="isAgreement$ | async" mat-flat-button color="primary" (click)="saveAsComplete()">Save</button>
-	</div>
+			<ng-container *ngIf="isAgreement$ | async">
+				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsComplete(true)">
+					Save as a new version
+				</button>
+			</ng-container>
+	
+			<ng-container *ngIf="!(isAgreement$ | async)">
+				<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">
+					Save
+				</button>
+			</ng-container>
+		</div>
+	</ng-container>
+
+	<ng-container *ngIf="selectedVersion?.isDraft">
+		<div class="save-actions">
+			<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">
+				Cancel
+			</button>
+	
+			<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
+				<span>Save as a draft</span>
+			</button>
+	
+			<button [disabled]="isLoading" mat-flat-button color="primary" (click)="saveDraftAsComplete()">
+				<span>Complete</span>
+			</button>
+		</div>
+	</ng-container>
+
 </ng-container>

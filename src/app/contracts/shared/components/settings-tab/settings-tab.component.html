@@ -10,10 +10,10 @@
         </span>
     </ng-template>
 	<ng-container *ngIf="templateName$ | async as templateName; else defaultNameTemplate">
-		<p>{{ templateName }}</p>
+		<div class="template-name" [customTooltip]="templateName">{{ templateName }}</div>
 	</ng-container>
 	<ng-template #defaultNameTemplate>
-		<p>{{ defaultName }}</p>
+		<div class="template-name">{{ defaultName }}</div>
 	</ng-template>
 </div>
 <nav mat-tab-nav-bar>

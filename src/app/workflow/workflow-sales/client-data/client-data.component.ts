@@ -10,7 +10,7 @@ import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementSimpleListItemDtoPaginatedList, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { ClientRateTypes, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
@@ -55,6 +55,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	isClientFeeEditing = false;
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialFeeFilter = new UntypedFormControl('');
+    filteredFrameAgreements: AgreementSimpleListItemDto[];
+
+    selectedFrameAgreementId: number | null;
+
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -305,30 +309,82 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.subscribe(() => {
 				this._checkAndPreselectFrameAgreement();
 			});
+
+        this.salesClientDataForm.frameAgreementId.valueChanges
+			.pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                startWith(''),
+                switchMap((value: any) => {
+                    let dataToSend = {
+                        recipientClientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
+                        search: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.agreementId) {
+                        dataToSend.search = value.agreementId ? value.agreementName : value;
+                    }
+                    if (dataToSend.recipientClientIds?.length) {
+                        return this.getFrameAgreements(false, dataToSend.search);
+                    } else {
+                        return of([]);
+                    }
+                }))
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+                if (list?.items?.length) {
+					this.filteredFrameAgreements = list.items;
+                    if (this.selectedFrameAgreementId) {
+                        this.salesClientDataForm.frameAgreementId.setValue(list.items.find(x => x.agreementId === this.selectedFrameAgreementId), {emitEvent: false});
+                        this.selectedFrameAgreementId = null;
+                    }
+				} else {
+					this.filteredFrameAgreements = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
+				}
+            });
     }
 
-    getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+    getPrimaryFrameAgreements() {
+        this.getFrameAgreements(true)
+        .subscribe((result) => {
+            this.filteredFrameAgreements = result.items;
+            if (this.selectedFrameAgreementId !== null) {
+                this.salesClientDataForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
+            } else if (result?.totalCount === 1) {
+                this._checkAndPreselectFrameAgreement();
+            } else if (result?.totalCount === 0) {
+                this.salesClientDataForm.frameAgreementId.setValue('');
+            }
+        });
+    }
+
+    getFrameAgreements(isInitial = false, search: string = '') {
         let dataToSend = {
-            agreementId: agreementId,
+            agreementId: undefined,
             search: search,
             clientId: this.salesClientDataForm.directClientIdValue.value.clientId,
             agreementType: AgreementType.Frame,
             validity: undefined,
-            legalEntityId: this.salesClientDataForm.pdcInvoicingEntityId.value,
-            salesTypeId: this.mainDataForm.salesTypeId.value,
+            legalEntityId: isInitial ? this.salesClientDataForm.pdcInvoicingEntityId.value : undefined,
+            salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
             contractTypeId: undefined,
-            deliveryTypeId: this.mainDataForm.deliveryTypeId.value,
-            startDate: this.salesClientDataForm.startDate.value,
-            endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
+            deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
+            startDate: isInitial ? this.salesClientDataForm.startDate.value : undefined,
+            endDate: isInitial ? (this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined) : undefined,
+            recipientClientIds: [this.salesClientDataForm.directClientIdValue.value?.clientId, this.salesClientDataForm.endClientIdValue.value?.clientId].filter(Boolean),
             pageNumber: 1,
             pageSize: 1000,
             sort: ''
         }
-        this._agreementService
+        return this._agreementService
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
-				dataToSend.clientId,
+				undefined, // dataToSend.clientId,
 				dataToSend.agreementType,
 				dataToSend.validity,
 				dataToSend.legalEntityId,
@@ -337,16 +393,13 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
-                undefined,
-                undefined,
-                undefined,
+                dataToSend.recipientClientIds,
+                undefined, //recipientConsultantId
+                undefined, //recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
-			)
-			.subscribe((result) => {
-				this.frameAgreements = result.items;
-			});
+			);
     }
 
     private _checkAndPreselectFrameAgreement() {
@@ -354,12 +407,12 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.salesClientDataForm.startDate.value &&
 			(this.salesClientDataForm.endDate.value ||
 				this.salesClientDataForm.noEndDate.value) &&
-			this.salesClientDataForm.directClientIdValue.value &&
+			this.salesClientDataForm.directClientIdValue.value?.clientId &&
 			this.mainDataForm.salesTypeId.value &&
 			this.mainDataForm.deliveryTypeId.value
 		) {
-            if (this.frameAgreements.length === 1) {
-                this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+            if (this.filteredFrameAgreements.length === 1) {
+                this.salesClientDataForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
             }
 		}
     }
