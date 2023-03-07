@@ -4,7 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve --host 0.0.0.0 --port 4200",
-        "start-qa": "ng serve  --host 0.0.0.0 --port 4200 --configuration qa",
+        "start-qa": "ng serve --port 4200 --configuration qa",
         "qa": "ng build --configuration=qa",
         "dev": "ng build --configuration=development",
         "docker-tests": "ng build --configuration=docker-tests",
@@ -37,6 +37,7 @@
         "devexpress-richedit": "^22.2.3",
         "devextreme": "22.2.3",
         "devextreme-angular": "22.2.3",
+        "ng2-pdf-viewer": "^9.1.4",
         "diff": "^5.1.0",
         "flag-icons": "^6.6.3",
         "html2canvas": "^1.4.1",
