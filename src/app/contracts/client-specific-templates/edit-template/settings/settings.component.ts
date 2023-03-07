@@ -50,7 +50,6 @@ import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/rele
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
 })
 export class CreationComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
