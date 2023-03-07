@@ -483,6 +483,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementTemplateDetailsDto.language,
 						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
 						note: agreementTemplateDetailsDto.note,
+                        receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
 						parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
 							? agreementTemplateDetailsDto.attachmentsFromParent
 							: [],
@@ -552,6 +553,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementDetailsDto.language,
 						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
 						note: agreementDetailsDto.note,
+                        receiveAgreementsFromOtherParty: agreementDetailsDto.receiveAgreementsFromOtherParty,
 						parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
 							? agreementDetailsDto.attachmentsFromParent
 							: [],
@@ -676,6 +678,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				language: agreement.language,
 				isSignatureRequired: agreement.isSignatureRequired,
 				note: agreement.note,
+                receiveAgreementsFromOtherParty: agreement.receiveAgreementsFromOtherParty,
 				signers: agreement.signers,
 				selectedInheritedFiles: agreement.attachments,
 			});

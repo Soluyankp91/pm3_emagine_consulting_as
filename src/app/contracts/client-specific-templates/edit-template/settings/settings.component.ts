@@ -309,6 +309,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			contractTypes: data.contractTypeIds,
 			language: data.language,
 			note: data.note,
+            receiveAgreementsFromOtherParty: data.receiveAgreementsFromOtherParty,
 			isSignatureRequired: data.isSignatureRequired,
 			parentSelectedAttachmentIds: data.attachmentsFromParent
 				? data.attachmentsFromParent.filter((attachement) => attachement.isSelected)
@@ -553,6 +554,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				contractTypes: agreementTemplate.contractTypeIds,
 				language: agreementTemplate.language,
 				note: agreementTemplate.note,
+                receiveAgreementsFromOtherParty: agreementTemplate.receiveAgreementsFromOtherParty,
 				isSignatureRequired: agreementTemplate.isSignatureRequired,
 				isEnabled: agreementTemplate.isEnabled,
 				selectedInheritedFiles: agreementTemplate.attachments,

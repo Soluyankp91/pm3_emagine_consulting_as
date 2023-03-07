@@ -223,13 +223,12 @@
 				<div class="bottom-fields">
 					<mat-form-field appearance="outline" class="textarea-form-field">
 						<mat-label>Notes</mat-label>
-						<textarea
-							matInput
-							formControlName="note"
-							cdkTextareaAutosize
-							#autosize="cdkTextareaAutosize"></textarea>
+						<textarea matInput formControlName="note" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
 						<mat-error><app-validator [control]="agreementFormGroup.note"></app-validator></mat-error>
 					</mat-form-field>
+					<mat-checkbox formControlName="receiveAgreementsFromOtherParty" class="checkbox-text">
+						Always receive agreement from other party
+					</mat-checkbox>
 					<mat-divider></mat-divider>
 					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">
 						<mat-label>Signature required</mat-label>
