@@ -123,7 +123,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	getTemplateVersions(templateId: number) {
 		this._agreementService.getTemplateVersions(templateId).subscribe((res) => {
 			this.versions = res;
-			this.currentTemplateVersion = res || res.length ? res[res.length - 1].version : 1;
+			this.currentTemplateVersion = res.length ? res[res.length - 1].version : 1;
 			this.templateVersions$.next(res || []);
 			this.selectedVersionControl.setValue(this.currentTemplateVersion)
 		});
