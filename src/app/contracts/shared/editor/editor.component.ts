@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, filter, map, pluck, skip, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
@@ -29,8 +29,9 @@ import { AppCommonModule } from 'src/app/shared/common/app-common.module';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CompleteTemplateDocumentFileDraftDto, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
-import { EditorObserverService } from './data-access/editor-observer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { custom } from 'devextreme/ui/dialog';
+import { EditorObserverService } from '../services/editor-observer.service';
 
 @Component({
 	standalone: true,
@@ -86,12 +87,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private _route: ActivatedRoute,
+		private _router: Router,
 		private _agreementService: AgreementAbstractService,
 		private _commentService: TemplateCommentService,
 		private _mergeFieldsService: MergeFieldsAbstractService,
 		private _editorCoreService: EditorCoreService,
 		private _dialog: MatDialog,
-		private chd: ChangeDetectorRef,
+		private _chd: ChangeDetectorRef,
 		private _snackBar: MatSnackBar,
 		private _editorObserverService: EditorObserverService
 	) {}
@@ -99,8 +101,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.isLoading = true;
 		this.templateId = this._route.snapshot.params.id;
+		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
+
 
 		this.registerChangeVersionListener(this.selectedVersionControl);
+		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID);
+
 		this.getTemplateVersions(this.templateId);
 
 		this._agreementService.getSimpleList().subscribe((res) => {
@@ -111,13 +117,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._editorCoreService.applyMergeFields(res);
 			this.mergeFields$.next(res);
 		});
-
-		this._editorObserverService.startObserve(1, 2);
 	}
 
 	ngOnDestroy(): void {
+		this._destroy$.next();
 		this._destroy$.complete();
-		this._editorObserverService.stopObserve();
 	}
 
 	getTemplateVersions(templateId: number) {
@@ -151,7 +155,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 					this._editorCoreService.loadDocument(tmp);
 					this.selectedVersion = this.versions[version - 1];
-					this.chd.detectChanges();
+					this._chd.detectChanges();
 
 				} else {
 					this._editorCoreService.newDocument();
@@ -169,6 +173,17 @@ export class EditorComponent implements OnInit, OnDestroy {
 			})
 		)
 		.subscribe()
+	}
+
+	registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string) {
+		(!templateId && !clientPeriodID
+			? of(null)
+			: templateId
+			? this._editorObserverService.runAgreementEditModeNotifier(templateId)
+			: this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID)
+		)
+			.pipe(takeUntil(this._destroy$))
+			.subscribe();
 	}
 
 	mergeSelectedField(field: string) {
@@ -307,7 +322,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							return res;
 						} else {
 							this.isLoading = false;
-							this.chd.detectChanges();
+							this._chd.detectChanges();
 							return null;
 						}
 					}),
@@ -360,18 +375,29 @@ export class EditorComponent implements OnInit, OnDestroy {
 				
 				this.isLoading = false;
 				this.hasUnsavedChanges$.next(false);
-				this.chd.detectChanges();
+				this._chd.detectChanges();
 			})
 		})
 	}
 
 	cancel() {
-		this.template$.pipe(
-			tap(template => {
-				this._editorCoreService.loadDocument(template);
-				this.hasUnsavedChanges$.next(false);
-			}),
-			take(1)
+		this._editorCoreService.hasUnsavedChanges$.pipe(
+			take(1),
+			tap((res) => {
+				if (res) {
+					this._showCompleteConfirmDialog((confirmed) => {
+						if (confirmed) {
+							this._router.navigate(['../settings'], {
+								relativeTo: this._route
+							})
+						}
+					});
+				} else {
+					this._router.navigate(['../settings'], {
+						relativeTo: this._route
+					})
+				}
+			})
 		).subscribe()
 	}
 
@@ -379,13 +405,30 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.showSnackbar();
 		this.isLoading = false;
 		this._editorCoreService.removeUnsavedChanges();
-		this.chd.detectChanges();
+		this._chd.detectChanges();
 	}
 
 	showSnackbar() {
 		this._snackBar.open('Successdully saved!', '', {
 			duration: 2500,
 			panelClass: 'green-panel'
+		});
+	}
+
+	private _showCompleteConfirmDialog(callback: (value: boolean) => void) {
+		let dialog = custom({
+			title: 'You have unsaved changes!',
+			buttons: [
+				{ type: 'normal', text: 'Cancel', onClick: () => false },
+				{ type: 'danger', text: 'Leave', onClick: () => true },
+			],
+			messageHtml: `
+                <p>All changes will be lost!</p>
+                <p>Are you sure you want to proceed?</p>`,
+		});
+
+		dialog.show().then((res) => {
+			callback(res);
 		});
 	}
 }
