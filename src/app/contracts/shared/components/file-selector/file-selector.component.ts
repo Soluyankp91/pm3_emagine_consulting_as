@@ -2,7 +2,7 @@ import { Component, forwardRef, Input, OnChanges, SimpleChanges } from '@angular
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DownloadFilesService } from '../../services/download-files.service';
 import { DownloadFile } from '../../utils/download-file';
-import { FileUpload, FileUploadItem } from '../file-uploader/files';
+import { EXISTED_ICONS, FileUpload, FileUploadItem } from '../file-uploader/files';
 
 @Component({
 	selector: 'emg-file-selector',
@@ -101,7 +101,11 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	}
 
 	private _getIconName(fileName: string): string {
-		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1].toLowerCase();
+        let splittetFileName = fileName.split('.');
+		if (EXISTED_ICONS.find((icon) => icon === splittetFileName[splittetFileName.length - 1].toLowerCase())) {
+			return splittetFileName[splittetFileName.length - 1].toLowerCase();
+		} else {
+			return 'no-extension';
+		}
 	}
 }

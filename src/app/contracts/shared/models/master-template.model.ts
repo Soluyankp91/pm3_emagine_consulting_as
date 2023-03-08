@@ -18,7 +18,7 @@ export class MasterTemplateModel extends FormGroup {
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			isSignatureRequired: new FormControl(false),
 			isEnabled: new FormControl(false),
-            isDefaultTemplate: new FormControl(false),
+			isDefaultTemplate: new FormControl(false),
 			attachments: new FormControl([]),
 		});
 	}
@@ -44,6 +44,10 @@ export class MasterTemplateModel extends FormGroup {
 
 	reset(formState?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
 		super.reset(formState ? formState : this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.value, options);
+	}
+
+	get duplicationSourceAgreementTemplateId() {
+		return this.get('duplicationSourceAgreementTemplateId');
 	}
 
 	get agreementType() {
@@ -98,7 +102,7 @@ export class MasterTemplateModel extends FormGroup {
 		return this.get('isEnabled');
 	}
 
-    get isDefaultTemplate() {
+	get isDefaultTemplate() {
 		return this.get('isDefaultTemplate');
 	}
 
@@ -125,8 +129,8 @@ export class MasterTemplateModel extends FormGroup {
 		language: null,
 		note: '',
 		isSignatureRequired: false,
-        isDefaultTemplate: false,
+		isDefaultTemplate: false,
 		isEnabled: false,
-        attachments: [],
+		attachments: [],
 	});
 }

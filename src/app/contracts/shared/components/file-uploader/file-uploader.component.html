@@ -62,7 +62,7 @@
 		#file
 		multiple
 		type="file"
-		[accept]="'.pdf,.doc'"
+		[accept]="allowedExtensions"
 		[disabled]="filesLoading$ | async"
 		(change)="onFileAdded($event.target)"
 		[style.display]="'none'" />

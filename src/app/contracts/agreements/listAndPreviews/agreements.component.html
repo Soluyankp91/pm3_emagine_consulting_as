@@ -17,7 +17,10 @@
 			(resetAllFilters)="resetAllTopFilters()"
 			(selectedRowIdChange)="onSelectRowId($event, table.items)">
 			<ng-template let-cell="element" #customCells>
-				<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
+				<span
+					class="fi fi-{{ cell.countryCode | lowercase }} country-icon"
+					[customTooltip]="cell.language"
+					[showAlways]="cell.language"></span>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
 				<div class="table-cell" [customTooltip]="cell.agreementId">{{ cell.agreementId }}</div>
@@ -118,6 +121,8 @@
 						<img
 							class="profile-picture"
 							[ngSrc]="employeePhotoUrl + cell.saleManager.externalId + '.jpg'"
+                            [customTooltip]="cell.saleManager.name"
+                            [showAlways]="cell.saleManager.name"
 							width="24"
 							height="24"
 							src
@@ -136,6 +141,8 @@
 						<img
 							class="profile-picture"
 							[ngSrc]="employeePhotoUrl + cell.contractManager.externalId + '.jpg'"
+                            [customTooltip]="cell.contractManager.name"
+                            [showAlways]="cell.contractManager.name"
 							width="24"
 							height="24"
 							src
@@ -150,7 +157,7 @@
 			</ng-template>
 		</emg-mat-grid>
 	</ng-container>
-	
+
 	<ng-container *ngIf="currentRowInfo$ | async as currentRowInfo">
 		<app-agreement-preview
 			[currentId]="currentRowInfo.id"

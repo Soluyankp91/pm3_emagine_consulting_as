@@ -3,19 +3,18 @@
 		<div class="page-container">
 			<div class="template-settings-section">
 				<h3 class="template-settings-header">Client template settings</h3>
-				<ng-container *ngIf="!editMode">
-					<mat-radio-group [formControl]="creationModeControl" class="radio-button-group">
-						<ng-container *ngFor="let radioButton of creationRadioButtons">
-							<mat-radio-button
-								class="option"
-								[value]="radioButton.value"
-								(click)="onModeControlChange(radioButton.value)"
-								>{{ radioButton.label }}</mat-radio-button
-							>
-						</ng-container>
-					</mat-radio-group>
-					<mat-divider class="mat-divider"></mat-divider>
-				</ng-container>
+				<mat-radio-group [formControl]="creationModeControl" class="radio-button-group">
+					<ng-container *ngFor="let radioButton of creationRadioButtons">
+						<mat-radio-button
+							class="option"
+							[ngClass]="{ 'edit-disabled': editMode }"
+							[value]="radioButton.value"
+							(click)="onModeControlChange(radioButton.value)"
+							>{{ radioButton.label }}</mat-radio-button
+						>
+					</ng-container>
+				</mat-radio-group>
+				<mat-divider class="mat-divider"></mat-divider>
 				<div class="form-fields-container">
 					<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
 						<ng-container *ngIf="templateOptions.options$ | async as options">
@@ -159,7 +158,7 @@
 				<mat-checkbox formControlName="isEnabled" class="checkbox-text">Enable</mat-checkbox>
 			</div>
 			<div class="attachments-section">
-                <h3 class="template-settings-header">Attachments</h3>
+				<h3 class="template-settings-header">Attachments</h3>
 				<ng-container *ngIf="clientTemplateFormGroup.parentSelectedAttachmentIds">
 					<emg-file-selector
 						[inheritedFiles]="attachmentsFromParent"

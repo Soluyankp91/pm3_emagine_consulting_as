@@ -26,6 +26,14 @@ export class ClientTemplatesModel extends FormGroup {
 		return this.get('agreementType');
 	}
 
+	get duplicationSourceAgreementTemplateId() {
+		return this.get('duplicationSourceAgreementTemplateId');
+	}
+
+	get parentAgreementTemplateId() {
+		return this.get('parentAgreementTemplateId');
+	}
+
 	get recipientTypeId() {
 		return this.get('recipientTypeId');
 	}
@@ -105,7 +113,7 @@ export class ClientTemplatesModel extends FormGroup {
 		note: '',
 		isSignatureRequired: false,
 		isEnabled: false,
-        attachments: []
+		attachments: [],
 	});
 
 	addControl(

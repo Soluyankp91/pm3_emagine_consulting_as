@@ -105,11 +105,10 @@ export interface BaseAgreementTemplate {
 	salesTypeIds: string[];
 	deliveryTypeIds: string[];
 
-	createdBy: string;
+	createdBy: EmployeeDto;
 	createdDateUtc: moment.Moment;
-	lastUpdatedBy: string;
+	lastUpdatedBy: EmployeeDto;
 	lastUpdateDateUtc?: moment.Moment;
-	lastUpdatedByLowerCaseInitials?: string;
 	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
 	duplicationSourceAgreementTemplateName?: string;
@@ -169,6 +168,7 @@ export const OperationsTypeMap = {
 
 export interface MappedAgreementTableItem {
 	language: string;
+    countryCode: string;
 	agreementId: number;
 	agreementName: string;
 	actualRecipientName: string;

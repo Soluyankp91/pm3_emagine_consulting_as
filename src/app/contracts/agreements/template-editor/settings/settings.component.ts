@@ -94,8 +94,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	currentDuplicatedTemplate: AgreementDetailsDto;
 
 	currentAgreementTemplate: AgreementDetailsDto;
-    clientPeriodId: string;
-    consultantPeriodId: string;
+	clientPeriodId: string;
+	consultantPeriodId: string;
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -137,7 +137,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
 		}
-        if (clientPeriodId) {
+		if (clientPeriodId) {
 			this.clientPeriodId = clientPeriodId;
 		}
 		if (consultantPeriodId) {
@@ -212,8 +212,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
-        toSend.clientPeriodId = this.clientPeriodId ?? undefined;
-        toSend.consultantPeriodId = this.consultantPeriodId ?? undefined;
+		toSend.clientPeriodId = this.clientPeriodId ?? undefined;
+		toSend.consultantPeriodId = this.consultantPeriodId ?? undefined;
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
@@ -664,6 +664,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					new FormControl(agreement.attachmentsFromParent.filter((attachement) => attachement.isSelected))
 				);
 				this.attachmentsFromParent = agreement.attachmentsFromParent as FileUpload[];
+			}
+			if (this.editMode) {
+				this.creationMode.setValue(agreement.creationMode);
 			}
 
 			this.creationModeControlReplay$.next(agreement.creationMode);

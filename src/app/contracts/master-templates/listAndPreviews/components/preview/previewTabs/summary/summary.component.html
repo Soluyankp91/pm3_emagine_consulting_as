@@ -28,7 +28,7 @@
 					<div class="label">{{ previewMap['agreementStatus'] }}</div>
 					<div class="fw-700 flex-b-60 flex-gap-6">
 						<emg-agreement-status [agreementStatus]="summaryItem.agreementStatus" [displayText]="true"></emg-agreement-status>
-                        <span> {{ summaryItem.lastUpdateDateUtc | momentFormat }} by {{ summaryItem.lastUpdatedBy }} </span>
+                        <span> {{ summaryItem.lastUpdateDateUtc | momentFormat }} by {{ summaryItem.lastUpdatedBy.name }} </span>
 					</div>
 				</div>
 			</ng-container>
@@ -137,13 +137,13 @@
 			<div class="row-item">
 				<div class="label">{{ previewMap['createdDateUtc'] }}, {{ previewMap['createdBy'] }}</div>
 				<div class="fw-600 flex-b-60">
-					{{ summaryItem.createdDateUtc | momentFormat }}, by {{ summaryItem.createdBy }}
+					{{ summaryItem.createdDateUtc | momentFormat }}, by {{ summaryItem.createdBy.name }}
 				</div>
 			</div>
 			<div class="row-item">
 				<div class="label">{{ previewMap['lastUpdateDateUtc'] }}, {{ previewMap['lastUpdatedBy'] }}</div>
 				<div class="fw-600 flex-b-60">
-					{{ summaryItem.lastUpdateDateUtc | momentFormat }}, by {{ summaryItem.lastUpdatedBy }}
+					{{ summaryItem.lastUpdateDateUtc | momentFormat }}, by {{ summaryItem.lastUpdatedBy.name }}
 				</div>
 			</div>
 			<ng-container *ngIf="summaryItem.startDate">

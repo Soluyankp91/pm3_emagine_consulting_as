@@ -2,19 +2,18 @@
 	<div class="page-container">
 		<div class="template-settings-section">
 			<h3 class="template-settings-header">Template settings</h3>
-			<ng-container *ngIf="!editMode">
-				<mat-radio-group [formControl]="agreementCreationMode" class="radio-button-group">
-					<ng-container *ngFor="let radioButton of creationRadioButtons">
-						<mat-radio-button
-							class="option"
-							[value]="radioButton.value"
-							(click)="modeControl$.next(radioButton.value)"
-							>{{ radioButton.label }}</mat-radio-button
-						>
-					</ng-container>
-				</mat-radio-group>
-				<mat-divider class="mat-divider"></mat-divider>
-			</ng-container>
+			<mat-radio-group [formControl]="agreementCreationMode" class="radio-button-group">
+				<ng-container *ngFor="let radioButton of creationRadioButtons">
+					<mat-radio-button
+						class="option"
+						[ngClass]="{ 'edit-disabled': editMode }"
+						[value]="radioButton.value"
+						(click)="onModeControlChange(radioButton.value)"
+						>{{ radioButton.label }}</mat-radio-button
+					>
+				</ng-container>
+			</mat-radio-group>
+			<mat-divider class="mat-divider"></mat-divider>
 			<div class="form-fields-container">
 				<div class="form-row">
 					<div class="row-cell">
@@ -48,27 +47,29 @@
 				</div>
 
 				<ng-container *ngIf="masterTemplateOptions$ | async as masterTemplateOptions">
-					<emg-dropdown-autocomplete-single-select
-						[options]="masterTemplateOptions"
-						[labelKey]="'name'"
-						[outputProperty]="'agreementTemplateId'"
-						[label]="'Master Template'"
-						[formControl]="duplicateTemplateControl"
-						(inputEmitter)="masterTemplateOptionsChanged$.next($event)">
-						<ng-template let-cell="option" #optionTemplate>
-							<div>
-								<div class="autocomplete-first-row">
-									<span> {{ cell.name }} </span>
+					<ng-container *ngIf="masterTemplateOptions.options$ | async as mtOptions">
+						<emg-dropdown-autocomplete-single-select
+							[options]="mtOptions"
+							[labelKey]="'name'"
+							[outputProperty]="'agreementTemplateId'"
+							[label]="'Master Template'"
+							formControlName="duplicationSourceAgreementTemplateId"
+							(inputEmitter)="masterTemplateOptions.optionsChanged$.next($event)">
+							<ng-template let-cell="option" #optionTemplate>
+								<div>
+									<div class="autocomplete-first-row">
+										<span> {{ cell.name }} </span>
+									</div>
+									<div class="autocomplete-second-row">
+										<span>{{ options[1].agreementType[cell.agreementType] }} </span>
+										<span>{{ cell.clientName }} </span>
+										<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
+										<span>{{ cell.createdDateUtc | momentFormat }}</span>
+									</div>
 								</div>
-								<div class="autocomplete-second-row">
-									<span>{{ options[1].agreementType[cell.agreementType] }} </span>
-									<span>{{ cell.clientName }} </span>
-									<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
-									<span>{{ cell.createdDateUtc | momentFormat }}</span>
-								</div>
-							</div>
-						</ng-template>
-					</emg-dropdown-autocomplete-single-select>
+							</ng-template>
+						</emg-dropdown-autocomplete-single-select>
+					</ng-container>
 				</ng-container>
 			</div>
 			<mat-divider></mat-divider>
@@ -160,17 +161,19 @@
 					<textarea matInput formControlName="note" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
 					<mat-error><app-validator [control]="masterTemplateFormGroup.note"></app-validator></mat-error>
 				</mat-form-field>
-                <div class="check-boxes">
-                    <mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
-                    <mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text">Default template for contracts of this type</mat-checkbox>
-                </div>
+				<div class="check-boxes">
+					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
+						>Default template for contracts of this type</mat-checkbox
+					>
+				</div>
 			</div>
 			<mat-divider class="mat-divider"></mat-divider>
 			<h4 class="status-header">Status</h4>
 			<mat-checkbox formControlName="isEnabled" class="checkbox-text">Enable</mat-checkbox>
 		</div>
 		<div class="attachments-section">
-            <h3 class="template-settings-header">Attachments</h3>
+			<h3 class="template-settings-header">Attachments</h3>
 			<emg-file-uploader [preselectedFiles]="preselectedFiles" formControlName="attachments"></emg-file-uploader>
 		</div>
 	</div>

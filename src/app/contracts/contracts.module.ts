@@ -335,5 +335,25 @@ export class ContractsModule {
 			'empty-table-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'empty-table-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'xls',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/xls-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'msg',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/msg-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'ppt',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/ppt-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'no-extension',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-extension-icon.svg')
+		);
 	}
 }

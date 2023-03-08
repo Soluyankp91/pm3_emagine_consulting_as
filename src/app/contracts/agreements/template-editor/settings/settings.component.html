@@ -3,19 +3,18 @@
 		<div class="page-container">
 			<div class="template-settings-section">
 				<h3 class="template-settings-header">Agreement settings</h3>
-				<ng-container *ngIf="!editMode">
-					<mat-radio-group [formControl]="creationMode" class="radio-button-group">
-						<ng-container *ngFor="let radioButton of creationRadioButtons">
-							<mat-radio-button
-								class="option"
-								[value]="radioButton.value"
-								(click)="onModeControlChange(radioButton.value)"
-								>{{ radioButton.label }}</mat-radio-button
-							>
-						</ng-container>
-					</mat-radio-group>
-					<mat-divider class="divider"></mat-divider>
-				</ng-container>
+				<mat-radio-group [formControl]="creationMode" class="radio-button-group">
+					<ng-container *ngFor="let radioButton of creationRadioButtons">
+						<mat-radio-button
+							class="option"
+							[ngClass]="{ 'edit-disabled': editMode }"
+							[value]="radioButton.value"
+							(click)="onModeControlChange(radioButton.value)"
+							>{{ radioButton.label }}</mat-radio-button
+						>
+					</ng-container>
+				</mat-radio-group>
+				<mat-divider class="divider"></mat-divider>
 				<div class="form-fields-container">
 					<ng-container *ngIf="duplicateOrInherit$ | async as dropdownInfo">
 						<ng-container *ngIf="dropdownInfo.options$ | async as templateOptions">
@@ -223,11 +222,7 @@
 				<div class="bottom-fields">
 					<mat-form-field appearance="outline" class="textarea-form-field">
 						<mat-label>Notes</mat-label>
-						<textarea
-							matInput
-							formControlName="note"
-							cdkTextareaAutosize
-							#autosize="cdkTextareaAutosize"></textarea>
+						<textarea matInput formControlName="note" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
 						<mat-error><app-validator [control]="agreementFormGroup.note"></app-validator></mat-error>
 					</mat-form-field>
 					<mat-divider></mat-divider>

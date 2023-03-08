@@ -29,7 +29,7 @@ export abstract class BasePreview {
 		map(([row, maps]) => {
 			return this.mapEntityToSummary(row, maps);
 		}),
-		tap(() => {
+		tap((s) => {
 			this.contentLoading$.next(false);
 		})
 	);

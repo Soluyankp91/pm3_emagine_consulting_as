@@ -119,7 +119,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 			}
 			case 'DUPLICATE': {
 				const params: Params = {
-					parentTemplateId: $event.row.agreementTemplateId,
+					id: $event.row.agreementTemplateId,
 				};
 				this._router.navigate(['create'], {
 					relativeTo: this._route,
@@ -176,14 +176,15 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				name: item.name,
 				agreementType: maps.agreementType[item.agreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId],
-				language: GetCountryCodeByLanguage(maps.language[item.language]),
+                language: maps.language[item.language as AgreementLanguage],
+				countryCode: GetCountryCodeByLanguage(maps.language[item.language]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
+                createdBy: item.createdBy,
 				createdDateUtc: item.createdDateUtc,
-				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
+				lastUpdatedBy: item.lastUpdatedBy,
 				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				isEnabled: item.isEnabled,
 				actionList: this.actions,

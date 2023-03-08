@@ -129,7 +129,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._subscribeOnCreationModeResolver();
 			this._subscribeOnCreationMode();
 			this._subscribeOnQueryParams();
-            this._initClients();
+			this._initClients();
 		}
 	}
 
@@ -265,7 +265,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			if (id) {
 				this.creationModeControl.setValue(AgreementCreationMode.Duplicated);
 				this.duplicateOptionsChanged$.next(id);
-				this.clientTemplateFormGroup.controls['duplicationSourceAgreementTemplateId'].setValue(id);
+				this.clientTemplateFormGroup.duplicationSourceAgreementTemplateId.setValue(id);
 			}
 		});
 	}
@@ -426,7 +426,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnParentTemplateChanges(): void {
-		this.clientTemplateFormGroup.controls['parentAgreementTemplateId'].valueChanges
+		this.clientTemplateFormGroup.parentAgreementTemplateId.valueChanges
 			.pipe(
 				takeUntil(
 					race([
@@ -455,7 +455,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnDuplicateTemplateChanges(): void {
-		this.clientTemplateFormGroup.controls['duplicationSourceAgreementTemplateId'].valueChanges
+		this.clientTemplateFormGroup.duplicationSourceAgreementTemplateId.valueChanges
 			.pipe(
 				takeUntil(
 					race([
@@ -499,6 +499,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	private _preselectAgreementTemplate(agreementTemplateId: number) {
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
 			this.currentAgreementTemplate = agreementTemplate;
+			this.creationModeControl.setValue(agreementTemplate.creationMode);
 			if (agreementTemplate.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreementTemplate;
 				this._setDuplicateObs();
@@ -558,7 +559,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				selectedInheritedFiles: agreementTemplate.attachments,
 			});
 
-            this._initClients();
+			this._initClients();
 		});
 	}
 
