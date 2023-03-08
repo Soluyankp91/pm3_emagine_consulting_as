@@ -76,6 +76,7 @@ export class AddressTableComponent extends AppComponentBase {
 	}
 
 	private _updateClientAddress(address: any) {
+		this.showMainSpinner();
 		let input = new ClientAddressDto(address);
 		if (address.country !== null && address.country !== undefined) {
 			input.countryId = address.country?.id;
@@ -91,6 +92,7 @@ export class AddressTableComponent extends AppComponentBase {
 	}
 
 	private _addNewClientAddress(address: any) {
+		this.showMainSpinner();
 		let input = new ClientAddressDto(address);
 		input.countryId = address.country?.id;
 		input.countryCode = address.country?.code;
