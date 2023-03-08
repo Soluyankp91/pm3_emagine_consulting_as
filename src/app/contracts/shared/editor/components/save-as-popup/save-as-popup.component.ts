@@ -55,6 +55,10 @@ export class SaveAsPopupComponent implements OnInit {
 			this.config.title = 'Save as a new version';
 			this.config.subtitle = '';
 			this.config.warning = '';
+
+			if (this.data.isAgreement) {
+				this.config.subtitle = 'You are promoting agreement draft to a new agreement version';
+			}
 		}
 
 		if (this.data.isAgreement) {

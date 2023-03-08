@@ -60,9 +60,6 @@
                             <mat-icon class="legal-contract--mode"
                                 [svgIcon]="eLegalContractSourceIcon[contract.value.processingPath]"></mat-icon>
                         </ng-container>
-                        <ng-template #noDataTemplate>
-                            -
-                        </ng-template>
                     </span>
                     <span fxFlex="160px" fxFlex.lt-xl="50px" fxLayoutAlign="start center"
                         fxLayoutAlign.lt-xl="center center"
@@ -88,10 +85,12 @@
                     </span>
                     <span fxFlex="35px" fxLayoutAlign="center center"
                         class="legal-contract--list-item text-truncate-ellipsis u-w--100">
-                        <img class="border-rounded-50" [matTooltip]="contract.value.lastUpdatedBy?.name"
-                            matTooltipClass="white-tooltip"
-                            [ngSrc]="employeePhotoUrl + contract.value.lastUpdatedBy?.externalId + '.jpg'" src
-                            width="32" height="32" src (error)="setDefaultImage($event.target)">
+                        <ng-container *ngIf="contract.value.lastUpdatedBy !== null && contract.value.lastUpdatedBy !== undefined; else noDataTemplate">
+                            <img class="border-rounded-50" [matTooltip]="contract.value.lastUpdatedBy?.name"
+                                matTooltipClass="white-tooltip"
+                                [ngSrc]="employeePhotoUrl + contract.value.lastUpdatedBy?.externalId + '.jpg'" src
+                                width="32" height="32" src (error)="setDefaultImage($event.target)">
+                        </ng-container>
                     </span>
                     <ng-container *ngIf="!readOnlyMode">
                         <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
@@ -203,3 +202,6 @@
         </div>
     </div>
 </form>
+<ng-template #noDataTemplate>
+    -
+</ng-template>

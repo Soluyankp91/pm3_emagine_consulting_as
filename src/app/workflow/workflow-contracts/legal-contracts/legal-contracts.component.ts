@@ -72,11 +72,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	ngOnInit(): void {
-		if (this.isClientContracts) {
-			this._getClientAgreements();
-		} else {
-			this._getConsultantAgreements();
-		}
+		this._getAgreementData();
 		// NB: needed for tests
 		// LegalContractsMockedData.forEach((item) => {
 		// 	this.addLegalContract(item);
@@ -122,7 +118,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 						if (error.status === 400) {
 							disableSendAllButton = true;
 						}
-                        this.hideMainSpinner();
+						this.hideMainSpinner();
 						this._openSendEnvelopeDialog(disableSendAllButton, agreementIds);
 					},
 					complete: () => {
@@ -213,19 +209,20 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 
 	public redirectToCreateAgreement() {
 		const url = this._router.serializeUrl(
-			this._router.createUrlTree([`/app/contracts/agreements/create`],
-            this.isClientContracts ?
-            {
-                queryParams: {
-                    clientPeriodId: this.periodId
-                }
-            } :
-            {
-                queryParams: {
-                    consultantPeriodId: this.periodId
-                }
-            }
-            )
+			this._router.createUrlTree(
+				[`/app/contracts/agreements/create`],
+				this.isClientContracts
+					? {
+							queryParams: {
+								clientPeriodId: this.periodId,
+							},
+					  }
+					: {
+							queryParams: {
+								consultantPeriodId: this.periodId,
+							},
+					  }
+			)
 		);
 		window.open(url, '_blank');
 	}
@@ -269,6 +266,14 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 				this.addLegalContract(item);
 			});
 		});
+	}
+
+	private _getAgreementData() {
+		if (this.isClientContracts) {
+			this._getClientAgreements();
+		} else {
+			this._getConsultantAgreements();
+		}
 	}
 
 	private _openSendEnvelopeDialog(disableSendAllButton: boolean, agreementIds: number[], showError = false) {
@@ -321,12 +326,16 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption) {
+		this.showMainSpinner();
 		let input = new SendEmailEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEmail: singleEmail,
 			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
-		this._agreementService.sendEmailEnvelope(input).subscribe(() => {});
+		this._agreementService
+			.sendEmailEnvelope(input)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => this._getAgreementData());
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
@@ -336,7 +345,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			singleEnvelope: singleEnvelope,
 			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
 		});
-		this._agreementService.sendDocusignEnvelope(input).subscribe(() => this.hideMainSpinner());
+		this._agreementService
+			.sendDocusignEnvelope(input)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => this._getAgreementData());
 	}
 
 	private _uploadSignedContract(agreementId: number, file: FileParameter) {
@@ -345,7 +357,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.uploadSigned(agreementId, forceUpdate, file)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe();
+			.subscribe(() => this._getAgreementData());
 	}
 
 	private _voidAgreement(agreementId: number, reason?: string) {
@@ -353,12 +365,15 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.voidEnvelope(agreementId, reason)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe();
+			.subscribe(() => this._getAgreementData());
 	}
 
 	private _deleteAgreement(agreementId: number) {
 		this.showMainSpinner();
-		this._agreementService.agreementDELETE(agreementId);
+		this._agreementService
+			.agreementDELETE(agreementId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => this._getAgreementData());
 	}
 
 	get legalContracts(): UntypedFormArray {

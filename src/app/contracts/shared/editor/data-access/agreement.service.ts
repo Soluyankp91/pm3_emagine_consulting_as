@@ -76,7 +76,9 @@ export class AgreementService implements AgreementAbstractService {
 	
 	saveDraftAsDraftTemplate(agreementId: number, force: boolean, fileContent: StringWrappedValueDto) {
 		const endpoint = `${this._baseUrl}/${agreementId}/document-file/${force}`;
-		return this._httpClient.put(endpoint, fileContent).pipe(
+		return this._httpClient.put(endpoint, fileContent, {
+			context: manualErrorHandlerEnabledContextCreator(true)
+		}).pipe(
 			catchError(({error}: HttpErrorResponse) => {
 				if (error.error.code === 'contracts.documents.draft.locked') {
 					const ref = this._dialog.open(ConfirmPopupComponent, {

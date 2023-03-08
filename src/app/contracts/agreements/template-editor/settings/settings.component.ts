@@ -1,4 +1,4 @@
-import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef } from '@angular/core';
+import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -43,10 +43,13 @@ import {
 	AgreementDetailsDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfaces';
+import { EditorObserverService } from '../../../shared/services/editor-observer.service';
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
+	encapsulation: ViewEncapsulation.None,
+	providers: [EditorObserverService],
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
@@ -109,7 +112,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _route: ActivatedRoute,
 		private readonly _injector: Injector,
 		private readonly _cdr: ChangeDetectorRef,
-		private readonly _creationTitleService: CreationTitleService
+		private readonly _creationTitleService: CreationTitleService,
+		private _editorObserverService: EditorObserverService
 	) {
 		super(_injector);
 	}
@@ -122,9 +126,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		this._subscribeOnNoExpirationDates();
+
 		const paramId = this._route.snapshot.params.id;
-		const clientPeriodId = this._route.snapshot.queryParams.clientPeriodId;
+		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
+		this._registerAgreementChangeNotifier(paramId, clientPeriodID);
+
 		const consultantPeriodId = this._route.snapshot.queryParams.consultantPeriodId;
+
 		if (paramId) {
 			this.editMode = true;
 			this.currentAgreementId = paramId;
@@ -137,9 +145,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
 		}
-		if (clientPeriodId) {
-			this.clientPeriodId = clientPeriodId;
+
+		if (clientPeriodID) {
+			this.clientPeriodId = clientPeriodID;
 		}
+
 		if (consultantPeriodId) {
 			this.consultantPeriodId = consultantPeriodId;
 		}
@@ -236,6 +246,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.navigateToEditor(agreementId);
 				});
 		}
+	}
+
+	private _registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string) {
+		(!templateId && !clientPeriodID
+			? of(null)
+			: templateId
+			? this._editorObserverService.runAgreementEditModeNotifier(templateId)
+			: this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID)
+		)
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe();
 	}
 
 	private _createAttachments(files: FileUpload[]) {
