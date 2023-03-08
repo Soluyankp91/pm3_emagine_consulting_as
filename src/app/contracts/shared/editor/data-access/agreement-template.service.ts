@@ -6,6 +6,7 @@ import { EMPTY, of, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
+import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
 import { AgreementTemplateServiceProxy, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
@@ -75,7 +76,7 @@ export class AgreementTemplateService implements AgreementAbstractService {
 	saveDraftAsDraftTemplate(templateId: number, force: boolean, fileContent: StringWrappedValueDto) {
 		const endpoint = `${this._baseUrl}/${templateId}/document-file/${force}`;
 		return this.httpClient
-			.put(endpoint, fileContent).pipe(
+			.put(endpoint, fileContent, {context: manualErrorHandlerEnabledContextCreator(true)}).pipe(
 				catchError(({error}: HttpErrorResponse) => {
 					if (error.error.code === 'contracts.documents.draft.locked') {
 						const ref = this._dialog.open(ConfirmPopupComponent, {

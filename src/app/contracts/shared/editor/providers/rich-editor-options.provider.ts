@@ -9,7 +9,7 @@ export const RichEditorOptionsProvider: FactoryProvider = {
 		let options = createOptions();
 		options.unit = 1;
 		options.width = 'calc(100vw - 160px)';
-		options.height = 'calc(100vh - 240px)';
+		options.height = 'calc(100vh - 220px)';
 		return options;
 	},
 };

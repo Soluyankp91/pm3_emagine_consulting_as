@@ -1,36 +1,38 @@
-<div class="versions">
-	<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
-		<mat-label>
-			{{selectedVersion?.isCurrent ? 'Current' : 'Draft'}}
-		</mat-label>
-		<mat-select [formControl]="selectedVersionControl" placeholder="version">
-			<mat-option *ngFor="let template of templateVersions$ | async" [value]="template.version">
-				<b>Version {{ template.version }}</b> - {{template.createdDateUtc | momentFormat}}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
+<div class="wrapper">
+	<div class="versions">
+		<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+			<mat-label>
+				{{selectedVersion?.isCurrent ? 'Current' : 'Draft'}}
+			</mat-label>
+			<mat-select [formControl]="selectedVersionControl" placeholder="version">
+				<mat-option *ngFor="let template of templateVersions$ | async" [value]="template.version">
+					<b>Version {{ template.version }}</b> - {{template.createdDateUtc | momentFormat}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	
+	<div richEditor class="editor" (saved)="saveAsComplete()"></div>
+	<div class="comment-sidebar">
+		<app-comment-sidebar
+			@inOutPaneAnimation
+			*ngIf="commentSidebarEnabled$ | async"
+			[entities]="comments$ | async"
+			(created)="createComment($event)"
+			(deleted)="deleteComment($event)"
+			(edited)="editComment($event)">
+		</app-comment-sidebar>
+	</div>
+	<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
+	</app-insert-merge-field-popup>
+	<app-compare-select-version-popup
+		[dataSource]="templateVersions$ | async"
+		(select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
+	<app-compare-select-document-popup
+		[dataSource]="documentList$ | async"
+		(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
+	
 </div>
-
-<div richEditor class="editor" (saved)="saveAsComplete()"></div>
-<div class="comment-sidebar">
-	<app-comment-sidebar
-		@inOutPaneAnimation
-		*ngIf="commentSidebarEnabled$ | async"
-		[entities]="comments$ | async"
-		(created)="createComment($event)"
-		(deleted)="deleteComment($event)"
-		(edited)="editComment($event)">
-	</app-comment-sidebar>
-</div>
-<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
-</app-insert-merge-field-popup>
-<app-compare-select-version-popup
-	[dataSource]="templateVersions$ | async"
-	(select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
-<app-compare-select-document-popup
-	[dataSource]="documentList$ | async"
-	(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
-
 	<!-- *ngIf="hasUnsavedChanges$ | async" -->
 <ng-container *ngIf="isLatestVersionSelected$ | async">
 
