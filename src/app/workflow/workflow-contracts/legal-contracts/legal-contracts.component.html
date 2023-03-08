@@ -95,7 +95,7 @@
                     <ng-container *ngIf="!readOnlyMode">
                         <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
-                                [matMenuTriggerFor]="legalContractMenu" class="three-dots-actions-btn">
+                                #menuTrigger="matMenuTrigger" [matMenuTriggerFor]="legalContractMenu" class="three-dots-actions-btn">
                                 <mat-icon svgIcon="3-dots"></mat-icon>
                             </button>
                             <mat-menu #legalContractMenu>
@@ -108,30 +108,30 @@
                                     </button>
                                 </ng-container>
                                 <ng-container *ngIf="contract.value.processingPath !== legalContractPath.ReceiveFromOtherParty">
-                                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="downloadPdf(contract.value.agreementId)">
+                                    <button class="menu-item green-color" mat-menu-item
+                                        (click)="downloadPdf(contract.value.agreementId)">
                                         <mat-icon svgIcon="download-pdf"></mat-icon>
                                         Download *.pdf
                                     </button>
                                 </ng-container>
                                 <ng-container *ngIf="contract.value.processingPath !== legalContractPath.ReceiveFromOtherParty">
-                                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="downloadDoc(contract.value.agreementId)">
+                                    <button class="menu-item green-color" mat-menu-item
+                                        (click)="downloadDoc(contract.value.agreementId)">
                                         <mat-icon svgIcon="download-doc"></mat-icon>
                                         Download *.doc
                                     </button>
                                 </ng-container>
                                 <ng-container *ngIf="contract.value.processingPath === legalContractPath.ReceiveFromOtherParty && contract.value.agreementStatus === legalContractStatus.Voided">
-                                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="downloadFile(contract.value.agreementId)">
+                                    <button class="menu-item green-color" mat-menu-item
+                                        (click)="downloadFile(contract.value.agreementId)">
                                         <mat-icon svgIcon="download-doc"></mat-icon>
                                         Download
                                     </button>
                                 </ng-container>
                                 <ng-container *ngIf="contract.value.agreementStatus !== legalContractStatus.Created">
                                     <ng-container *ngIf="contract.value.processingPath === legalContractPath.DocuSign">
-                                        <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                                            (throttledClick)="openInDocuSign(contract.value.docuSignUrl)">
+                                        <button class="menu-item green-color" mat-menu-item
+                                            (click)="openInDocuSign(contract.value.docuSignUrl)">
                                             <mat-icon svgIcon="open-in-docusign"></mat-icon>
                                             Open in DocuSign
                                         </button>
@@ -139,8 +139,8 @@
                                 </ng-container>
                                 <ng-container
                                     *ngIf="(!(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath === legalContractPath.ReceiveFromOtherParty) && !(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath === legalContractPath.DocuSign) && !(contract.value.agreementStatus === legalContractStatus.Voided && contract.value.processingPath === legalContractPath.ReceiveFromOtherParty))">
-                                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="editAgreement(contract.value.agreementId)">
+                                    <button class="menu-item green-color" mat-menu-item
+                                        (click)="editAgreement(contract.value.agreementId)">
                                         <mat-icon svgIcon="legal-contract-edit"></mat-icon>
                                         Edit
                                     </button>
@@ -148,15 +148,15 @@
                                 <ng-container
                                     *ngIf="contract.value.agreementStatus === legalContractStatus.Created || contract.value.agreementStatus === legalContractStatus.CreatedInDocuSign || contract.value.agreementStatus === legalContractStatus.Completed ||
                                                                 contract.value.agreementStatus === legalContractStatus.Expired || contract.value.agreementStatus === legalContractStatus.Voided || contract.value.agreementStatus === legalContractStatus.Declined || contract.value.processingPath == legalContractPath.ReceiveFromOtherParty; else voidAgreementOption">
-                                    <button class="menu-item red-color" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="openDeleteAgreementDialog(contract.value.agreementId)">
+                                    <button class="menu-item red-color" mat-menu-item
+                                        (click)="openDeleteAgreementDialog(contract.value.agreementId)">
                                         <mat-icon svgIcon="legal-contract-remove"></mat-icon>
                                         Delete
                                     </button>
                                 </ng-container>
                                 <ng-template #voidAgreementOption>
-                                    <button class="menu-item red-color" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="openVoidAgreementDialog(contract.value.agreementId)">
+                                    <button class="menu-item red-color" mat-menu-item
+                                        (click)="openVoidAgreementDialog(contract.value.agreementId)">
                                         <mat-icon svgIcon="legal-contract-remove"></mat-icon>
                                         Void
                                     </button>
