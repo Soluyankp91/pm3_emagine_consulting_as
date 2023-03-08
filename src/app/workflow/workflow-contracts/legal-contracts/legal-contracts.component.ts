@@ -1,11 +1,12 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpResponse } from '@angular/common/http';
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { AppComponentBase } from 'src/shared/app-component-base';
+import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
 	WorkflowAgreementDto,
@@ -29,7 +30,6 @@ import {
 	ELegalContractSourceText,
 	ELegalContractStatusIcon,
 	ELegalContractStatusText,
-	LegalContractsMockedData,
 } from './legal-contracts.model';
 import { RemoveOrUploadAgrementDialogComponent } from './remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
 import { ERemoveOrOuploadDialogMode } from './remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.model';
@@ -43,6 +43,7 @@ import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/
 	styleUrls: ['./legal-contracts.component.scss'],
 })
 export class LegalContractsComponent extends AppComponentBase implements OnInit {
+	@ViewChild('menuTrigger', { static: false }) menuTrigger: MatMenuTrigger;
 	@Input() periodId: string;
 	@Input() isClientContracts: boolean;
 	@Input() readOnlyMode: boolean;
@@ -132,6 +133,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public openUploadSignedContractDialog(agreementId: number) {
+		this._closeMenu();
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -151,12 +153,14 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public downloadPdf(agreementId: number) {
+		this._closeMenu();
 		this.showMainSpinner();
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/pdf`;
 		this._processDownloadDocument(url);
 	}
 
 	public downloadDoc(agreementId: number) {
+		this._closeMenu();
 		this.showMainSpinner();
 		const getDraftIfAvailable = false; // NB: hardcoded false as for now, BE requirement
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}/false`;
@@ -164,12 +168,14 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public downloadFile(agreementId: number) {
+		this._closeMenu();
 		this.showMainSpinner();
 		const url = `${this.apiUrl}/api/Agreement/${agreementId}/signed-document`;
 		this._processDownloadDocument(url);
 	}
 
 	public openInDocuSign(docuSignUrl: string) {
+		this._closeMenu();
 		window.open(docuSignUrl, '_blank');
 	}
 
@@ -177,10 +183,12 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		const routerUrl = this._router.serializeUrl(
 			this._router.createUrlTree([`/app/contracts/agreements/${agreementId}/settings`])
 		);
+        this._closeMenu();
 		window.open(routerUrl, '_blank');
 	}
 
 	public openDeleteAgreementDialog(agreementId: number) {
+		this._closeMenu();
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -195,6 +203,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	public openVoidAgreementDialog(agreementId: number) {
+		this._closeMenu();
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -254,6 +263,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 
 	private _getClientAgreements() {
 		this._clientPeriodService.clientAgreements(this.periodId).subscribe((result: WorkflowAgreementsDto) => {
+			this._resetForm();
 			result.agreements.forEach((item) => {
 				this.addLegalContract(item);
 			});
@@ -262,6 +272,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 
 	private _getConsultantAgreements() {
 		this._consultantPeriodService.consultantAgreements(this.periodId).subscribe((result: WorkflowAgreementsDto) => {
+			this._resetForm();
 			result.agreements.forEach((item) => {
 				this.addLegalContract(item);
 			});
@@ -335,7 +346,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.sendEmailEnvelope(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => this._getAgreementData());
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via Email');
+                this._getAgreementData()
+            });
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
@@ -348,7 +362,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.sendDocusignEnvelope(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => this._getAgreementData());
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via DocuSign');
+                this._getAgreementData()
+            });
 	}
 
 	private _uploadSignedContract(agreementId: number, file: FileParameter) {
@@ -357,15 +374,21 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.uploadSigned(agreementId, forceUpdate, file)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => this._getAgreementData());
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
+                this._getAgreementData()
+            });
 	}
 
-	private _voidAgreement(agreementId: number, reason?: string) {
+	private _voidAgreement(agreementId: number, reason: string) {
 		this.showMainSpinner();
 		this._agreementService
 			.voidEnvelope(agreementId, reason)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => this._getAgreementData());
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Agreement voided');
+                this._getAgreementData()
+            });
 	}
 
 	private _deleteAgreement(agreementId: number) {
@@ -373,7 +396,18 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.agreementDELETE(agreementId)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => this._getAgreementData());
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Agreement deleted');
+                this._getAgreementData()
+            });
+	}
+
+	private _resetForm() {
+		this.clientLegalContractsForm.legalContracts.controls = [];
+	}
+
+	private _closeMenu() {
+		this.menuTrigger.closeMenu();
 	}
 
 	get legalContracts(): UntypedFormArray {

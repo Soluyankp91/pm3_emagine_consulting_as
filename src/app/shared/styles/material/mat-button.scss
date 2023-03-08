@@ -246,6 +246,9 @@
             border: 2px solid $red-color;
             box-sizing: border-box;
             border-radius: 5px;
+            &[disabled] {
+                border-color: transparent;
+            }
         }
     }
 }

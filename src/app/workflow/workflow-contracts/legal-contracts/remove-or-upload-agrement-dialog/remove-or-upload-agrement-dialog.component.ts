@@ -36,7 +36,17 @@ export class RemoveOrUploadAgrementDialogComponent {
 	}
 
 	confirm() {
-		this.onConfirmed.emit();
+        switch (this.data.dialogMode) {
+            case ERemoveOrOuploadDialogMode.Void:
+                this.onConfirmed.emit(this.reasonForChange.value);
+                break;
+            case ERemoveOrOuploadDialogMode.UploadNewDocument:
+                this.onConfirmed.emit(this.file);
+                break;
+            case ERemoveOrOuploadDialogMode.Delete:
+                this.onConfirmed.emit();
+                break;
+        }
 		this._closeInternal();
 	}
 

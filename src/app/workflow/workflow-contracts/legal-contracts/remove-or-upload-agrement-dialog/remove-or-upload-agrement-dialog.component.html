@@ -41,7 +41,7 @@
         Cancel
     </button>
     <button mat-flat-button class="dialog-btn dialog-btn__negative" appPreventDoubleClick (throttledClick)="confirm()"
-        [disabled]="!data?.hideReason && !reasonForChange.valid">
+        [disabled]="(!data?.hideReason && !reasonForChange.valid) || (data?.dialogMode === dialogModes.UploadNewDocument && !isFileAdded)">
         {{dialogConfig.confirmButtonText}}
     </button>
 </mat-dialog-actions>
