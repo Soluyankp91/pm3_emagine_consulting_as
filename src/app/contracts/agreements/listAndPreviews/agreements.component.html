@@ -113,7 +113,7 @@
 				<div class="table-cell">{{ cell.startDate | momentFormat }}</div>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
-				<div class="table-cell">{{ cell.endDate | momentFormat }}</div>
+				<div class="table-cell">{{ cell.endDate ? (cell.endDate  | momentFormat) : '-' }}</div>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
 				<div class="table-cell">

@@ -48,12 +48,13 @@ import { EditorObserverService } from '../../../shared/services/editor-observer.
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
-	encapsulation: ViewEncapsulation.None,
 	providers: [EditorObserverService],
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
+
+    nextButtonLabel: string;
 
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
@@ -417,6 +418,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.dirtyStatus$ = this.agreementFormGroup.valueChanges.pipe(
 			takeUntil(this._unSubscribe$),
 			startWith(this.agreementFormGroup.value),
+			map(() => this.agreementFormGroup.getRawValue()),
 			dirtyCheck(this.agreementFormGroup.initial$)
 		);
 	}
@@ -653,6 +655,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _preselectAgreement(agreementId: number) {
 		this._apiServiceProxy.agreementGET(agreementId).subscribe((agreement) => {
 			this.currentAgreement = agreement;
+			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreement.receiveAgreementsFromOtherParty);
 			if (agreement.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreement;
 				this._setDuplicateObs();
@@ -735,7 +738,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _resetForm() {
 		this.agreementFormGroup.reset();
+		this.noExpirationDateControl.setValue(false);
 		this.preselectedFiles = [];
 		this.attachmentsFromParent = [];
 	}
+
+    // private _subscribeOnAgreementsFromOtherParty() {
+    //     this.agreementFormGroup.agre
+    // }
 }

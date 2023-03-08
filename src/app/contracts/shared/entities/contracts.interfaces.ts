@@ -148,6 +148,8 @@ export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMa
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;
 	linkState: AgreementTemplateParentChildLinkState;
+    linkStateAcceptedBy: EmployeeDto,
+    linkStateAcceptedDateUtc: moment.Moment;
 	linkStateAccepted: boolean | undefined;
 }
 export interface MasterTemplatePreview {

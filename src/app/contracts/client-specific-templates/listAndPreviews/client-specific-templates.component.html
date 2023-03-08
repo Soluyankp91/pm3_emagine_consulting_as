@@ -119,7 +119,7 @@
 					><div class="table-cell" [customTooltip]="lastUpdateDateUtcTooltip" [showAlways]="true">
 						{{ cell.lastUpdateDateUtc | momentFormat }}
 					</div>
-                    <ng-template #lastUpdateDateUtcTooltip>
+					<ng-template #lastUpdateDateUtcTooltip>
 						<div class="date-rows-container">
 							<div class="last-updated-label no-wrap">Created</div>
 							<div class="last-updated-info">{{ cell.createdDateUtc | momentFormat }}</div>
@@ -162,7 +162,17 @@
 						<emg-approval
 							[linkStateAccepted]="cell.linkStateAccepted"
 							[iconWidth]="23"
-							[iconHeight]="16"></emg-approval>
+							[iconHeight]="16"
+							[tooltip]="cell.linkStateAccepted ? approvalTooltip : null"></emg-approval>
+						<ng-template #approvalTooltip>
+                            <div class="date-rows-container">
+                                <div class="last-updated-label no-wrap">Approved</div>
+                                <div class="last-updated-info">{{ cell.linkStateAcceptedDateUtc | momentFormat }}</div>
+                                <div class="last-updated-info no-wrap">
+                                    by {{ cell.linkStateAcceptedBy.name }}
+                                </div>
+                            </div>
+                        </ng-template>
 					</div>
 				</ng-template>
 

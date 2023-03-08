@@ -19822,6 +19822,7 @@ export class AgreementTemplatesListItemDto implements IAgreementTemplatesListIte
     isEnabled?: boolean;
     linkState?: AgreementTemplateParentChildLinkState;
     linkStateAccepted?: boolean | undefined;
+    linkStateAcceptedDateUtc?: moment.Moment | undefined;
     linkStateAcceptedBy?: EmployeeDto;
 
     constructor(data?: IAgreementTemplatesListItemDto) {
@@ -19868,6 +19869,7 @@ export class AgreementTemplatesListItemDto implements IAgreementTemplatesListIte
             this.isEnabled = _data["isEnabled"];
             this.linkState = _data["linkState"];
             this.linkStateAccepted = _data["linkStateAccepted"];
+            this.linkStateAcceptedDateUtc = _data["linkStateAcceptedDateUtc"] ? moment(_data["linkStateAcceptedDateUtc"].toString()) : <any>undefined;
             this.linkStateAcceptedBy = _data["linkStateAcceptedBy"] ? EmployeeDto.fromJS(_data["linkStateAcceptedBy"]) : <any>undefined;
         }
     }
@@ -19914,6 +19916,7 @@ export class AgreementTemplatesListItemDto implements IAgreementTemplatesListIte
         data["isEnabled"] = this.isEnabled;
         data["linkState"] = this.linkState;
         data["linkStateAccepted"] = this.linkStateAccepted;
+        data["linkStateAcceptedDateUtc"] = this.linkStateAcceptedDateUtc ? this.linkStateAcceptedDateUtc.toISOString() : <any>undefined;
         data["linkStateAcceptedBy"] = this.linkStateAcceptedBy ? this.linkStateAcceptedBy.toJSON() : <any>undefined;
         return data;
     }
@@ -19937,6 +19940,7 @@ export interface IAgreementTemplatesListItemDto {
     isEnabled?: boolean;
     linkState?: AgreementTemplateParentChildLinkState;
     linkStateAccepted?: boolean | undefined;
+    linkStateAcceptedDateUtc?: moment.Moment | undefined;
     linkStateAcceptedBy?: EmployeeDto;
 }
 
@@ -22057,6 +22061,7 @@ export interface IClientRequestTrackItemDtoPaginatedList {
 export class ClientResultDto implements IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
+    registrationNumber?: string | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
@@ -22078,6 +22083,7 @@ export class ClientResultDto implements IClientResultDto {
         if (_data) {
             this.clientId = _data["clientId"];
             this.clientName = _data["clientName"];
+            this.registrationNumber = _data["registrationNumber"];
             this.address = _data["address"];
             this.address2 = _data["address2"];
             this.postCode = _data["postCode"];
@@ -22099,6 +22105,7 @@ export class ClientResultDto implements IClientResultDto {
         data = typeof data === 'object' ? data : {};
         data["clientId"] = this.clientId;
         data["clientName"] = this.clientName;
+        data["registrationNumber"] = this.registrationNumber;
         data["address"] = this.address;
         data["address2"] = this.address2;
         data["postCode"] = this.postCode;
@@ -22113,6 +22120,7 @@ export class ClientResultDto implements IClientResultDto {
 export interface IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
+    registrationNumber?: string | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
