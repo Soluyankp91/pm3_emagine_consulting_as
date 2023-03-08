@@ -693,7 +693,22 @@
                         </ng-container>
                     </div>
                 </ng-container>
+            </div>
+        </div>
 
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientInvoicingNumber">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">5</span>
+                <h2 class="workflow-section--header">Client purchase order + cap</h2>
+            </div>
+            <div class="workflow-section--content">
+                <ng-container *ngIf="!readOnlyMode">
+                    <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
+                        (throttledClick)="addPurchaseOrder()">
+                        <mat-icon>add</mat-icon>
+                        Add PO
+                    </button>
+                </ng-container>
                 <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">

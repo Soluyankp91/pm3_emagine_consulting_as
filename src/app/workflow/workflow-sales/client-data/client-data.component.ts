@@ -16,6 +16,10 @@ import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, Clien
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { ClientRateTypes, EClientSelectionType, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
+import { AddOrEditPoDialogComponent } from '../../shared/components/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
+import { Overlay } from '@angular/cdk/overlay';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-client-data',
@@ -78,6 +82,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _router: Router,
         private _agreementService: AgreementServiceProxy,
         private _workflowDataService: WorkflowDataService,
+        private _overlay: Overlay,
+        private _dialog: MatDialog
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -660,6 +666,16 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
     submitForm() {
         this.submitFormBtn.nativeElement.click();
+    }
+
+    addPurchaseOrder() {
+        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe((newAddress) => {
+            // this._addNewClientAddress(newAddress);
+		});
     }
 
     get clientRates(): UntypedFormArray {

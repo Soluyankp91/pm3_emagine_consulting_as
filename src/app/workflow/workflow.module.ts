@@ -31,6 +31,7 @@ import { DocumentsComponent } from './shared/components/wf-documents/wf-document
 import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { OnSubmitErrorStateMatcher } from 'src/shared/utils/custom-errorStateMatcher';
+import { AddOrEditPoDialogComponent } from './shared/components/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -58,6 +59,7 @@ import { OnSubmitErrorStateMatcher } from 'src/shared/utils/custom-errorStateMat
 		ContractsClientDataComponent,
 		ToggleEditModeComponent,
 		DocumentsComponent,
+  AddOrEditPoDialogComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],

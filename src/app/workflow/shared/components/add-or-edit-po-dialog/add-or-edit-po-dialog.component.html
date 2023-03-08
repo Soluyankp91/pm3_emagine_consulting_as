@@ -1,0 +1,101 @@
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <h1>
+            New Client Purchase Order
+        </h1>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
+    </div>
+    <form [formGroup]="purchaseOrderForm">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="start start" >
+                <mat-form-field appearance="outline" class="form-width-270">
+                    <mat-label>Number</mat-label>
+                    <input autocomplete="off" matInput name="poNumber" formControlName="number" required>
+                    <mat-error>
+                        <app-validator [control]="purchaseOrderForm.number"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="never" fxFlex="50%">
+                    <mat-label>Start date</mat-label>
+                    <input autocomplete="off" matInput
+                            [matDatepicker]="startDatePicker"
+                            name="clientExtensionEndDate" [formControl]="startDate"
+                            (focus)="startDatePicker.open()"
+                            required
+                            appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #startDatePicker></mat-datepicker>
+                    <mat-error>
+                        <app-validator [control]="purchaseOrderForm.number"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(purchaseOrderForm.numberMissingButRequired.value, purchaseOrderForm.numberMissingButRequired)">
+                Missing but required
+            </mat-checkbox>
+            <ng-container formGroupName="capForInvoicing">
+                <mat-form-field appearance="outline">
+                    <mat-label>Number</mat-label>
+                    <input autocomplete="off" matInput name="type" formControlName="type" required>
+                    <mat-error>
+                        <app-validator [control]="purchaseOrderForm.capForInvoicing.type"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>maxAmount</mat-label>
+                    <input autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
+                    <mat-error>
+                        <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+            </ng-container>
+        </div>
+
+    </form>
+    <!-- <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100 u-mt--10">
+        <mat-form-field appearance="outline" floatLabel="never" fxFlex="50%">
+            <mat-label>Start date</mat-label>
+            <input autocomplete="off" matInput
+                    [matDatepicker]="startDatePicker"
+                    name="clientExtensionEndDate" [formControl]="startDate"
+                    (focus)="startDatePicker.open()"
+                    required
+                    appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
+            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+            <mat-datepicker #startDatePicker></mat-datepicker>
+            <mat-error>
+                <app-validator [control]="startDate"></app-validator>
+            </mat-error>
+        </mat-form-field>
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
+            <mat-form-field appearance="outline" floatLabel="never">
+                <mat-label>End date</mat-label>
+                <input autocomplete="off" matInput
+                        [matDatepicker]="endDatePicker"
+                        name="clientExtensionEndDate" [formControl]="endDate"
+                        (focus)="endDatePicker.open()"
+                        [min]="startDate.value"
+                        required
+                        appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
+                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+                <mat-error>
+                    <app-validator [control]="endDate"></app-validator>
+                </mat-error>
+            </mat-form-field>
+            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+                No end date
+            </mat-checkbox>
+        </div>
+    </div> -->
+</mat-dialog-content>
+<mat-dialog-actions class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="confirm()">
+        Create
+    </button>
+</mat-dialog-actions>
