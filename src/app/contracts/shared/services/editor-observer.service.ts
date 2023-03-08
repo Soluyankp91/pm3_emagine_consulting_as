@@ -38,7 +38,7 @@ export class EditorObserverService {
 	}
 
 	private _draftLockedNotification(error: any) {
-		if (error.code || error.error.code.includes('draft.locked')) {
+		if (error.code && error.code.includes('draft.locked')) {
 			this._snackBar.open('This document has been edited by the other user!');
 		}
 	}
