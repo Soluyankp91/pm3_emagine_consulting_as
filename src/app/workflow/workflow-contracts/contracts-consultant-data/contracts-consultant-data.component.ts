@@ -214,8 +214,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         if (this.isContractModuleEnabled) {
             this.filteredFrameAgreements.push([]);
             if (consultant.employmentTypeId !== EmploymentTypes.FeeOnly && consultant.employmentTypeId !== EmploymentTypes.Recruitment) {
-                this.getInitialFrameAgreements(consultant.consultantId, consultantIndex);
                 this.manageFrameAgreementAutocomplete(consultant.consultantId, consultantIndex);
+                this.getInitialFrameAgreements(consultant.consultantId, consultantIndex);
             }
         }
 		this.filteredConsultants.push(consultant.consultant!);
@@ -243,6 +243,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
                 if (list?.items?.length) {
 					this.filteredFrameAgreements[consultantIndex] = list.items;
+                    if (this.selectedFrameAgreementList[consultantIndex] && this.selectedFrameAgreementList[consultantIndex] !== null) {
+                        this.consultants.at(consultantIndex).get('frameAgreementId').setValue(list.items.find(x => x.agreementId === this.selectedFrameAgreementList[consultantIndex]), {emitEvent: false});
+                        this.selectedFrameAgreementList[consultantIndex] = null;
+                    }
 				} else {
 					this.filteredFrameAgreements[consultantIndex] = [
 						new AgreementSimpleListItemDto({

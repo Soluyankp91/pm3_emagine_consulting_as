@@ -7,9 +7,6 @@
 	margin-bottom: 32px;
 	font-size: 16px;
 }
-.file-uploader {
-	width: 564px;
-}
 .add-attachment-cell {
 	width: 100%;
 	border: 2px dashed #e7e3e8;
@@ -33,17 +30,18 @@
 	font-size: 16px;
 }
 .file-container {
-	width: 564px;
 	padding: 16px;
 	border: 1px solid #e7e3e8;
 	margin-bottom: 16px;
 	display: flex;
-	justify-content: space-between;
+	gap: 15px;
 	align-items: center;
 }
 .file-item-left {
 	display: flex;
-    max-width: 464px;
+    flex-grow: 1;
+
+    max-width: calc(100% - 89px);
 }
 .file-label {
 	padding-left: 15px;
@@ -52,4 +50,11 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.loaded-files-label {
+	color: #898785;
+	font-size: 16px;
+	font-weight: 700;
+
+    margin-bottom: 24px;
 }

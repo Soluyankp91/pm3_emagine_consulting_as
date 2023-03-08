@@ -916,6 +916,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
             this.clientDataComponent.contractClientForm.frameAgreementId.setValue(data?.clientData.frameAgreementId, {emitEvent: false});
             this.clientDataComponent.selectedFrameAgreementId = data?.clientData.frameAgreementId ?? null;
+            this.clientDataComponent?.getInitialFrameAgreements();
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		if (data?.clientData?.periodClientSpecialRates?.length) {

@@ -1,4 +1,4 @@
-import { OnDestroy, Component, OnInit, ViewEncapsulation, Injector, ChangeDetectorRef } from '@angular/core';
+import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -62,6 +62,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	agreementFormGroup = new AgreementModel();
 
+	noExpirationDateControl = new FormControl(false);
+
 	attachmentsFromParent: FileUpload[] = [];
 	preselectedFiles: FileUpload[] = [];
 
@@ -95,6 +97,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	currentDuplicatedTemplate: AgreementDetailsDto;
 
 	currentAgreementTemplate: AgreementDetailsDto;
+    clientPeriodId: string;
+    consultantPeriodId: string;
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -121,9 +125,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subscribeOnSignatureRequire();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
+		this._subscribeOnNoExpirationDates();
+		
 		const paramId = this._route.snapshot.params.id;
 		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
 		this._registerAgreementChangeNotifier(paramId, clientPeriodID);
+		
+		const consultantPeriodId = this._route.snapshot.queryParams.consultantPeriodId;
 
 		if (paramId) {
 			this.editMode = true;
@@ -136,6 +144,14 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subscribeOnModeReplay();
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
+		}
+
+        if (clientPeriodID) {
+			this.clientPeriodId = clientPeriodID;
+		}
+
+		if (consultantPeriodId) {
+			this.consultantPeriodId = consultantPeriodId;
 		}
 	}
 
@@ -163,6 +179,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	navigateToEditor(templateId: number) {
 		this._router.navigate([`../${templateId}/editor`], {
 			relativeTo: this._route,
+			queryParams: this.clientPeriodId
+				? {
+						clientPeriodId: this.clientPeriodId,
+				  }
+				: {
+						consultantPeriodId: this.consultantPeriodId,
+				  },
 		});
 	}
 
@@ -199,6 +222,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
+        toSend.clientPeriodId = this.clientPeriodId ?? undefined;
+        toSend.consultantPeriodId = this.consultantPeriodId ?? undefined;
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
@@ -236,6 +261,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _createAttachments(files: FileUpload[]) {
 		return files.map((attachment: FileUpload) => new AgreementAttachmentDto(attachment));
+	}
+
+	private _subscribeOnNoExpirationDates() {
+		this.noExpirationDateControl.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((val) => {
+			if (val) {
+				this.agreementFormGroup.endDate.reset(null);
+				this.agreementFormGroup.endDate.disable({ emitEvent: false });
+			} else {
+				this.agreementFormGroup.enable({ emitEvent: false });
+			}
+		});
 	}
 
 	private _subscribeOnTemplateNameChanges() {
@@ -661,6 +697,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 			this.preselectedFiles = agreement.attachments as FileUpload[];
 			this._cdr.detectChanges();
+
+			if (!agreement.endDate) {
+				this.noExpirationDateControl.setValue(true);
+			}
+
 			this.agreementFormGroup.patchValue({
 				agreementType: agreement.agreementType,
 				recipientTypeId: agreement.recipientTypeId,

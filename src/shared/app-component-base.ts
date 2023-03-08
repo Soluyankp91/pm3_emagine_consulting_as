@@ -24,7 +24,6 @@ export abstract class AppComponentBase {
     momentFormatType = AppConsts.momentFormatType;
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
-    private _momentFormatPipe: MomentFormatPipe;
     imageType = EProfileImageLinkTypes;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
@@ -200,7 +199,12 @@ export abstract class AppComponentBase {
 	}
 
     displayAgreementNameFn(option: AgreementSimpleListItemDto) {
-        return `${option?.agreementName}, ${option.countryName} ${option.countryName ? '•' : '' + this._momentFormatPipe.transform(option.startDate)} ${option.startDate !== null && option.startDate !== undefined ? '-' : '' + this._momentFormatPipe.transform(option.endDate)}`;
+        if (option?.agreementId) {
+            let momentFormatPipe = new MomentFormatPipe();
+            return `${option?.agreementName}, ${option?.countryName} ${option?.countryName ? '•' : ''} ${momentFormatPipe.transform(option?.startDate)} ${option?.startDate !== null && option?.startDate !== undefined ? '-' : ''} ${momentFormatPipe.transform(option?.endDate)}`;
+        } else {
+            return '';
+        }
     }
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
