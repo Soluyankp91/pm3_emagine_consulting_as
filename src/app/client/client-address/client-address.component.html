@@ -6,7 +6,8 @@
                 Show hidden
             </mat-slide-toggle>
         </div>
-        <address-table [clientId]="clientId" [isDataLoading]="isDataLoading" [dataSource]="clientAddressData" (onGetTable)="getClientAddresses()" (refreshTable)="fillAddressTable($event)"></address-table>
+        <address-table [clientId]="clientId" [isDataLoading]="isDataLoading" [dataSource]="clientAddressData"
+            (onGetTable)="getClientAddresses()" (refreshTable)="fillAddressTable($event)"></address-table>
         <div fxLayout="row" fxLayoutAlign="end start" class="u-w--100 u-mt--15">
             <button class="button-add button-add--circled" mat-flat-button (click)="addAddress()">
                 <mat-icon svgIcon="add_icon_circled"></mat-icon>
@@ -17,8 +18,9 @@
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10 u-mb--10">
                 <h2 class="medium-grey-color text-600">Hidden</h2>
             </div>
-            <address-table [hiddenAddresses]="true" [clientId]="clientId" [isDataLoading]="isDataLoading" [dataSource]="hiddenClientAddressData" (onGetTable)="getClientAddresses()" (refreshTable)="fillAddressTable($event)"></address-table>
+            <address-table [hiddenAddresses]="true" [clientId]="clientId" [isDataLoading]="isDataLoading"
+                [dataSource]="hiddenClientAddressData" (onGetTable)="getClientAddresses()"
+                (refreshTable)="fillAddressTable($event)"></address-table>
         </ng-container>
     </div>
 </div>
-
