@@ -72,40 +72,51 @@
 </mat-dialog-actions>
 
 <ng-template #recipientsList let-recipients="recipients">
-    <div class="envelope-header u-pl--12 u-pr--12 u-mb--8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="5px">
-        <span fxFlex="35px" class="u-w--100"></span>
-        <span fxFlex="auto" class="u-w--100">Name</span>
-        <span fxFlex="130px" class="u-w--100">Signer type</span>
-        <span fxFlex="180px" class="u-w--100">Signing role</span>
-        <span fxFlex="80px" class="u-w--100">Sequence</span>
-    </div>
-    <ng-container *ngFor="let recipient of recipients">
-        <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-            <span fxFlex="35px" fxLayoutAlign="center center" class="u-w--100">
-                <ng-container
-                    *ngIf="recipient.signerType === signerType.InternalEmagine || recipient.signerType === signerType.Consultant; then recipientImage; else noImage"></ng-container>
-                <ng-template #recipientImage>
-                    <img class="border-rounded-50 image-thumbnail-small"
-                        [ngClass]="recipient.signerType === signerType.InternalEmagine ? 'internal-emagin' : 'consutlant'"
-                        [ngSrc]="(recipient.signerType === signerType.InternalEmagine ? employeePhotoUrl : consultantPhotoUrl) + recipient.externalId! + '.jpg'"
-                        width="35" height="35" src (error)="setDefaultImage($event.target)" />
-                </ng-template>
-                <ng-template #noImage>
-                    -
-                </ng-template>
-            </span>
-            <span fxFlex="auto" class="u-w--100">
-                {{recipient.name}}
-            </span>
-            <span fxFlex="130px" class="u-w--100">
-                {{signerTypeName[recipient.signerType]}}
-            </span>
-            <span fxFlex="180px" class="u-w--100">
-                {{signerRole[recipient.roleId]}}
-            </span>
-            <span fxFlex="80px" class="u-w--100">
-                {{recipient.signOrder}}
-            </span>
+    <ng-container *ngIf="recipients?.length; else noRecipients">
+        <div class="envelope-header u-pl--12 u-pr--12 u-mb--8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="5px">
+            <span fxFlex="35px" class="u-w--100"></span>
+            <span fxFlex="auto" class="u-w--100">Name</span>
+            <span fxFlex="130px" class="u-w--100">Signer type</span>
+            <span fxFlex="180px" class="u-w--100">Signing role</span>
+            <span fxFlex="80px" class="u-w--100">Sequence</span>
         </div>
+        <ng-container *ngFor="let recipient of recipients">
+            <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                <span fxFlex="35px" fxLayoutAlign="center center" class="u-w--100">
+                    <ng-container
+                        *ngIf="recipient.signerType === signerType.InternalEmagine || recipient.signerType === signerType.Consultant; then recipientImage; else noImage"></ng-container>
+                    <ng-template #recipientImage>
+                        <img class="border-rounded-50 image-thumbnail-small"
+                            [ngClass]="recipient.signerType === signerType.InternalEmagine ? 'internal-emagin' : 'consutlant'"
+                            [ngSrc]="(recipient.signerType === signerType.InternalEmagine ? employeePhotoUrl : consultantPhotoUrl) + recipient.externalId! + '.jpg'"
+                            width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                    </ng-template>
+                    <ng-template #noImage>
+                        -
+                    </ng-template>
+                </span>
+                <span fxFlex="auto" class="u-w--100">
+                    {{recipient.name}}
+                </span>
+                <span fxFlex="130px" class="u-w--100">
+                    {{signerTypeName[recipient.signerType]}}
+                </span>
+                <span fxFlex="180px" class="u-w--100">
+                    {{signerRole[recipient.roleId]}}
+                </span>
+                <span fxFlex="80px" class="u-w--100">
+                    {{recipient.signOrder}}
+                </span>
+            </div>
+        </ng-container>
     </ng-container>
 </ng-template>
+
+<ng-template #noRecipients>
+    <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+        <span class="light-grey-color text-600">
+            No recipients
+        </span>
+    </div>
+</ng-template>
+
