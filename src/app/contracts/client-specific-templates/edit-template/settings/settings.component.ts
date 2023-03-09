@@ -203,6 +203,13 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._apiServiceProxy
 				.agreementTemplatePATCH(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
 				.pipe(
+                    switchMap(() => {
+						return this._apiServiceProxy.preview2(this.currentAgreementId);
+					}),
+					tap((template) => {
+						this.clientTemplateFormGroup.attachments.reset();
+						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
 					tap(() => {
 						this.hideMainSpinner();
 					}),
