@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { create, createOptions, Options, RichEdit } from 'devexpress-richedit';
+import { create, createOptions, Options, RichEdit, ViewTabCommandId } from 'devexpress-richedit';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
 import { of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -26,10 +26,11 @@ export class EditorPreviewComponent implements AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
       const options: Options = createOptions();
       this._setupOptions(options);
-
       this._rich = create(this._element.nativeElement.firstElementChild, options);
-      this._rich.showHorizontalRuler = false;
       this._rich.readOnly = true;
+      this._rich.events.documentLoaded.addHandler(() => {
+        this._rich.executeCommand(ViewTabCommandId.ToggleShowHorizontalRuler)
+      })
   }
 
   ngOnDestroy() {
@@ -41,7 +42,7 @@ export class EditorPreviewComponent implements AfterViewInit, OnChanges {
 
   private _loadTemplate(templateId: number) {
       this._templateService.getTemplate(templateId, false).pipe(
-        tap(template => this._rich.openDocument(template, 'emagine_doc', DocumentFormatApi.OpenXml))
+        tap(template => this._rich.openDocument(template, 'emagine_doc', DocumentFormatApi.OpenXml)),
       ).subscribe()
   }
 

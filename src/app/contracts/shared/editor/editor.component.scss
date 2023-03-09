@@ -1,3 +1,24 @@
+.main {
+	&::before {
+		content: '';
+		transition: 0.24s all ease-in;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-color: white;
+		z-index: 1101;
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	&.page-loading {
+		&::before {
+			visibility: visible;
+			opacity: .8;
+		}
+	}
+}
+
 .wrapper {
 	padding: 20px 60px 10px 60px; 
 	display: block;
@@ -125,6 +146,7 @@
 	background: white;
 	width: 100%;
 	height: 64px;
+	z-index: 111;
 	box-shadow: 0px 0px 22px -2px rgba(133, 133, 133, 0.53);
 
 	button {
@@ -139,6 +161,14 @@
 
 		&:last-child {
 			margin-left: 24px;
+		}
+	}
+
+	&.promote {
+		button {
+			color: #17a297;
+			margin: unset;
+			margin-left: auto;
 		}
 	}
 

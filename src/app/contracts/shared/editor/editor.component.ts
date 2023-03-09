@@ -81,8 +81,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 	commentSidebarEnabled$ = this._editorCoreService.commentSidebarEnabled$;
 	comments$ = new BehaviorSubject<IComment[]>([]);
 	currentTemplateVersion: number | undefined;
+	prevValue = 0;
 
 	isLoading: boolean = false;
+	isPageLoading: boolean = true;
+
 	selectedVersionControl = new FormControl();
 
 	constructor(
@@ -135,16 +138,19 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	loadTemplate(templateId: number, version: number) {
 		this.isLoading = true;
+		this.isPageLoading = true;
 
 		this._agreementService
 			.getTemplateByVersion(templateId, version)
 			.pipe(catchError(() => {
 				this.isLoading = false;
+				this.isPageLoading = false;
 				return of(null)
 			}))
 			.subscribe((tmp) => {
 				this.template$.next(tmp);
 				this.isLoading = false;
+				this.isPageLoading = false;
 
 				if (tmp) {
 					if (version === this.versions[this.versions.length -1].version) {
@@ -165,11 +171,29 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	registerChangeVersionListener(control: FormControl) {
+		this.prevValue = control.value;
+
 		control.valueChanges.pipe(
 			takeUntil(this._destroy$),
-			tap(version => {
-				this.loadTemplate(this.templateId, version);
-				this.loadCommentsByTemplateVersion(this.templateId, version);
+			withLatestFrom(this._editorCoreService.hasUnsavedChanges$),
+			tap(([version, hasChanges]) => {
+				if (hasChanges) {
+					this._showCompleteConfirmDialog((confirmed) => {
+						if (confirmed) {
+							this.prevValue = version;
+							this._editorCoreService.removeUnsavedChanges();
+							this.loadTemplate(this.templateId, version);
+							this.loadCommentsByTemplateVersion(this.templateId, version);
+						} else {
+							control.setValue(this.prevValue, {emitEvent: false});
+						}
+					});
+				} else {
+					this.prevValue = version;
+					this._editorCoreService.removeUnsavedChanges();
+					this.loadTemplate(this.templateId, version);
+					this.loadCommentsByTemplateVersion(this.templateId, version);
+				}
 			})
 		)
 		.subscribe()
@@ -358,6 +382,20 @@ export class EditorComponent implements OnInit, OnDestroy {
 		})
 	}
 
+	promoteToDraft() {
+		this.isLoading = true;
+		
+		this._editorCoreService.setTemplateAsBase64(base64 => {
+			this._agreementService.saveCurrentAsDraftTemplate(
+				this.templateId, false, StringWrappedValueDto.fromJS({value: base64})
+			)
+			.subscribe(() => {
+				this.getTemplateVersions(this.templateId);
+				this.cleanUp();
+			})
+		})
+	}
+
 	saveDraftAsComplete() {
 		this.isLoading = true;
 
@@ -419,8 +457,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 		let dialog = custom({
 			title: 'You have unsaved changes!',
 			buttons: [
-				{ type: 'normal', text: 'Cancel', onClick: () => false },
-				{ type: 'danger', text: 'Leave', onClick: () => true },
+				{ type: 'normal', text: 'No', onClick: () => false },
+				{ type: 'danger', text: 'Yes', onClick: () => true },
 			],
 			messageHtml: `
                 <p>All changes will be lost!</p>
