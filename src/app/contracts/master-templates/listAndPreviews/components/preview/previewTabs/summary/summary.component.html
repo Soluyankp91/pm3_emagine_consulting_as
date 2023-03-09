@@ -152,10 +152,15 @@
 					<div class="fw-600 flex-b-60">{{ summaryItem.startDate | momentFormat }}</div>
 				</div>
 			</ng-container>
-			<ng-container *ngIf="summaryItem.endDate">
-				<div class="row-item">
+			<ng-container *ngIf="summaryItem.endDate || summaryItem.endDate === null || summaryItem.endDate === undefined">
+                <div class="row-item">
 					<div class="label">{{ previewMap['endDate'] }}</div>
-					<div class="fw-600 flex-b-60">{{ summaryItem.endDate | momentFormat }}</div>
+                    <ng-container *ngIf="summaryItem.endDate;else DefinedDate">
+                        <div class="fw-600 flex-b-60">{{ summaryItem.endDate | momentFormat }}</div>
+                    </ng-container>
+					<ng-template #DefinedDate>
+                        <div class="fw-600 flex-b-60"> Indefinite</div>
+                    </ng-template>
 				</div>
 			</ng-container>
             <ng-container *ngIf="summaryItem.duplicationSourceAgreementId">

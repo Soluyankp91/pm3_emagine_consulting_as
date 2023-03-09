@@ -776,16 +776,18 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnAgreementsFromOtherParty() {
-		this.agreementFormGroup.receiveAgreementsFromOtherParty.valueChanges.subscribe((receiveAgreementsFromOtherParty) => {
-			if (receiveAgreementsFromOtherParty && !this.editMode) {
-				this.nextButtonLabel = 'Complete';
-			}
-			if (!receiveAgreementsFromOtherParty && this.editMode) {
-				this.nextButtonLabel = 'Save';
-			}
-			if (!receiveAgreementsFromOtherParty && !this.editMode) {
-				this.nextButtonLabel = 'Next';
-			}
-		});
+		this.agreementFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+				}
+			});
 	}
 }

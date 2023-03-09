@@ -423,17 +423,19 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	private _subscribeOnAgreementsFromOtherParty() {
-		this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges.subscribe((receiveAgreementsFromOtherParty) => {
-			if (receiveAgreementsFromOtherParty && !this.editMode) {
-				this.nextButtonLabel = 'Complete';
-			}
-			if (!receiveAgreementsFromOtherParty && this.editMode) {
-				this.nextButtonLabel = 'Save';
-			}
-			if (!receiveAgreementsFromOtherParty && !this.editMode) {
-				this.nextButtonLabel = 'Next';
-			}
-		});
+		this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+				}
+			});
 	}
 
 	private _prefillForm() {
