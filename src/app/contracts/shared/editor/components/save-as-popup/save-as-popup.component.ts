@@ -31,6 +31,7 @@ export class SaveAsPopupComponent implements OnInit {
         public data: {
 			document: IDocumentVersion,
 			isAgreement: boolean,
+			versions: IDocumentVersion[],
 			base64: string
 		},
         private _dialogRef: MatDialogRef<SaveAsPopupComponent>
@@ -65,6 +66,11 @@ export class SaveAsPopupComponent implements OnInit {
 			this.form.removeControl('propagateChangesToDerivedTemplates');
 			this.form.removeControl('markActiveAgreementsAsOutdated');
 		}
+
+		// if (this.data.versions.length === 1) {
+		// 	this.config.warning = '';
+		// 	this.form.removeControl('versionDescription');
+		// }
 	}
 
 	submit() {

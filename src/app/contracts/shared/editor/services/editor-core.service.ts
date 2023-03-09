@@ -127,6 +127,10 @@ export class EditorCoreService {
 		this.editor.hasUnsavedChanges = false;
 		this.hasUnsavedChanges$.next(false);
 	}
+	
+	getUnsavedChanges() {
+		return this.editor.hasUnsavedChanges;
+	}
 
 	destroy() {
 		this.editor = null;

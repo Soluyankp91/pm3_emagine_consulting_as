@@ -11,7 +11,7 @@ export class TemplateCommentService {
 	constructor(private _httpClient: HttpClient) {}
 
 	getByTemplateID(templateID: number, version: number) {
-		const endpoint = `${this.baseUrl}/${templateID}/${version}`;
+		const endpoint = `${this.baseUrl}/${templateID}`;
 		return this._httpClient
 			.get<Array<IComment>>(endpoint)
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));

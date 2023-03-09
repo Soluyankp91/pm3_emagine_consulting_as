@@ -15,6 +15,7 @@ import { AgreementService } from './shared/editor/data-access/agreement.service'
 import { AgreementAbstractService } from './shared/editor/data-access/agreement-abstract.service';
 import { MergeFieldsAbstractService } from './shared/editor/data-access/merge-fields-abstract';
 import { AgreementMergeFieldsService } from './shared/editor/data-access/agreement-merge-fields';
+import { UnsavedChangesGuard } from './shared/editor/services/unsaved-changes.guard';
 
 const routes: Routes = [
 	{
@@ -67,6 +68,7 @@ const routes: Routes = [
 								data: {
 									isAgreement: true
 								},
+								canDeactivate: [UnsavedChangesGuard],
 								providers: [
 									{
 										provide: AgreementAbstractService,
@@ -114,6 +116,7 @@ const routes: Routes = [
 							{
 								path: ':id/editor',
 								component: EditorComponent,
+								canDeactivate: [UnsavedChangesGuard],
 								providers: [
 									{
 										provide: AgreementAbstractService,
@@ -161,6 +164,7 @@ const routes: Routes = [
 							{
 								path: ':id/editor',
 								component: EditorComponent,
+								canDeactivate: [UnsavedChangesGuard],
 								providers: [
 									{
 										provide: AgreementAbstractService,

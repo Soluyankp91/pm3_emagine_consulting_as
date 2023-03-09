@@ -40,7 +40,7 @@
 		<ng-container *ngIf="selectedVersion?.isCurrent">
 			<div class="save-actions">
 				<button mat-button color="accent" (click)="cancel()">
-					Cancel
+					Close
 				</button>
 		
 				<ng-container *ngIf="!(isAgreement$ | async)">
@@ -52,6 +52,10 @@
 				<ng-container *ngIf="isAgreement$ | async">
 					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsComplete(true)">
 						Save as a new version
+					</button>
+
+					<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">
+						Send
 					</button>
 				</ng-container>
 		
@@ -66,7 +70,7 @@
 		<ng-container *ngIf="selectedVersion?.isDraft">
 			<div class="save-actions">
 				<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">
-					Cancel
+					Close
 				</button>
 		
 				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">

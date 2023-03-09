@@ -28,10 +28,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { AppCommonModule } from 'src/app/shared/common/app-common.module';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { CompleteTemplateDocumentFileDraftDto, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, CompleteTemplateDocumentFileDraftDto, SendDocuSignEnvelopeCommand, SendEmailEnvelopeCommand, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { custom } from 'devextreme/ui/dialog';
 import { EditorObserverService } from '../services/editor-observer.service';
+import { SignersPreviewDialogComponent } from 'src/app/workflow/workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
+import { EDocuSignMenuOption, EEmailMenuOption } from 'src/app/workflow/workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.model';
+import { NotificationPopupComponent } from './components/notification-popup';
 
 @Component({
 	standalone: true,
@@ -98,7 +101,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _dialog: MatDialog,
 		private _chd: ChangeDetectorRef,
 		private _snackBar: MatSnackBar,
-		private _editorObserverService: EditorObserverService
+		private _editorObserverService: EditorObserverService,
+		private _agreementServiceProxy: AgreementServiceProxy
 	) {}
 
 	ngOnInit(): void {
@@ -332,7 +336,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 					data: {
 						document: this.selectedVersion,
 						base64,
-						isAgreement
+						isAgreement,
+						versions: this.versions
 					},
 					height: 'auto',
 					width: '500px',
@@ -403,7 +408,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService.saveDraftAndCompleteTemplate(
 				this.templateId,
 				StringWrappedValueDto.fromJS({value: base64}),
-				this.selectedVersion
+				this.selectedVersion,
+				this.versions
 			)
 			.subscribe((res) => {
 				if (res) {
@@ -416,6 +422,67 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this._chd.detectChanges();
 			})
 		})
+	}
+
+	sendEmail() {
+		if (this._editorCoreService.getUnsavedChanges()) {
+			this._dialog.open(NotificationPopupComponent, {
+				width: '500px',
+				data: {
+					title: 'Oops! Please check your request',
+					body: 'Changes were added to the agreement. Please reverse applied changes or Save as a new version in order to proceed.'
+				}
+			})
+		} else {
+			this._agreementServiceProxy
+			.envelopeRecipientsPreview([this.templateId], true)
+			.subscribe((result) => {
+				const dialogRef = this._dialog.open(SignersPreviewDialogComponent, {
+					width: '100vw',
+					maxWidth: '100vw',
+					height: 'calc(100vh - 115px)',
+					panelClass: 'signers-preview--modal',
+					autoFocus: false,
+					hasBackdrop: true,
+					backdropClass: 'backdrop-modal--wrapper',
+					data: {
+						envelopePreviewList: result,
+						singleEmail: true,
+					},
+				});
+
+				dialogRef.componentInstance.onSendViaEmail.subscribe((option: any) => {
+					this._sendViaEmail([this.templateId], true, option);
+				});
+				dialogRef.componentInstance.onSendViaDocuSign.subscribe((option: any) => {
+					this._sendViaDocuSign([this.templateId], true, option);
+				});
+			});
+		}
+		
+	}
+
+	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption) {
+		let input = new SendEmailEnvelopeCommand({
+			agreementIds: agreementIds,
+			singleEmail: singleEmail,
+			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
+		});
+		this._agreementServiceProxy
+			.sendEmailEnvelope(input)
+			.subscribe();
+	}
+
+	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
+		let input = new SendDocuSignEnvelopeCommand({
+			agreementIds: agreementIds,
+			singleEnvelope: singleEnvelope,
+			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
+		});
+		this._agreementServiceProxy
+			.sendDocusignEnvelope(input)
+			.pipe()
+			.subscribe();
 	}
 
 	cancel() {
@@ -462,7 +529,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			],
 			messageHtml: `
                 <p>All changes will be lost!</p>
-                <p>Are you sure you want to proceed?</p>`,
+                <p>Are you sure you want to proceed with loosing data?</p>`,
 		});
 
 		dialog.show().then((res) => {

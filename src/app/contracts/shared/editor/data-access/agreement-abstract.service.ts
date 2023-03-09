@@ -9,7 +9,7 @@ export abstract class AgreementAbstractService {
 	abstract saveCurrentAsCompleteTemplate(id: number, fileContent: CompleteTemplateDocumentFileDraftDto): Observable<any>;
 	abstract saveDraftAsDraftTemplate(id: number, force: boolean, fileContent: StringWrappedValueDto): Observable<any>;
 	abstract saveDraftAsCompleteTemplate(id: number, fileContent: CompleteTemplateDocumentFileDraftDto): Observable<any>;
-	abstract saveDraftAndCompleteTemplate(id: number, fileContent: StringWrappedValueDto, selectedDocument: IDocumentItem): Observable<any>;
+	abstract saveDraftAndCompleteTemplate(id: number, fileContent: StringWrappedValueDto, selectedDocument: IDocumentItem, versions: IDocumentVersion[]): Observable<any>;
 	abstract getSimpleList(): Observable<IDocumentItem[]>;
 	abstract getTemplateVersions(id: number): Observable<IDocumentVersion[]>;
 	abstract getTemplatePDF(id: number): Observable<Blob>;
