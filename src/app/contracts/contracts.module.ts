@@ -82,8 +82,6 @@ import { NotificationDialogComponent } from './shared/components/popUps/notifica
 import { DownloadFilesService } from './shared/services/download-files.service';
 import { TemplatePdfPreviewComponent } from './shared/template-pdf-preview/template-pdf-preview.component';
 import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
-import { ExtraHttpsService } from './shared/services/extra-https.service';
-import { DefaultTemplateComponent } from './shared/components/popUps/default-template/default-template.component';
 
 @NgModule({
 	declarations: [
@@ -146,7 +144,6 @@ import { DefaultTemplateComponent } from './shared/components/popUps/default-tem
 		AgreementsTopFiltersComponent,
 		NotificationDialogComponent,
 		StrInitialsPipe,
-  DefaultTemplateComponent,
 	],
 	imports: [
 		CommonModule,
@@ -175,7 +172,6 @@ import { DefaultTemplateComponent } from './shared/components/popUps/default-tem
 		AgreementAttachmentServiceProxy,
 		CreationTitleService,
 		DownloadFilesService,
-		ExtraHttpsService,
 	],
 })
 export class ContractsModule {
