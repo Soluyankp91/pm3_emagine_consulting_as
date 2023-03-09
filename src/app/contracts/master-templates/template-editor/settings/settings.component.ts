@@ -141,10 +141,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				)
 				.subscribe();
 		} else {
-			this._extraService
-				.AgreementPost(new SaveAgreementTemplateDto(toSend))
+			this._apiServiceProxy
+				.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
 				.pipe(
 					takeUntil(this._unSubscribe$),
+					map((result) => result.agreementTemplateId),
 					finalize(() => this.hideMainSpinner())
 				)
 				.subscribe((templateId: number | undefined) => {
