@@ -203,6 +203,13 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._apiServiceProxy
 				.agreementTemplatePATCH(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
 				.pipe(
+					switchMap(() => {
+						return this._apiServiceProxy.preview2(this.currentAgreementId);
+					}),
+					tap((template) => {
+						this.clientTemplateFormGroup.attachments.reset();
+						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
 					tap(() => {
 						this.hideMainSpinner();
 					}),
@@ -591,17 +598,19 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnAgreementsFromOtherParty() {
-		this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges.subscribe((receiveAgreementsFromOtherParty) => {
-			if (receiveAgreementsFromOtherParty && !this.editMode) {
-				this.nextButtonLabel = 'Complete';
-			}
-			if (!receiveAgreementsFromOtherParty && this.editMode) {
-				this.nextButtonLabel = 'Save';
-			}
-			if (!receiveAgreementsFromOtherParty && !this.editMode) {
-				this.nextButtonLabel = 'Next';
-			}
-		});
+		this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+				}
+			});
 	}
 
 	private _subsribeOnLegEntitiesChanges() {

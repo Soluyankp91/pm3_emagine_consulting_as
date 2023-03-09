@@ -71,8 +71,8 @@ export const ALLOWED_MIME_TYPES = [
 
 	'image/bmp', // .bmp
 	'image/gif', // .gif
-	'image/x-citrix-jpeg', // .jpg
-	'image/x-citrix-jpeg', // .jpeg
+	'image/jpeg', // .jpg
+	'image/jpeg', // .jpeg
 	'image/x-png', // .png
 	'image/tiff', // .tif
 	'image/tiff', // .tiff

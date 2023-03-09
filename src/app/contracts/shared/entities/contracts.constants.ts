@@ -27,7 +27,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	status: 'Status',
 	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
-	mode: 'Mode',
+	validity: 'Mode',
 	linkStateAccepted: 'Approval',
 	saleManager: 'SM',
 	contractManager: 'CM',

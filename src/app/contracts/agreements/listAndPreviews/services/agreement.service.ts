@@ -22,7 +22,7 @@ export class AgreementService extends BaseContract {
 		salesTypeIds: [],
 		deliveryTypeIds: [],
 		contractTypeIds: [],
-		mode: [],
+		validity: [],
 		status: [],
 		saleManager: [],
 		contractManager: [],
@@ -63,7 +63,7 @@ export class AgreementService extends BaseContract {
 			tableFilters.salesTypeIds.map((item) => item.id as number), // salesTypes,
 			tableFilters.deliveryTypeIds.map((item) => item.id as number), // deliveryTypes
 			tableFilters.contractTypeIds.map((item) => item.id as number), // contractTypes
-			tableFilters.mode.map((item) => item.id as number),
+			tableFilters.validity.map((item) => item.id as number),
 			tableFilters.status.map((item) => item.id as number),
 			tableFilters.saleManager.map((saleManager) => saleManager.id as number),
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
