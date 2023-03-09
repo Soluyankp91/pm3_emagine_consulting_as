@@ -38,7 +38,6 @@ import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
-import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
 
 @Component({
 	selector: 'app-settings',
@@ -86,7 +85,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		private readonly _router: Router,
 		private readonly _route: ActivatedRoute,
 		private readonly _creationTitleService: CreationTitleService,
-		private readonly _extraService: ExtraHttpsService,
 		private _injector: Injector
 	) {
 		super(_injector);
