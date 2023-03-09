@@ -38,6 +38,7 @@ import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
+import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
 
 @Component({
 	selector: 'app-settings',
@@ -47,6 +48,8 @@ import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/rele
 })
 export class CreateMasterTemplateComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = MASTER_CREATION;
+
+	nextButtonLabel: string;
 
 	editMode = false;
 	currentTemplate: AgreementTemplateDetailsDto;
@@ -83,6 +86,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		private readonly _router: Router,
 		private readonly _route: ActivatedRoute,
 		private readonly _creationTitleService: CreationTitleService,
+		private readonly _extraService: ExtraHttpsService,
 		private _injector: Injector
 	) {
 		super(_injector);
@@ -95,9 +99,12 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this._subsribeOnLegEntitiesChanges();
 		if (this._route.snapshot.params.id) {
 			this.editMode = true;
+			this.nextButtonLabel = 'Save';
 			this._templateId = this._route.snapshot.params.id;
 			this._prefillForm();
 		} else {
+			this.nextButtonLabel = 'Next';
+			this._subscribeOnAgreementsFromOtherParty();
 			this._subscribeOnModeReplay();
 			this._subscribeOnDirtyStatus();
 			this._initMasterTemplateOptions();
@@ -122,36 +129,34 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			...this.masterTemplateFormGroup.getRawValue(),
 			attachments: this._agreementTemplateAttachmentDto(),
 		});
-
+		this.showMainSpinner();
 		if (this.editMode) {
-			this.showMainSpinner();
 			this._apiServiceProxy
 				.agreementTemplatePATCH(this.currentTemplate.agreementTemplateId, toSend)
 				.pipe(
 					finalize(() => {
 						this.hideMainSpinner();
+					}),
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					})
 				)
-				.subscribe(() => {
-					this._navigateOnAction();
+				.subscribe();
+		} else {
+			this._extraService
+				.AgreementPost(new SaveAgreementTemplateDto(toSend))
+				.pipe(
+					takeUntil(this._unSubscribe$),
+					finalize(() => this.hideMainSpinner())
+				)
+				.subscribe((templateId: number | undefined) => {
+					if (toSend.receiveAgreementsFromOtherParty) {
+						this.navigateToEdit(templateId);
+					} else {
+						this.navigateToEditor(templateId);
+					}
 				});
-			return;
 		}
-		this.showMainSpinner();
-		this._apiServiceProxy
-			.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
-			.pipe(
-				takeUntil(this._unSubscribe$),
-				map((result) => result.agreementTemplateId),
-				finalize(() => this.hideMainSpinner())
-			)
-			.subscribe((templateId: number | undefined) => {
-				this._navigateOnAction(templateId);
-			});
-	}
-
-	navigateBack() {
-		this._navigateOnAction();
 	}
 
 	onModeControlChange(creationMode: AgreementCreationMode) {
@@ -202,18 +207,26 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this.preselectedFiles = [];
 	}
 
-	private _navigateOnAction(templateId?: number) {
-		if (!this.editMode && templateId) {
-			return this._router.navigate([`../${templateId}/editor`], {
-				relativeTo: this._route,
-			});
-		}
+	navigateBack() {
 		if (this.editMode) {
-			return this._router.navigate(['../../'], {
+			this._router.navigate([`../../`], {
+				relativeTo: this._route,
+			});
+		} else {
+			this._router.navigate([`../`], {
 				relativeTo: this._route,
 			});
 		}
-		return this._router.navigate(['../'], {
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
+	}
+
+	navigateToEditor(templateId: number) {
+		this._router.navigate([`../${templateId}/editor`], {
 			relativeTo: this._route,
 		});
 	}
@@ -294,6 +307,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			deliveryTypes: template.deliveryTypeIds,
 			language: template.language,
 			note: template.note,
+			receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
 			isSignatureRequired: template.isSignatureRequired,
 			isDefaultTemplate: template.isDefaultTemplate,
 			selectedInheritedFiles: null,
@@ -408,11 +422,26 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this.masterTemplateFormGroup.recipientTypeId.disable({ emitEvent: false });
 	}
 
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges.subscribe((receiveAgreementsFromOtherParty) => {
+			if (receiveAgreementsFromOtherParty && !this.editMode) {
+				this.nextButtonLabel = 'Complete';
+			}
+			if (!receiveAgreementsFromOtherParty && this.editMode) {
+				this.nextButtonLabel = 'Save';
+			}
+			if (!receiveAgreementsFromOtherParty && !this.editMode) {
+				this.nextButtonLabel = 'Next';
+			}
+		});
+	}
+
 	private _prefillForm() {
 		this._apiServiceProxy
 			.agreementTemplateGET(this._templateId)
 			.pipe(
 				tap((template) => {
+					this._creationTitleService.updateReceiveAgreementsFromOtherParty(template.receiveAgreementsFromOtherParty);
 					if (template.creationMode === AgreementCreationMode.Duplicated) {
 						this._initMasterTemplateOptions();
 						this.masterTemplateFormGroup.addControl(
@@ -426,7 +455,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					}
 				}),
 				tap((template) => {
-                    this.agreementCreationMode.setValue(template.creationMode);
+					this.agreementCreationMode.setValue(template.creationMode);
 					this.currentTemplate = template;
 					this.preselectedFiles = template.attachments as FileUpload[];
 					this._cdr.detectChanges();
@@ -446,6 +475,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 						note: template.note,
 						isSignatureRequired: template.isSignatureRequired,
 						isEnabled: template.isEnabled,
+						receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
 						isDefaultTemplate: template.isDefaultTemplate,
 						selectedInheritedFiles: template.attachments,
 					});

@@ -25,6 +25,7 @@ export class AgreementModel extends FormGroup {
 			startDate: new FormControl(null, [Validators.required]),
 			endDate: new FormControl(null, [Validators.required]),
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
+            receiveAgreementsFromOtherParty: new FormControl(false),
 			isSignatureRequired: new FormControl(false),
 			signers: new FormControl([]),
 			attachments: new FormControl([]),
@@ -120,6 +121,10 @@ export class AgreementModel extends FormGroup {
         return this.get('note');
     }
 
+    get receiveAgreementsFromOtherParty() {
+        return this.get('receiveAgreementsFromOtherParty')
+    }
+
 	get signers() {
 		return this.get('signers');
 	}
@@ -151,6 +156,7 @@ export class AgreementModel extends FormGroup {
 		deliveryTypes: null,
 		contractTypes: null,
 		language: null,
+        receiveAgreementsFromOtherParty: false,
 		note: '',
 		startDate: null,
 		endDate: null,

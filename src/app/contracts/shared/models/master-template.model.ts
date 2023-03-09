@@ -15,6 +15,7 @@ export class MasterTemplateModel extends FormGroup {
 			deliveryTypes: new FormControl(null, [Validators.required]),
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
+			receiveAgreementsFromOtherParty: new FormControl(false),
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			isSignatureRequired: new FormControl(false),
 			isEnabled: new FormControl(false),
@@ -102,6 +103,10 @@ export class MasterTemplateModel extends FormGroup {
 		return this.get('isEnabled');
 	}
 
+	get receiveAgreementsFromOtherParty() {
+		return this.get('receiveAgreementsFromOtherParty');
+	}
+
 	get isDefaultTemplate() {
 		return this.get('isDefaultTemplate');
 	}
@@ -128,6 +133,7 @@ export class MasterTemplateModel extends FormGroup {
 		contractTypes: null,
 		language: null,
 		note: '',
+		receiveAgreementsFromOtherParty: false,
 		isSignatureRequired: false,
 		isDefaultTemplate: false,
 		isEnabled: false,

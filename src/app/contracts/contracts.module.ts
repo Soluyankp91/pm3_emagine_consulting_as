@@ -82,6 +82,8 @@ import { NotificationDialogComponent } from './shared/components/popUps/notifica
 import { DownloadFilesService } from './shared/services/download-files.service';
 import { TemplatePdfPreviewComponent } from './shared/template-pdf-preview/template-pdf-preview.component';
 import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
+import { ExtraHttpsService } from './shared/services/extra-https.service';
+import { DefaultTemplateComponent } from './shared/components/popUps/default-template/default-template.component';
 
 @NgModule({
 	declarations: [
@@ -144,6 +146,7 @@ import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 		AgreementsTopFiltersComponent,
 		NotificationDialogComponent,
 		StrInitialsPipe,
+  DefaultTemplateComponent,
 	],
 	imports: [
 		CommonModule,
@@ -156,7 +159,7 @@ import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 		// Standalone
 		EditorComponent,
 		EditorPreviewComponent,
-		TemplatePdfPreviewComponent
+		TemplatePdfPreviewComponent,
 	],
 	providers: [
 		ContractsService,
@@ -172,6 +175,7 @@ import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 		AgreementAttachmentServiceProxy,
 		CreationTitleService,
 		DownloadFilesService,
+		ExtraHttpsService,
 	],
 })
 export class ContractsModule {
@@ -335,23 +339,14 @@ export class ContractsModule {
 			'empty-table-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'empty-table-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
-			'xls',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/xls-icon.svg')
-		);
-        iconRegistry.addSvgIcon(
-			'msg',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/msg-icon.svg')
-		);
-        iconRegistry.addSvgIcon(
-			'ppt',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/ppt-icon.svg')
-		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon('xls', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/xls-icon.svg'));
+		iconRegistry.addSvgIcon('msg', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/msg-icon.svg'));
+		iconRegistry.addSvgIcon('ppt', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/ppt-icon.svg'));
+		iconRegistry.addSvgIcon(
 			'no-extension',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-extension-icon.svg')
 		);

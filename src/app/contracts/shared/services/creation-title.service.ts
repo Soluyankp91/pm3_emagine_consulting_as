@@ -16,6 +16,10 @@ export class CreationTitleService {
 		return this._tenants$$.asObservable();
 	}
 
+    get alwaysReceiveFromOtherParty$() {
+		return this._receiveAgreementsFromOtherParty$$.asObservable();
+	}
+
 	updateTemplateName(name: string) {
 		this._templateName$$.next(name);
 	}

@@ -54,7 +54,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
 
-    nextButtonLabel: string;
+	nextButtonLabel: string;
 
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
@@ -136,9 +136,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 		if (paramId) {
 			this.editMode = true;
+			this.nextButtonLabel = 'Save';
 			this.currentAgreementId = paramId;
 			this._preselectAgreement(paramId);
 		} else {
+			this.nextButtonLabel = 'Next';
+			this._subscribeOnAgreementsFromOtherParty();
 			this._setDuplicateObs();
 			this._subscribeOnCreationMode();
 			this._setDirtyStatus();
@@ -175,6 +178,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				relativeTo: this._route,
 			});
 		}
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -232,6 +241,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				.pipe(
 					tap(() => {
 						this.hideMainSpinner();
+					}),
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					})
 				)
 				.subscribe();
@@ -244,7 +256,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					})
 				)
 				.subscribe(({ agreementId }) => {
-					this.navigateToEditor(agreementId);
+					if (toSend.receiveAgreementsFromOtherParty) {
+						this.navigateToEdit(agreementId);
+					} else {
+						this.navigateToEditor(agreementId);
+					}
 				});
 		}
 	}
@@ -525,6 +541,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementTemplateDetailsDto.language,
 						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
 						note: agreementTemplateDetailsDto.note,
+						receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
 						parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
 							? agreementTemplateDetailsDto.attachmentsFromParent
 							: [],
@@ -594,12 +611,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementDetailsDto.language,
 						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
 						note: agreementDetailsDto.note,
+						receiveAgreementsFromOtherParty: agreementDetailsDto.receiveAgreementsFromOtherParty,
 						parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
 							? agreementDetailsDto.attachmentsFromParent
 							: [],
 						signers: agreementDetailsDto.signers,
 						selectedInheritedFiles: [],
 					});
+					if (!agreementDetailsDto.endDate) {
+						this.noExpirationDateControl.setValue(true);
+					}
 				})
 			)
 			.subscribe();
@@ -722,6 +743,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				language: agreement.language,
 				isSignatureRequired: agreement.isSignatureRequired,
 				note: agreement.note,
+				receiveAgreementsFromOtherParty: agreement.receiveAgreementsFromOtherParty,
 				signers: agreement.signers,
 				selectedInheritedFiles: agreement.attachments,
 			});
@@ -743,7 +765,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.attachmentsFromParent = [];
 	}
 
-    // private _subscribeOnAgreementsFromOtherParty() {
-    //     this.agreementFormGroup.agre
-    // }
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.agreementFormGroup.receiveAgreementsFromOtherParty.valueChanges.subscribe((receiveAgreementsFromOtherParty) => {
+			if (receiveAgreementsFromOtherParty && !this.editMode) {
+				this.nextButtonLabel = 'Complete';
+			}
+			if (!receiveAgreementsFromOtherParty && this.editMode) {
+				this.nextButtonLabel = 'Save';
+			}
+			if (!receiveAgreementsFromOtherParty && !this.editMode) {
+				this.nextButtonLabel = 'Next';
+			}
+		});
+	}
 }

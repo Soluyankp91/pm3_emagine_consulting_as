@@ -166,6 +166,9 @@
 					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
 						>Default template for contracts of this type</mat-checkbox
 					>
+					<mat-checkbox formControlName="receiveAgreementsFromOtherParty" class="checkbox-text">
+						Always receive agreement from other party
+					</mat-checkbox>
 				</div>
 			</div>
 			<mat-divider class="mat-divider"></mat-divider>
@@ -179,6 +182,6 @@
 	</div>
 	<div class="bottom-panel">
 		<button mat-button (click)="navigateBack()" class="cancel-button">Cancel</button>
-		<button mat-raised-button type="button" (click)="onSave()">{{ editMode ? 'Save' : 'Next' }}</button>
+		<button mat-raised-button type="button" (click)="onSave()">{{ nextButtonLabel }}</button>
 	</div>
 </ng-container>
