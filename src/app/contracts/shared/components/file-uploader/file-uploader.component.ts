@@ -90,6 +90,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	}
 
 	onFileAdded($event: EventTarget | null) {
+		console.log(($event as HTMLInputElement).files);
 		if ($event) {
 			let files = ($event as HTMLInputElement).files as FileList;
 			const fileArray = [] as File[];
