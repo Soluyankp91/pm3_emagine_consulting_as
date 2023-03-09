@@ -96,7 +96,14 @@
                     </ng-template>
                 </span>
                 <span fxFlex="auto" class="u-w--100">
-                    {{recipient.name}}
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                        <span>
+                            {{recipient.name}}
+                        </span>
+                        <span class="recipient-email">
+                            {{recipient.email ?? ''}}
+                        </span>
+                    </div>
                 </span>
                 <span fxFlex="130px" class="u-w--100">
                     {{signerTypeName[recipient.signerType]}}
