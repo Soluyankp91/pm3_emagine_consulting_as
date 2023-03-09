@@ -47,7 +47,7 @@ export interface AgreementFiltersEnum {
 	salesTypeIds: EnumEntityTypeDto[];
 	deliveryTypeIds: EnumEntityTypeDto[];
 	contractTypeIds: EnumEntityTypeDto[];
-	mode: BaseEnumDto[];
+	validity: BaseEnumDto[];
 	status: BaseEnumDto[];
 	saleManager: EmployeeDto[];
 	contractManager: EmployeeDto[];

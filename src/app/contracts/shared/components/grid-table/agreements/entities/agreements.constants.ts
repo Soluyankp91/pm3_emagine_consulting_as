@@ -15,7 +15,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'salesTypeIds',
 	'deliveryTypeIds',
 	'contractTypeIds',
-	'mode',
+	'validity',
 	'status',
 	'startDate',
 	'endDate',
@@ -145,7 +145,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
-			formControlName: 'mode',
+			formControlName: 'validity',
 			component: () =>
 				import('../../agreements/filters/mode-filter/mode-filter.component').then(
 					(it) => it.AgreementModeFilterComponent
