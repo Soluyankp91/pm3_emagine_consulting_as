@@ -17,6 +17,7 @@ export class ClientTemplatesModel extends FormGroup {
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
+			receiveAgreementsFromOtherParty: new FormControl(false),
 			isSignatureRequired: new FormControl(false, []),
 			isEnabled: new FormControl(false, []),
 			attachments: new FormControl([]),
@@ -24,6 +25,14 @@ export class ClientTemplatesModel extends FormGroup {
 	}
 	get agreementType() {
 		return this.get('agreementType');
+	}
+
+	get duplicationSourceAgreementTemplateId() {
+		return this.get('duplicationSourceAgreementTemplateId');
+	}
+
+	get parentAgreementTemplateId() {
+		return this.get('parentAgreementTemplateId');
 	}
 
 	get recipientTypeId() {
@@ -78,6 +87,10 @@ export class ClientTemplatesModel extends FormGroup {
 		return this.get('isEnabled');
 	}
 
+	get receiveAgreementsFromOtherParty() {
+		return this.get('receiveAgreementsFromOtherParty');
+	}
+
 	get parentSelectedAttachmentIds() {
 		return this.get('parentSelectedAttachmentIds');
 	}
@@ -103,9 +116,10 @@ export class ClientTemplatesModel extends FormGroup {
 		contractTypes: null,
 		language: null,
 		note: '',
+		receiveAgreementsFromOtherParty: false,
 		isSignatureRequired: false,
 		isEnabled: false,
-        attachments: []
+		attachments: [],
 	});
 
 	addControl(

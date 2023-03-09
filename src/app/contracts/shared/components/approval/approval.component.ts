@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, TemplateRef } from '@angular/core';
 import { APPROVAL_FILTER_OPTIONS } from '../grid-table/client-templates/entities/client-template.constants';
 
 @Component({
@@ -8,6 +8,7 @@ import { APPROVAL_FILTER_OPTIONS } from '../grid-table/client-templates/entities
 })
 export class ApprovalComponent {
 	@Input() linkStateAccepted: boolean;
+	@Input() tooltip?: TemplateRef<any>;
 	@Input() iconWidth: number;
 	@Input() iconHeight: number;
 

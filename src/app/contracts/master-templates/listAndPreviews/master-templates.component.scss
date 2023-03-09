@@ -99,8 +99,8 @@ app-master-templates {
 		@include profile-picture;
 	}
 }
-.flex-grow-1 {
-	flex-grow: 1;
+.no-wrap {
+	white-space: nowrap;
 }
 .last-updated-label {
 	font-size: 12px;

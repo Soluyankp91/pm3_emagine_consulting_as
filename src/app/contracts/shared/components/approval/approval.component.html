@@ -2,7 +2,7 @@
 	<ng-container *ngSwitchCase="true">
 		<mat-icon
 			svgIcon="approved-icon"
-			[customTooltip]="approvalEnum.get(true)"
+			[customTooltip]="tooltip ? tooltip : approvalEnum.get(true)"
 			[showAlways]="true"
 			[style.width.px]="iconWidth"
 			[style.height.px]="iconHeight"></mat-icon>
@@ -10,7 +10,7 @@
 	<ng-container *ngSwitchCase="false">
 		<mat-icon
 			svgIcon="toApprove-icon"
-			[customTooltip]="approvalEnum.get(false)"
+			[customTooltip]="tooltip ? tooltip :approvalEnum.get(false)"
 			[showAlways]="true"
 			[style.width.px]="iconWidth"
 			[style.height.px]="iconHeight"></mat-icon>
@@ -18,7 +18,7 @@
 	<ng-container *ngSwitchCase="null">
 		<mat-icon
 			svgIcon="not-applicable-icon"
-			[customTooltip]="approvalEnum.get(null)"
+			[customTooltip]="tooltip ? tooltip :approvalEnum.get(null)"
 			[showAlways]="true"
 			[style.width.px]="iconWidth"
 			[style.height.px]="iconHeight"></mat-icon>

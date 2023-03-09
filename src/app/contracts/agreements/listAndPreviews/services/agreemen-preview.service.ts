@@ -54,9 +54,9 @@ export class AgreementPreviewService extends BasePreview {
 
 			agreementId: row.agreementId,
 			createdDateUtc: row.createdDateUtc,
-			createdBy: row.createdBy?.name,
+			createdBy: row.createdBy,
 			lastUpdateDateUtc: row.lastUpdateDateUtc,
-			lastUpdatedBy: row.lastUpdatedBy?.name,
+			lastUpdatedBy: row.lastUpdatedBy,
 			startDate: row.startDate,
 			endDate: row.endDate,
 			validity: row.validity,

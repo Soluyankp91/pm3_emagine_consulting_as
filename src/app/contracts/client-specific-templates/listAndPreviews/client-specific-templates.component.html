@@ -18,7 +18,10 @@
 				(resetAllFilters)="resetAllTopFilters()"
 				(selectedRowIdChange)="currentRowId$.next($event)">
 				<ng-template let-cell="element" #customCells>
-					<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
+					<span
+						class="fi fi-{{ cell.countryCode | lowercase }} country-icon"
+						[customTooltip]="cell.language"
+						[showAlways]="cell.language"></span>
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
@@ -34,7 +37,9 @@
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>
-					<div class="table-cell" [customTooltip]="cell.agreementType" [showAlways]="true">{{ cell.agreementType | strInitials }}</div></ng-template
+					<div class="table-cell" [customTooltip]="cell.agreementType" [showAlways]="true">
+						{{ cell.agreementType | strInitials }}
+					</div></ng-template
 				>
 
 				<ng-template let-cell="element" #customCells>
@@ -111,46 +116,64 @@
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells
-					><div class="table-cell" [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc | momentFormat }}</div>
+					><div class="table-cell" [customTooltip]="lastUpdateDateUtcTooltip" [showAlways]="true">
+						{{ cell.lastUpdateDateUtc | momentFormat }}
+					</div>
 					<ng-template #lastUpdateDateUtcTooltip>
-						<div>
-							<div class="date-row">
-								<div>Created</div>
-								<div>{{ cell.createdDateUtc | momentFormat }}</div>
+						<div class="date-rows-container">
+							<div class="last-updated-label no-wrap">Created</div>
+							<div class="last-updated-info">{{ cell.createdDateUtc | momentFormat }}</div>
+							<div class="last-updated-info no-wrap">
+								{{ cell.createdBy.name }}
 							</div>
-							<div class="date-row">
-								<div>Last updated</div>
-								<div>
-									{{ cell.lastUpdateDateUtc | momentFormat }}
-								</div>
+							<div class="last-updated-label no-wrap">Last updated</div>
+							<div class="last-updated-info">
+								{{ cell.lastUpdateDateUtc | momentFormat }}
+							</div>
+							<div class="last-updated-info no-wrap">
+								{{ cell.lastUpdatedBy.name }}
 							</div>
 						</div>
 					</ng-template>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-                    <div class="table-cell">
+					<div class="table-cell">
 						<img
 							class="profile-picture"
-							[ngSrc]="employeePhotoUrl + cell.externalId + '.jpg'"
+							[ngSrc]="employeePhotoUrl + cell.lastUpdatedBy.externalId + '.jpg'"
+							[customTooltip]="cell.lastUpdatedBy.name"
+							[showAlways]="cell.lastUpdatedBy"
 							src
 							width="24"
 							height="24"
-							(error)="setDefaultImage($event.target)" /></div
-				>
-                </ng-template
-				>
-				<ng-template let-cell="element" #customCells>
-                    <div class="table-cell">
-                        <emg-client-template-mode
-						[linkState]="cell.linkState"
-						[iconWidth]="23"
-						[iconHeight]="16"></emg-client-template-mode>
-                    </div>
+							(error)="setDefaultImage($event.target)" />
+					</div>
 				</ng-template>
 				<ng-template let-cell="element" #customCells>
-                    <div class="table-cell">
-                        <emg-approval [linkStateAccepted]="cell.linkStateAccepted" [iconWidth]="23" [iconHeight]="16"></emg-approval>
-                    </div>
+					<div class="table-cell">
+						<emg-client-template-mode
+							[linkState]="cell.linkState"
+							[iconWidth]="23"
+							[iconHeight]="16"></emg-client-template-mode>
+					</div>
+				</ng-template>
+				<ng-template let-cell="element" #customCells>
+					<div class="table-cell">
+						<emg-approval
+							[linkStateAccepted]="cell.linkStateAccepted"
+							[iconWidth]="23"
+							[iconHeight]="16"
+							[tooltip]="cell.linkStateAccepted ? approvalTooltip : null"></emg-approval>
+						<ng-template #approvalTooltip>
+                            <div class="date-rows-container">
+                                <div class="last-updated-label no-wrap">Approved</div>
+                                <div class="last-updated-info">{{ cell.linkStateAcceptedDateUtc | momentFormat }}</div>
+                                <div class="last-updated-info no-wrap">
+                                    by {{ cell.linkStateAcceptedBy.name }}
+                                </div>
+                            </div>
+                        </ng-template>
+					</div>
 				</ng-template>
 
 				<ng-template let-cell="element" #customCells>

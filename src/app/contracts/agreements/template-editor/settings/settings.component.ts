@@ -48,12 +48,13 @@ import { EditorObserverService } from '../../../shared/services/editor-observer.
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
-	encapsulation: ViewEncapsulation.None,
 	providers: [EditorObserverService],
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
+
+	nextButtonLabel: string;
 
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
@@ -97,8 +98,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	currentDuplicatedTemplate: AgreementDetailsDto;
 
 	currentAgreementTemplate: AgreementDetailsDto;
-    clientPeriodId: string;
-    consultantPeriodId: string;
+	clientPeriodId: string;
+	consultantPeriodId: string;
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -126,18 +127,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		this._subscribeOnNoExpirationDates();
-		
+
 		const paramId = this._route.snapshot.params.id;
 		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
 		this._registerAgreementChangeNotifier(paramId, clientPeriodID);
-		
+
 		const consultantPeriodId = this._route.snapshot.queryParams.consultantPeriodId;
 
 		if (paramId) {
 			this.editMode = true;
+			this.nextButtonLabel = 'Save';
 			this.currentAgreementId = paramId;
 			this._preselectAgreement(paramId);
 		} else {
+			this.nextButtonLabel = 'Next';
+			this._subscribeOnAgreementsFromOtherParty();
 			this._setDuplicateObs();
 			this._subscribeOnCreationMode();
 			this._setDirtyStatus();
@@ -146,7 +150,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._subscribeOnQueryParams();
 		}
 
-        if (clientPeriodID) {
+		if (clientPeriodID) {
 			this.clientPeriodId = clientPeriodID;
 		}
 
@@ -174,6 +178,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				relativeTo: this._route,
 			});
 		}
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -222,15 +232,28 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
-        toSend.clientPeriodId = this.clientPeriodId ?? undefined;
-        toSend.consultantPeriodId = this.consultantPeriodId ?? undefined;
+		toSend.clientPeriodId = this.clientPeriodId ?? undefined;
+		toSend.consultantPeriodId = this.consultantPeriodId ?? undefined;
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
 				.agreementPATCH(this.currentAgreementId, new SaveAgreementDto(toSend))
 				.pipe(
 					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
+					}),
+					switchMap(() => {
+						return this._apiServiceProxy.preview(this.currentAgreementId);
+					}),
+					tap((template) => {
+						this.agreementFormGroup.attachments.reset();
+						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
+					tap(() => {
 						this.hideMainSpinner();
+					}),
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					})
 				)
 				.subscribe();
@@ -243,7 +266,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					})
 				)
 				.subscribe(({ agreementId }) => {
-					this.navigateToEditor(agreementId);
+					if (toSend.receiveAgreementsFromOtherParty) {
+						this.navigateToEdit(agreementId);
+					} else {
+						this.navigateToEditor(agreementId);
+					}
 				});
 		}
 	}
@@ -417,6 +444,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.dirtyStatus$ = this.agreementFormGroup.valueChanges.pipe(
 			takeUntil(this._unSubscribe$),
 			startWith(this.agreementFormGroup.value),
+			map(() => this.agreementFormGroup.getRawValue()),
 			dirtyCheck(this.agreementFormGroup.initial$)
 		);
 	}
@@ -523,6 +551,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementTemplateDetailsDto.language,
 						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
 						note: agreementTemplateDetailsDto.note,
+						receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
 						parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
 							? agreementTemplateDetailsDto.attachmentsFromParent
 							: [],
@@ -592,12 +621,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						language: agreementDetailsDto.language,
 						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
 						note: agreementDetailsDto.note,
+						receiveAgreementsFromOtherParty: agreementDetailsDto.receiveAgreementsFromOtherParty,
 						parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
 							? agreementDetailsDto.attachmentsFromParent
 							: [],
 						signers: agreementDetailsDto.signers,
 						selectedInheritedFiles: [],
 					});
+					if (!agreementDetailsDto.endDate) {
+						this.noExpirationDateControl.setValue(true);
+					}
 				})
 			)
 			.subscribe();
@@ -653,6 +686,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _preselectAgreement(agreementId: number) {
 		this._apiServiceProxy.agreementGET(agreementId).subscribe((agreement) => {
 			this.currentAgreement = agreement;
+			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreement.receiveAgreementsFromOtherParty);
 			if (agreement.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreement;
 				this._setDuplicateObs();
@@ -686,6 +720,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				);
 				this.attachmentsFromParent = agreement.attachmentsFromParent as FileUpload[];
 			}
+			if (this.editMode) {
+				this.creationMode.setValue(agreement.creationMode);
+			}
 
 			this.creationModeControlReplay$.next(agreement.creationMode);
 
@@ -716,6 +753,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				language: agreement.language,
 				isSignatureRequired: agreement.isSignatureRequired,
 				note: agreement.note,
+				receiveAgreementsFromOtherParty: agreement.receiveAgreementsFromOtherParty,
 				signers: agreement.signers,
 				selectedInheritedFiles: agreement.attachments,
 			});
@@ -732,7 +770,24 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _resetForm() {
 		this.agreementFormGroup.reset();
+		this.noExpirationDateControl.setValue(false);
 		this.preselectedFiles = [];
 		this.attachmentsFromParent = [];
+	}
+
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.agreementFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+				}
+			});
 	}
 }

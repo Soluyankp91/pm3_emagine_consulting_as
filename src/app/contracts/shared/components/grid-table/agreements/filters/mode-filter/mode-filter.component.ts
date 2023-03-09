@@ -15,7 +15,7 @@ import { pluck, take } from 'rxjs/operators';
 })
 export class AgreementModeFilterComponent {
 	filterFormControl: FormControl;
-	tableFilter = 'mode';
+	tableFilter = 'validity';
 
 	labelMap = FILTER_LABEL_MAP;
 	options = MODE_FILTER_OPTIONS;

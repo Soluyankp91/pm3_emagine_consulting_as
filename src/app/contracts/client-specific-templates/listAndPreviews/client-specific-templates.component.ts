@@ -188,22 +188,30 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				clientName: item.clientName,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				language: maps.language[item.language as AgreementLanguage],
+                countryCode: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
+				createdBy: item.createdBy,
 				createdDateUtc: item.createdDateUtc,
-				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
+				lastUpdatedBy: item.lastUpdatedBy,
 				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				linkState: item.linkState,
+                linkStateAcceptedBy: item.linkStateAcceptedBy,
+                linkStateAcceptedDateUtc: item.linkStateAcceptedDateUtc,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
 				actionList: this.actions,
 			};
 		});
 	}
+
+    test(val: any) {
+        console.log(val);
+        return val;
+    }
 
 	private _subscribeOnDataLoading() {
 		this._clientTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
