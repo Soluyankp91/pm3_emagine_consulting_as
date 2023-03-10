@@ -13,10 +13,12 @@
     </ng-container>
 
     <form *ngIf="form" [formGroup]="form">
-        <mat-form-field appearance="outline" class="textarea-form-field">
-            <mat-label>Version description</mat-label>
-            <textarea [formControlName]="'versionDescription'" [cdkTextareaAutosize]="false" matInput class="text-area"></textarea>
-        </mat-form-field>
+        <ng-container *ngIf="form.get('versionDescription')">
+            <mat-form-field appearance="outline" class="textarea-form-field">
+                <mat-label>Version description</mat-label>
+                <textarea [formControlName]="'versionDescription'" [cdkTextareaAutosize]="false" matInput class="text-area"></textarea>
+            </mat-form-field>
+        </ng-container>
 
         <ng-container *ngIf="!data.isAgreement">
             <mat-checkbox [formControlName]="'propagateChangesToDerivedTemplates'" color="primary" class="u-w--100 u-mr--16">

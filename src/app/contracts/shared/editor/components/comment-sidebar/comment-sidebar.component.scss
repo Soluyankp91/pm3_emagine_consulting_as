@@ -104,6 +104,10 @@
 		}
 	}
 
+	.spinner-container {
+		background-color: unset;
+	}
+
 	::ng-deep {
 		.comment-header {
 			.dx-icon-spindown {

@@ -29,7 +29,7 @@ export class EditorObserverService {
 	}
 
 	private _makePatchRequest(url: string): Observable<any> {
-		return this._httpClient.get(url, { context: manualErrorHandlerEnabledContextCreator(true) }).pipe(
+		return this._httpClient.put(url, { context: manualErrorHandlerEnabledContextCreator(true) }).pipe(
 			catchError((error: HttpErrorResponse) => {
 				this._draftLockedNotification(error.error);
 				return of(null);
@@ -39,7 +39,7 @@ export class EditorObserverService {
 
 	private _draftLockedNotification(error: any) {
 		if (error.code && error.code.includes('draft.locked')) {
-			this._snackBar.open('This document has been edited by the other user!');
+			this._snackBar.open('This document has been edited by the other party!');
 		}
 	}
 }

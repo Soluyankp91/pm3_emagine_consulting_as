@@ -1,81 +1,95 @@
-<div class="wrapper">
-	<div class="versions">
-		<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
-			<mat-label>
-				{{selectedVersion?.isCurrent ? 'Current' : 'Draft'}}
-			</mat-label>
-			<mat-select [formControl]="selectedVersionControl" placeholder="version">
-				<mat-option *ngFor="let template of templateVersions$ | async" [value]="template.version">
-					<b>Version {{ template.version }}</b> - {{template.createdDateUtc | momentFormat}}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
-	</div>
-	
-	<div richEditor class="editor" (saved)="saveAsComplete()"></div>
-	<div class="comment-sidebar">
-		<app-comment-sidebar
-			@inOutPaneAnimation
-			*ngIf="commentSidebarEnabled$ | async"
-			[entities]="comments$ | async"
-			(created)="createComment($event)"
-			(deleted)="deleteComment($event)"
-			(edited)="editComment($event)">
-		</app-comment-sidebar>
-	</div>
-	<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
-	</app-insert-merge-field-popup>
-	<app-compare-select-version-popup
-		[dataSource]="templateVersions$ | async"
-		(select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
-	<app-compare-select-document-popup
-		[dataSource]="documentList$ | async"
-		(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
-	
-</div>
-	<!-- *ngIf="hasUnsavedChanges$ | async" -->
-<ng-container *ngIf="isLatestVersionSelected$ | async">
-
-	<ng-container *ngIf="selectedVersion?.isCurrent">
-		<div class="save-actions">
-			<button mat-button color="accent" (click)="cancel()">
-				Cancel
-			</button>
-	
-			<ng-container *ngIf="!(isAgreement$ | async)">
-				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
-					Save as a new version
-				</button>
-			</ng-container>
-
-			<ng-container *ngIf="isAgreement$ | async">
-				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsComplete(true)">
-					Save as a new version
-				</button>
-			</ng-container>
-	
-			<ng-container *ngIf="!(isAgreement$ | async)">
-				<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">
-					Save
-				</button>
-			</ng-container>
+<section class="main" [class.page-loading]="isPageLoading">
+	<div class="wrapper">
+		<div class="versions">
+			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
+				<mat-label>
+					{{selectedVersion?.isCurrent ? 'Current' : 'Draft'}}
+				</mat-label>
+				<mat-select [formControl]="selectedVersionControl" placeholder="version">
+					<mat-option *ngFor="let template of templateVersions$ | async" [value]="template.version">
+						<b>Version {{ template.version }}</b> - {{template.createdDateUtc | momentFormat}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
 		</div>
-	</ng-container>
+		
+		<div richEditor class="editor" (saved)="saveAsComplete()"></div>
+		<div class="comment-sidebar">
+			<app-comment-sidebar
+				@inOutPaneAnimation
+				*ngIf="commentSidebarEnabled$ | async"
+				[entities]="comments$ | async"
+				(created)="createComment($event)"
+				(deleted)="deleteComment($event)"
+				(edited)="editComment($event)">
+			</app-comment-sidebar>
+		</div>
+		<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
+		</app-insert-merge-field-popup>
+		<app-compare-select-version-popup
+			[dataSource]="templateVersions$ | async"
+			(select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
+		<app-compare-select-document-popup
+			[dataSource]="documentList$ | async"
+			(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
+		
+	</div>
+		<!-- *ngIf="hasUnsavedChanges$ | async" -->
+	<ng-container *ngIf="isLatestVersionSelected$ | async; else prevVersions">
+	
+		<ng-container *ngIf="selectedVersion?.isCurrent">
+			<div class="save-actions">
+				<button mat-button color="accent" (click)="cancel()">
+					Close
+				</button>
+		
+				<ng-container *ngIf="!(isAgreement$ | async)">
+					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
+						Save as a new version
+					</button>
+				</ng-container>
+	
+				<ng-container *ngIf="isAgreement$ | async">
+					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsComplete(true)">
+						Save as a new version
+					</button>
 
-	<ng-container *ngIf="selectedVersion?.isDraft">
-		<div class="save-actions">
-			<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">
-				Cancel
-			</button>
+					<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">
+						Send
+					</button>
+				</ng-container>
+		
+				<ng-container *ngIf="!(isAgreement$ | async)">
+					<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">
+						Save
+					</button>
+				</ng-container>
+			</div>
+		</ng-container>
 	
-			<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
-				<span>Save as a draft</span>
-			</button>
+		<ng-container *ngIf="selectedVersion?.isDraft">
+			<div class="save-actions">
+				<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">
+					Close
+				</button>
+		
+				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
+					<span>Save as a draft</span>
+				</button>
+		
+				<button [disabled]="isLoading" mat-flat-button color="primary" (click)="saveDraftAsComplete()">
+					<span>Complete</span>
+				</button>
+			</div>
+		</ng-container>
 	
-			<button [disabled]="isLoading" mat-flat-button color="primary" (click)="saveDraftAsComplete()">
-				<span>Complete</span>
+	</ng-container>
+	
+	<ng-template #prevVersions>
+		<div class="save-actions promote">
+			<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="promoteToDraft()">
+				<span>Promote to draft</span>
 			</button>
 		</div>
-	</ng-container>
-
-</ng-container>
+	</ng-template>
+</section>

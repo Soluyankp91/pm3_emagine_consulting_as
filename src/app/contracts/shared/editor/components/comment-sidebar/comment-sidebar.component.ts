@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AsyncPipe, DatePipe, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -9,10 +10,11 @@ import { DxButtonModule, DxDropDownButtonModule } from 'devextreme-angular';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
 import { CommentService } from '../../services';
-import { IComment, SidebarViewMode } from '../../entities';
+import { SidebarViewMode } from '../../entities';
 import { AppCommonModule } from 'src/app/shared/common/app-common.module';
+import { AgreementCommentDto } from 'src/shared/service-proxies/service-proxies';
 
-type CommentEntityMap = Record<IComment['id'], IComment>;
+type CommentEntityMap = Record<AgreementCommentDto['id'], AgreementCommentDto>;
 
 enum CommentEvents {
 	Edit = 'Edit',
@@ -24,16 +26,28 @@ enum CommentEvents {
 	selector: 'app-comment-sidebar',
 	templateUrl: './comment-sidebar.component.html',
 	styleUrls: ['./comment-sidebar.component.scss'],
-	imports: [NgIf, NgForOf, NgTemplateOutlet, ReactiveFormsModule, AsyncPipe, AppCommonModule, DxButtonModule, DxDropDownButtonModule],
+	imports: [
+		NgIf,
+		NgForOf,
+		NgTemplateOutlet,
+		ReactiveFormsModule,
+		AsyncPipe,
+		AppCommonModule,
+		DxButtonModule,
+		DxDropDownButtonModule,
+		MatProgressSpinnerModule,
+	],
 })
 export class CommentSidebarComponent implements OnInit, OnDestroy {
+	loading: boolean = false;
 	entityMap$: BehaviorSubject<CommentEntityMap> = new BehaviorSubject({});
 
 	displayedEntities$ = combineLatest([this.entityMap$, this._commentService.state$]).pipe(
 		map(([map, { selected }]) => selected.map((id) => map[id] || null).filter((i) => !!i))
 	);
 
-	@Input() set entities(list: IComment[] | null) {
+	@Input() set entities(list: AgreementCommentDto[] | null) {
+		this.loading = false;
 		this.entityMap$.next(this._mapEntityList(list));
 	}
 
@@ -62,20 +76,21 @@ export class CommentSidebarComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	handleCommentClick(event, entity: IComment) {
+	handleCommentClick(event, entity: AgreementCommentDto) {
 		switch (event.itemData as CommentEvents) {
 			case CommentEvents.Edit: {
 				this.switchEditMode(entity);
 				break;
 			}
 			case CommentEvents.Delete: {
+				this.loading = true;
 				this.deleted.emit(entity.id);
 				break;
 			}
 		}
 	}
 
-	switchEditMode(entity: IComment) {
+	switchEditMode(entity: AgreementCommentDto) {
 		this.commentForm.setValue({ entity_id: entity.id, message: entity.text });
 		this._commentService.setViewMode(SidebarViewMode.Edit);
 	}
@@ -84,20 +99,23 @@ export class CommentSidebarComponent implements OnInit, OnDestroy {
 		if (this.commentForm.valid) {
 			let { entity_id, message } = this.commentForm.value;
 			if (this.selectedViewMode === SidebarViewMode.Create) {
+				this.loading = true;
 				this.created.emit({ body: message, interval: this._selectedInterval });
 			}
 
 			if (this.selectedViewMode === SidebarViewMode.Edit) {
+				this.loading = true;
 				this.edited.emit({ body: message, entityID: entity_id });
 			}
 		}
 	}
 
 	cancelComment() {
+		this.loading = false;
 		this._commentService.cancelCreatHighlight();
 	}
 
-	private _mapEntityList(list: IComment[]): CommentEntityMap {
+	private _mapEntityList(list: AgreementCommentDto[]): CommentEntityMap {
 		return (list || []).reduce((acc, item) => {
 			return { ...acc, [item.id]: item };
 		}, {});

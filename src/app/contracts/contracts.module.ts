@@ -261,6 +261,22 @@ export class ContractsModule {
 			'no-items-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-items-icon.svg')
 		);
+		iconRegistry.addSvgIcon(
+			'download-doc',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-doc.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-pdf',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-pdf.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'send-via-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'create-docusign-draft',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/create-docusign-draft.svg')
+		);
 		iconRegistry.addSvgIcon('asc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/asc-arrow.svg'));
 		iconRegistry.addSvgIcon('desc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/desc-arrow.svg'));
 		iconRegistry.addSvgIcon(
@@ -348,3 +364,5 @@ export class ContractsModule {
 		);
 	}
 }
+
+

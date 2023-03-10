@@ -109,14 +109,15 @@ export class AgreementTemplateService implements AgreementAbstractService {
 			);
 	}
 
-	saveDraftAndCompleteTemplate(templateId: number, body: StringWrappedValueDto, doc: IDocumentItem) {
+	saveDraftAndCompleteTemplate(templateId: number, body: StringWrappedValueDto, doc: IDocumentItem, versions: IDocumentVersion[]) {
 		return this.saveDraftAsDraftTemplate(templateId, false, body).pipe(
 			switchMap(() => {
 				const ref = this._dialog.open(SaveAsPopupComponent, {
 					data: {
 						document: doc,
 						base64: body.value,
-						isAgreement: false
+						isAgreement: false,
+						versions
 					},
 					width: '500px',
 					disableClose: true,
