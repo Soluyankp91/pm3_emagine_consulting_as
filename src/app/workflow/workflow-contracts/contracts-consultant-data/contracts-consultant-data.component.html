@@ -1190,7 +1190,7 @@
                                 <h2 class="workflow-section--header">Legal contracts</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <legal-contracts-list #legalContracts [periodId]="consultant.value.consultantPeriodId" [isClientContracts]="false" [readOnlyMode]="readOnlyMode"></legal-contracts-list>
+                                <legal-contracts-list #legalContracts [clientPeriodId]="periodId" [consultantPeriodId]="consultant.value.consultantPeriodId" [isClientContracts]="false" [readOnlyMode]="readOnlyMode"></legal-contracts-list>
                             </div>
                         </div>
                     </ng-container>
