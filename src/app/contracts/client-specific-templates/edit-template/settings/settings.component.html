@@ -152,6 +152,9 @@
 						<mat-error><app-validator [control]="clientTemplateFormGroup.note"></app-validator></mat-error>
 					</mat-form-field>
 					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
+						>Default template for contracts of this type</mat-checkbox
+					>
 					<mat-checkbox formControlName="receiveAgreementsFromOtherParty" class="checkbox-text">
 						Always receive agreement from other party
 					</mat-checkbox>

@@ -28,6 +28,7 @@ import {
 	withLatestFrom,
 	filter,
 	take,
+	finalize,
 } from 'rxjs/operators';
 import { Observable, Subject, of, BehaviorSubject, race, combineLatest } from 'rxjs';
 import { FormControl } from '@angular/forms';
@@ -45,6 +46,7 @@ import { CreationTitleService } from 'src/app/contracts/shared/services/creation
 import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
+import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
 @Component({
 	selector: 'app-creation',
 	templateUrl: './settings.component.html',
@@ -109,6 +111,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
 		private readonly _creationTitleService: CreationTitleService,
+		private readonly _extraHttp: ExtraHttpsService,
 		public _dialog: MatDialog
 	) {
 		super(_injector);
@@ -127,7 +130,6 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._preselectAgreementTemplate(paramId);
 		} else {
 			this.nextButtonLabel = 'Next';
-			this._subscribeOnAgreementsFromOtherParty();
 			this._subscribeOnModeReplay();
 			this._subscribeOnDirtyStatus();
 			this._setDuplicateObs();
@@ -157,12 +159,6 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				relativeTo: this._route,
 			});
 		}
-	}
-
-	navigateToEdit(templateId: number) {
-		this._router.navigate([`../${templateId}/settings`], {
-			relativeTo: this._route,
-		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -200,8 +196,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.clientTemplateFormGroup.attachments.value);
 		this.showMainSpinner();
 		if (this.editMode) {
-			this._apiServiceProxy
-				.agreementTemplatePATCH(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
+			this._extraHttp
+				.agreementPatch(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
 				.pipe(
 					switchMap(() => {
 						return this._apiServiceProxy.preview2(this.currentAgreementId);
@@ -212,27 +208,21 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					}),
 					tap(() => {
 						this.hideMainSpinner();
-					}),
-					tap(() => {
-						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					})
 				)
 				.subscribe();
 		} else {
-			this._apiServiceProxy
-				.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
+			this._extraHttp
+				.agreementPost(new SaveAgreementTemplateDto(toSend))
 				.pipe(
-					tap(() => {
+					finalize(() => {
 						this.hideMainSpinner();
+					}),
+					tap((agreementTemplateId) => {
+						this.navigateToEditor(agreementTemplateId);
 					})
 				)
-				.subscribe(({ agreementTemplateId }) => {
-					if (toSend.receiveAgreementsFromOtherParty) {
-						this.navigateToEdit(agreementTemplateId);
-					} else {
-						this.navigateToEditor(agreementTemplateId);
-					}
-				});
+				.subscribe();
 		}
 	}
 
@@ -336,6 +326,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			note: data.note,
 			receiveAgreementsFromOtherParty: data.receiveAgreementsFromOtherParty,
 			isSignatureRequired: data.isSignatureRequired,
+			isDefaultTemplate: data.isDefaultTemplate,
 			parentSelectedAttachmentIds: data.attachmentsFromParent
 				? data.attachmentsFromParent.filter((attachement) => attachement.isSelected)
 				: [],
@@ -526,7 +517,6 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
 			this.currentAgreementTemplate = agreementTemplate;
 			this.creationModeControl.setValue(agreementTemplate.creationMode);
-			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreementTemplate.receiveAgreementsFromOtherParty);
 			if (agreementTemplate.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreementTemplate;
 				this._setDuplicateObs();
@@ -583,6 +573,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				note: agreementTemplate.note,
 				receiveAgreementsFromOtherParty: agreementTemplate.receiveAgreementsFromOtherParty,
 				isSignatureRequired: agreementTemplate.isSignatureRequired,
+				isDefaultTemplate: agreementTemplate.isDefaultTemplate,
 				isEnabled: agreementTemplate.isEnabled,
 				selectedInheritedFiles: agreementTemplate.attachments,
 			});
@@ -595,22 +586,6 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this.clientTemplateFormGroup.agreementType.disable({ emitEvent: false });
 		this.clientTemplateFormGroup.recipientTypeId.disable({ emitEvent: false });
 		this.clientTemplateFormGroup.clientId.disable({ emitEvent: false });
-	}
-
-	private _subscribeOnAgreementsFromOtherParty() {
-		this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
-			.pipe(takeUntil(this._unSubscribe$))
-			.subscribe((receiveAgreementsFromOtherParty) => {
-				if (receiveAgreementsFromOtherParty && !this.editMode) {
-					this.nextButtonLabel = 'Complete';
-				}
-				if (!receiveAgreementsFromOtherParty && this.editMode) {
-					this.nextButtonLabel = 'Save';
-				}
-				if (!receiveAgreementsFromOtherParty && !this.editMode) {
-					this.nextButtonLabel = 'Next';
-				}
-			});
 	}
 
 	private _subsribeOnLegEntitiesChanges() {

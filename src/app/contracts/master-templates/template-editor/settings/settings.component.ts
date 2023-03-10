@@ -38,6 +38,7 @@ import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
+import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
 
 @Component({
 	selector: 'app-settings',
@@ -85,6 +86,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		private readonly _router: Router,
 		private readonly _route: ActivatedRoute,
 		private readonly _creationTitleService: CreationTitleService,
+		private readonly _extraHttp: ExtraHttpsService,
 		private _injector: Injector
 	) {
 		super(_injector);
@@ -102,7 +104,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			this._prefillForm();
 		} else {
 			this.nextButtonLabel = 'Next';
-			this._subscribeOnAgreementsFromOtherParty();
 			this._subscribeOnModeReplay();
 			this._subscribeOnDirtyStatus();
 			this._initMasterTemplateOptions();
@@ -129,12 +130,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		});
 		this.showMainSpinner();
 		if (this.editMode) {
-			this._apiServiceProxy
-				.agreementTemplatePATCH(this.currentTemplate.agreementTemplateId, toSend)
+			this._extraHttp
+				.agreementPatch(this.currentTemplate.agreementTemplateId, toSend)
 				.pipe(
-					tap(() => {
-						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
-					}),
 					switchMap(() => {
 						return this._apiServiceProxy.preview2(this.currentTemplate.agreementTemplateId);
 					}),
@@ -148,20 +146,17 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				)
 				.subscribe();
 		} else {
-			this._apiServiceProxy
-				.agreementTemplatePOST(new SaveAgreementTemplateDto(toSend))
+			this.showMainSpinner();
+			this._extraHttp
+				.agreementPost(new SaveAgreementTemplateDto(toSend))
 				.pipe(
 					takeUntil(this._unSubscribe$),
-					map((result) => result.agreementTemplateId),
-					finalize(() => this.hideMainSpinner())
-				)
-				.subscribe((templateId: number | undefined) => {
-					if (toSend.receiveAgreementsFromOtherParty) {
-						this.navigateToEdit(templateId);
-					} else {
+					finalize(() => this.hideMainSpinner()),
+					tap((templateId: number | undefined) => {
 						this.navigateToEditor(templateId);
-					}
-				});
+					})
+				)
+				.subscribe();
 		}
 	}
 
@@ -223,12 +218,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				relativeTo: this._route,
 			});
 		}
-	}
-
-	navigateToEdit(templateId: number) {
-		this._router.navigate([`../${templateId}/settings`], {
-			relativeTo: this._route,
-		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -422,28 +411,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this.masterTemplateFormGroup.recipientTypeId.disable({ emitEvent: false });
 	}
 
-	private _subscribeOnAgreementsFromOtherParty() {
-		this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
-			.pipe(takeUntil(this._unSubscribe$))
-			.subscribe((receiveAgreementsFromOtherParty) => {
-				if (receiveAgreementsFromOtherParty && !this.editMode) {
-					this.nextButtonLabel = 'Complete';
-				}
-				if (!receiveAgreementsFromOtherParty && this.editMode) {
-					this.nextButtonLabel = 'Save';
-				}
-				if (!receiveAgreementsFromOtherParty && !this.editMode) {
-					this.nextButtonLabel = 'Next';
-				}
-			});
-	}
-
 	private _prefillForm() {
 		this._apiServiceProxy
 			.agreementTemplateGET(this._templateId)
 			.pipe(
 				tap((template) => {
-					this._creationTitleService.updateReceiveAgreementsFromOtherParty(template.receiveAgreementsFromOtherParty);
 					if (template.creationMode === AgreementCreationMode.Duplicated) {
 						this._initMasterTemplateOptions();
 						this.masterTemplateFormGroup.addControl(

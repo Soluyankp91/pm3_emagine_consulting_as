@@ -19,6 +19,7 @@ export class ClientTemplatesModel extends FormGroup {
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			receiveAgreementsFromOtherParty: new FormControl(false),
 			isSignatureRequired: new FormControl(false, []),
+            isDefaultTemplate: new FormControl(false, []),
 			isEnabled: new FormControl(false, []),
 			attachments: new FormControl([]),
 		});
@@ -118,6 +119,7 @@ export class ClientTemplatesModel extends FormGroup {
 		note: '',
 		receiveAgreementsFromOtherParty: false,
 		isSignatureRequired: false,
+        isDefaultTemplate: false,
 		isEnabled: false,
 		attachments: [],
 	});
