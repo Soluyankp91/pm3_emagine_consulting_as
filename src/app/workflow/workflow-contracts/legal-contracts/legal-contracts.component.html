@@ -176,31 +176,33 @@
             </span>
         </div>
     </ng-container>
-    <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mt--15">
-        <ng-container *ngIf="!readOnlyMode">
-            <button class="rates-and-fees--btn button-add" mat-flat-button (click)="redirectToCreateAgreement()">
-                <mat-icon>add</mat-icon>
-                Add agreement
-            </button>
-        </ng-container>
-        <div fxLayout="row" fxLayoutAlign="start start">
-            <div [matTooltip]="downloadEnvelopeAvailable ? '': 'Select at least 1 agreement'"
-                matTooltipClass="white-tooltip">
-                <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--12"
-                    [disabled]="!downloadEnvelopeAvailable" appPreventDoubleClick
-                    (throttledClick)="downloadEnvelopes()">
-                    Download envelope
+    <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length > 0">
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mt--15">
+            <ng-container *ngIf="!readOnlyMode">
+                <button class="rates-and-fees--btn button-add" mat-flat-button (click)="redirectToCreateAgreement()">
+                    <mat-icon>add</mat-icon>
+                    Add agreement
                 </button>
-            </div>
-            <div [matTooltip]="sendAgreementAvailable ? '' : 'Selected agreement has no signed document'"
-                matTooltipClass="white-tooltip">
-                <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button
-                    [disabled]="!sendAgreementAvailable" appPreventDoubleClick (throttledClick)="sendAgreement()">
-                    Send agreement
-                </button>
+            </ng-container>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <div [matTooltip]="downloadEnvelopeAvailable ? '': 'Select at least 1 agreement'"
+                    matTooltipClass="white-tooltip">
+                    <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--12"
+                        [disabled]="!downloadEnvelopeAvailable" appPreventDoubleClick
+                        (throttledClick)="downloadEnvelopes()">
+                        Download envelope
+                    </button>
+                </div>
+                <div [matTooltip]="sendAgreementAvailable ? '' : 'Selected agreement has no signed document'"
+                    matTooltipClass="white-tooltip">
+                    <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button
+                        [disabled]="!sendAgreementAvailable" appPreventDoubleClick (throttledClick)="sendAgreement()">
+                        Send agreement
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </form>
 <ng-template #noDataTemplate>
     -
