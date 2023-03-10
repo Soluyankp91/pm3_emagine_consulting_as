@@ -116,7 +116,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID);
 
 		this.getTemplateVersions(this.templateId);
-		this.loadComments(this.templateId);
+		this.loadComments(this.templateId, true);
 
 		this._agreementService.getSimpleList().subscribe((res) => {
 			this.documentList$.next(res);
@@ -257,12 +257,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	loadComments(templateID: number) {
+	loadComments(templateID: number, isInitial: boolean = false) {
 		this._editorCoreService.afterViewInit$
 			.pipe(switchMap(() => this._commentService.getByTemplateID(templateID)))
 			.subscribe((comments) => {
 				this.comments$.next(comments);
 				this._editorCoreService.insertComments(comments);
+				if (isInitial) {
+					this._editorCoreService.editor.hasUnsavedChanges = false;
+					this._editorCoreService.hasUnsavedChanges$.next(false);
+				}
 			});
 	}
 
@@ -273,6 +277,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._commentService.createComment(tmpID, version, body).subscribe((commentID) => {
 			this._editorCoreService.registerCommentThread(interval, commentID);
 			this.loadComments(tmpID);
+
 			if (this.selectedVersion.isCurrent) {
 				this.saveCurrentAsDraft();
 			} else {
