@@ -35,7 +35,7 @@
             <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i"
                 [formArrayName]="i">
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px"
-                    class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
+                    class="legal-contract--list u-w--100 u-pl--16 u-pr--16 u-mb--15">
                     <span fxFlex="20px" class="legal-contract--list-item u-w--100">
                         <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement"
                             class="black-checkbox">
@@ -176,14 +176,14 @@
             </span>
         </div>
     </ng-container>
-    <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length > 0">
-        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mt--15">
-            <ng-container *ngIf="!readOnlyMode">
-                <button class="rates-and-fees--btn button-add" mat-flat-button (click)="redirectToCreateAgreement()">
-                    <mat-icon>add</mat-icon>
-                    Add agreement
-                </button>
-            </ng-container>
+    <div fxLayout="row" fxLayoutAlign="space-between start">
+        <ng-container *ngIf="!readOnlyMode">
+            <button class="rates-and-fees--btn button-add" mat-flat-button (click)="redirectToCreateAgreement()">
+                <mat-icon>add</mat-icon>
+                Add agreement
+            </button>
+        </ng-container>
+        <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length > 0">
             <div fxLayout="row" fxLayoutAlign="start start">
                 <div [matTooltip]="downloadEnvelopeAvailable ? '': 'Select at least 1 agreement'"
                     matTooltipClass="white-tooltip">
@@ -201,8 +201,8 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </ng-container>
+        </ng-container>
+    </div>
 </form>
 <ng-template #noDataTemplate>
     -

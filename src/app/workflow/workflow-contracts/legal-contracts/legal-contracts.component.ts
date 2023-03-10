@@ -44,7 +44,8 @@ import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/
 })
 export class LegalContractsComponent extends AppComponentBase implements OnInit {
 	@ViewChild('menuTrigger', { static: false }) menuTrigger: MatMenuTrigger;
-	@Input() periodId: string;
+	@Input() clientPeriodId: string;
+	@Input() consultantPeriodId: string;
 	@Input() isClientContracts: boolean;
 	@Input() readOnlyMode: boolean;
 	clientLegalContractsForm: ClientLegalContractsForm;
@@ -186,12 +187,13 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 				this.isClientContracts
 					? {
 							queryParams: {
-								clientPeriodId: this.periodId,
+								clientPeriodId: this.clientPeriodId,
 							},
 					  }
 					: {
 							queryParams: {
-								consultantPeriodId: this.periodId,
+								consultantPeriodId: this.consultantPeriodId,
+								clientPeriodId: this.clientPeriodId,
 							},
 					  }
 			)
@@ -236,12 +238,13 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 				this.isClientContracts
 					? {
 							queryParams: {
-								clientPeriodId: this.periodId,
+								clientPeriodId: this.clientPeriodId,
 							},
 					  }
 					: {
 							queryParams: {
-								consultantPeriodId: this.periodId,
+								consultantPeriodId: this.consultantPeriodId,
+								clientPeriodId: this.clientPeriodId,
 							},
 					  }
 			)
@@ -275,7 +278,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _getClientAgreements() {
-		this._clientPeriodService.clientAgreements(this.periodId).subscribe((result: WorkflowAgreementsDto) => {
+		this._clientPeriodService.clientAgreements(this.clientPeriodId).subscribe((result: WorkflowAgreementsDto) => {
 			this._resetForm();
 			result.agreements.forEach((item) => {
 				this.addLegalContract(item);
@@ -284,7 +287,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _getConsultantAgreements() {
-		this._consultantPeriodService.consultantAgreements(this.periodId).subscribe((result: WorkflowAgreementsDto) => {
+		this._consultantPeriodService.consultantAgreements(this.consultantPeriodId).subscribe((result: WorkflowAgreementsDto) => {
 			this._resetForm();
 			result.agreements.forEach((item) => {
 				this.addLegalContract(item);

@@ -232,8 +232,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
-		toSend.clientPeriodId = this.clientPeriodId ?? this.currentAgreementTemplate.clientPeriodId;
-		toSend.consultantPeriodId = this.consultantPeriodId ?? this.currentAgreementTemplate.consultantPeriodId;
+        if (!this.consultantPeriodId && !this.currentAgreementTemplate.consultantPeriodId) {
+            toSend.clientPeriodId = this.clientPeriodId ?? this.currentAgreementTemplate.clientPeriodId;
+        }
+        toSend.consultantPeriodId = this.consultantPeriodId ?? this.currentAgreementTemplate.consultantPeriodId;
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
