@@ -72,7 +72,7 @@ export class EditorCoreService {
 		this._registerDocumentEvents();
 		this._registerCustomEvents();
 		this._initCompareTab();
-		this._initComments();
+		// this._initComments();
 		this._registerCustomContextMenuItems();
 	}
 

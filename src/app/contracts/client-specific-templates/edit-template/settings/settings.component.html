@@ -3,19 +3,18 @@
 		<div class="page-container">
 			<div class="template-settings-section">
 				<h3 class="template-settings-header">Client template settings</h3>
-				<ng-container *ngIf="!editMode">
-					<mat-radio-group [formControl]="creationModeControl" class="radio-button-group">
-						<ng-container *ngFor="let radioButton of creationRadioButtons">
-							<mat-radio-button
-								class="option"
-								[value]="radioButton.value"
-								(click)="onModeControlChange(radioButton.value)"
-								>{{ radioButton.label }}</mat-radio-button
-							>
-						</ng-container>
-					</mat-radio-group>
-					<mat-divider class="mat-divider"></mat-divider>
-				</ng-container>
+				<mat-radio-group [formControl]="creationModeControl" class="radio-button-group">
+					<ng-container *ngFor="let radioButton of creationRadioButtons">
+						<mat-radio-button
+							class="option"
+							[ngClass]="{ 'edit-disabled': editMode }"
+							[value]="radioButton.value"
+							(click)="onModeControlChange(radioButton.value)"
+							>{{ radioButton.label }}</mat-radio-button
+						>
+					</ng-container>
+				</mat-radio-group>
+				<mat-divider class="mat-divider"></mat-divider>
 				<div class="form-fields-container">
 					<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
 						<ng-container *ngIf="templateOptions.options$ | async as options">
@@ -153,12 +152,16 @@
 						<mat-error><app-validator [control]="clientTemplateFormGroup.note"></app-validator></mat-error>
 					</mat-form-field>
 					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					<mat-checkbox formControlName="receiveAgreementsFromOtherParty" class="checkbox-text">
+						Always receive agreement from other party
+					</mat-checkbox>
 				</div>
 				<mat-divider class="mat-divider"></mat-divider>
 				<h4 class="status-header">Status</h4>
 				<mat-checkbox formControlName="isEnabled" class="checkbox-text">Enable</mat-checkbox>
 			</div>
 			<div class="attachments-section">
+				<h3 class="template-settings-header">Attachments</h3>
 				<ng-container *ngIf="clientTemplateFormGroup.parentSelectedAttachmentIds">
 					<emg-file-selector
 						[inheritedFiles]="attachmentsFromParent"
@@ -173,7 +176,7 @@
 		</div>
 		<div class="bottom-panel">
 			<button mat-button (click)="navigateBack()" class="cancel-button">Cancel</button>
-			<button mat-raised-button type="button" (click)="onSave()">{{ editMode ? 'Save' : 'Next' }}</button>
+			<button mat-raised-button type="button" (click)="onSave()">{{ nextButtonLabel }}</button>
 		</div>
 	</form>
 </ng-container>

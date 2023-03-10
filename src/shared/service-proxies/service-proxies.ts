@@ -1052,6 +1052,56 @@ export class AdminServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    updateClientsVatNumber(fillEmptyOnly: boolean): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/update-clients-vat-number/{fillEmptyOnly}";
+        if (fillEmptyOnly === undefined || fillEmptyOnly === null)
+            throw new Error("The parameter 'fillEmptyOnly' must be defined.");
+        url_ = url_.replace("{fillEmptyOnly}", encodeURIComponent("" + fillEmptyOnly));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateClientsVatNumber(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateClientsVatNumber(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateClientsVatNumber(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -2341,6 +2391,58 @@ export class AgreementServiceProxy {
     }
 
     protected processSignedDocuments(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param agreementIds (optional) 
+     * @return Success
+     */
+    files(agreementIds?: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/files?";
+        if (agreementIds === null)
+            throw new Error("The parameter 'agreementIds' cannot be null.");
+        else if (agreementIds !== undefined)
+            agreementIds && agreementIds.forEach(item => { url_ += "agreementIds=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFiles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFiles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFiles(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -18682,6 +18784,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
     docuSignUrl?: string | undefined;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
+    receiveAgreementsFromOtherParty?: boolean;
 
     constructor(data?: IAgreementListItemDto) {
         if (data) {
@@ -18729,6 +18832,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
             this.docuSignUrl = _data["docuSignUrl"];
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
             this.envelopeProcessingPath = _data["envelopeProcessingPath"];
+            this.receiveAgreementsFromOtherParty = _data["receiveAgreementsFromOtherParty"];
         }
     }
 
@@ -18776,6 +18880,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
         data["docuSignUrl"] = this.docuSignUrl;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
         data["envelopeProcessingPath"] = this.envelopeProcessingPath;
+        data["receiveAgreementsFromOtherParty"] = this.receiveAgreementsFromOtherParty;
         return data;
     }
 }
@@ -18804,6 +18909,7 @@ export interface IAgreementListItemDto {
     docuSignUrl?: string | undefined;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
+    receiveAgreementsFromOtherParty?: boolean;
 }
 
 export class AgreementListItemDtoPaginatedList implements IAgreementListItemDtoPaginatedList {
@@ -22409,7 +22515,7 @@ export interface IClientRequestTrackItemDtoPaginatedList {
 export class ClientResultDto implements IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
-    registrationNumber?: string | undefined;
+    vatNumber?: string | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
@@ -22431,7 +22537,7 @@ export class ClientResultDto implements IClientResultDto {
         if (_data) {
             this.clientId = _data["clientId"];
             this.clientName = _data["clientName"];
-            this.registrationNumber = _data["registrationNumber"];
+            this.vatNumber = _data["vatNumber"];
             this.address = _data["address"];
             this.address2 = _data["address2"];
             this.postCode = _data["postCode"];
@@ -22453,7 +22559,7 @@ export class ClientResultDto implements IClientResultDto {
         data = typeof data === 'object' ? data : {};
         data["clientId"] = this.clientId;
         data["clientName"] = this.clientName;
-        data["registrationNumber"] = this.registrationNumber;
+        data["vatNumber"] = this.vatNumber;
         data["address"] = this.address;
         data["address2"] = this.address2;
         data["postCode"] = this.postCode;
@@ -22468,7 +22574,7 @@ export class ClientResultDto implements IClientResultDto {
 export interface IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
-    registrationNumber?: string | undefined;
+    vatNumber?: string | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
@@ -24122,10 +24228,13 @@ export class ConsultantResultDto implements IConsultantResultDto {
     name?: string | undefined;
     id?: number;
     legacyId?: number | undefined;
-    companyName?: string | undefined;
     tenantId?: number;
     externalId?: string;
     city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
+    companyName?: string | undefined;
+    vatNumber?: string | undefined;
     countryId?: number | undefined;
     supplierId?: number | undefined;
 
@@ -24143,10 +24252,13 @@ export class ConsultantResultDto implements IConsultantResultDto {
             this.name = _data["name"];
             this.id = _data["id"];
             this.legacyId = _data["legacyId"];
-            this.companyName = _data["companyName"];
             this.tenantId = _data["tenantId"];
             this.externalId = _data["externalId"];
             this.city = _data["city"];
+            this.zipCode = _data["zipCode"];
+            this.address = _data["address"];
+            this.companyName = _data["companyName"];
+            this.vatNumber = _data["vatNumber"];
             this.countryId = _data["countryId"];
             this.supplierId = _data["supplierId"];
         }
@@ -24164,10 +24276,13 @@ export class ConsultantResultDto implements IConsultantResultDto {
         data["name"] = this.name;
         data["id"] = this.id;
         data["legacyId"] = this.legacyId;
-        data["companyName"] = this.companyName;
         data["tenantId"] = this.tenantId;
         data["externalId"] = this.externalId;
         data["city"] = this.city;
+        data["zipCode"] = this.zipCode;
+        data["address"] = this.address;
+        data["companyName"] = this.companyName;
+        data["vatNumber"] = this.vatNumber;
         data["countryId"] = this.countryId;
         data["supplierId"] = this.supplierId;
         return data;
@@ -24178,10 +24293,13 @@ export interface IConsultantResultDto {
     name?: string | undefined;
     id?: number;
     legacyId?: number | undefined;
-    companyName?: string | undefined;
     tenantId?: number;
     externalId?: string;
     city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
+    companyName?: string | undefined;
+    vatNumber?: string | undefined;
     countryId?: number | undefined;
     supplierId?: number | undefined;
 }
@@ -26812,6 +26930,11 @@ export class LegalEntityDto implements ILegalEntityDto {
     id?: number;
     name?: string | undefined;
     tenantName?: string | undefined;
+    address?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    vatNumber?: string | undefined;
 
     constructor(data?: ILegalEntityDto) {
         if (data) {
@@ -26827,6 +26950,11 @@ export class LegalEntityDto implements ILegalEntityDto {
             this.id = _data["id"];
             this.name = _data["name"];
             this.tenantName = _data["tenantName"];
+            this.address = _data["address"];
+            this.postCode = _data["postCode"];
+            this.city = _data["city"];
+            this.country = _data["country"];
+            this.vatNumber = _data["vatNumber"];
         }
     }
 
@@ -26842,6 +26970,11 @@ export class LegalEntityDto implements ILegalEntityDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["tenantName"] = this.tenantName;
+        data["address"] = this.address;
+        data["postCode"] = this.postCode;
+        data["city"] = this.city;
+        data["country"] = this.country;
+        data["vatNumber"] = this.vatNumber;
         return data;
     }
 }
@@ -26850,6 +26983,11 @@ export interface ILegalEntityDto {
     id?: number;
     name?: string | undefined;
     tenantName?: string | undefined;
+    address?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    vatNumber?: string | undefined;
 }
 
 export enum LogOperationType {
@@ -29914,6 +30052,11 @@ export class SupplierResultDto implements ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
     externalId?: string;
+    vatNumber?: string | undefined;
+    country?: string | undefined;
+    city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
 
     constructor(data?: ISupplierResultDto) {
         if (data) {
@@ -29929,6 +30072,11 @@ export class SupplierResultDto implements ISupplierResultDto {
             this.supplierId = _data["supplierId"];
             this.supplierName = _data["supplierName"];
             this.externalId = _data["externalId"];
+            this.vatNumber = _data["vatNumber"];
+            this.country = _data["country"];
+            this.city = _data["city"];
+            this.zipCode = _data["zipCode"];
+            this.address = _data["address"];
         }
     }
 
@@ -29944,6 +30092,11 @@ export class SupplierResultDto implements ISupplierResultDto {
         data["supplierId"] = this.supplierId;
         data["supplierName"] = this.supplierName;
         data["externalId"] = this.externalId;
+        data["vatNumber"] = this.vatNumber;
+        data["country"] = this.country;
+        data["city"] = this.city;
+        data["zipCode"] = this.zipCode;
+        data["address"] = this.address;
         return data;
     }
 }
@@ -29952,6 +30105,11 @@ export interface ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
     externalId?: string;
+    vatNumber?: string | undefined;
+    country?: string | undefined;
+    city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
 }
 
 export class SyncClientFromCrmResultDto implements ISyncClientFromCrmResultDto {

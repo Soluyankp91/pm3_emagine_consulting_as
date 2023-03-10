@@ -58,6 +58,9 @@
                 span {
                     color: $dark-grey-color;
                     @include fontOpenSans(14px, 700);
+                    &.recipient-email {
+                        @include fontOpenSans(12px, 600);
+                    }
                 }
             }
         }

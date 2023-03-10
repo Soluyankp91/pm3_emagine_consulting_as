@@ -10,11 +10,11 @@ import {
 	OnChanges,
 	SimpleChanges,
 } from '@angular/core';
-import { AgreementTemplateAttachmentServiceProxy, FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, forkJoin, of, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap, takeUntil } from 'rxjs/operators';
 import { NgControl } from '@angular/forms';
-import { FileUpload, FileUploadItem } from './files';
+import { ACCEPTED_EXTENSIONS, ALLOWED_MIME_TYPES, EXISTED_ICONS, FileUpload, FileUploadItem } from './files';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { DownloadFile } from '../../utils/download-file';
 import { DownloadFilesService } from '../../services/download-files.service';
@@ -30,6 +30,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	@Input() label: string = 'Current master template';
 	@Input() idProp = 'agreementTemplateAttachmentId';
 
+	allowedExtensions = ACCEPTED_EXTENSIONS;
 	preselectedFilesModified: FileUploadItem[];
 	uploadedFiles$: Observable<FileUploadItem[]>;
 	filesLoading$ = new BehaviorSubject<boolean>(false);
@@ -89,11 +90,12 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	}
 
 	onFileAdded($event: EventTarget | null) {
+		console.log(($event as HTMLInputElement).files);
 		if ($event) {
 			let files = ($event as HTMLInputElement).files as FileList;
 			const fileArray = [] as File[];
 			for (let i = 0; i < files.length; i++) {
-				if (files[i].type != 'application/msword' && files[i].type !== 'application/pdf') {
+				if (!ALLOWED_MIME_TYPES.some((mimeType) => mimeType.toLowerCase() === files[i].type.toLowerCase())) {
 					continue;
 				}
 				fileArray.push(files.item(i) as File);
@@ -188,7 +190,11 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 
 	private _getIconName(fileName: string): string {
 		let splittetFileName = fileName.split('.');
-		return splittetFileName[splittetFileName.length - 1].toLowerCase();
+		if (EXISTED_ICONS.find((icon) => icon === splittetFileName[splittetFileName.length - 1].toLowerCase())) {
+			return splittetFileName[splittetFileName.length - 1].toLowerCase();
+		} else {
+			return 'no-extension';
+		}
 	}
 
 	private _clearAllFiles() {

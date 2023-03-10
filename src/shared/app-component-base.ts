@@ -31,9 +31,9 @@ export abstract class AppComponentBase {
         this.matSnackbar = injector.get(MatSnackBar);
     }
 
-	showNotify(severity: number, text: string, buttonText: string) {
+	showNotify(severity: number, text: string, buttonText: string = 'OK') {
 		const className = this.mapSeverity(severity);
-		this.matSnackbar.open(text, buttonText, { duration: 20000, panelClass: [className, 'general-snackbar'] });
+		this.matSnackbar.open(text, buttonText, { duration: 3000, panelClass: [className, 'general-snackbar'] });
 	}
 
 	mapSeverity(severity: number) {

@@ -116,7 +116,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID);
 
 		this.getTemplateVersions(this.templateId);
-		this.loadComments(this.templateId, true);
+		// this.loadComments(this.templateId, true);
 
 		this._agreementService.getSimpleList().subscribe((res) => {
 			this.documentList$.next(res);

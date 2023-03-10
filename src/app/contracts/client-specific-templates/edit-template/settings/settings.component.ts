@@ -56,6 +56,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	creationModes = AgreementCreationMode;
 
+	nextButtonLabel: string;
+
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
 
@@ -120,16 +122,19 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
 			this.editMode = true;
+			this.nextButtonLabel = 'Save';
 			this.currentAgreementId = paramId;
 			this._preselectAgreementTemplate(paramId);
 		} else {
+			this.nextButtonLabel = 'Next';
+			this._subscribeOnAgreementsFromOtherParty();
 			this._subscribeOnModeReplay();
 			this._subscribeOnDirtyStatus();
 			this._setDuplicateObs();
 			this._subscribeOnCreationModeResolver();
 			this._subscribeOnCreationMode();
 			this._subscribeOnQueryParams();
-            this._initClients();
+			this._initClients();
 		}
 	}
 
@@ -152,6 +157,12 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				relativeTo: this._route,
 			});
 		}
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -192,8 +203,18 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._apiServiceProxy
 				.agreementTemplatePATCH(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
 				.pipe(
+					switchMap(() => {
+						return this._apiServiceProxy.preview2(this.currentAgreementId);
+					}),
+					tap((template) => {
+						this.clientTemplateFormGroup.attachments.reset();
+						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
 					tap(() => {
 						this.hideMainSpinner();
+					}),
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					})
 				)
 				.subscribe();
@@ -206,7 +227,11 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					})
 				)
 				.subscribe(({ agreementTemplateId }) => {
-					this.navigateToEditor(agreementTemplateId);
+					if (toSend.receiveAgreementsFromOtherParty) {
+						this.navigateToEdit(agreementTemplateId);
+					} else {
+						this.navigateToEditor(agreementTemplateId);
+					}
 				});
 		}
 	}
@@ -265,7 +290,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			if (id) {
 				this.creationModeControl.setValue(AgreementCreationMode.Duplicated);
 				this.duplicateOptionsChanged$.next(id);
-				this.clientTemplateFormGroup.controls['duplicationSourceAgreementTemplateId'].setValue(id);
+				this.clientTemplateFormGroup.duplicationSourceAgreementTemplateId.setValue(id);
 			}
 		});
 	}
@@ -309,6 +334,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			contractTypes: data.contractTypeIds,
 			language: data.language,
 			note: data.note,
+			receiveAgreementsFromOtherParty: data.receiveAgreementsFromOtherParty,
 			isSignatureRequired: data.isSignatureRequired,
 			parentSelectedAttachmentIds: data.attachmentsFromParent
 				? data.attachmentsFromParent.filter((attachement) => attachement.isSelected)
@@ -426,7 +452,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnParentTemplateChanges(): void {
-		this.clientTemplateFormGroup.controls['parentAgreementTemplateId'].valueChanges
+		this.clientTemplateFormGroup.parentAgreementTemplateId.valueChanges
 			.pipe(
 				takeUntil(
 					race([
@@ -455,7 +481,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnDuplicateTemplateChanges(): void {
-		this.clientTemplateFormGroup.controls['duplicationSourceAgreementTemplateId'].valueChanges
+		this.clientTemplateFormGroup.duplicationSourceAgreementTemplateId.valueChanges
 			.pipe(
 				takeUntil(
 					race([
@@ -499,6 +525,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	private _preselectAgreementTemplate(agreementTemplateId: number) {
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
 			this.currentAgreementTemplate = agreementTemplate;
+			this.creationModeControl.setValue(agreementTemplate.creationMode);
+			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreementTemplate.receiveAgreementsFromOtherParty);
 			if (agreementTemplate.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreementTemplate;
 				this._setDuplicateObs();
@@ -553,12 +581,13 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				contractTypes: agreementTemplate.contractTypeIds,
 				language: agreementTemplate.language,
 				note: agreementTemplate.note,
+				receiveAgreementsFromOtherParty: agreementTemplate.receiveAgreementsFromOtherParty,
 				isSignatureRequired: agreementTemplate.isSignatureRequired,
 				isEnabled: agreementTemplate.isEnabled,
 				selectedInheritedFiles: agreementTemplate.attachments,
 			});
 
-            this._initClients();
+			this._initClients();
 		});
 	}
 
@@ -566,6 +595,22 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this.clientTemplateFormGroup.agreementType.disable({ emitEvent: false });
 		this.clientTemplateFormGroup.recipientTypeId.disable({ emitEvent: false });
 		this.clientTemplateFormGroup.clientId.disable({ emitEvent: false });
+	}
+
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+				}
+			});
 	}
 
 	private _subsribeOnLegEntitiesChanges() {

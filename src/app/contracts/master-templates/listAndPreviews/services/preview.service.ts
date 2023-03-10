@@ -151,9 +151,9 @@ export class PreviewService extends BasePreview {
 
 			agreementTemplateId: row.agreementTemplateId,
 			createdDateUtc: row.createdDateUtc,
-			createdBy: row.createdBy?.name,
+			createdBy: row.createdBy,
 			lastUpdateDateUtc: row.lastUpdateDateUtc,
-			lastUpdatedBy: row.lastUpdatedBy?.name,
+			lastUpdatedBy: row.lastUpdatedBy,
 			duplicationSourceAgreementTemplateId: row.duplicationSourceAgreementTemplateId,
 			duplicationSourceAgreementTemplateName: row.duplicationSourceAgreementTemplateName,
 

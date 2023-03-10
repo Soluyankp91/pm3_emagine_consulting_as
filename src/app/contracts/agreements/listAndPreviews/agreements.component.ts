@@ -4,7 +4,7 @@ import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, startWith, pairwise } from 'rxjs/operators';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
@@ -13,6 +13,8 @@ import {
 	AgreementListItemDtoPaginatedList,
 	AgreementServiceProxy,
 	AgreementType,
+	AgreementDetailsPreviewDto,
+	EnvelopeStatus,
 } from 'src/shared/service-proxies/service-proxies';
 import {
 	AGREEMENT_BOTTOM_ACTIONS,
@@ -108,20 +110,35 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				this._router.navigate([`${$event.row.agreementId}`, 'settings'], { relativeTo: this._route });
 				break;
 			case 'DELETE':
+				this.showMainSpinner();
+				this._agreementServiceProxy.agreementDELETE($event.row.agreementId).subscribe(() => {
+					//back end list not updated right after deletion. It takes some time
+					setTimeout(() => {
+						this._agreementService.reloadTable();
+					}, 1000);
+				});
 				break;
 		}
 	}
 
-	onSelectionAction($event: { selectedRows: AgreementListItemDto[]; action: string }) {
+	onSelectionAction($event: { selectedRows: AgreementDetailsPreviewDto[]; action: string }) {
 		switch ($event.action) {
 			case 'REMINDER':
 				break;
 
 			case 'DOWNLOAD':
-				this._agreementServiceProxy
-					.signedDocuments($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
-					.subscribe((d) => DownloadFile(d as any, 'signed-documents.pdf'));
-				break;
+				// w8 for backend to add field that needs for validation
+				const isValid = $event.selectedRows.find(
+					(row) => row.receiveAgreementsFromOtherParty && row.agreementStatus === EnvelopeStatus.WaitingForOthers
+				);
+				if (isValid) {
+					break;
+					this._agreementServiceProxy
+						.signedDocuments($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
+						.subscribe((d) => DownloadFile(d as any, 'signed-documents.pdf'));
+				} else {
+					break;
+				}
 		}
 	}
 
@@ -171,7 +188,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 	private _mapTableItems(items: AgreementListItemDto[], maps: MappedTableCells): MappedAgreementTableItem[] {
 		return items.map((item: AgreementListItemDto) => {
 			return <MappedAgreementTableItem>{
-				language: GetCountryCodeByLanguage(maps.language[item.languageId as AgreementLanguage]),
+				language: maps.language[item.languageId as AgreementLanguage],
+                countryCode: GetCountryCodeByLanguage(maps.language[item.languageId as AgreementLanguage]),
 				agreementId: item.agreementId,
 				agreementName: item.agreementName,
 				actualRecipientName: item.actualRecipientName,
