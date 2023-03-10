@@ -7,8 +7,23 @@
     </div>
     <form [formGroup]="purchaseOrderForm">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <ng-container *ngIf="!data?.isEdit">
+                <mat-form-field appearance="outline" class="filter-select form-width-140">
+                    <mat-label>PO Source</mat-label>
+                    <mat-select required formControlName="poSource" [disableOptionCentering]="true">
+                        <ng-container *ngFor="let item of poSources; trackBy: trackById">
+                            <mat-option [value]="item.id">
+                                {{ item.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error>
+                        <app-validator [control]="purchaseOrderForm.poSource"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+            </ng-container>
             <div fxLayout="row" fxLayoutAlign="start start" >
-                <mat-form-field appearance="outline" class="form-width-270">
+                <mat-form-field appearance="outline" class="form-width-270 u-mr--12">
                     <mat-label>Number</mat-label>
                     <input autocomplete="off" matInput name="poNumber" formControlName="number" required>
                     <mat-error>
@@ -16,80 +31,84 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" floatLabel="never" fxFlex="50%">
+                <mat-form-field appearance="outline" class="form-width-150">
                     <mat-label>Start date</mat-label>
                     <input autocomplete="off" matInput
-                            [matDatepicker]="startDatePicker"
-                            name="clientExtensionEndDate" [formControl]="startDate"
-                            (focus)="startDatePicker.open()"
+                            [matDatepicker]="receiveDatePicker"
+                            name="clientExtensionEndDate" formControlName="receiveDate"
+                            (focus)="receiveDatePicker.open()"
                             required
-                            appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
+                            appPreventDoubleClick (throttledClick)="receiveDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #startDatePicker></mat-datepicker>
+                    <mat-datepicker #receiveDatePicker></mat-datepicker>
                     <mat-error>
-                        <app-validator [control]="purchaseOrderForm.number"></app-validator>
+                        <app-validator [control]="purchaseOrderForm.receiveDate"></app-validator>
                     </mat-error>
                 </mat-form-field>
             </div>
-            <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(purchaseOrderForm.numberMissingButRequired.value, purchaseOrderForm.numberMissingButRequired)">
+            <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(purchaseOrderForm.numberMissingButRequired.value, purchaseOrderForm.number)">
                 Missing but required
             </mat-checkbox>
+            <mat-divider class="u-w--100 dark-grey-color"></mat-divider>
             <ng-container formGroupName="capForInvoicing">
-                <mat-form-field appearance="outline">
-                    <mat-label>Number</mat-label>
-                    <input autocomplete="off" matInput name="type" formControlName="type" required>
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.capForInvoicing.type"></app-validator>
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>maxAmount</mat-label>
-                    <input autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
-                    </mat-error>
-                </mat-form-field>
+                <h3 class="workflow-gray--header u-mt--20 u-mb--10">Shared Cap for Invoicing</h3>
+                <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !purchaseOrderForm.capForInvoicing.type?.valid}" class="workflow-toggle-buttons" formControlName="type" required>
+                    <ng-container *ngFor="let item of capTypes | keyvalue; trackBy: trackByKey">
+                        <mat-button-toggle [value]="+item.key">
+                            {{ item.value }}
+                        </mat-button-toggle>
+                    </ng-container>
+                </mat-button-toggle-group>
+                <mat-error>
+                    <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type?.touched">
+                        <app-validator [withoutFormField]="true" [control]="purchaseOrderForm.capForInvoicing.type"></app-validator>
+                    </ng-container>
+                </mat-error>
+                <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap">
+                    <div fxLayout="row" fxLayoutAlign="start start" >
+                        <mat-form-field appearance="outline" class="form-width-110 u-mr--12">
+                            <mat-label>Max amount</mat-label>
+                            <input autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
+                            <mat-error>
+                                <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits">
+                            <mat-form-field appearance="outline" class="filter-select form-width-110">
+                                <mat-label>Unit</mat-label>
+                                <mat-select required formControlName="valueUnitTypeId" [disableOptionCentering]="true">
+                                    <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
+                                        <mat-option [value]="item.id">
+                                            {{ item.name }}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                                <mat-error>
+                                    <app-validator [control]="purchaseOrderForm.capForInvoicing.valueUnitTypeId"></app-validator>
+                                </mat-error>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue">
+                            <mat-form-field appearance="outline" class="filter-select form-width-110">
+                                <mat-label>Currency</mat-label>
+                                <mat-select required formControlName="currencyId" [disableOptionCentering]="true">
+                                    <ng-container *ngFor="let item of currencies; trackBy: trackById">
+                                        <mat-option [value]="item.id">
+                                            {{ item.name }}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                                <mat-error>
+                                    <app-validator [control]="purchaseOrderForm.capForInvoicing.currencyId"></app-validator>
+                                </mat-error>
+                            </mat-form-field>
+                        </ng-container>
+                    </div>
+                </ng-container>
             </ng-container>
         </div>
 
     </form>
-    <!-- <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100 u-mt--10">
-        <mat-form-field appearance="outline" floatLabel="never" fxFlex="50%">
-            <mat-label>Start date</mat-label>
-            <input autocomplete="off" matInput
-                    [matDatepicker]="startDatePicker"
-                    name="clientExtensionEndDate" [formControl]="startDate"
-                    (focus)="startDatePicker.open()"
-                    required
-                    appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
-            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-            <mat-datepicker #startDatePicker></mat-datepicker>
-            <mat-error>
-                <app-validator [control]="startDate"></app-validator>
-            </mat-error>
-        </mat-form-field>
-
-        <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
-            <mat-form-field appearance="outline" floatLabel="never">
-                <mat-label>End date</mat-label>
-                <input autocomplete="off" matInput
-                        [matDatepicker]="endDatePicker"
-                        name="clientExtensionEndDate" [formControl]="endDate"
-                        (focus)="endDatePicker.open()"
-                        [min]="startDate.value"
-                        required
-                        appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
-                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                <mat-datepicker #endDatePicker></mat-datepicker>
-                <mat-error>
-                    <app-validator [control]="endDate"></app-validator>
-                </mat-error>
-            </mat-form-field>
-            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
-                No end date
-            </mat-checkbox>
-        </div>
-    </div> -->
 </mat-dialog-content>
 <mat-dialog-actions class="confirmation-dialog--actions">
     <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">

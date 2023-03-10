@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { PurchaseOrderForm } from './add-or-edit-po-dialog.model';
+import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
+import { EPOCaps, POSources, PurchaseOrderForm } from './add-or-edit-po-dialog.model';
 
 @Component({
 	selector: 'app-add-or-edit-po-dialog',
@@ -12,20 +15,27 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	@Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     purchaseOrderForm: PurchaseOrderForm;
+    capTypes: { [key: string]: string; };
+    currencies: EnumEntityTypeDto[];
+    unitTypes: EnumEntityTypeDto[];
+    poSources = POSources;
+    ePOCaps = EPOCaps;
 	constructor(
 		injector: Injector,
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
-			requestId: number;
-			requestConsultantId: number;
+			isEdit: boolean;
 		},
-		private dialogRef: MatDialogRef<AddOrEditPoDialogComponent>
+		private dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
+        private readonly _internalLookupService: InternalLookupService
 	) {
 		super(injector);
         this.purchaseOrderForm = new PurchaseOrderForm();
 	}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+        this._getEnums();
+    }
 
 	reject() {
 		this.onRejected.emit();
@@ -44,4 +54,17 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	private closeInternal(): void {
 		this.dialogRef.close();
 	}
+
+    private _getEnums() {
+        forkJoin({
+            capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
+            currencies: this._internalLookupService.getCurrencies(),
+            unitTypes: this._internalLookupService.getUnitTypes(),
+        })
+        .subscribe(result => {
+            this.capTypes = result.capTypes;
+            this.currencies = result.currencies;
+            this.unitTypes = result.unitTypes;
+        })
+    }
 }

@@ -45,6 +45,7 @@ export class InternalLookupService {
     syncStateStatuses: { [key: string]: string };
     valueUnitTypes: EnumEntityTypeDto[] = [];
     periodUnitTypes: EnumEntityTypeDto[] = [];
+    purchaseOrderCapTypes: { [key: string]: string };
 
     constructor(private _enumService: EnumServiceProxy) {
     }
@@ -782,6 +783,23 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.periodUnitTypes = response;
                         observer.next(this.periodUnitTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+    getPurchaseOrderCapTypes(): Observable<{ [key: string]: string }> {
+        return new Observable<{ [key: string]: string }>((observer) => {
+            if (this.purchaseOrderCapTypes !== undefined && this.purchaseOrderCapTypes !== null) {
+                observer.next(this.purchaseOrderCapTypes);
+                observer.complete();
+            } else {
+                this._enumService.purchaseOrderCapType()
+                    .subscribe(response => {
+                        this.purchaseOrderCapTypes = response;
+                        observer.next(this.purchaseOrderCapTypes);
                         observer.complete();
                     }, error => {
                         observer.error(error);
