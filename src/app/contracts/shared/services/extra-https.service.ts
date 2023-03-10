@@ -4,17 +4,18 @@ import { environment } from 'src/environments/environment';
 import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
 import { SaveAgreementTemplateDto } from 'src/shared/service-proxies/service-proxies';
 import { Observable, of, EMPTY } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { DefaultTemplateComponent } from '../components/popUps/default-template/default-template.component';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable()
 export class ExtraHttpsService {
 	private readonly baseUrl = `${environment.apiUrl}/api`;
 
-	constructor(private _http: HttpClient, private _dialog: MatDialog) {}
+	constructor(private _http: HttpClient, private _dialog: MatDialog, private readonly _spinner: NgxSpinnerService) {}
 
-	AgreementPost(body?: SaveAgreementTemplateDto | undefined): Observable<number> {
+	agreementPost(body?: SaveAgreementTemplateDto | undefined): Observable<number> {
 		let url = this.baseUrl + '/AgreementTemplate';
 		return this._http
 			.request('post', url, {
@@ -23,17 +24,50 @@ export class ExtraHttpsService {
 			})
 			.pipe(
 				catchError((errorResponse: HttpErrorResponse) => {
+					this._spinner.hide();
 					let error = errorResponse.error.error;
 					if (error && error.data) {
 						return this._dialog
 							.open(DefaultTemplateComponent, {
 								data: error.data,
-								width: '500px',
-								height: '240px',
+								width: '800px',
+								height: '490px',
 								backdropClass: 'backdrop-modal--wrapper',
+								panelClass: 'app-default-template',
 							})
 							.afterClosed()
-							.pipe(map(() => EMPTY));
+							.pipe(switchMap(() => EMPTY));
+					}
+					return EMPTY;
+				}),
+				map((response: any) => {
+					return response.agreementTemplateId as number;
+				})
+			);
+	}
+
+    agreementPatch(agreementTemplateId: number,body?: SaveAgreementTemplateDto | undefined): Observable<number> {
+		let url = this.baseUrl + `/AgreementTemplate/${agreementTemplateId}`;
+		return this._http
+			.request('patch', url, {
+				body: body,
+				context: manualErrorHandlerEnabledContextCreator(true),
+			})
+			.pipe(
+				catchError((errorResponse: HttpErrorResponse) => {
+					this._spinner.hide();
+					let error = errorResponse.error.error;
+					if (error && error.data) {
+						return this._dialog
+							.open(DefaultTemplateComponent, {
+								data: error.data,
+								width: '800px',
+								height: '490px',
+								backdropClass: 'backdrop-modal--wrapper',
+								panelClass: 'app-default-template',
+							})
+							.afterClosed()
+							.pipe(switchMap(() => EMPTY));
 					}
 					return EMPTY;
 				}),

@@ -208,11 +208,6 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		});
 	}
 
-    test(val: any) {
-        console.log(val);
-        return val;
-    }
-
 	private _subscribeOnDataLoading() {
 		this._clientTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {

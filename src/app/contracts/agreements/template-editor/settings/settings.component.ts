@@ -127,6 +127,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
 		this._subscribeOnNoExpirationDates();
+		this._subscribeOnAgreementsFromOtherParty();
 
 		const paramId = this._route.snapshot.params.id;
 		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
@@ -141,7 +142,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this._preselectAgreement(paramId);
 		} else {
 			this.nextButtonLabel = 'Next';
-			this._subscribeOnAgreementsFromOtherParty();
 			this._setDuplicateObs();
 			this._subscribeOnCreationMode();
 			this._setDirtyStatus();
@@ -501,11 +501,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnSignatureRequire() {
-		this.agreementFormGroup.isSignatureRequired.valueChanges.subscribe((isSignatureRequired) => {
-			if (!isSignatureRequired) {
-				this.agreementFormGroup.signers.reset([]);
-			}
-		});
+		this.agreementFormGroup.isSignatureRequired.valueChanges
+			.pipe(takeUntil(race([this.agreementFormGroup.receiveAgreementsFromOtherParty, this._unSubscribe$])))
+			.subscribe((isSignatureRequired) => {
+				if (!isSignatureRequired) {
+					this.agreementFormGroup.signers.reset([]);
+				}
+			});
 	}
 
 	private _subscribeOnParentChanges() {
@@ -781,12 +783,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe((receiveAgreementsFromOtherParty) => {
 				if (receiveAgreementsFromOtherParty && !this.editMode) {
 					this.nextButtonLabel = 'Complete';
+					this.agreementFormGroup.removeControl('isSignatureRequired');
+					this.agreementFormGroup.signers.reset([]);
 				}
 				if (!receiveAgreementsFromOtherParty && this.editMode) {
 					this.nextButtonLabel = 'Save';
+					this.agreementFormGroup.addControl('isSignatureRequired', new FormControl(false));
+				}
+				if (receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.agreementFormGroup.removeControl('isSignatureRequired');
+					this.agreementFormGroup.signers.reset([]);
 				}
 				if (!receiveAgreementsFromOtherParty && !this.editMode) {
 					this.nextButtonLabel = 'Next';
+					this.agreementFormGroup.addControl('isSignatureRequired', new FormControl(false));
 				}
 			});
 	}

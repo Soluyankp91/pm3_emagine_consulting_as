@@ -279,3 +279,18 @@ app-contract {
 		color: #b6b4b2;
 	}
 }
+
+//overlay  app-default-template
+.cdk-overlay-container .app-default-template {
+	mat-header-cell.mat-header-cell:first-of-type,
+	mat-header-cell.mat-header-cell:last-of-type,
+	mat-cell.mat-cell:first-of-type,
+	mat-cell.mat-cell:last-of-type,
+	.mat-dialog-actions.actions {
+		padding: 0 !important;
+	}
+    mat-row.mat-row:last-of-type {
+        border-bottom: unset !important;
+    }
+	@include scrollbar;
+}
