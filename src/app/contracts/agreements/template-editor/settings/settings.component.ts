@@ -100,8 +100,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	currentAgreementTemplate: AgreementDetailsDto;
 	clientPeriodId: string;
 	consultantPeriodId: string;
-    isClientContract: boolean;
-    isConsultantContract: boolean;
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
