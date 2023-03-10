@@ -427,6 +427,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
         this.initContactSubs();
+        this.salesClientDataForm.frameAgreementId.setValue('');
 		this.onDirectClientSelected.emit(event);
 	}
 

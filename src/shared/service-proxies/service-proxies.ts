@@ -1052,6 +1052,56 @@ export class AdminServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    updateClientsVatNumber(fillEmptyOnly: boolean): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/update-clients-vat-number/{fillEmptyOnly}";
+        if (fillEmptyOnly === undefined || fillEmptyOnly === null)
+            throw new Error("The parameter 'fillEmptyOnly' must be defined.");
+        url_ = url_.replace("{fillEmptyOnly}", encodeURIComponent("" + fillEmptyOnly));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateClientsVatNumber(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateClientsVatNumber(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateClientsVatNumber(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -2360,6 +2410,58 @@ export class AgreementServiceProxy {
     }
 
     /**
+     * @param agreementIds (optional) 
+     * @return Success
+     */
+    files(agreementIds?: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/files?";
+        if (agreementIds === null)
+            throw new Error("The parameter 'agreementIds' cannot be null.");
+        else if (agreementIds !== undefined)
+            agreementIds && agreementIds.forEach(item => { url_ += "agreementIds=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFiles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFiles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFiles(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     logs(agreementId: number, newestFirst: boolean): Observable<AgreementLogQueryResultDto> {
@@ -2735,6 +2837,249 @@ export class AgreementAttachmentServiceProxy {
     }
 
     protected processAgreementAttachment(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
+export class AgreementCommentServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    agreementCommentAll(agreementId: number): Observable<AgreementCommentDto[]> {
+        let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementCommentAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementCommentAll(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AgreementCommentDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AgreementCommentDto[]>;
+        }));
+    }
+
+    protected processAgreementCommentAll(response: HttpResponseBase): Observable<AgreementCommentDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AgreementCommentDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AgreementCommentDto[]>(null as any);
+    }
+
+    /**
+     * @param parentCommentId (optional) 
+     * @param body (optional) 
+     * @return Success
+     */
+    agreementCommentPUT(agreementId: number, parentCommentId?: number | undefined, body?: StringWrappedValueDto | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}?";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        if (parentCommentId === null)
+            throw new Error("The parameter 'parentCommentId' cannot be null.");
+        else if (parentCommentId !== undefined)
+            url_ += "parentCommentId=" + encodeURIComponent("" + parentCommentId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementCommentPUT(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementCommentPUT(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAgreementCommentPUT(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<number>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    agreementCommentPATCH(agreementCommentId: number, body?: StringWrappedValueDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementComment/{agreementCommentId}";
+        if (agreementCommentId === undefined || agreementCommentId === null)
+            throw new Error("The parameter 'agreementCommentId' must be defined.");
+        url_ = url_.replace("{agreementCommentId}", encodeURIComponent("" + agreementCommentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementCommentPATCH(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementCommentPATCH(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementCommentPATCH(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    agreementCommentDELETE(agreementCommentId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementComment/{agreementCommentId}";
+        if (agreementCommentId === undefined || agreementCommentId === null)
+            throw new Error("The parameter 'agreementCommentId' must be defined.");
+        url_ = url_.replace("{agreementCommentId}", encodeURIComponent("" + agreementCommentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementCommentDELETE(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementCommentDELETE(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementCommentDELETE(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4047,14 +4392,11 @@ export class AgreementTemplateCommentServiceProxy {
     /**
      * @return Success
      */
-    agreementTemplateCommentAll(agreementTemplateId: number, documentVersion: number): Observable<AgreementTemplateCommentDto[]> {
-        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}/{documentVersion}";
+    agreementTemplateCommentAll(agreementTemplateId: number): Observable<AgreementTemplateCommentDto[]> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        if (documentVersion === undefined || documentVersion === null)
-            throw new Error("The parameter 'documentVersion' must be defined.");
-        url_ = url_.replace("{documentVersion}", encodeURIComponent("" + documentVersion));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4113,14 +4455,11 @@ export class AgreementTemplateCommentServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    agreementTemplateCommentPUT(agreementTemplateId: number, documentVersion: number, parentCommentId?: number | undefined, body?: StringWrappedValueDto | undefined): Observable<number> {
-        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}/{documentVersion}?";
+    agreementTemplateCommentPUT(agreementTemplateId: number, parentCommentId?: number | undefined, body?: StringWrappedValueDto | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}?";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        if (documentVersion === undefined || documentVersion === null)
-            throw new Error("The parameter 'documentVersion' must be defined.");
-        url_ = url_.replace("{documentVersion}", encodeURIComponent("" + documentVersion));
         if (parentCommentId === null)
             throw new Error("The parameter 'parentCommentId' cannot be null.");
         else if (parentCommentId !== undefined)
@@ -4177,13 +4516,68 @@ export class AgreementTemplateCommentServiceProxy {
     }
 
     /**
+     * @param body (optional) 
      * @return Success
      */
-    agreementTemplateCommentDELETE(agreementTemplateDocumentCommentId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateDocumentCommentId}";
-        if (agreementTemplateDocumentCommentId === undefined || agreementTemplateDocumentCommentId === null)
-            throw new Error("The parameter 'agreementTemplateDocumentCommentId' must be defined.");
-        url_ = url_.replace("{agreementTemplateDocumentCommentId}", encodeURIComponent("" + agreementTemplateDocumentCommentId));
+    agreementTemplateCommentPATCH(agreementTemplateCommentId: number, body?: StringWrappedValueDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateCommentId}";
+        if (agreementTemplateCommentId === undefined || agreementTemplateCommentId === null)
+            throw new Error("The parameter 'agreementTemplateCommentId' must be defined.");
+        url_ = url_.replace("{agreementTemplateCommentId}", encodeURIComponent("" + agreementTemplateCommentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplateCommentPATCH(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplateCommentPATCH(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementTemplateCommentPATCH(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    agreementTemplateCommentDELETE(agreementTemplateCommentId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateCommentId}";
+        if (agreementTemplateCommentId === undefined || agreementTemplateCommentId === null)
+            throw new Error("The parameter 'agreementTemplateCommentId' must be defined.");
+        url_ = url_.replace("{agreementTemplateCommentId}", encodeURIComponent("" + agreementTemplateCommentId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -17543,6 +17937,58 @@ export interface IAgreementAttachmentDto {
     name?: string | undefined;
 }
 
+export class AgreementCommentDto implements IAgreementCommentDto {
+    id?: number;
+    parentId?: number | undefined;
+    text?: string | undefined;
+    createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
+
+    constructor(data?: IAgreementCommentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.parentId = _data["parentId"];
+            this.text = _data["text"];
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AgreementCommentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementCommentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["parentId"] = this.parentId;
+        data["text"] = this.text;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IAgreementCommentDto {
+    id?: number;
+    parentId?: number | undefined;
+    text?: string | undefined;
+    createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
+}
+
 export enum AgreementCreationMode {
     FromScratch = 1,
     InheritedFromParent = 2,
@@ -18338,6 +18784,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
     docuSignUrl?: string | undefined;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
+    receiveAgreementsFromOtherParty?: boolean;
 
     constructor(data?: IAgreementListItemDto) {
         if (data) {
@@ -18385,6 +18832,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
             this.docuSignUrl = _data["docuSignUrl"];
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
             this.envelopeProcessingPath = _data["envelopeProcessingPath"];
+            this.receiveAgreementsFromOtherParty = _data["receiveAgreementsFromOtherParty"];
         }
     }
 
@@ -18432,6 +18880,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
         data["docuSignUrl"] = this.docuSignUrl;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
         data["envelopeProcessingPath"] = this.envelopeProcessingPath;
+        data["receiveAgreementsFromOtherParty"] = this.receiveAgreementsFromOtherParty;
         return data;
     }
 }
@@ -18460,6 +18909,7 @@ export interface IAgreementListItemDto {
     docuSignUrl?: string | undefined;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
+    receiveAgreementsFromOtherParty?: boolean;
 }
 
 export class AgreementListItemDtoPaginatedList implements IAgreementListItemDtoPaginatedList {
@@ -19139,6 +19589,7 @@ export class AgreementTemplateCommentDto implements IAgreementTemplateCommentDto
     parentId?: number | undefined;
     text?: string | undefined;
     createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
 
     constructor(data?: IAgreementTemplateCommentDto) {
         if (data) {
@@ -19155,6 +19606,7 @@ export class AgreementTemplateCommentDto implements IAgreementTemplateCommentDto
             this.parentId = _data["parentId"];
             this.text = _data["text"];
             this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
         }
     }
 
@@ -19171,6 +19623,7 @@ export class AgreementTemplateCommentDto implements IAgreementTemplateCommentDto
         data["parentId"] = this.parentId;
         data["text"] = this.text;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -19180,6 +19633,7 @@ export interface IAgreementTemplateCommentDto {
     parentId?: number | undefined;
     text?: string | undefined;
     createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
 }
 
 export class AgreementTemplateDetailsAttachmentDto implements IAgreementTemplateDetailsAttachmentDto {
@@ -22061,7 +22515,7 @@ export interface IClientRequestTrackItemDtoPaginatedList {
 export class ClientResultDto implements IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
-    registrationNumber?: string | undefined;
+    vatNumber?: string | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
@@ -22083,7 +22537,7 @@ export class ClientResultDto implements IClientResultDto {
         if (_data) {
             this.clientId = _data["clientId"];
             this.clientName = _data["clientName"];
-            this.registrationNumber = _data["registrationNumber"];
+            this.vatNumber = _data["vatNumber"];
             this.address = _data["address"];
             this.address2 = _data["address2"];
             this.postCode = _data["postCode"];
@@ -22105,7 +22559,7 @@ export class ClientResultDto implements IClientResultDto {
         data = typeof data === 'object' ? data : {};
         data["clientId"] = this.clientId;
         data["clientName"] = this.clientName;
-        data["registrationNumber"] = this.registrationNumber;
+        data["vatNumber"] = this.vatNumber;
         data["address"] = this.address;
         data["address2"] = this.address2;
         data["postCode"] = this.postCode;
@@ -22120,7 +22574,7 @@ export class ClientResultDto implements IClientResultDto {
 export interface IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
-    registrationNumber?: string | undefined;
+    vatNumber?: string | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
@@ -23774,10 +24228,13 @@ export class ConsultantResultDto implements IConsultantResultDto {
     name?: string | undefined;
     id?: number;
     legacyId?: number | undefined;
-    companyName?: string | undefined;
     tenantId?: number;
     externalId?: string;
     city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
+    companyName?: string | undefined;
+    vatNumber?: string | undefined;
     countryId?: number | undefined;
     supplierId?: number | undefined;
 
@@ -23795,10 +24252,13 @@ export class ConsultantResultDto implements IConsultantResultDto {
             this.name = _data["name"];
             this.id = _data["id"];
             this.legacyId = _data["legacyId"];
-            this.companyName = _data["companyName"];
             this.tenantId = _data["tenantId"];
             this.externalId = _data["externalId"];
             this.city = _data["city"];
+            this.zipCode = _data["zipCode"];
+            this.address = _data["address"];
+            this.companyName = _data["companyName"];
+            this.vatNumber = _data["vatNumber"];
             this.countryId = _data["countryId"];
             this.supplierId = _data["supplierId"];
         }
@@ -23816,10 +24276,13 @@ export class ConsultantResultDto implements IConsultantResultDto {
         data["name"] = this.name;
         data["id"] = this.id;
         data["legacyId"] = this.legacyId;
-        data["companyName"] = this.companyName;
         data["tenantId"] = this.tenantId;
         data["externalId"] = this.externalId;
         data["city"] = this.city;
+        data["zipCode"] = this.zipCode;
+        data["address"] = this.address;
+        data["companyName"] = this.companyName;
+        data["vatNumber"] = this.vatNumber;
         data["countryId"] = this.countryId;
         data["supplierId"] = this.supplierId;
         return data;
@@ -23830,10 +24293,13 @@ export interface IConsultantResultDto {
     name?: string | undefined;
     id?: number;
     legacyId?: number | undefined;
-    companyName?: string | undefined;
     tenantId?: number;
     externalId?: string;
     city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
+    companyName?: string | undefined;
+    vatNumber?: string | undefined;
     countryId?: number | undefined;
     supplierId?: number | undefined;
 }
@@ -26464,6 +26930,11 @@ export class LegalEntityDto implements ILegalEntityDto {
     id?: number;
     name?: string | undefined;
     tenantName?: string | undefined;
+    address?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    vatNumber?: string | undefined;
 
     constructor(data?: ILegalEntityDto) {
         if (data) {
@@ -26479,6 +26950,11 @@ export class LegalEntityDto implements ILegalEntityDto {
             this.id = _data["id"];
             this.name = _data["name"];
             this.tenantName = _data["tenantName"];
+            this.address = _data["address"];
+            this.postCode = _data["postCode"];
+            this.city = _data["city"];
+            this.country = _data["country"];
+            this.vatNumber = _data["vatNumber"];
         }
     }
 
@@ -26494,6 +26970,11 @@ export class LegalEntityDto implements ILegalEntityDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["tenantName"] = this.tenantName;
+        data["address"] = this.address;
+        data["postCode"] = this.postCode;
+        data["city"] = this.city;
+        data["country"] = this.country;
+        data["vatNumber"] = this.vatNumber;
         return data;
     }
 }
@@ -26502,6 +26983,11 @@ export interface ILegalEntityDto {
     id?: number;
     name?: string | undefined;
     tenantName?: string | undefined;
+    address?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    vatNumber?: string | undefined;
 }
 
 export enum LogOperationType {
@@ -29566,6 +30052,11 @@ export class SupplierResultDto implements ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
     externalId?: string;
+    vatNumber?: string | undefined;
+    country?: string | undefined;
+    city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
 
     constructor(data?: ISupplierResultDto) {
         if (data) {
@@ -29581,6 +30072,11 @@ export class SupplierResultDto implements ISupplierResultDto {
             this.supplierId = _data["supplierId"];
             this.supplierName = _data["supplierName"];
             this.externalId = _data["externalId"];
+            this.vatNumber = _data["vatNumber"];
+            this.country = _data["country"];
+            this.city = _data["city"];
+            this.zipCode = _data["zipCode"];
+            this.address = _data["address"];
         }
     }
 
@@ -29596,6 +30092,11 @@ export class SupplierResultDto implements ISupplierResultDto {
         data["supplierId"] = this.supplierId;
         data["supplierName"] = this.supplierName;
         data["externalId"] = this.externalId;
+        data["vatNumber"] = this.vatNumber;
+        data["country"] = this.country;
+        data["city"] = this.city;
+        data["zipCode"] = this.zipCode;
+        data["address"] = this.address;
         return data;
     }
 }
@@ -29604,6 +30105,11 @@ export interface ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
     externalId?: string;
+    vatNumber?: string | undefined;
+    country?: string | undefined;
+    city?: string | undefined;
+    zipCode?: string | undefined;
+    address?: string | undefined;
 }
 
 export class SyncClientFromCrmResultDto implements ISyncClientFromCrmResultDto {

@@ -181,7 +181,20 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 
 	public editAgreement(agreementId: number) {
 		const routerUrl = this._router.serializeUrl(
-			this._router.createUrlTree([`/app/contracts/agreements/${agreementId}/settings`])
+			this._router.createUrlTree(
+				[`/app/contracts/agreements/${agreementId}/settings`],
+				this.isClientContracts
+					? {
+							queryParams: {
+								clientPeriodId: this.periodId,
+							},
+					  }
+					: {
+							queryParams: {
+								consultantPeriodId: this.periodId,
+							},
+					  }
+			)
 		);
         this._closeMenu();
 		window.open(routerUrl, '_blank');
