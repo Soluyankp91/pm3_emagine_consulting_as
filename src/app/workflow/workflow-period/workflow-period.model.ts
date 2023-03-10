@@ -305,7 +305,7 @@ export const FinanceSections: SubItemDto[] = [
         anchor: 'financeClientDebitor'
     },
     {
-        name: 'Docuemnts',
+        name: 'Documents',
         anchor: 'financeDocuments'
     },
     {
