@@ -214,7 +214,7 @@ export const ContractMainDataSections: SubItemDto[] = [
         anchor: 'contractAdditionalData'
     },
     {
-        name: 'Document',
+        name: 'Documents',
         anchor: 'contractDocuments'
     }
 ];
