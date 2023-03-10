@@ -1,7 +1,7 @@
 import { RibbonButtonItem } from 'devexpress-richedit';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { Moment } from 'moment';
-import { AgreementTemplateEditReason } from 'src/shared/service-proxies/service-proxies';
+import { AgreementCommentDto, AgreementTemplateEditReason } from 'src/shared/service-proxies/service-proxies';
 
 export enum ICustomCommand {
 	// Editor
@@ -76,7 +76,7 @@ export interface IDocumentItem {
 	linkStateAccepted?: boolean | undefined;
 	currentVersion?: number | undefined;
 	languageId?: any;
-	createdDateUtc?: Date| Moment | string;
+	createdDateUtc?: Date | Moment | string;
 	isEnabled?: boolean;
 	tenantIds?: number[] | undefined;
 }
@@ -119,19 +119,6 @@ export interface ICompareChanges {
 
 export type ICompareButtonMap = Record<ICompareButton['type'], ICompareButton>;
 
-export interface IComment {
-	id: any;
-	text: string;
-	parentId: number | null;
-	date_created: string;
-	createdBy: {
-		id: number;
-		externalId: string;
-		name: string;
-	};
-}
-
-
 export enum SidebarViewMode {
 	Create,
 	View,
@@ -139,7 +126,7 @@ export enum SidebarViewMode {
 }
 
 export interface IHighlightState {
-	comments: IComment[];
+	comments: AgreementCommentDto[];
 	enabled: boolean;
 	viewMode: SidebarViewMode;
 	commentIDs: number[];

@@ -35,6 +35,7 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 	selected: string | null = null;
 	dataSource: Array<IMergeFieldItem> = [];
 	visibility: boolean = false;
+	searchValue: string = '';
 
 	@Input() set fields(fields: IMergeField) {
 		this.dataSource = this._mapMergeField(fields);
@@ -69,6 +70,7 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 
 	afterClosed() {
 		this.selected = null;
+		this.searchValue = '';
 		this._treeView.instance.collapseAll();
 	}
 

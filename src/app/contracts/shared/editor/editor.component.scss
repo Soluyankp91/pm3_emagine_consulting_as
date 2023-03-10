@@ -1,14 +1,34 @@
 .main {
+
 	&::before {
 		content: '';
 		transition: 0.24s all ease-in;
 		position: absolute;
 		width: 100%;
-		height: 100%;
+		height: 100vh;
+		top: 0;
 		background-color: white;
 		z-index: 1101;
 		opacity: 0;
 		visibility: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&::after {
+		content: "";
+		visibility: hidden;
+		width: 50px;
+		height: 50px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		border-radius: 50%;
+		border: 5px solid transparent;
+		border-top-color: #17a297;
+		animation: spin 1s linear infinite;
+		z-index: 1111;
 	}
 
 	&.page-loading {
@@ -16,6 +36,20 @@
 			visibility: visible;
 			opacity: .8;
 		}
+
+		&::after {
+			visibility: visible;
+			opacity: .4;
+		}
+	}
+}
+
+@keyframes spin {
+	0% {
+	  transform: rotate(0deg);
+	}
+	100% {
+	  transform: rotate(360deg);
 	}
 }
 

@@ -5,8 +5,9 @@ import { RibbonItemType, RibbonTabType, RichEdit } from 'devexpress-richedit';
 import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 
-import { IComment, ICustomCommand, IHighlightState, InitialState, SidebarViewMode, TEXT_PRE_CONTENT, TEXT_SEPARATOR } from '../entities';
+import { ICustomCommand, IHighlightState, InitialState, SidebarViewMode, TEXT_PRE_CONTENT, TEXT_SEPARATOR } from '../entities';
 import { distinctUntilChanged, pluck, take } from 'rxjs/operators';
+import { AgreementCommentDto } from 'src/shared/service-proxies/service-proxies';
 @Injectable()
 export class CommentService {
 	private _editor: RichEdit;
@@ -60,7 +61,7 @@ export class CommentService {
 		this.setState(() => ({ viewMode }));
 	}
 
-	cleanUpDocument(comments: Array<IComment>): void {
+	cleanUpDocument(comments: Array<AgreementCommentDto>): void {
 		this.setState(() => ({ comments }));
 		let actualCommentIds = comments.map((cm) => cm.id);
 		let highlightFields = this._getDocumentHighlightFields();

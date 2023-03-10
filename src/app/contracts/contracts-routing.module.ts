@@ -16,6 +16,10 @@ import { AgreementAbstractService } from './shared/editor/data-access/agreement-
 import { MergeFieldsAbstractService } from './shared/editor/data-access/merge-fields-abstract';
 import { AgreementMergeFieldsService } from './shared/editor/data-access/agreement-merge-fields';
 import { UnsavedChangesGuard } from './shared/editor/services/unsaved-changes.guard';
+import { CommentsAbstractService } from './shared/editor/data-access/comments-abstract.service';
+import { AgreementCommentsService } from './shared/editor/data-access/agreement-comments.service';
+import { AgreementCommentServiceProxy, AgreementTemplateCommentServiceProxy } from '../../shared/service-proxies/service-proxies';
+import { AgreementTemplateCommentsService } from './shared/editor/data-access/agreement-template-comments.service';
 
 const routes: Routes = [
 	{
@@ -48,7 +52,7 @@ const routes: Routes = [
 								path: '',
 								pathMatch: 'full',
 								component: SettingsComponent,
-							}
+							},
 						],
 					},
 					{
@@ -66,19 +70,24 @@ const routes: Routes = [
 								path: ':id/editor',
 								component: EditorComponent,
 								data: {
-									isAgreement: true
+									isAgreement: true,
 								},
 								canDeactivate: [UnsavedChangesGuard],
 								providers: [
+									AgreementCommentServiceProxy,
 									{
 										provide: AgreementAbstractService,
-										useClass: AgreementService
+										useClass: AgreementService,
 									},
 									{
 										provide: MergeFieldsAbstractService,
-										useClass: AgreementMergeFieldsService
-									}
-								]
+										useClass: AgreementMergeFieldsService,
+									},
+									{
+										provide: CommentsAbstractService,
+										useClass: AgreementCommentsService,
+									},
+								],
 							},
 						],
 					},
@@ -118,15 +127,20 @@ const routes: Routes = [
 								component: EditorComponent,
 								canDeactivate: [UnsavedChangesGuard],
 								providers: [
+									AgreementTemplateCommentServiceProxy,
 									{
 										provide: AgreementAbstractService,
-										useClass: AgreementTemplateService
+										useClass: AgreementTemplateService,
 									},
 									{
 										provide: MergeFieldsAbstractService,
-										useClass: MergeFieldsService
-									}
-								]
+										useClass: MergeFieldsService,
+									},
+									{
+										provide: CommentsAbstractService,
+										useClass: AgreementTemplateCommentsService,
+									},
+								],
 							},
 						],
 					},
@@ -166,15 +180,20 @@ const routes: Routes = [
 								component: EditorComponent,
 								canDeactivate: [UnsavedChangesGuard],
 								providers: [
+									AgreementTemplateCommentServiceProxy,
 									{
 										provide: AgreementAbstractService,
-										useClass: AgreementTemplateService
+										useClass: AgreementTemplateService,
 									},
 									{
 										provide: MergeFieldsAbstractService,
-										useClass: MergeFieldsService
-									}
-								]
+										useClass: MergeFieldsService,
+									},
+									{
+										provide: CommentsAbstractService,
+										useClass: AgreementTemplateCommentsService,
+									},
+								],
 							},
 						],
 					},

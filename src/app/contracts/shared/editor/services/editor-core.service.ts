@@ -20,8 +20,9 @@ import { CompareService } from './compare.service';
 import { CommentService } from './comment.service';
 import { RICH_EDITOR_OPTIONS } from '../providers';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
-import { CUSTOM_CONTEXT_MENU_ITEMS, IComment, ICustomCommand, IMergeField } from '../entities';
+import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
+import { AgreementCommentDto } from '../../../../../shared/service-proxies/service-proxies';
 
 @Injectable()
 export class EditorCoreService {
@@ -39,7 +40,7 @@ export class EditorCoreService {
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
 		private _compareService: CompareService,
-		private _commentService: CommentService,
+		private _commentService: CommentService
 	) {}
 
 	set mergeFields(fields: IMergeField) {
@@ -102,7 +103,7 @@ export class EditorCoreService {
 		this.editor.mailMergeOptions.setDataSource([fields]);
 	}
 
-	insertComments(comments: Array<IComment>) {
+	insertComments(comments: Array<AgreementCommentDto>) {
 		this._commentService.cleanUpDocument(comments);
 	}
 
@@ -127,7 +128,7 @@ export class EditorCoreService {
 		this.editor.hasUnsavedChanges = false;
 		this.hasUnsavedChanges$.next(false);
 	}
-	
+
 	getUnsavedChanges() {
 		return this.editor.hasUnsavedChanges;
 	}
@@ -158,9 +159,9 @@ export class EditorCoreService {
 		this.editor.updateRibbon((ribbon) => {
 			const merge = ribbon.getTab(RibbonTabType.MailMerge);
 			merge.title = 'Merge Fields';
-			
+
 			ribbon.removeTab(RibbonTabType.MailMerge);
-			ribbon.insertTab(merge, 6)
+			ribbon.insertTab(merge, 6);
 		});
 	}
 
@@ -169,7 +170,7 @@ export class EditorCoreService {
 			this.afterViewInit$.next();
 			this.afterViewInit$.complete();
 		});
-		
+
 		this.editor.events.documentChanged.addHandler(() => {
 			if (!this._compareService.isCompareMode) {
 				this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
