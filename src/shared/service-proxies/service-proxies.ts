@@ -13229,6 +13229,74 @@ export class LookupServiceProxy {
     }
 
     /**
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
+     * @return Success
+     */
+    signerContacts(filter?: string | undefined, maxRecords?: number | undefined): Observable<ContactSignerResultDto[]> {
+        let url_ = this.baseUrl + "/api/Lookup/SignerContacts?";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
+        if (maxRecords === null)
+            throw new Error("The parameter 'maxRecords' cannot be null.");
+        else if (maxRecords !== undefined)
+            url_ += "maxRecords=" + encodeURIComponent("" + maxRecords) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSignerContacts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSignerContacts(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ContactSignerResultDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ContactSignerResultDto[]>;
+        }));
+    }
+
+    protected processSignerContacts(response: HttpResponseBase): Observable<ContactSignerResultDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ContactSignerResultDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ContactSignerResultDto[]>(null as any);
+    }
+
+    /**
      * @return Success
      */
     tree(): Observable<RoleTreeDto> {
@@ -25062,6 +25130,78 @@ export interface IContactResultDto {
     mobilePhone?: string | undefined;
     phone?: string | undefined;
     email?: string | undefined;
+}
+
+export class ContactSignerResultDto implements IContactSignerResultDto {
+    id?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    jobTitle?: string | undefined;
+    mobilePhone?: string | undefined;
+    phone?: string | undefined;
+    email?: string | undefined;
+    clientId?: number | undefined;
+    clientName?: string | undefined;
+    clientVatNumber?: string | undefined;
+
+    constructor(data?: IContactSignerResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.jobTitle = _data["jobTitle"];
+            this.mobilePhone = _data["mobilePhone"];
+            this.phone = _data["phone"];
+            this.email = _data["email"];
+            this.clientId = _data["clientId"];
+            this.clientName = _data["clientName"];
+            this.clientVatNumber = _data["clientVatNumber"];
+        }
+    }
+
+    static fromJS(data: any): ContactSignerResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContactSignerResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["jobTitle"] = this.jobTitle;
+        data["mobilePhone"] = this.mobilePhone;
+        data["phone"] = this.phone;
+        data["email"] = this.email;
+        data["clientId"] = this.clientId;
+        data["clientName"] = this.clientName;
+        data["clientVatNumber"] = this.clientVatNumber;
+        return data;
+    }
+}
+
+export interface IContactSignerResultDto {
+    id?: number;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    jobTitle?: string | undefined;
+    mobilePhone?: string | undefined;
+    phone?: string | undefined;
+    email?: string | undefined;
+    clientId?: number | undefined;
+    clientName?: string | undefined;
+    clientVatNumber?: string | undefined;
 }
 
 export class ContractDocumentInfoDto implements IContractDocumentInfoDto {
