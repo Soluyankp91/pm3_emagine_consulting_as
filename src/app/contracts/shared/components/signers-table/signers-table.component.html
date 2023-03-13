@@ -32,6 +32,23 @@
 								[labelKey]="options[0].labelKey"
 								[outputProperty]="options[0].outputProperty"
 								(inputEmitter)="signerOptionsArr$[i].optionsChanged$.next($event)">
+                                <ng-container *ngIf="options[0].isClient">
+                                    <ng-template let-cell="option" #optionTemplate>
+                                            <div>
+                                                <div class="autocomplete-first-row">
+                                                    {{ cell.firstName }}  {{ cell.lastname }}
+                                                </div>
+                                                <div class="autocomplete-second-row">
+                                                    {{ cell.id }} ·
+                                                    {{ cell.clientName }} 
+                                                    <ng-container *ngIf="cell.clientVatNumber">
+                                                        ·
+                                                    {{ cell.clientVatNumber }}
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                </ng-container>
 							</emg-dropdown-autocomplete-single-select>
 						</ng-container>
 					</ng-container>

@@ -3,7 +3,7 @@ import { IDropdownItem } from 'src/app/contracts/shared/components/emagine-menu-
 import { AgreementSimpleListItemDto, SimpleAgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
 
 export type SignerOptions = {
-	options$: Observable<[{ label: string; labelKey: string; outputProperty: string }, IDropdownItem[]]> | null;
+	options$: Observable<[{ label: string; labelKey: string; outputProperty: string, isClient?: boolean}, IDropdownItem[]]> | null;
 	optionsChanged$: Subject<string>;
 };
 export type ParentTemplateDto = {

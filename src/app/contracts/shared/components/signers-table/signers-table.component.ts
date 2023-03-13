@@ -115,7 +115,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'InternalEmagine', labelKey: 'name', outputProperty: 'id' }),
+							of({ label: 'InternalEmagine', labelKey: 'name', outputProperty: 'id'}),
 							this._lookupService.employees(search, true),
 						]);
 					})
@@ -126,8 +126,8 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Clients', labelKey: 'clientName', outputProperty: 'clientId' }),
-							this._lookupService.clientsAll(search, 20),
+							of({ label: 'Clients', labelKey: 'clientName', outputProperty: 'clientId', isClient: true}),
+							this._lookupService.signerContacts(search, 20),
 						]);
 					})
 				);
