@@ -353,7 +353,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							versions: this.versions,
 						},
 						height: 'auto',
-						width: '500px',
+						width: '540px',
 						maxWidth: '100%',
 						disableClose: true,
 						hasBackdrop: true,

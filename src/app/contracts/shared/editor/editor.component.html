@@ -14,10 +14,9 @@
 		</div>
 		
 		<div richEditor class="editor" (saved)="saveAsComplete()"></div>
-		<div class="comment-sidebar">
+		<div *ngIf="commentSidebarEnabled$ | async" class="comment-sidebar">
 			<app-comment-sidebar
 				@inOutPaneAnimation
-				*ngIf="commentSidebarEnabled$ | async"
 				[entities]="comments$ | async"
 				(created)="createComment($event)"
 				(deleted)="deleteComment($event)"
@@ -54,9 +53,11 @@
 						Save as a new version
 					</button>
 
-					<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">
-						Send
-					</button>
+					<ng-container *ngIf="versions.length < 2 && selectedVersion?.isCurrent">
+						<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">
+							Send
+						</button>
+					</ng-container>
 				</ng-container>
 		
 				<ng-container *ngIf="!(isAgreement$ | async)">

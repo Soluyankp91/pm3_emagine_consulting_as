@@ -67,10 +67,14 @@ export class SaveAsPopupComponent implements OnInit {
 			this.form.removeControl('markActiveAgreementsAsOutdated');
 		}
 
-		// if (this.data.versions.length === 1) {
-		// 	this.config.warning = '';
-		// 	this.form.removeControl('versionDescription');
-		// }
+		if (this.data.versions.length === 1) {
+			// this.config.title = 'Save as a new template';
+			// this.config.subtitle = 'You are promoting template draft to a current template version.';
+			// this.config.warning = '';
+			// this.form.removeControl('versionDescription');
+			// this.form.removeControl('propagateChangesToDerivedTemplates');
+			// this.form.removeControl('markActiveAgreementsAsOutdated');
+		}
 	}
 
 	submit() {

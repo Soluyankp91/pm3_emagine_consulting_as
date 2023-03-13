@@ -82,7 +82,7 @@ export class AgreementService implements AgreementAbstractService {
 			catchError(({error}: HttpErrorResponse) => {
 				if (error.error.code === 'contracts.documents.draft.locked') {
 					const ref = this._dialog.open(ConfirmPopupComponent, {
-						width: '500px',
+						width: '540px',
 						height: '240px',
 						backdropClass: 'backdrop-modal--wrapper',
 						data: {
@@ -121,7 +121,7 @@ export class AgreementService implements AgreementAbstractService {
 						base64: body.value,
 						versions
 					},
-					width: '500px',
+					width: '540px',
 					disableClose: true,
 					hasBackdrop: true,
 					backdropClass: 'backdrop-modal--wrapper'
