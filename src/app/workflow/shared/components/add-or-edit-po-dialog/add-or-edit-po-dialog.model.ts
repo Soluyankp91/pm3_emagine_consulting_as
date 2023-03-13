@@ -7,6 +7,7 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 			id: new UntypedFormControl(null),
 			poSource: new UntypedFormControl(null),
 			number: new UntypedFormControl('', Validators.required),
+			existingPo: new UntypedFormControl('', Validators.required),
 			receiveDate: new UntypedFormControl(null),
 			numberMissingButRequired: new UntypedFormControl(false),
 			capForInvoicing: new CapForInvoicingForm(),
@@ -21,6 +22,9 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 	}
 	get number() {
 		return this.get('number');
+	}
+    get existingPo() {
+		return this.get('existingPo');
 	}
 	get receiveDate() {
 		return this.get('receiveDate');
@@ -81,9 +85,3 @@ export const POSources = [
 		name: 'New PO',
 	},
 ];
-
-export enum EPOCaps {
-	CapOnUnits = 1,
-	CapOnValue = 2,
-	NoCap = 3,
-}

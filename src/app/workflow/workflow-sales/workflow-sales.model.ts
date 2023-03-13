@@ -153,6 +153,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             // Client project
             clientTimeReportingCapId: new UntypedFormControl(false),
             timeReportingCaps: new UntypedFormArray([]),
+            purchaseOrders: new UntypedFormArray([]),
         });
     }
 
@@ -292,6 +293,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get timeReportingCaps() {
         return this.get('timeReportingCaps') as UntypedFormArray;
+    }
+    get purchaseOrders() {
+        return this.get('purchaseOrders') as UntypedFormArray;
     }
 
 }
@@ -453,4 +457,10 @@ export enum ETimeReportingCaps {
     CapOnValue = 2,
     IndividualCap = 3,
     NoCap = 4
+}
+
+export enum EValueUnitTypes {
+    'Hours' = 1,
+    'Days' = 2,
+    'Months' = 4
 }

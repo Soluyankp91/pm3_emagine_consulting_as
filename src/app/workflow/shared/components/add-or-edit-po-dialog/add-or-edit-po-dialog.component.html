@@ -22,14 +22,38 @@
                     </mat-error>
                 </mat-form-field>
             </ng-container>
-            <div fxLayout="row" fxLayoutAlign="start start" >
-                <mat-form-field appearance="outline" class="form-width-270 u-mr--12">
-                    <mat-label>Number</mat-label>
-                    <input autocomplete="off" matInput name="poNumber" formControlName="number" required>
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.number"></app-validator>
-                    </mat-error>
-                </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <ng-container *ngIf="purchaseOrderForm.poSource.value == ePOSource.ExistingPO || purchaseOrderForm.poSource.value == ePOSource.DifferentWF; else newPoTemplate">
+                    <mat-form-field appearance="outline" class="filter-select form-width-270 u-mr--12">
+                        <mat-label>PO number</mat-label>
+                        <mat-select required formControlName="existingPo" [disableOptionCentering]="true">
+                            <ng-container *ngFor="let item of purchaseOrders; trackBy: trackById">
+                                <mat-option [value]="item.id">
+                                    <div fxLayout="row" fxLayoutAlign="start start">
+                                        <span [ngClass]="{'medium-grey-color': item?.numberMissingButRequired}">
+                                            {{ item?.numberMissingButRequired ? 'Missing, but required' : item.number }}
+                                        </span>
+                                        <ng-container *ngIf="item.workflowsIdsReferencingThisPo?.length">
+                                            <mat-icon>create</mat-icon>
+                                        </ng-container>
+                                    </div>
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error>
+                            <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+                <ng-template #newPoTemplate>
+                    <mat-form-field appearance="outline" class="form-width-270 u-mr--12">
+                        <mat-label>PO number</mat-label>
+                        <input autocomplete="off" matInput name="poNumber" formControlName="number" required>
+                        <mat-error>
+                            <app-validator [control]="purchaseOrderForm.number"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                </ng-template>
 
                 <mat-form-field appearance="outline" class="form-width-150">
                     <mat-label>Start date</mat-label>
@@ -47,11 +71,11 @@
                 </mat-form-field>
             </div>
             <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(purchaseOrderForm.numberMissingButRequired.value, purchaseOrderForm.number)">
-                Missing but required
+                PO number missing, but required
             </mat-checkbox>
-            <mat-divider class="u-w--100 dark-grey-color"></mat-divider>
+            <mat-divider class="u-w--100 dark-grey-color u-mt--15 u-mb--15"></mat-divider>
             <ng-container formGroupName="capForInvoicing">
-                <h3 class="workflow-gray--header u-mt--20 u-mb--10">Shared Cap for Invoicing</h3>
+                <h3 class="workflow-gray--header u-mb--10">Shared Cap for Invoicing</h3>
                 <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !purchaseOrderForm.capForInvoicing.type?.valid}" class="workflow-toggle-buttons" formControlName="type" required>
                     <ng-container *ngFor="let item of capTypes | keyvalue; trackBy: trackByKey">
                         <mat-button-toggle [value]="+item.key">
@@ -66,15 +90,15 @@
                 </mat-error>
                 <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap">
                     <div fxLayout="row" fxLayoutAlign="start start" >
-                        <mat-form-field appearance="outline" class="form-width-110 u-mr--12">
-                            <mat-label>Max amount</mat-label>
+                        <mat-form-field appearance="outline" class="form-width-120 u-mr--12">
+                            <mat-label>Max value</mat-label>
                             <input autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
                             <mat-error>
                                 <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
                             </mat-error>
                         </mat-form-field>
                         <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits">
-                            <mat-form-field appearance="outline" class="filter-select form-width-110">
+                            <mat-form-field appearance="outline" class="filter-select form-width-120">
                                 <mat-label>Unit</mat-label>
                                 <mat-select required formControlName="valueUnitTypeId" [disableOptionCentering]="true">
                                     <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
@@ -89,7 +113,7 @@
                             </mat-form-field>
                         </ng-container>
                         <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue">
-                            <mat-form-field appearance="outline" class="filter-select form-width-110">
+                            <mat-form-field appearance="outline" class="filter-select form-width-120">
                                 <mat-label>Currency</mat-label>
                                 <mat-select required formControlName="currencyId" [disableOptionCentering]="true">
                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">

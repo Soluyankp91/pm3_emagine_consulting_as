@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
@@ -12,10 +12,10 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { MapClientAddressList } from '../workflow-sales.helpers';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientAddressDto, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientAddressDto, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PurchaseOrderCapType, PurchaseOrderDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { ClientRateTypes, EClientSelectionType, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { ClientRateTypes, EClientSelectionType, ETimeReportingCaps, EValueUnitTypes, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { AddOrEditPoDialogComponent } from '../../shared/components/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
@@ -28,6 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+    @Input() periodId: string;
 	@Input() readOnlyMode: boolean;
     @Input() mainDataForm: WorkflowSalesMainForm;
     @Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
@@ -70,6 +71,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialFeeFilter = new UntypedFormControl('');
     eTimeReportingCaps = ETimeReportingCaps;
+    eValueUnitType = EValueUnitTypes;
+    ePoCapType = PurchaseOrderCapType;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -668,14 +671,46 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
         this.submitFormBtn.nativeElement.click();
     }
 
-    addPurchaseOrder() {
+    createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderDto) {
         const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            isEdit: !!purchaseOrder,
+            clientPeriodId: this.periodId,
+            directClientId: this.salesClientDataForm.directClientIdValue.value?.clientId
+        }
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((newAddress) => {
-            // this._addNewClientAddress(newAddress);
+		dialogRef.componentInstance.onConfirmed.subscribe((purchaseOrder: PurchaseOrderDto) => {
+            this._addPurchaseOrder(purchaseOrder);
 		});
+    }
+
+    removePurchaseOrder(orderIndex: number) {
+        this.purchaseOrders.removeAt(orderIndex);
+    }
+
+    private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
+        const form = this._fb.group({
+			id: new UntypedFormControl(purchaseOrder?.id ?? null),
+			number: new UntypedFormControl(purchaseOrder?.number),
+            numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired),
+            receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate),
+            capForInvoicing: new UntypedFormGroup({
+                type: new UntypedFormControl(purchaseOrder?.capForInvoicing?.type),
+                valueUnitTypeId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.valueUnitTypeId),
+                maxAmount: new UntypedFormControl(purchaseOrder?.capForInvoicing?.maxAmount),
+                currencyId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.currencyId),
+                currency: new UntypedFormControl(this.findItemById(this.currencies, purchaseOrder?.capForInvoicing?.currencyId)),
+                amountUsed: new UntypedFormControl(purchaseOrder?.capForInvoicing?.amountUsed),
+            }),
+            createdBy: new UntypedFormControl(purchaseOrder?.createdBy),
+            createdOnUtc: new UntypedFormControl(purchaseOrder?.createdOnUtc),
+            modifiedBy: new UntypedFormControl(purchaseOrder?.modifiedBy),
+            modifiedOnUtc: new UntypedFormControl(purchaseOrder?.modifiedOnUtc),
+            workflowsIdsReferencingThisPo: new UntypedFormControl(purchaseOrder?.workflowsIdsReferencingThisPo),
+		});
+		this.purchaseOrders.push(form);
     }
 
     get clientRates(): UntypedFormArray {
@@ -692,6 +727,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
     get timeReportingCaps(): UntypedFormArray {
         return this.salesClientDataForm.get('timeReportingCaps') as UntypedFormArray;
+    }
+    get purchaseOrders(): UntypedFormArray {
+        return this.salesClientDataForm.get('purchaseOrders') as UntypedFormArray;
     }
 
 }

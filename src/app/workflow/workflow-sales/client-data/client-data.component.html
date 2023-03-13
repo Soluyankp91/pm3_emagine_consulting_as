@@ -702,9 +702,122 @@
                 <h2 class="workflow-section--header">Client purchase order + cap</h2>
             </div>
             <div class="workflow-section--content">
+                <div class="inline-edit-form u-w--100">
+                    <ng-container *ngIf="salesClientDataForm.purchaseOrders?.controls?.length">
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
+                            class="workflow-sales-inline--form__header-container u-w--100">
+                            <span fxFlex class="workflow-sales-inline--form__header u-w--100">
+                                Invoicing Ref Nr (PO)
+                            </span>
+                            <span fxFlex="100px" class="workflow-sales-inline--form__header u-w--100">
+                                Receive date
+                            </span>
+                            <span fxFlex="150px" class="workflow-sales-inline--form__header u-w--100">
+                                Cap type
+                            </span>
+                            <span fxFlex="120px" class="workflow-sales-inline--form__header u-w--100">
+                                Used
+                            </span>
+                            <span fxFlex="120px" class="workflow-sales-inline--form__header u-w--100">
+                                Max value
+                            </span>
+                            <span fxFlex="150px" class="workflow-sales-inline--form__header u-w--100">
+                                Units
+                            </span>
+                            <span fxFlex="80px" class="workflow-sales-inline--form__header u-w--100"
+                                [fxHide]="readOnlyMode">
+                            </span>
+                        </div>
+                    </ng-container>
+                    <ng-container formArrayName="purchaseOrders" class="u-w--100">
+                        <ng-container *ngFor="let order of salesClientDataForm.purchaseOrders.controls; trackBy: trackByItem; index as i"
+                            [formArrayName]="i">
+                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                class="workflow-sales-inline--form__row u-w--100">
+                                <ng-container>
+                                    <span fxFlex class="u-w--100 text-truncate-ellipsis"
+                                        [ngClass]="{'medium-grey-color': order.value.numberMissingButRequired}"
+                                        [matTooltip]="order.value.numberMissingButRequired ? 'Missing, but required' : (order.value.number ?? '-')" matTooltipClass="white-tooltip"
+                                        appShowIfTruncated>
+                                        {{order.value.numberMissingButRequired ? 'Missing, but required' : (order.value.number ?? '-') }}
+                                    </span>
+                                    <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+                                        [matTooltip]="order.value.receiveDate !== null && order.value.receiveDate !== undefined ? (order.value.receiveDate | momentFormat) : '-'" matTooltipClass="white-tooltip"
+                                        appShowIfTruncated>
+                                        {{ order.value.receiveDate !== null && order.value.receiveDate !== undefined ? (order.value.receiveDate | momentFormat) : '-'}}
+                                    </span>
+                                    <span fxFlex="150px" class="u-w--100 text-truncate-ellipsis"
+                                        [matTooltip]="order.value.capForInvoicing?.type"
+                                        matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{order.value.capForInvoicing?.type}}
+                                    </span>
+                                    <span fxFlex="120px" class="u-w--100 text-truncate-ellipsis"
+                                        [matTooltip]="order.value.capForInvoicing?.amountUsed ?? '-'"
+                                        matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{order.value.capForInvoicing?.amountUsed ?? '-'}}
+                                    </span>
+                                    <span fxFlex="120px" class="u-w--100 text-truncate-ellipsis"
+                                        [matTooltip]="order.value.capForInvoicing?.maxAmount ?? '-'"
+                                        matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{order.value.capForInvoicing?.maxAmount ?? '-'}}
+                                    </span>
+                                    <ng-container [ngSwitch]="order.value.capForInvoicing?.type">
+                                        <ng-container *ngSwitchCase="ePoCapType.CapOnUnits">
+                                            <span fxFlex="150px" class="u-w--100 text-truncate-ellipsis"
+                                                [matTooltip]="eValueUnitType[order.value.capForInvoicing?.valueUnitTypeId]"
+                                                matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                {{eValueUnitType[order.value.capForInvoicing?.valueUnitTypeId]}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="ePoCapType.CapOnValue">
+                                            <span fxFlex="150px" class="u-w--100 text-truncate-ellipsis"
+                                                [matTooltip]="order.value.capForInvoicing?.currency?.name"
+                                                matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                {{order.value.capForInvoicing?.currency?.name}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="ePoCapType.NoCap">
+                                            <span fxFlex="150px" class="u-w--100 text-truncate-ellipsis">-</span>
+                                        </ng-container>
+                                    </ng-container>
+
+                                    <div fxFlex="80px" fxLayoutAlign="end center" class="u-w--100"
+                                        [fxHide]="readOnlyMode">
+                                        <button mat-icon-button type="button" appPreventDoubleClick
+                                            (throttledClick)="$event.stopPropagation();"
+                                            [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
+                                            <mat-icon svgIcon="3-dots"></mat-icon>
+                                        </button>
+                                        <mat-menu #poMenu>
+                                            <button class="menu-item green-color"
+                                                mat-menu-item appPreventDoubleClick
+                                                (throttledClick)="createOrEditPurchaseOrder(order.value)">
+                                                <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                                Edit
+                                            </button>
+                                            <button class="menu-item menu-item--cancel" mat-menu-item
+                                                appPreventDoubleClick (throttledClick)="removePurchaseOrder(i)">
+                                                <mat-icon svgIcon="close-icon"></mat-icon>
+                                                Delete
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="salesClientDataForm.purchaseOrders.controls?.length === 0 && readOnlyMode">
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
+                                class="workflow-sales-inline--form__row u-w--100 border-unset">
+                                <span class="light-grey-color text-600">
+                                    No purchase orders
+                                </span>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
                 <ng-container *ngIf="!readOnlyMode">
                     <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
-                        (throttledClick)="addPurchaseOrder()">
+                        (throttledClick)="createOrEditPurchaseOrder()">
                         <mat-icon>add</mat-icon>
                         Add PO
                     </button>
