@@ -1,18 +1,38 @@
 <section class="main" [class.page-loading]="isPageLoading">
 	<div class="wrapper">
-		<div class="versions">
-			<mat-form-field class="dropdown" appearance="outline" floatLabel="never">
-				<mat-label>
-					{{selectedVersion?.isCurrent ? 'Current' : 'Draft'}}
-				</mat-label>
-				<mat-select [formControl]="selectedVersionControl" placeholder="version">
-					<mat-option *ngFor="let template of templateVersions$ | async" [value]="template.version">
-						<b>Version {{ template.version }}</b> - {{template.createdDateUtc | momentFormat}}
+		<div *ngIf="templateVersions$ | async as templateVersions" class="versions">
+			<mat-form-field *ngIf="templateVersions.length" class="dropdown" appearance="outline" floatLabel="never">
+				<mat-select
+					class="tmp-version-select"
+					panelClass="tmp-version-select-panel"
+					[formControl]="selectedVersionControl"
+					placeholder="version">
+					<mat-select-trigger
+						[ngTemplateOutlet]="versionRowTmp"
+						[ngTemplateOutletContext]="{ $implicit: selectedVersion }"></mat-select-trigger>
+					<mat-option *ngFor="let template of templateVersions" [value]="template.version">
+						<ng-container
+							[ngTemplateOutlet]="versionRowTmp"
+							[ngTemplateOutletContext]="{ $implicit: template }"></ng-container>
+						<p *ngIf="template.description" class="tmp-version-description">
+							{{ template.description }}
+						</p>
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
+
+			<ng-template #versionRowTmp let-templateVersion>
+				<ng-container *ngIf="templateVersion">
+					<div class="tmp-version-row">
+						<span class="tmp-version-num">Version {{ templateVersion.version }}</span>
+						<span *ngIf="templateVersion.isCurrent" class="label label-success">Current</span>
+						<span *ngIf="templateVersion.isDraft" class="label label-warning">Draft</span>
+						<span class="tmp-version-date">- {{ templateVersion.createdDateUtc | momentFormat }}</span>
+					</div>
+				</ng-container>
+			</ng-template>
 		</div>
-		
+
 		<div richEditor class="editor" (saved)="saveAsComplete()"></div>
 		<div *ngIf="commentSidebarEnabled$ | async" class="comment-sidebar">
 			<app-comment-sidebar
@@ -31,61 +51,50 @@
 		<app-compare-select-document-popup
 			[dataSource]="documentList$ | async"
 			(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
-		
 	</div>
-		<!-- *ngIf="hasUnsavedChanges$ | async" -->
+	<!-- *ngIf="hasUnsavedChanges$ | async" -->
 	<ng-container *ngIf="isLatestVersionSelected$ | async; else prevVersions">
-	
 		<ng-container *ngIf="selectedVersion?.isCurrent">
 			<div class="save-actions">
-				<button mat-button color="accent" (click)="cancel()">
-					Close
-				</button>
-		
+				<button mat-button color="accent" (click)="cancel()">Close</button>
+
 				<ng-container *ngIf="!(isAgreement$ | async)">
 					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
 						Save as a new version
 					</button>
 				</ng-container>
-	
+
 				<ng-container *ngIf="isAgreement$ | async">
 					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsComplete(true)">
 						Save as a new version
 					</button>
 
 					<ng-container *ngIf="versions.length < 2 && selectedVersion?.isCurrent">
-						<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">
-							Send
-						</button>
+						<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">Send</button>
 					</ng-container>
 				</ng-container>
-		
+
 				<ng-container *ngIf="!(isAgreement$ | async)">
-					<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">
-						Save
-					</button>
+					<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">Save</button>
 				</ng-container>
 			</div>
 		</ng-container>
-	
+
 		<ng-container *ngIf="selectedVersion?.isDraft">
 			<div class="save-actions">
-				<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">
-					Close
-				</button>
-		
+				<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">Close</button>
+
 				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
 					<span>Save as a draft</span>
 				</button>
-		
+
 				<button [disabled]="isLoading" mat-flat-button color="primary" (click)="saveDraftAsComplete()">
 					<span>Complete</span>
 				</button>
 			</div>
 		</ng-container>
-	
 	</ng-container>
-	
+
 	<ng-template #prevVersions>
 		<div class="save-actions promote">
 			<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="promoteToDraft()">

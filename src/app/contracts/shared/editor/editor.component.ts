@@ -431,7 +431,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 					}
 
 					this.isLoading = false;
-					this.hasUnsavedChanges$.next(false);
+					this._editorCoreService.removeUnsavedChanges();
 					this._chd.detectChanges();
 				});
 		});
@@ -531,7 +531,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	showSnackbar() {
-		this._snackBar.open('Successdully saved!', '', {
+		this._snackBar.open('Successfully saved!', '', {
 			duration: 2500,
 			panelClass: 'green-panel',
 		});
