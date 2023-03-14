@@ -353,7 +353,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							versions: this.versions,
 						},
 						height: 'auto',
-						width: '500px',
+						width: '540px',
 						maxWidth: '100%',
 						disableClose: true,
 						hasBackdrop: true,
@@ -431,7 +431,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 					}
 
 					this.isLoading = false;
-					this.hasUnsavedChanges$.next(false);
+					this._editorCoreService.removeUnsavedChanges();
 					this._chd.detectChanges();
 				});
 		});
@@ -531,7 +531,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	showSnackbar() {
-		this._snackBar.open('Successdully saved!', '', {
+		this._snackBar.open('Successfully saved!', '', {
 			duration: 2500,
 			panelClass: 'green-panel',
 		});
