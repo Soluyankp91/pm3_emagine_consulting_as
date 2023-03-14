@@ -50,10 +50,11 @@
         ::ng-deep {
             textarea {
                 height: 86px;
+                line-height: 18px;
             }
 
             .mat-form-field-outline {
-                height: 86px;
+                height: 110px;
             }
         }
     }

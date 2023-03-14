@@ -6,7 +6,7 @@ import {
 	Inject,
 	OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -45,7 +45,7 @@ export class SaveAsPopupComponent implements OnInit {
 	}
 
 	form: FormGroup = new FormGroup({
-		versionDescription: new FormControl(this.data.document.isCurrent ? this.data.document.description : ''),
+		versionDescription: new FormControl(this.data.document.isCurrent ? this.data.document.description : '', Validators.maxLength(500)),
 		propagateChangesToDerivedTemplates: new FormControl(false),
 		markActiveAgreementsAsOutdated: new FormControl(false),
 		fileContent: new FormControl(this.data.base64)
