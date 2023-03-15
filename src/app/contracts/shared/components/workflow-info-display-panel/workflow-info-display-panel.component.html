@@ -1,0 +1,114 @@
+<ng-container *ngIf="workflowSummary">
+	<div class="summary-header">WorkFlow summary</div>
+	<div class="items-section">
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['client'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-highlighted-value">
+					{{ workflowSummary.client.clientName }}
+				</div>
+			</div>
+		</div>
+		<ng-container *ngFor="let consultantDto of workflowSummary.consultants">
+			<div class="item-row">
+				<div class="property-label">
+					{{ labelMap['consultant'] }}
+				</div>
+				<div class="right-part">
+					<img
+						class="profile-picture"
+						[ngSrc]="employeePhotoUrl + consultantDto.consultant.externalId + '.jpg'"
+						[customTooltip]="consultantDto.consultant.name"
+						[showAlways]="true"
+						src
+						width="24"
+						height="24"
+						(error)="setDefaultImage($event.target)" />
+					<div class="property-highlighted-value">
+						{{ consultantDto.consultant.name }}
+					</div>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+	<mat-divider class="divider"></mat-divider>
+	<div class="items-section">
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['actualRecipient'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-value">
+					{{ workflowSummary.actualRecipient.clientName }}
+				</div>
+			</div>
+		</div>
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['legalEntityId'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-value">
+					{{ workflowSummary.legalEntityId }}
+				</div>
+			</div>
+		</div>
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['saleManager'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-value">
+					{{ workflowSummary.saleManager.name }}
+				</div>
+			</div>
+		</div>
+	</div>
+	<mat-divider class="divider"></mat-divider>
+	<div class="items-section">
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['salesTypeId'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-value">
+					{{ workflowSummary.salesTypeId }}
+				</div>
+			</div>
+		</div>
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['deliveryTypeId'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-value">
+					{{ workflowSummary.deliveryTypeId }}
+				</div>
+			</div>
+		</div>
+        <ng-container *ngFor="let contractType of workflowSummary.contractTypes">
+			<div class="item-row">
+				<div class="property-label">
+					{{ labelMap['contractType'] }}
+				</div>
+				<div class="right-part">
+					<div class="property-value">
+						{{ contractType}}
+					</div>
+				</div>
+			</div>
+		</ng-container>
+		<div class="item-row">
+			<div class="property-label">
+				{{ labelMap['country'] }}
+			</div>
+			<div class="right-part">
+				<div class="property-value">
+					{{ workflowSummary.country }}
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-container>

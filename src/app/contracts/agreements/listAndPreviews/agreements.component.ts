@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation, Injector, OnDestroy } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
@@ -64,6 +65,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _contractService: ContractsService,
 		private readonly _downloadFilesService: DownloadFilesService,
+        private readonly _snackBar: MatSnackBar,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
@@ -112,7 +114,9 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 			case 'DELETE':
 				this.showMainSpinner();
 				this._agreementServiceProxy.agreementDELETE($event.row.agreementId).subscribe(() => {
-					//back end list not updated right after deletion. It takes some time
+                    this._snackBar.open('Agreement was deleted', undefined, {
+						duration: 5000,
+					});
 					setTimeout(() => {
 						this._agreementService.reloadTable();
 					}, 1000);

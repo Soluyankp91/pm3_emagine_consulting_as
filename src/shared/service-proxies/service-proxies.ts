@@ -22588,8 +22588,8 @@ export class ClientResultDto implements IClientResultDto {
     address2?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
-    countryId?: number | undefined;
-    countryName?: string | undefined;
+    addressCountryCode?: string | undefined;
+    tenantCountryCode?: string | undefined;
     readonly crmClientId?: number | undefined;
 
     constructor(data?: IClientResultDto) {
@@ -22610,8 +22610,8 @@ export class ClientResultDto implements IClientResultDto {
             this.address2 = _data["address2"];
             this.postCode = _data["postCode"];
             this.city = _data["city"];
-            this.countryId = _data["countryId"];
-            this.countryName = _data["countryName"];
+            this.addressCountryCode = _data["addressCountryCode"];
+            this.tenantCountryCode = _data["tenantCountryCode"];
             (<any>this).crmClientId = _data["crmClientId"];
         }
     }
@@ -22632,8 +22632,8 @@ export class ClientResultDto implements IClientResultDto {
         data["address2"] = this.address2;
         data["postCode"] = this.postCode;
         data["city"] = this.city;
-        data["countryId"] = this.countryId;
-        data["countryName"] = this.countryName;
+        data["addressCountryCode"] = this.addressCountryCode;
+        data["tenantCountryCode"] = this.tenantCountryCode;
         data["crmClientId"] = this.crmClientId;
         return data;
     }
@@ -22647,8 +22647,8 @@ export interface IClientResultDto {
     address2?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
-    countryId?: number | undefined;
-    countryName?: string | undefined;
+    addressCountryCode?: string | undefined;
+    tenantCountryCode?: string | undefined;
     crmClientId?: number | undefined;
 }
 
@@ -24303,7 +24303,9 @@ export class ConsultantResultDto implements IConsultantResultDto {
     address?: string | undefined;
     companyName?: string | undefined;
     vatNumber?: string | undefined;
+    addressCountryCode?: string | undefined;
     countryId?: number | undefined;
+    tenantCountryCode?: string | undefined;
     supplierId?: number | undefined;
 
     constructor(data?: IConsultantResultDto) {
@@ -24327,7 +24329,9 @@ export class ConsultantResultDto implements IConsultantResultDto {
             this.address = _data["address"];
             this.companyName = _data["companyName"];
             this.vatNumber = _data["vatNumber"];
+            this.addressCountryCode = _data["addressCountryCode"];
             this.countryId = _data["countryId"];
+            this.tenantCountryCode = _data["tenantCountryCode"];
             this.supplierId = _data["supplierId"];
         }
     }
@@ -24351,7 +24355,9 @@ export class ConsultantResultDto implements IConsultantResultDto {
         data["address"] = this.address;
         data["companyName"] = this.companyName;
         data["vatNumber"] = this.vatNumber;
+        data["addressCountryCode"] = this.addressCountryCode;
         data["countryId"] = this.countryId;
+        data["tenantCountryCode"] = this.tenantCountryCode;
         data["supplierId"] = this.supplierId;
         return data;
     }
@@ -24368,7 +24374,9 @@ export interface IConsultantResultDto {
     address?: string | undefined;
     companyName?: string | undefined;
     vatNumber?: string | undefined;
+    addressCountryCode?: string | undefined;
     countryId?: number | undefined;
+    tenantCountryCode?: string | undefined;
     supplierId?: number | undefined;
 }
 
@@ -27073,7 +27081,7 @@ export class LegalEntityDto implements ILegalEntityDto {
     address?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
-    country?: string | undefined;
+    countryCode?: string | undefined;
     vatNumber?: string | undefined;
 
     constructor(data?: ILegalEntityDto) {
@@ -27093,7 +27101,7 @@ export class LegalEntityDto implements ILegalEntityDto {
             this.address = _data["address"];
             this.postCode = _data["postCode"];
             this.city = _data["city"];
-            this.country = _data["country"];
+            this.countryCode = _data["countryCode"];
             this.vatNumber = _data["vatNumber"];
         }
     }
@@ -27113,7 +27121,7 @@ export class LegalEntityDto implements ILegalEntityDto {
         data["address"] = this.address;
         data["postCode"] = this.postCode;
         data["city"] = this.city;
-        data["country"] = this.country;
+        data["countryCode"] = this.countryCode;
         data["vatNumber"] = this.vatNumber;
         return data;
     }
@@ -27126,7 +27134,7 @@ export interface ILegalEntityDto {
     address?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
-    country?: string | undefined;
+    countryCode?: string | undefined;
     vatNumber?: string | undefined;
 }
 
@@ -30193,7 +30201,7 @@ export class SupplierResultDto implements ISupplierResultDto {
     supplierName?: string | undefined;
     externalId?: string;
     vatNumber?: string | undefined;
-    country?: string | undefined;
+    countryCode?: string | undefined;
     city?: string | undefined;
     zipCode?: string | undefined;
     address?: string | undefined;
@@ -30213,7 +30221,7 @@ export class SupplierResultDto implements ISupplierResultDto {
             this.supplierName = _data["supplierName"];
             this.externalId = _data["externalId"];
             this.vatNumber = _data["vatNumber"];
-            this.country = _data["country"];
+            this.countryCode = _data["countryCode"];
             this.city = _data["city"];
             this.zipCode = _data["zipCode"];
             this.address = _data["address"];
@@ -30233,7 +30241,7 @@ export class SupplierResultDto implements ISupplierResultDto {
         data["supplierName"] = this.supplierName;
         data["externalId"] = this.externalId;
         data["vatNumber"] = this.vatNumber;
-        data["country"] = this.country;
+        data["countryCode"] = this.countryCode;
         data["city"] = this.city;
         data["zipCode"] = this.zipCode;
         data["address"] = this.address;
@@ -30246,7 +30254,7 @@ export interface ISupplierResultDto {
     supplierName?: string | undefined;
     externalId?: string;
     vatNumber?: string | undefined;
-    country?: string | undefined;
+    countryCode?: string | undefined;
     city?: string | undefined;
     zipCode?: string | undefined;
     address?: string | undefined;
@@ -30823,6 +30831,8 @@ export class WorkflowAgreementDto implements IWorkflowAgreementDto {
     name?: string | undefined;
     agreementStatus?: EnvelopeStatus;
     validity?: AgreementValidityState;
+    createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
     lastUpdateDateUtc?: moment.Moment;
     hasSignedDocumentFile?: boolean;
@@ -30845,6 +30855,8 @@ export class WorkflowAgreementDto implements IWorkflowAgreementDto {
             this.name = _data["name"];
             this.agreementStatus = _data["agreementStatus"];
             this.validity = _data["validity"];
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
             this.lastUpdatedBy = _data["lastUpdatedBy"] ? EmployeeDto.fromJS(_data["lastUpdatedBy"]) : <any>undefined;
             this.lastUpdateDateUtc = _data["lastUpdateDateUtc"] ? moment(_data["lastUpdateDateUtc"].toString()) : <any>undefined;
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
@@ -30871,6 +30883,8 @@ export class WorkflowAgreementDto implements IWorkflowAgreementDto {
         data["name"] = this.name;
         data["agreementStatus"] = this.agreementStatus;
         data["validity"] = this.validity;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
         data["lastUpdatedBy"] = this.lastUpdatedBy ? this.lastUpdatedBy.toJSON() : <any>undefined;
         data["lastUpdateDateUtc"] = this.lastUpdateDateUtc ? this.lastUpdateDateUtc.toISOString() : <any>undefined;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
@@ -30890,6 +30904,8 @@ export interface IWorkflowAgreementDto {
     name?: string | undefined;
     agreementStatus?: EnvelopeStatus;
     validity?: AgreementValidityState;
+    createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
     lastUpdateDateUtc?: moment.Moment;
     hasSignedDocumentFile?: boolean;

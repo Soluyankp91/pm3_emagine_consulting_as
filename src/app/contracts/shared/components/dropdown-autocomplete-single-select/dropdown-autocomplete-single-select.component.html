@@ -8,11 +8,17 @@
 		[matAutocomplete]="auto"
 		[errorStateMatcher]="matcher"
 		(blur)="onFocusOut()" />
+	<ng-container
+		*ngIf="selectedOptionTemplate && selectedItem && (control.valid || control.disabled)"
+		[ngTemplateOutlet]="selectedOptionTemplate"
+		[ngTemplateOutletContext]="{ selectedItem }">
+	</ng-container>
 	<mat-autocomplete
 		#auto="matAutocomplete"
 		[displayWith]="displayFn.bind(context)"
 		class="app-contract-backdrop"
 		classList="app-contract-backdrop"
+		[panelWidth]="panelWidth"
 		(optionSelected)="onSelect($event.option.value)">
 		<div class="scroll-container">
 			<ng-container *ngFor="let option of options; trackBy: trackById.bind(this)">

@@ -2,7 +2,7 @@ import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef, ViewEncapsul
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { combineLatest, Observable, Subject, of, BehaviorSubject, race } from 'rxjs';
+import { combineLatest, Observable, Subject, of, BehaviorSubject, race, forkJoin, EMPTY } from 'rxjs';
 import {
 	startWith,
 	switchMap,
@@ -26,7 +26,7 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { CreationTitleService } from 'src/app/contracts/shared/services/creation-title.service';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
+import { MapCountryCodeTenant, MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import {
 	AgreementAttachmentDto,
 	AgreementCreationMode,
@@ -41,9 +41,22 @@ import {
 	SupplierResultDto,
 	AgreementTemplateServiceProxy,
 	AgreementDetailsDto,
+	ClientPeriodServiceProxy,
+	AgreementType,
+	SignerType,
+	ConsultantPeriodServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
-import { DuplicateOrParentOptions, ParentTemplateDto } from './settings.interfaces';
+import { DuplicateOrParentOptions, ParentTemplateDto, WorkflowSummary } from './settings.interfaces';
 import { EditorObserverService } from '../../../shared/services/editor-observer.service';
+import { union } from 'lodash';
+import { NotificationDialogComponent } from 'src/app/contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
+
+export enum RecipientDropdowns {
+	SUPPLIER,
+	CONSULTANT,
+	CLIENT,
+	PDC,
+}
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
@@ -54,7 +67,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
 
+	recipientDropdowns = RecipientDropdowns;
+
 	nextButtonLabel: string;
+
+	workflowSummary: WorkflowSummary;
+	isDefaultTemplate: boolean;
 
 	possibleDocumentTypes: BaseEnumDto[];
 	documentTypes$: Observable<BaseEnumDto[]>;
@@ -70,7 +88,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	options$: Observable<[SettingsPageOptions, MappedTableCells]>;
 
-	clientOptionsChanged$ = new BehaviorSubject('');
+	recipientOptionsChanged$ = new BehaviorSubject('');
 
 	creationMode = new FormControl<AgreementCreationMode>({
 		value: AgreementCreationMode.InheritedFromParent,
@@ -78,10 +96,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	});
 	modeControl$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 	dirtyStatus$: Observable<boolean>;
-	clientDropdown$: Observable<{
+	recipientDropdown$: Observable<{
 		options$: Observable<SupplierResultDto[] | ConsultantResultDto[] | ClientResultDto[] | LegalEntityDto[]>;
 		outputProperty: string;
 		labelKey: string;
+		label: string;
+		dropdownType: RecipientDropdowns;
 	} | null>;
 
 	duplicateOrInherit$: Observable<DuplicateOrParentOptions | null>;
@@ -108,6 +128,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _enumService: EnumServiceProxy,
 		private readonly _apiServiceProxy: AgreementServiceProxy,
 		private readonly _apiServiceProxy2: AgreementTemplateServiceProxy,
+		private readonly _clientPeriodServiceProxy: ClientPeriodServiceProxy,
+		private readonly _consultantPeriodServiceProxy: ConsultantPeriodServiceProxy,
 		private readonly _dialog: MatDialog,
 		private readonly _router: Router,
 		private readonly _route: ActivatedRoute,
@@ -141,17 +163,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this.currentAgreementId = paramId;
 			this._preselectAgreement(paramId);
 		} else {
+			this.clientPeriodId = clientPeriodID;
+			this.consultantPeriodId = consultantPeriodId;
+			this._subscribeOnCreationMode();
+			if (clientPeriodID && !consultantPeriodId) {
+				this._setClientPeriodId();
+			}
+			if (consultantPeriodId) {
+				this._setConsultantPeriodId();
+			}
 			this.nextButtonLabel = 'Next';
 			this._setDuplicateObs();
-			this._subscribeOnCreationMode();
 			this._setDirtyStatus();
 			this._subscribeOnModeReplay();
 			this._subsribeOnCreationModeChanges();
 			this._subscribeOnQueryParams();
-		}
-
-		if (clientPeriodID) {
-			this.clientPeriodId = clientPeriodID;
 		}
 
 		if (consultantPeriodId) {
@@ -232,10 +258,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
 
 		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
-        if (!this.consultantPeriodId && !this.currentAgreementTemplate?.consultantPeriodId) {
-            toSend.clientPeriodId = this.clientPeriodId ?? this.currentAgreementTemplate?.clientPeriodId;
-        }
-        toSend.consultantPeriodId = this.consultantPeriodId ?? this.currentAgreementTemplate?.consultantPeriodId;
+		if (!this.consultantPeriodId && !this.currentAgreementTemplate?.consultantPeriodId) {
+			toSend.clientPeriodId = this.clientPeriodId ?? this.currentAgreementTemplate?.clientPeriodId;
+		}
+		toSend.consultantPeriodId = this.consultantPeriodId ?? this.currentAgreementTemplate?.consultantPeriodId;
 		this.showMainSpinner();
 		if (this.editMode) {
 			this._apiServiceProxy
@@ -275,6 +301,259 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					}
 				});
 		}
+	}
+
+	private _setClientPeriodId() {
+		this._clientPeriodServiceProxy
+			.clientSalesGET(this.clientPeriodId)
+			.pipe(
+				withLatestFrom(this._contractService.getEnumMap$()),
+				switchMap(([clientPeriodSales, maps]) => {
+					let agreementTypeId = AgreementType.WorkOrder;
+					let recipientTypeId = 3;
+
+					let contractTypes = union(
+						clientPeriodSales.consultantSalesData.map((consultantSale) => consultantSale.employmentTypeId)
+					);
+					let salesTypeId = clientPeriodSales.salesMainData.salesTypeId;
+					let deliveryTypeId = clientPeriodSales.salesMainData.deliveryTypeId;
+
+					let client = clientPeriodSales.salesClientData.directClient;
+					let legalEntityId = clientPeriodSales.salesClientData.pdcInvoicingEntityId;
+
+					let startDate = clientPeriodSales.startDate;
+					let endDate = clientPeriodSales.endDate;
+
+					let countryCode = clientPeriodSales.salesClientData.directClient.tenantCountryCode;
+
+					let contractSigners = clientPeriodSales.salesClientData.contractSigners.map(
+						(contractSigner) =>
+							<AgreementDetailsSignerDto>{
+								signerType: SignerType.Client,
+								signerId: contractSigner.contact.id,
+								signOrder: contractSigner.signOrder,
+								roleId: contractSigner.signerRoleId,
+							}
+					);
+					this.workflowSummary = {
+						client: client,
+						consultants: clientPeriodSales.consultantSalesData,
+
+						actualRecipient: client,
+						legalEntityId: maps.legalEntityIds[legalEntityId],
+						contractTypes: contractTypes.map((contractTypeId) => maps.contractTypeIds[contractTypeId]),
+						saleManager: clientPeriodSales.salesMainData.salesAccountManagerData,
+
+						salesTypeId: maps.salesTypeIds[salesTypeId],
+						deliveryTypeId: maps.deliveryTypeIds[deliveryTypeId],
+						countryCode: countryCode,
+						country: MapCountryCodeTenant(countryCode),
+					};
+					return this._apiServiceProxy2
+						.defaultTemplateId(
+							recipientTypeId,
+							legalEntityId,
+							deliveryTypeId,
+							salesTypeId,
+							contractTypes[0],
+							client.clientId
+						)
+						.pipe(
+							switchMap((defaultTemplateId) => {
+								if (defaultTemplateId) {
+									this.isDefaultTemplate = true;
+									return this._apiServiceProxy2.agreementTemplateGET(defaultTemplateId).pipe(
+										tap((defaultTemplate) => {
+											this.parentOptionsChanged$.next(String(defaultTemplateId));
+											this.recipientOptionsChanged$.next(String(client.clientId));
+
+											this.attachmentsFromParent = [
+												...(defaultTemplate.attachments as FileUpload[]),
+												...(defaultTemplate.attachmentsFromParent
+													? (defaultTemplate.attachmentsFromParent as FileUpload[])
+													: []),
+											];
+										}),
+										tap((defaultTemplate) => {
+											this.agreementFormGroup.patchValue({
+												parentAgreementTemplate: defaultTemplateId,
+												agreementType: agreementTypeId,
+												recipientTypeId: recipientTypeId,
+												recipientId: client.clientId,
+												nameTemplate: defaultTemplate.name,
+												definition: defaultTemplate.definition,
+												legalEntityId: legalEntityId,
+												salesTypes: [salesTypeId],
+												deliveryTypes: [deliveryTypeId],
+												contractTypes: contractTypes,
+												language: defaultTemplate.language,
+												startDate: startDate,
+												endDate: endDate,
+												note: defaultTemplate.note,
+												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
+												isSignatureRequired: true,
+												signers: defaultTemplate.isSignatureRequired ? contractSigners : [],
+												attachments: defaultTemplate.attachments,
+												parentSelectedAttachmentIds: defaultTemplate.attachmentsFromParent
+													? defaultTemplate.attachmentsFromParent
+													: [],
+											});
+										})
+									);
+								} else {
+									this.recipientOptionsChanged$.next(String(client.clientId));
+
+									this.creationMode.setValue(AgreementCreationMode.FromScratch);
+									this.agreementFormGroup.patchValue({
+										agreementType: agreementTypeId,
+										recipientTypeId: recipientTypeId,
+										recipientId: client.clientId,
+										legalEntityId: legalEntityId,
+										salesTypes: [salesTypeId],
+										deliveryTypes: [deliveryTypeId],
+										contractTypes: contractTypes,
+										startDate: startDate,
+										endDate: endDate,
+										isSignatureRequired: true,
+										signers: contractSigners,
+									});
+									let dialogRef = this._dialog.open(NotificationDialogComponent, {
+										width: '500px',
+										height: '240px',
+										backdropClass: 'backdrop-modal--wrapper',
+										data: {
+											label: 'No default template',
+											message: 'Default template was not found basing on data from Workflow',
+										},
+									});
+									return dialogRef.afterClosed();
+								}
+							})
+						);
+				})
+			)
+			.subscribe(() => {});
+	}
+
+	private _setConsultantPeriodId() {
+		forkJoin([
+			this._clientPeriodServiceProxy.clientSalesGET(this.clientPeriodId),
+			this._consultantPeriodServiceProxy.consultantSalesGET(this.consultantPeriodId),
+			this._contractService.getEnumMap$().pipe(take(1)),
+		])
+			.pipe(
+				switchMap(([clientSalesData, consultantData, maps]) => {
+					let agreementTypeId = AgreementType.ServiceOrder;
+					let recipientTypeId = 2;
+
+					let contractType = consultantData.consultantSalesData.employmentTypeId;
+					let salesTypeId = clientSalesData.salesMainData.salesTypeId;
+					let deliveryTypeId = clientSalesData.salesMainData.deliveryTypeId;
+
+					let client = clientSalesData.salesClientData.directClient;
+					let legalEntityId = consultantData.clientPeriodPdcInvoicingEntityId;
+
+					let startDate = clientSalesData.startDate;
+					let endDate = clientSalesData.endDate;
+
+					let countryCode = clientSalesData.salesClientData.directClient.tenantCountryCode;
+
+					this.workflowSummary = {
+						client: client,
+						consultants: [consultantData.consultantSalesData],
+
+						actualRecipient: client,
+						legalEntityId: maps.legalEntityIds[legalEntityId],
+						contractTypes: [maps.contractTypeIds[contractType]],
+						saleManager: clientSalesData.salesMainData.salesAccountManagerData,
+
+						salesTypeId: maps.salesTypeIds[salesTypeId],
+						deliveryTypeId: maps.deliveryTypeIds[deliveryTypeId],
+						countryCode: countryCode,
+						country: MapCountryCodeTenant(countryCode),
+					};
+					return this._apiServiceProxy2
+						.defaultTemplateId(
+							recipientTypeId,
+							legalEntityId,
+							deliveryTypeId,
+							salesTypeId,
+							contractType,
+							client.clientId
+						)
+						.pipe(
+							switchMap((defaultTemplateId) => {
+								if (defaultTemplateId) {
+									this.isDefaultTemplate = true;
+									return this._apiServiceProxy2.agreementTemplateGET(defaultTemplateId).pipe(
+										tap((defaultTemplate) => {
+											this.parentOptionsChanged$.next(String(defaultTemplateId));
+											this.recipientOptionsChanged$.next(String(client.clientId));
+
+											this.attachmentsFromParent = [
+												...(defaultTemplate.attachments as FileUpload[]),
+												...(defaultTemplate.attachmentsFromParent
+													? (defaultTemplate.attachmentsFromParent as FileUpload[])
+													: []),
+											];
+										}),
+										tap((defaultTemplate) => {
+											this.agreementFormGroup.patchValue({
+												parentAgreementTemplate: defaultTemplateId,
+												agreementType: agreementTypeId,
+												recipientTypeId: recipientTypeId,
+												recipientId: client.clientId,
+												nameTemplate: defaultTemplate.name,
+												definition: defaultTemplate.definition,
+												legalEntityId: legalEntityId,
+												salesTypes: [salesTypeId],
+												deliveryTypes: [deliveryTypeId],
+												contractTypes: [contractType],
+												language: defaultTemplate.language,
+												startDate: startDate,
+												endDate: endDate,
+												note: defaultTemplate.note,
+												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
+												isSignatureRequired: true,
+												attachments: defaultTemplate.attachments,
+												parentSelectedAttachmentIds: defaultTemplate.attachmentsFromParent
+													? defaultTemplate.attachmentsFromParent
+													: [],
+											});
+										})
+									);
+								} else {
+									this.creationMode.setValue(AgreementCreationMode.FromScratch);
+									this.recipientOptionsChanged$.next(String(client.clientId));
+									this.agreementFormGroup.patchValue({
+										agreementType: agreementTypeId,
+										recipientTypeId: recipientTypeId,
+										recipientId: client.clientId,
+										legalEntityId: legalEntityId,
+										salesTypes: [salesTypeId],
+										deliveryTypes: [deliveryTypeId],
+										contractTypes: [contractType],
+										startDate: startDate,
+										endDate: endDate,
+										isSignatureRequired: true,
+									});
+
+									let dialogRef = this._dialog.open(NotificationDialogComponent, {
+										width: '500px',
+										height: '240px',
+										backdropClass: 'backdrop-modal--wrapper',
+										data: {
+											label: 'No default template',
+											message: 'Default template was not found basing on data from Workflow',
+										},
+									});
+									return dialogRef.afterClosed();
+								}
+							})
+						);
+				})
+			)
+			.subscribe();
 	}
 
 	private _registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string) {
@@ -375,48 +654,54 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _setClientOptions() {
-		this.clientDropdown$ = (this.agreementFormGroup.recipientTypeId?.valueChanges as Observable<number>).pipe(
+		this.recipientDropdown$ = (this.agreementFormGroup.recipientTypeId?.valueChanges as Observable<number>).pipe(
 			switchMap((recipientTypeId) => {
 				if (recipientTypeId === 1) {
 					return of({
-						options$: this.clientOptionsChanged$.pipe(
-							startWith(this.clientOptionsChanged$.value),
+						options$: this.recipientOptionsChanged$.pipe(
+							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._lookupService.suppliers(search, 20);
 							})
 						),
+						dropdownType: RecipientDropdowns.SUPPLIER,
 						outputProperty: 'supplierId',
 						labelKey: 'supplierName',
+						label: 'Supplier',
 					});
 				} else if (recipientTypeId === 2) {
 					return of({
-						options$: this.clientOptionsChanged$.pipe(
-							startWith(this.clientOptionsChanged$.value),
+						options$: this.recipientOptionsChanged$.pipe(
+							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._lookupService.consultants(search, 20);
 							})
 						),
+						dropdownType: RecipientDropdowns.CONSULTANT,
 						outputProperty: 'id',
 						labelKey: 'name',
+						label: 'Consultant',
 					});
 				} else if (recipientTypeId === 3) {
 					return of({
-						options$: this.clientOptionsChanged$.pipe(
-							startWith(this.clientOptionsChanged$.value),
+						options$: this.recipientOptionsChanged$.pipe(
+							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._lookupService.clientsAll(search, 20);
 							})
 						),
+						dropdownType: RecipientDropdowns.CLIENT,
 						outputProperty: 'clientId',
 						labelKey: 'clientName',
+						label: 'Client',
 					});
 				} else if (recipientTypeId === 4) {
 					return of({
-						options$: this.clientOptionsChanged$.pipe(
-							startWith(this.clientOptionsChanged$.value),
+						options$: this.recipientOptionsChanged$.pipe(
+							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._enumService
@@ -432,8 +717,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									);
 							})
 						),
+						dropdownType: RecipientDropdowns.PDC,
 						outputProperty: 'id',
 						labelKey: 'name',
+						label: 'PDC entity',
 					});
 				} else {
 					return of(null);
@@ -484,16 +771,24 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				takeUntil(this._unSubscribe$),
 				tap(() => {
 					this.duplicateOptionsChanged$.next('');
-				})
+					this.parentOptionsChanged$.next('');
+					this.recipientOptionsChanged$.next('');
+				}),
+				map((creationMode, index) => ({ creationMode, index }))
 			)
-			.subscribe((creationMode) => {
+			.subscribe(({ creationMode, index }) => {
 				this.agreementFormGroup.removeControl('parentAgreementTemplate');
 				this.agreementFormGroup.removeControl('duplicationSourceAgreementId');
 				this.agreementFormGroup.removeControl('parentSelectedAttachmentIds');
+				if (creationMode !== AgreementCreationMode.InheritedFromParent) {
+					this.isDefaultTemplate = false;
+				}
 				if (creationMode === AgreementCreationMode.InheritedFromParent) {
 					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null));
 					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
-					this._subscribeOnParentChanges();
+					if ((!this.clientPeriodId && !this.consultantPeriodId) || index) {
+						this._subscribeOnParentChanges();
+					}
 				} else if (creationMode === AgreementCreationMode.Duplicated) {
 					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null));
 					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
@@ -504,7 +799,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _subscribeOnSignatureRequire() {
 		this.agreementFormGroup.isSignatureRequired.valueChanges
-			.pipe(takeUntil(race([this.agreementFormGroup.receiveAgreementsFromOtherParty, this._unSubscribe$])))
+			.pipe(takeUntil(race([this.agreementFormGroup.receiveAgreementsFromOtherParty.valueChanges, this._unSubscribe$])))
 			.subscribe((isSignatureRequired) => {
 				if (!isSignatureRequired) {
 					this.agreementFormGroup.signers.reset([]);
@@ -603,7 +898,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				}),
 				tap((agreementDetailsDto) => {
 					this.preselectedFiles = agreementDetailsDto.attachments as FileUpload[];
-					this.clientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
+					this.recipientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
 					this.attachmentsFromParent = agreementDetailsDto.attachmentsFromParent
 						? (agreementDetailsDto.attachmentsFromParent as FileUpload[])
 						: [];
@@ -664,7 +959,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				} else if (creationMode === AgreementCreationMode.InheritedFromParent) {
 					return of<DuplicateOrParentOptions>({
 						options$: this.parentOptionsChanged$.pipe(
-							startWith(''),
+							startWith(this.parentOptionsChanged$.value),
 							debounceTime(300),
 							switchMap((search) => {
 								return this._apiServiceProxy2
@@ -731,10 +1026,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			this.creationModeControlReplay$.next(agreement.creationMode);
 
 			this.agreementFormGroup.recipientId.setValue(agreement.recipientId);
-			this.clientOptionsChanged$.next(String(agreement.recipientId));
+			this.recipientOptionsChanged$.next(String(agreement.recipientId));
 			this.agreementFormGroup.recipientTypeId.setValue(agreement.recipientTypeId);
 
-			this.clientOptionsChanged$.next(String(agreement.recipientId));
+			this.recipientOptionsChanged$.next(String(agreement.recipientId));
 
 			this.preselectedFiles = agreement.attachments as FileUpload[];
 			this._cdr.detectChanges();
