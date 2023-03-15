@@ -218,13 +218,13 @@ export class EditorCoreService {
 				case ICustomCommand.FormatPainter:
 					this._formatPainter();
 					break;
-				case ICustomCommand.SelectionHighlight: {
-					this._commentService.toggleCreateMode();
-					break;
-				}
-				case ICustomCommand.ToggleCommentMode:
-					this._commentService.toggleHighlightState(e.parameter);
-					break;
+				// case ICustomCommand.SelectionHighlight: {
+				// 	this._commentService.toggleCreateMode();
+				// 	break;
+				// }
+				// case ICustomCommand.ToggleCommentMode:
+				// 	this._commentService.toggleHighlightState(e.parameter);
+				// 	break;
 			}
 		});
 	}

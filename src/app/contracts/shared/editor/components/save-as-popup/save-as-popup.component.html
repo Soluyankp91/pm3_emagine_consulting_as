@@ -16,7 +16,7 @@
         <ng-container *ngIf="form.get('versionDescription')">
             <mat-form-field appearance="outline" class="textarea-form-field">
                 <mat-label>Version description</mat-label>
-                <textarea [formControlName]="'versionDescription'" [cdkTextareaAutosize]="false" matInput class="text-area"></textarea>
+                <textarea [formControlName]="'versionDescription'" maxlength="500" [cdkTextareaAutosize]="false" matInput class="text-area"></textarea>
             </mat-form-field>
         </ng-container>
 

@@ -57,13 +57,21 @@
                         <ng-template let-cell="option" #optionTemplate>
                             <div>
                                 <div class="autocomplete-first-row">
-                                    {{ cell.clientName }}
+                                    {{ cell.clientName || cell.name || cell.supplierName }}
                                 </div>
                                 <div class="autocomplete-second-row">
-                                    {{ cell.clientId }} · {{
-                                    cell.crmClientId }}
-                                    <ng-container *ngIf="cell.address && cell.city">
-                                        · {{cell.city}} {{cell.address}}
+                                    #{{ cell.clientId || cell.supplierId || cell.id }}
+                                    <ng-container *ngIf="cell.crmClientId">
+                                        · {{cell.crmClientId }}
+                                    </ng-container>
+                                    <ng-container *ngIf="cell.country">
+                                        · {{cell.country }}
+                                    </ng-container>
+                                    <ng-container *ngIf="cell.city">
+                                        · {{cell.city }}
+                                    </ng-container>
+                                    <ng-container *ngIf="cell.address">
+                                        · {{cell.address}}
                                     </ng-container>
                                 </div>
                             </div>
