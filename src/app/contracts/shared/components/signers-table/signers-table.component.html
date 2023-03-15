@@ -27,28 +27,136 @@
 								formControlName="signerId"
                                 appearance="fill"
                                 [displayError]="false"
+                                [panelWidth]="'auto'"
 								[options]="options[1]"
 								[label]="options[0].label"
 								[labelKey]="options[0].labelKey"
 								[outputProperty]="options[0].outputProperty"
 								(inputEmitter)="signerOptionsArr$[i].optionsChanged$.next($event)">
-                                <ng-container *ngIf="options[0].isClient">
-                                    <ng-template let-cell="option" #optionTemplate>
-                                            <div>
+                                <ng-template let-cell="option" #optionTemplate>
+                                    <div>
+                                        <div [ngSwitch]="options[0].dropdownType">
+                                            <div *ngSwitchCase="signerDropdowns.SUPPLIER">
                                                 <div class="autocomplete-first-row">
-                                                    {{ cell.firstName }}  {{ cell.lastname }}
+                                                    {{ cell.supplierName }}
                                                 </div>
-                                                <div class="autocomplete-second-row">
-                                                    {{ cell.id }} ·
-                                                    {{ cell.clientName }} 
-                                                    <ng-container *ngIf="cell.clientVatNumber">
-                                                        ·
-                                                    {{ cell.clientVatNumber }}
+                                                <div class="autocomplete-second-row selected-option">
+                                                    <ng-container *ngIf="cell.email">
+                                                        {{ cell.email }} ·
+                                                    </ng-container>
+                                                    #{{ cell.supplierId }}
+                                                    <ng-container *ngIf="cell.vatNumber">
+                                                        · {{
+                                                            cell.vatNumber }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="cell.supplierCompany">
+                                                        · {{ cell.supplierCompany }}
                                                     </ng-container>
                                                 </div>
+                                                <ng-template #selectedOption let-cell="selectedItem">
+                                                    <div class="autocomplete-second-row selected-option">
+                                                        <ng-container *ngIf="cell.email">
+                                                            {{ cell.email }} ·
+                                                        </ng-container>
+                                                        #{{ cell.supplierId }}
+                                                        <ng-container *ngIf="cell.vatNumber">
+                                                            · {{
+                                                                cell.vatNumber }}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="cell.supplierCompany">
+                                                            · {{ cell.supplierCompany }}
+                                                        </ng-container>
+                                                    </div>
+                                                </ng-template>
                                             </div>
-                                        </ng-template>
-                                </ng-container>
+                                            <div *ngSwitchCase="signerDropdowns.CONSULTANT">
+                                                <div class="autocomplete-first-row">
+                                                    {{ cell.name }}
+                                                </div>
+                                                <div class="autocomplete-second-row selected-option">
+                                                    <ng-container *ngIf="cell.email">
+                                                        {{ cell.email }} ·
+                                                    </ng-container>
+                                                    #{{ cell.id }}
+                                                    <ng-container *ngIf="cell.vatNumber">
+                                                        · {{
+                                                            cell.vatNumber }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="cell.companyName">
+                                                        · {{ cell.companyName }}
+                                                    </ng-container>
+                                                </div>
+                                                <ng-template #selectedOption let-cell="selectedItem">
+                                                    <div class="autocomplete-second-row selected-option">
+                                                        <ng-container *ngIf="cell.email">
+                                                            {{ cell.email }} ·
+                                                        </ng-container>
+                                                        #{{ cell.id }}
+                                                        <ng-container *ngIf="cell.vatNumber">
+                                                            · {{
+                                                                cell.vatNumber }}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="cell.companyName">
+                                                            · {{ cell.companyName }}
+                                                        </ng-container>
+                                                    </div>
+                                                </ng-template>
+                                            </div>
+                                            <div *ngSwitchCase="signerDropdowns.CLIENT">
+                                                <div class="autocomplete-first-row selected-option">
+                                                    {{ cell.firstName }} {{ cell.lastName }}
+                                                </div>
+                                                <div class="autocomplete-second-row selected-option">
+                                                    <ng-container *ngIf="cell.email">
+                                                        {{ cell.email }} ·
+                                                    </ng-container>
+                                                    #{{ cell.clientId }}
+                                                    <ng-container *ngIf="cell.clientVatNumber">
+                                                        · {{
+                                                            cell.clientVatNumber }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="cell.clientName">
+                                                        · {{ cell.clientName}}
+                                                    </ng-container>
+                                                </div>
+                                                <ng-template #selectedOption let-cell="selectedItem">
+                                                    <div class="autocomplete-second-row selected-option">
+                                                        <ng-container *ngIf="cell.email">
+                                                            {{ cell.email }} ·
+                                                        </ng-container>
+                                                        #{{ cell.clientId }}
+                                                        <ng-container *ngIf="cell.clientVatNumber">
+                                                            · {{
+                                                                cell.clientVatNumber }}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="cell.clientName">
+                                                            · {{ cell.clientName}}
+                                                        </ng-container>
+                                                    </div>
+                                                </ng-template>
+                                            </div>
+                                            <div *ngSwitchCase="signerDropdowns.INTERNAL">
+                                                <div class="autocomplete-first-row">
+                                                    {{ cell.name }}
+                                                </div>
+                                                <ng-container *ngIf="cell.email">
+                                                    {{ cell.email }} ·
+                                                </ng-container>
+                                                <div class="autocomplete-second-row selected-option">
+                                                    #{{ cell.id }}
+                                                </div>
+                                                <ng-template #selectedOption let-cell="selectedItem">
+                                                    <ng-container *ngIf="cell.email">
+                                                        {{ cell.email }} ·
+                                                    </ng-container>
+                                                    <div class="autocomplete-second-row selected-option">
+                                                        #{{ cell.id }}
+                                                    </div>
+                                                </ng-template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
 							</emg-dropdown-autocomplete-single-select>
 						</ng-container>
 					</ng-container>

@@ -84,6 +84,7 @@ import { TemplatePdfPreviewComponent } from './shared/template-pdf-preview/templ
 import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 import { ExtraHttpsService } from './shared/services/extra-https.service';
 import { DefaultTemplateComponent } from './shared/components/popUps/default-template/default-template.component';
+import { WorkflowInfoDisplayPanelComponent } from './shared/components/workflow-info-display-panel/workflow-info-display-panel.component';
 
 @NgModule({
 	declarations: [
@@ -147,6 +148,7 @@ import { DefaultTemplateComponent } from './shared/components/popUps/default-tem
 		NotificationDialogComponent,
 		StrInitialsPipe,
   DefaultTemplateComponent,
+  WorkflowInfoDisplayPanelComponent,
 	],
 	imports: [
 		CommonModule,

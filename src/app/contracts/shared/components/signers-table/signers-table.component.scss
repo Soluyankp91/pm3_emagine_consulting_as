@@ -92,4 +92,16 @@ app-signers-table {
 		height: 5px;
 		width: 10px;
 	}
+
+    .selected-option {
+        font-size: 12px;
+        font-weight: 600;
+        color: #b6b4b2;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        max-width: 100%;
+    }
 }

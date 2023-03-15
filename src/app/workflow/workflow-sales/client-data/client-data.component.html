@@ -51,8 +51,8 @@
                                             <ng-container *ngIf="client?.clientId !== undefined">
                                                 <span
                                                     class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                    #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ?
-                                                    ', ' + client.countryName : ''}}
+                                                    #{{client.clientId}} | {{client.city ?? ''}} {{client.tenantCountryCode ?
+                                                    ', ' + client.tenantCountryCode : ''}}
                                                 </span>
                                             </ng-container>
                                         </div>
@@ -91,8 +91,8 @@
                                             <ng-container *ngIf="client?.clientId !== undefined">
                                                 <span
                                                     class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                    #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ?
-                                                    ', ' + client.countryName : ''}}
+                                                    #{{client.clientId}} | {{client.city ?? ''}} {{client.tenantCountryCode ?
+                                                    ', ' + client.tenantCountryCode : ''}}
                                                 </span>
                                             </ng-container>
                                         </div>
@@ -298,7 +298,7 @@
                                                     <span
                                                         class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                         #{{client.clientId}} | {{client.city ?? ''}}
-                                                        {{client.countryName ? ', ' + client.countryName : ''}}
+                                                        {{client.tenantCountryCode ? ', ' + client.tenantCountryCode : ''}}
                                                     </span>
                                                 </ng-container>
                                             </div>

@@ -15,6 +15,12 @@ import { SignerOptions } from 'src/app/contracts/agreements/template-editor/sett
 import { AgreementDetailsSignerDto, LookupServiceProxy, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../services/contracts.service';
 
+export enum SignerDropdowns {
+	INTERNAL,
+	CLIENT,
+	SUPPLIER,
+	CONSULTANT,
+}
 @Component({
 	selector: 'app-signers-table',
 	templateUrl: './signers-table.component.html',
@@ -25,6 +31,8 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 	formArray: FormArray;
 
 	options$ = this._contractService.signersEnum$$;
+
+    signerDropdowns = SignerDropdowns;
 
 	signerTableData: AbstractControl[] = [];
 	signerOptionsArr$: SignerOptions[] = [];
@@ -115,8 +123,13 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'InternalEmagine', labelKey: 'name', outputProperty: 'id'}),
-							this._lookupService.employees(search, true),
+							of({
+								label: 'InternalEmagine',
+								labelKey: 'name',
+								outputProperty: 'id',
+								dropdownType: SignerDropdowns.INTERNAL,
+							}),
+							this._lookupService.employees(search, false),
 						]);
 					})
 				);
@@ -126,7 +139,12 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Clients', labelKey: 'clientName', outputProperty: 'clientId', isClient: true}),
+							of({
+								label: 'Clients',
+								labelKey: 'firstName',
+								outputProperty: 'clientId',
+								dropdownType: SignerDropdowns.CLIENT,
+							}),
 							this._lookupService.signerContacts(search, 20),
 						]);
 					})
@@ -136,7 +154,12 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Consultants', labelKey: 'name', outputProperty: 'id' }),
+							of({
+								label: 'Consultants',
+								labelKey: 'name',
+								outputProperty: 'id',
+								dropdownType: SignerDropdowns.CONSULTANT,
+							}),
 							this._lookupService.consultants(search, 20),
 						]);
 					})
@@ -146,7 +169,12 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					switchMap((search: string) => {
 						return forkJoin([
-							of({ label: 'Suppliers', labelKey: 'supplierName', outputProperty: 'supplierId' }),
+							of({
+								label: 'Suppliers',
+								labelKey: 'supplierName',
+								outputProperty: 'supplierId',
+								dropdownType: SignerDropdowns.SUPPLIER,
+							}),
 							this._lookupService.suppliers(search, 20),
 						]);
 					})

@@ -1,4 +1,16 @@
-import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, Self, ContentChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnDestroy,
+	OnInit,
+	EventEmitter,
+	Output,
+	Self,
+	ContentChild,
+	TemplateRef,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+} from '@angular/core';
 import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
@@ -11,20 +23,22 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 	selector: 'emg-dropdown-autocomplete-single-select',
 	templateUrl: './dropdown-autocomplete-single-select.component.html',
 	styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() options: Item[];
 	@Input() labelKey: string = 'name';
 	@Input() outputProperty: string = 'id';
 	@Input() label: string = 'label';
-    @Input() displayError: boolean = true;
-    @Input() appearance: MatFormFieldAppearance = 'outline';
+	@Input() displayError: boolean = true;
+	@Input() appearance: MatFormFieldAppearance = 'outline';
+	@Input() panelWidth: string | number;
 	@Input() unwrapFunction?: (arg: any) => {};
 
 	@Output() inputEmitter = new EventEmitter<string>();
 
 	@ContentChild('optionTemplate') optionTemplate: TemplateRef<any>;
+	@ContentChild('selectedOption') selectedOptionTemplate: TemplateRef<any>;
 
 	get control() {
 		return this.ngControl.control as AbstractControl;
@@ -42,7 +56,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 
 	private _unSubscribe$ = new Subject();
 
-	constructor(@Self() private readonly ngControl: NgControl) {
+	constructor(@Self() private readonly ngControl: NgControl, private readonly _cdr: ChangeDetectorRef) {
 		ngControl.valueAccessor = this;
 	}
 
@@ -74,6 +88,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 			this.onChange(this.unwrapFunction(selectedOption));
 		}
 		this.selectedItem = selectedOption;
+		this._cdr.detectChanges();
 	}
 
 	trackById(index: number, item: Item) {
@@ -100,6 +115,9 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 			emitEvent: false,
 			onlySelf: true,
 		});
+		if (this.unwrapFunction) {
+			this.onChange(this.unwrapFunction(preselectedOption));
+		}
 	}
 
 	setDisabledState(isDisabled: boolean): void {
