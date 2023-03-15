@@ -108,10 +108,10 @@ export class EditorCoreService {
 		this._commentService.cleanUpDocument(comments);
 	}
 
-	insertMergeField(field: string) {
+	insertMergeField(field: string, insertLineBreak = true) {
 		const position = this.editor.selection.active;
 		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
-
+		
 		const text = this.editor.document.getText(_field.codeInterval);
 
 		const replaced = text.replace(/['"]+/g, '');
@@ -122,11 +122,8 @@ export class EditorCoreService {
 
 	toggleFields() {
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
-		
-		setTimeout(() => {
-			this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
-			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
-		}, 0)
+		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+		this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
 	}
 	
 

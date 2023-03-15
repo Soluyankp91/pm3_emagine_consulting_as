@@ -23,7 +23,12 @@
 				[height]="390"
 				[searchEnabled]="true"
 				[(searchValue)]="searchValue"
-				(onItemClick)="selectItem($event)">
+				[showCheckBoxesMode]="'normal'"
+				[selectionMode]="'multiple'"
+				[selectNodesRecursive]="true"
+				(onContentReady)="treeViewContentReady($event)"
+				(onSelectionChanged)="treeViewSelectionChanged($event)"
+			>
 			</dx-tree-view>
 		</div>
 		<div class="buttons-column button-group">
@@ -31,9 +36,9 @@
 				<dx-button
 					stylingMode="contained"
 					text="Insert"
-					[type]="selected ? 'default' : 'normal'"
+					[type]="selected.length ? 'default' : 'normal'"
 					[width]="120"
-					[disabled]="!selected"
+					[disabled]="!selected.length"
 					(onClick)="applySelected()">
 				</dx-button>
 			</div>

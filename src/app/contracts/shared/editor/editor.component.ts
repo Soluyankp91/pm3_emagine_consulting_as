@@ -216,8 +216,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
-	mergeSelectedField(field: string) {
-		this._editorCoreService.insertMergeField(field);
+	mergeSelectedField(fields: string[]) {
+		fields.forEach((field, index) => {
+			setTimeout(() => {
+				this._editorCoreService.insertMergeField(field);
+			})
+		})
 	}
 
 	loadCompareTemplateByVersion(version: number) {

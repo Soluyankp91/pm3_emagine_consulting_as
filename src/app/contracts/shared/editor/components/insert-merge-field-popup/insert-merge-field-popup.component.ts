@@ -32,7 +32,7 @@ interface IMergeFieldItem {
 export class InsertMergeFieldPopupComponent implements OnInit {
 	@ViewChild('treeView') private _treeView: DxTreeViewComponent;
 
-	selected: string | null = null;
+	selected: string[] = [];
 	dataSource: Array<IMergeFieldItem> = [];
 	visibility: boolean = false;
 	searchValue: string = '';
@@ -41,7 +41,7 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 		this.dataSource = this._mapMergeField(fields);
 	}
 
-	@Output() mergeField: EventEmitter<string> = new EventEmitter();
+	@Output() mergeField: EventEmitter<string[]> = new EventEmitter();
 
 	constructor(private _cdr: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
 
@@ -53,14 +53,30 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 	}
 
 	selectItem(event: Record<'itemData', IMergeFieldItem>) {
-		this.selected = event.itemData.parentID ? event.itemData.id : null;
+		 event.itemData.parentID && this.selected.push(event.itemData.id);
 	}
 
 	applySelected() {
-		if (this.selected) {
+		if (this.selected.length) {
 			this.mergeField.emit(this.selected);
 			this.close();
 		}
+	}
+
+	treeViewSelectionChanged(e) {
+		this.syncSelection(e.component);
+	}
+	
+	treeViewContentReady(e) {
+		this.syncSelection(e.component);
+	}
+
+	syncSelection(treeView) {
+		const selectedItems = treeView.getSelectedNodes()
+			.map((node) => node.itemData).filter(item => item.parentID)
+			.map(item => item.id);
+
+		this.selected = selectedItems;
 	}
 
 	close() {
@@ -69,8 +85,9 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 	}
 
 	afterClosed() {
-		this.selected = null;
+		this.selected = [];
 		this.searchValue = '';
+		this._treeView.instance.unselectAll();
 		this._treeView.instance.collapseAll();
 	}
 
