@@ -59,12 +59,12 @@ export class SettingsTabComponent implements OnInit {
 		}
 		this.tabs = [
 			{
-				link: '',
+				link: '../create',
 				label: 'Settings',
 				icon: 'cog-icon',
 			},
 			{
-				link: '',
+				link: undefined,
 				label: 'Editor',
 				disabled: true,
 				icon: 'editor-icon',
