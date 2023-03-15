@@ -22,7 +22,8 @@ export class ProjectLineForm extends UntypedFormGroup {
             modificationDate: new UntypedFormControl(null),
             consultantInsuranceOptionId: new UntypedFormControl(null),
             wasSynced: new UntypedFormControl(false),
-            isLineForFees: new UntypedFormControl(false)
+            isLineForFees: new UntypedFormControl(false),
+            markedForLegacyDeletion: new UntypedFormControl(false),
         })
 
     }
@@ -85,5 +86,8 @@ export class ProjectLineForm extends UntypedFormGroup {
     }
     get isLineForFees() {
         return this.get('isLineForFees');
+    }
+    get markedForLegacyDeletion() {
+        return this.get('markedForLegacyDeletion');
     }
 }
