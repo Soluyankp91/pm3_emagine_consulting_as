@@ -4,6 +4,7 @@ import {
 	FileTabItemId,
 	HomeTabCommandId,
 	HomeTabItemId,
+	MailMergeTabCommandId,
 	MailMergeTabItemId,
 	Options,
 	RibbonButtonItem,
@@ -109,8 +110,25 @@ export class EditorCoreService {
 
 	insertMergeField(field: string) {
 		const position = this.editor.selection.active;
-		this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
+		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
+
+		const text = this.editor.document.getText(_field.codeInterval);
+
+		const replaced = text.replace(/['"]+/g, '');
+		this.editor.document.deleteText(_field.codeInterval);
+		this.editor.document.insertText(_field.codeInterval.start, replaced);
+		this.toggleFields();
 	}
+
+	toggleFields() {
+		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+		
+		setTimeout(() => {
+			this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
+		}, 0)
+	}
+	
 
 	registerCommentThread(interval: IntervalApi, commentID: number) {
 		this._commentService.applyHighlight(interval, commentID);
@@ -153,6 +171,13 @@ export class EditorCoreService {
 		homeTab.insertItem(new RibbonButtonItem(ICustomCommand.FormatPainter, 'Format Painter', painterFormatBtnOpts), 3);
 
 		mergeTab.removeItem(MailMergeTabItemId.ShowInsertMergeFieldDialog);
+		mergeTab.removeItem(MailMergeTabItemId.ToggleViewMergedData);
+		mergeTab.removeItem(MailMergeTabItemId.ShowMailMergeDialog);
+		mergeTab.removeItem(MailMergeTabItemId.GoToFirstDataRecord);
+		mergeTab.removeItem(MailMergeTabItemId.GoToLastDataRecord);
+		mergeTab.removeItem(MailMergeTabItemId.GoToNextDataRecord);
+		mergeTab.removeItem(MailMergeTabItemId.GoToPreviousDataRecord);
+
 		fileTab.removeItem(FileTabItemId.ExportDocument);
 		homeTab.removeItem(HomeTabItemId.Paste);
 
@@ -169,6 +194,7 @@ export class EditorCoreService {
 		this.editor.events.documentLoaded.addHandler(() => {
 			this.afterViewInit$.next();
 			this.afterViewInit$.complete();
+			this.toggleFields();
 		});
 
 		this.editor.events.documentChanged.addHandler(() => {

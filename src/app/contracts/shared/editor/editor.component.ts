@@ -321,6 +321,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveCurrentAsDraft() {
 		this.isLoading = true;
+		this._editorCoreService.toggleFields();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -334,6 +335,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveCurrentAsComplete(isAgreement: boolean) {
 		this.isLoading = true;
+		this._editorCoreService.toggleFields();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			if (isAgreement) {
@@ -390,6 +392,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveDraftAsDraft() {
 		this.isLoading = true;
+		this._editorCoreService.toggleFields();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -402,6 +405,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	promoteToDraft() {
 		this.isLoading = true;
+		this._editorCoreService.toggleFields();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -415,6 +419,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveDraftAsComplete() {
 		this.isLoading = true;
+		this._editorCoreService.toggleFields();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService

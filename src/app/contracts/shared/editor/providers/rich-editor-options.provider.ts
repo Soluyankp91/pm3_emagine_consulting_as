@@ -10,6 +10,8 @@ export const RichEditorOptionsProvider: FactoryProvider = {
 		options.unit = 1;
 		options.width = 'calc(100vw - 160px)';
 		options.height = 'calc(100vh - 220px)';
+		
+		options.mailMerge.viewMergedData = true;
 		options.confirmOnLosingChanges.enabled = false;
 		return options;
 	},
