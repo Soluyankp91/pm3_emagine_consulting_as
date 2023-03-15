@@ -355,7 +355,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
     }
 
     changeAnchorSelection(item: StepAnchorDto) {
-        this.selectedAnchor = item.anchor;
+        this.selectedAnchor = item?.anchor;
     }
 
     deleteWorkflowTermination() {
