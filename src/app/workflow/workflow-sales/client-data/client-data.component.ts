@@ -17,9 +17,10 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { ClientRateTypes, EClientSelectionType, ETimeReportingCaps, EValueUnitTypes, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
-import { AddOrEditPoDialogComponent } from '../../shared/components/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
+import { AddOrEditPoDialogComponent } from '../../shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
+import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 
 @Component({
 	selector: 'app-client-data',
@@ -28,6 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+    @ViewChild('purchaseOrders') purchaseOrders: PurchaseOrdersComponent;
     @Input() periodId: string;
 	@Input() readOnlyMode: boolean;
     @Input() mainDataForm: WorkflowSalesMainForm;
@@ -71,8 +73,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialFeeFilter = new UntypedFormControl('');
     eTimeReportingCaps = ETimeReportingCaps;
-    eValueUnitType = EValueUnitTypes;
-    ePoCapType = PurchaseOrderCapType;
+    // eValueUnitType = EValueUnitTypes;
+    // ePoCapType = PurchaseOrderCapType;
+    // capTypes: { [key: string]: string };
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -115,6 +118,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
             valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
             periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+            // capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.legalEntities = result.legalEntities;
@@ -127,6 +131,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.clientTimeReportingCap = result.clientTimeReportingCap;
             this.valueUnitTypes = result.valueUnitTypes;
             this.periodUnitTypes = result.periodUnitTypes;
+            // this.capTypes = result.capTypes;
 		});
 	}
 
@@ -671,47 +676,72 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
         this.submitFormBtn.nativeElement.click();
     }
 
-    createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderDto) {
-        const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-        MediumDialogConfig.data = {
-            isEdit: !!purchaseOrder,
-            clientPeriodId: this.periodId,
-            directClientId: this.salesClientDataForm.directClientIdValue.value?.clientId
-        }
-		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
+    // createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderDto, orderIndex?: number) {
+    //     const scrollStrategy = this._overlay.scrollStrategies.reposition();
+	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
+    //     MediumDialogConfig.data = {
+    //         purchaseOrder: purchaseOrder,
+    //         isEdit: !!purchaseOrder,
+    //         clientPeriodId: this.periodId,
+    //         directClientId: this.salesClientDataForm.directClientIdValue.value?.clientId,
+    //     }
+	// 	const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((purchaseOrder: PurchaseOrderDto) => {
-            this._addPurchaseOrder(purchaseOrder);
-		});
-    }
+	// 	dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderDto) => {
+    //         if (!!purchaseOrder) {
+    //             this._updatePurchaseOrder(newPurchaseOrder, orderIndex);
+    //         } else {
+    //             this._addPurchaseOrder(newPurchaseOrder);
+    //         }
+	// 	});
+    // }
 
-    removePurchaseOrder(orderIndex: number) {
-        this.purchaseOrders.removeAt(orderIndex);
-    }
+    // removePurchaseOrder(orderIndex: number) {
+    //     this.purchaseOrders.removeAt(orderIndex);
+    // }
 
-    private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
-        const form = this._fb.group({
-			id: new UntypedFormControl(purchaseOrder?.id ?? null),
-			number: new UntypedFormControl(purchaseOrder?.number),
-            numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired),
-            receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate),
-            capForInvoicing: new UntypedFormGroup({
-                type: new UntypedFormControl(purchaseOrder?.capForInvoicing?.type),
-                valueUnitTypeId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.valueUnitTypeId),
-                maxAmount: new UntypedFormControl(purchaseOrder?.capForInvoicing?.maxAmount),
-                currencyId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.currencyId),
-                currency: new UntypedFormControl(this.findItemById(this.currencies, purchaseOrder?.capForInvoicing?.currencyId)),
-                amountUsed: new UntypedFormControl(purchaseOrder?.capForInvoicing?.amountUsed),
-            }),
-            createdBy: new UntypedFormControl(purchaseOrder?.createdBy),
-            createdOnUtc: new UntypedFormControl(purchaseOrder?.createdOnUtc),
-            modifiedBy: new UntypedFormControl(purchaseOrder?.modifiedBy),
-            modifiedOnUtc: new UntypedFormControl(purchaseOrder?.modifiedOnUtc),
-            workflowsIdsReferencingThisPo: new UntypedFormControl(purchaseOrder?.workflowsIdsReferencingThisPo),
-		});
-		this.purchaseOrders.push(form);
-    }
+    // private _updatePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
+    //     const formRow = this.purchaseOrders.at(orderIndex);
+    //     formRow.get('id').setValue(purchaseOrder?.id, {emitEvent: false});
+    //     formRow.get('number').setValue(purchaseOrder?.number, {emitEvent: false});
+    //     formRow.get('numberMissingButRequired').setValue(purchaseOrder?.numberMissingButRequired, {emitEvent: false});
+    //     formRow.get('receiveDate').setValue(purchaseOrder?.receiveDate, {emitEvent: false});
+    //     formRow.get('createdBy').setValue(purchaseOrder?.createdBy, {emitEvent: false});
+    //     formRow.get('createdOnUtc').setValue(purchaseOrder?.createdOnUtc, {emitEvent: false});
+    //     formRow.get('modifiedBy').setValue(purchaseOrder?.modifiedBy, {emitEvent: false});
+    //     formRow.get('modifiedOnUtc').setValue(purchaseOrder?.modifiedOnUtc, {emitEvent: false});
+    //     formRow.get('workflowsIdsReferencingThisPo').setValue(purchaseOrder?.workflowsIdsReferencingThisPo, {emitEvent: false});
+    //     const capForInvoicingForm = formRow.get('capForInvoicing') as UntypedFormGroup;
+    //     capForInvoicingForm.get('type').setValue(purchaseOrder?.capForInvoicing?.type, {emitEvent: false});
+    //     capForInvoicingForm.get('valueUnitTypeId').setValue(purchaseOrder?.capForInvoicing?.valueUnitTypeId, {emitEvent: false});
+    //     capForInvoicingForm.get('maxAmount').setValue(purchaseOrder?.capForInvoicing?.maxAmount, {emitEvent: false});
+    //     capForInvoicingForm.get('currencyId').setValue(purchaseOrder?.capForInvoicing?.currencyId, {emitEvent: false});
+    //     capForInvoicingForm.get('currency').setValue(this.findItemById(this.currencies, purchaseOrder?.capForInvoicing?.currencyId), {emitEvent: false});
+    //     capForInvoicingForm.get('amountUsed').setValue(purchaseOrder?.capForInvoicing?.amountUsed, {emitEvent: false});
+    // }
+
+    // private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
+    //     const form = this._fb.group({
+	// 		id: new UntypedFormControl(purchaseOrder?.id ?? null),
+	// 		number: new UntypedFormControl(purchaseOrder?.number),
+    //         numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired),
+    //         receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate),
+    //         capForInvoicing: new UntypedFormGroup({
+    //             type: new UntypedFormControl(purchaseOrder?.capForInvoicing?.type),
+    //             valueUnitTypeId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.valueUnitTypeId),
+    //             maxAmount: new UntypedFormControl(purchaseOrder?.capForInvoicing?.maxAmount),
+    //             currencyId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.currencyId),
+    //             currency: new UntypedFormControl(this.findItemById(this.currencies, purchaseOrder?.capForInvoicing?.currencyId)),
+    //             amountUsed: new UntypedFormControl(purchaseOrder?.capForInvoicing?.amountUsed),
+    //         }),
+    //         createdBy: new UntypedFormControl(purchaseOrder?.createdBy),
+    //         createdOnUtc: new UntypedFormControl(purchaseOrder?.createdOnUtc),
+    //         modifiedBy: new UntypedFormControl(purchaseOrder?.modifiedBy),
+    //         modifiedOnUtc: new UntypedFormControl(purchaseOrder?.modifiedOnUtc),
+    //         workflowsIdsReferencingThisPo: new UntypedFormControl(purchaseOrder?.workflowsIdsReferencingThisPo),
+	// 	});
+	// 	this.purchaseOrders.push(form);
+    // }
 
     get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
@@ -728,8 +758,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
     get timeReportingCaps(): UntypedFormArray {
         return this.salesClientDataForm.get('timeReportingCaps') as UntypedFormArray;
     }
-    get purchaseOrders(): UntypedFormArray {
-        return this.salesClientDataForm.get('purchaseOrders') as UntypedFormArray;
-    }
+    // get purchaseOrders(): UntypedFormArray {
+    //     return this.salesClientDataForm.get('purchaseOrders') as UntypedFormArray;
+    // }
 
 }

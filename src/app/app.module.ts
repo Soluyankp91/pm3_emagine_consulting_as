@@ -590,5 +590,9 @@ export class AppModule {
 			'percentage-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/percentage-icon.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'shared-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/shared-icon.svg')
+		);
 	}
 }

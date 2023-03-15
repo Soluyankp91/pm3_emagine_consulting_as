@@ -998,6 +998,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		input.clientData.noSpecialFee = this.clientDataComponent?.contractClientForm.clientFees.value?.length === 0;
+        // input.clientData.purchaseOrdersIds = this.clientDataComponent?.purchaseOrders.value.map(x => x.id);
 		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
 
 		input.mainData = new ContractsMainDataDto();

@@ -702,7 +702,8 @@
                 <h2 class="workflow-section--header">Client purchase order + cap</h2>
             </div>
             <div class="workflow-section--content">
-                <div class="inline-edit-form u-w--100">
+                <purchase-orders #purchaseOrders [readOnlyMode]="readOnlyMode" [periodId]="periodId" [directClientId]="salesClientDataForm.directClientIdValue.value?.clientId"></purchase-orders>
+                <!-- <div class="inline-edit-form u-w--100">
                     <ng-container *ngIf="salesClientDataForm.purchaseOrders?.controls?.length">
                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
                             class="workflow-sales-inline--form__header-container u-w--100">
@@ -735,11 +736,14 @@
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                 class="workflow-sales-inline--form__row u-w--100">
                                 <ng-container>
-                                    <span fxFlex class="u-w--100 text-truncate-ellipsis"
+                                    <span fxFlex fxLayoutAlign="start center" class="u-w--100 text-truncate-ellipsis"
                                         [ngClass]="{'medium-grey-color': order.value.numberMissingButRequired}"
                                         [matTooltip]="order.value.numberMissingButRequired ? 'Missing, but required' : (order.value.number ?? '-')" matTooltipClass="white-tooltip"
                                         appShowIfTruncated>
                                         {{order.value.numberMissingButRequired ? 'Missing, but required' : (order.value.number ?? '-') }}
+                                        <ng-container *ngIf="order.value.workflowsIdsReferencingThisPo?.length">
+                                            <mat-icon class="shared-icon u-ml--10 cursor-pointer" svgIcon="shared-icon" [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
+                                        </ng-container>
                                     </span>
                                     <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
                                         [matTooltip]="order.value.receiveDate !== null && order.value.receiveDate !== undefined ? (order.value.receiveDate | momentFormat) : '-'" matTooltipClass="white-tooltip"
@@ -747,9 +751,9 @@
                                         {{ order.value.receiveDate !== null && order.value.receiveDate !== undefined ? (order.value.receiveDate | momentFormat) : '-'}}
                                     </span>
                                     <span fxFlex="150px" class="u-w--100 text-truncate-ellipsis"
-                                        [matTooltip]="order.value.capForInvoicing?.type"
+                                        [matTooltip]="capTypes[order.value.capForInvoicing?.type]"
                                         matTooltipClass="white-tooltip" appShowIfTruncated>
-                                        {{order.value.capForInvoicing?.type}}
+                                        {{capTypes[order.value.capForInvoicing?.type]}}
                                     </span>
                                     <span fxFlex="120px" class="u-w--100 text-truncate-ellipsis"
                                         [matTooltip]="order.value.capForInvoicing?.amountUsed ?? '-'"
@@ -791,7 +795,7 @@
                                         <mat-menu #poMenu>
                                             <button class="menu-item green-color"
                                                 mat-menu-item appPreventDoubleClick
-                                                (throttledClick)="createOrEditPurchaseOrder(order.value)">
+                                                (throttledClick)="createOrEditPurchaseOrder(order.value, i)">
                                                 <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                 Edit
                                             </button>
@@ -821,7 +825,8 @@
                         <mat-icon>add</mat-icon>
                         Add PO
                     </button>
-                </ng-container>
+                </ng-container> -->
+
                 <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">

@@ -176,6 +176,12 @@
     </div>
     <ng-container>
         <mat-divider class="u-w--100 u-mb--30"></mat-divider>
+        <h2 class="workflow-overview--history-header u-mb--15">Client Purchase Orders</h2>
+        <p class="medium-grey-color text-bold">With Cap for invoicing</p>
+        <purchase-orders #purchaseOrder [periodId]="periodId" [readOnlyMode]="false" [workflowId]="workflowId" [mode]="ePurchaseOrderMode.WFOverview"></purchase-orders>
+    </ng-container>
+    <ng-container>
+        <mat-divider class="u-w--100 u-mb--30"></mat-divider>
         <h2 class="workflow-overview--history-header u-mb--15">Documents</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--15">
             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">

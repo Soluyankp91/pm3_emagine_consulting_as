@@ -34,6 +34,7 @@ import {
 	WorkflowServiceProxy,
 	WorkflowStepStatus,
 } from 'src/shared/service-proxies/service-proxies';
+import { EPurchaseOrderMode } from '../shared/components/purchase-orders/purchase-orders.model';
 import { WFDocument } from '../shared/components/wf-documents/wf-documents.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
@@ -91,6 +92,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	pageSizeOptions = [5, 10, 20, 50, 100];
 	individualConsultantActionsAvailable: boolean;
     showAllDocument = false;
+    ePurchaseOrderMode = EPurchaseOrderMode;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,

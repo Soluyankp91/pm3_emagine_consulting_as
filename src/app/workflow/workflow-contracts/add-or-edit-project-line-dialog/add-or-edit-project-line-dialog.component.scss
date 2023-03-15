@@ -31,3 +31,8 @@
 .hint-reached-maximum-characters {
     color: #FAAD19;
 }
+
+.section-header {
+    @include fontOpenSans(16px, 700);
+    color: rgba($color: #384853, $alpha: 87%);
+}

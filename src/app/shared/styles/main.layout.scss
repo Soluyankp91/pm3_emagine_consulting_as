@@ -101,3 +101,9 @@
 .fi {
     outline: 1px solid $sand-color;
 }
+
+mat-icon.shared-icon:hover {
+    svg>path[fill] {
+        fill: $green-color !important;
+    }
+}

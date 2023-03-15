@@ -1,16 +1,16 @@
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { IdNameDto } from 'src/shared/service-proxies/service-proxies';
+import { PurchaseOrderCapDto, PurchaseOrderDto } from 'src/shared/service-proxies/service-proxies';
 
 export class PurchaseOrderForm extends UntypedFormGroup {
-	constructor() {
+	constructor(purchaseOrder?: PurchaseOrderDto) {
 		super({
-			id: new UntypedFormControl(null),
+			id: new UntypedFormControl(purchaseOrder?.id ?? null),
 			poSource: new UntypedFormControl(null),
-			number: new UntypedFormControl('', Validators.required),
-			existingPo: new UntypedFormControl('', Validators.required),
-			receiveDate: new UntypedFormControl(null),
-			numberMissingButRequired: new UntypedFormControl(false),
-			capForInvoicing: new CapForInvoicingForm(),
+			number: new UntypedFormControl(purchaseOrder?.number ?? ''),
+			existingPo: new UntypedFormControl(''),
+			receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate ?? null),
+			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired ?? false),
+			capForInvoicing: new CapForInvoicingForm(purchaseOrder?.capForInvoicing),
 		});
 	}
 
@@ -38,13 +38,13 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 }
 
 export class CapForInvoicingForm extends UntypedFormGroup {
-	constructor() {
+	constructor(purchaseOrderCap?: PurchaseOrderCapDto) {
 		super({
-			type: new UntypedFormControl(null),
-			maxAmount: new UntypedFormControl(null, Validators.required),
-			valueUnitTypeId: new UntypedFormControl(null),
-			currencyId: new UntypedFormControl(null),
-			amountUsed: new UntypedFormControl(null),
+			type: new UntypedFormControl(purchaseOrderCap?.type ?? 1),
+			maxAmount: new UntypedFormControl(purchaseOrderCap?.maxAmount ?? null, Validators.required),
+			valueUnitTypeId: new UntypedFormControl(purchaseOrderCap?.valueUnitTypeId ?? null),
+			currencyId: new UntypedFormControl(purchaseOrderCap?.currencyId ?? null),
+			amountUsed: new UntypedFormControl(purchaseOrderCap?.amountUsed ?? null),
 		});
 	}
 

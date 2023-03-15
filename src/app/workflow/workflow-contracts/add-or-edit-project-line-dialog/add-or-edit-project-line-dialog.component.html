@@ -13,144 +13,151 @@
         <mat-icon class="confirmation-dialog--header-close-icon" svgIcon="dialog-close-icon" (click)="close()"></mat-icon>
     </div>
     <form [formGroup]="projectLineForm">
-        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
-                <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%">
-                    <mat-label>Project name</mat-label>
-                    <textarea matInput autocomplete="new-password" maxlength="250" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" name="projectName" formControlName="projectName" class="u-pb--10">
-                    </textarea>
-                    <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.projectName?.length === 250}">{{(projectLineForm.value.projectName?.length ?? 0 ) + '/250'}}</mat-hint>
-                    <mat-error>
-                        <app-validator [control]="projectLineForm.projectName"></app-validator>
-                    </mat-error>
-                </mat-form-field>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                    <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">
-                        <mat-label>Start date</mat-label>
-                        <input autocomplete="off" placeholder="New end date" matInput [matDatepicker]="startDatePicker"
-                            name="startDate" formControlName="startDate" (focus)="startDatePicker.open()"
-                            appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
-                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                        <mat-datepicker #startDatePicker></mat-datepicker>
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
+                    <h2 class="section-header">Main data</h2>
+                    <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%">
+                        <mat-label>Project name</mat-label>
+                        <textarea matInput autocomplete="new-password" maxlength="250" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" name="projectName" formControlName="projectName" class="u-pb--10">
+                        </textarea>
+                        <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.projectName?.length === 250}">{{(projectLineForm.value.projectName?.length ?? 0 ) + '/250'}}</mat-hint>
+                        <mat-error>
+                            <app-validator [control]="projectLineForm.projectName"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                        <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">
+                            <mat-label>Start date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput [matDatepicker]="startDatePicker"
+                                name="startDate" formControlName="startDate" (focus)="startDatePicker.open()"
+                                appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #startDatePicker></mat-datepicker>
+                        </mat-form-field>
+
+                        <div fxLayout="column" fxLayoutAlign="start start" fxFlex="0 0 calc(50% - 8px)">
+                            <mat-form-field appearance="outline" class="u-w--100">
+                                <mat-label>End date</mat-label>
+                                <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="endDatePicker" name="saleDate" formControlName="endDate"
+                                    (focus)="endDatePicker.open()" appPreventDoubleClick
+                                    (throttledClick)="endDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #endDatePicker></mat-datepicker>
+                            </mat-form-field>
+                            <mat-checkbox color="accent" formControlName="noEndDate" name="noEndDate"
+                                class="black-checkbox u-mr--10"
+                                (change)="disableOrEnableInput(projectLineForm.noEndDate!.value, projectLineForm.endDate)">
+                                No end date
+                            </mat-checkbox>
+                        </div>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mt--10"
+                        fxFlex="20%">
+                        <mat-label>Insurance</mat-label>
+                        <mat-select formControlName="consultantInsuranceOptionId" placeholder="Insurance"
+                            [disableOptionCentering]="true">
+                            <mat-option *ngFor="let item of consultantInsuranceOptions | keyvalue" [value]="+item.key">
+                                {{ item.value }}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" fxFlex="0 0 calc(50% - 8px)">
-                        <mat-form-field appearance="outline" class="u-w--100">
-                            <mat-label>End date</mat-label>
-                            <input autocomplete="off" placeholder="New end date" matInput
-                                [matDatepicker]="endDatePicker" name="saleDate" formControlName="endDate"
-                                (focus)="endDatePicker.open()" appPreventDoubleClick
-                                (throttledClick)="endDatePicker.open()" readonly>
-                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                            <mat-datepicker #endDatePicker></mat-datepicker>
-                        </mat-form-field>
-                        <mat-checkbox color="accent" formControlName="noEndDate" name="noEndDate"
-                            class="black-checkbox u-mr--10"
-                            (change)="disableOrEnableInput(projectLineForm.noEndDate!.value, projectLineForm.endDate)">
-                            No end date
-                        </mat-checkbox>
-                    </div>
+                    <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input textarea-with-hint">
+                        <mat-label>Optional invoicing info</mat-label>
+                        <textarea matInput autocomplete="new-password" maxlength="250" cdkAutosizeMinRows="5"
+                            cdkTextareaAutosize name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo"
+                            class="u-pb--10">
+                        </textarea>
+                        <mat-hint
+                            [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.optionalInvoicingInfo?.length === 250}">
+                            {{(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'}}</mat-hint>
+                    </mat-form-field>
+
+                    <mat-checkbox color="accent" name="feesBilledWithThisProjectLine" formControlName="isLineForFees"
+                        class="black-checkbox u-mt--20">
+                        Fees billed with this Project line
+                    </mat-checkbox>
                 </div>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
+                    <h2 class="section-header">Invoicing</h2>
+                    <mat-form-field appearance="outline" class="u-w--100 filter-select">
+                        <mat-label>Assignment ID / PO number</mat-label>
+                        <input matInput type="text" formControlName="invoicingReferenceNumber">
+                    </mat-form-field>
+                    <mat-checkbox color="accent" name="differentInvoicingReferenceNumber"
+                        formControlName="differentInvoicingReferenceNumber" class="black-checkbox"
+                        (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
+                        Different assignment ID / PO number
+                    </mat-checkbox>
 
-                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mt--10"
-                    fxFlex="20%">
-                    <mat-label>Insurance</mat-label>
-                    <mat-select formControlName="consultantInsuranceOptionId" placeholder="Insurance"
-                        [disableOptionCentering]="true">
-                        <mat-option *ngFor="let item of consultantInsuranceOptions | keyvalue" [value]="+item.key">
-                            {{ item.value }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                    <ng-container *ngIf="!projectLineForm.value?.invoicingReferencePersonDontShowOnInvoice">
+                        <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
+                            <mat-label>Invoice reference person</mat-label>
+                            <input #invoicingReferencePersonAutocompleteInput type="text" matInput
+                                [matAutocomplete]="invoicingReferencePersonAutocomplete"
+                                formControlName="invoicingReferencePersonId" appPreventDoubleClick
+                                (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
+                                <span matSuffix class="shevron"></span>
+                            <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
+                                [displayWith]="displayFullNameFn">
+                                <ng-container>
+                                    <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
+                                        <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                        <mat-checkbox color="accent" name="differentInvoicingReferencePerson"
+                            formControlName="differentInvoicingReferencePerson" class="black-checkbox"
+                            (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferencePerson!.value, projectLineForm.invoicingReferencePersonId)">
+                            Different invoicing reference person
+                        </mat-checkbox>
+                    </ng-container>
 
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input textarea-with-hint">
-                    <mat-label>Optional invoicing info</mat-label>
-                    <textarea matInput autocomplete="new-password" maxlength="250" cdkAutosizeMinRows="5"
-                        cdkTextareaAutosize name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo"
-                        class="u-pb--10">
-                    </textarea>
-                    <mat-hint
-                        [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.optionalInvoicingInfo?.length === 250}">
-                        {{(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'}}</mat-hint>
-                </mat-form-field>
 
-                <mat-checkbox color="accent" name="feesBilledWithThisProjectLine" formControlName="isLineForFees"
-                    class="black-checkbox u-mt--20">
-                    Fees billed with this Project line
-                </mat-checkbox>
-            </div>
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
-                <mat-form-field appearance="outline" class="u-w--100 filter-select">
-                    <mat-label>Assignment ID / PO number</mat-label>
-                    <input matInput type="text" formControlName="invoicingReferenceNumber">
-                </mat-form-field>
-                <mat-checkbox color="accent" name="differentInvoicingReferenceNumber"
-                    formControlName="differentInvoicingReferenceNumber" class="black-checkbox"
-                    (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
-                    Different assignment ID / PO number
-                </mat-checkbox>
+                    <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
+                        <mat-label>Debitor number</mat-label>
+                        <input matInput type="text" formControlName="debtorNumber">
+                    </mat-form-field>
+                    <mat-checkbox color="accent" name="differentDebtorNumber" formControlName="differentDebtorNumber"
+                        class="black-checkbox"
+                        (change)="disableOrEnableInput(!projectLineForm.differentDebtorNumber!.value, projectLineForm.debtorNumber)">
+                        Different debitor number
+                    </mat-checkbox>
 
-                <ng-container *ngIf="!projectLineForm.value?.invoicingReferencePersonDontShowOnInvoice">
-                    <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
-                        <mat-label>Invoice reference person</mat-label>
-                        <input #invoicingReferencePersonAutocompleteInput type="text" matInput
-                            [matAutocomplete]="invoicingReferencePersonAutocomplete"
-                            formControlName="invoicingReferencePersonId" appPreventDoubleClick
-                            (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
+                    <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
+                        <mat-label>Invoice recipient</mat-label>
+                        <input #clientInvoicingRecipientInput type="text" matInput
+                            [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId"
+                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                            placeholder="Invoice recipient">
                             <span matSuffix class="shevron"></span>
-                        <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
-                            [displayWith]="displayFullNameFn">
+                        <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete"
+                            [displayWith]="displayClientNameFn">
                             <ng-container>
-                                <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
-                                    <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
+                                <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                                    <div class="multilineDropdown-option--column">
+                                        <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
+                                        <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                            #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
+                                        </span>
+                                    </div>
                                 </mat-option>
                             </ng-container>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-checkbox color="accent" name="differentInvoicingReferencePerson"
-                        formControlName="differentInvoicingReferencePerson" class="black-checkbox"
-                        (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferencePerson!.value, projectLineForm.invoicingReferencePersonId)">
-                        Different invoicing reference person
+                    <mat-checkbox color="accent" name="differentInvoiceRecipient"
+                        formControlName="differentInvoiceRecipient" class="black-checkbox"
+                        (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
+                        Different invoice recipient
                     </mat-checkbox>
-                </ng-container>
-
-
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
-                    <mat-label>Debitor number</mat-label>
-                    <input matInput type="text" formControlName="debtorNumber">
-                </mat-form-field>
-                <mat-checkbox color="accent" name="differentDebtorNumber" formControlName="differentDebtorNumber"
-                    class="black-checkbox"
-                    (change)="disableOrEnableInput(!projectLineForm.differentDebtorNumber!.value, projectLineForm.debtorNumber)">
-                    Different debitor number
-                </mat-checkbox>
-
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
-                    <mat-label>Invoice recipient</mat-label>
-                    <input #clientInvoicingRecipientInput type="text" matInput
-                        [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId"
-                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                        placeholder="Invoice recipient">
-                        <span matSuffix class="shevron"></span>
-                    <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete"
-                        [displayWith]="displayClientNameFn">
-                        <ng-container>
-                            <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                <div class="multilineDropdown-option--column">
-                                    <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                    <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
-                                        #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
-                                    </span>
-                                </div>
-                            </mat-option>
-                        </ng-container>
-                    </mat-autocomplete>
-                </mat-form-field>
-                <mat-checkbox color="accent" name="differentInvoiceRecipient"
-                    formControlName="differentInvoiceRecipient" class="black-checkbox"
-                    (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
-                    Different invoice recipient
-                </mat-checkbox>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
+                <h2 class="section-header">Client Purchase Order (PO)</h2>
             </div>
         </div>
     </form>
