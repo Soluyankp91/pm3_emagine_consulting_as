@@ -13840,11 +13840,16 @@ export class PurchaseOrderServiceProxy {
     }
 
     /**
+     * @param currentClientPeriodId (optional) 
      * @param body (optional) 
      * @return Success
      */
-    purchaseOrderPUT(body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
-        let url_ = this.baseUrl + "/api/PurchaseOrder";
+    purchaseOrderPUT(currentClientPeriodId?: string | undefined, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder?";
+        if (currentClientPeriodId === null)
+            throw new Error("The parameter 'currentClientPeriodId' cannot be null.");
+        else if (currentClientPeriodId !== undefined)
+            url_ += "currentClientPeriodId=" + encodeURIComponent("" + currentClientPeriodId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -27814,7 +27819,10 @@ export class PurchaseOrderDto implements IPurchaseOrderDto {
     createdOnUtc?: moment.Moment | undefined;
     modifiedBy?: Employee;
     modifiedOnUtc?: moment.Moment | undefined;
+    directClientIdReferencingThisPo?: number | undefined;
     workflowsIdsReferencingThisPo?: string[] | undefined;
+    clientPeriodsIdsReferencingThisPo?: string[] | undefined;
+    isUserAllowedToEditPurchaseOrderInCurrentClientPeriod?: boolean | undefined;
 
     constructor(data?: IPurchaseOrderDto) {
         if (data) {
@@ -27836,11 +27844,18 @@ export class PurchaseOrderDto implements IPurchaseOrderDto {
             this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
             this.modifiedBy = _data["modifiedBy"] ? Employee.fromJS(_data["modifiedBy"]) : <any>undefined;
             this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
+            this.directClientIdReferencingThisPo = _data["directClientIdReferencingThisPo"];
             if (Array.isArray(_data["workflowsIdsReferencingThisPo"])) {
                 this.workflowsIdsReferencingThisPo = [] as any;
                 for (let item of _data["workflowsIdsReferencingThisPo"])
                     this.workflowsIdsReferencingThisPo!.push(item);
             }
+            if (Array.isArray(_data["clientPeriodsIdsReferencingThisPo"])) {
+                this.clientPeriodsIdsReferencingThisPo = [] as any;
+                for (let item of _data["clientPeriodsIdsReferencingThisPo"])
+                    this.clientPeriodsIdsReferencingThisPo!.push(item);
+            }
+            this.isUserAllowedToEditPurchaseOrderInCurrentClientPeriod = _data["isUserAllowedToEditPurchaseOrderInCurrentClientPeriod"];
         }
     }
 
@@ -27862,11 +27877,18 @@ export class PurchaseOrderDto implements IPurchaseOrderDto {
         data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
         data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
         data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
+        data["directClientIdReferencingThisPo"] = this.directClientIdReferencingThisPo;
         if (Array.isArray(this.workflowsIdsReferencingThisPo)) {
             data["workflowsIdsReferencingThisPo"] = [];
             for (let item of this.workflowsIdsReferencingThisPo)
                 data["workflowsIdsReferencingThisPo"].push(item);
         }
+        if (Array.isArray(this.clientPeriodsIdsReferencingThisPo)) {
+            data["clientPeriodsIdsReferencingThisPo"] = [];
+            for (let item of this.clientPeriodsIdsReferencingThisPo)
+                data["clientPeriodsIdsReferencingThisPo"].push(item);
+        }
+        data["isUserAllowedToEditPurchaseOrderInCurrentClientPeriod"] = this.isUserAllowedToEditPurchaseOrderInCurrentClientPeriod;
         return data;
     }
 }
@@ -27881,7 +27903,10 @@ export interface IPurchaseOrderDto {
     createdOnUtc?: moment.Moment | undefined;
     modifiedBy?: Employee;
     modifiedOnUtc?: moment.Moment | undefined;
+    directClientIdReferencingThisPo?: number | undefined;
     workflowsIdsReferencingThisPo?: string[] | undefined;
+    clientPeriodsIdsReferencingThisPo?: string[] | undefined;
+    isUserAllowedToEditPurchaseOrderInCurrentClientPeriod?: boolean | undefined;
 }
 
 export class RecipientPreviewDto implements IRecipientPreviewDto {
@@ -28217,6 +28242,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     invoicingReferencePersonIdValue?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
+    purchaseOrdersIds?: number[] | undefined;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -28273,6 +28299,11 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.invoicingReferencePersonIdValue = _data["invoicingReferencePersonIdValue"];
             this.invoicingReferencePerson = _data["invoicingReferencePerson"] ? ContactResultDto.fromJS(_data["invoicingReferencePerson"]) : <any>undefined;
             this.invoicingReferencePersonDontShowOnInvoice = _data["invoicingReferencePersonDontShowOnInvoice"];
+            if (Array.isArray(_data["purchaseOrdersIds"])) {
+                this.purchaseOrdersIds = [] as any;
+                for (let item of _data["purchaseOrdersIds"])
+                    this.purchaseOrdersIds!.push(item);
+            }
             this.noSpecialRate = _data["noSpecialRate"];
             if (Array.isArray(_data["periodClientSpecialRates"])) {
                 this.periodClientSpecialRates = [] as any;
@@ -28341,6 +28372,11 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["invoicingReferencePersonIdValue"] = this.invoicingReferencePersonIdValue;
         data["invoicingReferencePerson"] = this.invoicingReferencePerson ? this.invoicingReferencePerson.toJSON() : <any>undefined;
         data["invoicingReferencePersonDontShowOnInvoice"] = this.invoicingReferencePersonDontShowOnInvoice;
+        if (Array.isArray(this.purchaseOrdersIds)) {
+            data["purchaseOrdersIds"] = [];
+            for (let item of this.purchaseOrdersIds)
+                data["purchaseOrdersIds"].push(item);
+        }
         data["noSpecialRate"] = this.noSpecialRate;
         if (Array.isArray(this.periodClientSpecialRates)) {
             data["periodClientSpecialRates"] = [];
@@ -28398,6 +28434,7 @@ export interface ISalesClientDataDto {
     invoicingReferencePersonIdValue?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
+    purchaseOrdersIds?: number[] | undefined;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -28431,6 +28468,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     commissionAccountManagerData?: EmployeeDto;
     commissionedEmployeesIdValues?: number[] | undefined;
     commissionedEmployeesData?: EmployeeDto[] | undefined;
+    primarySourcerId?: number | undefined;
+    primarySourcer?: EmployeeDto;
     contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
@@ -28477,6 +28516,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
                 for (let item of _data["commissionedEmployeesData"])
                     this.commissionedEmployeesData!.push(EmployeeDto.fromJS(item));
             }
+            this.primarySourcerId = _data["primarySourcerId"];
+            this.primarySourcer = _data["primarySourcer"] ? EmployeeDto.fromJS(_data["primarySourcer"]) : <any>undefined;
             if (Array.isArray(_data["contractExpirationNotificationIntervalIds"])) {
                 this.contractExpirationNotificationIntervalIds = [] as any;
                 for (let item of _data["contractExpirationNotificationIntervalIds"])
@@ -28527,6 +28568,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
             for (let item of this.commissionedEmployeesData)
                 data["commissionedEmployeesData"].push(item.toJSON());
         }
+        data["primarySourcerId"] = this.primarySourcerId;
+        data["primarySourcer"] = this.primarySourcer ? this.primarySourcer.toJSON() : <any>undefined;
         if (Array.isArray(this.contractExpirationNotificationIntervalIds)) {
             data["contractExpirationNotificationIntervalIds"] = [];
             for (let item of this.contractExpirationNotificationIntervalIds)
@@ -28558,6 +28601,8 @@ export interface ISalesMainDataDto {
     commissionAccountManagerData?: EmployeeDto;
     commissionedEmployeesIdValues?: number[] | undefined;
     commissionedEmployeesData?: EmployeeDto[] | undefined;
+    primarySourcerId?: number | undefined;
+    primarySourcer?: EmployeeDto;
     contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;

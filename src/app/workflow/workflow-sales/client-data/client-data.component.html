@@ -702,7 +702,7 @@
                 <h2 class="workflow-section--header">Client purchase order + cap</h2>
             </div>
             <div class="workflow-section--content">
-                <purchase-orders #purchaseOrders [readOnlyMode]="readOnlyMode" [periodId]="periodId" [directClientId]="salesClientDataForm.directClientIdValue.value?.clientId"></purchase-orders>
+                <purchase-orders #poComponent [readOnlyMode]="readOnlyMode" [periodId]="periodId" [directClientId]="salesClientDataForm.directClientIdValue.value?.clientId" [mode]="ePurchaseOrderMode.SalesStep"></purchase-orders>
                 <!-- <div class="inline-edit-form u-w--100">
                     <ng-container *ngIf="salesClientDataForm.purchaseOrders?.controls?.length">
                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"

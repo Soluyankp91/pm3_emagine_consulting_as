@@ -56,6 +56,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		console.log(this.purchaseOrderForm.value);
 		const form = this.purchaseOrderForm.value;
 		let input = new PurchaseOrderDto(form);
+        input.directClientIdReferencingThisPo = this.data?.directClientId;
         // input.id = form.id;
 		// input.number = form.number;
 		// input.numberMissingButRequired = form.numberMissingButRequired;
@@ -65,7 +66,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
 		console.log(input);
         if (form.id !== null) {
-            this._purchaseOrderService.purchaseOrderPUT(input)
+            this._purchaseOrderService.purchaseOrderPUT(this.data?.clientPeriodId, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe((result) => {
                 this.onConfirmed.emit(result);

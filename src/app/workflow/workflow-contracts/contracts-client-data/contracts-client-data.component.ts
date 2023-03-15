@@ -126,7 +126,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			this.contractsMainForm.salesType.value?.id &&
 			this.contractsMainForm.deliveryType.value?.id
 		) {
-            if (this.frameAgreements.length === 1) {
+            if (this.frameAgreements?.length === 1) {
                 this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
             }
 		}

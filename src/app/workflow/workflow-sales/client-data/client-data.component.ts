@@ -21,6 +21,7 @@ import { AddOrEditPoDialogComponent } from '../../shared/components/purchase-ord
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
+import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 
 @Component({
 	selector: 'app-client-data',
@@ -29,7 +30,7 @@ import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
-    @ViewChild('purchaseOrders') purchaseOrders: PurchaseOrdersComponent;
+    @ViewChild('poComponent') poComponent: PurchaseOrdersComponent;
     @Input() periodId: string;
 	@Input() readOnlyMode: boolean;
     @Input() mainDataForm: WorkflowSalesMainForm;
@@ -76,6 +77,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
     // eValueUnitType = EValueUnitTypes;
     // ePoCapType = PurchaseOrderCapType;
     // capTypes: { [key: string]: string };
+    ePurchaseOrderMode = EPurchaseOrderMode;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -387,7 +389,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.mainDataForm.salesTypeId.value &&
 			this.mainDataForm.deliveryTypeId.value
 		) {
-            if (this.frameAgreements.length === 1) {
+            if (this.frameAgreements?.length === 1) {
                 this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
             }
 		}
