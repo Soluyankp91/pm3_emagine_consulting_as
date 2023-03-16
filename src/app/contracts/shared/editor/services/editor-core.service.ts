@@ -108,7 +108,7 @@ export class EditorCoreService {
 		this._commentService.cleanUpDocument(comments);
 	}
 
-	insertMergeField(field: string, insertLineBreak = true) {
+	insertMergeField(field: string) {
 		const position = this.editor.selection.active;
 		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
 		
@@ -192,6 +192,7 @@ export class EditorCoreService {
 			this.afterViewInit$.next();
 			this.afterViewInit$.complete();
 			this.toggleFields();
+			this.removeUnsavedChanges();
 		});
 
 		this.editor.events.documentChanged.addHandler(() => {

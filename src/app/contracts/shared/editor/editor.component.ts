@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, filter, map, pluck, skip, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, pluck, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 
 // Project Specific
@@ -35,7 +35,6 @@ import {
 	SendDocuSignEnvelopeCommand,
 	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
-	UpdateCompletedTemplateDocumentFileDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { custom } from 'devextreme/ui/dialog';
@@ -96,6 +95,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	constructor(
 		private _route: ActivatedRoute,
 		private _router: Router,
+		private _location: Location,
 		private _agreementService: AgreementAbstractService,
 		private _commentService: CommentsAbstractService,
 		private _mergeFieldsService: MergeFieldsAbstractService,
@@ -510,26 +510,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	cancel() {
-		this._editorCoreService.hasUnsavedChanges$
-			.pipe(
-				take(1),
-				tap((res) => {
-					if (res) {
-						this._showCompleteConfirmDialog((confirmed) => {
-							if (confirmed) {
-								this._router.navigate(['../settings'], {
-									relativeTo: this._route,
-								});
-							}
-						});
-					} else {
-						this._router.navigate(['../settings'], {
-							relativeTo: this._route,
-						});
-					}
-				})
-			)
-			.subscribe();
+		this._location.back();
 	}
 
 	cleanUp() {
