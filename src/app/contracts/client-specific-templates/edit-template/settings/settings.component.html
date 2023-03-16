@@ -57,23 +57,34 @@
                         <ng-template let-cell="option" #optionTemplate>
                             <div>
                                 <div class="autocomplete-first-row">
-                                    {{ cell.clientName || cell.name || cell.supplierName }}
+                                    {{ cell.clientName }}
                                 </div>
-                                <div class="autocomplete-second-row">
-                                    #{{ cell.clientId || cell.supplierId || cell.id }}
+                                <div class="autocomplete-second-row selected-option">
+                                    #{{ cell.clientId }}
                                     <ng-container *ngIf="cell.crmClientId">
-                                        · {{cell.crmClientId }}
+                                        · {{ cell.crmClientId }}
                                     </ng-container>
-                                    <ng-container *ngIf="cell.country">
-                                        · {{cell.country }}
+                                    <ng-container *ngIf="cell.addressCountryCode && cell.city">
+                                        · {{ cell.city }} {{ cell.addressCountryCode }}
                                     </ng-container>
-                                    <ng-container *ngIf="cell.city">
-                                        · {{cell.city }}
-                                    </ng-container>
-                                    <ng-container *ngIf="cell.address">
-                                        · {{cell.address}}
+                                    <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+                                        · {{ cell.city }}
                                     </ng-container>
                                 </div>
+                                <ng-template #selectedOption let-cell="selectedItem">
+                                    <div class="autocomplete-second-row selected-option">
+                                        #{{ cell.clientId }}
+                                        <ng-container *ngIf="cell.crmClientId">
+                                            · {{ cell.crmClientId }}
+                                        </ng-container>
+                                        <ng-container *ngIf="cell.addressCountryCode && cell.city">
+                                            · {{ cell.city }} {{ cell.addressCountryCode }}
+                                        </ng-container>
+                                        <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+                                            · {{ cell.city }}
+                                        </ng-container>
+                                    </div>
+                                </ng-template>
                             </div>
                         </ng-template>
                     </emg-dropdown-autocomplete-single-select>

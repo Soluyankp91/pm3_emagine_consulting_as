@@ -164,7 +164,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._closeMenu();
 		this.showMainSpinner();
 		const getDraftIfAvailable = false; // NB: hardcoded false as for now, BE requirement
-		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}/false`;
+		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}`;
 		this._processDownloadDocument(url);
 	}
 

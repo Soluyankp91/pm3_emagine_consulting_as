@@ -151,7 +151,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 							of({
 								label: 'Clients',
 								labelKey: 'firstName',
-								outputProperty: 'clientId',
+								outputProperty: 'id',
 								dropdownType: SignerDropdowns.CLIENT,
 							}),
 							this._lookupService.signerContacts(search, 20),
