@@ -115,7 +115,7 @@ app-contract {
 	mat-autocomplete + .mat-error {
 		font-size: 75%;
 		margin-top: 0.6666666667em;
-		top: calc(100% - 1.7916666667em);
+		position: absolute;
 	}
 
 	//mat-button

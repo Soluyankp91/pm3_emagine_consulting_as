@@ -114,6 +114,9 @@
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }}, {{ cell.countryCode }}
 														</ng-container>
+                                                        <ng-container *ngIf="!cell.countryCode && cell.city">
+                                                            · {{ cell.city }}
+                                                        </ng-container>
 													</div>
 													<ng-template #selectedOption let-cell="selectedItem">
 														<div class="autocomplete-second-row selected-option">
@@ -123,6 +126,9 @@
 															</ng-container>
 															<ng-container *ngIf="cell.countryCode && cell.city">
 																· {{ cell.city }}, {{ cell.countryCode }}
+															</ng-container>
+                                                            <ng-container *ngIf="!cell.countryCode && cell.city">
+																· {{ cell.city }}
 															</ng-container>
 														</div>
 													</ng-template>
@@ -139,6 +145,9 @@
 														<ng-container *ngIf="cell.addressCountryCode && cell.city">
 															· {{ cell.city }}, {{ cell.addressCountryCode }}
 														</ng-container>
+                                                        <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
 													</div>
 
 													<ng-template #selectedOption let-cell="selectedItem">
@@ -150,6 +159,9 @@
 															<ng-container *ngIf="cell.addressCountryCode && cell.city">
 																· {{ cell.city }}, {{ cell.addressCountryCode }}
 															</ng-container>
+                                                            <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+                                                                · {{ cell.city }}
+                                                            </ng-container>
 														</div>
 													</ng-template>
 												</div>
@@ -165,6 +177,9 @@
                                                         <ng-container *ngIf="cell.addressCountryCode && cell.city">
                                                             · {{ cell.city }} {{ cell.addressCountryCode }}
                                                         </ng-container>
+                                                        <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+                                                            · {{ cell.city }}
+                                                        </ng-container>
                                                     </div>
 													<ng-template #selectedOption let-cell="selectedItem">
 														<div class="autocomplete-second-row selected-option">
@@ -175,6 +190,9 @@
 															<ng-container *ngIf="cell.addressCountryCode && cell.city">
 																· {{ cell.city }} {{ cell.addressCountryCode }}
 															</ng-container>
+                                                            <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+                                                                · {{ cell.city }}
+                                                            </ng-container>
 														</div>
 													</ng-template>
 												</div>
@@ -190,6 +208,9 @@
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }} {{ cell.countryCode }}
 														</ng-container>
+                                                        <ng-container *ngIf="!cell.countryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
 													</div>
                                                     <ng-template #selectedOption let-cell="selectedItem">
                                                         <div class="autocomplete-second-row selected-option">
@@ -199,6 +220,9 @@
                                                             </ng-container>
                                                             <ng-container *ngIf="cell.countryCode && cell.city">
                                                                 · {{ cell.city }} {{ cell.countryCode }}
+                                                            </ng-container>
+                                                            <ng-container *ngIf="!cell.countryCode && cell.city">
+                                                                · {{ cell.city }}
                                                             </ng-container>
                                                         </div>
                                                     </ng-template>
