@@ -10,7 +10,7 @@ import {
 	FormGroup,
 } from '@angular/forms';
 import { BehaviorSubject, forkJoin, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, startWith} from 'rxjs/operators';
 import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/settings.interfaces';
 import { AgreementDetailsSignerDto, LookupServiceProxy, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../services/contracts.service';
@@ -33,6 +33,8 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 	options$ = this._contractService.signersEnum$$;
 
     signerDropdowns = SignerDropdowns;
+
+    prefillMode = false;
 
 	signerTableData: AbstractControl[] = [];
 	signerOptionsArr$: SignerOptions[] = [];
@@ -98,6 +100,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 		if (!signers) {
 			return;
 		}
+        this.prefillMode = true;
 		signers.forEach((signerDto, index) => {
 			this.formArray.push(
 				new FormGroup({
@@ -115,12 +118,17 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 			});
 			this.onSignerTypeChange(signerDto.signerType as SignerType, index);
 		});
+        this.prefillMode = false;
 	}
 
 	onSignerTypeChange(signerType: SignerType, rowIndex: number) {
+        if(!this.prefillMode) {
+            this.signerOptionsArr$[rowIndex].optionsChanged$.next('');
+        }
 		switch (signerType) {
 			case 1: {
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
+                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -137,6 +145,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 			}
 			case 2:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
+                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -152,6 +161,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				break;
 			case 3:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
+                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -167,6 +177,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				break;
 			case 4:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
+                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({

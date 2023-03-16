@@ -2585,6 +2585,67 @@ export class AgreementServiceProxy {
     /**
      * @return Success
      */
+    statusHistory(agreementId: number): Observable<AgreementStatusHistoryDto[]> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/status-history";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStatusHistory(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStatusHistory(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AgreementStatusHistoryDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AgreementStatusHistoryDto[]>;
+        }));
+    }
+
+    protected processStatusHistory(response: HttpResponseBase): Observable<AgreementStatusHistoryDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AgreementStatusHistoryDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AgreementStatusHistoryDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     openEdit(agreementId: number): Observable<void> {
         let url_ = this.baseUrl + "/api/Agreement/{agreementId}/open-edit";
         if (agreementId === undefined || agreementId === null)
@@ -12801,7 +12862,7 @@ export class LookupServiceProxy {
      * @param idsToExclude (optional) 
      * @return Success
      */
-    employees(filter?: string | undefined, showAll?: boolean | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
+    employees(filter?: string | undefined, showAll?: boolean | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeSearchEmployeeDto[]> {
         let url_ = this.baseUrl + "/api/Lookup/Employees?";
         if (filter === null)
             throw new Error("The parameter 'filter' cannot be null.");
@@ -12832,14 +12893,14 @@ export class LookupServiceProxy {
                 try {
                     return this.processEmployees(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<EmployeeDto[]>;
+                    return _observableThrow(e) as any as Observable<EmployeeSearchEmployeeDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<EmployeeDto[]>;
+                return _observableThrow(response_) as any as Observable<EmployeeSearchEmployeeDto[]>;
         }));
     }
 
-    protected processEmployees(response: HttpResponseBase): Observable<EmployeeDto[]> {
+    protected processEmployees(response: HttpResponseBase): Observable<EmployeeSearchEmployeeDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12853,7 +12914,7 @@ export class LookupServiceProxy {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(EmployeeDto.fromJS(item));
+                    result200!.push(EmployeeSearchEmployeeDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -12865,7 +12926,7 @@ export class LookupServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<EmployeeDto[]>(null as any);
+        return _observableOf<EmployeeSearchEmployeeDto[]>(null as any);
     }
 
     /**
@@ -19352,6 +19413,50 @@ export interface IAgreementSimpleListItemDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
+export class AgreementStatusHistoryDto implements IAgreementStatusHistoryDto {
+    status?: EnvelopeStatus;
+    timestampUtc?: moment.Moment;
+    triggeredBy?: string | undefined;
+
+    constructor(data?: IAgreementStatusHistoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+            this.timestampUtc = _data["timestampUtc"] ? moment(_data["timestampUtc"].toString()) : <any>undefined;
+            this.triggeredBy = _data["triggeredBy"];
+        }
+    }
+
+    static fromJS(data: any): AgreementStatusHistoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AgreementStatusHistoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["timestampUtc"] = this.timestampUtc ? this.timestampUtc.toISOString() : <any>undefined;
+        data["triggeredBy"] = this.triggeredBy;
+        return data;
+    }
+}
+
+export interface IAgreementStatusHistoryDto {
+    status?: EnvelopeStatus;
+    timestampUtc?: moment.Moment;
+    triggeredBy?: string | undefined;
+}
+
 export class AgreementTemplateAttachmentDto implements IAgreementTemplateAttachmentDto {
     agreementTemplateAttachmentId?: number | undefined;
     temporaryFileId?: string | undefined;
@@ -24298,6 +24403,7 @@ export class ConsultantResultDto implements IConsultantResultDto {
     legacyId?: number | undefined;
     tenantId?: number;
     externalId?: string;
+    email?: string | undefined;
     city?: string | undefined;
     zipCode?: string | undefined;
     address?: string | undefined;
@@ -24324,6 +24430,7 @@ export class ConsultantResultDto implements IConsultantResultDto {
             this.legacyId = _data["legacyId"];
             this.tenantId = _data["tenantId"];
             this.externalId = _data["externalId"];
+            this.email = _data["email"];
             this.city = _data["city"];
             this.zipCode = _data["zipCode"];
             this.address = _data["address"];
@@ -24350,6 +24457,7 @@ export class ConsultantResultDto implements IConsultantResultDto {
         data["legacyId"] = this.legacyId;
         data["tenantId"] = this.tenantId;
         data["externalId"] = this.externalId;
+        data["email"] = this.email;
         data["city"] = this.city;
         data["zipCode"] = this.zipCode;
         data["address"] = this.address;
@@ -24369,6 +24477,7 @@ export interface IConsultantResultDto {
     legacyId?: number | undefined;
     tenantId?: number;
     externalId?: string;
+    email?: string | undefined;
     city?: string | undefined;
     zipCode?: string | undefined;
     address?: string | undefined;
@@ -26080,6 +26189,54 @@ export enum EmployeeRole {
     ContractManager = 2,
 }
 
+export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+    email?: string | undefined;
+
+    constructor(data?: IEmployeeSearchEmployeeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.externalId = _data["externalId"];
+            this.name = _data["name"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeSearchEmployeeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeSearchEmployeeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["externalId"] = this.externalId;
+        data["name"] = this.name;
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IEmployeeSearchEmployeeDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+    email?: string | undefined;
+}
+
 export class EmployeeTenantNotificationItem implements IEmployeeTenantNotificationItem {
     notificationId?: number;
     notificationName?: string | undefined;
@@ -26222,11 +26379,13 @@ export interface IEnumEntityTypeDto {
 
 export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
     envelopeId?: number;
-    envelopeDocuSignEnvelopeId?: string;
+    envelopeDocuSignEnvelopeId?: string | undefined;
     docuSignEvent?: DocuSignEvent;
+    newEnvelopeStatus?: EnvelopeStatus;
     receivedDateUtc?: moment.Moment;
     envelopeRecipientName?: string | undefined;
     envelopeRecipientEmail?: string | undefined;
+    employeeName?: string | undefined;
     documentFileVersion?: number | undefined;
     documentFileDescription?: string | undefined;
     voidReason?: string | undefined;
@@ -26245,9 +26404,11 @@ export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
             this.envelopeId = _data["envelopeId"];
             this.envelopeDocuSignEnvelopeId = _data["envelopeDocuSignEnvelopeId"];
             this.docuSignEvent = _data["docuSignEvent"];
+            this.newEnvelopeStatus = _data["newEnvelopeStatus"];
             this.receivedDateUtc = _data["receivedDateUtc"] ? moment(_data["receivedDateUtc"].toString()) : <any>undefined;
             this.envelopeRecipientName = _data["envelopeRecipientName"];
             this.envelopeRecipientEmail = _data["envelopeRecipientEmail"];
+            this.employeeName = _data["employeeName"];
             this.documentFileVersion = _data["documentFileVersion"];
             this.documentFileDescription = _data["documentFileDescription"];
             this.voidReason = _data["voidReason"];
@@ -26266,9 +26427,11 @@ export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
         data["envelopeId"] = this.envelopeId;
         data["envelopeDocuSignEnvelopeId"] = this.envelopeDocuSignEnvelopeId;
         data["docuSignEvent"] = this.docuSignEvent;
+        data["newEnvelopeStatus"] = this.newEnvelopeStatus;
         data["receivedDateUtc"] = this.receivedDateUtc ? this.receivedDateUtc.toISOString() : <any>undefined;
         data["envelopeRecipientName"] = this.envelopeRecipientName;
         data["envelopeRecipientEmail"] = this.envelopeRecipientEmail;
+        data["employeeName"] = this.employeeName;
         data["documentFileVersion"] = this.documentFileVersion;
         data["documentFileDescription"] = this.documentFileDescription;
         data["voidReason"] = this.voidReason;
@@ -26278,11 +26441,13 @@ export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
 
 export interface IEnvelopeEventListItemDto {
     envelopeId?: number;
-    envelopeDocuSignEnvelopeId?: string;
+    envelopeDocuSignEnvelopeId?: string | undefined;
     docuSignEvent?: DocuSignEvent;
+    newEnvelopeStatus?: EnvelopeStatus;
     receivedDateUtc?: moment.Moment;
     envelopeRecipientName?: string | undefined;
     envelopeRecipientEmail?: string | undefined;
+    employeeName?: string | undefined;
     documentFileVersion?: number | undefined;
     documentFileDescription?: string | undefined;
     voidReason?: string | undefined;
@@ -30199,6 +30364,7 @@ export interface IStringWrappedValueDto {
 export class SupplierResultDto implements ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
+    email?: string | undefined;
     externalId?: string;
     vatNumber?: string | undefined;
     countryCode?: string | undefined;
@@ -30219,6 +30385,7 @@ export class SupplierResultDto implements ISupplierResultDto {
         if (_data) {
             this.supplierId = _data["supplierId"];
             this.supplierName = _data["supplierName"];
+            this.email = _data["email"];
             this.externalId = _data["externalId"];
             this.vatNumber = _data["vatNumber"];
             this.countryCode = _data["countryCode"];
@@ -30239,6 +30406,7 @@ export class SupplierResultDto implements ISupplierResultDto {
         data = typeof data === 'object' ? data : {};
         data["supplierId"] = this.supplierId;
         data["supplierName"] = this.supplierName;
+        data["email"] = this.email;
         data["externalId"] = this.externalId;
         data["vatNumber"] = this.vatNumber;
         data["countryCode"] = this.countryCode;
@@ -30252,6 +30420,7 @@ export class SupplierResultDto implements ISupplierResultDto {
 export interface ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
+    email?: string | undefined;
     externalId?: string;
     vatNumber?: string | undefined;
     countryCode?: string | undefined;
