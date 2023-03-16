@@ -56,7 +56,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		console.log(this.purchaseOrderForm.value);
 		const form = this.purchaseOrderForm.value;
 		let input = new PurchaseOrderDto(form);
-        input.directClientIdReferencingThisPo = this.data?.directClientId;
+        input.directClientIdReferencingThisPo = this.data?.directClientId ?? undefined;
         // input.id = form.id;
 		// input.number = form.number;
 		// input.numberMissingButRequired = form.numberMissingButRequired;
@@ -99,7 +99,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 
 	private _getPurchaseOrders() {
 		this._purchaseOrderService
-			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId)
+			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
 			.subscribe((result) => {
 				this.purchaseOrders = result;
 			});

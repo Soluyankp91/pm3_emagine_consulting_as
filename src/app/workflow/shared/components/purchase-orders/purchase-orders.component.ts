@@ -70,9 +70,10 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		});
 	}
 
-	getPurchaseOrders(purchaseOrderIds: number[]) {
+	getPurchaseOrders(purchaseOrderIds: number[], directClientId: number) {
+        console.log('PO ids');
 		this._purchaseOrderService
-			.getPurchaseOrdersAvailableForClientPeriod(this.periodId, this.directClientId)
+			.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId)
 			.subscribe((result) => {
 				this.purchaseOrdersList = result;
                 this._filterResponse(result, purchaseOrderIds);

@@ -666,8 +666,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 if (this.isContractModuleEnabled) {
                     this.clientDataComponent?.getFrameAgreements();
                 }
+                console.log('PO ids');
                 if (result.salesClientData.purchaseOrdersIds?.length) {
-                    this.clientDataComponent?.poComponent?.getPurchaseOrders(result.salesClientData.purchaseOrdersIds);
+                    this.clientDataComponent?.poComponent?.getPurchaseOrders(result.salesClientData.purchaseOrdersIds, result.salesClientData.directClientIdValue);
                 }
 			});
 	}
