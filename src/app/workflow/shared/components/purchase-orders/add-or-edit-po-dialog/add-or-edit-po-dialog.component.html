@@ -86,41 +86,37 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--12">
                             <mat-label>Max value</mat-label>
-                            <input autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
+                            <input type="number" autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
                             <mat-error>
                                 <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
                             </mat-error>
                         </mat-form-field>
-                        <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
-                                <mat-label>Unit</mat-label>
-                                <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits" formControlName="valueUnitTypeId" [disableOptionCentering]="true">
-                                    <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
-                                        <mat-option [value]="item.id">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="purchaseOrderForm.capForInvoicing.valueUnitTypeId"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                        </ng-container>
-                        <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue">
-                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
-                                <mat-label>Currency</mat-label>
-                                <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue" formControlName="currencyId" [disableOptionCentering]="true">
-                                    <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                        <mat-option [value]="item.id">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-select>
-                                <mat-error>
-                                    <app-validator [control]="purchaseOrderForm.capForInvoicing.currencyId"></app-validator>
-                                </mat-error>
-                            </mat-form-field>
-                        </ng-container>
+                        <mat-form-field [fxHide]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.CapOnUnits" appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
+                            <mat-label>Unit</mat-label>
+                            <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits" formControlName="valueUnitTypeId" [disableOptionCentering]="true">
+                                <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
+                                    <mat-option [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="purchaseOrderForm.capForInvoicing.valueUnitTypeId"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field [fxHide]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.CapOnValue" appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
+                            <mat-label>Currency</mat-label>
+                            <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue" formControlName="currencyId" [disableOptionCentering]="true">
+                                <ng-container *ngFor="let item of currencies; trackBy: trackById">
+                                    <mat-option [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="purchaseOrderForm.capForInvoicing.currencyId"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
                     </div>
                 </ng-container>
             </ng-container>

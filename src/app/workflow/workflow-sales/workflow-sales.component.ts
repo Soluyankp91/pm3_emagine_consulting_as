@@ -254,6 +254,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	validateSalesForm() {
+        console.log(this.clientDataComponent.salesClientDataForm);
+        console.log(this.mainDataComponent.salesMainDataForm);
+        console.log(this.consutlantDataComponent.consultantsForm);
         this.clientDataComponent?.submitForm();
 		this.clientDataComponent?.salesClientDataForm.markAllAsTouched();
         this.mainDataComponent?.submitForm();

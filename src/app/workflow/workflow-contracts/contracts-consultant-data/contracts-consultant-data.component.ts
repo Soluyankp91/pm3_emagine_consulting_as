@@ -23,6 +23,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@Input() contractClientForm: any;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
+    @Input() periodId: string;
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	employmentTypes: EnumEntityTypeDto[];
@@ -373,7 +374,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			).value;
 		}
 		const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
-			width: '760px',
+			width: '800px',
 			minHeight: '180px',
 			height: 'auto',
 			scrollStrategy,
@@ -387,7 +388,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 						: ProjectLineDiallogMode.Create,
 				projectLineData: projectLine,
 				directClientId: this.contractClientForm.directClientId?.value,
-                endClientId: this.contractClientForm.endClientId?.value
+                endClientId: this.contractClientForm.endClientId?.value,
+                periodId: this.periodId
 			},
 		});
 

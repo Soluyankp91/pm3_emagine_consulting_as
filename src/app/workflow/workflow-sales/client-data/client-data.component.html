@@ -152,7 +152,7 @@
                             class="formFieldNoMarginPadding filter-select form-width-330 client-address-autocomplete">
                             <mat-label>Client address</mat-label>
                             <mat-select [disabled]="readOnlyMode" formControlName="endClientAddress"
-                            [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                            [disableOptionCentering]="true" [compareWith]="compareWithFn" [required]="salesClientDataForm.differentEndClient?.value">
                                 <mat-select-trigger>
                                     <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                         <span class="multilineDropdown-option--column-client-name">

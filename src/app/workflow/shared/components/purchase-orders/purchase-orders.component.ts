@@ -34,6 +34,8 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	ePoCapType = PurchaseOrderCapType;
 	capTypes: { [key: string]: string };
 	purchaseOrdersList: PurchaseOrderDto[];
+    ePurchaseOrderMode = EPurchaseOrderMode;
+    previousPO: PurchaseOrderDto;
 	constructor(
 		injector: Injector,
 		private _overlay: Overlay,
@@ -83,6 +85,26 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			});
 	}
 
+    removePurchaseOrder(orderIndex: number) {
+		this.purchaseOrders.removeAt(orderIndex);
+	}
+
+    changePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
+        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			clientPeriodId: this.periodId,
+			directClientId: this.directClientId,
+		};
+		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderDto) => {
+            console.log('{previousPO set}')
+            this._updatePurchaseOrder(newPurchaseOrder, orderIndex);
+            this.previousPO = purchaseOrder;
+		});
+    }
+
     private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
         switch (this.mode) {
             case EPurchaseOrderMode.WFOverview:
@@ -91,16 +113,13 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
                 });
                 break;
             case EPurchaseOrderMode.SalesStep:
+            case EPurchaseOrderMode.ProjectLine:
                 list.filter(item => purchaseOrderIds.includes(item.id)).forEach(order => {
                     this._addPurchaseOrder(order);
                 });
                 break;
         }
     }
-
-	removePurchaseOrder(orderIndex: number) {
-		this.purchaseOrders.removeAt(orderIndex);
-	}
 
 	private _updatePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
 		const formRow = this.purchaseOrders.at(orderIndex);

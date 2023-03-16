@@ -594,5 +594,9 @@ export class AppModule {
 			'shared-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/shared-icon.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'change-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/change-icon.svg')
+		);
 	}
 }
