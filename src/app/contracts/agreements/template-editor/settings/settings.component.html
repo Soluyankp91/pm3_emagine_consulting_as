@@ -206,7 +206,7 @@
 															· {{ cell.vatNumber }}
 														</ng-container>
 														<ng-container *ngIf="cell.countryCode && cell.city">
-															· {{ cell.city }} {{ cell.countryCode }}
+															· {{ cell.city }}, {{ cell.countryCode }}
 														</ng-container>
                                                         <ng-container *ngIf="!cell.countryCode && cell.city">
 															· {{ cell.city }}
