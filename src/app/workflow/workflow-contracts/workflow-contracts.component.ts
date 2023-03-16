@@ -1222,6 +1222,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
 				projectLineInput.wasSynced = projectLine.wasSynced;
 				projectLineInput.isLineForFees = projectLine.isLineForFees;
+                projectLineInput.purchaseOrderId = projectLine.purchaseOrderId;
 
 				consultantData.projectLines.push(projectLineInput);
 			}
