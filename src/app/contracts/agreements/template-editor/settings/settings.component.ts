@@ -258,8 +258,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		}
 
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
+		toSend.signers = toSend.signers.map((signer: any) => {
+			const newObj = Object.assign({}, signer);
+			delete newObj.agreementSignerId;
+			return new AgreementDetailsSignerDto(newObj);
+		});
 
-		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
 		if (!this.consultantPeriodId && !this.currentAgreementTemplate?.consultantPeriodId) {
 			toSend.clientPeriodId = this.clientPeriodId ?? this.currentAgreementTemplate?.clientPeriodId;
 		}
@@ -367,7 +371,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									return this._apiServiceProxy2.agreementTemplateGET(defaultTemplateId).pipe(
 										tap((defaultTemplate) => {
 											this.parentOptionsChanged$.next(String(defaultTemplateId));
-                                            this.isDuplicating = true;
+											this.isDuplicating = true;
 											this.recipientOptionsChanged$.next(String(client.clientId));
 
 											this.attachmentsFromParent = [
@@ -394,19 +398,19 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												endDate: endDate,
 												note: defaultTemplate.note,
 												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
-												isSignatureRequired: true,
+												isSignatureRequired: defaultTemplate.isSignatureRequired,
 												signers: defaultTemplate.isSignatureRequired ? contractSigners : [],
 												attachments: defaultTemplate.attachments,
 												parentSelectedAttachmentIds: defaultTemplate.attachmentsFromParent
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
-                                            this.isDuplicating = false;
+											this.isDuplicating = false;
 										})
 									);
 								} else {
-                                    this.creationMode.setValue(AgreementCreationMode.FromScratch);
-                                    this.isDuplicating = true;
+									this.creationMode.setValue(AgreementCreationMode.FromScratch);
+									this.isDuplicating = true;
 									this.recipientOptionsChanged$.next(String(client.clientId));
 
 									this.agreementFormGroup.patchValue({
@@ -419,7 +423,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										contractTypes: contractTypes,
 										startDate: startDate,
 										endDate: endDate,
-										isSignatureRequired: true,
+										isSignatureRequired: contractSigners.length ? true : false,
 										signers: contractSigners,
 									});
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
@@ -431,9 +435,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 											message: 'Default template was not found basing on data from Workflow',
 										},
 									});
-									return dialogRef.afterClosed().pipe(tap(() => {
-                                        this.isDuplicating = false;
-                                    }));
+									return dialogRef.afterClosed().pipe(
+										tap(() => {
+											this.isDuplicating = false;
+										})
+									);
 								}
 							})
 						);
@@ -458,7 +464,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					let deliveryTypeId = clientSalesData.salesMainData.deliveryTypeId;
 
 					let client = clientSalesData.salesClientData.directClient;
-                    let consultant = consultantData.consultantSalesData;
+					let consultant = consultantData.consultantSalesData;
 					let legalEntityId = consultantData.clientPeriodPdcInvoicingEntityId;
 
 					let startDate = clientSalesData.startDate;
@@ -659,7 +665,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _setDocumentType() {
 		this.documentTypes$ = (this.agreementFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
-            takeUntil(this._unSubscribe$),
+			takeUntil(this._unSubscribe$),
 			switchMap((recipientTypeId) => {
 				if (recipientTypeId) {
 					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
@@ -674,7 +680,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			tap(() => {
 				if (!this.editMode && !this.isDuplicating) {
 					this.recipientOptionsChanged$.next('');
-                    this.agreementFormGroup.recipientId.setValue(null);
+					this.agreementFormGroup.recipientId.setValue(null);
 				}
 			}),
 			switchMap((recipientTypeId) => {
@@ -920,7 +926,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				tap((agreementDetailsDto) => {
 					this.preselectedFiles = agreementDetailsDto.attachments as FileUpload[];
 					this.recipientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
-                    this.isDuplicating = true;
+					this.isDuplicating = true;
 					this.attachmentsFromParent = agreementDetailsDto.attachmentsFromParent
 						? (agreementDetailsDto.attachmentsFromParent as FileUpload[])
 						: [];
@@ -952,7 +958,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					if (!agreementDetailsDto.endDate) {
 						this.noExpirationDateControl.setValue(true);
 					}
-                    this.isDuplicating = false;
+					this.isDuplicating = false;
 				})
 			)
 			.subscribe();
@@ -1050,7 +1056,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 			this.agreementFormGroup.recipientId.setValue(agreement.recipientId);
 			this.recipientOptionsChanged$.next(String(agreement.recipientId));
-            this.isDuplicating = true;
+			this.isDuplicating = true;
 			this.agreementFormGroup.recipientTypeId.setValue(agreement.recipientTypeId);
 
 			this.recipientOptionsChanged$.next(String(agreement.recipientId));
@@ -1081,7 +1087,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				selectedInheritedFiles: agreement.attachments,
 			});
 
-            this.isDuplicating = false;
+			this.isDuplicating = false;
 
 			this._disableFields();
 		});
