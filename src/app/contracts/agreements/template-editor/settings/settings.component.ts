@@ -405,6 +405,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
+                                            if (clientPeriodSales.noEndDate) {
+                                                this.noExpirationDateControl.setValue(true);
+                                            }
 											this.isDuplicating = false;
 										})
 									);
@@ -426,6 +429,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										isSignatureRequired: contractSigners.length ? true : false,
 										signers: contractSigners,
 									});
+                                    if (clientPeriodSales.noEndDate) {
+                                        this.noExpirationDateControl.setValue(true);
+                                    }
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
 										height: '240px',
@@ -535,6 +541,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
+                                            if (clientSalesData.noEndDate) {
+                                                this.noExpirationDateControl.setValue(true);
+                                            }
 											this.isDuplicating = false;
 										})
 									);
@@ -554,7 +563,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										endDate: clientSalesData.noEndDate ? null : endDate,
 										isSignatureRequired: true,
 									});
-
+                                    if (clientSalesData.noEndDate) {
+                                        this.noExpirationDateControl.setValue(true);
+                                    }
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
 										height: '240px',
