@@ -395,7 +395,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												contractTypes: contractTypes,
 												language: defaultTemplate.language,
 												startDate: startDate,
-												endDate: endDate,
+												endDate: clientPeriodSales.noEndDate ? null : endDate,
 												note: defaultTemplate.note,
 												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
 												isSignatureRequired: defaultTemplate.isSignatureRequired,
@@ -405,6 +405,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
+                                            if (clientPeriodSales.noEndDate) {
+                                                this.noExpirationDateControl.setValue(true);
+                                            }
 											this.isDuplicating = false;
 										})
 									);
@@ -422,10 +425,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										deliveryTypes: [deliveryTypeId],
 										contractTypes: contractTypes,
 										startDate: startDate,
-										endDate: endDate,
+										endDate: clientPeriodSales.noEndDate ? null : endDate,
 										isSignatureRequired: contractSigners.length ? true : false,
 										signers: contractSigners,
 									});
+                                    if (clientPeriodSales.noEndDate) {
+                                        this.noExpirationDateControl.setValue(true);
+                                    }
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
 										height: '240px',
@@ -526,7 +532,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												contractTypes: [contractType],
 												language: defaultTemplate.language,
 												startDate: startDate,
-												endDate: endDate,
+												endDate: clientSalesData.noEndDate ? null : endDate,
 												note: defaultTemplate.note,
 												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
 												isSignatureRequired: true,
@@ -535,6 +541,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
+                                            if (clientSalesData.noEndDate) {
+                                                this.noExpirationDateControl.setValue(true);
+                                            }
 											this.isDuplicating = false;
 										})
 									);
@@ -551,10 +560,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										deliveryTypes: [deliveryTypeId],
 										contractTypes: [contractType],
 										startDate: startDate,
-										endDate: endDate,
+										endDate: clientSalesData.noEndDate ? null : endDate,
 										isSignatureRequired: true,
 									});
-
+                                    if (clientSalesData.noEndDate) {
+                                        this.noExpirationDateControl.setValue(true);
+                                    }
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
 										height: '240px',
