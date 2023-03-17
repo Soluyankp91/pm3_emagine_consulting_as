@@ -63,7 +63,7 @@ import { CommentsAbstractService } from './data-access/comments-abstract.service
 		CommentSidebarComponent,
 		MatFormFieldModule,
 		MatSelectModule,
-		AppCommonModule,
+		AppCommonModule
 	],
 	providers: [RichEditorOptionsProvider, CompareService, CommentService, EditorCoreService, EditorObserverService],
 	animations: [inOutPaneAnimation],

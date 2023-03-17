@@ -10,7 +10,7 @@ import {
 	ViewChild,
 	ViewEncapsulation,
 } from '@angular/core';
-import { DxButtonModule, DxCheckBoxModule, DxPopupModule, DxTemplateModule, DxTreeViewComponent, DxTreeViewModule } from 'devextreme-angular';
+import { DxBulletModule, DxButtonModule, DxCheckBoxModule, DxPopupModule, DxTemplateModule, DxTreeListModule, DxTreeViewComponent, DxTreeViewModule } from 'devextreme-angular';
 import { IMergeField } from '../../entities';
 import { EditorCoreService } from '../../services';
 
@@ -24,7 +24,7 @@ interface IMergeFieldItem {
 	standalone: true,
 	selector: 'app-insert-merge-field-popup',
 	templateUrl: './insert-merge-field-popup.component.html',
-	imports: [CommonModule, DxTemplateModule, DxButtonModule, DxPopupModule, DxTreeViewModule, DxCheckBoxModule],
+	imports: [CommonModule, DxTemplateModule, DxButtonModule, DxPopupModule, DxTreeViewModule, DxCheckBoxModule, DxTreeListModule],
 	styleUrls: ['./insert-merge-field-popup.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	encapsulation: ViewEncapsulation.None,
