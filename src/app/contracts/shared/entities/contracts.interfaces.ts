@@ -189,5 +189,6 @@ export interface MappedAgreementTableItem {
 	endDate: moment.Moment;
 	saleManager: EmployeeDto;
 	contractManager: EmployeeDto;
+    receiveAgreementsFromOtherParty?: boolean;
 	actionList: Actions[];
 }
