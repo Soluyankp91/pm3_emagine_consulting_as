@@ -19,7 +19,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'status',
 	'startDate',
 	'endDate',
-	'saleManager',
+	'salesManager',
 	'contractManager',
 ];
 export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
@@ -180,13 +180,13 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
-			formControlName: 'saleManager',
+			formControlName: 'salesManager',
 			component: () =>
 				import('../../agreements/filters/sales-managers-filter/sales-managers-filter.component').then(
 					(it) => it.SalesManagersFilterComponent
 				),
 		},
-		class: 'saleManager-column',
+		class: 'salesManager-column',
 		sort: true,
 	},
 	{

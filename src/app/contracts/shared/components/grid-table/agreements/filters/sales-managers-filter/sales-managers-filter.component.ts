@@ -25,7 +25,7 @@ export class SalesManagersFilterComponent implements OnDestroy {
 
 	labelMap = FILTER_LABEL_MAP;
 
-	tableFilter = 'saleManager';
+	tableFilter = 'salesManager';
 
 	private _unSubscribe$ = new Subject();
 	constructor(

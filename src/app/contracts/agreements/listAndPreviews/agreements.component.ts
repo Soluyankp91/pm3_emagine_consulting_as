@@ -226,7 +226,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				status: item.status,
 				startDate: item.startDate,
 				endDate: item.endDate,
-				saleManager: item.salesManager ? item.salesManager : null,
+				salesManager: item.salesManager ? item.salesManager : null,
 				contractManager: item.contractManager ? item.contractManager : null,
 				isWorkflowRelated: item.isWorkflowRelated,
 				receiveAgreementsFromOtherParty: item.receiveAgreementsFromOtherParty,

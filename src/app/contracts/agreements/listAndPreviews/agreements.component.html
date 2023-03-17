@@ -117,19 +117,19 @@
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
 				<div class="table-cell">
-					<ng-container *ngIf="cell.saleManager; else nullData">
+					<ng-container *ngIf="cell.salesManager; else nullData">
 						<img
 							class="profile-picture"
-							[ngSrc]="employeePhotoUrl + cell.saleManager.externalId + '.jpg'"
-                            [customTooltip]="cell.saleManager.name"
-                            [showAlways]="cell.saleManager.name"
+							[ngSrc]="employeePhotoUrl + cell.salesManager.externalId + '.jpg'"
+                            [customTooltip]="cell.salesManager.name"
+                            [showAlways]="cell.salesManager.name"
 							width="24"
 							height="24"
 							src
 							(error)="setDefaultImage($event.target)" />
-						<ng-template #saleManagerTooltip>
+						<ng-template #salesManagerTooltip>
 							<div>
-								{{ cell.saleManager.name }}
+								{{ cell.salesManager.name }}
 							</div>
 						</ng-template>
 					</ng-container>

@@ -13,7 +13,7 @@ export const CREATIONS_TABS: Tab[] = [
 ];
 
 export const FILTER_LABEL_MAP: { [key: string]: string } = {
-    languageId: 'Language',
+	languageId: 'Language',
 	language: 'Language',
 	id: 'ID',
 	agreementType: 'Type',
@@ -29,7 +29,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	lastUpdatedByLowerCaseInitials: 'By',
 	validity: 'Mode',
 	linkStateAccepted: 'Approval',
-	saleManager: 'SM',
+	salesManager: 'SM',
 	contractManager: 'CM',
 };
 export const MASTER_CREATION: { label: string; value: AgreementCreationMode }[] = [

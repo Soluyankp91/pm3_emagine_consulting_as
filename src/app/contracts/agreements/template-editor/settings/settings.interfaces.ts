@@ -35,21 +35,21 @@ export type WorkflowSummary = {
 
 	actualRecipient: ClientResultDto;
 	legalEntityId: string;
-    contractTypes: string [];
-	saleManager: EmployeeDto;
+	contractTypes: string[];
+	salesManager: EmployeeDto;
 
 	salesTypeId: string;
 	deliveryTypeId: string;
 	country: string;
-    countryCode: string;
+	countryCode: string;
 };
 export const WorkflowLabelMap = {
 	client: 'Client',
-    contractType: 'Conctract type',
-    consultant: 'Consultant',
+	contractType: 'Conctract type',
+	consultant: 'Consultant',
 	actualRecipient: 'Actual recipient',
 	legalEntityId: 'Legal entity',
-	saleManager: 'Sales Manager',
+	salesManager: 'Sales Manager',
 	salesTypeId: 'Sales type',
 	deliveryTypeId: 'Delivery type',
 	country: 'Country',

@@ -24,7 +24,7 @@ export class AgreementService extends BaseContract {
 		contractTypeIds: [],
 		validity: [],
 		status: [],
-		saleManager: [],
+		salesManager: [],
 		contractManager: [],
 	});
 
@@ -65,7 +65,7 @@ export class AgreementService extends BaseContract {
 			tableFilters.contractTypeIds.map((item) => item.id as number), // contractTypes
 			tableFilters.validity.map((item) => item.id as number),
 			tableFilters.status.map((item) => item.id as number),
-			tableFilters.saleManager.map((saleManager) => saleManager.id as number),
+			tableFilters.salesManager.map((salesManager) => salesManager.id as number),
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
 			search,
 			undefined, //isWorkflowRelated

@@ -138,7 +138,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _route: ActivatedRoute,
 		private readonly _injector: Injector,
 		private readonly _cdr: ChangeDetectorRef,
-        private readonly _location: Location,
+		private readonly _location: Location,
 		private readonly _creationTitleService: CreationTitleService,
 		private _editorObserverService: EditorObserverService
 	) {
@@ -199,7 +199,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	navigateBack() {
-        this._location.back();
+		this._location.back();
 	}
 
 	navigateToEdit(templateId: number) {
@@ -342,7 +342,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						actualRecipient: client,
 						legalEntityId: maps.legalEntityIds[legalEntityId],
 						contractTypes: contractTypes.map((contractTypeId) => maps.contractTypeIds[contractTypeId]),
-						saleManager: clientPeriodSales.salesMainData.salesAccountManagerData,
+						salesManager: clientPeriodSales.salesMainData.salesAccountManagerData,
 
 						salesTypeId: maps.salesTypeIds[salesTypeId],
 						deliveryTypeId: maps.deliveryTypeIds[deliveryTypeId],
@@ -399,9 +399,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
-                                            if (clientPeriodSales.noEndDate) {
-                                                this.noExpirationDateControl.setValue(true);
-                                            }
+											if (clientPeriodSales.noEndDate) {
+												this.noExpirationDateControl.setValue(true);
+											}
 											this.isDuplicating = false;
 										})
 									);
@@ -423,9 +423,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										isSignatureRequired: contractSigners.length ? true : false,
 										signers: contractSigners,
 									});
-                                    if (clientPeriodSales.noEndDate) {
-                                        this.noExpirationDateControl.setValue(true);
-                                    }
+									if (clientPeriodSales.noEndDate) {
+										this.noExpirationDateControl.setValue(true);
+									}
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
 										height: '240px',
@@ -479,7 +479,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						actualRecipient: client,
 						legalEntityId: maps.legalEntityIds[legalEntityId],
 						contractTypes: [maps.contractTypeIds[contractType]],
-						saleManager: clientSalesData.salesMainData.salesAccountManagerData,
+						salesManager: clientSalesData.salesMainData.salesAccountManagerData,
 
 						salesTypeId: maps.salesTypeIds[salesTypeId],
 						deliveryTypeId: maps.deliveryTypeIds[deliveryTypeId],
@@ -535,9 +535,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 													? defaultTemplate.attachmentsFromParent
 													: [],
 											});
-                                            if (clientSalesData.noEndDate) {
-                                                this.noExpirationDateControl.setValue(true);
-                                            }
+											if (clientSalesData.noEndDate) {
+												this.noExpirationDateControl.setValue(true);
+											}
 											this.isDuplicating = false;
 										})
 									);
@@ -557,9 +557,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										endDate: clientSalesData.noEndDate ? null : endDate,
 										isSignatureRequired: true,
 									});
-                                    if (clientSalesData.noEndDate) {
-                                        this.noExpirationDateControl.setValue(true);
-                                    }
+									if (clientSalesData.noEndDate) {
+										this.noExpirationDateControl.setValue(true);
+									}
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
 										height: '240px',
