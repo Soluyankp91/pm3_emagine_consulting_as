@@ -2990,19 +2990,19 @@ export class AgreementCommentServiceProxy {
     }
 
     /**
-     * @param parentCommentId (optional) 
+     * @param parentAgreementCommentId (optional) 
      * @param body (optional) 
      * @return Success
      */
-    agreementCommentPUT(agreementId: number, parentCommentId?: number | undefined, body?: StringWrappedValueDto | undefined): Observable<number> {
+    agreementCommentPUT(agreementId: number, parentAgreementCommentId?: number | undefined, body?: CommentInputDto | undefined): Observable<number> {
         let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}?";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
         url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
-        if (parentCommentId === null)
-            throw new Error("The parameter 'parentCommentId' cannot be null.");
-        else if (parentCommentId !== undefined)
-            url_ += "parentCommentId=" + encodeURIComponent("" + parentCommentId) + "&";
+        if (parentAgreementCommentId === null)
+            throw new Error("The parameter 'parentAgreementCommentId' cannot be null.");
+        else if (parentAgreementCommentId !== undefined)
+            url_ += "parentAgreementCommentId=" + encodeURIComponent("" + parentAgreementCommentId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3058,7 +3058,7 @@ export class AgreementCommentServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    agreementCommentPATCH(agreementCommentId: number, body?: StringWrappedValueDto | undefined): Observable<void> {
+    agreementCommentPATCH(agreementCommentId: number, body?: CommentInputDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/AgreementComment/{agreementCommentId}";
         if (agreementCommentId === undefined || agreementCommentId === null)
             throw new Error("The parameter 'agreementCommentId' must be defined.");
@@ -3141,6 +3141,110 @@ export class AgreementCommentServiceProxy {
     }
 
     protected processAgreementCommentDELETE(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    bulkUpdate(body?: UpdateCommentInputDto[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementComment/bulk-update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBulkUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBulkUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processBulkUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    bulkDelete(body?: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementComment/bulk-delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBulkDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBulkDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processBulkDelete(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4516,7 +4620,7 @@ export class AgreementTemplateCommentServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    agreementTemplateCommentPUT(agreementTemplateId: number, parentCommentId?: number | undefined, body?: StringWrappedValueDto | undefined): Observable<number> {
+    agreementTemplateCommentPUT(agreementTemplateId: number, parentCommentId?: number | undefined, body?: CommentInputDto | undefined): Observable<number> {
         let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}?";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
@@ -4580,7 +4684,7 @@ export class AgreementTemplateCommentServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    agreementTemplateCommentPATCH(agreementTemplateCommentId: number, body?: StringWrappedValueDto | undefined): Observable<void> {
+    agreementTemplateCommentPATCH(agreementTemplateCommentId: number, body?: CommentInputDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateCommentId}";
         if (agreementTemplateCommentId === undefined || agreementTemplateCommentId === null)
             throw new Error("The parameter 'agreementTemplateCommentId' must be defined.");
@@ -4663,6 +4767,110 @@ export class AgreementTemplateCommentServiceProxy {
     }
 
     protected processAgreementTemplateCommentDELETE(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    bulkUpdate2(body?: UpdateCommentInputDto[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/bulk-update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBulkUpdate2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBulkUpdate2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processBulkUpdate2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    bulkDelete2(body?: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/bulk-delete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBulkDelete2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBulkDelete2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processBulkDelete2(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -18072,6 +18280,7 @@ export class AgreementCommentDto implements IAgreementCommentDto {
     text?: string | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
+    metadata?: string | undefined;
 
     constructor(data?: IAgreementCommentDto) {
         if (data) {
@@ -18089,6 +18298,7 @@ export class AgreementCommentDto implements IAgreementCommentDto {
             this.text = _data["text"];
             this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
+            this.metadata = _data["metadata"];
         }
     }
 
@@ -18106,6 +18316,7 @@ export class AgreementCommentDto implements IAgreementCommentDto {
         data["text"] = this.text;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
+        data["metadata"] = this.metadata;
         return data;
     }
 }
@@ -18116,6 +18327,7 @@ export interface IAgreementCommentDto {
     text?: string | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
+    metadata?: string | undefined;
 }
 
 export enum AgreementCreationMode {
@@ -19763,6 +19975,7 @@ export class AgreementTemplateCommentDto implements IAgreementTemplateCommentDto
     text?: string | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
+    metadata?: string | undefined;
 
     constructor(data?: IAgreementTemplateCommentDto) {
         if (data) {
@@ -19780,6 +19993,7 @@ export class AgreementTemplateCommentDto implements IAgreementTemplateCommentDto
             this.text = _data["text"];
             this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
+            this.metadata = _data["metadata"];
         }
     }
 
@@ -19797,6 +20011,7 @@ export class AgreementTemplateCommentDto implements IAgreementTemplateCommentDto
         data["text"] = this.text;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
+        data["metadata"] = this.metadata;
         return data;
     }
 }
@@ -19807,6 +20022,7 @@ export interface IAgreementTemplateCommentDto {
     text?: string | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
+    metadata?: string | undefined;
 }
 
 export class AgreementTemplateDetailsAttachmentDto implements IAgreementTemplateDetailsAttachmentDto {
@@ -23195,6 +23411,46 @@ export interface IClientWorkflowTreeItemDto {
     clientContracts?: ClientContractBaseDto[] | undefined;
     consultantContracts?: ClientContractBaseDto[] | undefined;
     internalContracts?: ClientContractBaseDto[] | undefined;
+}
+
+export class CommentInputDto implements ICommentInputDto {
+    text?: string | undefined;
+    metadata?: string | undefined;
+
+    constructor(data?: ICommentInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+            this.metadata = _data["metadata"];
+        }
+    }
+
+    static fromJS(data: any): CommentInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommentInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        data["metadata"] = this.metadata;
+        return data;
+    }
+}
+
+export interface ICommentInputDto {
+    text?: string | undefined;
+    metadata?: string | undefined;
 }
 
 export class CommissionDetailsDto implements ICommissionDetailsDto {
@@ -30849,6 +31105,50 @@ export interface IUpdateClientWFResponsibleCommand {
     clientId?: number | undefined;
     contractStepResponsibleEmployeeId?: number | undefined;
     financeStepResponsibleEmployeeId?: number | undefined;
+}
+
+export class UpdateCommentInputDto implements IUpdateCommentInputDto {
+    text?: string | undefined;
+    metadata?: string | undefined;
+    id?: number;
+
+    constructor(data?: IUpdateCommentInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+            this.metadata = _data["metadata"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): UpdateCommentInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCommentInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        data["metadata"] = this.metadata;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IUpdateCommentInputDto {
+    text?: string | undefined;
+    metadata?: string | undefined;
+    id?: number;
 }
 
 export class UpdateCompletedTemplateDocumentFileDto implements IUpdateCompletedTemplateDocumentFileDto {
