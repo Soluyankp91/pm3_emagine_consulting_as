@@ -50,6 +50,7 @@ import { DuplicateOrParentOptions, ParentTemplateDto, WorkflowSummary } from './
 import { EditorObserverService } from '../../../shared/services/editor-observer.service';
 import { union } from 'lodash';
 import { NotificationDialogComponent } from 'src/app/contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
+import { Location } from '@angular/common';
 
 export enum RecipientDropdowns {
 	SUPPLIER,
@@ -137,6 +138,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _route: ActivatedRoute,
 		private readonly _injector: Injector,
 		private readonly _cdr: ChangeDetectorRef,
+        private readonly _location: Location,
 		private readonly _creationTitleService: CreationTitleService,
 		private _editorObserverService: EditorObserverService
 	) {
@@ -197,15 +199,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	navigateBack() {
-		if (this.editMode) {
-			this._router.navigate([`../../`], {
-				relativeTo: this._route,
-			});
-		} else {
-			this._router.navigate([`../`], {
-				relativeTo: this._route,
-			});
-		}
+        this._location.back();
 	}
 
 	navigateToEdit(templateId: number) {

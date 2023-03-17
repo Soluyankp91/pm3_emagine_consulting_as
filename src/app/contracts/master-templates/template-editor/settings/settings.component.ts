@@ -39,6 +39,7 @@ import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
+import { Location } from '@angular/common';
 
 @Component({
 	selector: 'app-settings',
@@ -87,6 +88,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		private readonly _route: ActivatedRoute,
 		private readonly _creationTitleService: CreationTitleService,
 		private readonly _extraHttp: ExtraHttpsService,
+        private readonly _location: Location,
 		private _injector: Injector
 	) {
 		super(_injector);
@@ -209,15 +211,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	navigateBack() {
-		if (this.editMode) {
-			this._router.navigate([`../../`], {
-				relativeTo: this._route,
-			});
-		} else {
-			this._router.navigate([`../`], {
-				relativeTo: this._route,
-			});
-		}
+        this._location.back();
 	}
 
 	navigateToEditor(templateId: number) {

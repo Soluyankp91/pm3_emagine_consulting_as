@@ -47,6 +47,7 @@ import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/co
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
+import { Location } from '@angular/common';
 @Component({
 	selector: 'app-creation',
 	templateUrl: './settings.component.html',
@@ -112,6 +113,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _router: Router,
 		private readonly _creationTitleService: CreationTitleService,
 		private readonly _extraHttp: ExtraHttpsService,
+        private readonly _location: Location,
 		public _dialog: MatDialog
 	) {
 		super(_injector);
@@ -150,15 +152,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	navigateBack() {
-		if (this.editMode) {
-			this._router.navigate([`../../`], {
-				relativeTo: this._route,
-			});
-		} else {
-			this._router.navigate([`../`], {
-				relativeTo: this._route,
-			});
-		}
+        this._location.back();
 	}
 
 	navigateToEditor(templateId: number) {
