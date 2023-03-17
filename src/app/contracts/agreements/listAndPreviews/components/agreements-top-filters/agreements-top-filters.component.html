@@ -42,8 +42,8 @@
 				<emg-dropdown-autocomplete-multiselect
 					[options]="contractManagers"
 					[idProperty]="'id'"
-					[label]="labelMap['saleManager']"
-					formControlName="saleManager"
+					[label]="labelMap['salesManager']"
+					formControlName="salesManager"
 					(emitText)="this.freeTextEmitter.emit($event)">
 					<ng-template #triggerButton let-options="selectedOptions">
 						<ng-container *ngIf="!options.size; else selectedManagers">
@@ -54,7 +54,7 @@
 						</ng-container>
 						<ng-template #selectedManagers>
 							<span
-								class="fi fi-{{ options.values().next().value.externalId | lowercase }} saleManager-icon"></span>
+								class="fi fi-{{ options.values().next().value.externalId | lowercase }} salesManager-icon"></span>
 						</ng-template> </ng-template
 				></emg-dropdown-autocomplete-multiselect>
 			</ng-container>

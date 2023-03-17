@@ -146,7 +146,7 @@ export const PREVIEW_LABEL_MAP: { [key: string]: string } = {
 	consultantName: 'Consultant',
 	companyName: 'Company',
 	legalEntityId: 'Legal entity',
-	saleManager: 'Sales manager',
+	salesManager: 'Sales manager',
 	contractManager: 'Contract manager',
 	legalEntityIds: 'Legal entities',
 	salesTypeIds: 'Sales types',

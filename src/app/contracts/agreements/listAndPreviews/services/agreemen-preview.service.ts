@@ -16,7 +16,7 @@ import {
 
 @Injectable()
 export class AgreementPreviewService extends BasePreview {
-    downloadAgreementAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
+	downloadAgreementAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
 	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
 	entityGet = this._agreementServiceProxy.preview.bind(this._agreementServiceProxy);
 	entityMetadataLog = this._agreementServiceProxy.logs.bind(this._agreementServiceProxy);
@@ -43,7 +43,7 @@ export class AgreementPreviewService extends BasePreview {
 			companyName: row.companyName,
 
 			legalEntityId: maps.legalEntityIds[row.legalEntityId],
-			saleManager: row.saleManager ? row.saleManager.name : row.saleManager,
+			salesManager: row.saleManager ? row.saleManager.name : row.saleManager,
 			contractManager: row.contractManager ? row.contractManager.name : row.contractManager,
 			salesTypeIds: row.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 			deliveryTypeIds: row.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
@@ -65,7 +65,7 @@ export class AgreementPreviewService extends BasePreview {
 
 			parentAgreementTemplateId: row.parentAgreementTemplateId,
 			parentAgreementTemplateName: row.parentAgreementTemplateName,
-            parentAgreementTemplateIsMasterTemplate: row.parentAgreementTemplateIsMasterTemplate
+			parentAgreementTemplateIsMasterTemplate: row.parentAgreementTemplateIsMasterTemplate,
 		};
 	}
 

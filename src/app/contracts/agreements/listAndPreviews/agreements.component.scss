@@ -74,11 +74,11 @@ app-agreements {
 	}
 	.mode-column {
 		@include table-cell-width(60px);
-        justify-content: center;
+		justify-content: center;
 	}
 	.status-column {
 		@include table-cell-width(63px);
-        justify-content: center;
+		justify-content: center;
 	}
 	.start-date-column {
 		@include table-cell-width(90px);
@@ -86,7 +86,7 @@ app-agreements {
 	.end-date-column {
 		@include table-cell-width(90px);
 	}
-	.saleManager-column {
+	.salesManager-column {
 		@include table-cell-width(48px);
 	}
 	.contractManager-column {

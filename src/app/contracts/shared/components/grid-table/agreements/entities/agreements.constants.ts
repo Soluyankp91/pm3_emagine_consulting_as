@@ -19,7 +19,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'status',
 	'startDate',
 	'endDate',
-	'saleManager',
+	'salesManager',
 	'contractManager',
 ];
 export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
@@ -34,27 +34,27 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		},
 		class: 'language-column',
 		sticky: true,
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'ID',
 		class: 'id-column',
 		sticky: true,
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Agreement name',
 		class: 'agreement-name-column',
 		sticky: true,
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Actual Recipient',
 		class: 'actual-recipient-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -66,7 +66,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'recipientId-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -78,7 +78,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'agreementType-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -95,19 +95,19 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		type: EHeaderCells.DEFAULT,
 		title: 'Client',
 		class: 'client-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Company name',
 		class: 'company-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Consultant name',
 		class: 'consultant-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -152,7 +152,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'mode-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -169,25 +169,25 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		type: EHeaderCells.DEFAULT,
 		title: 'Strt. date',
 		class: 'start-date-column',
-        sort: true
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Exp. date',
 		class: 'end-date-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
-			formControlName: 'saleManager',
+			formControlName: 'salesManager',
 			component: () =>
 				import('../../agreements/filters/sales-managers-filter/sales-managers-filter.component').then(
 					(it) => it.SalesManagersFilterComponent
 				),
 		},
-		class: 'saleManager-column',
-        sort: true,
+		class: 'salesManager-column',
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -199,7 +199,7 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'contractManager-column',
-        sort: true,
+		sort: true,
 	},
 ];
 
@@ -325,3 +325,5 @@ export const STATUTES = [
 		color: '#ED2939',
 	},
 ];
+export const INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE =
+	'Invalid documents were selected. You can only download envelopes that contain a document. Please check if you are trying to download an Agreement that is set to always being received from other party.';

@@ -68,10 +68,10 @@
 					<div class="fw-600 flex-b-60">{{ summaryItem.legalEntityId }}</div>
 				</div>
 			</ng-container>
-            <ng-container *ngIf="summaryItem.saleManager">
+            <ng-container *ngIf="summaryItem.salesManager">
                 <div class="row-item">
-                    <div class="label">{{ previewMap['saleManager']}}</div>
-                    <div class="fw-600 flex-b-60">{{ summaryItem.saleManager | emptyStringHandle }}</div>
+                    <div class="label">{{ previewMap['salesManager']}}</div>
+                    <div class="fw-600 flex-b-60">{{ summaryItem.salesManager | emptyStringHandle }}</div>
                 </div>
             </ng-container>
             <ng-container *ngIf="summaryItem.contractManager">

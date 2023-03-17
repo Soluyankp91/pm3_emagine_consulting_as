@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation, Injector, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
@@ -21,10 +22,12 @@ import {
 	AGREEMENT_BOTTOM_ACTIONS,
 	AGREEMENT_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
+	INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE,
 	NON_WORKFLOW_AGREEMENT_ACTIONS,
 	WORKFLOW_AGREEMENT_ACTIONS,
 } from '../../shared/components/grid-table/agreements/entities/agreements.constants';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
+import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
 import { AgreementFiltersEnum, MappedAgreementTableItem, MappedTableCells } from '../../shared/entities/contracts.interfaces';
 import { ContractsService } from '../../shared/services/contracts.service';
 import { DownloadFilesService } from '../../shared/services/download-files.service';
@@ -65,7 +68,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _contractService: ContractsService,
 		private readonly _downloadFilesService: DownloadFilesService,
-        private readonly _snackBar: MatSnackBar,
+		private readonly _snackBar: MatSnackBar,
+		private readonly _dialog: MatDialog,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
@@ -114,7 +118,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 			case 'DELETE':
 				this.showMainSpinner();
 				this._agreementServiceProxy.agreementDELETE($event.row.agreementId).subscribe(() => {
-                    this._snackBar.open('Agreement was deleted', undefined, {
+					this._snackBar.open('Agreement was deleted', undefined, {
 						duration: 5000,
 					});
 					setTimeout(() => {
@@ -131,17 +135,29 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				break;
 
 			case 'DOWNLOAD':
-				// w8 for backend to add field that needs for validation
-				const isValid = $event.selectedRows.find(
-					(row) => row.receiveAgreementsFromOtherParty && row.agreementStatus === EnvelopeStatus.WaitingForOthers
+				const invalid = $event.selectedRows.find(
+					(row) => row.receiveAgreementsFromOtherParty || row.agreementStatus === EnvelopeStatus.WaitingForOthers
 				);
-				if (isValid) {
-					break;
-					this._agreementServiceProxy
-						.signedDocuments($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
-						.subscribe((d) => DownloadFile(d as any, 'signed-documents.pdf'));
+				if (invalid) {
+					this._dialog.open(NotificationDialogComponent, {
+						width: '500px',
+						height: '290px',
+						backdropClass: 'backdrop-modal--wrapper',
+						data: {
+							label: 'Download envelope',
+							message: INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE,
+						},
+					});
 				} else {
-					break;
+					this.showMainSpinner();
+					this._downloadFilesService
+						.agreementFiles($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
+						.pipe(
+							tap(() => {
+								this.hideMainSpinner();
+							})
+						)
+						.subscribe((d) => DownloadFile(d as any, 'signed-documents.zip'));
 				}
 		}
 	}
@@ -193,7 +209,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		return items.map((item: AgreementListItemDto) => {
 			return <MappedAgreementTableItem>{
 				language: maps.language[item.languageId as AgreementLanguage],
-                countryCode: GetCountryCodeByLanguage(maps.language[item.languageId as AgreementLanguage]),
+				countryCode: GetCountryCodeByLanguage(maps.language[item.languageId as AgreementLanguage]),
 				agreementId: item.agreementId,
 				agreementName: item.agreementName,
 				actualRecipientName: item.actualRecipientName,
@@ -210,9 +226,10 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				status: item.status,
 				startDate: item.startDate,
 				endDate: item.endDate,
-				saleManager: item.salesManager ? item.salesManager : null,
+				salesManager: item.salesManager ? item.salesManager : null,
 				contractManager: item.contractManager ? item.contractManager : null,
 				isWorkflowRelated: item.isWorkflowRelated,
+				receiveAgreementsFromOtherParty: item.receiveAgreementsFromOtherParty,
 				actionList: item.isWorkflowRelated ? this.workflowActions : this.nonWorkflowAction,
 			};
 		});

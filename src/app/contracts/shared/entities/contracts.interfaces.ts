@@ -49,7 +49,7 @@ export interface AgreementFiltersEnum {
 	contractTypeIds: EnumEntityTypeDto[];
 	validity: BaseEnumDto[];
 	status: BaseEnumDto[];
-	saleManager: EmployeeDto[];
+	salesManager: EmployeeDto[];
 	contractManager: EmployeeDto[];
 }
 
@@ -132,24 +132,24 @@ export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 
 	agreementStatus?: EnvelopeStatus;
 	legalEntityId?: string;
-	saleManager: string;
+	salesManager: string;
 	contractManager: string;
 
 	startDate?: moment.Moment;
 	endDate?: moment.Moment;
 	validity: AgreementValidityState;
 
-    duplicationSourceAgreementId: number;
-    duplicationSourceAgreementName: string;
+	duplicationSourceAgreementId: number;
+	duplicationSourceAgreementName: string;
 
-    parentAgreementTemplateIsMasterTemplate: boolean;
+	parentAgreementTemplateIsMasterTemplate: boolean;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;
 	linkState: AgreementTemplateParentChildLinkState;
-    linkStateAcceptedBy: EmployeeDto,
-    linkStateAcceptedDateUtc: moment.Moment;
+	linkStateAcceptedBy: EmployeeDto;
+	linkStateAcceptedDateUtc: moment.Moment;
 	linkStateAccepted: boolean | undefined;
 }
 export interface MasterTemplatePreview {
@@ -170,7 +170,7 @@ export const OperationsTypeMap = {
 
 export interface MappedAgreementTableItem {
 	language: string;
-    countryCode: string;
+	countryCode: string;
 	agreementId: number;
 	agreementName: string;
 	actualRecipientName: string;
@@ -187,7 +187,8 @@ export interface MappedAgreementTableItem {
 	status: EnvelopeStatus;
 	startDate: moment.Moment;
 	endDate: moment.Moment;
-	saleManager: EmployeeDto;
+	salesManager: EmployeeDto;
 	contractManager: EmployeeDto;
+	receiveAgreementsFromOtherParty?: boolean;
 	actionList: Actions[];
 }

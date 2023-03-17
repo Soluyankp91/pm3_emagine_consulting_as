@@ -68,7 +68,7 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 	resetFilters() {
 		this.topFiltersFormGroup.reset({
 			status: [],
-			saleManager: [],
+			salesManager: [],
 		});
 	}
 
@@ -81,22 +81,22 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 			.getTableFilters$()
 			.pipe(
 				takeUntil(this._unSubscribe$),
-				map(({ status, saleManager }: { status: BaseEnumDto[]; saleManager: BaseEnumDto[] }) => ({
+				map(({ status, salesManager }: { status: BaseEnumDto[]; salesManager: BaseEnumDto[] }) => ({
 					status,
-					saleManager,
+					salesManager,
 				})),
-				tapOnce(({ status, saleManager }) => {
+				tapOnce(({ status, salesManager }) => {
 					this.topFiltersFormGroup = new FormGroup({
 						status: new FormControl(status),
-						saleManager: new FormControl(saleManager),
+						salesManager: new FormControl(salesManager),
 					});
 				}),
 				skip(1),
-				tap(({ status, saleManager }) => {
+				tap(({ status, salesManager }) => {
 					this.topFiltersFormGroup.patchValue(
 						{
 							status: status,
-							saleManager: saleManager,
+							salesManager: salesManager,
 						},
 						{
 							emitEvent: false,
@@ -104,7 +104,7 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 					);
 					this.topFiltersValue$.next({
 						status: status,
-						saleManager: saleManager,
+						salesManager: salesManager,
 					});
 				})
 			)
@@ -164,7 +164,7 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 			dirtyCheck(
 				of({
 					status: [],
-					saleManager: [],
+					salesManager: [],
 				})
 			)
 		);
