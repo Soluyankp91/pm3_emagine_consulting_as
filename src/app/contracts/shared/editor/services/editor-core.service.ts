@@ -270,10 +270,13 @@ export class EditorCoreService {
 
 		const handler = (rich: RichEdit, e) => {
 			let interval = this.editor.selection.intervals[0];
-
 			rich.beginUpdate();
-			rich.document.setCharacterProperties(interval, charProperties);
-			rich.document.setParagraphProperties(interval, prgphProperties);
+			
+			if (charProperties && prgphProperties) {
+				rich.document.setCharacterProperties(interval, charProperties);
+				rich.document.setParagraphProperties(interval, prgphProperties);
+			}
+			
 			this.editor.setCommandEnabled(ICustomCommand.FormatPainter, true);
 			rich.endUpdate();
 
@@ -283,6 +286,7 @@ export class EditorCoreService {
 		};
 
 		const interval = this.editor.selection.intervals[0];
+
 		const sHandler = (rich: RichEdit, e) => {
 			charProperties = rich.document.getCharacterProperties(interval);
 			prgphProperties = rich.document.getParagraphProperties(interval);
