@@ -73,7 +73,7 @@ export class EditorCoreService {
 		this._registerDocumentEvents();
 		this._registerCustomEvents();
 		this._initCompareTab();
-		// this._initComments();
+		this._initComments();
 		this._registerCustomContextMenuItems();
 	}
 
@@ -94,6 +94,7 @@ export class EditorCoreService {
 	}
 
 	setTemplateAsBase64(callback: (base64: string) => void | unknown) {
+        this._commentService.closeCommentPanel();
 		this.editor.exportToBase64((base64) => {
 			this.templateAsBase64$.next(base64);
 			callback(base64);
@@ -105,13 +106,13 @@ export class EditorCoreService {
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {
-		this._commentService.cleanUpDocument(comments);
+        this._commentService.applyComments(comments as any);
 	}
 
 	insertMergeField(field: string) {
 		const position = this.editor.selection.active;
 		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
-		
+
 		const text = this.editor.document.getText(_field.codeInterval);
 
 		const replaced = text.replace(/['"]+/g, '');
@@ -120,24 +121,23 @@ export class EditorCoreService {
 		this.toggleFields();
 	}
 
+    getSyncedCommentState() {
+        return this._commentService.getSyncedCommentState();
+    }
+
 	toggleFields() {
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
 		this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
-	}
-	
-
-	registerCommentThread(interval: IntervalApi, commentID: number) {
-		this._commentService.applyHighlight(interval, commentID);
 	}
 
 	deleteComment(commentID: number) {
 		this._commentService.deleteHighlight(commentID);
 	}
 
-	applyCommentChanges(commentID: number) {
-		this._commentService.highlightSelected(commentID);
-	}
+    applyCommentChanges(commentID: number, text: string) {
+        this._commentService.applyCommentChanges(commentID, text);
+    }
 
 	removeUnsavedChanges() {
 		this.editor.hasUnsavedChanges = false;
@@ -174,6 +174,7 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.GoToLastDataRecord);
 		mergeTab.removeItem(MailMergeTabItemId.GoToNextDataRecord);
 		mergeTab.removeItem(MailMergeTabItemId.GoToPreviousDataRecord);
+		mergeTab.removeItem(MailMergeTabItemId.UpdateAllFields);
 
 		fileTab.removeItem(FileTabItemId.ExportDocument);
 		homeTab.removeItem(HomeTabItemId.Paste);
@@ -198,10 +199,6 @@ export class EditorCoreService {
 		this.editor.events.documentChanged.addHandler(() => {
 			if (!this._compareService.isCompareMode) {
 				this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
-			}
-
-			if (this._commentService.commentModeEnabled) {
-				this.hasUnsavedChanges$.next(false);
 			}
 		});
 
@@ -242,13 +239,13 @@ export class EditorCoreService {
 				case ICustomCommand.FormatPainter:
 					this._formatPainter();
 					break;
-				// case ICustomCommand.SelectionHighlight: {
-				// 	this._commentService.toggleCreateMode();
-				// 	break;
-				// }
-				// case ICustomCommand.ToggleCommentMode:
-				// 	this._commentService.toggleHighlightState(e.parameter);
-				// 	break;
+				case ICustomCommand.SelectionHighlight: {
+					this._commentService.toggleCreateMode();
+					break;
+				}
+				case ICustomCommand.ToggleCommentMode:
+					this._commentService.toggleHighlightState(e.parameter);
+					break;
 			}
 		});
 	}

@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, filter, map, pluck, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { catchError, filter, map, mergeMap, pluck, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
@@ -83,7 +83,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 	isLatestVersionSelected$ = new BehaviorSubject(false);
 
 	commentSidebarEnabled$ = this._editorCoreService.commentSidebarEnabled$;
-	comments$ = new BehaviorSubject<Array<AgreementCommentDto | AgreementTemplateCommentDto>>([]);
 	currentTemplateVersion: number | undefined;
 	prevValue = 0;
 
@@ -116,7 +115,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID);
 
 		this.getTemplateVersions(this.templateId);
-		// this.loadComments(this.templateId, true);
+		this.loadComments(this.templateId, true);
 
 		this._agreementService.getSimpleList().subscribe((res) => {
 			this.documentList$.next(res);
@@ -265,7 +264,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._editorCoreService.afterViewInit$
 			.pipe(switchMap(() => this._commentService.getByTemplateID(templateID)))
 			.subscribe((comments) => {
-				this.comments$.next(comments);
 				this._editorCoreService.insertComments(comments);
 				if (isInitial) {
 					this._editorCoreService.editor.hasUnsavedChanges = false;
@@ -274,42 +272,24 @@ export class EditorComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	createComment({ body, interval }: { body: string; interval: IntervalApi }) {
-		let tmpID = this.templateId;
-		let version = this.currentTemplateVersion;
+    createComment({ text, metadata }: { text: string; metadata: string }) {
+        let tmpID = this.templateId;
+        this._commentService.createComment(tmpID, text, metadata).subscribe(() => {
+            this.loadComments(tmpID);
+        });
+    }
 
-		this._commentService.createComment(tmpID, version, body).subscribe((commentID) => {
-			this._editorCoreService.registerCommentThread(interval, commentID);
-			this.loadComments(tmpID);
+    deleteComment(entityID: number) {
+        this._commentService.deleteComment(entityID).subscribe(() => {
+            this._editorCoreService.deleteComment(entityID);
+        });
+    }
 
-			if (this.selectedVersion.isCurrent) {
-				this.saveCurrentAsDraft();
-			} else {
-				this.saveDraftAsDraft();
-			}
-		});
-	}
-
-	deleteComment(entityID: number) {
-		this._commentService.deleteComment(entityID).subscribe(() => {
-			this.comments$.next(this.comments$.value.filter((c) => c.id !== entityID));
-			this._editorCoreService.deleteComment(entityID);
-		});
-	}
-
-	editComment({ body, entityID }: { body: string; entityID: number }) {
-		this._commentService.editComment(entityID, body).subscribe(() => {
-			this.comments$.next(
-				this.comments$.value.map((comment) => {
-					if (comment.id === entityID) {
-						return { ...comment, text: body } as AgreementCommentDto;
-					}
-					return comment;
-				})
-			);
-			this._editorCoreService.applyCommentChanges(entityID);
-		});
-	}
+    editComment({ text, entityID, metadata }: { text: string; metadata: string; entityID: number }) {
+        this._commentService.editComment(entityID, text, metadata).subscribe(() => {
+            this._editorCoreService.applyCommentChanges(entityID, text);
+        });
+    }
 
 	saveAsComplete() {
 		if (this.selectedVersion.isCurrent) {
@@ -331,6 +311,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveCurrentAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
+                    this._updateCommentByNeeds();
 					this.getTemplateVersions(this.templateId);
 					this.cleanUp();
 				});
@@ -346,6 +327,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this._agreementService
 					.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 					.subscribe(() => {
+                        this._updateCommentByNeeds();
 						this.getTemplateVersions(this.templateId);
 						this.cleanUp();
 					});
@@ -381,6 +363,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							this._agreementService.saveCurrentAsCompleteTemplate(this.templateId, res).pipe(
 								tap(() => {
 									if (isAgreement) {
+                                        this._updateCommentByNeeds();
 										this.getTemplateVersions(this.templateId);
 									}
 								})
@@ -402,6 +385,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
+                    this._updateCommentByNeeds();
 					this.cleanUp();
 				});
 		});
@@ -415,6 +399,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveCurrentAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
+                    this._updateCommentByNeeds();
 					this.getTemplateVersions(this.templateId);
 					this.cleanUp();
 				});
@@ -436,6 +421,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				.subscribe((res) => {
 					if (res) {
 						this.showSnackbar();
+                        this._updateCommentByNeeds();
 						this.getTemplateVersions(this.templateId);
 					}
 
@@ -543,4 +529,22 @@ export class EditorComponent implements OnInit, OnDestroy {
 			callback(res);
 		});
 	}
+
+    private _updateCommentByNeeds() {
+        this._editorCoreService
+            .getSyncedCommentState()
+            .pipe(
+                mergeMap(({ updated, deleted }) => {
+                    let obs: Array<Observable<unknown>> = [];
+                    if (updated && updated.length) {
+                        obs.push(this._commentService.updateMany(updated));
+                    }
+                    if (deleted && deleted.length) {
+                        obs.push(this._commentService.deleteMany(deleted));
+                    }
+                    return forkJoin(obs);
+                })
+            )
+            .subscribe();
+    }
 }
