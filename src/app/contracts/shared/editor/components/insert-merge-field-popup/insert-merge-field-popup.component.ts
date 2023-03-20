@@ -104,7 +104,8 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 			acc.push({
 				id: item,
 				parentID: slices[0],
-				displayName: slices.slice(1).join(' '),
+				// @ts-ignore
+				displayName: slices.slice(1).join(' ').replaceAll('_', ' '),
 			});
 			return acc;
 		}, [] as Array<IMergeFieldItem>);
