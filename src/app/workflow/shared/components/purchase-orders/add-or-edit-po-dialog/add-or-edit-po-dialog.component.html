@@ -9,7 +9,7 @@
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
             <div fxLayout="row" fxLayoutAlign="start start">
                 <ng-container *ngIf="!data?.isEdit">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-140">
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-140 u-mr--12">
                         <mat-label>PO Source</mat-label>
                         <mat-select required formControlName="poSource" [disableOptionCentering]="true" (selectionChange)="poSourceChange($event)">
                             <ng-container *ngFor="let item of poSources; trackBy: trackById">
@@ -73,7 +73,7 @@
                             </mat-select-trigger>
                             <ng-container *ngFor="let item of purchaseOrders; trackBy: trackById">
                                 <mat-option [value]="item">
-                                    <ng-container [ngTemplateOutlet]="poNumberInfo" [ngTemplateOutletContext]="{order: item}"></ng-container>
+                                    <ng-container [ngTemplateOutlet]="poNumberInfo" [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
 
                                     <!-- <div fxLayout="row" fxLayoutAlign="space-between center">
                                         <span [ngClass]="{'medium-grey-color': item?.numberMissingButRequired}">
@@ -169,11 +169,11 @@
 </mat-dialog-actions>
 
 
-<ng-template #poNumberInfo let-order="order">
+<ng-template #poNumberInfo let-order="order" let-isList="isList">
     <div class="multilineDropdown-option--column text-truncate-ellipsis">
-        <span class="multilineDropdown-option--column-client-name">
-            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length">
-                <mat-icon class="shared-icon cursor-pointer" svgIcon="shared-icon"
+        <span class="multilineDropdown-option--column-client-name flex-items-center" [ngClass]="{'medium-grey-color': order?.numberMissingButRequired}">
+            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length && isList">
+                <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
             </ng-container>
             {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}

@@ -51,7 +51,6 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	reject() {
-        console.log(this.purchaseOrderForm);
 		this.onRejected.emit();
 		this._closeInternal();
 	}
@@ -61,12 +60,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		const form = this.purchaseOrderForm.value;
 		let input = new PurchaseOrderDto(form);
         input.directClientIdReferencingThisPo = this.data?.directClientId ?? undefined;
-        // input.id = form.id;
-		// input.number = form.number;
-		// input.numberMissingButRequired = form.numberMissingButRequired;
 		input.workflowsIdsReferencingThisPo = [];
-		// input.receiveDate = form.receiveDate;
-		// input.number = form.number;
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
         if (this.purchaseOrderForm.poSource.value === EPOSource.ExistingPO || this.purchaseOrderForm.poSource.value === EPOSource.DifferentWF) {
             this.onConfirmed.emit(this.existingPo);

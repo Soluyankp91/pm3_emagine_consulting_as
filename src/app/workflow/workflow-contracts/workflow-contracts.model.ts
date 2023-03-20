@@ -17,7 +17,7 @@ export class WorkflowContractsMainForm extends UntypedFormGroup {
             remarks: new UntypedFormControl(null, Validators.required),
             noRemarks: new UntypedFormControl(false),
             customDebtorNumber: new UntypedFormControl(null)
-        });
+        }, {updateOn: 'submit'});
     }
 
     get salesType() {
@@ -75,7 +75,7 @@ export class WorkflowContractsSyncForm extends UntypedFormGroup {
             isNewSyncNeeded: new UntypedFormControl(false),
             lastSyncedDate: new UntypedFormControl(null),
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        });
+        }, {updateOn: 'submit'});
     }
 
     get contractLinesDoneManuallyInOldPm() {
@@ -128,7 +128,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             noSpecialContractTerms: new UntypedFormControl(null),
             clientRates: new UntypedFormArray([]),
             clientFees: new UntypedFormArray([]),
-        });
+        }, {updateOn: 'submit'});
     }
 
     get directClientId() {
@@ -194,7 +194,7 @@ export class WorkflowContractsConsultantsDataForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        })
+        }, {updateOn: 'submit'});
     }
     get consultants() {
         return this.get('consultants') as UntypedFormArray;
@@ -205,7 +205,7 @@ export class WorkflowConsultantsLegalContractForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([])
-        })
+        }, {updateOn: 'submit'});
 
     }
     get consultants() {
@@ -218,7 +218,7 @@ export class WorkflowContractsTerminationConsultantsDataForm extends UntypedForm
     constructor() {
         super({
             consultantTerminationContractData: new UntypedFormArray([])
-        })
+        }, {updateOn: 'submit'});
 
     }
     get consultantTerminationContractData() {

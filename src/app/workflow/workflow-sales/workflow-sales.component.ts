@@ -254,9 +254,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	validateSalesForm() {
-        console.log(this.clientDataComponent.salesClientDataForm);
-        console.log(this.mainDataComponent.salesMainDataForm);
-        console.log(this.consutlantDataComponent.consultantsForm);
         this.clientDataComponent?.submitForm();
 		this.clientDataComponent?.salesClientDataForm.markAllAsTouched();
         this.mainDataComponent?.submitForm();
@@ -669,7 +666,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 if (this.isContractModuleEnabled) {
                     this.clientDataComponent?.getFrameAgreements();
                 }
-                console.log('PO ids');
                 if (result.salesClientData.purchaseOrdersIds?.length) {
                     this.clientDataComponent?.poComponent?.getPurchaseOrders(result.salesClientData.purchaseOrdersIds, result.salesClientData.directClientIdValue);
                 }
@@ -956,6 +952,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
             this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
             this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
+            if (this.clientDataComponent.poComponent) {
+                this.clientDataComponent.poComponent.purchaseOrders.controls = [];
+            }
         }
         if (this.mainDataComponent) {
             this.mainDataComponent.salesMainDataForm.commissions.controls = [];

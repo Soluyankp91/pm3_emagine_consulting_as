@@ -27,7 +27,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	@Input() directClientId: number;
 	@Input() readOnlyMode: boolean;
     @Input() mode: EPurchaseOrderMode;
-	// @Input()
 	currencies: EnumEntityTypeDto[];
 	poForm: PoForm;
 	eValueUnitType = EValueUnitTypes;
@@ -35,7 +34,8 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	capTypes: { [key: string]: string };
 	purchaseOrdersList: PurchaseOrderDto[];
     ePurchaseOrderMode = EPurchaseOrderMode;
-    previousPO: PurchaseOrderDto;
+    eCurrencies: { [key: number]: string};
+
 	constructor(
 		injector: Injector,
 		private _overlay: Overlay,
@@ -85,23 +85,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		this.purchaseOrders.removeAt(orderIndex);
 	}
 
-    changePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
-        // FIXME: rewrite => remove previous -> create new === replace without previousPO
-        const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
-			clientPeriodId: this.periodId,
-			directClientId: this.directClientId,
-		};
-		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
-
-		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderDto) => {
-            this.removePurchaseOrder(orderIndex);
-            this._updatePurchaseOrder(newPurchaseOrder, orderIndex);
-            // this.previousPO = purchaseOrder;
-		});
-    }
-
     private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
         switch (this.mode) {
             case EPurchaseOrderMode.WFOverview:
@@ -110,6 +93,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
                 });
                 break;
             case EPurchaseOrderMode.SalesStep:
+            case EPurchaseOrderMode.ContractStep:
             case EPurchaseOrderMode.ProjectLine:
                 list.filter(item => purchaseOrderIds.includes(item.id)).forEach(order => {
                     this._addPurchaseOrder(order);
@@ -136,9 +120,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			.setValue(purchaseOrder?.capForInvoicing?.valueUnitTypeId, { emitEvent: false });
 		capForInvoicingForm.get('maxAmount').setValue(purchaseOrder?.capForInvoicing?.maxAmount, { emitEvent: false });
 		capForInvoicingForm.get('currencyId').setValue(purchaseOrder?.capForInvoicing?.currencyId, { emitEvent: false });
-		capForInvoicingForm
-			.get('currency')
-			.setValue(this.findItemById(this.currencies, purchaseOrder?.capForInvoicing?.currencyId), { emitEvent: false });
 		capForInvoicingForm.get('amountUsed').setValue(purchaseOrder?.capForInvoicing?.amountUsed, { emitEvent: false });
 	}
 
@@ -153,7 +134,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 				valueUnitTypeId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.valueUnitTypeId),
 				maxAmount: new UntypedFormControl(purchaseOrder?.capForInvoicing?.maxAmount),
 				currencyId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.currencyId),
-				currency: new UntypedFormControl(this.findItemById(this.currencies, purchaseOrder?.capForInvoicing?.currencyId)),
 				amountUsed: new UntypedFormControl(purchaseOrder?.capForInvoicing?.amountUsed),
 			}),
 			createdBy: new UntypedFormControl(purchaseOrder?.createdBy),
@@ -172,6 +152,8 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		}).subscribe((result) => {
 			this.capTypes = result.capTypes;
 			this.currencies = result.currencies;
+            this.eCurrencies = this.arrayToEnum(this.currencies);
+
 		});
 	}
 

@@ -121,7 +121,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			clientFees: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
 			projectLines: new UntypedFormArray([], Validators.minLength(1)),
-		});
+		}, {updateOn: 'submit'});
 		this.contractsConsultantsDataForm.consultants.push(form);
 		consultant.projectLines?.forEach((project: any) => {
 			this.addProjectLinesToConsultantData(consultantIndex, project);

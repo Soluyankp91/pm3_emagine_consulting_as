@@ -496,6 +496,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (this.clientDataComponent) {
             this.clientDataComponent.contractClientForm.clientRates.controls = [];
             this.clientDataComponent.contractClientForm.clientFees.controls = [];
+            if (this.clientDataComponent.poComponent) {
+                this.clientDataComponent.poComponent.purchaseOrders.controls = [];
+            }
         }
         if (this.consultantDataComponent) {
             this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
@@ -918,6 +921,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			if (data.clientData.directClientId) {
 				this.getRatesAndFees(data.clientData.directClientId);
 			}
+            if (data.clientData.purchaseOrdersIds?.length) {
+                this.clientDataComponent?.poComponent?.getPurchaseOrders(data.clientData.purchaseOrdersIds, data.clientData.directClientId);
+            }
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		if (data?.clientData?.periodClientSpecialRates?.length) {
@@ -998,7 +1004,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		input.clientData.noSpecialFee = this.clientDataComponent?.contractClientForm.clientFees.value?.length === 0;
-        // input.clientData.purchaseOrdersIds = this.clientDataComponent?.purchaseOrders.value.map(x => x.id);
+        input.clientData.purchaseOrdersIds = this.clientDataComponent?.poComponent?.purchaseOrders.value.map(x => x.id);
 		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
 
 		input.mainData = new ContractsMainDataDto();

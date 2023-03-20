@@ -15,5 +15,6 @@ export class PoForm extends UntypedFormGroup {
 export enum EPurchaseOrderMode {
     WFOverview = 1,
     SalesStep = 2,
-    ProjectLine = 3
+    ContractStep = 3,
+    ProjectLine = 4
 }

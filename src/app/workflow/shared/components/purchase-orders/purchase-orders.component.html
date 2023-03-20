@@ -40,20 +40,6 @@
         </div>
     </ng-container>
 </form>
-<ng-container *ngIf="previousPO?.id">
-    <div class="inline-edit-form u-w--100 u-mt--15">
-        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
-            class="inline-form--header__container u-w--100">
-            <span fxFlex class="inline-form--header u-w--100">
-                Previous PO number
-            </span>
-        </div>
-        <ng-container [ngTemplateOutlet]="poRow"
-            [ngTemplateOutletContext]="{order: previousPO, i: null, isPreviousPO: true}">
-        </ng-container>
-    </div>
-</ng-container>
-
 
 <ng-template #poHeader>
     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
@@ -81,10 +67,10 @@
     </div>
 </ng-template>
 
-<ng-template #poRow let-order="order" let-i="i" let-isPreviousPO="isPreviousPO">
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-form--row u-w--100" [ngClass]="{'previous-po': isPreviousPO}">
+<ng-template #poRow let-order="order" let-i="i">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-form--row u-w--100">
         <span fxFlex fxLayoutAlign="start center" class="u-w--100 text-truncate-ellipsis"
-            [ngClass]="order.numberMissingButRequired || isPreviousPO ? 'medium-grey-color' : 'dark-grey-color'"
+            [ngClass]="order.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
             [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
             matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-') }}
@@ -121,9 +107,9 @@
             </ng-container>
             <ng-container *ngSwitchCase="ePoCapType.CapOnValue">
                 <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
-                    [matTooltip]="order.capForInvoicing?.currency?.name" matTooltipClass="white-tooltip"
+                    [matTooltip]="eCurrencies[order.capForInvoicing?.currencyId]" matTooltipClass="white-tooltip"
                     appShowIfTruncated>
-                    {{order.capForInvoicing?.currency?.name}}
+                    {{eCurrencies[order.capForInvoicing?.currencyId]}}
                 </span>
             </ng-container>
             <ng-container *ngSwitchCase="ePoCapType.NoCap">
@@ -132,31 +118,22 @@
         </ng-container>
 
         <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
-            <ng-container *ngIf="!isPreviousPO">
-                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
-                    [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
-                    <mat-icon svgIcon="3-dots"></mat-icon>
+            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
+                [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
+                <mat-icon svgIcon="3-dots"></mat-icon>
+            </button>
+            <mat-menu #poMenu>
+                <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                    (throttledClick)="createOrEditPurchaseOrder(order, i)">
+                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                    {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
                 </button>
-                <mat-menu #poMenu>
-                    <ng-container *ngIf="mode === ePurchaseOrderMode.ProjectLine">
-                        <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                            (throttledClick)="changePurchaseOrder(order, i)">
-                            <mat-icon svgIcon="change-icon"></mat-icon>
-                            Change PO
-                        </button>
-                    </ng-container>
-                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="createOrEditPurchaseOrder(order, i)">
-                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
-                    </button>
-                    <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="removePurchaseOrder(i)">
-                        <mat-icon svgIcon="close-icon"></mat-icon>
-                        Delete
-                    </button>
-                </mat-menu>
-            </ng-container>
+                <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
+                    (throttledClick)="removePurchaseOrder(i)">
+                    <mat-icon svgIcon="close-icon"></mat-icon>
+                    {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
+                </button>
+            </mat-menu>
         </div>
     </div>
 </ng-template>
