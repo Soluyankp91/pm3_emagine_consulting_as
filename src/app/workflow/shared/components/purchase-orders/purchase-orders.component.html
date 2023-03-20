@@ -88,7 +88,7 @@
             [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
             matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-') }}
-            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length">
+            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length > 1">
                 <mat-icon class="shared-icon u-ml--10 cursor-pointer" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
             </ng-container>

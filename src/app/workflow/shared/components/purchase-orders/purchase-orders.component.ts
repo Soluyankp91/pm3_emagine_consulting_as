@@ -72,16 +72,12 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		});
 	}
 
-	getPurchaseOrders(purchaseOrderIds: number[], directClientId: number) {
-        console.log('PO ids');
+	getPurchaseOrders(purchaseOrderIds: number[], directClientId: number, periodId?: string) {
 		this._purchaseOrderService
-			.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId)
+			.getPurchaseOrdersAvailableForClientPeriod(this.periodId ?? periodId, directClientId)
 			.subscribe((result) => {
 				this.purchaseOrdersList = result;
                 this._filterResponse(result, purchaseOrderIds);
-                // result.filter(item => purchaseOrderIds.includes(item.id)).forEach(order => {
-                //     this._addPurchaseOrder(order);
-                // })
 			});
 	}
 
@@ -90,6 +86,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	}
 
     changePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
+        // FIXME: rewrite => remove previous -> create new === replace without previousPO
         const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -99,9 +96,9 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderDto) => {
-            console.log('{previousPO set}')
+            this.removePurchaseOrder(orderIndex);
             this._updatePurchaseOrder(newPurchaseOrder, orderIndex);
-            this.previousPO = purchaseOrder;
+            // this.previousPO = purchaseOrder;
 		});
     }
 

@@ -206,4 +206,12 @@ export abstract class AppComponentBase {
 		b.style.overflow = overflowStyle;
 	}
 
+    arrayToEnum(list: EnumEntityTypeDto[]) {
+        let result: { [key: number]: string} = {};
+        list.forEach(x => {
+            result[x.id] = x.name
+        });
+        return result;
+    }
+
 }
