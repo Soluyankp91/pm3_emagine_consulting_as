@@ -82,7 +82,7 @@
         </div>
         <ng-container *ngFor="let recipient of recipients">
             <div class="envelope-row u-pl--12 u-pr--12" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                <span fxFlex="35px" fxLayoutAlign="center center" class="u-w--100">
+                <span fxFlex="35px" fxLayoutAlign="center center" class="u-w--100 u-mr--16">
                     <ng-container
                         *ngIf="recipient.signerType === signerType.InternalEmagine || recipient.signerType === signerType.Consultant; then recipientImage; else noImage"></ng-container>
                     <ng-template #recipientImage>

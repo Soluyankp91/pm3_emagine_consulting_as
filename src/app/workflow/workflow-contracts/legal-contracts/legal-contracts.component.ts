@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
@@ -67,7 +68,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _legalContractService: LegalContractService,
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
-		private _router: Router
+		private _router: Router,
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
@@ -390,9 +391,29 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._agreementService
 			.uploadSigned(agreementId, forceUpdate, file)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
-                this._getAgreementData()
+			.subscribe({
+                next:() => {
+                    this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
+                    this._getAgreementData()
+                },
+                error:() => {
+                    const scrollStrategy = this._overlay.scrollStrategies.reposition();
+                    MediumDialogConfig.scrollStrategy = scrollStrategy;
+                    MediumDialogConfig.data = {
+                        confirmationMessageTitle: `Terminate consultant`,
+                        confirmationMessage: `Are you sure you want to terminate consultant?`,
+                        rejectButtonText: 'Cancel',
+                        confirmButtonText: 'Yes',
+                        isNegative: true,
+                    };
+                    const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+                    dialogRef.componentInstance.onConfirmed.subscribe(() => {
+                        // CALL AGAIN WUTH FORCE = TRUE
+                    });
+                    // const header = ``;
+                    // const message = ``;
+                    // this._errorService.openDialog()
+                }
             });
 	}
 

@@ -37,7 +37,7 @@
     border-radius: 5px;
     &.mat-button-disabled {
         background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
-        border: 2px solid rgba($color: $light-grey-color, $alpha: 0.55) !important;
+        border: 2px solid transparent !important;
     }
 }
 

@@ -35,7 +35,7 @@
             <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i"
                 [formArrayName]="i">
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px"
-                    class="legal-contract--list u-w--100 u-pl--16 u-pr--16 u-mb--15">
+                    class="legal-contract--list u-w--100 u-pl--16 u-pr--16 u-mb--8">
                     <span fxFlex="20px" class="legal-contract--list-item u-w--100">
                         <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement"
                             class="black-checkbox">
@@ -100,7 +100,7 @@
                             </button>
                             <mat-menu #legalContractMenu>
                                 <ng-container
-                                    *ngIf="contract.value.agreementStatus === legalContractStatus.Sent || contract.value.agreementStatus === legalContractStatus.WaitingForOthers || contract.value.agreementStatus === legalContractStatus.AboutToExpire || contract.value.agreementStatus === legalContractStatus.DeliveryFailure">
+                                    *ngIf="contract.value.agreementStatus !== legalContractStatus.Completed">
                                     <button class="menu-item green-color" mat-menu-item
                                         (click)="openUploadSignedContractDialog(contract.value.agreementId)">
                                         <mat-icon svgIcon="legal-contract-upload"></mat-icon>
