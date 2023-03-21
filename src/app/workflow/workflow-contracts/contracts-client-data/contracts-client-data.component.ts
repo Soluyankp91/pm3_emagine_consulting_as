@@ -21,6 +21,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
+import { takeUntil } from 'rxjs/operators';
 @Component({
 	selector: 'app-contracts-client-data',
 	templateUrl: './contracts-client-data.component.html',

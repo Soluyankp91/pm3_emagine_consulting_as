@@ -23,18 +23,18 @@ import { EPurchaseOrderMode, PoForm } from './purchase-orders.model';
 })
 export class PurchaseOrdersComponent extends AppComponentBase implements OnInit {
 	@Input() periodId: string;
-    @Input() workflowId: string;
+	@Input() workflowId: string;
 	@Input() directClientId: number;
 	@Input() readOnlyMode: boolean;
-    @Input() mode: EPurchaseOrderMode;
+	@Input() mode: EPurchaseOrderMode;
 	currencies: EnumEntityTypeDto[];
 	poForm: PoForm;
 	eValueUnitType = EValueUnitTypes;
 	ePoCapType = PurchaseOrderCapType;
 	capTypes: { [key: string]: string };
 	purchaseOrdersList: PurchaseOrderDto[];
-    ePurchaseOrderMode = EPurchaseOrderMode;
-    eCurrencies: { [key: number]: string};
+	ePurchaseOrderMode = EPurchaseOrderMode;
+	eCurrencies: { [key: number]: string };
 
 	constructor(
 		injector: Injector,
@@ -77,30 +77,31 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			.getPurchaseOrdersAvailableForClientPeriod(this.periodId ?? periodId, directClientId)
 			.subscribe((result) => {
 				this.purchaseOrdersList = result;
-                this._filterResponse(result, purchaseOrderIds);
+                this.purchaseOrders.controls = [];
+				this._filterResponse(result, purchaseOrderIds);
 			});
 	}
 
-    removePurchaseOrder(orderIndex: number) {
+	removePurchaseOrder(orderIndex: number) {
 		this.purchaseOrders.removeAt(orderIndex);
 	}
 
-    private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
-        switch (this.mode) {
-            case EPurchaseOrderMode.WFOverview:
-                list.filter(item => item.workflowsIdsReferencingThisPo.includes(this.workflowId)).forEach(order => {
-                    this._addPurchaseOrder(order);
-                });
-                break;
-            case EPurchaseOrderMode.SalesStep:
-            case EPurchaseOrderMode.ContractStep:
-            case EPurchaseOrderMode.ProjectLine:
-                list.filter(item => purchaseOrderIds.includes(item.id)).forEach(order => {
-                    this._addPurchaseOrder(order);
-                });
-                break;
-        }
-    }
+	private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
+		switch (this.mode) {
+			case EPurchaseOrderMode.WFOverview:
+				list.filter((item) => item.workflowsIdsReferencingThisPo.includes(this.workflowId)).forEach((order) => {
+					this._addPurchaseOrder(order);
+				});
+				break;
+			case EPurchaseOrderMode.SalesStep:
+			case EPurchaseOrderMode.ContractStep:
+			case EPurchaseOrderMode.ProjectLine:
+				list.filter((item) => purchaseOrderIds.includes(item.id)).forEach((order) => {
+					this._addPurchaseOrder(order);
+				});
+				break;
+		}
+	}
 
 	private _updatePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
 		const formRow = this.purchaseOrders.at(orderIndex);
@@ -152,8 +153,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		}).subscribe((result) => {
 			this.capTypes = result.capTypes;
 			this.currencies = result.currencies;
-            this.eCurrencies = this.arrayToEnum(this.currencies);
-
+			this.eCurrencies = this.arrayToEnum(this.currencies);
 		});
 	}
 

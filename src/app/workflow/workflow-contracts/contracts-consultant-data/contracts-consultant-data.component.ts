@@ -4,9 +4,11 @@ import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormContr
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { forkJoin, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, PurchaseOrderCapType, PurchaseOrderDto, PurchaseOrderServiceProxy, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowDataService } from '../../workflow-data.service';
 import { EValueUnitTypes } from '../../workflow-sales/workflow-sales.model';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
@@ -45,6 +47,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
     ePOCaps = PurchaseOrderCapType;
     capTypes: { [key: string]: string };
     eCurrencies: { [key: number]: string};
+    directClientId: number;
 	private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -52,10 +55,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         private dialog: MatDialog,
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
-        private _purchaseOrderService: PurchaseOrderServiceProxy
+        private _purchaseOrderService: PurchaseOrderServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
 		super(injector);
 		this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
+        this._workflowDataService.updatePurchaseOrders
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => this.getPOsToUpdateValues(this.directClientId));
 	}
 
 	ngOnInit(): void {
@@ -67,7 +74,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this._unsubscribe.complete();
 	}
 
-    getAvailablePOs(directClientId: number) {
+    getPOsToUpdateValues(directClientId: number) {
         this._purchaseOrderService.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId)
             .subscribe(result => {
                 this.purchaseOrders = result;
@@ -75,42 +82,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
             });
     }
 
-    private _updateProjectLinePOs() {
-        this.consultants.controls.forEach(consutlant => {
-            const projectLines = (consutlant.get('projectLines') as UntypedFormArray);
-            projectLines.controls.forEach(projectLine => {
-                projectLine.get('purchaseOrder').setValue(this.purchaseOrders?.find(x => x.id === projectLine.get('purchaseOrderId').value));
-            });
-        });
-    }
-
-    // getPO(poId: number, pos: PurchaseOrderDto[]) {
-    //     return pos.find(x => x.id === poId);
-    // }
-
-    private _getEnums() {
-        forkJoin({
-            employmentTypes: this._internalLookupService.getEmploymentTypes(),
-            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-            currencies: this._internalLookupService.getCurrencies(),
-            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-            capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-        })
-        .subscribe(result => {
-            this.employmentTypes = result.employmentTypes;
-            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-            this.currencies = result.currencies;
-            this.eCurrencies = this.arrayToEnum(result.currencies);
-            this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-            this.valueUnitTypes = result.valueUnitTypes;
-            this.periodUnitTypes = result.periodUnitTypes;
-            this.capTypes = result.capTypes;
-        })
-    }
-
     addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number, directClientId?: number) {
+        this.directClientId = directClientId;
 		const form = this._fb.group({
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
 			consultantId: new UntypedFormControl(consultant?.consultantId),
@@ -168,7 +141,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		});
 		this.filteredConsultants.push(consultant.consultant!);
         if (directClientId) {
-            this.getAvailablePOs(directClientId);
+            this.getPOsToUpdateValues(directClientId);
         }
 	}
 
@@ -610,6 +583,38 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 
     submitForm() {
         this.submitFormBtn.nativeElement.click();
+    }
+
+
+    private _updateProjectLinePOs() {
+        this.consultants.controls.forEach(consutlant => {
+            const projectLines = (consutlant.get('projectLines') as UntypedFormArray);
+            projectLines.controls.forEach(projectLine => {
+                projectLine.get('purchaseOrder').setValue(this.purchaseOrders?.find(x => x.id === projectLine.get('purchaseOrderId').value));
+            });
+        });
+    }
+
+    private _getEnums() {
+        forkJoin({
+            employmentTypes: this._internalLookupService.getEmploymentTypes(),
+            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+            currencies: this._internalLookupService.getCurrencies(),
+            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
+            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+            capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
+        })
+        .subscribe(result => {
+            this.employmentTypes = result.employmentTypes;
+            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
+            this.currencies = result.currencies;
+            this.eCurrencies = this.arrayToEnum(result.currencies);
+            this.consultantInsuranceOptions = result.consultantInsuranceOptions;
+            this.valueUnitTypes = result.valueUnitTypes;
+            this.periodUnitTypes = result.periodUnitTypes;
+            this.capTypes = result.capTypes;
+        })
     }
 
     get timeReportingCaps(): UntypedFormArray {

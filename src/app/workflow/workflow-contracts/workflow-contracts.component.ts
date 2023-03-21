@@ -114,7 +114,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	salesTypesEnum = SalesTypes;
 
     isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
-
+    purchaseOrderIds: number[];
+    directClientId: number;
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -134,6 +135,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		super(injector);
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
+        this._workflowDataService.updatePurchaseOrders
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => this.clientDataComponent.poComponent.getPurchaseOrders(this.purchaseOrderIds, this.directClientId, this.periodId));
 	}
 
 	ngOnInit(): void {
@@ -924,8 +928,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 			if (data.clientData.directClientId) {
 				this.getRatesAndFees(data.clientData.directClientId);
-                // this.getAvailablePOs(data.clientData.directClientId);
 			}
+            this.purchaseOrderIds = data.clientData.purchaseOrdersIds;
+            this.directClientId = data.clientData.directClientId;
             if (data.clientData.purchaseOrdersIds?.length) {
                 this.clientDataComponent?.poComponent?.getPurchaseOrders(data.clientData.purchaseOrdersIds, data.clientData.directClientId, this.periodId);
             }

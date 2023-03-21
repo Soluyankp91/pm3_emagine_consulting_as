@@ -43,6 +43,7 @@ export class WorkflowDataService {
 
     cancelForceEdit =  new EventEmitter<any>();
     resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
+    updatePurchaseOrders = new EventEmitter();
     isContractModuleEnabled: boolean;
     isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
 

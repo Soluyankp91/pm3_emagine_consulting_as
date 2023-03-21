@@ -23,7 +23,7 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 	get number() {
 		return this.get('number');
 	}
-    get existingPo() {
+	get existingPo() {
 		return this.get('existingPo');
 	}
 	get receiveDate() {
@@ -54,13 +54,13 @@ export class CapForInvoicingForm extends UntypedFormGroup {
 	get maxAmount() {
 		return this.get('maxAmount');
 	}
-    get valueUnitTypeId() {
+	get valueUnitTypeId() {
 		return this.get('valueUnitTypeId');
 	}
-    get currencyId() {
+	get currencyId() {
 		return this.get('currencyId');
 	}
-    get amountUsed() {
+	get amountUsed() {
 		return this.get('amountUsed');
 	}
 }
