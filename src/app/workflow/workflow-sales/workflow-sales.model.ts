@@ -22,6 +22,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
 
             salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new UntypedFormControl(null),
+            primarySourcer: new UntypedFormControl(null),
             contractExpirationNotification: new UntypedFormControl(null),
             customContractExpirationNotificationDate: new UntypedFormControl(null),
 
@@ -74,6 +75,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     }
     get commissionAccountManagerIdValue () {
         return this.get('commissionAccountManagerIdValue');
+    }
+    get primarySourcer () {
+        return this.get('primarySourcer');
     }
     get contractExpirationNotification() {
         return this.get('contractExpirationNotification');

@@ -483,6 +483,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesMainData?.commissionAccountManagerData,
 					{ emitEvent: false }
 				);
+                this.mainDataComponent?.salesMainDataForm.primarySourcer?.setValue(
+					result?.salesMainData?.primarySourcer,
+					{ emitEvent: false }
+				);
 				let expirationNotificationIntervals = result.salesMainData?.contractExpirationNotificationIntervalIds;
 				if (
 					result?.salesMainData?.customContractExpirationNotificationDate !== null &&
@@ -1022,6 +1026,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
 		input.salesMainData.commissionAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
+        input.salesMainData.primarySourcerId = this.mainDataComponent?.salesMainDataForm.primarySourcer?.value?.id;
+        input.salesMainData.primarySourcer = this.mainDataComponent?.salesMainDataForm.primarySourcer?.value;
 		input.salesMainData.customContractExpirationNotificationDate =
 			this.mainDataComponent?.salesMainDataForm.contractExpirationNotification?.value?.includes(999)
 				? this.mainDataComponent?.salesMainDataForm.customContractExpirationNotificationDate?.value
