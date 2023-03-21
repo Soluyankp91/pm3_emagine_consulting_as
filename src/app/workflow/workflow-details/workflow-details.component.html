@@ -246,11 +246,11 @@
         <div class="u-w--100">
             <router-outlet #outlet="outlet"></router-outlet>
         </div>
-        <div class="workflow-notes-wrapper">
-            <ng-container *ngIf="!rlaWFOverview.isActive">
+        <ng-container *ngIf="!rlaWFOverview.isActive">
+            <div class="workflow-notes-wrapper">
                 <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
-            </ng-container>
-        </div>
+            </div>
+        </ng-container>
         <ng-container *ngIf="bottomToolbarVisible">
             <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls">
                 <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing">

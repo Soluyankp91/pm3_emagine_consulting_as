@@ -23,7 +23,7 @@
                         </mat-error>
                     </mat-form-field>
                 </ng-container>
-                <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO">
+                <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO || data.isEdit">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-165">
                         <mat-label>PO receive date</mat-label>
                         <input autocomplete="off" matInput
@@ -103,7 +103,7 @@
                 <!-- </ng-template> -->
 
             </div>
-            <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO">
+            <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO || data.isEdit">
                 <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableInputs(purchaseOrderForm.numberMissingButRequired.value)">
                     PO number missing, but required
                 </mat-checkbox>
