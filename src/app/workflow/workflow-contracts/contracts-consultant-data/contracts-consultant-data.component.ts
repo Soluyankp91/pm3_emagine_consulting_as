@@ -6,7 +6,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { forkJoin, Observable, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, PurchaseOrderDto, PurchaseOrderServiceProxy, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, PurchaseOrderCapType, PurchaseOrderDto, PurchaseOrderServiceProxy, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { EValueUnitTypes } from '../../workflow-sales/workflow-sales.model';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
@@ -24,7 +25,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
     @Input() periodId: string;
-    @Input() purchaseOrders: PurchaseOrderDto[] = [];
+    purchaseOrders: PurchaseOrderDto[] = [];
     purchaseOrders$: Observable<PurchaseOrderDto[]>;
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
@@ -40,6 +41,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
+    eValueUnitType = EValueUnitTypes;
+    ePOCaps = PurchaseOrderCapType;
+    capTypes: { [key: string]: string };
+    eCurrencies: { [key: number]: string};
 	private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -62,9 +67,22 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this._unsubscribe.complete();
 	}
 
-    // getAvailablePOs(directClientId: number) {
-    //     this.purchaseOrders$ = this._purchaseOrderService.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId);
-    // }
+    getAvailablePOs(directClientId: number) {
+        this._purchaseOrderService.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId)
+            .subscribe(result => {
+                this.purchaseOrders = result;
+                this._updateProjectLinePOs();
+            });
+    }
+
+    private _updateProjectLinePOs() {
+        this.consultants.controls.forEach(consutlant => {
+            const projectLines = (consutlant.get('projectLines') as UntypedFormArray);
+            projectLines.controls.forEach(projectLine => {
+                projectLine.get('purchaseOrder').setValue(this.purchaseOrders?.find(x => x.id === projectLine.get('purchaseOrderId').value));
+            });
+        });
+    }
 
     // getPO(poId: number, pos: PurchaseOrderDto[]) {
     //     return pos.find(x => x.id === poId);
@@ -78,18 +96,21 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
             consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
             valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
             periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+            capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
         })
         .subscribe(result => {
             this.employmentTypes = result.employmentTypes;
             this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
             this.currencies = result.currencies;
+            this.eCurrencies = this.arrayToEnum(result.currencies);
             this.consultantInsuranceOptions = result.consultantInsuranceOptions;
             this.valueUnitTypes = result.valueUnitTypes;
             this.periodUnitTypes = result.periodUnitTypes;
+            this.capTypes = result.capTypes;
         })
     }
 
-    addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+    addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number, directClientId?: number) {
 		const form = this._fb.group({
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
 			consultantId: new UntypedFormControl(consultant?.consultantId),
@@ -146,6 +167,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			this.addSpecialRateToConsultantData(consultantIndex, rate);
 		});
 		this.filteredConsultants.push(consultant.consultant!);
+        if (directClientId) {
+            this.getAvailablePOs(directClientId);
+        }
 	}
 
     selectConsultantSpecialRate(
@@ -380,14 +404,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				? null
 				: this.contractClientForm.invoicingReferencePerson?.value,
 			purchaseOrderId: null,
-			// purchaseOrder: new PurchaseOrderDto(),
+			purchaseOrder: new PurchaseOrderDto(),
 		};
 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
 			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(
 				projectLinesIndex!
 			).value;
             projectLine.purchaseOrderId = (this.consultants.at(index).get('projectLines') as UntypedFormArray).at(projectLinesIndex).get('purchaseOrderId').value;
-            // projectLine.purchaseOrder = (this.consultants.at(index).get('projectLines') as UntypedFormArray).at(projectLinesIndex).get('purchaseOrder').value;
+            projectLine.purchaseOrder = (this.consultants.at(index).get('projectLines') as UntypedFormArray).at(projectLinesIndex).get('purchaseOrder').value;
 		}
 		const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
 			width: '800px',
@@ -465,7 +489,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			wasSynced: new UntypedFormControl(projectLine?.wasSynced),
 			isLineForFees: new UntypedFormControl(projectLine?.isLineForFees),
             purchaseOrderId: new UntypedFormControl(projectLine?.purchaseOrderId),
-            // purchaseOrder: new UntypedFormControl(purchaseOrders?.find(x => x.id === projectLine?.purchaseOrderId)),
+            purchaseOrder: new UntypedFormControl(null),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
 	}
@@ -527,7 +551,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, { emitEvent: false });
 		projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
 		projectLineRow.get('purchaseOrderId')?.setValue(projectLineData.purchaseOrderId, { emitEvent: false });
-		// projectLineRow.get('purchaseOrder')?.setValue(purchaseOrders?.find(x => x.id === projectLineData.purchaseOrderId), { emitEvent: false });
+		projectLineRow.get('purchaseOrder')?.setValue(null, { emitEvent: false });
 	}
 
 	duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {

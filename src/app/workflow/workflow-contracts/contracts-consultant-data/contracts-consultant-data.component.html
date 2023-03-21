@@ -910,11 +910,13 @@
                                                             </span>
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                                [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'"
+                                                                [matTooltip]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                                {{projectLine.value.invoicingReferenceNumber &&
-                                                                projectLine.value.invoicingReferenceNumber !== '' ?
-                                                                projectLine.value.invoicingReferenceNumber : '-'}}
+                                                                <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate">
+                                                                    <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
+                                                                        {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
+                                                                    </span>
+                                                                </ng-container>
                                                             </span>
                                                             <span fxFlex="10%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
@@ -1021,10 +1023,25 @@
                                                         <span fxFlex="15%"
                                                             class="project-line--expansion-additional__header">Current PO</span>
                                                         <span class="project-line--expansion-additional__content">
-                                                            Under development
-                                                            <!-- {{projectLine.value.purchaseOrder?.number}}
-                                                            {{projectLine.value.purchaseOrder?.maxAmount}} -->
-                                                            <!-- {{projectLine.value.purchaseOrder?.number}} -->
+                                                            <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate">
+                                                                <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
+                                                                    {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
+                                                                </span>
+                                                                • {{capTypes[order?.capForInvoicing?.type]}}:
+                                                                <span class="color-black text-bold">
+                                                                    {{order?.capForInvoicing?.amountUsed ?? '0'}} / {{order?.capForInvoicing?.maxAmount}}
+                                                                    <ng-container [ngSwitch]="order?.capForInvoicing?.type">
+                                                                        <ng-container *ngSwitchCase="ePOCaps.CapOnUnits">
+                                                                            {{eValueUnitType[order?.capForInvoicing?.valueUnitTypeId]}}
+                                                                        </ng-container>
+                                                                        <ng-container *ngSwitchCase="ePOCaps.CapOnValue">
+                                                                            {{eCurrencies[order?.capForInvoicing?.currencyId]}}
+                                                                        </ng-container>
+                                                                        <ng-container *ngSwitchCase="ePOCaps.NoCap">
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                </span>
+                                                            </ng-container>
                                                         </span>
                                                     </div>
                                                     <div fxLayout="row" class="project-line--expansion-additional">
@@ -1048,15 +1065,12 @@
                                                                 <span
                                                                     class="text-bold">{{projectLine.value.invoiceRecipient?.clientName}}</span>
                                                                 <span>
-                                                                    {{projectLine.value.invoiceRecipient?.countryName ?
-                                                                    projectLine.value.invoiceRecipient?.countryName + '|' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.city ?
-                                                                    projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.address ?
-                                                                    projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.address2 ?
-                                                                    projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.postCode}}
+                                                                    <ng-container *ngIf="projectLine.value.invoiceRecipient?.clientAddresses[0] as address">
+                                                                        {{address.address ? address.address + ', ' : ''}}
+                                                                        {{address.postCode}}
+                                                                        {{address.city ? address.city + ', ' : ''}}
+                                                                        {{address.countryCode}}
+                                                                    </ng-container>
                                                                 </span>
                                                             </ng-container>
                                                         </div>
@@ -1168,3 +1182,5 @@
     </ng-container>
     <button #submitFormBtn class="display-none" type="submit">Hidden button to set form submitted</button>
 </form>
+
+<ng-template #noTemplate>-</ng-template>
