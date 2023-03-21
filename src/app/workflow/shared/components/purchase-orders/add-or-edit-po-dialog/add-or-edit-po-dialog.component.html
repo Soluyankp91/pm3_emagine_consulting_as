@@ -165,7 +165,7 @@
     <div class="multilineDropdown-option--column text-truncate-ellipsis">
         <span class="multilineDropdown-option--column-client-name flex-items-center"
             [ngClass]="{'medium-grey-color': order?.numberMissingButRequired}">
-            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length && isList">
+            <ng-container *ngIf="order.purchaseOrderCurrentContextData?.isSharedWithAnotherWorkflow && isList">
                 <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
             </ng-container>

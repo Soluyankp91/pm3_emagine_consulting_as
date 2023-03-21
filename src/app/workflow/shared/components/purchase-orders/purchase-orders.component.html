@@ -117,7 +117,7 @@
             </ng-container>
         </ng-container>
 
-        <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
+        <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode || !order.purchaseOrderCurrentContextData?.isUserAllowedToEdit">
             <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
                 [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
                 <mat-icon svgIcon="3-dots"></mat-icon>

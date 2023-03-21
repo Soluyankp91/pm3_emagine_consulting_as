@@ -68,7 +68,6 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.showMainSpinner();
 		const form = this.purchaseOrderForm.value;
 		let input = new PurchaseOrderDto(form);
-		input.directClientIdReferencingThisPo = this.data?.directClientId ?? undefined;
 		input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
 		if (
