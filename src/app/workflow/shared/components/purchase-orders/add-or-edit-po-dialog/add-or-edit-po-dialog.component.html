@@ -24,10 +24,11 @@
                     </mat-form-field>
                 </ng-container>
                 <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO || data.isEdit">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-165">
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-165" [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
                         <mat-label>PO receive date</mat-label>
                         <input autocomplete="off" matInput
                                 [matDatepicker]="receiveDatePicker"
+                                [disabled]="purchaseOrderForm.numberMissingButRequired.value"
                                 name="clientExtensionEndDate" formControlName="receiveDate"
                                 (focus)="receiveDatePicker.open()"
                                 appPreventDoubleClick (throttledClick)="receiveDatePicker.open()" readonly>
