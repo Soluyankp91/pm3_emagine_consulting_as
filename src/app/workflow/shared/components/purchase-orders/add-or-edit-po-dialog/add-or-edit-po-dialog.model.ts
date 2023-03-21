@@ -41,7 +41,7 @@ export class CapForInvoicingForm extends UntypedFormGroup {
 	constructor(purchaseOrderCap?: PurchaseOrderCapDto) {
 		super({
 			type: new UntypedFormControl(purchaseOrderCap?.type ?? 1),
-			maxAmount: new UntypedFormControl(purchaseOrderCap?.maxAmount ?? null, Validators.required),
+			maxAmount: new UntypedFormControl(purchaseOrderCap?.maxAmount ?? null),
 			valueUnitTypeId: new UntypedFormControl(purchaseOrderCap?.valueUnitTypeId ?? null),
 			currencyId: new UntypedFormControl(purchaseOrderCap?.currencyId ?? null),
 			amountUsed: new UntypedFormControl(purchaseOrderCap?.amountUsed ?? null),

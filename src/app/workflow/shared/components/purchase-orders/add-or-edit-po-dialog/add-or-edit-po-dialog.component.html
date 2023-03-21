@@ -93,9 +93,9 @@
                     </mat-form-field>
                 <!-- </ng-container> -->
                 <!-- <ng-template #newPoTemplate> -->
-                    <mat-form-field [fxHide]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF" appearance="outline" class="formFieldNoMarginPadding form-width-270 u-mr--12">
+                    <mat-form-field [fxHide]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF" appearance="outline" class="formFieldNoMarginPadding form-width-270 u-mr--12" [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
                         <mat-label>PO number</mat-label>
-                        <input autocomplete="off" matInput name="poNumber" formControlName="number" [required]="purchaseOrderForm.poSource.value === ePOSource.NewPO">
+                        <input autocomplete="off" matInput name="poNumber" formControlName="number" [required]="purchaseOrderForm.poSource.value === ePOSource.NewPO && !purchaseOrderForm.numberMissingButRequired.value">
                         <mat-error>
                             <app-validator [control]="purchaseOrderForm.number"></app-validator>
                         </mat-error>
@@ -118,11 +118,11 @@
                         </mat-button-toggle>
                     </ng-container>
                 </mat-button-toggle-group>
-                <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10">
+                <!-- <ng-container *ngIf="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap"> -->
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10" [fxHide]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.NoCap">
                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--12">
                             <mat-label>Max value</mat-label>
-                            <input type="number" autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" required>
+                            <input type="number" autocomplete="off" matInput name="maxAmount" formControlName="maxAmount" [required]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap">
                             <mat-error>
                                 <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
                             </mat-error>
@@ -154,7 +154,7 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                </ng-container>
+                <!-- </ng-container> -->
             </ng-container>
         </div>
     </form>

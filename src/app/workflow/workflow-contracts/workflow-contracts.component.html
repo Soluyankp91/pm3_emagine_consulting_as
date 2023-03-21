@@ -78,6 +78,7 @@
             <app-contracts-consultant-data #consultantDataComponent [readOnlyMode]="readOnlyMode"
                 [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList"
                 [periodId]="periodId"
+                [purchaseOrders]="clientDataComponent?.poComponent?.purchaseOrdersList"
                 [contractsMainForm]="mainDataComponent?.contractsMainForm"
                 [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-consultant-data>
 

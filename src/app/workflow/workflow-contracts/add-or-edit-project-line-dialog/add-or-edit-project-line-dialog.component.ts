@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
@@ -17,8 +17,8 @@ import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
     styleUrls: ['./add-or-edit-project-line-dialog.component.scss']
 })
 
-export class AddOrEditProjectLineDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('poComponent') poComponent: PurchaseOrdersComponent;
+export class AddOrEditProjectLineDialogComponent extends AppComponentBase implements OnInit, AfterViewInit, OnDestroy {
+    @ViewChild('poComponent', {static: true}) poComponent: PurchaseOrdersComponent;
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     dialogType = ProjectLineDiallogMode;
@@ -109,6 +109,10 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.fillForm(this.data.projectLineData);
     }
 
+    ngAfterViewInit(): void {
+        this.poComponent?.getPurchaseOrders([this.data.projectLineData.purchaseOrderId], this.data?.directClientId);
+    }
+
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
@@ -162,7 +166,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.modifiedById?.setValue(data.modifiedBy, {emitEvent: false});
         this.projectLineForm.wasSynced?.setValue(data.wasSynced, {emitEvent: false});
         this.projectLineForm.isLineForFees?.setValue(data.isLineForFees, {emitEvent: false});
-        this.poComponent.getPurchaseOrders([data.purchaseOrderId], this.data?.directClientId);
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();

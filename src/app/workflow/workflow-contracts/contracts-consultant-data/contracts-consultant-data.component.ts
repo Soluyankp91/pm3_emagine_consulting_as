@@ -3,10 +3,10 @@ import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } 
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, PurchaseOrderDto, PurchaseOrderServiceProxy, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
@@ -24,6 +24,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
     @Input() periodId: string;
+    @Input() purchaseOrders: PurchaseOrderDto[] = [];
+    purchaseOrders$: Observable<PurchaseOrderDto[]>;
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	employmentTypes: EnumEntityTypeDto[];
@@ -38,7 +40,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
-
 	private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -46,6 +47,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         private dialog: MatDialog,
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
+        private _purchaseOrderService: PurchaseOrderServiceProxy
     ) {
 		super(injector);
 		this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
@@ -59,6 +61,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
 	}
+
+    // getAvailablePOs(directClientId: number) {
+    //     this.purchaseOrders$ = this._purchaseOrderService.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId);
+    // }
+
+    // getPO(poId: number, pos: PurchaseOrderDto[]) {
+    //     return pos.find(x => x.id === poId);
+    // }
 
     private _getEnums() {
         forkJoin({
@@ -366,12 +376,18 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
-			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value ? null : this.contractClientForm.invoicingReferencePerson?.value
+			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value
+				? null
+				: this.contractClientForm.invoicingReferencePerson?.value,
+			purchaseOrderId: null,
+			// purchaseOrder: new PurchaseOrderDto(),
 		};
 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
 			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(
 				projectLinesIndex!
 			).value;
+            projectLine.purchaseOrderId = (this.consultants.at(index).get('projectLines') as UntypedFormArray).at(projectLinesIndex).get('purchaseOrderId').value;
+            // projectLine.purchaseOrder = (this.consultants.at(index).get('projectLines') as UntypedFormArray).at(projectLinesIndex).get('purchaseOrder').value;
 		}
 		const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
 			width: '800px',
@@ -388,21 +404,21 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 						: ProjectLineDiallogMode.Create,
 				projectLineData: projectLine,
 				directClientId: this.contractClientForm.directClientId?.value,
-                endClientId: this.contractClientForm.endClientId?.value,
-                periodId: this.periodId
+				endClientId: this.contractClientForm.endClientId?.value,
+				periodId: this.periodId,
 			},
 		});
 
-		dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
+		dialogRef.componentInstance.onConfirmed.subscribe((projectLine, purchaseOrders) => {
 			if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
-				this.editProjectLineValue(index, projectLinesIndex, projectLine);
+				this.editProjectLineValue(index, projectLinesIndex, projectLine, purchaseOrders);
 			} else {
-				this.addProjectLinesToConsultantData(index, projectLine);
+				this.addProjectLinesToConsultantData(index, projectLine, purchaseOrders);
 			}
 		});
 	}
 
-	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
+	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto, purchaseOrders?: PurchaseOrderDto[]) {
 		if (projectLine) {
 			if (!projectLine?.differentDebtorNumber) {
 				projectLine!.debtorNumber = this.contractsMainForm.customDebtorNumber?.value;
@@ -417,6 +433,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				projectLine!.invoicingReferencePerson = this.contractClientForm.invoicingReferencePerson?.value;
 			}
 		}
+        console.log('this.purchaseOrders ', this.purchaseOrders);
 		const form = this._fb.group({
 			id: new UntypedFormControl(projectLine?.id ?? null),
 			projectName: new UntypedFormControl(projectLine?.projectName ?? null),
@@ -447,11 +464,13 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			markedForLegacyDeletion: new UntypedFormControl(projectLine?.markedForLegacyDeletion),
 			wasSynced: new UntypedFormControl(projectLine?.wasSynced),
 			isLineForFees: new UntypedFormControl(projectLine?.isLineForFees),
+            purchaseOrderId: new UntypedFormControl(projectLine?.purchaseOrderId),
+            // purchaseOrder: new UntypedFormControl(purchaseOrders?.find(x => x.id === projectLine?.purchaseOrderId)),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
 	}
 
-	editProjectLineValue(consultantIndex: number, projectLinesIndex: number, projectLineData: any) {
+	editProjectLineValue(consultantIndex: number, projectLinesIndex: number, projectLineData: any, purchaseOrders?: PurchaseOrderDto[]) {
 		const projectLineRow = (
 			this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray
 		).at(projectLinesIndex);
@@ -507,6 +526,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		});
 		projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, { emitEvent: false });
 		projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
+		projectLineRow.get('purchaseOrderId')?.setValue(projectLineData.purchaseOrderId, { emitEvent: false });
+		// projectLineRow.get('purchaseOrder')?.setValue(purchaseOrders?.find(x => x.id === projectLineData.purchaseOrderId), { emitEvent: false });
 	}
 
 	duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
