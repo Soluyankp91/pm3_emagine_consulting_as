@@ -166,6 +166,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.modifiedById?.setValue(data.modifiedBy, {emitEvent: false});
         this.projectLineForm.wasSynced?.setValue(data.wasSynced, {emitEvent: false});
         this.projectLineForm.isLineForFees?.setValue(data.isLineForFees, {emitEvent: false});
+        this.projectLineForm.purchaseOrderId?.setValue(data.purchaseOrderId, {emitEvent: false});
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();
