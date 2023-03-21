@@ -148,7 +148,14 @@
                 </button>
             </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
+        <div fxLayout="row" [fxLayoutAlign]="isAdvancedFilters ? 'space-between center' : 'flex-end center'" class="u-w--100">
+            <ng-container *ngIf="isAdvancedFilters">
+                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--10" [ngClass]="{'selected-status': showPONumberMissing}" appPreventDoubleClick (throttledClick)="showPONumberMissing = !showPONumberMissing; updateAdvancedFiltersCounter(); getWorkflowList(true)">
+                    <span class="workflow-list--filter-type__name">
+                        PO number missing
+                    </span>
+                </span>
+            </ng-container>
             <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
                 <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>

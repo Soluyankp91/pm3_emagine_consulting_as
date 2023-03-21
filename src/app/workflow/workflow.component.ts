@@ -47,7 +47,7 @@ import {
 	WorkflowStatusMenuList,
 } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.6';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.7';
 @Component({
 	selector: 'app-workflow',
 	templateUrl: './workflow.component.html',
@@ -112,6 +112,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	isAdvancedFilters = false;
 	showOnlyWorkflowsWithNewSales = false;
 	showOnlyWorkflowsWithExtensions = false;
+    showPONumberMissing = false;
 	showPendingSteps = false;
 	showUpcomingSteps = false;
 	includeTerminated = false;
@@ -236,8 +237,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.paymentEntityControl.value,
 			this.salesTypeControl.value,
 			this.deliveryTypesControl.value,
-			this.workflowStatusControl.value
-		).filter((item) => item !== null && item !== undefined).length;
+			this.workflowStatusControl.value,
+            this.showPONumberMissing
+		).filter((item) => item !== null && item !== undefined && item).length;
 	}
 
 	saveGridOptions() {
@@ -254,6 +256,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			syncStateStatus: this.selectedSyncStateStatuses,
 			showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
 			showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
+            showPONumberMissing: this.showPONumberMissing,
 			showPendingSteps: this.showPendingSteps,
 			pendingStepType: this.pendingStepType,
 			showUpcomingSteps: this.showUpcomingSteps,
@@ -280,6 +283,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.invoicingEntityControl.setValue(filters.invoicingEntity, { emitEvent: false });
 			this.showOnlyWorkflowsWithNewSales = filters.showOnlyWorkflowsWithNewSales;
 			this.showOnlyWorkflowsWithExtensions = filters.showOnlyWorkflowsWithExtensions;
+            this.showPONumberMissing = filters.showPONumberMissing;
 			this.showPendingSteps = filters.showPendingSteps;
 			this.pendingStepType = filters.pendingStepType;
 			this.showUpcomingSteps = filters.showUpcomingSteps;
@@ -506,7 +510,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
 				this.includeTerminated,
 				this.includeDeleted,
-                undefined, // showWorkflowsWithProjectLinesMarkedAsPoMissing
+                this.showPONumberMissing,
 				searchFilter,
 				this.pageNumber,
 				this.deafultPageSize,
@@ -679,6 +683,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.workflowStatusControl.setValue(null, { emitEvent: false });
 		this.showOnlyWorkflowsWithNewSales = false;
 		this.showOnlyWorkflowsWithExtensions = false;
+        this.showPONumberMissing = false;
 		this.pendingStepType = null;
 		this.showPendingSteps = false;
 		this.upcomingStepType = null;
