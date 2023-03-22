@@ -1,0 +1,8 @@
+<emg-multi-select [options]="options"  [displayedProperty]="'name'" [formControl]="filterFormControl">
+	<ng-template #triggerButton>
+		<div class="table-header-cell">{{ labelMap[tableFilter] }}</div>
+	</ng-template>
+	<ng-template #optionPrefix let-option="$implicit">
+		<emg-envelope-path class="icon" [envelopeProcessingPath]="option.id" [iconWidth]="16" [iconHeight]="16"></emg-envelope-path>
+	</ng-template>
+</emg-multi-select>

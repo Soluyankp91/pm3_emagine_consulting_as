@@ -1,0 +1,29 @@
+<ng-container [ngSwitch]="envelopeProcessingPath">
+	<ng-container *ngSwitchCase="1">
+		<mat-icon
+			svgIcon="envelope-email"
+			[customTooltip]="envelopePathEnum[1]"
+			[showAlways]="true"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"></mat-icon>
+	</ng-container>
+	<ng-container *ngSwitchCase="2">
+		<mat-icon
+			svgIcon="envelope-docusign"
+			[customTooltip]="envelopePathEnum[2]"
+			[showAlways]="true"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"></mat-icon>
+	</ng-container>
+	<ng-container *ngSwitchCase="3">
+		<mat-icon
+			svgIcon="envelope-other-party"
+			[customTooltip]="envelopePathEnum[3]"
+			[showAlways]="true"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"></mat-icon>
+	</ng-container>
+    <ng-container *ngSwitchDefault>
+        <div>-</div>
+    </ng-container>
+</ng-container>

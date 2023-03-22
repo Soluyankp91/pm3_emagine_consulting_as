@@ -24,6 +24,7 @@ export class AgreementService extends BaseContract {
 		contractTypeIds: [],
 		validity: [],
 		status: [],
+		envelopeProcessingPath: [],
 		salesManager: [],
 		contractManager: [],
 	});
@@ -69,7 +70,7 @@ export class AgreementService extends BaseContract {
 			tableFilters.contractManager.map((contractManager) => contractManager.id as number),
 			search,
 			undefined, //isWorkflowRelated
-			undefined, //envelopeProcessingPath
+			tableFilters.envelopeProcessingPath.map((item) => item.id as number), //envelopeProcessingPath
 			page.pageIndex + 1,
 			page.pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''

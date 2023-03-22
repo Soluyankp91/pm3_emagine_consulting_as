@@ -1,4 +1,4 @@
-import { Component, OnInit, Self, DoCheck, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Self, DoCheck, ViewEncapsulation, OnDestroy } from '@angular/core';
 import {
 	NgControl,
 	ControlValueAccessor,
@@ -9,8 +9,8 @@ import {
 	AbstractControl,
 	FormGroup,
 } from '@angular/forms';
-import { BehaviorSubject, forkJoin, of } from 'rxjs';
-import { switchMap, startWith} from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
+import { switchMap, startWith, takeUntil } from 'rxjs/operators';
 import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/settings.interfaces';
 import { AgreementDetailsSignerDto, LookupServiceProxy, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../services/contracts.service';
@@ -27,14 +27,14 @@ export enum SignerDropdowns {
 	styleUrls: ['./signers-table.component.scss'],
 	encapsulation: ViewEncapsulation.None,
 })
-export class SignersTableComponent implements OnInit, DoCheck, ControlValueAccessor {
+export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, ControlValueAccessor {
 	formArray: FormArray;
 
 	options$ = this._contractService.signersEnum$$;
 
-    signerDropdowns = SignerDropdowns;
+	signerDropdowns = SignerDropdowns;
 
-    prefillMode = false;
+	prefillMode = false;
 
 	signerTableData: AbstractControl[] = [];
 	signerOptionsArr$: SignerOptions[] = [];
@@ -42,6 +42,8 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 
 	onChange: any = () => {};
 	onTouch: any = () => {};
+
+	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
 		@Self() private readonly ngControl: NgControl,
@@ -52,8 +54,10 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 		ngControl.valueAccessor = this;
 	}
 
-	ngOnInit(): void {
-		this._subscribeOnFormArray();
+	ngOnInit(): void {}
+	ngOnDestroy(): void {
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	ngDoCheck(): void {
@@ -95,12 +99,13 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 
 	writeValue(signers: AgreementDetailsSignerDto[] | null) {
 		this.formArray = new FormArray([]);
+		this._subscribeOnFormArray();
 		this.signerTableData = [];
 		this.signerOptionsArr$ = [];
 		if (!signers) {
 			return;
 		}
-        this.prefillMode = true;
+		this.prefillMode = true;
 		signers.forEach((signerDto, index) => {
 			this.formArray.push(
 				new FormGroup({
@@ -118,17 +123,17 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 			});
 			this.onSignerTypeChange(signerDto.signerType as SignerType, index);
 		});
-        this.prefillMode = false;
+		this.prefillMode = false;
 	}
 
 	onSignerTypeChange(signerType: SignerType, rowIndex: number) {
-        if(!this.prefillMode) {
-            this.signerOptionsArr$[rowIndex].optionsChanged$.next('');
-        }
+		if (!this.prefillMode) {
+			this.signerOptionsArr$[rowIndex].optionsChanged$.next('');
+		}
 		switch (signerType) {
 			case 1: {
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -145,7 +150,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 			}
 			case 2:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -161,7 +166,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				break;
 			case 3:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -177,7 +182,7 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 				break;
 			case 4:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
-                    startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -196,8 +201,8 @@ export class SignersTableComponent implements OnInit, DoCheck, ControlValueAcces
 		}
 	}
 
-	_subscribeOnFormArray() {
-		this.formArray.valueChanges.subscribe((value) => {
+	private _subscribeOnFormArray() {
+		this.formArray.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((value) => {
 			this.onChange(value);
 			if (this.formArray.controls.every((control) => control.valid)) {
 				this.ngControl.control.setErrors(null);

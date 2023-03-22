@@ -8,6 +8,7 @@ import {
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
+	EnvelopeProcessingPath,
 	EnvelopeStatus,
 	LegalEntityDto,
 	LogOperationType,
@@ -49,6 +50,7 @@ export interface AgreementFiltersEnum {
 	contractTypeIds: EnumEntityTypeDto[];
 	validity: BaseEnumDto[];
 	status: BaseEnumDto[];
+	envelopeProcessingPath: BaseEnumDto[];
 	salesManager: EmployeeDto[];
 	contractManager: EmployeeDto[];
 }
@@ -185,6 +187,7 @@ export interface MappedAgreementTableItem {
 	contractTypeIds: string[];
 	mode: AgreementValidityState;
 	status: EnvelopeStatus;
+	envelopeProcessingPath: EnvelopeProcessingPath;
 	startDate: moment.Moment;
 	endDate: moment.Moment;
 	salesManager: EmployeeDto;

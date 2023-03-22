@@ -349,6 +349,20 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						countryCode: countryCode,
 						country: MapCountryCodeTenant(countryCode),
 					};
+					this.agreementFormGroup.updateInitialFormValue({
+						agreementType: agreementTypeId,
+						recipientId: client.clientId,
+						recipientTypeId: recipientTypeId,
+						legalEntityId: legalEntityId,
+						salesTypes: [salesTypeId],
+						deliveryTypes: [deliveryTypeId],
+						contractTypes: contractTypes,
+						startDate: startDate,
+						isSignatureRequired: contractSigners.length ? true : false,
+						endDate: endDate,
+						signers: contractSigners,
+					});
+					this.showMainSpinner();
 					return this._apiServiceProxy2
 						.defaultTemplateId(
 							recipientTypeId,
@@ -392,8 +406,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												endDate: clientPeriodSales.noEndDate ? null : endDate,
 												note: defaultTemplate.note,
 												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
-												isSignatureRequired: defaultTemplate.isSignatureRequired,
-												signers: defaultTemplate.isSignatureRequired ? contractSigners : [],
+												isSignatureRequired: contractSigners.length
+													? true
+													: defaultTemplate.isSignatureRequired,
+												signers: contractSigners.length ? contractSigners : [],
 												attachments: defaultTemplate.attachments,
 												parentSelectedAttachmentIds: defaultTemplate.attachmentsFromParent
 													? defaultTemplate.attachmentsFromParent
@@ -403,6 +419,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												this.noExpirationDateControl.setValue(true);
 											}
 											this.isDuplicating = false;
+											this.hideMainSpinner();
 										})
 									);
 								} else {
@@ -435,6 +452,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 											message: 'Default template was not found basing on data from Workflow',
 										},
 									});
+									this.hideMainSpinner();
 									return dialogRef.afterClosed().pipe(
 										tap(() => {
 											this.isDuplicating = false;
@@ -486,6 +504,18 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						countryCode: countryCode,
 						country: MapCountryCodeTenant(countryCode),
 					};
+					this.agreementFormGroup.updateInitialFormValue({
+						agreementType: agreementTypeId,
+						recipientId: consultant.consultantId,
+						recipientTypeId: recipientTypeId,
+						legalEntityId: legalEntityId,
+						salesTypes: [salesTypeId],
+						deliveryTypes: [deliveryTypeId],
+						contractTypes: [contractType],
+						startDate: startDate,
+						endDate: endDate,
+					});
+					this.showMainSpinner();
 					return this._apiServiceProxy2
 						.defaultTemplateId(
 							recipientTypeId,
@@ -529,7 +559,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												endDate: clientSalesData.noEndDate ? null : endDate,
 												note: defaultTemplate.note,
 												receiveAgreementsFromOtherParty: defaultTemplate.receiveAgreementsFromOtherParty,
-												isSignatureRequired: true,
+												isSignatureRequired: defaultTemplate.isSignatureRequired,
 												attachments: defaultTemplate.attachments,
 												parentSelectedAttachmentIds: defaultTemplate.attachmentsFromParent
 													? defaultTemplate.attachmentsFromParent
@@ -539,6 +569,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												this.noExpirationDateControl.setValue(true);
 											}
 											this.isDuplicating = false;
+											this.hideMainSpinner();
 										})
 									);
 								} else {
@@ -555,7 +586,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										contractTypes: [contractType],
 										startDate: startDate,
 										endDate: clientSalesData.noEndDate ? null : endDate,
-										isSignatureRequired: true,
 									});
 									if (clientSalesData.noEndDate) {
 										this.noExpirationDateControl.setValue(true);
@@ -569,6 +599,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 											message: 'Default template was not found basing on data from Workflow',
 										},
 									});
+									this.hideMainSpinner();
 									return dialogRef.afterClosed().pipe(
 										tap(() => {
 											this.isDuplicating = false;
@@ -793,6 +824,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this.creationMode.patchValue(this.modeControl$.value);
 					this._resetForm();
 				}
+				if (this.clientPeriodId || this.consultantPeriodId) {
+					this.recipientOptionsChanged$.next(String(this.agreementFormGroup.recipientId.value));
+				}
+
 				this.agreementFormGroup.markAsUntouched();
 				this.agreementFormGroup.markAsPristine();
 			});
@@ -831,7 +866,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _subscribeOnSignatureRequire() {
 		this.agreementFormGroup.isSignatureRequired.valueChanges
-			.pipe(takeUntil(race([this.agreementFormGroup.receiveAgreementsFromOtherParty.valueChanges, this._unSubscribe$])))
+			.pipe(takeUntil(this._unSubscribe$))
 			.subscribe((isSignatureRequired) => {
 				if (!isSignatureRequired) {
 					this.agreementFormGroup.signers.reset([]);
@@ -871,26 +906,43 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this._cdr.detectChanges();
 				}),
 				tap((agreementTemplateDetailsDto) => {
-					this.agreementFormGroup.patchValue({
-						agreementType: agreementTemplateDetailsDto.agreementType,
-						recipientTypeId: agreementTemplateDetailsDto.recipientTypeId,
-						nameTemplate: agreementTemplateDetailsDto.name,
-						definition: agreementTemplateDetailsDto.definition,
-						salesTypes: agreementTemplateDetailsDto.salesTypeIds,
-						deliveryTypes: agreementTemplateDetailsDto.deliveryTypeIds,
-						contractTypes: agreementTemplateDetailsDto.contractTypeIds,
-						language: agreementTemplateDetailsDto.language,
-						isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
-						note: agreementTemplateDetailsDto.note,
-						receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
-						parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
-							? agreementTemplateDetailsDto.attachmentsFromParent
-							: [],
-						legalEntityId: null,
-						recipientId: null,
-						startDate: null,
-						endDate: null,
-					});
+					if (this.clientPeriodId || this.consultantPeriodId) {
+						this.agreementFormGroup.patchValue({
+							nameTemplate: agreementTemplateDetailsDto.name,
+							definition: agreementTemplateDetailsDto.definition,
+							language: agreementTemplateDetailsDto.language,
+							isSignatureRequired: this.agreementFormGroup.initialValue.signers.length
+								? true
+								: agreementTemplateDetailsDto.isSignatureRequired,
+							signers: this.agreementFormGroup.initialValue.signers,
+							note: agreementTemplateDetailsDto.note,
+							parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
+								? agreementTemplateDetailsDto.attachmentsFromParent
+								: [],
+							selectedInheritedFiles: [],
+						});
+					} else {
+						this.agreementFormGroup.patchValue({
+							agreementType: agreementTemplateDetailsDto.agreementType,
+							recipientTypeId: agreementTemplateDetailsDto.recipientTypeId,
+							nameTemplate: agreementTemplateDetailsDto.name,
+							definition: agreementTemplateDetailsDto.definition,
+							salesTypes: agreementTemplateDetailsDto.salesTypeIds,
+							deliveryTypes: agreementTemplateDetailsDto.deliveryTypeIds,
+							contractTypes: agreementTemplateDetailsDto.contractTypeIds,
+							language: agreementTemplateDetailsDto.language,
+							isSignatureRequired: agreementTemplateDetailsDto.isSignatureRequired,
+							note: agreementTemplateDetailsDto.note,
+							receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
+							parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
+								? agreementTemplateDetailsDto.attachmentsFromParent
+								: [],
+							legalEntityId: null,
+							recipientId: null,
+							startDate: null,
+							endDate: null,
+						});
+					}
 					this.agreementFormGroup.markAsUntouched();
 				})
 			)
@@ -922,15 +974,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					const queryParams: Params = {
 						id: `${agreementDetailsDto.agreementId}`,
 					};
-					this._router.navigate([], {
-						queryParams: queryParams,
-					});
+					if (!(this.consultantPeriodId || this.clientPeriodId)) {
+						this._router.navigate([], {
+							queryParams: queryParams,
+						});
+					}
 					this.currentDuplicatedTemplate = agreementDetailsDto;
 					this._cdr.detectChanges();
 				}),
 				tap((agreementDetailsDto) => {
 					this.preselectedFiles = agreementDetailsDto.attachments as FileUpload[];
-					this.recipientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
+					if (this.clientPeriodId || this.consultantPeriodId) {
+						this.recipientOptionsChanged$.next(String(this.agreementFormGroup.initialValue.recipientId));
+					} else {
+						this.recipientOptionsChanged$.next(String(agreementDetailsDto.recipientId));
+					}
 					this.isDuplicating = true;
 					this.attachmentsFromParent = agreementDetailsDto.attachmentsFromParent
 						? (agreementDetailsDto.attachmentsFromParent as FileUpload[])
@@ -938,30 +996,44 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this._cdr.detectChanges();
 				}),
 				tap((agreementDetailsDto) => {
-					this.agreementFormGroup.patchValue({
-						agreementType: agreementDetailsDto.agreementType,
-						recipientTypeId: agreementDetailsDto.recipientTypeId,
-						recipientId: agreementDetailsDto.recipientId,
-						nameTemplate: agreementDetailsDto.nameTemplate,
-						definition: agreementDetailsDto.definition,
-						legalEntityId: agreementDetailsDto.legalEntityId,
-						salesTypes: agreementDetailsDto.salesTypeIds,
-						deliveryTypes: agreementDetailsDto.deliveryTypeIds,
-						contractTypes: agreementDetailsDto.contractTypeIds,
-						startDate: agreementDetailsDto.startDate,
-						endDate: agreementDetailsDto.endDate,
-						language: agreementDetailsDto.language,
-						isSignatureRequired: agreementDetailsDto.isSignatureRequired,
-						note: agreementDetailsDto.note,
-						receiveAgreementsFromOtherParty: agreementDetailsDto.receiveAgreementsFromOtherParty,
-						parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
-							? agreementDetailsDto.attachmentsFromParent
-							: [],
-						signers: agreementDetailsDto.signers,
-						selectedInheritedFiles: [],
-					});
-					if (!agreementDetailsDto.endDate) {
-						this.noExpirationDateControl.setValue(true);
+					if (this.clientPeriodId || this.consultantPeriodId) {
+						this.agreementFormGroup.patchValue({
+							nameTemplate: agreementDetailsDto.nameTemplate,
+							definition: agreementDetailsDto.definition,
+							language: agreementDetailsDto.language,
+							isSignatureRequired: this.agreementFormGroup.initialValue.signers.length
+								? true
+								: agreementDetailsDto.isSignatureRequired,
+							note: agreementDetailsDto.note,
+							parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
+								? agreementDetailsDto.attachmentsFromParent
+								: [],
+							signers: [...this.agreementFormGroup.initialValue.signers, ...agreementDetailsDto.signers],
+							selectedInheritedFiles: [],
+						});
+					} else {
+						this.agreementFormGroup.patchValue({
+							agreementType: agreementDetailsDto.agreementType,
+							recipientTypeId: agreementDetailsDto.recipientTypeId,
+							recipientId: agreementDetailsDto.recipientId,
+							nameTemplate: agreementDetailsDto.nameTemplate,
+							definition: agreementDetailsDto.definition,
+							legalEntityId: agreementDetailsDto.legalEntityId,
+							salesTypes: agreementDetailsDto.salesTypeIds,
+							deliveryTypes: agreementDetailsDto.deliveryTypeIds,
+							contractTypes: agreementDetailsDto.contractTypeIds,
+							startDate: agreementDetailsDto.startDate,
+							endDate: agreementDetailsDto.endDate,
+							language: agreementDetailsDto.language,
+							isSignatureRequired: agreementDetailsDto.isSignatureRequired,
+							note: agreementDetailsDto.note,
+							receiveAgreementsFromOtherParty: agreementDetailsDto.receiveAgreementsFromOtherParty,
+							parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
+								? agreementDetailsDto.attachmentsFromParent
+								: [],
+							signers: agreementDetailsDto.signers,
+							selectedInheritedFiles: [],
+						});
 					}
 					this.isDuplicating = false;
 				})
@@ -1131,7 +1203,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				}
 				if (!receiveAgreementsFromOtherParty && !this.editMode) {
 					this.nextButtonLabel = 'Next';
-					this.agreementFormGroup.addControl('isSignatureRequired', new FormControl(false));
+					this.agreementFormGroup.addControl(
+						'isSignatureRequired',
+						new FormControl(this.agreementFormGroup.initialValue.isSignatureRequired)
+					);
 				}
 			});
 	}

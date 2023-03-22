@@ -80,6 +80,10 @@ app-agreements {
 		@include table-cell-width(63px);
 		justify-content: center;
 	}
+	.envelopeProcessingPath-column {
+		@include table-cell-width(60px);
+		justify-content: center;
+	}
 	.start-date-column {
 		@include table-cell-width(90px);
 	}
