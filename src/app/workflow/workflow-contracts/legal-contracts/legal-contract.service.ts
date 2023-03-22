@@ -2,7 +2,7 @@ import { HttpClient, HttpBackend, HttpHeaders, HttpResponse, HttpResponseBase } 
 import { mergeMap as _observableMergeMap, catchError as _observableCatch, switchMap } from 'rxjs/operators';
 import { Observable, throwError as _observableThrow, of as _observableOf, from } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { ApiException } from 'src/shared/service-proxies/service-proxies';
+import { ApiException, FileParameter } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AuthenticationResult } from '@azure/msal-browser';
@@ -126,6 +126,74 @@ export class LegalContractService {
 			}
 		}
 	}
+
+    getTokenAndManuallyUpload(agreementId: number, forceUpdate: boolean, file?: FileParameter): Observable<any> {
+		return this._localHttpService
+			.getTokenSilent()
+			.pipe(switchMap((response) => this.uploadSigned(agreementId, forceUpdate, file, response.accessToken)));
+	}
+
+    /**
+     * @param file (optional)
+     * @return Success
+     */
+    uploadSigned(agreementId: number, forceUpdate: boolean, file?: FileParameter | undefined, token?: string): Observable<void> {
+        let url_ = this._baseUrl + "/api/Agreement/{agreementId}/upload-signed/{forceUpdate}";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        if (forceUpdate === undefined || forceUpdate === null)
+            throw new Error("The parameter 'forceUpdate' must be defined.");
+        url_ = url_.replace("{forceUpdate}", encodeURIComponent("" + forceUpdate));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file === null || file === undefined)
+            throw new Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                Authorization: `Bearer ${token}`,
+            })
+        };
+
+        return this._httpClientBypass.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadSigned(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadSigned(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUploadSigned(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 function throwException(

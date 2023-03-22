@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { finalize } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
+import { GlobalHttpInterceptorService } from 'src/shared/service-proxies/global-http-interceptor.service';
 import {
 	WorkflowAgreementDto,
 	ClientPeriodServiceProxy,
@@ -42,6 +43,7 @@ import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/
 	selector: 'legal-contracts-list',
 	templateUrl: './legal-contracts.component.html',
 	styleUrls: ['./legal-contracts.component.scss'],
+	providers: [GlobalHttpInterceptorService],
 })
 export class LegalContractsComponent extends AppComponentBase implements OnInit {
 	@ViewChild('menuTrigger', { static: false }) menuTrigger: MatMenuTrigger;
@@ -69,6 +71,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
 		private _router: Router,
+		private _globalHttpIntercepor: GlobalHttpInterceptorService
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
@@ -199,7 +202,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 					  }
 			)
 		);
-        this._closeMenu();
+		this._closeMenu();
 		window.open(routerUrl, '_blank');
 	}
 
@@ -364,9 +367,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.sendEmailEnvelope(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via Email');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via Email');
+				this._getAgreementData();
+			});
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
@@ -380,41 +383,49 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.sendDocusignEnvelope(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via DocuSign');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via DocuSign');
+				this._getAgreementData();
+			});
 	}
 
-	private _uploadSignedContract(agreementId: number, file: FileParameter) {
+	private _uploadSignedContract(agreementId: number, file: FileParameter, forceUpdate = false) {
 		this.showMainSpinner();
-		const forceUpdate = false; // NB: hardcoded false as for now, BE requirement
-		this._agreementService
-			.uploadSigned(agreementId, forceUpdate, file)
+		this._legalContractService
+			.getTokenAndManuallyUpload(
+				agreementId,
+				forceUpdate,
+				file
+			)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe({
-                next:() => {
-                    this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
-                    this._getAgreementData()
-                },
-                error:() => {
-                    const scrollStrategy = this._overlay.scrollStrategies.reposition();
-                    MediumDialogConfig.scrollStrategy = scrollStrategy;
-                    MediumDialogConfig.data = {
-                        confirmationMessageTitle: `Terminate consultant`,
-                        confirmationMessage: `Are you sure you want to terminate consultant?`,
-                        rejectButtonText: 'Cancel',
-                        confirmButtonText: 'Yes',
-                        isNegative: true,
-                    };
-                    const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
-                    dialogRef.componentInstance.onConfirmed.subscribe(() => {
-                        // CALL AGAIN WUTH FORCE = TRUE
-                    });
-                    // const header = ``;
-                    // const message = ``;
-                    // this._errorService.openDialog()
-                }
-            });
+				next: () => {
+					this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
+					this._getAgreementData();
+				},
+				error: (error) => {
+					const errorObj = JSON.parse(error.response);
+					let message = errorObj?.error?.message;
+					message = message?.length ? message : 'RESERVE MESSAGE';
+					this._showForceUpdateDialog(message, agreementId, (forceUpdate = true), file);
+				},
+			});
+	}
+
+	private _showForceUpdateDialog(message: string, agreementId: number, forceUpdate: boolean, file: FileParameter) {
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Force contract upload`,
+			confirmationMessage: `${message} \n
+            Are you sure you want to upload the agreement manually?`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Proceed',
+			isNegative: false,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this._uploadSignedContract(agreementId, file, forceUpdate);
+		});
 	}
 
 	private _voidAgreement(agreementId: number, reason: string) {
@@ -423,9 +434,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.voidEnvelope(agreementId, reason)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement voided');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement voided');
+				this._getAgreementData();
+			});
 	}
 
 	private _deleteAgreement(agreementId: number) {
@@ -434,9 +445,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.agreementDELETE(agreementId)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement deleted');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement deleted');
+				this._getAgreementData();
+			});
 	}
 
 	private _resetForm() {

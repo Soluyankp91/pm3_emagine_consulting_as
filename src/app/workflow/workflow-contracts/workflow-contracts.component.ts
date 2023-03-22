@@ -914,7 +914,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			if (data.clientData.directClientId) {
 				this.getRatesAndFees(data.clientData.directClientId);
 			}
-            this.clientDataComponent.contractClientForm.frameAgreementId.setValue(data?.clientData.frameAgreementId, {emitEvent: false});
+            this.clientDataComponent?.contractClientForm?.frameAgreementId.setValue(data?.clientData.frameAgreementId, {emitEvent: false});
             this.clientDataComponent.selectedFrameAgreementId = data?.clientData.frameAgreementId ?? null;
             this.clientDataComponent?.getInitialFrameAgreements();
 		}
