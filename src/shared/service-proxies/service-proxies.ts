@@ -1136,13 +1136,13 @@ export class AgreementServiceProxy {
      * @param contractManagers (optional) 
      * @param search (optional) 
      * @param isWorkflowRelated (optional) 
-     * @param envelopeProcessingPath (optional) 
+     * @param envelopeProcessingPaths (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    list(agreementId?: number | undefined, agreementName?: string | undefined, languages?: number[] | undefined, clientName?: string | undefined, consultantName?: string | undefined, companyName?: string | undefined, actualRecipientName?: string | undefined, legalEntities?: number[] | undefined, tenantIds?: number[] | undefined, agreementTypes?: number[] | undefined, recipientTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, contractTypes?: number[] | undefined, validities?: number[] | undefined, statuses?: number[] | undefined, salesManagers?: number[] | undefined, contractManagers?: number[] | undefined, search?: string | undefined, isWorkflowRelated?: boolean | undefined, envelopeProcessingPath?: number | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
+    list(agreementId?: number | undefined, agreementName?: string | undefined, languages?: number[] | undefined, clientName?: string | undefined, consultantName?: string | undefined, companyName?: string | undefined, actualRecipientName?: string | undefined, legalEntities?: number[] | undefined, tenantIds?: number[] | undefined, agreementTypes?: number[] | undefined, recipientTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, contractTypes?: number[] | undefined, validities?: number[] | undefined, statuses?: number[] | undefined, salesManagers?: number[] | undefined, contractManagers?: number[] | undefined, search?: string | undefined, isWorkflowRelated?: boolean | undefined, envelopeProcessingPaths?: number[] | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Agreement/list?";
         if (agreementId === null)
             throw new Error("The parameter 'agreementId' cannot be null.");
@@ -1224,10 +1224,10 @@ export class AgreementServiceProxy {
             throw new Error("The parameter 'isWorkflowRelated' cannot be null.");
         else if (isWorkflowRelated !== undefined)
             url_ += "IsWorkflowRelated=" + encodeURIComponent("" + isWorkflowRelated) + "&";
-        if (envelopeProcessingPath === null)
-            throw new Error("The parameter 'envelopeProcessingPath' cannot be null.");
-        else if (envelopeProcessingPath !== undefined)
-            url_ += "EnvelopeProcessingPath=" + encodeURIComponent("" + envelopeProcessingPath) + "&";
+        if (envelopeProcessingPaths === null)
+            throw new Error("The parameter 'envelopeProcessingPaths' cannot be null.");
+        else if (envelopeProcessingPaths !== undefined)
+            envelopeProcessingPaths && envelopeProcessingPaths.forEach(item => { url_ += "EnvelopeProcessingPaths=" + encodeURIComponent("" + item) + "&"; });
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -19122,6 +19122,9 @@ export class AgreementListItemDto implements IAgreementListItemDto {
     salesManager?: EmployeeDto;
     contractManager?: EmployeeDto;
     isWorkflowRelated?: boolean;
+    workflowId?: string | undefined;
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
     docuSignUrl?: string | undefined;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
@@ -19170,6 +19173,9 @@ export class AgreementListItemDto implements IAgreementListItemDto {
             this.salesManager = _data["salesManager"] ? EmployeeDto.fromJS(_data["salesManager"]) : <any>undefined;
             this.contractManager = _data["contractManager"] ? EmployeeDto.fromJS(_data["contractManager"]) : <any>undefined;
             this.isWorkflowRelated = _data["isWorkflowRelated"];
+            this.workflowId = _data["workflowId"];
+            this.clientPeriodId = _data["clientPeriodId"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
             this.docuSignUrl = _data["docuSignUrl"];
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
             this.envelopeProcessingPath = _data["envelopeProcessingPath"];
@@ -19218,6 +19224,9 @@ export class AgreementListItemDto implements IAgreementListItemDto {
         data["salesManager"] = this.salesManager ? this.salesManager.toJSON() : <any>undefined;
         data["contractManager"] = this.contractManager ? this.contractManager.toJSON() : <any>undefined;
         data["isWorkflowRelated"] = this.isWorkflowRelated;
+        data["workflowId"] = this.workflowId;
+        data["clientPeriodId"] = this.clientPeriodId;
+        data["consultantPeriodId"] = this.consultantPeriodId;
         data["docuSignUrl"] = this.docuSignUrl;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
         data["envelopeProcessingPath"] = this.envelopeProcessingPath;
@@ -19247,6 +19256,9 @@ export interface IAgreementListItemDto {
     salesManager?: EmployeeDto;
     contractManager?: EmployeeDto;
     isWorkflowRelated?: boolean;
+    workflowId?: string | undefined;
+    clientPeriodId?: string | undefined;
+    consultantPeriodId?: string | undefined;
     docuSignUrl?: string | undefined;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
@@ -20867,6 +20879,7 @@ export enum AgreementValidityState {
     Active = 0,
     ActiveOutdatedTemplate = 1,
     Inactive = 2,
+    NotStarted = 3,
 }
 
 export class AreaRoleNodeDto implements IAreaRoleNodeDto {

@@ -224,6 +224,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				mode: item.validity,
 				status: item.status,
+				envelopeProcessingPath: item.envelopeProcessingPath,
 				startDate: item.startDate,
 				endDate: item.endDate,
 				salesManager: item.salesManager ? item.salesManager : null,

@@ -25,6 +25,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	contractTypeIds: 'Contract type',
 	isEnabled: 'Status',
 	status: 'Status',
+	envelopeProcessingPath: 'Via',
 	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
 	validity: 'Mode',
