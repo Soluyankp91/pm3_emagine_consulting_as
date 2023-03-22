@@ -405,7 +405,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 				error: (error) => {
 					const errorObj = JSON.parse(error.response);
 					let message = errorObj?.error?.message;
-					message = message?.length ? message : 'RESERVE MESSAGE';
+					message = message?.length ? message : 'Forcing contract upload may result in envelope changes.';
 					this._showForceUpdateDialog(message, agreementId, (forceUpdate = true), file);
 				},
 			});
