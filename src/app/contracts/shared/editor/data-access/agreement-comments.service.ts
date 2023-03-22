@@ -1,26 +1,40 @@
 import { Injectable } from '@angular/core';
-import { AgreementCommentServiceProxy, StringWrappedValueDto } from 'src/shared/service-proxies/service-proxies';
+import {
+    AgreementCommentServiceProxy,
+    AgreementTemplateCommentDto,
+    CommentInputDto,
+    UpdateCommentInputDto,
+} from 'src/shared/service-proxies/service-proxies';
 import { CommentsAbstractService } from './comments-abstract.service';
 
 @Injectable()
 export class AgreementCommentsService implements CommentsAbstractService {
-	constructor(private _commentProxyService: AgreementCommentServiceProxy) {}
+    constructor(private _commentProxyService: AgreementCommentServiceProxy) {}
 
-	getByTemplateID(agreementId: number) {
-		return this._commentProxyService.agreementCommentAll(agreementId);
-	}
+    getByTemplateID(agreementId: number) {
+        return this._commentProxyService.agreementCommentAll(agreementId);
+    }
 
-	createComment(templateID: number, version: number, message: string, parentID?: number) {
-		const body = StringWrappedValueDto.fromJS({ value: message });
-		return this._commentProxyService.agreementCommentPUT(templateID, parentID || undefined, body);
-	}
+    createComment(templateID: number, text: string, metadata: string, parentID?: number) {
+        const body = CommentInputDto.fromJS({ text, metadata });
+        return this._commentProxyService.agreementCommentPUT(templateID, parentID || undefined, body);
+    }
 
-	deleteComment(commentID: number) {
-		return this._commentProxyService.agreementCommentDELETE(commentID);
-	}
+    editComment(commentID: number, text: string, metadata: string) {
+        const body = CommentInputDto.fromJS({ text, metadata });
+        return this._commentProxyService.agreementCommentPATCH(commentID, body);
+    }
 
-	editComment(commentID: number, value: string) {
-		const body = StringWrappedValueDto.fromJS({ value });
-		return this._commentProxyService.agreementCommentPATCH(commentID, body);
-	}
+    updateMany(updates: Array<Pick<AgreementTemplateCommentDto, 'metadata' | 'id' | 'text'>>) {
+        let body = updates.map((update) => UpdateCommentInputDto.fromJS(update));
+        return this._commentProxyService.bulkUpdate(body);
+    }
+
+    deleteComment(commentID: number) {
+        return this._commentProxyService.agreementCommentDELETE(commentID);
+    }
+
+    deleteMany(commentIDs: Array<number>) {
+        return this._commentProxyService.bulkDelete(commentIDs);
+    }
 }
