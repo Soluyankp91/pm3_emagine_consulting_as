@@ -17,11 +17,9 @@
             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
                     <h2 class="section-header">Main data</h2>
-                    <mat-form-field appearance="outline" class="form-width-340 textarea-input textarea-with-hint u-mt--10">
+                    <mat-form-field appearance="outline" class="form-width-340 formFieldNoMarginPadding u-mt--10">
                         <mat-label>Project name</mat-label>
-                        <textarea matInput autocomplete="new-password" maxlength="250" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" name="projectName" formControlName="projectName" class="u-pb--10">
-                        </textarea>
-                        <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.projectName?.length === 250}">{{(projectLineForm.value.projectName?.length ?? 0 ) + '/250'}}</mat-hint>
+                        <input matInput type="text" autocomplete="new-password" name="projectName" formControlName="projectName" />
                         <mat-error>
                             <app-validator [control]="projectLineForm.projectName"></app-validator>
                         </mat-error>

@@ -430,7 +430,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				projectLine!.invoicingReferencePerson = this.contractClientForm.invoicingReferencePerson?.value;
 			}
 		}
-        console.log('this.purchaseOrders ', this.purchaseOrders);
 		const form = this._fb.group({
 			id: new UntypedFormControl(projectLine?.id ?? null),
 			projectName: new UntypedFormControl(projectLine?.projectName ?? null),

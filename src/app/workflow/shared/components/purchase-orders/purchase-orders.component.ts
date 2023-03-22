@@ -122,6 +122,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		capForInvoicingForm.get('maxAmount').setValue(purchaseOrder?.capForInvoicing?.maxAmount, { emitEvent: false });
 		capForInvoicingForm.get('currencyId').setValue(purchaseOrder?.capForInvoicing?.currencyId, { emitEvent: false });
 		capForInvoicingForm.get('amountUsed').setValue(purchaseOrder?.capForInvoicing?.amountUsed, { emitEvent: false });
+		capForInvoicingForm.get('isUserAllowedToEdit').setValue(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit, { emitEvent: false });
 	}
 
 	private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
@@ -142,6 +143,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			modifiedBy: new UntypedFormControl(purchaseOrder?.modifiedBy),
 			modifiedOnUtc: new UntypedFormControl(purchaseOrder?.modifiedOnUtc),
 			workflowsIdsReferencingThisPo: new UntypedFormControl(purchaseOrder?.workflowsIdsReferencingThisPo),
+            isUserAllowedToEdit: new UntypedFormControl(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit)
 		});
 		this.purchaseOrders.push(form);
 	}

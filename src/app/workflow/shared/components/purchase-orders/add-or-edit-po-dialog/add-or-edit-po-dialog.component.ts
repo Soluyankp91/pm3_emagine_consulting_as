@@ -59,7 +59,6 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	reject() {
-		console.log(this.purchaseOrderForm);
 		this.onRejected.emit();
 		this._closeInternal();
 	}

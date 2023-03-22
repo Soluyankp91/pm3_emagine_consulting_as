@@ -62,7 +62,7 @@
         <span fxFlex="60px" class="inline-form--header u-w--100">
             Units
         </span>
-        <span fxFlex="40px" class="inline-form--header u-w--100" [fxHide]="readOnlyMode">
+        <span fxFlex="40px" class="inline-form--header u-w--100">
         </span>
     </div>
 </ng-template>
@@ -117,23 +117,25 @@
             </ng-container>
         </ng-container>
 
-        <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode || !order.purchaseOrderCurrentContextData?.isUserAllowedToEdit">
-            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
-                [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
-                <mat-icon svgIcon="3-dots"></mat-icon>
-            </button>
-            <mat-menu #poMenu>
-                <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                    (throttledClick)="createOrEditPurchaseOrder(order, i)">
-                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                    {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
+        <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
+            <ng-container *ngIf="!readOnlyMode && order?.isUserAllowedToEdit">
+                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
+                    [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
+                    <mat-icon svgIcon="3-dots"></mat-icon>
                 </button>
-                <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
-                    (throttledClick)="removePurchaseOrder(i)">
-                    <mat-icon svgIcon="close-icon"></mat-icon>
-                    {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
-                </button>
-            </mat-menu>
+                <mat-menu #poMenu>
+                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                        (throttledClick)="createOrEditPurchaseOrder(order, i)">
+                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
+                    </button>
+                    <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
+                        (throttledClick)="removePurchaseOrder(i)">
+                        <mat-icon svgIcon="close-icon"></mat-icon>
+                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
+                    </button>
+                </mat-menu>
+            </ng-container>
         </div>
     </div>
 </ng-template>
