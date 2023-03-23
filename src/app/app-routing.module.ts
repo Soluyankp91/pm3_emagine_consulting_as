@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { AppComponent } from './app.component';
 import { ContractsProductionGuard } from './guards/production.guard';
 
@@ -83,5 +84,6 @@ import { ContractsProductionGuard } from './guards/production.guard';
         ]),
     ],
     exports: [RouterModule],
+    providers: [TitleService]
 })
 export class AppRoutingModule {}
