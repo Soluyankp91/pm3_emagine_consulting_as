@@ -20,7 +20,7 @@ export class LinkedClientTemplatesComponent implements OnInit, OnDestroy {
 
 	searchControl = new FormControl<string>('');
 
-	displayedColumns = ['isEnabled', 'linkState', 'agreementTemplateId', 'clientName', 'name', 'agreementTemplateLink'];
+	displayedColumns = ['isEnabled', 'linkState', 'linkStateAccepted', 'agreementTemplateId', 'clientName', 'name', 'agreementTemplateLink'];
 
 	private _unSubscribe$ = new Subject<void>();
 
