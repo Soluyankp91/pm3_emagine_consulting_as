@@ -188,7 +188,9 @@
 						<textarea matInput formControlName="note" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
 						<mat-error><app-validator [control]="clientTemplateFormGroup.note"></app-validator></mat-error>
 					</mat-form-field>
-					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					<ng-container *ngIf="!clientTemplateFormGroup.value.receiveAgreementsFromOtherParty">
+						<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					</ng-container>
 					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
 						>Default template for contracts of this type</mat-checkbox
 					>

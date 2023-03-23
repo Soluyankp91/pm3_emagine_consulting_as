@@ -100,6 +100,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this._setOptions();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
+		this._subscribeOnAgreementsFromOtherParty();
 		if (this._route.snapshot.params.id) {
 			this.editMode = true;
 			this.nextButtonLabel = 'Save';
@@ -139,6 +140,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					switchMap(() => {
 						return this._apiServiceProxy.preview2(this.currentTemplate.agreementTemplateId);
 					}),
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
+					}),
 					tap((template) => {
 						this.masterTemplateFormGroup.attachments.reset();
 						this.preselectedFiles = template.attachments as FileUpload[];
@@ -156,7 +160,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					takeUntil(this._unSubscribe$),
 					finalize(() => this.hideMainSpinner()),
 					tap((templateId: number | undefined) => {
-						this.navigateToEditor(templateId);
+						if (toSend.receiveAgreementsFromOtherParty) {
+							this.navigateToEdit(templateId);
+						} else {
+							this.navigateToEditor(templateId);
+						}
 					})
 				)
 				.subscribe();
@@ -213,6 +221,12 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	navigateBack() {
 		this._location.back();
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -417,6 +431,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.agreementTemplateGET(this._templateId)
 			.pipe(
 				tap((template) => {
+					this._creationTitleService.updateReceiveAgreementsFromOtherParty(template.receiveAgreementsFromOtherParty);
 					if (template.creationMode === AgreementCreationMode.Duplicated) {
 						this._initMasterTemplateOptions();
 						this.masterTemplateFormGroup.addControl(
@@ -460,5 +475,31 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				})
 			)
 			.subscribe();
+	}
+
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+					this.masterTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.masterTemplateFormGroup.addControl('isSignatureRequired', new FormControl(false));
+				}
+				if (receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.masterTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+					this.masterTemplateFormGroup.addControl(
+						'isSignatureRequired',
+						new FormControl(this.masterTemplateFormGroup.initialValue.isSignatureRequired)
+					);
+				}
+			});
 	}
 }

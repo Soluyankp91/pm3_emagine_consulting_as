@@ -88,7 +88,11 @@
 				<emg-auto-name formControlName="agreementNameTemplate"></emg-auto-name>
 				<mat-form-field appearance="outline" class="textarea-form-field">
 					<mat-label>Definition(optional)</mat-label>
-					<textarea matInput formControlName="definition" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
+					<textarea
+						matInput
+						formControlName="definition"
+						cdkTextareaAutosize
+						#autosize="cdkTextareaAutosize"></textarea>
 					<mat-error><app-validator [control]="masterTemplateFormGroup.definition"></app-validator></mat-error>
 				</mat-form-field>
 				<mat-form-field appearance="outline" floatLabel="never">
@@ -168,7 +172,12 @@
 					<mat-error><app-validator [control]="masterTemplateFormGroup.note"></app-validator></mat-error>
 				</mat-form-field>
 				<div class="check-boxes">
-					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					<ng-container *ngIf="!masterTemplateFormGroup.value.receiveAgreementsFromOtherParty">
+						<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text"
+							>Signature required</mat-checkbox
+						>
+					</ng-container>
+
 					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
 						>Default template for contracts of this type</mat-checkbox
 					>

@@ -93,7 +93,8 @@
 			<mat-row
 				*matRowDef="let row; columns: displayedColumns"
 				[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
-				(click)="getTableRow(row); $event.stopPropagation()"></mat-row>
+				(click)="getTableRow(row); $event.stopPropagation()"
+				class="row-hover"></mat-row>
 		</mat-table>
 		<ng-container *ngIf="!tableConfig.items.length">
 			<div class="no-items">

@@ -125,6 +125,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._setOptions();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
+		this._subscribeOnAgreementsFromOtherParty();
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
 			this.editMode = true;
@@ -154,6 +155,12 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	navigateBack() {
 		this._location.back();
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -194,6 +201,9 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._extraHttp
 				.agreementPatch(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
 				.pipe(
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
+					}),
 					switchMap(() => {
 						return this._apiServiceProxy.preview2(this.currentAgreementId);
 					}),
@@ -214,7 +224,11 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					}),
 					tap((agreementTemplateId) => {
-						this.navigateToEditor(agreementTemplateId);
+						if (toSend.receiveAgreementsFromOtherParty) {
+							this.navigateToEdit(agreementTemplateId);
+						} else {
+							this.navigateToEditor(agreementTemplateId);
+						}
 					})
 				)
 				.subscribe();
@@ -528,6 +542,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
 			this.currentAgreementTemplate = agreementTemplate;
 			this.creationModeControl.setValue(agreementTemplate.creationMode);
+			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreementTemplate.receiveAgreementsFromOtherParty);
 			if (agreementTemplate.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreementTemplate;
 				this._setDuplicateObs();
@@ -614,5 +629,31 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			}
 			this._creationTitleService.updateTenants([]);
 		});
+	}
+
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+					this.clientTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.clientTemplateFormGroup.addControl('isSignatureRequired', new FormControl(false));
+				}
+				if (receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.clientTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+					this.clientTemplateFormGroup.addControl(
+						'isSignatureRequired',
+						new FormControl(this.clientTemplateFormGroup.initialValue.isSignatureRequired)
+					);
+				}
+			});
 	}
 }

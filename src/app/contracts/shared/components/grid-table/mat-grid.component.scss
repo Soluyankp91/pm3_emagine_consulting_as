@@ -39,6 +39,12 @@
 	.mat-table {
 		background-color: #faf9fb;
 	}
+	.row-hover {
+		cursor: pointer;
+		&:hover {
+			background-color: #EAF4F5;
+		}
+	}
 	.highlight {
 		background-color: #EAF4F5;
 	}
