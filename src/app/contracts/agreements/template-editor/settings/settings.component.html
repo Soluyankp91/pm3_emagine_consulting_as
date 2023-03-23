@@ -9,9 +9,16 @@
 							class="option"
 							[ngClass]="{ 'edit-disabled': editMode }"
 							[value]="radioButton.value"
-							(click)="onModeControlChange(radioButton.value)"
-							>{{ radioButton.label }}</mat-radio-button
-						>
+							(click)="onModeControlChange(radioButton.value)">
+							{{ radioButton.label }}
+							<ng-container *ngIf="radioButton.infoTip">
+								<mat-icon
+									class="info-tip-icon"
+									svgIcon="information-tip-icon"
+									[customTooltip]="radioButton.infoTip"
+									[showAlways]="true"></mat-icon>
+							</ng-container>
+						</mat-radio-button>
 					</ng-container>
 				</mat-radio-group>
 				<mat-divider class="divider"></mat-divider>
@@ -21,6 +28,7 @@
 							<emg-dropdown-autocomplete-single-select
 								[options]="$any(templateOptions)"
 								[outputProperty]="dropdownInfo.outputProperty"
+								[isOptionsLoading]="duplicateOptionsLoading$"
 								[unwrapFunction]="dropdownInfo.unwrapFunction"
 								[labelKey]="dropdownInfo.labelKey"
 								[label]="dropdownInfo.label"
@@ -94,142 +102,151 @@
 								<emg-dropdown-autocomplete-single-select
 									formControlName="recipientId"
 									[labelKey]="recipientOptions.labelKey"
+									[isOptionsLoading]="recipientOptionsLoading$"
 									[label]="recipientOptions.label"
 									[options]="options"
 									[outputProperty]="recipientOptions.outputProperty"
 									[ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }"
 									(inputEmitter)="recipientOptionsChanged$.next($event)">
-									<ng-template let-cell="option" #optionTemplate>
-										<div>
-											<div [ngSwitch]="recipientOptions.dropdownType">
-												<div *ngSwitchCase="recipientDropdowns.SUPPLIER">
+									<ng-container [ngSwitch]="recipientOptions.dropdownType">
+										<ng-container *ngSwitchCase="recipientDropdowns.SUPPLIER">
+											<ng-template let-cell="option" #optionTemplate>
+												<div>
 													<div class="autocomplete-first-row">
 														{{ cell.supplierName }}
 													</div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.supplierId }}
-														<ng-container *ngIf="cell.vatNumber">
-															· {{ cell.vatNumber }}
-														</ng-container>
+														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }}, {{ cell.countryCode }}
 														</ng-container>
-                                                        <ng-container *ngIf="!cell.countryCode && cell.city">
-                                                            · {{ cell.city }}
-                                                        </ng-container>
+														<ng-container *ngIf="!cell.countryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
 													</div>
-													<ng-template #selectedOption let-cell="selectedItem">
-														<div class="autocomplete-second-row selected-option">
-															#{{ cell.supplierId }}
-															<ng-container *ngIf="cell.vatNumber">
-																· {{ cell.vatNumber }}
-															</ng-container>
-															<ng-container *ngIf="cell.countryCode && cell.city">
-																· {{ cell.city }}, {{ cell.countryCode }}
-															</ng-container>
-                                                            <ng-container *ngIf="!cell.countryCode && cell.city">
-																· {{ cell.city }}
-															</ng-container>
-														</div>
-													</ng-template>
 												</div>
-												<div *ngSwitchCase="recipientDropdowns.CONSULTANT">
+											</ng-template>
+											<ng-template #selectedOption let-cell="selectedItem">
+												<div>
+													<div class="autocomplete-second-row selected-option">
+														#{{ cell.supplierId }}
+														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.countryCode && cell.city">
+															· {{ cell.city }}, {{ cell.countryCode }}
+														</ng-container>
+														<ng-container *ngIf="!cell.countryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
+													</div>
+												</div>
+											</ng-template>
+										</ng-container>
+										<ng-container *ngSwitchCase="recipientDropdowns.CONSULTANT">
+											<ng-template let-cell="option" #optionTemplate>
+												<div>
 													<div class="autocomplete-first-row">
 														{{ cell.name }}
 													</div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.id }}
-														<ng-container *ngIf="cell.vatNumber">
-															· {{ cell.vatNumber }}
-														</ng-container>
+														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
 														<ng-container *ngIf="cell.addressCountryCode && cell.city">
 															· {{ cell.city }}, {{ cell.addressCountryCode }}
 														</ng-container>
-                                                        <ng-container *ngIf="!cell.addressCountryCode && cell.city">
+														<ng-container *ngIf="!cell.addressCountryCode && cell.city">
 															· {{ cell.city }}
 														</ng-container>
 													</div>
-
-													<ng-template #selectedOption let-cell="selectedItem">
-														<div class="autocomplete-second-row selected-option">
-															#{{ cell.id }}
-															<ng-container *ngIf="cell.vatNumber">
-																· {{ cell.vatNumber }}
-															</ng-container>
-															<ng-container *ngIf="cell.addressCountryCode && cell.city">
-																· {{ cell.city }}, {{ cell.addressCountryCode }}
-															</ng-container>
-                                                            <ng-container *ngIf="!cell.addressCountryCode && cell.city">
-                                                                · {{ cell.city }}
-                                                            </ng-container>
-														</div>
-													</ng-template>
 												</div>
-												<div *ngSwitchCase="recipientDropdowns.CLIENT">
+											</ng-template>
+
+											<ng-template #selectedOption let-cell="selectedItem">
+												<div>
+													<div class="autocomplete-second-row selected-option">
+														#{{ cell.id }}
+														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.addressCountryCode && cell.city">
+															· {{ cell.city }}, {{ cell.addressCountryCode }}
+														</ng-container>
+														<ng-container *ngIf="!cell.addressCountryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
+													</div>
+												</div>
+											</ng-template>
+										</ng-container>
+										<ng-container *ngSwitchCase="recipientDropdowns.CLIENT">
+											<ng-template let-cell="option" #optionTemplate>
+												<div>
 													<div class="autocomplete-first-row">
 														{{ cell.clientName }}
 													</div>
-                                                    <div class="autocomplete-second-row selected-option">
-                                                        #{{ cell.clientId }}
-                                                        <ng-container *ngIf="cell.crmClientId">
-                                                            · {{ cell.crmClientId }}
-                                                        </ng-container>
-                                                        <ng-container *ngIf="cell.addressCountryCode && cell.city">
-                                                            · {{ cell.city }} {{ cell.addressCountryCode }}
-                                                        </ng-container>
-                                                        <ng-container *ngIf="!cell.addressCountryCode && cell.city">
-                                                            · {{ cell.city }}
-                                                        </ng-container>
-                                                    </div>
-													<ng-template #selectedOption let-cell="selectedItem">
-														<div class="autocomplete-second-row selected-option">
-															#{{ cell.clientId }}
-															<ng-container *ngIf="cell.crmClientId">
-																· {{ cell.crmClientId }}
-															</ng-container>
-															<ng-container *ngIf="cell.addressCountryCode && cell.city">
-																· {{ cell.city }} {{ cell.addressCountryCode }}
-															</ng-container>
-                                                            <ng-container *ngIf="!cell.addressCountryCode && cell.city">
-                                                                · {{ cell.city }}
-                                                            </ng-container>
-														</div>
-													</ng-template>
-												</div>
-												<div *ngSwitchCase="recipientDropdowns.PDC">
-													<div class="autocomplete-first-row">
-														{{ cell.name }}
-													</div>
-                                                    <div class="autocomplete-second-row">
-														#{{ cell.id }}
-														<ng-container *ngIf="cell.vatNumber">
-															· {{ cell.vatNumber }}
+													<div class="autocomplete-second-row selected-option">
+														#{{ cell.clientId }}
+														<ng-container *ngIf="cell.crmClientId">
+															· {{ cell.crmClientId }}
 														</ng-container>
-														<ng-container *ngIf="cell.countryCode && cell.city">
-															· {{ cell.city }}, {{ cell.countryCode }}
+														<ng-container *ngIf="cell.addressCountryCode && cell.city">
+															· {{ cell.city }} {{ cell.addressCountryCode }}
 														</ng-container>
-                                                        <ng-container *ngIf="!cell.countryCode && cell.city">
+														<ng-container *ngIf="!cell.addressCountryCode && cell.city">
 															· {{ cell.city }}
 														</ng-container>
 													</div>
-                                                    <ng-template #selectedOption let-cell="selectedItem">
-                                                        <div class="autocomplete-second-row selected-option">
-                                                            #{{ cell.id }}
-                                                            <ng-container *ngIf="cell.vatNumber">
-                                                                · {{ cell.vatNumber }}
-                                                            </ng-container>
-                                                            <ng-container *ngIf="cell.countryCode && cell.city">
-                                                                · {{ cell.city }} {{ cell.countryCode }}
-                                                            </ng-container>
-                                                            <ng-container *ngIf="!cell.countryCode && cell.city">
-                                                                · {{ cell.city }}
-                                                            </ng-container>
-                                                        </div>
-                                                    </ng-template>
 												</div>
-											</div>
-										</div>
-									</ng-template>
+											</ng-template>
+											<ng-template #selectedOption let-cell="selectedItem">
+												<div>
+													<div class="autocomplete-second-row selected-option">
+														#{{ cell.clientId }}
+														<ng-container *ngIf="cell.crmClientId">
+															· {{ cell.crmClientId }}
+														</ng-container>
+														<ng-container *ngIf="cell.addressCountryCode && cell.city">
+															· {{ cell.city }} {{ cell.addressCountryCode }}
+														</ng-container>
+														<ng-container *ngIf="!cell.addressCountryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
+													</div>
+												</div>
+											</ng-template>
+										</ng-container>
+										<ng-container *ngSwitchCase="recipientDropdowns.PDC">
+											<ng-template let-cell="option" #optionTemplate>
+												<div>
+													<div class="autocomplete-first-row">
+														{{ cell.name }}
+													</div>
+													<div class="autocomplete-second-row">
+														#{{ cell.id }}
+														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.countryCode && cell.city">
+															· {{ cell.city }}, {{ cell.countryCode }}
+														</ng-container>
+														<ng-container *ngIf="!cell.countryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
+													</div>
+												</div>
+											</ng-template>
+											<ng-template #selectedOption let-cell="selectedItem">
+												<div>
+													<div class="autocomplete-second-row selected-option">
+														#{{ cell.id }}
+														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.countryCode && cell.city">
+															· {{ cell.city }} {{ cell.countryCode }}
+														</ng-container>
+														<ng-container *ngIf="!cell.countryCode && cell.city">
+															· {{ cell.city }}
+														</ng-container>
+													</div>
+												</div>
+											</ng-template>
+										</ng-container>
+									</ng-container>
 								</emg-dropdown-autocomplete-single-select>
 							</ng-container>
 						</ng-container>
@@ -239,9 +256,13 @@
 							<input matInput type="text" formControlName="nameTemplate" placeholder="Agreement name" />
 							<mat-error><app-validator [control]="agreementFormGroup.nameTemplate"></app-validator></mat-error>
 						</mat-form-field>
-						<mat-form-field appearance="outline">
-							<mat-label>Definition(optional)</mat-label>
-							<input matInput type="text" formControlName="definition" placeholder="Definition" />
+						<mat-form-field appearance="outline" class="textarea-form-field">
+							<mat-label>Definiton(optional)</mat-label>
+							<textarea
+								matInput
+								formControlName="definition"
+								cdkTextareaAutosize
+								#autosize="cdkTextareaAutosize"></textarea>
 							<mat-error><app-validator [control]="agreementFormGroup.definition"></app-validator></mat-error>
 						</mat-form-field>
 						<mat-form-field appearance="outline" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">

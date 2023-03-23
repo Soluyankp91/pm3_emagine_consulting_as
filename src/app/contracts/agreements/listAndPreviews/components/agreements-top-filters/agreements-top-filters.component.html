@@ -4,8 +4,10 @@
 		<div class="right-filters">
 			<div class="search-block">
 				<mat-form-field appearance="outline">
-					<mat-label>Search</mat-label>
-					<input matInput [formControl]="searchControl" placeholder="search" />
+					<div class="input">
+							<mat-icon svgIcon="loop-icon" class="loop-icon"></mat-icon>
+							<input matInput [formControl]="searchControl" placeholder="Search" />
+					</div>
 				</mat-form-field>
 			</div>
 			<div class="add-button" (click)="navigateTo()">
@@ -43,6 +45,7 @@
 					[options]="contractManagers"
 					[idProperty]="'id'"
 					[label]="labelMap['salesManager']"
+					[optionsLoading]="isOptionsLoading$"
 					formControlName="salesManager"
 					(emitText)="this.freeTextEmitter.emit($event)">
 					<ng-template #triggerButton let-options="selectedOptions">
@@ -53,13 +56,61 @@
 								[style.height]="'32px !important'"></mat-icon>
 						</ng-container>
 						<ng-template #selectedManagers>
-							<span
-								class="fi fi-{{ options.values().next().value.externalId | lowercase }} salesManager-icon"></span>
-						</ng-template> </ng-template
-				></emg-dropdown-autocomplete-multiselect>
+							<ng-container *ngIf="options.size <= 3; else moreSelected">
+								<div [style.margin-right.px]="-16 * options.size + 12">
+									<ng-container *ngFor="let option of options; let i = index">
+										<img
+											class="profile-picture-avatar"
+											[ngSrc]="employeePhotoUrl + option.externalId + '.jpg'"
+											width="32"
+											height="32"
+											src
+											(error)="setDefaultImage($event.target)"
+											[style.left.px]="-16 * i" />
+									</ng-container>
+								</div>
+							</ng-container>
+							<ng-template #moreSelected>
+								<div [customTooltip]="selectedTooltip" [showAlways]="true" class="circle-counter flex">
+									{{ options.size }}
+								</div>
+								<ng-template #selectedTooltip>
+									<ng-container *ngFor="let option of options">
+										<div class="custom-option">
+											<img
+												class="small-profile-picture-avatar"
+												[ngSrc]="employeePhotoUrl + option.externalId + '.jpg'"
+												width="22"
+												height="22"
+												src
+												(error)="setDefaultImage($event.target)" />
+											<div>
+												{{ option.name }}
+											</div>
+										</div>
+									</ng-container>
+								</ng-template>
+							</ng-template>
+						</ng-template>
+					</ng-template>
+					<ng-template #optionTemplate let-option="option">
+						<div class="custom-option mg-left-8">
+							<img
+								class="small-profile-picture-avatar"
+								[ngSrc]="employeePhotoUrl + option.externalId + '.jpg'"
+								width="22"
+								height="22"
+								src
+								(error)="setDefaultImage($event.target)" />
+							<div>
+								{{ option.name }}
+							</div>
+						</div>
+					</ng-template>
+				</emg-dropdown-autocomplete-multiselect>
 			</ng-container>
 			<mat-form-field appearance="outline" class="flex-basis-200">
-				<mat-select formControlName="status" placeholder="Status" multiple [compareWith]="compareWith">
+				<mat-select formControlName="status" placeholder="Status" multiple [compareWith]="compareWith" panelClass="app-contract-backdrop">
 					<ng-container *ngFor="let status of statusesOptions">
 						<mat-option [value]="status">
 							<emg-agreement-status class="icon" [agreementStatus]="status.id"></emg-agreement-status>

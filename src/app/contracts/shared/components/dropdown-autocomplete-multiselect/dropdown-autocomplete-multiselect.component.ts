@@ -1,5 +1,5 @@
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { IDropdownItem } from '../emagine-menu-multi-select/emagine-menu-multi-select.interfaces';
 import {
 	Component,
@@ -23,6 +23,7 @@ import { MatMenu } from '@angular/material/menu';
 @Component({
 	selector: 'emg-dropdown-autocomplete-multiselect',
 	templateUrl: './dropdown-autocomplete-multiselect.component.html',
+	styleUrls: ['dropdown-autocomplete-multiselect.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [
 		{
@@ -42,6 +43,7 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 	@Input() label: string;
 
 	@Input() idProperty: string | number = 'id';
+	@Input() optionsLoading: BehaviorSubject<boolean>;
 
 	@Output() emitText = new EventEmitter();
 
@@ -51,13 +53,13 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 	@ViewChild('menu', { read: MatMenu }) menu: MatMenu;
 
 	@ContentChild('triggerButton', { static: true }) triggerButton: TemplateRef<any>;
+	@ContentChild('optionTemplate', { static: true }) optionTemplate: TemplateRef<any>;
 
 	get idsToExclude() {
 		return Array.from(this.selectedOptions).map((selectedOption: IDropdownItem) => selectedOption.id);
 	}
 
 	isSearchNull: boolean;
-	selectedAll = false;
 
 	initialOptions: Set<IDropdownItem>;
 	availableOptions: Set<IDropdownItem>;
@@ -94,41 +96,19 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 
 	writeValue(values: any[]): void {
 		this.selectedOptions.clear();
-        this.inputControl.setValue('');
+		this.inputControl.setValue('');
 		values?.forEach((setValueOption) => {
-			this.initialOptions.forEach((option) => {
-				if (setValueOption.id === option.id) {
-					this.selectedOptions.add(option);
-					this.availableOptions.delete(option);
-				}
-			});
+			this.selectedOptions.add(setValueOption);
+			this.availableOptions.delete(setValueOption);
 		});
-		this.selectedAll = this.selectedOptions.size !== 0;
 
 		this._cdr.detectChanges();
-	}
-
-	toggleSelectAll() {
-		if (!this.selectedAll) {
-			this.availableOptions.forEach((option) => {
-				this.selectedOptions.add(option);
-			});
-			this.availableOptions.clear();
-		} else {
-			this.selectedOptions.forEach((option) => {
-				if (this.initialOptions.has(option)) {
-					this.availableOptions.add(option);
-				}
-			});
-			this.selectedOptions.clear();
-		}
-		this.selectedAll = !this.selectedAll;
 	}
 
 	selectCheckBox(option: IDropdownItem) {
 		this.selectedOptions.add(option);
 		this.availableOptions.delete(option);
-		this._checkSelectionStatus();
+		this._cdr.detectChanges();
 	}
 
 	unSelectCheckBox(option: IDropdownItem) {
@@ -136,7 +116,7 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 			this.availableOptions.add(option);
 		}
 		this.selectedOptions.delete(option);
-		this._checkSelectionStatus();
+		this._cdr.detectChanges();
 	}
 
 	openPanel() {
@@ -148,10 +128,6 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 
 	menuClosed() {
 		this._onChangeSelectedOptions();
-	}
-
-	private _checkSelectionStatus() {
-		this.selectedAll = this.selectedOptions.size !== 0;
 	}
 
 	private _onChangeSelectedOptions() {

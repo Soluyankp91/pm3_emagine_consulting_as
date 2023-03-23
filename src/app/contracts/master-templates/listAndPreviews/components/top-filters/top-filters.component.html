@@ -27,8 +27,10 @@
 	<div class="right-panel">
 		<div class="search-block">
 			<mat-form-field appearance="outline">
-				<mat-label>Search</mat-label>
-				<input matInput formControlName="search" placeholder="Search" />
+				<div class="input">
+					<mat-icon svgIcon="loop-icon" class="loop-icon"></mat-icon>
+					<input matInput formControlName="search" placeholder="Search" />
+				</div>
 			</mat-form-field>
 		</div>
 		<mat-icon svgIcon="create-icon" class="create-icon" (click)="navigateTo()"></mat-icon>

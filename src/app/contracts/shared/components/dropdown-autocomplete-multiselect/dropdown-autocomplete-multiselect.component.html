@@ -1,5 +1,8 @@
 <div [matMenuTriggerFor]="menu" (menuOpened)="openPanel()" (onMenuClose)="menuClosed()">
-    <ng-container *ngIf="triggerButton" [ngTemplateOutlet]="triggerButton" [ngTemplateOutletContext]="{selectedOptions}"></ng-container>
+	<ng-container
+		*ngIf="triggerButton"
+		[ngTemplateOutlet]="triggerButton"
+		[ngTemplateOutletContext]="{selectedOptions}"></ng-container>
 </div>
 <mat-menu #menu="matMenu" backdropClass="app-contract-backdrop">
 	<div mat-menu-item (click)="$event.stopPropagation()">
@@ -9,16 +12,10 @@
 				type="text"
 				matInput
 				[matAutocomplete]="autoName"
-                matAutocompletePosition="auto"
+				matAutocompletePosition="auto"
 				[formControl]="inputControl"
-				#trigger="matAutocompleteTrigger"
-                />
-			<mat-autocomplete #autoName="matAutocomplete" >
-				<mat-option >
-					<mat-checkbox [indeterminate]="selectedAll" (click)="$event.stopPropagation()" (change)="toggleSelectAll()" [checked]="selectedAll">
-						{{ selectedAll ? 'Clear all' : 'Select all' }}
-					</mat-checkbox>
-				</mat-option>
+				#trigger="matAutocompleteTrigger" />
+			<mat-autocomplete #autoName="matAutocomplete">
 				<div>
 					<ng-container *ngFor="let selectedOption of selectedOptions; trackBy: trackById.bind(this)">
 						<mat-option>
@@ -27,23 +24,44 @@
 								[checked]="true"
 								(click)="$event.stopPropagation()"
 								(change)="unSelectCheckBox(selectedOption)">
-								{{ selectedOption.name }}
+								<ng-container
+									*ngIf="optionTemplate; else noOptionTemplate"
+									[ngTemplateOutlet]="optionTemplate"
+									[ngTemplateOutletContext]="{ option: selectedOption }">
+								</ng-container>
+								<ng-template #noOptionTemplate>
+									{{ selectedOption.name }}
+								</ng-template>
 							</mat-checkbox>
 						</mat-option>
 					</ng-container>
 				</div>
 				<mat-divider></mat-divider>
-				<ng-container *ngIf="!isSearchNull; else notFound">
-					<ng-container *ngFor="let option of availableOptions; trackBy: trackById.bind(this)">
-						<mat-option>
-							<mat-checkbox (click)="$event.stopPropagation()" (change)="selectCheckBox(option)">
-								{{ option.name }}
-							</mat-checkbox>
-						</mat-option>
+				<ng-container *ngIf="!(optionsLoading | async); else loading">
+					<ng-container *ngIf="!isSearchNull; else notFound">
+						<ng-container *ngFor="let option of availableOptions; trackBy: trackById.bind(this)">
+							<mat-option>
+								<mat-checkbox (click)="$event.stopPropagation()" (change)="selectCheckBox(option)">
+									<ng-container
+										*ngIf="optionTemplate; else noOptionTemplate"
+										[ngTemplateOutlet]="optionTemplate"
+										[ngTemplateOutletContext]="{ option: option }">
+									</ng-container>
+									<ng-template #noOptionTemplate>
+										{{ option.name }}
+									</ng-template>
+								</mat-checkbox>
+							</mat-option>
+						</ng-container>
 					</ng-container>
+					<ng-template #notFound>
+						<mat-option>Not Found</mat-option>
+					</ng-template>
 				</ng-container>
-				<ng-template #notFound>
-					<mat-option>Not Found</mat-option>
+				<ng-template #loading>
+					<mat-option>
+						<mat-spinner diameter="32" class="spinner"></mat-spinner>
+					</mat-option>
 				</ng-template>
 			</mat-autocomplete>
 		</mat-form-field>

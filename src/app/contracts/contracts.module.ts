@@ -384,5 +384,14 @@ export class ContractsModule {
 			'envelope-other-party',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-other-party-icon.svg')
 		);
+		iconRegistry.addSvgIcon(
+			'agreement-not-started-yet-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-not-started-yet-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'information-tip-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/information-tip-icon.svg')
+		);
+		iconRegistry.addSvgIcon('loop-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/loop-icon.svg'));
 	}
 }

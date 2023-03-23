@@ -284,6 +284,10 @@ export const MODE_FILTER_OPTIONS = [
 		id: 2,
 		name: 'Ended',
 	},
+	{
+		id: 3,
+		name: 'Not started yet',
+	},
 ];
 export const ENVELOPEPATH_FILTER_OPTIONS = [
 	{

@@ -111,6 +111,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				});
 				break;
 			case 'WORKFLOW_LINK':
+				let url = this._router.serializeUrl(this._router.createUrlTree(['app', 'workflow', `${$event.row.workflowId}`]));
+				window.open(url, '_blank');
 				break;
 			case 'EDIT':
 				this._router.navigate([`${$event.row.agreementId}`, 'settings'], { relativeTo: this._route });
@@ -230,6 +232,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				salesManager: item.salesManager ? item.salesManager : null,
 				contractManager: item.contractManager ? item.contractManager : null,
 				isWorkflowRelated: item.isWorkflowRelated,
+				workflowId: item.workflowId,
 				receiveAgreementsFromOtherParty: item.receiveAgreementsFromOtherParty,
 				actionList: item.isWorkflowRelated ? this.workflowActions : this.nonWorkflowAction,
 			};

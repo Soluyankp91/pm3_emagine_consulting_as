@@ -90,7 +90,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	clientOptions$: Observable<ClientResultDto[]>;
 
 	clientOptionsChanged$ = new BehaviorSubject<string>('');
-	clientOptionsLoaded$ = new Subject();
+	isClientOptionsLoading$ = new BehaviorSubject(false);
 
 	duplicateOrInherit$: Observable<any>;
 
@@ -98,6 +98,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
+	isDuplicateParentOptionsLoading$ = new BehaviorSubject(false);
 
 	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 
@@ -113,7 +114,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _router: Router,
 		private readonly _creationTitleService: CreationTitleService,
 		private readonly _extraHttp: ExtraHttpsService,
-        private readonly _location: Location,
+		private readonly _location: Location,
 		public _dialog: MatDialog
 	) {
 		super(_injector);
@@ -152,7 +153,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	navigateBack() {
-        this._location.back();
+		this._location.back();
 	}
 
 	navigateToEditor(templateId: number) {
@@ -283,11 +284,15 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this.clientOptions$ = this.clientOptionsChanged$.pipe(
 			takeUntil(this._unSubscribe$),
 			startWith(this.clientOptionsChanged$.value),
-			switchMap((search) => {
-				return this._lookupServiceProxy.clientsAll(search, 20);
-			}),
 			tap(() => {
-				this.clientOptionsLoaded$.next();
+				this.isClientOptionsLoading$.next(true);
+			}),
+			switchMap((search) => {
+				return this._lookupServiceProxy.clientsAll(search, 20).pipe(
+					tap(() => {
+						this.isClientOptionsLoading$.next(false);
+					})
+				);
 			})
 		);
 	}
@@ -370,10 +375,16 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.duplicateOptionsChanged$.pipe(
 							startWith(this.duplicateOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.isDuplicateParentOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._apiServiceProxy
-									.simpleList2(true, undefined, undefined, search)
-									.pipe(map((response) => response.items));
+								return this._apiServiceProxy.simpleList2(true, undefined, undefined, search).pipe(
+									tap(() => {
+										this.isDuplicateParentOptionsLoading$.next(false);
+									}),
+									map((response) => response.items)
+								);
 							})
 						),
 						optionsChanged$: this.duplicateOptionsChanged$,
@@ -385,10 +396,16 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.parentOptionsChanged$.pipe(
 							startWith(this.parentOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.isDuplicateParentOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._apiServiceProxy
-									.simpleList2(false, undefined, undefined, search)
-									.pipe(map((response) => response.items));
+								return this._apiServiceProxy.simpleList2(false, undefined, undefined, search).pipe(
+									tap(() => {
+										this.isDuplicateParentOptionsLoading$.next(false);
+									}),
+									map((response) => response.items)
+								);
 							})
 						),
 						optionsChanged$: this.parentOptionsChanged$,

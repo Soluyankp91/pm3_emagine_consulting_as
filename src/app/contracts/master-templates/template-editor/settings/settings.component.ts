@@ -74,6 +74,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	modeControl$ = new BehaviorSubject(AgreementCreationMode.Duplicated);
 	masterTemplateOptions$: Observable<{ options$: Observable<any>; optionsChanged$: BehaviorSubject<string> } | null>;
 	masterTemplateOptionsChanged$ = new BehaviorSubject<string>('');
+	isMasterTemplateOptionsLoading$ = new BehaviorSubject(false);
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -88,7 +89,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		private readonly _route: ActivatedRoute,
 		private readonly _creationTitleService: CreationTitleService,
 		private readonly _extraHttp: ExtraHttpsService,
-        private readonly _location: Location,
+		private readonly _location: Location,
 		private _injector: Injector
 	) {
 		super(_injector);
@@ -211,7 +212,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	navigateBack() {
-        this._location.back();
+		this._location.back();
 	}
 
 	navigateToEditor(templateId: number) {
@@ -375,10 +376,16 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 							startWith(this.masterTemplateOptionsChanged$.value),
 							distinctUntilChanged(),
 							debounceTime(500),
+							tap(() => {
+								this.isMasterTemplateOptionsLoading$.next(true);
+							}),
 							switchMap((freeText: string) => {
 								return this._apiServiceProxy
 									.simpleList2(false, undefined, undefined, freeText, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT)
 									.pipe(
+										tap(() => {
+											this.isMasterTemplateOptionsLoading$.next(false);
+										}),
 										withLatestFrom(this._contractsService.getEnumMap$()),
 										map(([response, maps]) => {
 											return response.items.map(

@@ -10,7 +10,7 @@ import {
 	FormGroup,
 } from '@angular/forms';
 import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
-import { switchMap, startWith, takeUntil } from 'rxjs/operators';
+import { switchMap, startWith, takeUntil, tap, map } from 'rxjs/operators';
 import { SignerOptions } from 'src/app/contracts/agreements/template-editor/settings/settings.interfaces';
 import { AgreementDetailsSignerDto, LookupServiceProxy, SignerType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../services/contracts.service';
@@ -39,6 +39,7 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 	signerTableData: AbstractControl[] = [];
 	signerOptionsArr$: SignerOptions[] = [];
 	displayedSignerColumns = ['signerType', 'signerName', 'signingRole', 'signOrder', 'actions'];
+	isOptionsLoading$ = new BehaviorSubject(false);
 
 	onChange: any = () => {};
 	onTouch: any = () => {};
@@ -129,11 +130,15 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 	onSignerTypeChange(signerType: SignerType, rowIndex: number) {
 		if (!this.prefillMode) {
 			this.signerOptionsArr$[rowIndex].optionsChanged$.next('');
+			(this.formArray.at(rowIndex) as FormGroup).controls['signerId'].reset();
 		}
 		switch (signerType) {
 			case 1: {
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					tap(() => {
+						this.isOptionsLoading$.next(true);
+					}),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -142,7 +147,11 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 								outputProperty: 'id',
 								dropdownType: SignerDropdowns.INTERNAL,
 							}),
-							this._lookupService.employees(search, false),
+							this._lookupService.employees(search, false).pipe(
+								tap(() => {
+									this.isOptionsLoading$.next(false);
+								})
+							),
 						]);
 					})
 				);
@@ -151,6 +160,9 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 			case 2:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					tap(() => {
+						this.isOptionsLoading$.next(true);
+					}),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -159,7 +171,21 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 								outputProperty: 'id',
 								dropdownType: SignerDropdowns.CLIENT,
 							}),
-							this._lookupService.signerContacts(search, 20),
+							this._lookupService.signerContacts(search, 20).pipe(
+								tap(() => {
+									this.isOptionsLoading$.next(false);
+								}),
+								map((clients) =>
+									clients.map((client) => {
+										let mappedClient = Object.assign(
+											{},
+											{ ...client, firstName: client.firstName + ' ' + client.lastName }
+										);
+										delete mappedClient.lastName;
+										return mappedClient;
+									})
+								)
+							),
 						]);
 					})
 				);
@@ -167,6 +193,9 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 			case 3:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					tap(() => {
+						this.isOptionsLoading$.next(true);
+					}),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -175,7 +204,11 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 								outputProperty: 'id',
 								dropdownType: SignerDropdowns.CONSULTANT,
 							}),
-							this._lookupService.consultants(search, 20),
+							this._lookupService.consultants(search, 20).pipe(
+								tap(() => {
+									this.isOptionsLoading$.next(false);
+								})
+							),
 						]);
 					})
 				);
@@ -183,6 +216,9 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 			case 4:
 				this.signerOptionsArr$[rowIndex].options$ = this.signerOptionsArr$[rowIndex].optionsChanged$.pipe(
 					startWith((this.signerOptionsArr$[rowIndex].optionsChanged$ as BehaviorSubject<string>).value),
+					tap(() => {
+						this.isOptionsLoading$.next(true);
+					}),
 					switchMap((search: string) => {
 						return forkJoin([
 							of({
@@ -191,7 +227,11 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 								outputProperty: 'supplierId',
 								dropdownType: SignerDropdowns.SUPPLIER,
 							}),
-							this._lookupService.suppliers(search, 20),
+							this._lookupService.suppliers(search, 20).pipe(
+								tap(() => {
+									this.isOptionsLoading$.next(false);
+								})
+							),
 						]);
 					})
 				);

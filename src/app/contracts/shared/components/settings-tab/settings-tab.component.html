@@ -1,14 +1,14 @@
 <div class="align-items">
 	<ng-container *ngIf="tenants$ | async as tenants; else defaultTenants">
-        <ng-container *ngIf="tenants.length; else defaultTenants">
-            <emg-tenants [tenants]="tenants"></emg-tenants>
-        </ng-container>
+		<ng-container *ngIf="tenants.length; else defaultTenants">
+			<emg-tenants [tenants]="tenants"></emg-tenants>
+		</ng-container>
 	</ng-container>
-    <ng-template #defaultTenants>
-        <span>
-            <mat-icon svgIcon="worldwide-icon" class="worldwide-icon"></mat-icon>
-        </span>
-    </ng-template>
+	<ng-template #defaultTenants>
+		<span>
+			<mat-icon svgIcon="worldwide-icon" class="worldwide-icon"></mat-icon>
+		</span>
+	</ng-template>
 	<ng-container *ngIf="templateName$ | async as templateName; else defaultNameTemplate">
 		<div class="template-name" [customTooltip]="templateName">{{ templateName }}</div>
 	</ng-container>
@@ -17,18 +17,19 @@
 	</ng-template>
 </div>
 <nav mat-tab-nav-bar>
-    <ng-container *ngFor="let tab of tabs">
-        <a
-        mat-tab-link
-        [active]="masterTemplate.isActive"
-        [disabled]="tab.disabled"
-        [routerLink]="tab.link"
-        routerLinkActive="active"
-        #masterTemplate="routerLinkActive"
-    >
-        <mat-icon *ngIf="tab.icon" [svgIcon]="tab.icon"></mat-icon>
-        <span>{{ tab.label }}</span>
-    </a>
-    </ng-container>
+	<ng-container *ngFor="let tab of tabs">
+		<a
+			mat-tab-link
+			[active]="masterTemplate.isActive"
+			[disabled]="tab.disabled"
+			[routerLink]="tab.link"
+			routerLinkActive="active"
+			#masterTemplate="routerLinkActive"
+			class="tab-link"
+			[ngClass]="{ 'tab-active': masterTemplate.isActive }">
+			<mat-icon *ngIf="tab.icon" [svgIcon]="tab.icon" class="tab-icon"></mat-icon>
+			<span>{{ tab.label }}</span>
+		</a>
+	</ng-container>
 </nav>
 <router-outlet></router-outlet>
