@@ -41,7 +41,7 @@ app-master-templates {
 		@include table-cell-width(61px);
 	}
 	.template-name-column {
-		@include responsive-table-cell(306, 860);
+		@include responsive-table-cell(290, 830);
 	}
 	.agreementType-column {
 		@include table-cell-width(56px);

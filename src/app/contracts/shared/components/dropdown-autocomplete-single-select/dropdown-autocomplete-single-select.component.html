@@ -21,26 +21,33 @@
 		[panelWidth]="panelWidth"
 		(optionSelected)="onSelect($event.option.value)">
 		<div class="scroll-container">
-            <ng-container *ngIf="options.length; else noItems">
-                <ng-container *ngFor="let option of options; trackBy: trackById.bind(this)">
-                    <mat-option [value]="option">
-                        <ng-container
-                            *ngIf="optionTemplate; else noTemplate"
-                            [ngTemplateOutlet]="optionTemplate"
-                            [ngTemplateOutletContext]="{ option }">
-                        </ng-container>
-                        <ng-template #noTemplate>{{ option[labelKey] }}</ng-template>
-                    </mat-option>
-                </ng-container>
-            </ng-container>
-            <ng-template #noItems>
-                <mat-option [disabled]="true">
-                    <div class="no-items">
-                        No item found
-                    </div>
+			<ng-container *ngIf="!(isOptionsLoading | async); else loading">
+				<ng-container *ngIf="options.length; else noItems">
+					<ng-container *ngFor="let option of options; trackBy: trackById.bind(this)">
+						<mat-option [value]="option">
+							<ng-container
+								*ngIf="optionTemplate; else noTemplate"
+								[ngTemplateOutlet]="optionTemplate"
+								[ngTemplateOutletContext]="{ option }">
+							</ng-container>
+							<ng-template #noTemplate>{{ option[labelKey] }}</ng-template>
+						</mat-option>
+					</ng-container>
+				</ng-container>
+				<ng-template #noItems>
+					<mat-option [disabled]="true">
+						<div class="no-items">
+							No item found
+						</div>
 
-                </mat-option>
-            </ng-template>
+					</mat-option>
+				</ng-template>
+			</ng-container>
+			<ng-template #loading>
+				<mat-option>
+					<mat-spinner diameter="32" class="spinner"></mat-spinner>
+				</mat-option>
+			</ng-template>
 		</div>
 	</mat-autocomplete>
 	<ng-container *ngIf="displayError">

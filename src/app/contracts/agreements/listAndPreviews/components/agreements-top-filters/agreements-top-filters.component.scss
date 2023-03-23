@@ -61,3 +61,52 @@
 .flex-basis-200 {
 	flex-basis: 200px;
 }
+.profile-picture-avatar {
+	width: 32px;
+	height: 32px;
+	background-size: cover;
+	border-radius: 50%;
+	position: relative;
+}
+.small-profile-picture-avatar {
+	width: 22px;
+	height: 22px;
+	background-size: cover;
+	border-radius: 50%;
+	position: relative;
+}
+.custom-option {
+	display: flex;
+	gap: 8px;
+}
+.mg-left-8 {
+	margin-left: 8px;
+}
+.circle-counter {
+	width: 32px;
+	height: 32px;
+	position: relative;
+	background-color: #4a4e60;
+	border-radius: 50%;
+	color: rgb(255, 255, 255);
+}
+.flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.flag {
+	width: 18px;
+	height: 18px;
+	background-size: cover;
+	border-radius: 50%;
+}
+.loop-icon {
+	width: 16px;
+	height: 16px;
+}
+.input {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}

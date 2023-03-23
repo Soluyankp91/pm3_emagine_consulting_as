@@ -27,7 +27,7 @@ app-client-specific-templates {
 		@include table-cell(700);
 	}
 	.select-column {
-		@include table-cell-width(34px);
+		@include table-cell-width(42px);
 	}
 	.language-column {
 		@include table-cell-width(34px);
@@ -36,7 +36,7 @@ app-client-specific-templates {
 		@include table-cell-width(60px);
 	}
 	.template-name-column {
-		@include table-cell-width(500px);
+		@include table-cell-width(470px);
 	}
 	.client-column {
 		@include table-cell-width(190px); // +18
@@ -76,9 +76,6 @@ app-client-specific-templates {
 	.status-column {
 		@include table-cell-width(57px); // +10
 		justify-content: center;
-	}
-	.actions-column {
-		@include table-cell-width(36px);
 	}
 	.mat-cell:first-of-type {
 		padding: 0px;

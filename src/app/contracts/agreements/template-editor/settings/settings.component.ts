@@ -18,7 +18,7 @@ import {
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
 import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
@@ -65,7 +65,7 @@ export enum RecipientDropdowns {
 	providers: [EditorObserverService],
 })
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
-	creationRadioButtons = CLIENT_AGREEMENTS_CREATION;
+	creationRadioButtons = AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
 
 	recipientDropdowns = RecipientDropdowns;
@@ -92,6 +92,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	options$: Observable<[SettingsPageOptions, MappedTableCells]>;
 
 	recipientOptionsChanged$ = new BehaviorSubject('');
+	recipientOptionsLoading$ = new BehaviorSubject(false);
 
 	creationMode = new FormControl<AgreementCreationMode>({
 		value: AgreementCreationMode.InheritedFromParent,
@@ -110,6 +111,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	duplicateOrInherit$: Observable<DuplicateOrParentOptions | null>;
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
+	duplicateOptionsLoading$ = new BehaviorSubject(false);
 
 	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 
@@ -725,8 +727,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.recipientOptionsChanged$.pipe(
 							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.recipientOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._lookupService.suppliers(search, 20);
+								return this._lookupService.suppliers(search, 20).pipe(
+									tap(() => {
+										this.recipientOptionsLoading$.next(false);
+									})
+								);
 							})
 						),
 						dropdownType: RecipientDropdowns.SUPPLIER,
@@ -739,8 +748,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.recipientOptionsChanged$.pipe(
 							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.recipientOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._lookupService.consultants(search, 20);
+								return this._lookupService.consultants(search, 20).pipe(
+									tap(() => {
+										this.recipientOptionsLoading$.next(false);
+									})
+								);
 							})
 						),
 						dropdownType: RecipientDropdowns.CONSULTANT,
@@ -753,8 +769,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.recipientOptionsChanged$.pipe(
 							startWith(this.recipientOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.recipientOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._lookupService.clientsAll(search, 20);
+								return this._lookupService.clientsAll(search, 20).pipe(
+									tap(() => {
+										this.recipientOptionsLoading$.next(false);
+									})
+								);
 							})
 						),
 						dropdownType: RecipientDropdowns.CLIENT,
@@ -1049,10 +1072,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.duplicateOptionsChanged$.pipe(
 							startWith(this.duplicateOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.duplicateOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._apiServiceProxy
-									.simpleList(undefined, search)
-									.pipe(map((response) => response.items));
+								return this._apiServiceProxy.simpleList(undefined, search).pipe(
+									tap(() => {
+										this.duplicateOptionsLoading$.next(false);
+									}),
+									map((response) => response.items)
+								);
 							})
 						),
 						optionsChanged$: this.duplicateOptionsChanged$,
@@ -1067,10 +1096,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.parentOptionsChanged$.pipe(
 							startWith(this.parentOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.duplicateOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._apiServiceProxy2
-									.simpleList2(undefined, undefined, undefined, search, 1, 20)
-									.pipe(map((response) => response.items));
+								return this._apiServiceProxy2.simpleList2(undefined, undefined, undefined, search, 1, 20).pipe(
+									tap(() => {
+										this.duplicateOptionsLoading$.next(false);
+									}),
+									map((response) => response.items)
+								);
 							})
 						),
 						optionsChanged$: this.parentOptionsChanged$,

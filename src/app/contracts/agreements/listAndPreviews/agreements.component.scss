@@ -30,7 +30,7 @@ app-agreements {
 		height: 20px !important;
 	}
 	.select-column {
-		@include table-cell-width(34px);
+		@include table-cell-width(42px);
 	}
 	.language-column {
 		@include table-cell-width(30px);
@@ -95,9 +95,6 @@ app-agreements {
 	}
 	.contractManager-column {
 		@include table-cell-width(48px);
-	}
-	.actions-column {
-		@include table-cell-width(40px);
 	}
 	.mat-cell:first-of-type {
 		padding-left: 0px;

@@ -2,6 +2,7 @@ import { SortDirection } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import {
+	AgreementCreationMode,
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
 	AgreementValidityState,
@@ -192,6 +193,13 @@ export interface MappedAgreementTableItem {
 	endDate: moment.Moment;
 	salesManager: EmployeeDto;
 	contractManager: EmployeeDto;
+	isWorkflowRelated: boolean;
+	workflowId: string;
 	receiveAgreementsFromOtherParty?: boolean;
 	actionList: Actions[];
+}
+export interface CreationModeItem {
+	label: string;
+	value: AgreementCreationMode;
+	infoTip?: string;
 }

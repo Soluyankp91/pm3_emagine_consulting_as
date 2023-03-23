@@ -1,7 +1,6 @@
 <ng-container *ngIf="clientTemplateLinks$ | async as clientTemplateLinks; else loading">
 	<ng-container *ngIf="clientTemplateLinks.length || searchControl.value ">
 		<mat-form-field class="form-field">
-			<mat-label class="input-label">Search</mat-label>
 			<input matInput class="input" placeholder="Search" [formControl]="searchControl" />
 		</mat-form-field>
 	</ng-container>

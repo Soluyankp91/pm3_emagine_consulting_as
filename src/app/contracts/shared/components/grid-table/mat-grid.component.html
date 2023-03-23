@@ -6,8 +6,8 @@
                 <span class="chip-label">{{ chip.label }}</span>
             </mat-chip>
             <ng-container *ngIf="matChips.length">
-                <span class="close-filters">
-                    <mat-icon svgIcon="close-button-icon-grey" class="close-button-icon" (click)="closeAllFilters()"></mat-icon>
+                <span class="close-filters" (click)="closeAllFilters()">
+                    <mat-icon svgIcon="close-button-icon-grey" class="close-button-icon"></mat-icon>
                     <p class="reset-all-filters-label">Reset all Filters</p>
                 </span>
             </ng-container>
@@ -28,14 +28,16 @@
 						<mat-checkbox
 							[checked]="selectionModel.hasValue() && isAllSelected()"
 							[indeterminate]="selectionModel.hasValue() && !isAllSelected()"
-							(change)="toggleAllRows()">
+							(change)="toggleAllRows()"
+							class="select-padding-8">
 						</mat-checkbox>
 					</mat-header-cell>
 					<mat-cell *matCellDef="let row" class="select-column">
 						<mat-checkbox
 							[checked]="selectionModel.isSelected(row)"
 							(click)="$event.stopPropagation()"
-							(change)="selectionModel.toggle(row)"></mat-checkbox>
+							(change)="selectionModel.toggle(row)"
+							class="select-padding-8"></mat-checkbox>
 					</mat-cell>
 				</ng-container>
 			</ng-container>

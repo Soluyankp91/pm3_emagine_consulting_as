@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy, Injector } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STATUTES } from 'src/app/contracts/shared/components/grid-table/agreements/entities/agreements.constants';
@@ -8,9 +8,10 @@ import { map, debounceTime, skip, tap, startWith, switchMap, takeUntil } from 'r
 import { tapOnce } from 'src/app/contracts/shared/operators/tapOnceOperator';
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { EmployeeDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
 	selector: 'app-agreements-top-filters',
@@ -18,7 +19,7 @@ import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperato
 	styleUrls: ['./agreements-top-filters.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
+export class AgreementsTopFiltersComponent extends AppComponentBase implements OnInit, OnDestroy {
 	tenantFilter$ = this._contractsService.getTenants$();
 	preselectedTenants$ = this._agreementService.getTenants$();
 	salesManagers$: Observable<EmployeeDto[]>;
@@ -34,6 +35,8 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 	tenantsIdsControl = new FormControl([]);
 	searchControl = new FormControl('');
 
+	isOptionsLoading$ = new BehaviorSubject(false);
+
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -41,8 +44,11 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 		private readonly _route: ActivatedRoute,
 		private readonly _contractsService: ContractsService,
 		private readonly _agreementService: AgreementService,
-		private readonly _lookupServiceProxy: LookupServiceProxy
-	) {}
+		private readonly _lookupServiceProxy: LookupServiceProxy,
+		private readonly _injector: Injector
+	) {
+		super(_injector);
+	}
 
 	ngOnInit(): void {
 		this._initFilters();
@@ -120,8 +126,15 @@ export class AgreementsTopFiltersComponent implements OnInit, OnDestroy {
 	private _initSalesManagers() {
 		this.salesManagers$ = this.freeTextEmitter.pipe(
 			startWith({ filter: '', idsToExclude: [] }),
+			tap(() => {
+				this.isOptionsLoading$.next(true);
+			}),
 			switchMap(({ filter, idsToExclude }) => {
-				return this._lookupServiceProxy.employees(filter, false, idsToExclude);
+				return this._lookupServiceProxy.employees(filter, false, idsToExclude).pipe(
+					tap(() => {
+						this.isOptionsLoading$.next(false);
+					})
+				);
 			})
 		);
 	}
