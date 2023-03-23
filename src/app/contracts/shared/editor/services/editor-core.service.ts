@@ -109,8 +109,11 @@ export class EditorCoreService {
         this._commentService.applyComments(comments as any);
 	}
 
-	insertMergeField(field: string) {
+	insertMergeField(field: string, insertBreak: boolean = false) {
 		const position = this.editor.selection.active;
+		if (insertBreak) {
+			this.editor.document.insertText(position, ' ');
+		}
 		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
 
 		const text = this.editor.document.getText(_field.codeInterval);

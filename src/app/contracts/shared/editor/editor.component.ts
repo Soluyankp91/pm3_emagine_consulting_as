@@ -218,9 +218,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 	mergeSelectedField(fields: string[]) {
 		fields.forEach((field, index) => {
 			setTimeout(() => {
-				this._editorCoreService.insertMergeField(field);
-			})
-		})
+				this._editorCoreService.insertMergeField(field, index > 0);
+			});
+		});
 	}
 
 	loadCompareTemplateByVersion(version: number) {

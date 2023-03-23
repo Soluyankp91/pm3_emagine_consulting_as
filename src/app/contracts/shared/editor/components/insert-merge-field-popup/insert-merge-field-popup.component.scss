@@ -10,7 +10,7 @@
 			color: initial;
 			background-color: #f1fcfb;
 		}
-		
+
 		.dx-treeview-item-with-checkbox .dx-checkbox {
 			top: 10px;
 		}
@@ -18,11 +18,11 @@
 		.dx-treeview-node {
 			padding-left: 45px;
 		}
-		
+
 		.dx-checkbox-icon {
 			font-family: DXIcons !important;
 		}
-		
+
 		ul:first-child {
 			& > li {
 				padding-left: 50px;
@@ -55,6 +55,13 @@
 		}
 		ul .dx-treeview-item {
 			padding: 10px 6px;
+		}
+
+		li.parent-node-item {
+			padding-left: 8px !important;
+			> .dx-checkbox {
+				display: none;
+			}
 		}
 	}
 	.button-group {
