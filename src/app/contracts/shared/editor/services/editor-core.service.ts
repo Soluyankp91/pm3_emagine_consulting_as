@@ -118,7 +118,7 @@ export class EditorCoreService {
 
 		const text = this.editor.document.getText(_field.codeInterval);
 
-		const replaced = text.replace(/['"]+/g, '');
+		const replaced = text.replace(/["]+/g, '');
 		this.editor.document.deleteText(_field.codeInterval);
 		this.editor.document.insertText(_field.codeInterval.start, replaced);
 		this.toggleFields();
