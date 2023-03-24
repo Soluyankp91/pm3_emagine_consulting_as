@@ -4,8 +4,6 @@
         <h2 class="workflow-notes--header-text">
             Notes
         </h2>
-        <button class="button-close" *ngIf="!alwaysVisible" mat-icon-button type="button" appPreventDoubleClick
-            (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
     </div>
     <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'"
         class="workflow-notes--content u-mt--10" [ngStyle]="{'height': 'calc(100vh - ' + (height + 135) + '- 50px)'}">

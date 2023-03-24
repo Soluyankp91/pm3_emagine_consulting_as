@@ -87,10 +87,6 @@
                 position: relative;
                 z-index: 9999;
             }
-            &.wrapper-overlay {
-                top: 60;
-                height: 100%;
-            }
         }
         &.top-toolbar-shown {
             height: calc(100vh - 115px);

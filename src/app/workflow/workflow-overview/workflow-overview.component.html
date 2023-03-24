@@ -1,344 +1,346 @@
-<div class="workflow-overview" *ngIf="componentInitalized">
-    <div *ngFor="let item of workflowProcesses; trackBy: trackByItem">
-        <div class="workflow-overview--team" fxLayout="row" fxLayoutGap="60px" [ngClass]="{'flex-items-center': !item.typeId}">
-            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="15%">
-                <span class="flex-row flex-items-center" [ngClass]="{'u-mb--10': item.typeId}">
-                    <ng-container [ngSwitch]="item.typeId">
-                        <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
-                            <mat-icon svgIcon="workflowAdd"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.ExtendClientPeriod">
-                            <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.TerminateWorkflow">
-                            <mat-icon svgIcon="workflowTerminate"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.ChangeClientPeriod">
-                            <mat-icon svgIcon="workflowEdit"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.StartConsultantPeriod">
-                            <mat-icon svgIcon="workflowAdd"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.ChangeConsultantPeriod">
-                            <mat-icon svgIcon="workflowEdit"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.ExtendConsultantPeriod">
-                            <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="workflowProcessType.TerminateConsultant">
-                            <mat-icon svgIcon="workflowTerminate"></mat-icon>
-                        </ng-container>
-                        <ng-container *ngSwitchDefault>
-                            <mat-icon svgIcon="what-next-icon" class="u-mr--10"></mat-icon>
-                        </ng-container>
-                    </ng-container>
-                    <span class="workflow-overview--process">
-                        {{item.name ? item.name : 'What next?'}}
-                    </span>
-                </span>
-                <span class="workflow-overview--process-daterange u-ml--5">{{(item.periodStartDate | momentFormat) + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat) : '...')}}</span>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
-                <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
-                    <div class="workflow-overview--team__user column" appPreventDoubleClick (throttledClick)="openPeriod(item)">
-                        <div fxLayout="row" fxLayoutAlign="start center">
-                            <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
-                                <app-manager-search
-                                    appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                    [formFieldLabel]="step.name + ' Manager'"
-                                    [periodId]="item.consultantPeriodId!"
-                                    [consultantPeriodId]="item.consultantPeriodId!"
-                                    [stepType]="step.typeId!"
-                                    [periodType]="step.typeId!"
-                                    [workflowId]="workflowId"
-                                    [managerStatus]="step.status!"
-                                    [responsiblePerson]="step.responsiblePerson!"
-                                    [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined"
-                                    [width]="30"
-                                    [height]="30">
-                                </app-manager-search>
-                            </div>
-                            <div class="column">
-                                <h2 class="workflow-overview--team__user-position">{{step.name}}</h2>
-                                <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
-                            </div>
-                        </div>
-                        <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': step.status === workflowStepStatus.Completed, 'in-progress': step.status === workflowStepStatus.Pending}" [matTooltip]="stepActionTooltip[step?.status!]" matTooltipClass="white-tooltip">
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
-                            <span class="icon-in-progress u-mr--5">
-                                <mat-icon [svgIcon]="step.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'"></mat-icon>
-                            </span>
-                            <span class="workflow-overview--team__user-status" [ngClass]="{'finished': step.status !== workflowStepStatus.Completed}">
-                                <span [ngSwitch]="step.status">
-                                    <ng-container *ngSwitchCase="workflowStepStatus.Completed">
-                                        Step complete
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="workflowStepStatus.Pending">
-                                        Continue setup
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="workflowStepStatus.Upcoming">
-                                        Start setup
-                                    </ng-container>
-                                    <ng-container *ngSwitchDefault>
-                                        Step incomplete
-                                    </ng-container>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-template #fakeActiveStepTemplate>
-                    <div class="workflow-overview--team__user column">
-                        <div fxLayout="row" fxLayoutAlign="start center">
-                            <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
-                                <app-manager-search
-                                    appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                    [formFieldLabel]="step.name + ' Manager'"
-                                    [periodId]="periodId!"
-                                    [consultantPeriodId]="periodId!"
-                                    [stepType]="step.typeId!"
-                                    [periodType]="step.typeId!"
-                                    [workflowId]="workflowId"
-                                    [managerStatus]="step.status!"
-                                    [responsiblePerson]="step.responsiblePerson!"
-                                    [readonly]="periodId === null || periodId === undefined"
-                                    [isFakeActiveStep]="step.isFakeActiveStep!"
-                                    [width]="30"
-                                    [height]="30">
-                                </app-manager-search>
-                            </div>
-                            <div class="column">
-                                <h2 class="workflow-overview--team__user-position">Account manager</h2>
-                                <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
-                        <button
-                            class="button-outlined"
-                            mat-flat-button
-                            (click)="getAvailableConsultantForChangeOrExtend()">
-                            Extend workflow
-                        </button>
-                    </div>
-                </ng-template>
-            </div>
-        </div>
-    </div>
-    <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start" [fxHide]="overviewGroups.length === 0 && overviewItems.length === 0" fxFlexFill>
-        <app-gantt-chart *ngIf="overviewGroups.length && overviewItems.length"
-            #gantt
-            [items]="overviewItems"
-            [groups]="overviewGroups"
-            [viewOptions]="viewOptions"
-            [viewType]="viewType"
-            [draggable]="false"
-            [showTodayLine]="false">
-            <ng-template #group let-group="group">
-            </ng-template>
-            <ng-template #bar let-item="item">
-            </ng-template>
-        </app-gantt-chart>
-
-        <div fxFlex="3%" fxLayout="column" class="u-mt--44">
-            <ng-container *ngIf="individualConsultantActionsAvailable">
-                <div *ngFor="let item of overviewGroups; trackBy: trackByItem" class="workflow-overview--timeline-actions">
-                    <button  mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn workflow-overview--three-dots">
-                        <mat-icon svgIcon="3-dots"></mat-icon>
-                    </button>
-                    <mat-menu #consultantMenu>
-                        <button
-                            class="menu-item green-color"
-                            mat-menu-item
-                            appPreventDoubleClick (throttledClick)="changeConsultantData(item.origin)">
-                            <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                            Change consultant data
-                        </button>
-                        <button
-                            class="menu-item green-color"
-                            mat-menu-item
-                            appPreventDoubleClick (throttledClick)="extendConsultant(item.origin)">
-                            <mat-icon svgIcon="add-icon-green"></mat-icon>
-                            Extend consultant
-                        </button>
-                        <button
-                            class="menu-item menu-item--cancel"
-                            mat-menu-item
-                            appPreventDoubleClick (throttledClick)="terminateConsultant(item.origin)">
-                            <mat-icon svgIcon="close-icon"></mat-icon>
-                            Terminate consultant
-                        </button>
-                    </mat-menu>
-                </div>
-            </ng-container>
-        </div>
-    </div>
-    <ng-container>
-        <mat-divider class="u-w--100 u-mb--30"></mat-divider>
-        <h2 class="workflow-overview--history-header u-mb--15">Documents</h2>
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--15">
-            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
-                <mat-label>Period</mat-label>
-                <mat-select [formControl]="documentsPeriod" [disableOptionCentering]="true" (selectionChange)="getDocuments()">
-                    <mat-option [value]="'All'">
-                        <div class="u-w--100">
-                            <mat-checkbox [checked]="documentsPeriod.value === 'All'"
-                                color="primary"
-                                class="black-checkbox u-pl--1"
-                                (change)="documentsPeriod.setValue('All')"
-                                (click)="$event.stopPropagation();">
-                                <span
-                                    (click)="$event.stopPropagation()">
-                                    All periods
-                                </span>
-                            </mat-checkbox>
-                        </div>
-                    </mat-option>
-                    <ng-container *ngFor="let item of clientPeriods; trackBy: trackById">
-                        <mat-option [value]="item.id">
-                            {{ item.name }} ( {{item.startDate | momentFormat}} - {{item.endDate !== null && item.endDate !== undefined ?
-                            (item.endDate | momentFormat) : '...'}} )
-                        </mat-option>
-                    </ng-container>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <ng-container *ngIf="overviewDocuments.length; else noDocuments">
-            <div fxLayout="row" fxLayoutAlign="start start" class="documents-header u-w--100 u-mb--8">
-                <div fxFlex="20px" class="u-mr--16">
-                </div>
-                <div fxFlex fxLayoutAlign="start center">
-                    Document name
-                </div>
-                <div fxFlex="180px" fxLayoutAlign="start center">
-                    Process type
-                </div>
-                <div fxFlex="180px" fxLayoutAlign="start center">
-                    Workflow step
-                </div>
-                <div fxFlex="120px" fxLayoutAlign="start center">
-                    Date
-                </div>
-                <div fxFlex="80px" fxLayoutAlign="center center">
-                    By
-                </div>
-                <div fxFlex="40px" fxLayoutAlign="end center">
-                </div>
-            </div>
-            <ng-container *ngFor="let item of overviewDocuments | slice: 0: showAllDocument ? undefined : 5; trackBy: trackById;">
-                <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100">
-                    <div fxFlex="20px" class="u-mr--16" fxLayoutAlign="start center">
-                        <mat-icon [svgIcon]="item.icon"></mat-icon>
-                    </div>
-                    <div fxFlex="auto" class="text-bold" fxLayoutAlign="start center">
-                        {{item.name}}
-                    </div>
-                    <div fxFlex="180px" fxLayoutAlign="start center">
-                        <ng-container [ngSwitch]="item.workflowProcessType">
+<div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+    <div class="workflow-overview" *ngIf="componentInitalized" fxFlex="80%">
+        <ng-container *ngFor="let item of workflowProcesses; trackBy: trackByItem" >
+            <div class="workflow-overview--team" fxLayout="row" fxLayoutGap="60px" [ngClass]="{'flex-items-center': !item.typeId}">
+                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="15%">
+                    <span class="flex-row flex-items-center" [ngClass]="{'u-mb--10': item.typeId}">
+                        <ng-container [ngSwitch]="item.typeId">
                             <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
                                 <mat-icon svgIcon="workflowAdd"></mat-icon>
-                                Start WF
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.ExtendClientPeriod">
                                 <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
-                                Extend WF
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.TerminateWorkflow">
                                 <mat-icon svgIcon="workflowTerminate"></mat-icon>
-                                Terminate WF
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.ChangeClientPeriod">
                                 <mat-icon svgIcon="workflowEdit"></mat-icon>
-                                Change WF
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.StartConsultantPeriod">
                                 <mat-icon svgIcon="workflowAdd"></mat-icon>
-                                Start consultant
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.ChangeConsultantPeriod">
                                 <mat-icon svgIcon="workflowEdit"></mat-icon>
-                                Change consultant
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.ExtendConsultantPeriod">
                                 <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
-                                Extend consultant
                             </ng-container>
                             <ng-container *ngSwitchCase="workflowProcessType.TerminateConsultant">
                                 <mat-icon svgIcon="workflowTerminate"></mat-icon>
-                                Terminate consultant
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                                <mat-icon svgIcon="what-next-icon" class="u-mr--10"></mat-icon>
                             </ng-container>
                         </ng-container>
-                    </div>
-                    <span fxFlex="180px" fxLayoutAlign="start center">
-                        {{stepTypes[item.stepType!]}}
+                        <span class="workflow-overview--process">
+                            {{item.name ? item.name : 'What next?'}}
+                        </span>
                     </span>
-                    <span fxFlex="120px" fxLayoutAlign="start center">
-                        {{item.createdDateUtc | momentFormat}}
-                    </span>
-                    <span fxFlex="80px" fxLayoutAlign="center center" [matTooltip]="item.createdBy?.name" matTooltipClass="white-tooltip">
-                        <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + item.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
-                    </span>
-                    <span fxFlex="40px" fxLayoutAlign="end center">
-                        <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="documentActionsMenu" class="three-dots-actions-btn">
+                    <span class="workflow-overview--process-daterange u-ml--5">{{(item.periodStartDate | momentFormat) + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat) : '...')}}</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
+                    <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
+                        <div class="workflow-overview--team__user column" appPreventDoubleClick (throttledClick)="openPeriod(item)">
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
+                                    <app-manager-search
+                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                        [formFieldLabel]="step.name + ' Manager'"
+                                        [periodId]="item.consultantPeriodId!"
+                                        [consultantPeriodId]="item.consultantPeriodId!"
+                                        [stepType]="step.typeId!"
+                                        [periodType]="step.typeId!"
+                                        [workflowId]="workflowId"
+                                        [managerStatus]="step.status!"
+                                        [responsiblePerson]="step.responsiblePerson!"
+                                        [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined"
+                                        [width]="30"
+                                        [height]="30">
+                                    </app-manager-search>
+                                </div>
+                                <div class="column">
+                                    <h2 class="workflow-overview--team__user-position">{{step.name}}</h2>
+                                    <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
+                                </div>
+                            </div>
+                            <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': step.status === workflowStepStatus.Completed, 'in-progress': step.status === workflowStepStatus.Pending}" [matTooltip]="stepActionTooltip[step?.status!]" matTooltipClass="white-tooltip">
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
+                                <span class="icon-in-progress u-mr--5">
+                                    <mat-icon [svgIcon]="step.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'"></mat-icon>
+                                </span>
+                                <span class="workflow-overview--team__user-status" [ngClass]="{'finished': step.status !== workflowStepStatus.Completed}">
+                                    <span [ngSwitch]="step.status">
+                                        <ng-container *ngSwitchCase="workflowStepStatus.Completed">
+                                            Step complete
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="workflowStepStatus.Pending">
+                                            Continue setup
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="workflowStepStatus.Upcoming">
+                                            Start setup
+                                        </ng-container>
+                                        <ng-container *ngSwitchDefault>
+                                            Step incomplete
+                                        </ng-container>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-template #fakeActiveStepTemplate>
+                        <div class="workflow-overview--team__user column">
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
+                                    <app-manager-search
+                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                        [formFieldLabel]="step.name + ' Manager'"
+                                        [periodId]="periodId!"
+                                        [consultantPeriodId]="periodId!"
+                                        [stepType]="step.typeId!"
+                                        [periodType]="step.typeId!"
+                                        [workflowId]="workflowId"
+                                        [managerStatus]="step.status!"
+                                        [responsiblePerson]="step.responsiblePerson!"
+                                        [readonly]="periodId === null || periodId === undefined"
+                                        [isFakeActiveStep]="step.isFakeActiveStep!"
+                                        [width]="30"
+                                        [height]="30">
+                                    </app-manager-search>
+                                </div>
+                                <div class="column">
+                                    <h2 class="workflow-overview--team__user-position">Account manager</h2>
+                                    <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
+                            <button
+                                class="button-outlined"
+                                mat-flat-button
+                                (click)="getAvailableConsultantForChangeOrExtend()">
+                                Extend workflow
+                            </button>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </ng-container>
+        <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start" [fxHide]="overviewGroups.length === 0 && overviewItems.length === 0" fxFlexFill>
+            <app-gantt-chart *ngIf="overviewGroups.length && overviewItems.length"
+                #gantt
+                [items]="overviewItems"
+                [groups]="overviewGroups"
+                [viewOptions]="viewOptions"
+                [viewType]="viewType"
+                [draggable]="false"
+                [showTodayLine]="false">
+                <ng-template #group let-group="group">
+                </ng-template>
+                <ng-template #bar let-item="item">
+                </ng-template>
+            </app-gantt-chart>
+
+            <div fxFlex="3%" fxLayout="column" class="u-mt--44">
+                <ng-container *ngIf="individualConsultantActionsAvailable">
+                    <div *ngFor="let item of overviewGroups; trackBy: trackByItem" class="workflow-overview--timeline-actions">
+                        <button  mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn workflow-overview--three-dots">
                             <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
-                        <mat-menu #documentActionsMenu>
+                        <mat-menu #consultantMenu>
                             <button
                                 class="menu-item green-color"
                                 mat-menu-item
-                                appPreventDoubleClick (throttledClick)="downloadDocument(item)">
-                                <mat-icon svgIcon="download-icon"></mat-icon>
-                                Download
+                                appPreventDoubleClick (throttledClick)="changeConsultantData(item.origin)">
+                                <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                Change consultant data
+                            </button>
+                            <button
+                                class="menu-item green-color"
+                                mat-menu-item
+                                appPreventDoubleClick (throttledClick)="extendConsultant(item.origin)">
+                                <mat-icon svgIcon="add-icon-green"></mat-icon>
+                                Extend consultant
                             </button>
                             <button
                                 class="menu-item menu-item--cancel"
                                 mat-menu-item
-                                appPreventDoubleClick (throttledClick)="removeDocument(item)">
+                                appPreventDoubleClick (throttledClick)="terminateConsultant(item.origin)">
                                 <mat-icon svgIcon="close-icon"></mat-icon>
-                                Delete
+                                Terminate consultant
                             </button>
                         </mat-menu>
-                    </span>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <ng-container>
+            <mat-divider class="u-w--100 u-mb--30"></mat-divider>
+            <h2 class="workflow-overview--history-header u-mb--15">Documents</h2>
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--15">
+                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
+                    <mat-label>Period</mat-label>
+                    <mat-select [formControl]="documentsPeriod" [disableOptionCentering]="true" (selectionChange)="getDocuments()">
+                        <mat-option [value]="'All'">
+                            <div class="u-w--100">
+                                <mat-checkbox [checked]="documentsPeriod.value === 'All'"
+                                    color="primary"
+                                    class="black-checkbox u-pl--1"
+                                    (change)="documentsPeriod.setValue('All')"
+                                    (click)="$event.stopPropagation();">
+                                    <span
+                                        (click)="$event.stopPropagation()">
+                                        All periods
+                                    </span>
+                                </mat-checkbox>
+                            </div>
+                        </mat-option>
+                        <ng-container *ngFor="let item of clientPeriods; trackBy: trackById">
+                            <mat-option [value]="item.id">
+                                {{ item.name }} ( {{item.startDate | momentFormat}} - {{item.endDate !== null && item.endDate !== undefined ?
+                                (item.endDate | momentFormat) : '...'}} )
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <ng-container *ngIf="overviewDocuments.length; else noDocuments">
+                <div fxLayout="row" fxLayoutAlign="start start" class="documents-header u-w--100 u-mb--8">
+                    <div fxFlex="20px" class="u-mr--16">
+                    </div>
+                    <div fxFlex fxLayoutAlign="start center">
+                        Document name
+                    </div>
+                    <div fxFlex="180px" fxLayoutAlign="start center">
+                        Process type
+                    </div>
+                    <div fxFlex="180px" fxLayoutAlign="start center">
+                        Workflow step
+                    </div>
+                    <div fxFlex="120px" fxLayoutAlign="start center">
+                        Date
+                    </div>
+                    <div fxFlex="80px" fxLayoutAlign="center center">
+                        By
+                    </div>
+                    <div fxFlex="40px" fxLayoutAlign="end center">
+                    </div>
                 </div>
+                <ng-container *ngFor="let item of overviewDocuments | slice: 0: showAllDocument ? undefined : 5; trackBy: trackById;">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100">
+                        <div fxFlex="20px" class="u-mr--16" fxLayoutAlign="start center">
+                            <mat-icon [svgIcon]="item.icon"></mat-icon>
+                        </div>
+                        <div fxFlex="auto" class="text-bold" fxLayoutAlign="start center">
+                            {{item.name}}
+                        </div>
+                        <div fxFlex="180px" fxLayoutAlign="start center">
+                            <ng-container [ngSwitch]="item.workflowProcessType">
+                                <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
+                                    <mat-icon svgIcon="workflowAdd"></mat-icon>
+                                    Start WF
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.ExtendClientPeriod">
+                                    <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                    Extend WF
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.TerminateWorkflow">
+                                    <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                                    Terminate WF
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.ChangeClientPeriod">
+                                    <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                    Change WF
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.StartConsultantPeriod">
+                                    <mat-icon svgIcon="workflowAdd"></mat-icon>
+                                    Start consultant
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.ChangeConsultantPeriod">
+                                    <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                    Change consultant
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.ExtendConsultantPeriod">
+                                    <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                    Extend consultant
+                                </ng-container>
+                                <ng-container *ngSwitchCase="workflowProcessType.TerminateConsultant">
+                                    <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                                    Terminate consultant
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                        <span fxFlex="180px" fxLayoutAlign="start center">
+                            {{stepTypes[item.stepType!]}}
+                        </span>
+                        <span fxFlex="120px" fxLayoutAlign="start center">
+                            {{item.createdDateUtc | momentFormat}}
+                        </span>
+                        <span fxFlex="80px" fxLayoutAlign="center center" [matTooltip]="item.createdBy?.name" matTooltipClass="white-tooltip">
+                            <img class="image-settings--dropdown" [ngSrc]="employeePhotoUrl + item.createdBy?.externalId + '.jpg'" src width="24" height="24" src (error)="setDefaultImage($event.target)">
+                        </span>
+                        <span fxFlex="40px" fxLayoutAlign="end center">
+                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="documentActionsMenu" class="three-dots-actions-btn">
+                                <mat-icon svgIcon="3-dots"></mat-icon>
+                            </button>
+                            <mat-menu #documentActionsMenu>
+                                <button
+                                    class="menu-item green-color"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="downloadDocument(item)">
+                                    <mat-icon svgIcon="download-icon"></mat-icon>
+                                    Download
+                                </button>
+                                <button
+                                    class="menu-item menu-item--cancel"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="removeDocument(item)">
+                                    <mat-icon svgIcon="close-icon"></mat-icon>
+                                    Delete
+                                </button>
+                            </mat-menu>
+                        </span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="overviewDocuments.length > 5">
+                    <button (click)="showAllDocument = !showAllDocument" class="showMore-btn u-mt--16" mat-flat-button>
+                        <mat-icon class="showMore-btn--chevron" [ngClass]="{'should-rotate': showAllDocument}" svgIcon="chevron-green"></mat-icon>
+                        <span class="showMore-btn--text u-ml--10">{{showAllDocument ? 'Show less' : 'Show more' }}</span>
+                    </button>
+                </ng-container>
             </ng-container>
-            <ng-container *ngIf="overviewDocuments.length > 5">
-                <button (click)="showAllDocument = !showAllDocument" class="showMore-btn u-mt--16" mat-flat-button>
-                    <mat-icon class="showMore-btn--chevron" [ngClass]="{'should-rotate': showAllDocument}" svgIcon="chevron-green"></mat-icon>
-                    <span class="showMore-btn--text u-ml--10">{{showAllDocument ? 'Show less' : 'Show more' }}</span>
-                </button>
-            </ng-container>
+            <ng-template #noDocuments>
+                <div class="documents-noData" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon svgIcon="no-docs-icon"></mat-icon>
+                    <span class="medium-grey-color text-600 u-ml--12">There are no documents added yet</span>
+                </div>
+            </ng-template>
         </ng-container>
-        <ng-template #noDocuments>
-            <div class="documents-noData" fxLayout="row" fxLayoutAlign="start center">
-                <mat-icon svgIcon="no-docs-icon"></mat-icon>
-                <span class="medium-grey-color text-600 u-ml--12">There are no documents added yet</span>
-            </div>
-        </ng-template>
-    </ng-container>
-    <ng-container *ngIf="workflowHistory.length">
-        <mat-divider class="u-w--100 u-mb--30 u-mt--30"></mat-divider>
-        <h2 class="workflow-overview--history-header u-mb--30">Latest changes</h2>
-        <div fxLayout="row" fxLayoutAlign="start start" class="workflow-overview--history">
-            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="40%">
-                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--15 u-w--100" *ngFor="let item of workflowHistory; trackBy: trackByOperationId" >
-                    <span class="workflow-overview--history-grey-text" fxFlex="20%">
-                        {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY HH:mm'}}
-                    </span>
-                    <img class="workflow-overview--history-img u-mr--16" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
-                    <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" matTooltipClass="white-tooltip" fxFlex="40%" appShowIfTruncated>
-                        {{item.eventName}}
-                    </span>
-                    <span class="workflow-overview--history-grey-text text-truncate-ellipsis" [matTooltip]="item.initiatedBy?.name!" matTooltipClass="white-tooltip" fxFlex="30%" appShowIfTruncated>
-                        {{item.initiatedBy?.name}}
-                    </span>
+        <ng-container *ngIf="workflowHistory.length">
+            <mat-divider class="u-w--100 u-mb--30 u-mt--30"></mat-divider>
+            <h2 class="workflow-overview--history-header u-mb--30">Latest changes</h2>
+            <div fxLayout="row" fxLayoutAlign="start start" class="workflow-overview--history">
+                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="40%">
+                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--15 u-w--100" *ngFor="let item of workflowHistory; trackBy: trackByOperationId" >
+                        <span class="workflow-overview--history-grey-text" fxFlex="20%">
+                            {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY HH:mm'}}
+                        </span>
+                        <img class="workflow-overview--history-img u-mr--16" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                        <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" matTooltipClass="white-tooltip" fxFlex="40%" appShowIfTruncated>
+                            {{item.eventName}}
+                        </span>
+                        <span class="workflow-overview--history-grey-text text-truncate-ellipsis" [matTooltip]="item.initiatedBy?.name!" matTooltipClass="white-tooltip" fxFlex="30%" appShowIfTruncated>
+                            {{item.initiatedBy?.name}}
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="pagination-container u-w--100">
-            <mat-paginator #historyPaginator [length]="historyTotalCount" [pageSize]="historyDeafultPageSize" [pageIndex]="historyPageNumber-1"
-                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="historyPageChanged($event)">
-            </mat-paginator>
-        </div>
-    </ng-container>
+            <div class="pagination-container u-w--100">
+                <mat-paginator #historyPaginator [length]="historyTotalCount" [pageSize]="historyDeafultPageSize" [pageIndex]="historyPageNumber-1"
+                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="historyPageChanged($event)">
+                </mat-paginator>
+            </div>
+        </ng-container>
+    </div>
 </div>
