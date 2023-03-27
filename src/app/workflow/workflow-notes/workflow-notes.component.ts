@@ -17,7 +17,6 @@ import { Subject } from 'rxjs';
 export class WorkflowNotesComponent extends AppComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @Input() topToolbarVisible: boolean;
     @Input() workflowId: string;
-    @Input() alwaysVisible: boolean;
     @Output() noteHidden = new EventEmitter<any>();
     @ViewChild('notesContainer', {static: false}) notesContainer: ElementRef;
     notesEditable = false;

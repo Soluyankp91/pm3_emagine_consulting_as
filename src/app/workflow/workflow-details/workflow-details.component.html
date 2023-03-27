@@ -100,9 +100,6 @@
             </div>
         </ng-container>
         <div fxFlex="10%" fxLayoutAlign="end center">
-            <ng-container *ngIf="rlaWFOverview.isActive">
-                <button mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
-            </ng-container>
             <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
             <mat-menu #workflowMenu>
                 <ng-container *ngIf="individualConsultantActionsAvailable">
@@ -179,11 +176,6 @@
     </ng-container>
 
     <div class="workflow-content pos-relative u-w--100" id="workflowDetails">
-        <ng-container *ngIf="isNoteVisible">
-            <div class="workflow-notes-wrapper wrapper-overlay">
-                <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
-            </div>
-        </ng-container>
         <div fxLayout="row" fxLayoutAlign="start start" class="sticky-nav">
             <nav mat-tab-nav-bar mat-align-tabs="start" class="workflow-content--tabs form-width-300">
                 <a mat-tab-link routerLink="overview" class="overview-tab" [active]="rlaWFOverview.isActive" routerLinkActive
@@ -247,9 +239,7 @@
             <router-outlet #outlet="outlet"></router-outlet>
         </div>
         <div class="workflow-notes-wrapper">
-            <ng-container *ngIf="!rlaWFOverview.isActive">
-                <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
-            </ng-container>
+            <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId"></app-workflow-notes>
         </div>
         <ng-container *ngIf="bottomToolbarVisible">
             <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls">

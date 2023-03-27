@@ -93,7 +93,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	workflowPeriodStepTypes: { [key: string]: string };
 	individualConsultantActionsAvailable: boolean;
 	projectCategories: EnumEntityTypeDto[];
-	isNoteVisible = false;
     workflowSequenceIdCode: string;
 
     ePeriodClass = EPeriodClass;
@@ -164,10 +163,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     private _getProjectCategories() {
 		this._internalLookupService.getProjectCategory().subscribe((result) => (this.projectCategories = result));
-	}
-
-	public showOrHideNotes() {
-		this.isNoteVisible = !this.isNoteVisible;
 	}
 
 	private _resetWorkflowProgress() {
