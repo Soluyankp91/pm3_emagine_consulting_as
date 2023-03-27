@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
@@ -20,7 +21,7 @@ import {
 	SendDocuSignEnvelopeCommand,
 	FileParameter,
 	EnvelopeProcessingPath,
-    AgreementStatusHistoryDto,
+	AgreementStatusHistoryDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { LegalContractService } from './legal-contract.service';
 import {
@@ -392,16 +393,40 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			});
 	}
 
-	private _uploadSignedContract(agreementId: number, file: FileParameter) {
+	private _uploadSignedContract(agreementId: number, file: FileParameter, forceUpdate = false) {
 		this.showMainSpinner();
-		const forceUpdate = false; // NB: hardcoded false as for now, BE requirement
-		this._agreementService
-			.uploadSigned(agreementId, forceUpdate, file)
+		this._legalContractService
+			.getTokenAndManuallyUpload(agreementId, forceUpdate, file)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
-				this._getAgreementData();
+			.subscribe({
+				next: () => {
+					this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
+					this._getAgreementData();
+				},
+				error: (error) => {
+					const errorObj = JSON.parse(error.response);
+					let message = errorObj?.error?.message;
+					message = message?.length ? message : 'Forcing contract upload may result in envelope changes.';
+					this._showForceUpdateDialog(message, agreementId, (forceUpdate = true), file);
+				},
 			});
+	}
+
+	private _showForceUpdateDialog(message: string, agreementId: number, forceUpdate: boolean, file: FileParameter) {
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Force contract upload`,
+			confirmationMessage: `${message} \n
+            Are you sure you want to upload the agreement manually?`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Proceed',
+			isNegative: false,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this._uploadSignedContract(agreementId, file, forceUpdate);
+		});
 	}
 
 	private _voidAgreement(agreementId: number, reason: string) {
