@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, startWith, pairwise } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { AgreementListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 import {
 	AGREEMENT_HEADER_CELLS,
@@ -29,7 +31,7 @@ export class AgreementsComponent implements OnInit {
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
 
-	dataSource$ : Observable<AgreementListItemDtoPaginatedList>  = this._agreementService.getContracts$();
+	dataSource$: Observable<AgreementListItemDtoPaginatedList> = this._agreementService.getContracts$();
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 
@@ -42,10 +44,12 @@ export class AgreementsComponent implements OnInit {
 		private readonly _route: ActivatedRoute,
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _agreementService: AgreementService,
-		private readonly _contractService: ContractsService
+		private readonly _contractService: ContractsService,
+		private readonly _titleService: TitleService
 	) {}
 
 	ngOnInit(): void {
+		this._titleService.setTitle(ERouteTitleType.ContractAgreement);
 		this._initTable$();
 		this._initPreselectedFilters();
 		this._subscribeOnOuterClicks();

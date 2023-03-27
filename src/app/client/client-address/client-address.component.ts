@@ -18,10 +18,10 @@ import { AddAddressDialogComponent } from './add-address-dialog/add-address-dial
 export class ClientAddressComponent extends AppComponentBase implements OnInit {
 	clientId: number;
 	isDataLoading = false;
-    showHidden = false;
+	showHidden = false;
 
 	clientAddressData: MatTableDataSource<ClientAddressDto>;
-    hiddenClientAddressData: MatTableDataSource<ClientAddressDto>;
+	hiddenClientAddressData: MatTableDataSource<ClientAddressDto>;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -56,24 +56,26 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 		const dialogRef = this._dialog.open(AddAddressDialogComponent, MediumDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((newAddress) => {
-            this._addNewClientAddress(newAddress);
+			this._addNewClientAddress(newAddress);
 		});
 	}
 
-    fillAddressTable(addresses: ClientAddressDto[]) {
-        this.clientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => !x.isHidden));
-        this.hiddenClientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter(x => x.isHidden));
-    }
+	fillAddressTable(addresses: ClientAddressDto[]) {
+		this.clientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter((x) => !x.isHidden));
+		this.hiddenClientAddressData = new MatTableDataSource<ClientAddressDto>(addresses.filter((x) => x.isHidden));
+	}
 
-    private _addNewClientAddress(address: any) {
-        let input = new ClientAddressDto(address);
-        input.countryId = address.country?.id;
-        input.countryCode = address.country?.code;
-        input.countryName = address.country?.name;
-        this._clientAddressesService.clientAddressesPOST(this.clientId, input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
-                this.fillAddressTable(result);
-            });
-    }
+	private _addNewClientAddress(address: any) {
+		this.showMainSpinner();
+		let input = new ClientAddressDto(address);
+		input.countryId = address.country?.id;
+		input.countryCode = address.country?.code;
+		input.countryName = address.country?.name;
+		this._clientAddressesService
+			.clientAddressesPOST(this.clientId, input)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe((result) => {
+				this.fillAddressTable(result);
+			});
+	}
 }

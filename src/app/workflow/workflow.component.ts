@@ -12,6 +12,8 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
 	EmployeeDto,
@@ -153,7 +155,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _lookupService: LookupServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
 		private _activatedRoute: ActivatedRoute,
-        private _workflowDataService: WorkflowDataService
+        private _workflowDataService: WorkflowDataService,
+        private _titleService: TitleService
 	) {
 		super(injector);
 
@@ -218,6 +221,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	ngOnInit(): void {
+        this._titleService.setTitle(ERouteTitleType.WfList);
 		this.getSyncStateStatuses();
 		this.getCurrentUser();
 		this.getLegalEntities();

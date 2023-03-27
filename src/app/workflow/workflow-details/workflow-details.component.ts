@@ -46,6 +46,8 @@ import { EPeriodAbbreviation, EPeriodClass, EPeriodName, EPermissions } from './
 import { EProcessIcon } from '../workflow-period/workflow-period.model';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 
 @Component({
 	selector: 'app-workflow-details',
@@ -93,7 +95,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	workflowPeriodStepTypes: { [key: string]: string };
 	individualConsultantActionsAvailable: boolean;
 	projectCategories: EnumEntityTypeDto[];
-	isNoteVisible = false;
     workflowSequenceIdCode: string;
 
     ePeriodClass = EPeriodClass;
@@ -117,7 +118,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		private _httpClient: HttpClient,
 		private _router: Router,
         private _clipboard: Clipboard,
-        private _snackBar: MatSnackBar
+        private _snackBar: MatSnackBar,
+        private _titleService: TitleService,
 	) {
 		super(injector);
 	}
@@ -164,10 +166,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     private _getProjectCategories() {
 		this._internalLookupService.getProjectCategory().subscribe((result) => (this.projectCategories = result));
-	}
-
-	public showOrHideNotes() {
-		this.isNoteVisible = !this.isNoteVisible;
 	}
 
 	private _resetWorkflowProgress() {
@@ -262,6 +260,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 					this._router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
 					this.topMenuTabs.realignInkBar();
 				}
+                this._titleService.setTitle(ERouteTitleType.WfDetails, result.directClientName ?? '', result.workflowSequenceIdCode);
 			});
 	}
 
