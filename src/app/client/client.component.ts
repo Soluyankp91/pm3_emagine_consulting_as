@@ -13,6 +13,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -84,7 +86,8 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
-        private _employeeService: EmployeeServiceProxy
+        private _employeeService: EmployeeServiceProxy,
+        private _titleService: TitleService,
     ) {
         super(injector);
         this.clientFilter.valueChanges.pipe(
@@ -131,6 +134,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     ngOnInit(): void {
+        this._titleService.setTitle(ERouteTitleType.ClientList);
         this.getCountries();
         this.filteredCountries = this.countryFilter.valueChanges
             .pipe(

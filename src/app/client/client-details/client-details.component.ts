@@ -7,6 +7,8 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { ClientAddressDto, ClientDetailsDto, ClientsServiceProxy, SyncClientFromCrmResultDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
@@ -38,6 +40,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
         private dialog: MatDialog,
+        private _titleService: TitleService,
     ) {
         super(injector);
     }
@@ -66,6 +69,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
                 if (this.clientAddress !== null && this.clientAddress !== undefined) {
                     this.clientAddressDisplay = [this.clientAddress.address, this.clientAddress.address2, this.clientAddress.postCode, this.clientAddress.city, this.clientAddress.countryCode].filter(Boolean).join(', ');
                 }
+                this._titleService.setTitle(ERouteTitleType.ClientDetails, result.name);
             });
     }
 

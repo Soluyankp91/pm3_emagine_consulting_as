@@ -17,4 +17,5 @@ export class AppConsts {
         dashboardPageSize: 7
     };
     static momentFormatType = 'DD.MM.YYYY';
+    static PM3_TITLE = 'PM3';
 }
