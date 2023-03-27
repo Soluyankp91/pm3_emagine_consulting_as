@@ -110,10 +110,18 @@
 				</div>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
+				<div class="table-cell">
+					<emg-envelope-path
+						[envelopeProcessingPath]="cell.envelopeProcessingPath"
+						[iconWidth]="16"
+						[iconHeight]="16"></emg-envelope-path>
+				</div>
+			</ng-template>
+			<ng-template let-cell="element" #customCells>
 				<div class="table-cell">{{ cell.startDate | momentFormat }}</div>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
-				<div class="table-cell">{{ cell.endDate ? (cell.endDate  | momentFormat) : '-' }}</div>
+				<div class="table-cell">{{ cell.endDate ? (cell.endDate | momentFormat) : '-' }}</div>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
 				<div class="table-cell">
@@ -121,8 +129,8 @@
 						<img
 							class="profile-picture"
 							[ngSrc]="employeePhotoUrl + cell.salesManager.externalId + '.jpg'"
-                            [customTooltip]="cell.salesManager.name"
-                            [showAlways]="cell.salesManager.name"
+							[customTooltip]="cell.salesManager.name"
+							[showAlways]="cell.salesManager.name"
 							width="24"
 							height="24"
 							src
@@ -141,8 +149,8 @@
 						<img
 							class="profile-picture"
 							[ngSrc]="employeePhotoUrl + cell.contractManager.externalId + '.jpg'"
-                            [customTooltip]="cell.contractManager.name"
-                            [showAlways]="cell.contractManager.name"
+							[customTooltip]="cell.contractManager.name"
+							[showAlways]="cell.contractManager.name"
 							width="24"
 							height="24"
 							src

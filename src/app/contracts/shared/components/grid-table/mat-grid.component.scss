@@ -39,8 +39,14 @@
 	.mat-table {
 		background-color: #faf9fb;
 	}
+	.row-hover {
+		cursor: pointer;
+		&:hover {
+			background-color: #EAF4F5;
+		}
+	}
 	.highlight {
-		background-color: #c5e8e5;
+		background-color: #EAF4F5;
 	}
 	.bottom-panel {
 		width: 100%;
@@ -125,10 +131,13 @@
 		}
 	}
 	.mat-column-actions {
-		@include table-cell-width(26px);
+		@include table-cell-width(50px);
 		button.mat-icon-button {
-			width: 20px;
-			height: 20px;
+			padding-left: 16px;
+		}
+		button.mat-icon-button, button.mat-icon-button mat-icon.mat-icon {
+			width: 40px !important;
+			height: 40px !important;
 		}
 	}
 	.close-button-icon {
@@ -136,14 +145,13 @@
 		height: 13px;
 		display: flex;
         color: $primary-1;
-		cursor: pointer;
 	}
 	.close-filters {
 		display: flex;
 		gap: 7px;
 		align-items: center;
 		position: relative;
-
+		cursor: pointer;
 		margin-left: 32px;
 		&::before {
 			content: '';
@@ -172,4 +180,7 @@
 	.small-icon {
 		@include small-icon;
 	}
+}
+.select-padding-8 {
+	padding-left: 8px;
 }

@@ -25,7 +25,7 @@ export class AgreementModel extends FormGroup {
 			startDate: new FormControl(null, [Validators.required]),
 			endDate: new FormControl(null, [Validators.required]),
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
-            receiveAgreementsFromOtherParty: new FormControl(false),
+			receiveAgreementsFromOtherParty: new FormControl(false),
 			isSignatureRequired: new FormControl(false),
 			signers: new FormControl([]),
 			attachments: new FormControl([]),
@@ -117,13 +117,13 @@ export class AgreementModel extends FormGroup {
 		return this.get('isSignatureRequired');
 	}
 
-    get note() {
-        return this.get('note');
-    }
+	get note() {
+		return this.get('note');
+	}
 
-    get receiveAgreementsFromOtherParty() {
-        return this.get('receiveAgreementsFromOtherParty')
-    }
+	get receiveAgreementsFromOtherParty() {
+		return this.get('receiveAgreementsFromOtherParty');
+	}
 
 	get signers() {
 		return this.get('signers');
@@ -145,6 +145,10 @@ export class AgreementModel extends FormGroup {
 		return this.INITIAL_AGREEMENT_FORM_VALUE$.value;
 	}
 
+	updateInitialFormValue(data: { [key: string]: any }) {
+		this.INITIAL_AGREEMENT_FORM_VALUE$.next({ ...this.initialValue, ...data });
+	}
+
 	private INITIAL_AGREEMENT_FORM_VALUE$ = new BehaviorSubject<{ [key: string]: any }>({
 		agreementType: null,
 		recipientId: null,
@@ -156,7 +160,7 @@ export class AgreementModel extends FormGroup {
 		deliveryTypes: null,
 		contractTypes: null,
 		language: null,
-        receiveAgreementsFromOtherParty: false,
+		receiveAgreementsFromOtherParty: false,
 		note: '',
 		startDate: null,
 		endDate: null,

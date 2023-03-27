@@ -9,12 +9,44 @@
 						[ngClass]="{ 'edit-disabled': editMode }"
 						[value]="radioButton.value"
 						(click)="onModeControlChange(radioButton.value)"
-						>{{ radioButton.label }}</mat-radio-button
-					>
+						>{{ radioButton.label }}
+						<ng-container *ngIf="radioButton.infoTip">
+							<mat-icon
+								class="info-tip-icon"
+								svgIcon="information-tip-icon"
+								[customTooltip]="radioButton.infoTip"
+								[showAlways]="true"></mat-icon> </ng-container
+					></mat-radio-button>
 				</ng-container>
 			</mat-radio-group>
 			<mat-divider class="mat-divider"></mat-divider>
 			<div class="form-fields-container">
+				<ng-container *ngIf="masterTemplateOptions$ | async as masterTemplateOptions">
+					<ng-container *ngIf="masterTemplateOptions.options$ | async as mtOptions">
+						<emg-dropdown-autocomplete-single-select
+							[options]="mtOptions"
+							[labelKey]="'name'"
+							[outputProperty]="'agreementTemplateId'"
+							[label]="'Duplicated from'"
+							[isOptionsLoading]="isMasterTemplateOptionsLoading$"
+							formControlName="duplicationSourceAgreementTemplateId"
+							(inputEmitter)="masterTemplateOptions.optionsChanged$.next($event)">
+							<ng-template let-cell="option" #optionTemplate>
+								<div>
+									<div class="autocomplete-first-row">
+										<span> {{ cell.name }} </span>
+									</div>
+									<div class="autocomplete-second-row">
+										<span>{{ options[1].agreementType[cell.agreementType] }} </span>
+										<span>{{ cell.clientName }} </span>
+										<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
+										<span>{{ cell.createdDateUtc | momentFormat }}</span>
+									</div>
+								</div>
+							</ng-template>
+						</emg-dropdown-autocomplete-single-select>
+					</ng-container>
+				</ng-container>
 				<div class="form-row">
 					<div class="row-cell">
 						<mat-form-field appearance="outline" floatLabel="never">
@@ -45,32 +77,6 @@
 						</ng-container>
 					</div>
 				</div>
-
-				<ng-container *ngIf="masterTemplateOptions$ | async as masterTemplateOptions">
-					<ng-container *ngIf="masterTemplateOptions.options$ | async as mtOptions">
-						<emg-dropdown-autocomplete-single-select
-							[options]="mtOptions"
-							[labelKey]="'name'"
-							[outputProperty]="'agreementTemplateId'"
-							[label]="'Master Template'"
-							formControlName="duplicationSourceAgreementTemplateId"
-							(inputEmitter)="masterTemplateOptions.optionsChanged$.next($event)">
-							<ng-template let-cell="option" #optionTemplate>
-								<div>
-									<div class="autocomplete-first-row">
-										<span> {{ cell.name }} </span>
-									</div>
-									<div class="autocomplete-second-row">
-										<span>{{ options[1].agreementType[cell.agreementType] }} </span>
-										<span>{{ cell.clientName }} </span>
-										<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
-										<span>{{ cell.createdDateUtc | momentFormat }}</span>
-									</div>
-								</div>
-							</ng-template>
-						</emg-dropdown-autocomplete-single-select>
-					</ng-container>
-				</ng-container>
 			</div>
 			<mat-divider></mat-divider>
 			<div class="form-fields-container">
@@ -80,9 +86,13 @@
 					<mat-error><app-validator [control]="masterTemplateFormGroup.controls['name']"></app-validator></mat-error>
 				</mat-form-field>
 				<emg-auto-name formControlName="agreementNameTemplate"></emg-auto-name>
-				<mat-form-field appearance="outline" floatLabel="never">
-					<mat-label> Definition </mat-label>
-					<input matInput type="text" formControlName="definition" placeholder="Definition" />
+				<mat-form-field appearance="outline" class="textarea-form-field">
+					<mat-label>Definition(optional)</mat-label>
+					<textarea
+						matInput
+						formControlName="definition"
+						cdkTextareaAutosize
+						#autosize="cdkTextareaAutosize"></textarea>
 					<mat-error><app-validator [control]="masterTemplateFormGroup.definition"></app-validator></mat-error>
 				</mat-form-field>
 				<mat-form-field appearance="outline" floatLabel="never">
@@ -162,7 +172,12 @@
 					<mat-error><app-validator [control]="masterTemplateFormGroup.note"></app-validator></mat-error>
 				</mat-form-field>
 				<div class="check-boxes">
-					<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+					<ng-container *ngIf="!masterTemplateFormGroup.value.receiveAgreementsFromOtherParty">
+						<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text"
+							>Signature required</mat-checkbox
+						>
+					</ng-container>
+
 					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
 						>Default template for contracts of this type</mat-checkbox
 					>

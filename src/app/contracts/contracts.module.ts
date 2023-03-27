@@ -85,6 +85,8 @@ import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 import { ExtraHttpsService } from './shared/services/extra-https.service';
 import { DefaultTemplateComponent } from './shared/components/popUps/default-template/default-template.component';
 import { WorkflowInfoDisplayPanelComponent } from './shared/components/workflow-info-display-panel/workflow-info-display-panel.component';
+import { EnvelopePathFilterComponent } from './shared/components/grid-table/agreements/filters/envelope-path-filter/envelope-path-filter.component';
+import { EnvelopePathComponent } from './shared/components/envelope-path/envelope-path.component';
 
 @NgModule({
 	declarations: [
@@ -147,8 +149,10 @@ import { WorkflowInfoDisplayPanelComponent } from './shared/components/workflow-
 		AgreementsTopFiltersComponent,
 		NotificationDialogComponent,
 		StrInitialsPipe,
-  DefaultTemplateComponent,
-  WorkflowInfoDisplayPanelComponent,
+		DefaultTemplateComponent,
+		WorkflowInfoDisplayPanelComponent,
+		EnvelopePathFilterComponent,
+		EnvelopePathComponent,
 	],
 	imports: [
 		CommonModule,
@@ -368,7 +372,26 @@ export class ContractsModule {
 			'no-extension',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-extension-icon.svg')
 		);
+		iconRegistry.addSvgIcon(
+			'envelope-email',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-email-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'envelope-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-docusign-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'envelope-other-party',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-other-party-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-not-started-yet-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-not-started-yet-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'information-tip-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/information-tip-icon.svg')
+		);
+		iconRegistry.addSvgIcon('loop-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/loop-icon.svg'));
 	}
 }
-
-

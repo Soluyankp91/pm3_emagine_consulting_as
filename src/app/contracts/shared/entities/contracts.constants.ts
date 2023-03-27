@@ -1,5 +1,5 @@
 import { AgreementCreationMode } from 'src/shared/service-proxies/service-proxies';
-import { Tab } from './contracts.interfaces';
+import { CreationModeItem, Tab } from './contracts.interfaces';
 
 export const CREATIONS_TABS: Tab[] = [
 	{
@@ -25,6 +25,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	contractTypeIds: 'Contract type',
 	isEnabled: 'Status',
 	status: 'Status',
+	envelopeProcessingPath: 'Via',
 	linkState: 'Mode',
 	lastUpdatedByLowerCaseInitials: 'By',
 	validity: 'Mode',
@@ -32,21 +33,41 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 	salesManager: 'SM',
 	contractManager: 'CM',
 };
-export const MASTER_CREATION: { label: string; value: AgreementCreationMode }[] = [
+export const MASTER_CREATION: CreationModeItem[] = [
 	{
-		label: 'Duplicate from other agreement',
+		label: 'Duplicate from master template',
 		value: AgreementCreationMode.Duplicated,
 	},
 	{
-		label: 'Agreement provided by other party',
+		label: 'Template provided by other party',
 		value: AgreementCreationMode.ProvidedByOtherParty,
+		infoTip: 'Upload available in Editor',
 	},
 	{
 		label: 'Create from scratch',
 		value: AgreementCreationMode.FromScratch,
 	},
 ];
-export const CLIENT_AGREEMENTS_CREATION: { label: string; value: AgreementCreationMode }[] = [
+export const CLIENT_AGREEMENTS_CREATION: CreationModeItem[] = [
+	{
+		label: 'Inherit from master template',
+		value: AgreementCreationMode.InheritedFromParent,
+	},
+	{
+		label: 'Duplicate from client specific template',
+		value: AgreementCreationMode.Duplicated,
+	},
+	{
+		label: 'Template provided by other party',
+		value: AgreementCreationMode.ProvidedByOtherParty,
+		infoTip: 'Upload available in Editor',
+	},
+	{
+		label: 'Create from scratch',
+		value: AgreementCreationMode.FromScratch,
+	},
+];
+export const AGREEMENTS_CREATION: CreationModeItem[] = [
 	{
 		label: 'Inherit from template',
 		value: AgreementCreationMode.InheritedFromParent,
@@ -58,6 +79,7 @@ export const CLIENT_AGREEMENTS_CREATION: { label: string; value: AgreementCreati
 	{
 		label: 'Agreement provided by other party',
 		value: AgreementCreationMode.ProvidedByOtherParty,
+		infoTip: 'Upload available in Editor',
 	},
 	{
 		label: 'Create from scratch',

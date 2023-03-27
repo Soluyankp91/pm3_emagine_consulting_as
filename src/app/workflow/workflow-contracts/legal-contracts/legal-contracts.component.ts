@@ -21,6 +21,7 @@ import {
 	SendDocuSignEnvelopeCommand,
 	FileParameter,
 	EnvelopeProcessingPath,
+	AgreementStatusHistoryDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { LegalContractService } from './legal-contract.service';
 import {
@@ -68,7 +69,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _legalContractService: LegalContractService,
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
-		private _router: Router,
+		private _router: Router
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
@@ -82,7 +83,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		// });
 	}
 
-	addLegalContract(legalContract?: WorkflowAgreementDto) {
+	addLegalContract(legalContract?: WorkflowAgreementDto, statusHistory?: AgreementStatusHistoryDto[]) {
 		const form = this._fb.group({
 			selected: new UntypedFormControl(false),
 			agreementId: new UntypedFormControl(legalContract?.agreementId ?? null),
@@ -95,6 +96,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			lastUpdateDateUtc: new UntypedFormControl(legalContract?.lastUpdateDateUtc ?? null),
 			hasSignedDocumentFile: new UntypedFormControl(legalContract?.hasSignedDocumentFile ?? null),
 			inEditByEmployeeDtos: new UntypedFormControl(legalContract?.inEditByEmployeeDtos ?? null),
+			statusHistory: new UntypedFormControl(statusHistory ?? []),
 		});
 		this.clientLegalContractsForm.legalContracts.push(form);
 	}
@@ -282,7 +284,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._clientPeriodService.clientAgreements(this.clientPeriodId).subscribe((result: WorkflowAgreementsDto) => {
 			this._resetForm();
 			result.agreements.forEach((item) => {
-				this.addLegalContract(item);
+				this._getAgreementStatusAndAddLegalContract(item);
 			});
 		});
 	}
@@ -291,8 +293,14 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._consultantPeriodService.consultantAgreements(this.consultantPeriodId).subscribe((result: WorkflowAgreementsDto) => {
 			this._resetForm();
 			result.agreements.forEach((item) => {
-				this.addLegalContract(item);
+				this._getAgreementStatusAndAddLegalContract(item);
 			});
+		});
+	}
+
+	private _getAgreementStatusAndAddLegalContract(item: WorkflowAgreementDto) {
+		this._agreementService.statusHistory(item.agreementId).subscribe((result) => {
+			this.addLegalContract(item, result);
 		});
 	}
 
@@ -388,11 +396,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	private _uploadSignedContract(agreementId: number, file: FileParameter, forceUpdate = false) {
 		this.showMainSpinner();
 		this._legalContractService
-			.getTokenAndManuallyUpload(
-				agreementId,
-				forceUpdate,
-				file
-			)
+			.getTokenAndManuallyUpload(agreementId, forceUpdate, file)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe({
 				next: () => {

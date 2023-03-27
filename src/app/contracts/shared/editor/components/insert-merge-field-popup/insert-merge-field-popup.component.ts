@@ -1,16 +1,27 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import {
+	AfterViewInit,
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 	Component,
 	EventEmitter,
+	Inject,
 	Input,
 	OnInit,
 	Output,
 	ViewChild,
 	ViewEncapsulation,
 } from '@angular/core';
-import { DxBulletModule, DxButtonModule, DxCheckBoxModule, DxPopupModule, DxTemplateModule, DxTreeListModule, DxTreeViewComponent, DxTreeViewModule } from 'devextreme-angular';
+import {
+	DxBulletModule,
+	DxButtonModule,
+	DxCheckBoxModule,
+	DxPopupModule,
+	DxTemplateModule,
+	DxTreeListModule,
+	DxTreeViewComponent,
+	DxTreeViewModule,
+} from 'devextreme-angular';
 import { IMergeField } from '../../entities';
 import { EditorCoreService } from '../../services';
 
@@ -24,7 +35,15 @@ interface IMergeFieldItem {
 	standalone: true,
 	selector: 'app-insert-merge-field-popup',
 	templateUrl: './insert-merge-field-popup.component.html',
-	imports: [CommonModule, DxTemplateModule, DxButtonModule, DxPopupModule, DxTreeViewModule, DxCheckBoxModule, DxTreeListModule],
+	imports: [
+		CommonModule,
+		DxTemplateModule,
+		DxButtonModule,
+		DxPopupModule,
+		DxTreeViewModule,
+		DxCheckBoxModule,
+		DxTreeListModule,
+	],
 	styleUrls: ['./insert-merge-field-popup.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	encapsulation: ViewEncapsulation.None,
@@ -43,7 +62,11 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 
 	@Output() mergeField: EventEmitter<string[]> = new EventEmitter();
 
-	constructor(private _cdr: ChangeDetectorRef, private _editorCoreService: EditorCoreService) {}
+	constructor(
+		@Inject(DOCUMENT) private document: Document,
+		private _cdr: ChangeDetectorRef,
+		private _editorCoreService: EditorCoreService
+	) {}
 
 	ngOnInit(): void {
 		this._editorCoreService.onSelectMergeField$.subscribe(() => {
@@ -52,31 +75,69 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 		});
 	}
 
+	initialized() {
+		this.focusSearchField();
+	}
+
 	selectItem(event: Record<'itemData', IMergeFieldItem>) {
-		 event.itemData.parentID && this.selected.push(event.itemData.id);
+		event.itemData.parentID && this.selected.push(event.itemData.id);
 	}
 
 	applySelected() {
 		if (this.selected.length) {
-			this.mergeField.emit(this.selected);
+			this.mergeField.emit(this.selected.reverse());
 			this.close();
+		}
+	}
+
+	treeViewItemClicked(event) {
+		if (event.itemData.parentID) {
+			if (event.itemData.selected) {
+				event.component.unselectItem(event.itemData);
+			} else {
+				event.component.selectItem(event.itemData);
+			}
+		}
+	}
+
+	treeViewItemRendered(event) {
+		if (!event.itemData.parentID) {
+			let parentElem: HTMLElement = event.itemElement.parentNode;
+			parentElem.classList.add('parent-node-item');
 		}
 	}
 
 	treeViewSelectionChanged(e) {
 		this.syncSelection(e.component);
 	}
-	
+
 	treeViewContentReady(e) {
 		this.syncSelection(e.component);
 	}
 
 	syncSelection(treeView) {
-		const selectedItems = treeView.getSelectedNodes()
-			.map((node) => node.itemData).filter(item => item.parentID)
-			.map(item => item.id);
+		const selectedItems: string[] = treeView
+			.getSelectedNodes()
+			.map((node) => node.itemData)
+			.filter((item) => item.parentID)
+			.map((item) => item.id);
 
-		this.selected = selectedItems;
+		let current = this.selected.filter((i) => selectedItems.includes(i));
+
+		selectedItems.forEach((item) => {
+			if (!current.includes(item)) {
+				current.push(item);
+			}
+		});
+		this.selected = current;
+	}
+
+	focusSearchField() {
+		let selector = '.dx-treeview-search .dx-texteditor-input';
+		let searchInput: HTMLInputElement = this.document.querySelector(selector);
+		if (searchInput) {
+			searchInput.focus();
+		}
 	}
 
 	close() {
@@ -104,7 +165,8 @@ export class InsertMergeFieldPopupComponent implements OnInit {
 			acc.push({
 				id: item,
 				parentID: slices[0],
-				displayName: slices.slice(1).join(' '),
+				// @ts-ignore
+				displayName: slices.slice(1).join(' ').replaceAll('_', ' '),
 			});
 			return acc;
 		}, [] as Array<IMergeFieldItem>);

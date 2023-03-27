@@ -37,6 +37,8 @@ export class SaveAsPopupComponent implements OnInit {
         private _dialogRef: MatDialogRef<SaveAsPopupComponent>
     ) {
 	}
+
+	descriptionLimit = 255;
 	
 	config = {
 		title: 'Save updates',
@@ -45,7 +47,7 @@ export class SaveAsPopupComponent implements OnInit {
 	}
 
 	form: FormGroup = new FormGroup({
-		versionDescription: new FormControl(this.data.document.isCurrent ? this.data.document.description : '', Validators.maxLength(500)),
+		versionDescription: new FormControl(this.data.document.isCurrent ? this.data.document.description : '', Validators.maxLength(this.descriptionLimit)),
 		propagateChangesToDerivedTemplates: new FormControl(false),
 		markActiveAgreementsAsOutdated: new FormControl(false),
 		fileContent: new FormControl(this.data.base64)

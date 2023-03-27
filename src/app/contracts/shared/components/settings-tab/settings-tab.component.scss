@@ -2,22 +2,40 @@
 	display: flex;
 	align-items: center;
 
-    margin-left: 35px;
-    margin-top: 20px;
+	margin-left: 35px;
+	margin-top: 20px;
 }
 .worldwide-icon {
 	width: 32px;
 	height: 32px;
 	margin: 7px;
 }
-.template-name {    
-    margin-left: 10px;
+.template-name {
+	margin-left: 10px;
 
 	font-size: 28px;
 	font-weight: 800;
 
-    max-width: 500px;
-    white-space: nowrap;
+	max-width: 500px;
+	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.tab-icon {
+	width: 16px;
+	height: 16px;
+}
+.tab-link {
+	display: flex;
+	gap: 8px;
+	opacity: 1;
+	font-size: 14px;
+	font-weight: 700;
+	color: #4A4E60;
+	&[ng-reflect-disabled="true"] {
+		color:  #B6B4B2;
+	}
+}
+.tab-active {
+	color: #17a297 !important;
 }

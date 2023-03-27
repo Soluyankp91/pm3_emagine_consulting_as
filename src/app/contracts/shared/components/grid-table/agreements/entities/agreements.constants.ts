@@ -17,6 +17,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'contractTypeIds',
 	'validity',
 	'status',
+	'envelopePath',
 	'startDate',
 	'endDate',
 	'salesManager',
@@ -166,6 +167,17 @@ export const AGREEMENT_HEADER_CELLS: IHeaderCell[] = [
 		class: 'status-column',
 	},
 	{
+		type: EHeaderCells.FILTER,
+		filter: {
+			formControlName: 'envelopeProcessingPath',
+			component: () =>
+				import('../../agreements/filters/envelope-path-filter/envelope-path-filter.component').then(
+					(it) => it.EnvelopePathFilterComponent
+				),
+		},
+		class: 'envelopeProcessingPath-column',
+	},
+	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Strt. date',
 		class: 'start-date-column',
@@ -271,6 +283,24 @@ export const MODE_FILTER_OPTIONS = [
 	{
 		id: 2,
 		name: 'Ended',
+	},
+	{
+		id: 3,
+		name: 'Not started yet',
+	},
+];
+export const ENVELOPEPATH_FILTER_OPTIONS = [
+	{
+		id: 2,
+		name: 'Sent via DocuSign',
+	},
+	{
+		id: 1,
+		name: 'Sent via email',
+	},
+	{
+		id: 3,
+		name: 'Receive from other party',
 	},
 ];
 export const STATUTES = [

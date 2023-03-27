@@ -90,7 +90,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	clientOptions$: Observable<ClientResultDto[]>;
 
 	clientOptionsChanged$ = new BehaviorSubject<string>('');
-	clientOptionsLoaded$ = new Subject();
+	isClientOptionsLoading$ = new BehaviorSubject(false);
 
 	duplicateOrInherit$: Observable<any>;
 
@@ -98,6 +98,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
+	isDuplicateParentOptionsLoading$ = new BehaviorSubject(false);
 
 	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 
@@ -113,7 +114,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _router: Router,
 		private readonly _creationTitleService: CreationTitleService,
 		private readonly _extraHttp: ExtraHttpsService,
-        private readonly _location: Location,
+		private readonly _location: Location,
 		public _dialog: MatDialog
 	) {
 		super(_injector);
@@ -124,6 +125,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._setOptions();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
+		this._subscribeOnAgreementsFromOtherParty();
 		const paramId = this._route.snapshot.params.id;
 		if (paramId) {
 			this.editMode = true;
@@ -152,7 +154,13 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	navigateBack() {
-        this._location.back();
+		this._location.back();
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
+			relativeTo: this._route,
+		});
 	}
 
 	navigateToEditor(templateId: number) {
@@ -193,6 +201,9 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			this._extraHttp
 				.agreementPatch(this.currentAgreementId, new SaveAgreementTemplateDto(toSend))
 				.pipe(
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
+					}),
 					switchMap(() => {
 						return this._apiServiceProxy.preview2(this.currentAgreementId);
 					}),
@@ -213,7 +224,11 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this.hideMainSpinner();
 					}),
 					tap((agreementTemplateId) => {
-						this.navigateToEditor(agreementTemplateId);
+						if (toSend.receiveAgreementsFromOtherParty) {
+							this.navigateToEdit(agreementTemplateId);
+						} else {
+							this.navigateToEditor(agreementTemplateId);
+						}
 					})
 				)
 				.subscribe();
@@ -283,11 +298,15 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this.clientOptions$ = this.clientOptionsChanged$.pipe(
 			takeUntil(this._unSubscribe$),
 			startWith(this.clientOptionsChanged$.value),
-			switchMap((search) => {
-				return this._lookupServiceProxy.clientsAll(search, 20);
-			}),
 			tap(() => {
-				this.clientOptionsLoaded$.next();
+				this.isClientOptionsLoading$.next(true);
+			}),
+			switchMap((search) => {
+				return this._lookupServiceProxy.clientsAll(search, 20).pipe(
+					tap(() => {
+						this.isClientOptionsLoading$.next(false);
+					})
+				);
 			})
 		);
 	}
@@ -370,10 +389,16 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.duplicateOptionsChanged$.pipe(
 							startWith(this.duplicateOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.isDuplicateParentOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._apiServiceProxy
-									.simpleList2(true, undefined, undefined, search)
-									.pipe(map((response) => response.items));
+								return this._apiServiceProxy.simpleList2(true, undefined, undefined, search).pipe(
+									tap(() => {
+										this.isDuplicateParentOptionsLoading$.next(false);
+									}),
+									map((response) => response.items)
+								);
 							})
 						),
 						optionsChanged$: this.duplicateOptionsChanged$,
@@ -385,10 +410,16 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						options$: this.parentOptionsChanged$.pipe(
 							startWith(this.parentOptionsChanged$.value),
 							debounceTime(300),
+							tap(() => {
+								this.isDuplicateParentOptionsLoading$.next(true);
+							}),
 							switchMap((search) => {
-								return this._apiServiceProxy
-									.simpleList2(false, undefined, undefined, search)
-									.pipe(map((response) => response.items));
+								return this._apiServiceProxy.simpleList2(false, undefined, undefined, search).pipe(
+									tap(() => {
+										this.isDuplicateParentOptionsLoading$.next(false);
+									}),
+									map((response) => response.items)
+								);
 							})
 						),
 						optionsChanged$: this.parentOptionsChanged$,
@@ -511,6 +542,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
 			this.currentAgreementTemplate = agreementTemplate;
 			this.creationModeControl.setValue(agreementTemplate.creationMode);
+			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreementTemplate.receiveAgreementsFromOtherParty);
 			if (agreementTemplate.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreementTemplate;
 				this._setDuplicateObs();
@@ -597,5 +629,31 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			}
 			this._creationTitleService.updateTenants([]);
 		});
+	}
+
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+					this.clientTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.clientTemplateFormGroup.addControl('isSignatureRequired', new FormControl(false));
+				}
+				if (receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.clientTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+					this.clientTemplateFormGroup.addControl(
+						'isSignatureRequired',
+						new FormControl(this.clientTemplateFormGroup.initialValue.isSignatureRequired)
+					);
+				}
+			});
 	}
 }

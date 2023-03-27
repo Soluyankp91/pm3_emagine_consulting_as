@@ -20,7 +20,7 @@ export class LinkedAgreementsComponent implements OnInit, OnDestroy {
 
 	searchControl = new FormControl<string>('');
 
-	displayedColumns = ['agreementStatus', 'mode', 'agreementId', 'recipientName', 'agreementName', 'agreementLink'];
+	displayedColumns = ['agreementStatus', 'validity', 'agreementId', 'recipientName', 'agreementName', 'agreementLink'];
 
 	private _unSubscribe$ = new Subject<void>();
 

@@ -5,6 +5,19 @@ app-contract {
 	display: block;
 	height: 100%;
 
+	.tab-link {
+		opacity: 1;
+		font-size: 14px;
+		font-weight: 700;
+		color: #4a4e60;
+		&[ng-reflect-disabled='true'] {
+			color: #b6b4b2;
+		}
+	}
+	.tab-active {
+		color: #17a297 !important;
+	}
+
 	@include scrollbar;
 	.mat-form-field.mat-form-field-appearance-outline.textarea-form-field {
 		height: fit-content;
@@ -145,6 +158,12 @@ app-contract {
 	.mat-radio-button.mat-accent.mat-radio-checked:not(.edit-disabled) .mat-radio-outer-circle {
 		border-color: #17a297;
 	}
+	.mat-radio-button .mat-radio-label-content {
+		display: flex;
+		align-items: center;
+
+		gap: 6px;
+	}
 	.mat-radio-button.mat-radio-disabled:not(.edit-disabled) .mat-radio-label-content {
 		color: unset !important;
 	}
@@ -229,7 +248,15 @@ app-contract {
 .cdk-overlay-container .cdk-overlay-connected-position-bounding-box .mat-autocomplete-panel.app-contract-backdrop {
 	@include scrollbar;
 }
-
+.cdk-overlay-container .cdk-overlay-connected-position-bounding-box {
+	@include scrollbar;
+	//mat-option
+	.app-contract-backdrop mat-option.mat-option .mat-option-text {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+}
 .app-contract-backdrop {
 	~ .cdk-overlay-connected-position-bounding-box {
 		@include scrollbar;
@@ -289,8 +316,8 @@ app-contract {
 	.mat-dialog-actions.actions {
 		padding: 0 !important;
 	}
-    mat-row.mat-row:last-of-type {
-        border-bottom: unset !important;
-    }
+	mat-row.mat-row:last-of-type {
+		border-bottom: unset !important;
+	}
 	@include scrollbar;
 }

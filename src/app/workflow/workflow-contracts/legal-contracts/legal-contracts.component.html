@@ -71,13 +71,35 @@
                             {{eLegalContractStatusText[contract.value.agreementStatus]}}
                         </span>
                         <ng-template #statusTooltip>
-                            <div fxLayout="row" fxLayoutAlign="start center">
-                                <mat-icon class="legal-contract--status u-mr--5"
-                                    [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
-                                <span>
-                                    {{eLegalContractStatusText[contract.value.agreementStatus]}}
-                                </span>
-                            </div>
+                            <ng-container *ngIf="contract.value.statusHistory?.length; else noStatusHistoryTemplate">
+                                <ng-container *ngFor="let item of contract.value.statusHistory; trackBy: trackByItem">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <mat-icon class="legal-contract--status u-mr--5"
+                                            [ngClass]="eLegalContractStatusIcon[item.status]">fiber_manual_record</mat-icon>
+                                        <span fxFlex="90px" class="dark-grey-color text-bold u-mr--5">
+                                            {{eLegalContractStatusText[item.status]}}
+                                        </span>
+                                        <span class="dark-grey-color text-bold u-mr--5">
+                                            {{item.timestampUtc | momentFormat: 'MM.DD.YYYY'}}
+                                        </span>
+                                        <span class="dark-grey-color text-600 u-mr--10"  fxFlex="40px">
+                                            {{item.timestampUtc | momentFormat: 'HH:mm:ss'}}
+                                        </span>
+                                        <span class="medium-grey-color text-nowrap text-600">
+                                            {{item.triggeredBy ?? '-'}}
+                                        </span>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #noStatusHistoryTemplate>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <mat-icon class="legal-contract--status u-mr--8"
+                                        [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
+                                    <span class="dark-grey-color text-bold">
+                                        {{eLegalContractStatusText[contract.value.agreementStatus]}}
+                                    </span>
+                                </div>
+                            </ng-template>
                         </ng-template>
                     </span>
                     <span fxFlex="80px" class="legal-contract--list-item text-truncate-ellipsis u-w--100">

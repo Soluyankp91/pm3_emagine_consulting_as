@@ -9,6 +9,7 @@
 		[(visible)]="visibility"
 		[copyRootClassesToWrapper]="true"
 		(onHiding)="afterClosed()"
+		(onShown)="initialized()"
 		class="merge-field-insert-popup">
 		<div class="form">
 			<dx-tree-view
@@ -20,15 +21,17 @@
 				displayExpr="displayName"
 				expandEvent="click"
 				searchMode="contains"
+				[focusStateEnabled]="true"
 				[height]="390"
 				[searchEnabled]="true"
 				[(searchValue)]="searchValue"
 				[showCheckBoxesMode]="'normal'"
 				[selectionMode]="'multiple'"
-				[selectNodesRecursive]="true"
+				[selectNodesRecursive]="false"
+				(onItemClick)="treeViewItemClicked($event)"
+				(onItemRendered)="treeViewItemRendered($event)"
 				(onContentReady)="treeViewContentReady($event)"
-				(onSelectionChanged)="treeViewSelectionChanged($event)"
-			>
+				(onSelectionChanged)="treeViewSelectionChanged($event)">
 			</dx-tree-view>
 		</div>
 		<div class="buttons-column button-group">

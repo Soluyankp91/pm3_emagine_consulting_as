@@ -46,6 +46,9 @@ export class MasterTemplateModel extends FormGroup {
 	reset(formState?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
 		super.reset(formState ? formState : this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.value, options);
 	}
+	get initialValue() {
+		return this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.value;
+	}
 
 	get duplicationSourceAgreementTemplateId() {
 		return this.get('duplicationSourceAgreementTemplateId');

@@ -37,7 +37,6 @@
 		<div *ngIf="commentSidebarEnabled$ | async" class="comment-sidebar">
 			<app-comment-sidebar
 				@inOutPaneAnimation
-				[entities]="comments$ | async"
 				(created)="createComment($event)"
 				(deleted)="deleteComment($event)"
 				(edited)="editComment($event)">

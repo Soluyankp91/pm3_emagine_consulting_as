@@ -14,7 +14,7 @@ import {
 import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { RequiredValidator } from '../../validators/customRequireValidator';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
@@ -23,7 +23,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 	selector: 'emg-dropdown-autocomplete-single-select',
 	templateUrl: './dropdown-autocomplete-single-select.component.html',
 	styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
-	changeDetection: ChangeDetectionStrategy.OnPush,
+	//changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() options: Item[];
@@ -34,6 +34,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	@Input() appearance: MatFormFieldAppearance = 'outline';
 	@Input() panelWidth: string | number;
 	@Input() unwrapFunction?: (arg: any) => {};
+	@Input() isOptionsLoading: BehaviorSubject<boolean>;
 
 	@Output() inputEmitter = new EventEmitter<string>();
 
