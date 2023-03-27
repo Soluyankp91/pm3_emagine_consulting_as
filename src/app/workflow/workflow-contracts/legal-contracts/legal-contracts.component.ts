@@ -20,6 +20,7 @@ import {
 	SendDocuSignEnvelopeCommand,
 	FileParameter,
 	EnvelopeProcessingPath,
+    AgreementStatusHistoryDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { LegalContractService } from './legal-contract.service';
 import {
@@ -81,7 +82,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		// });
 	}
 
-	addLegalContract(legalContract?: WorkflowAgreementDto) {
+	addLegalContract(legalContract?: WorkflowAgreementDto, statusHistory?: AgreementStatusHistoryDto[]) {
 		const form = this._fb.group({
 			selected: new UntypedFormControl(false),
 			agreementId: new UntypedFormControl(legalContract?.agreementId ?? null),
@@ -94,6 +95,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			lastUpdateDateUtc: new UntypedFormControl(legalContract?.lastUpdateDateUtc ?? null),
 			hasSignedDocumentFile: new UntypedFormControl(legalContract?.hasSignedDocumentFile ?? null),
 			inEditByEmployeeDtos: new UntypedFormControl(legalContract?.inEditByEmployeeDtos ?? null),
+			statusHistory: new UntypedFormControl(statusHistory ?? []),
 		});
 		this.clientLegalContractsForm.legalContracts.push(form);
 	}
@@ -198,7 +200,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 					  }
 			)
 		);
-        this._closeMenu();
+		this._closeMenu();
 		window.open(routerUrl, '_blank');
 	}
 
@@ -281,7 +283,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._clientPeriodService.clientAgreements(this.clientPeriodId).subscribe((result: WorkflowAgreementsDto) => {
 			this._resetForm();
 			result.agreements.forEach((item) => {
-				this.addLegalContract(item);
+				this._getAgreementStatusAndAddLegalContract(item);
 			});
 		});
 	}
@@ -290,8 +292,14 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this._consultantPeriodService.consultantAgreements(this.consultantPeriodId).subscribe((result: WorkflowAgreementsDto) => {
 			this._resetForm();
 			result.agreements.forEach((item) => {
-				this.addLegalContract(item);
+				this._getAgreementStatusAndAddLegalContract(item);
 			});
+		});
+	}
+
+	private _getAgreementStatusAndAddLegalContract(item: WorkflowAgreementDto) {
+		this._agreementService.statusHistory(item.agreementId).subscribe((result) => {
+			this.addLegalContract(item, result);
 		});
 	}
 
@@ -363,9 +371,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.sendEmailEnvelope(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via Email');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via Email');
+				this._getAgreementData();
+			});
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
@@ -379,9 +387,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.sendDocusignEnvelope(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via DocuSign');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement(s) sent via DocuSign');
+				this._getAgreementData();
+			});
 	}
 
 	private _uploadSignedContract(agreementId: number, file: FileParameter) {
@@ -391,9 +399,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.uploadSigned(agreementId, forceUpdate, file)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Signed contract uploaded');
+				this._getAgreementData();
+			});
 	}
 
 	private _voidAgreement(agreementId: number, reason: string) {
@@ -402,9 +410,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.voidEnvelope(agreementId, reason)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement voided');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement voided');
+				this._getAgreementData();
+			});
 	}
 
 	private _deleteAgreement(agreementId: number) {
@@ -413,9 +421,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			.agreementDELETE(agreementId)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
-                this.showNotify(NotifySeverity.Success, 'Agreement deleted');
-                this._getAgreementData()
-            });
+				this.showNotify(NotifySeverity.Success, 'Agreement deleted');
+				this._getAgreementData();
+			});
 	}
 
 	private _resetForm() {
