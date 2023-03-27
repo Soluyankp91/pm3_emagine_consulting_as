@@ -19,6 +19,9 @@ import { forkJoin, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
+import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
+import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
+
 @Component({
 	selector: 'app-contracts-client-data',
 	templateUrl: './contracts-client-data.component.html',
@@ -26,10 +29,12 @@ import { WorkflowDataService } from '../../workflow-data.service';
 })
 export class ContractsClientDataComponent extends AppComponentBase implements OnInit {
     @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+    @ViewChild('poComponent') poComponent: PurchaseOrdersComponent;
 	@Input() readOnlyMode: boolean;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
     @Input() contractsMainForm: WorkflowContractsMainForm;
+    @Input() periodId: string;
 	contractClientForm: WorkflowContractsClientDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	clientTimeReportingCap: EnumEntityTypeDto[];
@@ -45,7 +50,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	isClientFeeEditing = false;
     frameAgreements: AgreementSimpleListItemDto[];
     isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
-
+    ePurchaseOrderMode = EPurchaseOrderMode;
 	private _unsubscribe = new Subject();
 	constructor(injector: Injector, private _fb: UntypedFormBuilder, private _internalLookupService: InternalLookupService, private _agreementService: AgreementServiceProxy, private _workflowDataService: WorkflowDataService) {
 		super(injector);
@@ -126,7 +131,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			this.contractsMainForm.salesType.value?.id &&
 			this.contractsMainForm.deliveryType.value?.id
 		) {
-            if (this.frameAgreements.length === 1) {
+            if (this.frameAgreements?.length === 1) {
                 this.contractClientForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
             }
 		}

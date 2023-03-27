@@ -6,7 +6,7 @@ export class FinancesClientForm extends UntypedFormGroup {
             clientCreatedInNavision: new UntypedFormControl(false),
             differentDebtorNumberForInvoicing: new UntypedFormControl(false),
             customDebtorNumber: new UntypedFormControl(null)
-        });
+        }, {updateOn: 'submit'});
     }
 
     get clientCreatedInNavision() {
@@ -24,7 +24,7 @@ export class FinancesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([])
-        });
+        }, {updateOn: 'submit'});
     }
 
     get consultants() {

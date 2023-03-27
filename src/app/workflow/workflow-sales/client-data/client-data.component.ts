@@ -12,30 +12,59 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { MapClientAddressList } from '../workflow-sales.helpers';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementType, ClientAddressDto, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import {
+	AgreementServiceProxy,
+	AgreementSimpleListItemDto,
+	AgreementType,
+	ClientAddressDto,
+	ClientResultDto,
+	ClientSpecialFeeDto,
+	ClientSpecialRateDto,
+	ClientsServiceProxy,
+	ContactResultDto,
+	ContractSignerDto,
+	EnumEntityTypeDto,
+	LegalEntityDto,
+	LookupServiceProxy,
+	PeriodClientSpecialFeeDto,
+	PeriodClientSpecialRateDto,
+	TimeReportingCapDto,
+} from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { ClientRateTypes, EClientSelectionType, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import {
+	ClientRateTypes,
+	EClientSelectionType,
+	ETimeReportingCaps,
+	IClientAddress,
+	WorkflowSalesClientDataForm,
+	WorkflowSalesMainForm,
+} from '../workflow-sales.model';
+import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
+import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 
 @Component({
 	selector: 'app-client-data',
 	templateUrl: './client-data.component.html',
-	styleUrls: ['../workflow-sales.component.scss']
+	styleUrls: ['../workflow-sales.component.scss'],
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+	@ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+	@ViewChild('poComponent') poComponent: PurchaseOrdersComponent;
+	@Input() periodId: string;
 	@Input() readOnlyMode: boolean;
-    @Input() mainDataForm: WorkflowSalesMainForm;
-    @Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
+	@Input() mainDataForm: WorkflowSalesMainForm;
+	@Input() clientSpecialRateList: ClientSpecialRateDto[] = [];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[] = [];
-	@Output() onDirectClientSelected: EventEmitter<MatAutocompleteSelectedEvent> = new EventEmitter<MatAutocompleteSelectedEvent>();
+	@Output() onDirectClientSelected: EventEmitter<MatAutocompleteSelectedEvent> =
+		new EventEmitter<MatAutocompleteSelectedEvent>();
 	@Output() clientPeriodDatesChanged: EventEmitter<any> = new EventEmitter<any>();
-    @Input() isContractModuleEnabled: boolean;
+	@Input() isContractModuleEnabled: boolean;
 	salesClientDataForm: WorkflowSalesClientDataForm;
 	filteredDirectClients: ClientResultDto[];
 	filteredEndClients: ClientResultDto[];
 	filteredReferencePersons: ContactResultDto[];
-    filteredProjectManagers: ContactResultDto[];
+	filteredProjectManagers: ContactResultDto[];
 	filteredClientInvoicingRecipients: ClientResultDto[];
 	filteredEvaluationReferencePersons: ContactResultDto[];
 	filteredContractSigners: ContactResultDto[];
@@ -50,14 +79,14 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	invoicingTimes: EnumEntityTypeDto[];
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	clientRateTypes = ClientRateTypes;
-    frameAgreements: AgreementSimpleListItemDto[];
+	frameAgreements: AgreementSimpleListItemDto[];
 
-    directClientAddresses: IClientAddress[];
-    endClientAddresses: IClientAddress[];
-    invoicingRecipientsAddresses: IClientAddress[];
-    eClientSelectionType = EClientSelectionType;
-    valueUnitTypes: EnumEntityTypeDto[];
-    periodUnitTypes: EnumEntityTypeDto[];
+	directClientAddresses: IClientAddress[];
+	endClientAddresses: IClientAddress[];
+	invoicingRecipientsAddresses: IClientAddress[];
+	eClientSelectionType = EClientSelectionType;
+	valueUnitTypes: EnumEntityTypeDto[];
+	periodUnitTypes: EnumEntityTypeDto[];
 
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
@@ -65,7 +94,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	isClientFeeEditing = false;
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialFeeFilter = new UntypedFormControl('');
-    eTimeReportingCaps = ETimeReportingCaps;
+	eTimeReportingCaps = ETimeReportingCaps;
+	ePurchaseOrderMode = EPurchaseOrderMode;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -76,8 +106,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _httpClient: HttpClient,
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
-        private _agreementService: AgreementServiceProxy,
-        private _workflowDataService: WorkflowDataService,
+		private _agreementService: AgreementServiceProxy,
+		private _workflowDataService: WorkflowDataService
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -85,7 +115,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	ngOnInit(): void {
 		this._getEnums();
-        this._subscriptions$();
+		this._subscriptions$();
 	}
 
 	ngOnDestroy(): void {
@@ -104,8 +134,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
 			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
 			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+			valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+			periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.legalEntities = result.legalEntities;
@@ -116,17 +146,17 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.invoiceFrequencies = result.invoiceFrequencies;
 			this.invoicingTimes = result.invoicingTimes;
 			this.clientTimeReportingCap = result.clientTimeReportingCap;
-            this.valueUnitTypes = result.valueUnitTypes;
-            this.periodUnitTypes = result.periodUnitTypes;
+			this.valueUnitTypes = result.valueUnitTypes;
+			this.periodUnitTypes = result.periodUnitTypes;
 		});
 	}
 
-    private _subscriptions$() {
-        this.salesClientDataForm.directClientIdValue?.valueChanges
+	private _subscriptions$() {
+		this.salesClientDataForm.directClientIdValue?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ?? '',
@@ -155,7 +185,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ?? '',
@@ -184,21 +214,24 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-                    if (toSend.clientIds?.length) {
-					    return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
-                    }
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -211,25 +244,28 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				}
 			});
 
-        this.salesClientDataForm.clientContactProjectManager?.valueChanges
+		this.salesClientDataForm.clientContactProjectManager?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-                    if (toSend.clientIds?.length) {
-					    return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
-                    }
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -242,12 +278,11 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				}
 			});
 
-
 		this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ?? '',
@@ -273,25 +308,24 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
-                    let toSend = {
-                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id ? value.firstName : value;
-                    }
-                    if (toSend.clientIds?.length) {
-                        return this._lookupService.contacts(
-                            toSend.clientIds,
-                            toSend.name,
-                            toSend.maxRecordsCount
-                        );
-                    } else {
-                        return of([]);
-                    }
+					let toSend = {
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.firstName : value;
+					}
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -312,34 +346,32 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
 			.subscribe(() => {
 				this.clientPeriodDatesChanged.emit();
-                this._checkAndPreselectFrameAgreement();
-			});
-
-        this._workflowDataService.preselectFrameAgreement
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe(() => {
 				this._checkAndPreselectFrameAgreement();
 			});
-    }
 
-    getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
-        let dataToSend = {
-            agreementId: agreementId,
-            search: search,
-            clientId: this.salesClientDataForm.directClientIdValue.value?.clientId,
-            agreementType: AgreementType.Frame,
-            validity: undefined,
-            legalEntityId: this.salesClientDataForm.pdcInvoicingEntityId.value,
-            salesTypeId: this.mainDataForm.salesTypeId.value,
-            contractTypeId: undefined,
-            deliveryTypeId: this.mainDataForm.deliveryTypeId.value,
-            startDate: this.salesClientDataForm.startDate.value,
-            endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
-            pageNumber: 1,
-            pageSize: 1000,
-            sort: ''
-        }
-        this._agreementService
+		this._workflowDataService.preselectFrameAgreement.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
+			this._checkAndPreselectFrameAgreement();
+		});
+	}
+
+	getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+		let dataToSend = {
+			agreementId: agreementId,
+			search: search,
+			clientId: this.salesClientDataForm.directClientIdValue.value?.clientId,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: this.salesClientDataForm.pdcInvoicingEntityId.value ?? undefined,
+			salesTypeId: this.mainDataForm.salesTypeId.value ?? undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: this.mainDataForm.deliveryTypeId.value ?? undefined,
+			startDate: this.salesClientDataForm.startDate.value ?? undefined,
+			endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		this._agreementService
 			.simpleList(
 				dataToSend.agreementId,
 				dataToSend.search,
@@ -352,9 +384,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
-                [], // recipientClientIds
-                undefined, // recipientConsultantId
-                undefined, // recipientSupplierId
+				[], // recipientClientIds
+				undefined, // recipientConsultantId
+				undefined, // recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
@@ -362,22 +394,21 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.subscribe((result) => {
 				this.frameAgreements = result.items;
 			});
-    }
+	}
 
-    private _checkAndPreselectFrameAgreement() {
-        if (
+	private _checkAndPreselectFrameAgreement() {
+		if (
 			this.salesClientDataForm.startDate.value &&
-			(this.salesClientDataForm.endDate.value ||
-				this.salesClientDataForm.noEndDate.value) &&
+			(this.salesClientDataForm.endDate.value || this.salesClientDataForm.noEndDate.value) &&
 			this.salesClientDataForm.directClientIdValue.value &&
 			this.mainDataForm.salesTypeId.value &&
 			this.mainDataForm.deliveryTypeId.value
 		) {
-            if (this.frameAgreements.length === 1) {
-                this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
-            }
+			if (this.frameAgreements?.length === 1) {
+				this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+			}
 		}
-    }
+	}
 
 	clientRateTypeChange(value: EnumEntityTypeDto) {
 		if (value.id) {
@@ -388,36 +419,35 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
-        this.initContactSubs();
-        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
+		this.initContactSubs();
+		this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
 		this.onDirectClientSelected.emit(event);
 	}
 
-    clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
-        this.getClientAddresses(event.option.value?.clientAddresses, clientType);
-        this.focusToggleMethod('auto');
-    }
+	clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
+		this.getClientAddresses(event.option.value?.clientAddresses, clientType);
+		this.focusToggleMethod('auto');
+	}
 
-    getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
-        switch (clientType) {
-            case EClientSelectionType.DirectClient:
-                this.directClientAddresses = MapClientAddressList(clientAddresses);
-                break;
-            case EClientSelectionType.EndClient:
-                this.endClientAddresses = MapClientAddressList(clientAddresses);
-                break;
-            case EClientSelectionType.InvoicingRecipient:
-                this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
-                break;
-        }
-    }
+	getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
+		switch (clientType) {
+			case EClientSelectionType.DirectClient:
+				this.directClientAddresses = MapClientAddressList(clientAddresses);
+				break;
+			case EClientSelectionType.EndClient:
+				this.endClientAddresses = MapClientAddressList(clientAddresses);
+				break;
+			case EClientSelectionType.InvoicingRecipient:
+				this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
+				break;
+		}
+	}
 
-
-    initContactSubs() {
-        this.salesClientDataForm.clientContactProjectManager.setValue('');
-        this.salesClientDataForm.invoicePaperworkContactIdValue.setValue('');
-        this.salesClientDataForm.evaluationsReferencePersonIdValue.setValue('');
-    }
+	initContactSubs() {
+		this.salesClientDataForm.clientContactProjectManager.setValue('');
+		this.salesClientDataForm.invoicePaperworkContactIdValue.setValue('');
+		this.salesClientDataForm.evaluationsReferencePersonIdValue.setValue('');
+	}
 
 	getRatesAndFees(clientId: number) {
 		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
@@ -558,11 +588,14 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	addSignerToForm(signer?: ContractSignerDto) {
-		const form = this._fb.group({
-			clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
-			signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
-			clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
-		});
+		const form = this._fb.group(
+			{
+				clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
+				signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
+				clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
+			},
+			{ updateOn: 'submit' }
+		);
 		this.salesClientDataForm.contractSigners.push(form);
 		this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
 	}
@@ -574,21 +607,24 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-                        clientIds: [this.salesClientDataForm.directClientIdValue?.value?.clientId, this.salesClientDataForm.endClientIdValue?.value?.clientId].filter(Boolean),
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
 						name: value,
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.firstName : value;
 					}
-                    if (toSend.clientIds?.length) {
-					    return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
-                    }
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
 				})
 			)
 			.subscribe((list: ContactResultDto[]) => {
@@ -638,9 +674,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		}
 	}
 
-    addTimeReportingCap(cap?: TimeReportingCapDto) {
+	addTimeReportingCap(cap?: TimeReportingCapDto) {
 		const form = this._fb.group({
-            id: new UntypedFormControl(cap?.id?.value ?? null),
+			id: new UntypedFormControl(cap?.id?.value ?? null),
 			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
 			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
 			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
@@ -652,30 +688,29 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this.timeReportingCaps.removeAt(index);
 	}
 
-    capSelectionChange(event: MatSelectChange) {
-        if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
-            this.timeReportingCaps.controls = [];
-        }
-    }
+	capSelectionChange(event: MatSelectChange) {
+		if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
+			this.timeReportingCaps.controls = [];
+		}
+	}
 
-    submitForm() {
-        this.submitFormBtn.nativeElement.click();
-    }
+	submitForm() {
+		this.submitFormBtn.nativeElement.click();
+	}
 
-    get clientRates(): UntypedFormArray {
+	get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
 	}
 
-    get clientFees(): UntypedFormArray {
+	get clientFees(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientFees') as UntypedFormArray;
 	}
 
-    get contractSigners(): UntypedFormArray {
+	get contractSigners(): UntypedFormArray {
 		return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
 	}
 
-    get timeReportingCaps(): UntypedFormArray {
-        return this.salesClientDataForm.get('timeReportingCaps') as UntypedFormArray;
-    }
-
+	get timeReportingCaps(): UntypedFormArray {
+		return this.salesClientDataForm.get('timeReportingCaps') as UntypedFormArray;
+	}
 }

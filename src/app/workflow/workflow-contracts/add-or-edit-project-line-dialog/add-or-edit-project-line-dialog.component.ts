@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
@@ -6,6 +6,8 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientResultDto, ContactResultDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
+import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
 
@@ -15,7 +17,8 @@ import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
     styleUrls: ['./add-or-edit-project-line-dialog.component.scss']
 })
 
-export class AddOrEditProjectLineDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
+export class AddOrEditProjectLineDialogComponent extends AppComponentBase implements OnInit, AfterViewInit, OnDestroy {
+    @ViewChild('poComponent', {static: true}) poComponent: PurchaseOrdersComponent;
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     dialogType = ProjectLineDiallogMode;
@@ -24,6 +27,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     filteredReferencePersons: any[] = [];
     filteredClientInvoicingRecipients: any[] = [];
     consultantInsuranceOptions: { [key: string]: string; };
+    ePurchaseOrderMode = EPurchaseOrderMode;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -33,6 +37,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
             projectLineData: any,
             directClientId: number,
             endClientId: number,
+            periodId: string,
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>,
         private _lookupService: LookupServiceProxy,
@@ -104,6 +109,10 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.fillForm(this.data.projectLineData);
     }
 
+    ngAfterViewInit(): void {
+        this.poComponent?.getPurchaseOrders([this.data.projectLineData.purchaseOrderId], this.data?.directClientId);
+    }
+
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
@@ -157,6 +166,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.modifiedById?.setValue(data.modifiedBy, {emitEvent: false});
         this.projectLineForm.wasSynced?.setValue(data.wasSynced, {emitEvent: false});
         this.projectLineForm.isLineForFees?.setValue(data.isLineForFees, {emitEvent: false});
+        this.projectLineForm.purchaseOrderId?.setValue(data.purchaseOrderId, {emitEvent: false});
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();
@@ -195,6 +205,11 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.consultantInsuranceOptionId = this.projectLineForm.consultantInsuranceOptionId?.value;
         result.wasSynced = this.projectLineForm.wasSynced?.value;
         result.isLineForFees = this.projectLineForm.isLineForFees?.value;
+        if (this.poComponent.purchaseOrders.controls?.length) {
+            result.purchaseOrderId = this.poComponent.purchaseOrders.at(0).value?.id;
+        } else {
+            result.purchaseOrderId = undefined;
+        }
 
         this.onConfirmed.emit(result);
         this.closeInternal();

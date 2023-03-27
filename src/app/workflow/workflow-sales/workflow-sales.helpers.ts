@@ -52,3 +52,11 @@ export function MapAddressType(isInvoiceAddress: boolean, isWorkplaceAddress: bo
         return addressTypeArray.join(' • ') + ' address';
     }
 }
+
+export function FindClientAddress(clientAddresses: ClientAddressDto[], addressId: number) {
+    if (addressId && clientAddresses?.length) {
+        return clientAddresses.find(x => x.id === addressId);
+    } else {
+        return undefined;
+    }
+}

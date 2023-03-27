@@ -153,6 +153,10 @@ export const SalesClientDataSections: SubItemDto[] = [
         anchor: 'salesClientInvoicingNumber'
     },
     {
+        name: 'Client PO + CAP',
+        anchor: 'salesClientPurchaseOrder'
+    },
+    {
         name: 'Rates and fees',
         anchor: 'salesClientRatesFees'
     },
@@ -232,6 +236,10 @@ export const ContractClientDataSections: SubItemDto[] = [
     {
         name: 'Frame agreement',
         anchor: 'contractFrameAgreement'
+    },
+    {
+        name: 'Client PO + CAP',
+        anchor: 'contractClientPurchaseOrders'
     },
     {
         name: 'Rates and fees',

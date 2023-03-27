@@ -29,8 +29,8 @@ import { ContractsClientDataComponent } from './workflow-contracts/contracts-cli
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
 import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { OnSubmitErrorStateMatcher } from 'src/shared/utils/custom-errorStateMatcher';
+import { AddOrEditPoDialogComponent } from './shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
+import { PurchaseOrdersComponent } from './shared/components/purchase-orders/purchase-orders.component';
 
 @NgModule({
 	declarations: [
@@ -58,13 +58,14 @@ import { OnSubmitErrorStateMatcher } from 'src/shared/utils/custom-errorStateMat
 		ContractsClientDataComponent,
 		ToggleEditModeComponent,
 		DocumentsComponent,
+  AddOrEditPoDialogComponent,
+  PurchaseOrdersComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
 	providers: [
 		WorkflowCreateResolver,
 		WorkflowPeriodResolver,
-		{ provide: ErrorStateMatcher, useClass: OnSubmitErrorStateMatcher },
 	],
 })
 export class WorkflowModule {}

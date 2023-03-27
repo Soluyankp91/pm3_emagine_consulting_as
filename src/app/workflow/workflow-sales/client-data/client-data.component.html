@@ -152,7 +152,7 @@
                             class="formFieldNoMarginPadding filter-select form-width-330 client-address-autocomplete">
                             <mat-label>Client address</mat-label>
                             <mat-select [disabled]="readOnlyMode" formControlName="endClientAddress"
-                            [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                            [disableOptionCentering]="true" [compareWith]="compareWithFn" [required]="salesClientDataForm.differentEndClient?.value">
                                 <mat-select-trigger>
                                     <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                         <span class="multilineDropdown-option--column-client-name">
@@ -693,7 +693,16 @@
                         </ng-container>
                     </div>
                 </ng-container>
+            </div>
+        </div>
 
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientPurchaseOrder">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">5</span>
+                <h2 class="workflow-section--header">Client purchase order + cap</h2>
+            </div>
+            <div class="workflow-section--content">
+                <purchase-orders #poComponent [readOnlyMode]="readOnlyMode" [periodId]="periodId" [directClientId]="salesClientDataForm.directClientIdValue.value?.clientId" [mode]="ePurchaseOrderMode.SalesStep"></purchase-orders>
                 <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">

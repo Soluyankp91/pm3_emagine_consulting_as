@@ -25,6 +25,7 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.FileServiceProxy,
         ApiServiceProxies.AgreementServiceProxy,
         ApiServiceProxies.ClientAddressesServiceProxy,
+        ApiServiceProxies.PurchaseOrderServiceProxy,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: GlobalHttpInterceptorService,

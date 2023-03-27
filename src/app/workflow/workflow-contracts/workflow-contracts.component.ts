@@ -39,6 +39,8 @@ import {
     WorkflowDocumentServiceProxy,
     TimeReportingCapDto,
     TimeReportingCapId,
+    PurchaseOrderDto,
+    PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import {} from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
@@ -97,6 +99,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	consultantInsuranceOptions: { [key: string]: string };
 	projectCategories: EnumEntityTypeDto[] = [];
 	filteredConsultants: ConsultantResultDto[] = [];
+    purchaseOrders: PurchaseOrderDto[] = [];
 
 	contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
 	clientSpecialRateList: ClientSpecialRateDto[];
@@ -111,7 +114,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	salesTypesEnum = SalesTypes;
 
     isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
-
+    purchaseOrderIds: number[];
+    directClientId: number;
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -125,11 +129,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _clientService: ClientsServiceProxy,
 		private _contractSyncService: ContractSyncServiceProxy,
 		private _scrollToService: ScrollToService,
-        private _workflowDocumentsService: WorkflowDocumentServiceProxy
+        private _workflowDocumentsService: WorkflowDocumentServiceProxy,
+        private _purchaseOrderService: PurchaseOrderServiceProxy
 	) {
 		super(injector);
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
+        this._workflowDataService.updatePurchaseOrders
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => this.clientDataComponent.poComponent.getPurchaseOrders(this.purchaseOrderIds, this.directClientId, this.periodId));
 	}
 
 	ngOnInit(): void {
@@ -496,6 +504,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (this.clientDataComponent) {
             this.clientDataComponent.contractClientForm.clientRates.controls = [];
             this.clientDataComponent.contractClientForm.clientFees.controls = [];
+            if (this.clientDataComponent.poComponent) {
+                this.clientDataComponent.poComponent.purchaseOrders.controls = [];
+            }
         }
         if (this.consultantDataComponent) {
             this.consultantDataComponent.contractsConsultantsDataForm.consultants.controls = [];
@@ -918,6 +929,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			if (data.clientData.directClientId) {
 				this.getRatesAndFees(data.clientData.directClientId);
 			}
+            this.purchaseOrderIds = data.clientData.purchaseOrdersIds;
+            this.directClientId = data.clientData.directClientId;
+            if (data.clientData.purchaseOrdersIds?.length) {
+                this.clientDataComponent?.poComponent?.getPurchaseOrders(data.clientData.purchaseOrdersIds, data.clientData.directClientId, this.periodId);
+            }
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		if (data?.clientData?.periodClientSpecialRates?.length) {
@@ -932,7 +948,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
-				this.consultantDataComponent?.addConsultantDataToForm(consultant, index);
+				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();
@@ -998,6 +1014,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			}
 		}
 		input.clientData.noSpecialFee = this.clientDataComponent?.contractClientForm.clientFees.value?.length === 0;
+        input.clientData.purchaseOrdersIds = this.clientDataComponent?.poComponent?.purchaseOrders.value.map(x => x.id);
 		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
 
 		input.mainData = new ContractsMainDataDto();
@@ -1221,6 +1238,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
 				projectLineInput.wasSynced = projectLine.wasSynced;
 				projectLineInput.isLineForFees = projectLine.isLineForFees;
+                projectLineInput.purchaseOrderId = projectLine.purchaseOrderId;
 
 				consultantData.projectLines.push(projectLineInput);
 			}
@@ -1232,6 +1250,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (this.submitFormBtn) {
             this.submitFormBtn.nativeElement.click();
         }
+    }
+
+    getAvailablePOs(directClientId: number) {
+        this._purchaseOrderService
+			.getPurchaseOrdersAvailableForClientPeriod(this.periodId, directClientId)
+			.subscribe((result) => {
+				this.purchaseOrders = result;
+			});
     }
 
     get canToggleEditMode() {

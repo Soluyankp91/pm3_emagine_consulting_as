@@ -34,6 +34,8 @@ import {
 	WorkflowServiceProxy,
 	WorkflowStepStatus,
 } from 'src/shared/service-proxies/service-proxies';
+import { PurchaseOrdersComponent } from '../shared/components/purchase-orders/purchase-orders.component';
+import { EPurchaseOrderMode } from '../shared/components/purchase-orders/purchase-orders.model';
 import { WFDocument } from '../shared/components/wf-documents/wf-documents.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
@@ -50,6 +52,7 @@ import { EStepActionTooltip, IWFOverviewDocuments } from './workflow-overview.mo
 })
 export class WorkflowOverviewComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild('gantt') ganttComponent: NgxGanttComponent;
+	@ViewChild('purchaseOrder') purchaseOrder: PurchaseOrdersComponent;
 
 	workflowId: string;
 	clientPeriods: ClientPeriodDto[] | undefined;
@@ -91,6 +94,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	pageSizeOptions = [5, 10, 20, 50, 100];
 	individualConsultantActionsAvailable: boolean;
     showAllDocument = false;
+    ePurchaseOrderMode = EPurchaseOrderMode;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -301,6 +305,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 this.periodId = result.clientPeriods?.length ? result.clientPeriods[0].id : '';
                 this.clientPeriods = result.clientPeriods;
                 this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
+                if (result.directClientId) {
+                    this.purchaseOrder.getPurchaseOrders([], result.directClientId, this.periodId);
+                }
                 this._setWFProgress();
             })
     }

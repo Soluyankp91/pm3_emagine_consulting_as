@@ -101,3 +101,12 @@
 .fi {
     outline: 1px solid $sand-color;
 }
+
+mat-icon.shared-icon {
+    height: 16px;
+    &:hover {
+        svg>path[fill] {
+            fill: $green-color !important;
+        }
+    }
+}

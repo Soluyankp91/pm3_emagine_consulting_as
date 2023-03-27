@@ -152,6 +152,10 @@ export abstract class AppComponentBase {
 	}
 
 	// TODO: move all others trackBy methods here
+    trackByKey(index: number, item: any) {
+		return item.key;
+	}
+
 	trackById(index: number, item: any) {
 		return item.id;
 	}
@@ -201,5 +205,13 @@ export abstract class AppComponentBase {
 		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
 		b.style.overflow = overflowStyle;
 	}
+
+    arrayToEnum(list: EnumEntityTypeDto[]) {
+        let result: { [key: number]: string} = {};
+        list.forEach(x => {
+            result[x.id] = x.name
+        });
+        return result;
+    }
 
 }

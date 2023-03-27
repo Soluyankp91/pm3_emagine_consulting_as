@@ -9,7 +9,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             deliveryTypeId: new UntypedFormControl(null, Validators.required),
             projectTypeId: new UntypedFormControl(null, Validators.required),
             marginId: new UntypedFormControl(null, Validators.required),
-            projectCategoryId: new UntypedFormControl(null, Validators.required),
+            projectCategoryId: new UntypedFormControl(null),
             primaryCategoryArea: new UntypedFormControl(null),
             primaryCategoryType: new UntypedFormControl(null),
             primaryCategoryRole: new UntypedFormControl(null),
@@ -22,12 +22,13 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
 
             salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new UntypedFormControl(null),
+            primarySourcer: new UntypedFormControl(null),
             contractExpirationNotification: new UntypedFormControl(null),
             customContractExpirationNotificationDate: new UntypedFormControl(null),
 
             remarks: new UntypedFormControl(null),
             noRemarks: new UntypedFormControl(false)
-        });
+        }, {updateOn: 'submit'});
     }
 
     get salesTypeId() {
@@ -74,6 +75,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     }
     get commissionAccountManagerIdValue () {
         return this.get('commissionAccountManagerIdValue');
+    }
+    get primarySourcer () {
+        return this.get('primarySourcer');
     }
     get contractExpirationNotification() {
         return this.get('contractExpirationNotification');
@@ -153,7 +157,8 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             // Client project
             clientTimeReportingCapId: new UntypedFormControl(false),
             timeReportingCaps: new UntypedFormArray([]),
-        });
+            purchaseOrders: new UntypedFormArray([]),
+        }, {updateOn: 'submit'});
     }
 
     // Client
@@ -293,6 +298,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get timeReportingCaps() {
         return this.get('timeReportingCaps') as UntypedFormArray;
     }
+    get purchaseOrders() {
+        return this.get('purchaseOrders') as UntypedFormArray;
+    }
 
 }
 
@@ -300,7 +308,7 @@ export class WorkflowSalesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        });
+        }, {updateOn: 'submit'});
 
     }
     get consultants() {
@@ -453,4 +461,10 @@ export enum ETimeReportingCaps {
     CapOnValue = 2,
     IndividualCap = 3,
     NoCap = 4
+}
+
+export enum EValueUnitTypes {
+    'Hours' = 1,
+    'Days' = 2,
+    'Months' = 4
 }

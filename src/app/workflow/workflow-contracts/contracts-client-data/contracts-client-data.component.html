@@ -147,10 +147,18 @@
                 </ng-template>
             </div>
         </div>
-
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractClientRatesFees">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractClientPurchaseOrders">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                 <span class="workflow-section--number">4</span>
+                <h2 class="workflow-section--header">Client purchase order + cap</h2>
+            </div>
+            <div class="workflow-section--content">
+                <purchase-orders #poComponent [readOnlyMode]="readOnlyMode" [periodId]="periodId" [directClientId]="contractClientForm.directClientId?.value?.clientId" [mode]="ePurchaseOrderMode.ContractStep"></purchase-orders>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractClientRatesFees">
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                <span class="workflow-section--number">5</span>
                 <h2 class="workflow-section--header">Client rates and fees</h2>
             </div>
             <div class="workflow-section--content">
