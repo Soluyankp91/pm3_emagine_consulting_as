@@ -44,10 +44,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			clientPeriodId: string;
 			directClientId?: number;
 		},
-		private dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
+		private _dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
 		private readonly _internalLookupService: InternalLookupService,
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy,
-        private readonly _workflowDataService: WorkflowDataService
+		private readonly _workflowDataService: WorkflowDataService
 	) {
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
@@ -82,7 +82,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 					.purchaseOrderPUT(this.data?.clientPeriodId, input)
 					.pipe(finalize(() => this.hideMainSpinner()))
 					.subscribe((result) => {
-                        this._workflowDataService.updatePurchaseOrders.emit();
+						this._workflowDataService.updatePurchaseOrders.emit();
 						this.onConfirmed.emit(result);
 						this._closeInternal();
 					});
@@ -105,9 +105,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			this.purchaseOrderForm.number.disable();
 			this.purchaseOrderForm.receiveDate.disable();
 		} else {
+			this.purchaseOrderForm.number.enable();
+			this.purchaseOrderForm.number.enable();
 		}
-		this.purchaseOrderForm.number.enable();
-		this.purchaseOrderForm.number.enable();
 	}
 
 	poSelected(event: MatSelectChange) {
@@ -135,7 +135,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	private _closeInternal(): void {
-		this.dialogRef.close();
+		this._dialogRef.close();
 	}
 
 	private _getPurchaseOrders() {

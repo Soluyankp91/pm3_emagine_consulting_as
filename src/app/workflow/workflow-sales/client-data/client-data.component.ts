@@ -28,8 +28,6 @@ import {
 	LookupServiceProxy,
 	PeriodClientSpecialFeeDto,
 	PeriodClientSpecialRateDto,
-	PurchaseOrderCapType,
-	PurchaseOrderDto,
 	TimeReportingCapDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
@@ -138,7 +136,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
 			valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
 			periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-			// capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.legalEntities = result.legalEntities;
@@ -151,7 +148,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			this.clientTimeReportingCap = result.clientTimeReportingCap;
 			this.valueUnitTypes = result.valueUnitTypes;
 			this.periodUnitTypes = result.periodUnitTypes;
-			// this.capTypes = result.capTypes;
 		});
 	}
 
