@@ -63,7 +63,7 @@ import { CommentsAbstractService } from './data-access/comments-abstract.service
 		CommentSidebarComponent,
 		MatFormFieldModule,
 		MatSelectModule,
-		AppCommonModule
+		AppCommonModule,
 	],
 	providers: [RichEditorOptionsProvider, CompareService, CommentService, EditorCoreService, EditorObserverService],
 	animations: [inOutPaneAnimation],
@@ -272,24 +272,31 @@ export class EditorComponent implements OnInit, OnDestroy {
 			});
 	}
 
-    createComment({ text, metadata }: { text: string; metadata: string }) {
-        let tmpID = this.templateId;
-        this._commentService.createComment(tmpID, text, metadata).subscribe(() => {
-            this.loadComments(tmpID);
-        });
-    }
+	createComment({ text, metadata }: { text: string; metadata: string }) {
+		let tmpID = this.templateId;
+		this._commentService
+			.createComment(tmpID, text, metadata)
+			.pipe(
+				switchMap((id) =>
+					this._commentService.getByTemplateID(tmpID).pipe(map((res) => res.find((comment) => comment.id === id)))
+				)
+			)
+			.subscribe((comment) => {
+				this._editorCoreService.applyNewComment(comment);
+			});
+	}
 
-    deleteComment(entityID: number) {
-        this._commentService.deleteComment(entityID).subscribe(() => {
-            this._editorCoreService.deleteComment(entityID);
-        });
-    }
+	deleteComment(entityID: number) {
+		this._commentService.deleteComment(entityID).subscribe(() => {
+			this._editorCoreService.deleteComment(entityID);
+		});
+	}
 
-    editComment({ text, entityID, metadata }: { text: string; metadata: string; entityID: number }) {
-        this._commentService.editComment(entityID, text, metadata).subscribe(() => {
-            this._editorCoreService.applyCommentChanges(entityID, text);
-        });
-    }
+	editComment({ text, entityID, metadata }: { text: string; metadata: string; entityID: number }) {
+		this._commentService.editComment(entityID, text, metadata).subscribe(() => {
+			this._editorCoreService.applyCommentChanges(entityID, text);
+		});
+	}
 
 	saveAsComplete() {
 		if (this.selectedVersion.isCurrent) {
@@ -311,7 +318,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveCurrentAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
-                    this._updateCommentByNeeds();
+					this._updateCommentByNeeds();
 					this.getTemplateVersions(this.templateId);
 					this.cleanUp();
 				});
@@ -327,7 +334,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				this._agreementService
 					.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 					.subscribe(() => {
-                        this._updateCommentByNeeds();
+						this._updateCommentByNeeds();
 						this.getTemplateVersions(this.templateId);
 						this.cleanUp();
 					});
@@ -363,7 +370,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							this._agreementService.saveCurrentAsCompleteTemplate(this.templateId, res).pipe(
 								tap(() => {
 									if (isAgreement) {
-                                        this._updateCommentByNeeds();
+										this._updateCommentByNeeds();
 										this.getTemplateVersions(this.templateId);
 									}
 								})
@@ -385,7 +392,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
-                    this._updateCommentByNeeds();
+					this._updateCommentByNeeds();
 					this.cleanUp();
 				});
 		});
@@ -399,7 +406,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveCurrentAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
-                    this._updateCommentByNeeds();
+					this._updateCommentByNeeds();
 					this.getTemplateVersions(this.templateId);
 					this.cleanUp();
 				});
@@ -421,7 +428,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				.subscribe((res) => {
 					if (res) {
 						this.showSnackbar();
-                        this._updateCommentByNeeds();
+						this._updateCommentByNeeds();
 						this.getTemplateVersions(this.templateId);
 					}
 
@@ -530,21 +537,22 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 	}
 
-    private _updateCommentByNeeds() {
-        this._editorCoreService
-            .getSyncedCommentState()
-            .pipe(
-                mergeMap(({ updated, deleted }) => {
-                    let obs: Array<Observable<unknown>> = [];
-                    if (updated && updated.length) {
-                        obs.push(this._commentService.updateMany(updated));
-                    }
-                    if (deleted && deleted.length) {
-                        obs.push(this._commentService.deleteMany(deleted));
-                    }
-                    return forkJoin(obs);
-                })
-            )
-            .subscribe();
-    }
+	private _updateCommentByNeeds() {
+		of(this._editorCoreService.getSyncedCommentState())
+			.pipe(
+				switchMap(({ updated, deleted }) => {
+					let obs: Array<Observable<unknown>> = [];
+					if (updated && updated.length) {
+						obs.push(this._commentService.updateMany(updated));
+					}
+					if (deleted && deleted.length) {
+						obs.push(this._commentService.deleteMany(deleted));
+					}
+					return forkJoin(obs);
+				})
+			)
+			.subscribe(() => {
+				this.loadComments(this.templateId);
+			});
+	}
 }

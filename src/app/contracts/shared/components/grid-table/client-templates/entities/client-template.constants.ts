@@ -4,8 +4,8 @@ import { EHeaderCells, IHeaderCell } from '../../mat-grid.interfaces';
 export const DISPLAYED_COLUMNS: string[] = [
 	'language',
 	'agreementTemplateId',
-	'clientName',
 	'name',
+	'clientName',
 	'agreementType',
 	'recipientTypeId',
 	'legalEntityIds',
