@@ -34,6 +34,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1; // Remove this line to use Angular Universal
 
@@ -97,6 +98,7 @@ export function getRemoteServiceBaseUrl(): string {
 		ServiceProxyModule,
 		MsalModule,
 		NgxSpinnerModule,
+		!environment.production ? StoreDevtoolsModule.instrument() : [],
 	],
 	providers: [
 		LoginGuard,

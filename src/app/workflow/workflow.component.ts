@@ -8,6 +8,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { getEmployees } from 'src/app/store/selectors/core.selectors';
+import { Store } from '@ngrx/store';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -144,6 +146,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	syncStateStatuses: ISelectableIdNameDto[] = [];
 	selectedSyncStateStatuses: ISelectableIdNameDto[] = [];
 
+    employees$: Observable<EmployeeDto[]>;
+
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -156,7 +160,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _employeeService: EmployeeServiceProxy,
 		private _activatedRoute: ActivatedRoute,
         private _workflowDataService: WorkflowDataService,
-        private _titleService: TitleService
+        private _titleService: TitleService,
+        private _store: Store
 	) {
 		super(injector);
 
@@ -228,6 +233,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getSalesType();
 		this.getDeliveryTypes();
 		this.getWorkflowStatuses();
+        this.employees$ = this._store.select(getEmployees);
 	}
 
 	ngOnDestroy(): void {
