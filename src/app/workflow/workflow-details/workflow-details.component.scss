@@ -220,6 +220,7 @@
         }
         &--name {
             display: flex;
+            align-items: center;
             &.change-period {
                 color: #72A0F8;
             }
@@ -230,11 +231,14 @@
                 color: $purple-color;
             }
             &::after {
-                content: "•";
+                content: "\A";
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
                 display: block;
-                color: $dark-grey-color;
+                background-color: $dark-grey-color;
                 margin: 0 5px;
-            }
+        }
         }
     }
     &-subheader {
