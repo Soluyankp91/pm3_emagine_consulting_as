@@ -195,7 +195,7 @@
                         <div fxLayout="column" fxLayoutAlign="start start" emgCustomTooltip [contentTemplate]="clientPeriods?.length > 5 ? periodTooltip : null">
                             <div fxLayout="row" fxLayoutAlign="center center">
                                 <span class="tab-header">
-                                    <mat-icon [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
+                                    <mat-icon class="u-mr--5" [svgIcon]="ePeriodIcon[tab.typeId]"></mat-icon>
                                     <span class="tab-header--name" [ngClass]="ePeriodClass[tab.typeId]">
                                         {{clientPeriods?.length > 5 ? ePeriodAbbreviation[tab.typeId] : ePeriodName[tab.typeId]}}
                                     </span>

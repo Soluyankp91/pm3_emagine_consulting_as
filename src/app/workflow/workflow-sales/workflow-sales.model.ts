@@ -28,7 +28,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
 
             remarks: new UntypedFormControl(null),
             noRemarks: new UntypedFormControl(false)
-        }, {updateOn: 'submit'});
+        });
     }
 
     get salesTypeId() {
@@ -158,7 +158,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             clientTimeReportingCapId: new UntypedFormControl(false),
             timeReportingCaps: new UntypedFormArray([]),
             purchaseOrders: new UntypedFormArray([]),
-        }, {updateOn: 'submit'});
+        });
     }
 
     // Client
@@ -308,7 +308,7 @@ export class WorkflowSalesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        }, {updateOn: 'submit'});
+        });
 
     }
     get consultants() {
