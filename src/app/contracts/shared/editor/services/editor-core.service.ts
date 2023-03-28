@@ -23,7 +23,7 @@ import { RICH_EDITOR_OPTIONS } from '../providers';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
 import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
-import { AgreementCommentDto } from '../../../../../shared/service-proxies/service-proxies';
+import { AgreementCommentDto, AgreementTemplateCommentDto } from '../../../../../shared/service-proxies/service-proxies';
 
 @Injectable()
 export class EditorCoreService {
@@ -94,7 +94,7 @@ export class EditorCoreService {
 	}
 
 	setTemplateAsBase64(callback: (base64: string) => void | unknown) {
-        this._commentService.closeCommentPanel();
+		this._commentService.closeCommentPanel();
 		this.editor.exportToBase64((base64) => {
 			this.templateAsBase64$.next(base64);
 			callback(base64);
@@ -106,7 +106,7 @@ export class EditorCoreService {
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {
-        this._commentService.applyComments(comments as any);
+		this._commentService.applyComments(comments as any);
 	}
 
 	insertMergeField(field: string, insertBreak: boolean = false) {
@@ -124,9 +124,9 @@ export class EditorCoreService {
 		this.toggleFields();
 	}
 
-    getSyncedCommentState() {
-        return this._commentService.getSyncedCommentState();
-    }
+	getSyncedCommentState() {
+		return this._commentService.getSyncedCommentState();
+	}
 
 	toggleFields() {
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
@@ -138,9 +138,13 @@ export class EditorCoreService {
 		this._commentService.deleteHighlight(commentID);
 	}
 
-    applyCommentChanges(commentID: number, text: string) {
-        this._commentService.applyCommentChanges(commentID, text);
-    }
+	applyCommentChanges(commentID: number, text: string) {
+		this._commentService.applyCommentChanges(commentID, text);
+	}
+
+	applyNewComment(comment: AgreementCommentDto | AgreementTemplateCommentDto) {
+		this._commentService.applyNewComment(comment);
+	}
 
 	removeUnsavedChanges() {
 		this.editor.hasUnsavedChanges = false;
@@ -274,12 +278,12 @@ export class EditorCoreService {
 		const handler = (rich: RichEdit, e) => {
 			let interval = this.editor.selection.intervals[0];
 			rich.beginUpdate();
-			
+
 			if (charProperties && prgphProperties) {
 				rich.document.setCharacterProperties(interval, charProperties);
 				rich.document.setParagraphProperties(interval, prgphProperties);
 			}
-			
+
 			this.editor.setCommandEnabled(ICustomCommand.FormatPainter, true);
 			rich.endUpdate();
 
