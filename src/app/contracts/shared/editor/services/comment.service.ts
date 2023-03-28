@@ -27,9 +27,7 @@ export class CommentService {
 	state$ = this._state$$.asObservable().pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)));
 	selectEnabled$ = this.state$.pipe(pluck('enabled'));
 
-	constructor() {
-		this.state$.subscribe(console.log);
-	}
+	constructor() {}
 
 	initialize(instance: RichEdit) {
 		this._editor = instance;
