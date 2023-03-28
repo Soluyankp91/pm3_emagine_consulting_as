@@ -10,8 +10,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { getEmployees } from 'src/app/store/selectors/core.selectors';
 import { Store } from '@ngrx/store';
-import { merge, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { merge, Observable, of, Subject, Subscription } from 'rxjs';
+import { debounceTime, filter, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ERouteTitleType } from 'src/shared/AppEnums';
@@ -147,6 +147,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	selectedSyncStateStatuses: ISelectableIdNameDto[] = [];
 
     employees$: Observable<EmployeeDto[]>;
+    filteredAccountManagers$: Observable<SelectableEmployeeDto[]>;
 
 	private _unsubscribe = new Subject();
 	constructor(
@@ -188,41 +189,41 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				this.getWorkflowList(true);
 			});
 
-		this.accountManagerFilter.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(500),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
-						showAll: true,
-						excludeIds: this.selectedAccountManagers.map((x) => +x.id),
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.name : value;
-					}
-					this.isLoading = true;
-					return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredAccountManagers = list.map((x) => {
-						return new SelectableEmployeeDto({
-							id: x.id!,
-							name: x.name!,
-							externalId: x.externalId!,
-							selected: false,
-						});
-					});
-				} else {
-					this.filteredAccountManagers = [
-						{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
-					];
-				}
-				this.isLoading = false;
-			});
+		// this.accountManagerFilter.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(500),
+		// 		switchMap((value: any) => {
+		// 			let toSend = {
+		// 				name: value,
+		// 				maxRecordsCount: 1000,
+		// 				showAll: true,
+		// 				excludeIds: this.selectedAccountManagers.map((x) => +x.id),
+		// 			};
+		// 			if (value?.id) {
+		// 				toSend.name = value.id ? value.name : value;
+		// 			}
+		// 			this.isLoading = true;
+		// 			return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
+		// 		})
+		// 	)
+		// 	.subscribe((list: EmployeeDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredAccountManagers = list.map((x) => {
+		// 				return new SelectableEmployeeDto({
+		// 					id: x.id!,
+		// 					name: x.name!,
+		// 					externalId: x.externalId!,
+		// 					selected: false,
+		// 				});
+		// 			});
+		// 		} else {
+		// 			this.filteredAccountManagers = [
+		// 				{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
+		// 			];
+		// 		}
+		// 		this.isLoading = false;
+		// 	});
 	}
 
 	ngOnInit(): void {
@@ -234,7 +235,80 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getDeliveryTypes();
 		this.getWorkflowStatuses();
         this.employees$ = this._store.select(getEmployees);
+        this.accountManagerFilter.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                // switchMap((value: any) => {
+
+                // })
+                map((value) => {
+                    return this._filterEmployees(value);
+                })
+            )
+            .subscribe((result) => {
+                this.filteredAccountManagers$ = result;
+            });
 	}
+
+    private _filterEmployees(value: string): Observable<SelectableEmployeeDto[]> {
+        const filterValue = value.toLowerCase();
+        const noResults = new SelectableEmployeeDto({
+            id: 'no-data',
+            name: 'No employees found',
+            externalId: '',
+            selected: false
+        });
+        const result = this.employees$.pipe(
+			map((response) => response
+                .filter((option) => option.name.toLowerCase().includes(filterValue))
+                .filter((option) => !this.selectedAccountManagers.map((y) => y.id).includes(option.id))
+                .map((item, index, list) => {
+                    if (list?.length) {
+                        return new SelectableEmployeeDto({
+                            id: item.id!,
+                            name: item.name!,
+                            externalId: item.externalId!,
+                            selected: false,
+                        });
+                    } else {
+                        return noResults;
+                    }
+                }))
+		);
+        this.trigger.updatePosition();
+        // const result = of([]);
+        if (value === '') {
+            return this.employees$.pipe(
+				map((response) =>
+					response
+						.filter((x) => !this.selectedAccountManagers.map((y) => y.id).includes(x.id))
+						.map((item, index, list) => {
+                            if (list?.length) {
+                                return new SelectableEmployeeDto({
+                                    id: item.id!,
+                                    name: item.name!,
+                                    externalId: item.externalId!,
+                                    selected: false,
+                                });
+                            } else {
+                                return noResults;
+                            }
+						})
+				)
+			);
+            // return  new Array<SelectableEmployeeDto>();
+            // .map(i => {
+                // return new SelectableEmployeeDto({
+                //     id: i.id!,
+                //     name: i.name!,
+                //     externalId: i.externalId!,
+                //     selected: false,
+                // })
+            // })))
+        } else {
+            return result;
+        }
+    }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -709,6 +783,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	openMenu(event: any) {
 		event.stopPropagation();
 		this.trigger.openPanel();
+        // setTimeout(() => {
+        //     this.trigger.updatePosition();
+        // }, 0);
 	}
 
 	onOpenedMenu() {

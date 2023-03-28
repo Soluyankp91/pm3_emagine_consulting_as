@@ -43,7 +43,7 @@
                                         </div>
                                     </mat-option>
                                     <ng-container *ngIf="!isLoading">
-                                        <mat-option *ngFor="let manager of filteredAccountManagers"
+                                        <mat-option *ngFor="let manager of filteredAccountManagers$ | async"
                                             class="u-pg--5"
                                             [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
                                             [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
