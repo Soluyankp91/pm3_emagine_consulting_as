@@ -112,7 +112,6 @@ export class FileUploaderComponent implements OnInit {
                     this._files.push(FileUploaderFile.wrap(file.name, file));
                     this.filesAdded.emit([FileUploaderFile.wrap(file.name, file)]);
                     this.filesChanged.emit();
-                    // this.acceptedFileType = true;
                 }
             }
         }
@@ -152,10 +151,7 @@ export class FileUploaderComponent implements OnInit {
 
     public validateFileType(name: String) {
         let ext = name.substring(name.lastIndexOf('.') + 1);
-        if (ext.toLowerCase() === 'png' || ext.toLowerCase() === 'jpg' || ext.toLowerCase() === 'svg' ||
-            ext.toLowerCase() === 'pdf' || ext.toLowerCase() === 'doc' || ext.toLowerCase() === 'docx' ||
-            ext.toLowerCase() === 'txt' || ext.toLowerCase() === 'xls' || ext.toLowerCase() === 'xlsx') {
-
+        if (this.acceptedTypes.includes(ext.toLowerCase())) {
             this.acceptedFileType = true;
             return true;
         } else {

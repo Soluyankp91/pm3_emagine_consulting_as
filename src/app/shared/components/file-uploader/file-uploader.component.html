@@ -1,5 +1,5 @@
 <div class="file-uploader" file-drag-and-drop (click)="fileInput.click()" (onFileDropped)="fileDropped($event)" [ngClass]="{'uploading-wrapper': isFileUploading}">
-    <input #fileInput type="file" [accept]="'.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.svg'" style="display: none"
+    <input #fileInput type="file" [accept]="'.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.svg,.eml,.msg'" style="display: none"
         (change)="onFilesAdded()">
     <div class="content">
         <ng-container *ngIf="isFileUploading; else fileUpload">
