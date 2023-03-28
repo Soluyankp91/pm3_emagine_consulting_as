@@ -265,7 +265,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				},
 				CustomValidators.autocompleteValidator(['id'])
 			),
-		}, {updateOn: 'submit'});
+		});
 		this.consultants.push(form);
         this.onsiteClientAddresses.push([]);
         if (consultant?.onsiteClient?.clientId) {
