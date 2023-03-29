@@ -157,7 +157,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	ngOnInit(): void {
-		this.activatedRoute.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
+		this.activatedRoute.parent.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.workflowId = params.get('id')!;
 		});
 		this._workflowDataService.updateWorkflowProgressStatus({
@@ -1202,7 +1202,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
-			consultantInput.onsiteClientAddress = consultant.onsiteClientAddress;
+			consultantInput.onsiteClientAddress = FindClientAddress(consultant.consultantWorkplaceClientAddress?.clientAddresses, consultant.onsiteClientAddress?.id);
 			consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
 			consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
 			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;

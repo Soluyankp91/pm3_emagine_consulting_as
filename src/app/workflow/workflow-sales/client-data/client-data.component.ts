@@ -593,8 +593,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
 				signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
 				clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
-			},
-			{ updateOn: 'submit' }
+			}
 		);
 		this.salesClientDataForm.contractSigners.push(form);
 		this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
