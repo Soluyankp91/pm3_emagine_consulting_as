@@ -32,7 +32,9 @@
 	font-size: 14px;
 	font-weight: 700;
 	color: #4A4E60;
-	&[ng-reflect-disabled="true"] {
+	&[ng-reflect-disabled="true"],
+    &.mat-tab-disabled,
+    &[aria-disabled="true"] {
 		color:  #B6B4B2;
 	}
 }

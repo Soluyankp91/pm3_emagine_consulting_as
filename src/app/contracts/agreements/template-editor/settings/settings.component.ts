@@ -223,7 +223,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		});
 	}
 
-	onSave() {
+	onSave(discarded = false) {
+		if (this.agreementFormGroup.receiveAgreementsFromOtherParty.value && !discarded) {
+			this._showDiscardDialog();
+			return;
+		}
 		if (!this.agreementFormGroup.valid) {
 			this.agreementFormGroup.markAllAsTouched();
 			return;
@@ -1244,5 +1248,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					);
 				}
 			});
+	}
+
+	private _showDiscardDialog() {
+		let dialogRef = this._dialog.open(ConfirmDialogComponent, {
+			width: '500px',
+			height: '240px',
+			backdropClass: 'backdrop-modal--wrapper',
+			data: {
+				message: `You\'ve selected “Receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
+			},
+		});
+		dialogRef.afterClosed().subscribe((discarded) => {
+			if (discarded) {
+				this.onSave(discarded);
+			}
+		});
 	}
 }
