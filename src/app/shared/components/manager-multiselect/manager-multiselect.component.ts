@@ -10,7 +10,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
-	selector: 'app-manager-multiselect',
+	selector: 'manager-multiselect',
 	templateUrl: './manager-multiselect.component.html',
 	styleUrls: ['./manager-multiselect.component.scss'],
 })

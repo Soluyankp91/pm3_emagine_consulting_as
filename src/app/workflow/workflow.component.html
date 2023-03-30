@@ -4,7 +4,7 @@
         {{(employees$ | async)?.length}}
         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
-                <app-manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)"></app-manager-multiselect>
+                <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)"></manager-multiselect>
                 <!-- <div class="workflow-list--filter-manager cursor-pointer u-mr--10" [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (onMenuOpen)="onOpenedMenu()">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                     <img *ngIf="selectedAccountManagers.length === 0" class="border-rounded-50" src="../../../assets/common/images/select-user-icon.svg">
