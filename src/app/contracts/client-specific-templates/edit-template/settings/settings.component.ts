@@ -664,7 +664,8 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	private _showDiscardDialog() {
 		let dialogRef = this._dialog.open(ConfirmDialogComponent, {
 			width: '500px',
-			height: '240px',
+			minHeight: '240px',
+			height: 'auto',
 			backdropClass: 'backdrop-modal--wrapper',
 			data: {
 				message: `You\'ve selected “Always receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
