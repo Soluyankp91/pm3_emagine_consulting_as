@@ -4,7 +4,8 @@
         {{(employees$ | async)?.length}}
         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
-                <div class="workflow-list--filter-manager cursor-pointer u-mr--10" [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
+                <app-manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)"></app-manager-multiselect>
+                <!-- <div class="workflow-list--filter-manager cursor-pointer u-mr--10" [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (onMenuOpen)="onOpenedMenu()">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [ngSrc]="employeePhotoUrl + selectedAccountManagers[0].externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                     <img *ngIf="selectedAccountManagers.length === 0" class="border-rounded-50" src="../../../assets/common/images/select-user-icon.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
@@ -43,33 +44,41 @@
                                         </div>
                                     </mat-option>
                                     <ng-container *ngIf="!isLoading">
-                                        <mat-option *ngFor="let manager of filteredAccountManagers$ | async"
-                                            class="u-pg--5"
-                                            [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                            [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                            <div class="u-w--100">
-                                                <mat-checkbox [checked]="manager.selected"
-                                                    *ngIf="manager.id !== 'no-data'"
-                                                    color="primary"
-                                                    class="black-checkbox"
-                                                    (change)="toggleSelection(manager,selectedAccountManagers)"
-                                                    (click)="$event.stopPropagation()">
-                                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                        <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)">
-                                                        <span>{{ manager.name }}</span>
+                                            <ng-container *ngFor="let manager of filteredAccountManagers$ | async; trackBy: trackById">
+                                                <mat-option class="u-pg--5"  [ngClass]="{ 'no-data': manager.id === 'no-data'}"
+                                                    [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                                    <div class="u-w--100">
+                                                        <mat-checkbox [checked]="manager.selected"
+                                                            *ngIf="manager.id !== 'no-data'"
+                                                            color="primary"
+                                                            class="black-checkbox"
+                                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                            (click)="$event.stopPropagation()">
+                                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                                <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [ngSrc]="employeePhotoUrl + manager.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)">
+                                                                <span>{{ manager.name }}</span>
+                                                            </div>
+                                                        </mat-checkbox>
+                                                        <span *ngIf="manager.id === 'no-data'"
+                                                            (click)="$event.stopPropagation()">{{ manager.name }}
+                                                        </span>
                                                     </div>
-                                                </mat-checkbox>
-                                                <span *ngIf="manager.id === 'no-data'"
-                                                    (click)="$event.stopPropagation()">{{ manager.name }}
-                                                </span>
-                                            </div>
-                                        </mat-option>
+                                                </mat-option>
+                                                <ng-container *ngIf="(filteredAccountManagers$ | async)?.length === 0">
+                                                    <mat-option (click)="$event.stopPropagation()" class="no-data">
+                                                        <span>
+                                                            No managers found
+                                                        </span>
+                                                    </mat-option>
+                                                </ng-container>
+
+                                            </ng-container>
                                     </ng-container>
                                 </mat-autocomplete>
                             </mat-form-field>
                         </div>
                     </mat-menu>
-                </div>
+                </div> -->
                 <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--10" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">

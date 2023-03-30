@@ -11,7 +11,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angula
 import { getEmployees } from 'src/app/store/selectors/core.selectors';
 import { Store } from '@ngrx/store';
 import { merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { debounceTime, filter, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, finalize, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ERouteTitleType } from 'src/shared/AppEnums';
@@ -238,17 +238,26 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.accountManagerFilter.valueChanges
             .pipe(
                 takeUntil(this._unsubscribe),
+                debounceTime(500),
+                startWith(''),
                 // switchMap((value: any) => {
 
                 // })
                 map((value) => {
+                    this.isLoading = true;
                     return this._filterEmployees(value);
                 })
             )
             .subscribe((result) => {
                 this.filteredAccountManagers$ = result;
+                this.isLoading = false;
             });
 	}
+
+    managersChanged(event: SelectableEmployeeDto[]) {
+        this.selectedAccountManagers = event;
+		this.getWorkflowList(true);
+    }
 
     private _filterEmployees(value: string): Observable<SelectableEmployeeDto[]> {
         const filterValue = value.toLowerCase();
@@ -263,48 +272,30 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 .filter((option) => option.name.toLowerCase().includes(filterValue))
                 .filter((option) => !this.selectedAccountManagers.map((y) => y.id).includes(option.id))
                 .map((item, index, list) => {
-                    if (list?.length) {
-                        return new SelectableEmployeeDto({
-                            id: item.id!,
-                            name: item.name!,
-                            externalId: item.externalId!,
-                            selected: false,
-                        });
-                    } else {
-                        return noResults;
-                    }
-                }))
+                    return new SelectableEmployeeDto({
+                        id: item.id!,
+                        name: item.name!,
+                        externalId: item.externalId!,
+                        selected: false,
+                    });
+                })
+            )
 		);
-        this.trigger.updatePosition();
-        // const result = of([]);
         if (value === '') {
             return this.employees$.pipe(
 				map((response) =>
 					response
 						.filter((x) => !this.selectedAccountManagers.map((y) => y.id).includes(x.id))
 						.map((item, index, list) => {
-                            if (list?.length) {
-                                return new SelectableEmployeeDto({
-                                    id: item.id!,
-                                    name: item.name!,
-                                    externalId: item.externalId!,
-                                    selected: false,
-                                });
-                            } else {
-                                return noResults;
-                            }
+                            return new SelectableEmployeeDto({
+                                id: item.id!,
+                                name: item.name!,
+                                externalId: item.externalId!,
+                                selected: false,
+                            });
 						})
 				)
 			);
-            // return  new Array<SelectableEmployeeDto>();
-            // .map(i => {
-                // return new SelectableEmployeeDto({
-                //     id: i.id!,
-                //     name: i.name!,
-                //     externalId: i.externalId!,
-                //     selected: false,
-                // })
-            // })))
         } else {
             return result;
         }
@@ -780,17 +771,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getCurrentUser();
 	}
 
-	openMenu(event: any) {
-		event.stopPropagation();
-		this.trigger.openPanel();
-        // setTimeout(() => {
-        //     this.trigger.updatePosition();
-        // }, 0);
-	}
-
 	onOpenedMenu() {
-		this.accountManagerFilter.setValue('');
-		this.accountManagerFilter.markAsTouched();
+        setTimeout(() => {
+            this.trigger.openPanel();
+        }, 100);
 	}
 
 	displayNameFn(option: any) {

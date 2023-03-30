@@ -23,6 +23,7 @@ import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
 import { environment } from 'src/environments/environment';
 import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 import { TooltipModule } from './ui/tooltip/tooltip.module';
+import { ManagerMultiselectComponent } from '../components/manager-multiselect/manager-multiselect.component';
 
 @NgModule({
 	declarations: [
@@ -41,6 +42,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		ImageFallbackDirective,
 		ImgUrlPipe,
 		DisplayListPipe,
+		ManagerMultiselectComponent,
 	],
 	imports: [
 		CommonModule,
@@ -50,7 +52,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgScrollbarModule,
 		ScrollToModule.forRoot(),
 		NgOptimizedImage,
-        TooltipModule
+		TooltipModule,
 	],
 	exports: [
 		MaterialModule,
@@ -73,7 +75,8 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgOptimizedImage,
 		ImgUrlPipe,
 		DisplayListPipe,
-        TooltipModule,
+		TooltipModule,
+		ManagerMultiselectComponent,
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })
