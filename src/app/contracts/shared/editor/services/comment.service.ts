@@ -74,6 +74,11 @@ export class CommentService {
 		}
 	}
 
+	applyNewHighlight(interval: IntervalApi, id: number) {
+		this._registerHighlightPosition(interval, id);
+		this.selectEnabled$.pipe(take(1)).subscribe((enabled) => this._toggleHighlightStyle(enabled));
+	}
+
 	cancelHighlightCreation() {
 		this.setState(() => ({ viewMode: SidebarViewMode.View, selected: [] }));
 	}
@@ -86,6 +91,12 @@ export class CommentService {
 	toggleCreateMode() {
 		const interval = this._editor.selection.intervals[0];
 		this.setState(() => ({ enabled: true, viewMode: SidebarViewMode.Create, selected: [], interval }));
+	}
+
+	getMatchedHighlightIdByPosition(oldInterval: IntervalApi): number | null {
+		let highlights = this._state$$.value.highlights;
+		let matchedHighlight = highlights.find((hl) => this._doesIntervalIncludesPosition(hl.interval, oldInterval.start));
+		return matchedHighlight ? matchedHighlight.id : null;
 	}
 
 	setInterval(interval: IntervalApi) {
@@ -169,7 +180,6 @@ export class CommentService {
 				}
 
 				if (enabled && viewMode === SidebarViewMode.Create) {
-					this._toggleCommentSidebar(false);
 					this.setState(() => ({ viewMode: SidebarViewMode.View }));
 				}
 			});
@@ -191,7 +201,7 @@ export class CommentService {
 				text: 'Highlight',
 				type: RibbonItemType.Button,
 				toggleMode: true,
-				selected: false,
+				selected: true,
 				showText: true,
 				beginGroup: false,
 				id: ICustomCommand.ToggleCommentMode,

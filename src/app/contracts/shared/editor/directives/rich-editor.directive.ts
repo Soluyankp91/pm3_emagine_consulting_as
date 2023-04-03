@@ -58,13 +58,6 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 					this._registerTabChangeEvent();
 					break;
 				}
-				case ICustomCommand.RibbonTabChange: {
-					this.editor.events.customCommandExecuted._fireEvent(this.editor, {
-						commandName: ICustomCommand.ToggleCommentMode,
-						parameter: false,
-					});
-					break;
-				}
 				case ICustomCommand.DocumentSave: {
 					this.saved.emit();
 					break;
@@ -76,9 +69,12 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 	private _registerTabChangeEvent() {
 		let tabElems = this._elementRef.nativeElement.querySelectorAll('.dx-item.dx-tab');
 		let sub = fromEvent(tabElems, 'click').subscribe((e) => {
+			let target = e.target as HTMLElement;
+			let parentElem = target.classList.contains('dx-item') ? target : target.parentElement;
+			let ribbonName = parentElem.querySelector('.dx-tab-text')?.textContent;
 			this.editor.events.customCommandExecuted._fireEvent(this.editor, {
 				commandName: ICustomCommand.RibbonTabChange,
-				parameter: undefined,
+				parameter: ribbonName ? ribbonName.toLowerCase() : undefined,
 			});
 		});
 		this._subscriptions.push(sub);
