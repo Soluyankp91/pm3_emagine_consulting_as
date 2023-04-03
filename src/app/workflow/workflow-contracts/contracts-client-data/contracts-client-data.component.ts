@@ -122,6 +122,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
     getInitialFrameAgreements() {
         this.getFrameAgreements(true)
             .subscribe((result) => {
+				console.log(result, 'result');
                 this.filteredFrameAgreements = result.items;
                 if (this.selectedFrameAgreementId !== null) {
                     this.contractClientForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
