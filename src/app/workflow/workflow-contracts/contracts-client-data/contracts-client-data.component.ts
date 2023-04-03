@@ -11,6 +11,7 @@ import {
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
 	EnumEntityTypeDto,
+	FrameAgreementServiceProxy,
 	PeriodClientSpecialFeeDto,
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
@@ -57,6 +58,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		private _internalLookupService: InternalLookupService,
 		private _agreementService: AgreementServiceProxy,
 		private _workflowDataService: WorkflowDataService,
+		private _frameAgreementServiceProxy: FrameAgreementServiceProxy,
 	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
@@ -149,13 +151,13 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			pageSize: 1000,
 			sort: '',
 		};
-		return this._agreementService
-			.simpleList(
+		return this._frameAgreementServiceProxy
+			.clientFrameAgreementList(
 				dataToSend.agreementId,
 				dataToSend.search,
 				undefined, // dataToSend.clientId,
-				dataToSend.agreementType,
-				dataToSend.validity,
+				// dataToSend.agreementType,
+				// dataToSend.validity,
 				dataToSend.legalEntityId,
 				dataToSend.salesTypeId,
 				dataToSend.contractTypeId,
@@ -163,8 +165,8 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.startDate,
 				dataToSend.endDate,
                 dataToSend.recipientClientIds,
-                undefined, //recipientConsultantId
-                undefined, //recipientSupplierId
+                // undefined, //recipientConsultantId
+                // undefined, //recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort

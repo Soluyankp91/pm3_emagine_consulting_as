@@ -10,7 +10,7 @@ import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementSimpleListItemDtoPaginatedList, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementSimpleListItemDtoPaginatedList, AgreementType, ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, ContactResultDto, ContractSignerDto, EnumEntityTypeDto, FrameAgreementServiceProxy, LegalEntityDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { ClientRateTypes, WorkflowSalesClientDataForm, WorkflowSalesMainForm } from '../workflow-sales.model';
@@ -70,7 +70,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
         private _agreementService: AgreementServiceProxy,
-        private _workflowDataService: WorkflowDataService
+        private _workflowDataService: WorkflowDataService,
+		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -380,13 +381,13 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
             pageSize: 1000,
             sort: ''
         }
-        return this._agreementService
-			.simpleList(
+        return this._frameAgreementServiceProxy
+			.clientFrameAgreementList(
 				dataToSend.agreementId,
 				dataToSend.search,
 				undefined, // dataToSend.clientId,
-				dataToSend.agreementType,
-				dataToSend.validity,
+				// dataToSend.agreementType,
+				// dataToSend.validity,
 				dataToSend.legalEntityId,
 				dataToSend.salesTypeId,
 				dataToSend.contractTypeId,
@@ -394,8 +395,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				dataToSend.startDate,
 				dataToSend.endDate,
                 dataToSend.recipientClientIds,
-                undefined, //recipientConsultantId
-                undefined, //recipientSupplierId
+                // undefined, //recipientConsultantId
+                // undefined, //recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
