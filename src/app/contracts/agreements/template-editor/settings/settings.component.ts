@@ -119,6 +119,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	currentAgreementId: number;
 	currentAgreement: AgreementDetailsDto;
+	isLocked: boolean;
 
 	currentDuplicatedTemplate: AgreementDetailsDto;
 
@@ -223,10 +224,30 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		});
 	}
 
-	onSave(discarded = false) {
-		if (this.agreementFormGroup.receiveAgreementsFromOtherParty.value && !discarded) {
-			this._showDiscardDialog();
-			return;
+	async onSave() {
+		if (this.isLocked) {
+			let dialogRef = this._dialog.open(ConfirmDialogComponent, {
+				width: '500px',
+				height: '306px',
+				backdropClass: 'backdrop-modal--wrapper',
+				data: {
+					label: 'Agreement number change',
+					message:
+						'Editing sent agreement settings will result in the current agreement number {number} change to {new number}. Are you sure you want to proceed?',
+				},
+			});
+			let proceed = await dialogRef.afterClosed().toPromise();
+			if (proceed) {
+				await this._apiServiceProxy.openEdit(this.currentAgreement.agreementId).toPromise();
+			} else {
+				return;
+			}
+		}
+		if (this.agreementFormGroup.receiveAgreementsFromOtherParty.value && this.editMode) {
+			let discard = await this._showDiscardDialog().afterClosed().toPromise();
+			if (!discard) {
+				return;
+			}
 		}
 		if (!this.agreementFormGroup.valid) {
 			this.agreementFormGroup.markAllAsTouched();
@@ -279,9 +300,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					switchMap(() => {
 						return this._apiServiceProxy.preview(this.currentAgreementId);
 					}),
-					tap((template) => {
+					tap((agreement) => {
 						this.agreementFormGroup.attachments.reset();
-						this.preselectedFiles = template.attachments as FileUpload[];
+						this.preselectedFiles = agreement.attachments as FileUpload[];
+					}),
+					tap((agreement) => {
+						this.isLocked = agreement.isLocked;
 					}),
 					tap(() => {
 						this.hideMainSpinner();
@@ -840,6 +864,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							width: '500px',
 							height: '240px',
 							backdropClass: 'backdrop-modal--wrapper',
+							data: {
+								label: 'Discard Changes',
+								message:
+									'Changing main template settings will result in discarding all the data that has been applied',
+							},
 						});
 						return dialogRef.afterClosed();
 					}
@@ -1130,6 +1159,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _preselectAgreement(agreementId: number) {
 		this._apiServiceProxy.agreementGET(agreementId).subscribe((agreement) => {
 			this.currentAgreement = agreement;
+			this.isLocked = this.currentAgreement.isLocked;
 			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreement.receiveAgreementsFromOtherParty);
 			if (agreement.creationMode === 3) {
 				this.currentDuplicatedTemplate = agreement;
@@ -1251,19 +1281,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _showDiscardDialog() {
-		let dialogRef = this._dialog.open(ConfirmDialogComponent, {
+		return this._dialog.open(ConfirmDialogComponent, {
 			width: '500px',
 			minHeight: '240px',
 			height: 'auto',
 			backdropClass: 'backdrop-modal--wrapper',
 			data: {
+				label: 'Discard Changes',
 				message: `You\'ve selected “Receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
 			},
-		});
-		dialogRef.afterClosed().subscribe((discarded) => {
-			if (discarded) {
-				this.onSave(discarded);
-			}
 		});
 	}
 }

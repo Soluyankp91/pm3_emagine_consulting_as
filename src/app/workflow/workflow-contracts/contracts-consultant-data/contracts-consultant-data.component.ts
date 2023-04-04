@@ -7,7 +7,7 @@ import { forkJoin, Subject } from 'rxjs';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementSimpleListItemDtoPaginatedList, AgreementType, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementServiceProxy, AgreementSimpleListItemDto, AgreementSimpleListItemDtoPaginatedList, AgreementType, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantContractsDataQueryDto, ConsultantResultDto, EnumEntityTypeDto, FrameAgreementServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
@@ -47,8 +47,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         private dialog: MatDialog,
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
-        private _agreementService: AgreementServiceProxy,
-        private _workflowDataService: WorkflowDataService
+        // private _agreementService: AgreementServiceProxy,
+        private _workflowDataService: WorkflowDataService,
+		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
     ) {
 		super(injector);
 		this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
@@ -63,8 +64,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		this._unsubscribe.complete();
 	}
 
-    getInitialFrameAgreements(consultantId: number, consultantIndex: number) {
-        this.getFrameAgreements(consultantId, consultantIndex, true)
+	// TODO: refactor this any type
+    getInitialFrameAgreements(consultant: any, consultantIndex: number) {
+        this.getFrameAgreements(consultant, consultantIndex, true)
             .subscribe((result) => {
                 this.filteredFrameAgreements[consultantIndex] = result.items;
                 if (this.selectedFrameAgreementList[consultantIndex] !== null) {
@@ -77,7 +79,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
             });
     }
 
-    getFrameAgreements(consultantId: number, consultantIndex: number, isInitial = false, search: string = '') {
+	// TODO: refactor this any type
+    getFrameAgreements(consultant: any, consultantIndex: number, isInitial = false, search: string = '') {
 		let dataToSend = {
 			agreementId: undefined,
 			search: search,
@@ -91,27 +94,28 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			startDate: undefined,
 			endDate: undefined,
             recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(Boolean),
-            recipientConsultantId: consultantId,
+            recipientConsultantId: consultant.consultantId,
+			recipientSupplierId: consultant.consultant.supplierId,
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
 		};
-		return this._agreementService
-			.simpleList(
+		return this._frameAgreementServiceProxy
+			.consultantFrameAgreementList(
 				dataToSend.agreementId,
 				dataToSend.search,
-				undefined, // dataToSend.clientId,
-				dataToSend.agreementType,
-				dataToSend.validity,
+				// undefined, // dataToSend.clientId,
+				// dataToSend.agreementType,
+				// dataToSend.validity,
 				dataToSend.legalEntityId,
 				dataToSend.salesTypeId,
 				dataToSend.contractTypeId,
 				dataToSend.deliveryTypeId,
 				dataToSend.startDate,
 				dataToSend.endDate,
-                dataToSend.recipientClientIds,
-                dataToSend.recipientConsultantId, //recipientConsultantId
-                undefined, //recipientSupplierId
+                // dataToSend.recipientClientIds,
+                dataToSend.recipientConsultantId || undefined, //recipientConsultantId
+				dataToSend.recipientSupplierId || undefined,
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort
@@ -215,14 +219,17 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         if (this.isContractModuleEnabled) {
             this.filteredFrameAgreements.push([]);
             if (consultant.employmentTypeId !== EmploymentTypes.FeeOnly && consultant.employmentTypeId !== EmploymentTypes.Recruitment) {
-                this.manageFrameAgreementAutocomplete(consultant.consultantId, consultantIndex);
-                this.getInitialFrameAgreements(consultant.consultantId, consultantIndex);
+                // this.manageFrameAgreementAutocomplete(consultant.consultantId, consultantIndex);
+				this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
+
+                this.getInitialFrameAgreements(consultant, consultantIndex);
             }
         }
+
 		this.filteredConsultants.push(consultant.consultant!);
 	}
 
-    manageFrameAgreementAutocomplete(consultantId: number, consultantIndex: number) {
+    manageFrameAgreementAutocomplete(consultant: any, consultantIndex: number) {
         let arrayControl = this.consultants.at(consultantIndex);
 		arrayControl!
 			.get('frameAgreementId')!
@@ -238,7 +245,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 					if (value?.agreementId) {
 						toSend.search = value.agreementId ? value.agreementName : value;
 					}
-					return this.getFrameAgreements(consultantId, consultantIndex, false, toSend.search);
+					return this.getFrameAgreements(consultant, consultantIndex, false, toSend.search);
 				})
 			)
 			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {

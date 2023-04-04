@@ -156,6 +156,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			)
 			.subscribe((tmp) => {
 				this.template$.next(tmp);
+				this.loadComments(templateId, false);
 				this.isLoading = false;
 				this.isPageLoading = false;
 

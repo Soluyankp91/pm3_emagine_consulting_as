@@ -122,10 +122,12 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this._unSubscribe$.complete();
 	}
 
-	onSave(discarded = false) {
-		if (this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.value && !discarded) {
-			this._showDiscardDialog();
-			return;
+	async onSave() {
+		if (this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.value && this.editMode) {
+			let discard = await this._showDiscardDialog().afterClosed().toPromise();
+			if (!discard) {
+				return;
+			}
 		}
 		if (!this.masterTemplateFormGroup.valid) {
 			this.masterTemplateFormGroup.markAllAsTouched();
@@ -508,19 +510,15 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	private _showDiscardDialog() {
-		let dialogRef = this._dialog.open(ConfirmDialogComponent, {
+		return this._dialog.open(ConfirmDialogComponent, {
 			width: '500px',
 			minHeight: '240px',
 			height: 'auto',
 			backdropClass: 'backdrop-modal--wrapper',
 			data: {
+				label: 'Discard Changes',
 				message: `You\'ve selected “Always receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
 			},
-		});
-		dialogRef.afterClosed().subscribe((discarded) => {
-			if (discarded) {
-				this.onSave(discarded);
-			}
 		});
 	}
 }

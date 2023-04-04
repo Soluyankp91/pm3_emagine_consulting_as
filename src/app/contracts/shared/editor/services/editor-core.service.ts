@@ -1,10 +1,13 @@
 import { EventEmitter, Inject, Injectable } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
+
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import {
 	FileTabItemId,
 	HomeTabCommandId,
 	HomeTabItemId,
 	MailMergeTabCommandId,
+	ContextMenuCommandId,
 	MailMergeTabItemId,
 	Options,
 	RibbonButtonItem,
@@ -12,6 +15,7 @@ import {
 	RibbonTabType,
 	RichEdit,
 } from 'devexpress-richedit';
+import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
 import { CharacterPropertiesApi } from 'devexpress-richedit/lib/model-api/character-properties';
 import { ParagraphPropertiesApi } from 'devexpress-richedit/lib/model-api/paragraph';
@@ -22,8 +26,8 @@ import { CommentService } from './comment.service';
 import { RICH_EDITOR_OPTIONS } from '../providers';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
 import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
-import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { AgreementCommentDto, AgreementTemplateCommentDto } from '../../../../../shared/service-proxies/service-proxies';
+import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 
 @Injectable()
 export class EditorCoreService {
@@ -41,16 +45,9 @@ export class EditorCoreService {
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
 		private _compareService: CompareService,
-		private _commentService: CommentService
+		private _commentService: CommentService,
+		private clipboard: Clipboard
 	) {}
-
-	set mergeFields(fields: IMergeField) {
-		this.options.mailMerge.dataSource = [fields];
-	}
-
-	get mergeFields() {
-		return this.options.mailMerge.dataSource[0];
-	}
 
 	set loading(state: boolean) {
 		if (this.editor) {
@@ -75,6 +72,7 @@ export class EditorCoreService {
 		this._initCompareTab();
 		this._initComments();
 		this._registerCustomContextMenuItems();
+		this._registerCopyMergeFieldCommand();
 	}
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
@@ -94,7 +92,7 @@ export class EditorCoreService {
 	}
 
 	setTemplateAsBase64(callback: (base64: string) => void | unknown) {
-		this._commentService.closeCommentPanel();
+		// this._commentService.closeCommentPanel();
 		this.editor.exportToBase64((base64) => {
 			this.templateAsBase64$.next(base64);
 			callback(base64);
@@ -121,17 +119,23 @@ export class EditorCoreService {
 		const replaced = text.replace(/["]+/g, '');
 		this.editor.document.deleteText(_field.codeInterval);
 		this.editor.document.insertText(_field.codeInterval.start, replaced);
-		this.toggleFields();
 	}
 
 	getSyncedCommentState() {
 		return this._commentService.getSyncedCommentState();
 	}
 
-	toggleFields() {
-		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
-		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
-		this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
+	toggleFields(showResult: boolean = true) {
+		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+		if (showResult) {
+			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
+		} else {
+			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldCodes);
+		}
+	}
+
+	toggleHighlightView(state: boolean) {
+		this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, state);
 	}
 
 	deleteComment(commentID: number) {
@@ -165,6 +169,7 @@ export class EditorCoreService {
 		const homeTab = this.options.ribbon.getTab(RibbonTabType.Home);
 
 		const insertFieldBtnOpts: RibbonButtonItemOptions = { icon: 'dxre-icon-InsertDataField', showText: true };
+		const showAllFieldResultsBtnOpts: RibbonButtonItemOptions = { icon: 'dxre-icon-ShowAllFieldResults', showText: true };
 		const painterFormatBtnOpts: RibbonButtonItemOptions = { icon: 'palette', showText: false };
 
 		fileTab.insertItem(new RibbonButtonItem(ICustomCommand.UpdateStyle, 'Update Styles'), 5);
@@ -182,6 +187,9 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.GoToNextDataRecord);
 		mergeTab.removeItem(MailMergeTabItemId.GoToPreviousDataRecord);
 		mergeTab.removeItem(MailMergeTabItemId.UpdateAllFields);
+		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldResults);
+
+		mergeTab.insertItem(new RibbonButtonItem(MailMergeTabItemId.UpdateAllFields, 'Show All Field Results', showAllFieldResultsBtnOpts), 3);
 
 		fileTab.removeItem(FileTabItemId.ExportDocument);
 		homeTab.removeItem(HomeTabItemId.Paste);
@@ -201,6 +209,14 @@ export class EditorCoreService {
 			this.afterViewInit$.complete();
 			this.toggleFields();
 			this.removeUnsavedChanges();
+			this.toggleHighlightView(true);
+			this.editor.events.contentInserted.addHandler((s, e) => {
+				const regex = /{[^}]*}/g;
+				const text = this.editor.document.getText(e.interval);
+				if (text.length > 1 && regex.test(text)) {
+					this._transformFieldsIntoMergeFields();
+				}
+			});
 		});
 
 		this.editor.events.documentChanged.addHandler(() => {
@@ -252,6 +268,15 @@ export class EditorCoreService {
 				}
 				case ICustomCommand.ToggleCommentMode:
 					this._commentService.toggleHighlightState(e.parameter);
+					break;
+				case ICustomCommand.CopyMergeFields:
+					this._copyMergeFields();
+					break;
+				case ICustomCommand.TransformToFreeText:
+					this._transformMergeFieldToFreeText();
+					break;
+				case ICustomCommand.RibbonTabChange:
+					this._onRibbonTabChange(e.parameter);
 					break;
 			}
 		});
@@ -309,9 +334,84 @@ export class EditorCoreService {
 		this.editor.events.pointerUp.addHandler(handler);
 	}
 
+	private _copyMergeFields() {
+		this.editor.history.beginTransaction();
+		let code = this.editor.document.getText(this.editor.selection.intervals[0]);
+		let cleanedUpText = this._replaceMergeFieldWithRegex(code);
+		this.clipboard.copy(cleanedUpText);
+		this.editor.history.endTransaction();
+	}
+
+	private _transformMergeFieldToFreeText() {
+		this.editor.history.beginTransaction();
+		let selection = this.editor.selection.intervals[0];
+		let fields = this.editor.document.fields.find(selection);
+		fields.forEach((field) => this._removeMergeField(field));
+		this.editor.history.endTransaction();
+	}
+
+	private _removeMergeField(field: FieldApi) {
+		let fieldInterval = field.interval;
+		let contentInterval = field.resultInterval;
+		let content = this.editor.document.getText(contentInterval);
+		let newInterval = new IntervalApi(fieldInterval.start, content.length);
+		let highlightID = this._commentService.getMatchedHighlightIdByPosition(fieldInterval);
+		field.delete();
+
+		this.editor.document.insertText(fieldInterval.start, content);
+		if (highlightID) {
+			this._commentService.applyNewHighlight(newInterval, highlightID);
+		}
+		this.editor.selection.goToLineStart();
+	}
+
+	private _registerCopyMergeFieldCommand() {
+		this.editor.events.contextMenuShowing.addHandler((s, e) => {
+			let interval = this.editor.selection.intervals[0];
+			if (interval.length) {
+				let fieldsInPosition = this.editor.document.fields.find(interval);
+				if (fieldsInPosition.length) {
+					e.contextMenu.items.forEach((item) => {
+						let allowedCommands = [ICustomCommand.CopyMergeFields, ICustomCommand.TransformToFreeText];
+						let disallowedCommands = [
+							ContextMenuCommandId.ShowBookmarkDialog,
+							ContextMenuCommandId.ShowHyperlinkDialog,
+						];
+						if (allowedCommands.includes(item.id as ICustomCommand)) {
+							item.visible = true;
+							item.disabled = false;
+						}
+
+						if (disallowedCommands.includes(item.id as ContextMenuCommandId)) {
+							item.visible = false;
+							item.disabled = true;
+						}
+					});
+				}
+			}
+		});
+	}
+
 	private _registerCustomContextMenuItems() {
 		CUSTOM_CONTEXT_MENU_ITEMS.forEach((menuItem) => {
-			this.editor.contextMenu.insertItem(menuItem);
+			if (Reflect.has(menuItem, 'insertAfter')) {
+				this.editor.contextMenu.insertItemAfter(menuItem, menuItem.insertAfter);
+			} else {
+				this.editor.contextMenu.insertItem(menuItem);
+			}
 		});
+	}
+
+	private _replaceMergeFieldWithRegex(code: string) {
+		const regex = new RegExp(/\}.*?\>/g);
+		return code.replace(regex, '}').replace(/{MERGEFIELD /g, '{');
+	}
+
+	private _triggerCustomCommand(command: ICustomCommand, parameter?: any) {
+		this.editor.events.customCommandExecuted._fireEvent(this.editor, { commandName: command, parameter });
+	}
+
+	private _onRibbonTabChange(param: string) {
+		this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, param !== 'compare');
 	}
 }

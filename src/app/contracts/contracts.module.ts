@@ -87,6 +87,8 @@ import { DefaultTemplateComponent } from './shared/components/popUps/default-tem
 import { WorkflowInfoDisplayPanelComponent } from './shared/components/workflow-info-display-panel/workflow-info-display-panel.component';
 import { EnvelopePathFilterComponent } from './shared/components/grid-table/agreements/filters/envelope-path-filter/envelope-path-filter.component';
 import { EnvelopePathComponent } from './shared/components/envelope-path/envelope-path.component';
+import { ActionDialogComponent } from './shared/components/popUps/action-dialog/action-dialog.component';
+import { DefaultFileUploaderComponent } from './shared/components/default-file-uploader/default-file-uploader.component';
 
 @NgModule({
 	declarations: [
@@ -153,6 +155,8 @@ import { EnvelopePathComponent } from './shared/components/envelope-path/envelop
 		WorkflowInfoDisplayPanelComponent,
 		EnvelopePathFilterComponent,
 		EnvelopePathComponent,
+		ActionDialogComponent,
+  DefaultFileUploaderComponent,
 	],
 	imports: [
 		CommonModule,
@@ -393,5 +397,9 @@ export class ContractsModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/information-tip-icon.svg')
 		);
 		iconRegistry.addSvgIcon('loop-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/loop-icon.svg'));
+		iconRegistry.addSvgIcon(
+			'legal-contract-upload',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contract-upload.svg')
+		);
 	}
 }
