@@ -37,10 +37,18 @@
 										<span> {{ cell.name }} </span>
 									</div>
 									<div class="autocomplete-second-row">
-										<span>{{ options[1].agreementType[cell.agreementType] }} </span>
-										<span>{{ cell.clientName }} </span>
-										<span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
-										<span>{{ cell.createdDateUtc | momentFormat }}</span>
+										<ng-container *ngIf="options[1].agreementType[cell.agreementType]">
+											<span>{{ options[1].agreementType[cell.agreementType] }} </span>
+										</ng-container>
+										<ng-container *ngIf="cell.clientName">
+											· <span>{{ cell.clientName }} </span>
+										</ng-container>
+										<ng-container *ngIf="cell.tenantIds">
+											· <span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
+										</ng-container>
+										<ng-container *ngIf="cell.createdDateUtc">
+											· <span>{{ cell.createdDateUtc | momentFormat }}</span>
+										</ng-container>
 									</div>
 								</div>
 							</ng-template>

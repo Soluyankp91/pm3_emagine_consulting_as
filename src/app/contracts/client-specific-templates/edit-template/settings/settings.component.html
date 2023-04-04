@@ -23,9 +23,9 @@
 				<mat-divider class="mat-divider"></mat-divider>
 				<div class="form-fields-container">
 					<ng-container *ngIf="duplicateOrInherit$ | async as templateOptions">
-						<ng-container *ngIf="templateOptions.options$ | async as options">
+						<ng-container *ngIf="templateOptions.options$ | async as duplicateOrInheritOptions">
 							<emg-dropdown-autocomplete-single-select
-								[options]="$any(options)"
+								[options]="$any(duplicateOrInheritOptions)"
 								[unwrapFunction]="templateOptions.unwrapFunction"
 								[label]="templateOptions.label"
 								[isOptionsLoading]="isDuplicateParentOptionsLoading$"
@@ -33,6 +33,27 @@
 								outputProperty="agreementTemplateId"
 								labelKey="name"
 								(inputEmitter)="templateOptions.optionsChanged$.next($event)">
+								<ng-template let-cell="option" #optionTemplate>
+									<div>
+										<div class="autocomplete-first-row">
+											<span> {{ cell.name }} </span>
+										</div>
+										<div class="autocomplete-second-row">
+											<ng-container *ngIf="options[1].agreementType[cell.agreementType]">
+												<span>{{ options[1].agreementType[cell.agreementType] }} </span>
+											</ng-container>
+											<ng-container *ngIf="cell.clientName">
+												· <span>{{ cell.clientName }} </span>
+											</ng-container>
+											<ng-container *ngIf="cell.tenantIds">
+												· <span>{{ cell.tenantIds | truncateTextCustom : 35 }} </span>
+											</ng-container>
+											<ng-container *ngIf="cell.createdDateUtc">
+												· <span>{{ cell.createdDateUtc | momentFormat }}</span>
+											</ng-container>
+										</div>
+									</div>
+								</ng-template>
 							</emg-dropdown-autocomplete-single-select>
 						</ng-container>
 					</ng-container>
@@ -41,7 +62,7 @@
 							<mat-form-field appearance="outline">
 								<mat-label> Recipient type </mat-label>
 								<mat-select placeholder="Recipient type" formControlName="recipientTypeId">
-									<ng-container *ngFor="let recipientType of options.recipientTypes">
+									<ng-container *ngFor="let recipientType of options[0].recipientTypes">
 										<mat-option [value]="recipientType.id">{{ recipientType.name }}</mat-option>
 									</ng-container>
 								</mat-select>
@@ -120,7 +141,7 @@
 					<mat-form-field appearance="outline" class="long-row-cell">
 						<mat-label>Internal legal entity</mat-label>
 						<mat-select formControlName="legalEntities" placeholder="Internal legal entity" multiple>
-							<ng-container *ngFor="let legalEntity of options.legalEntities">
+							<ng-container *ngFor="let legalEntity of options[0].legalEntities">
 								<mat-option [value]="legalEntity.id">{{ legalEntity.name }}</mat-option>
 							</ng-container>
 						</mat-select>
@@ -131,7 +152,7 @@
 							<mat-form-field appearance="outline">
 								<mat-label>Sales type</mat-label>
 								<mat-select formControlName="salesTypes" placeholder="Sales types" multiple>
-									<mat-option *ngFor="let salesType of options.salesTypes" [value]="salesType.id">
+									<mat-option *ngFor="let salesType of options[0].salesTypes" [value]="salesType.id">
 										{{ salesType.name }}</mat-option
 									>
 								</mat-select>
@@ -145,7 +166,7 @@
 							<mat-form-field appearance="outline">
 								<mat-label>Delivery type</mat-label>
 								<mat-select formControlName="deliveryTypes" placeholder="Delivery type" multiple>
-									<ng-container *ngFor="let deliveryType of options.deliveryTypes">
+									<ng-container *ngFor="let deliveryType of options[0].deliveryTypes">
 										<mat-option [value]="deliveryType.id">{{ deliveryType.name }}</mat-option>
 									</ng-container>
 								</mat-select>
@@ -160,7 +181,7 @@
 							<mat-form-field appearance="outline">
 								<mat-label> Contract type</mat-label>
 								<mat-select formControlName="contractTypes" placeholder="Contract type" multiple>
-									<ng-container *ngFor="let contractType of options.contractTypes">
+									<ng-container *ngFor="let contractType of options[0].contractTypes">
 										<mat-option [value]="contractType.id">{{ contractType.name }}</mat-option>
 									</ng-container>
 								</mat-select>
@@ -173,7 +194,7 @@
 							<mat-form-field appearance="outline">
 								<mat-label> Language of text</mat-label>
 								<mat-select formControlName="language" placeholder="Language of text">
-									<mat-option *ngFor="let language of options.languages" [value]="language.id">{{
+									<mat-option *ngFor="let language of options[0].languages" [value]="language.id">{{
 										language.name
 									}}</mat-option>
 								</mat-select>
@@ -189,7 +210,9 @@
 						<mat-error><app-validator [control]="clientTemplateFormGroup.note"></app-validator></mat-error>
 					</mat-form-field>
 					<ng-container *ngIf="!clientTemplateFormGroup.value.receiveAgreementsFromOtherParty">
-						<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text">Signature required</mat-checkbox>
+						<mat-checkbox formControlName="isSignatureRequired" class="checkbox-text"
+							>Signature required</mat-checkbox
+						>
 					</ng-container>
 					<mat-checkbox formControlName="isDefaultTemplate" class="checkbox-text"
 						>Default template for contracts of this type</mat-checkbox
