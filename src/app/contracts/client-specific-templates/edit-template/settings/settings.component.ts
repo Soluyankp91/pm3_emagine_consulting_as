@@ -16,6 +16,7 @@ import {
 	LegalEntityDto,
 	LookupServiceProxy,
 	SaveAgreementTemplateDto,
+	SimpleAgreementTemplatesListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
 import {
 	map,
@@ -44,7 +45,7 @@ import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model'
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { CreationTitleService } from 'src/app/contracts/shared/services/creation-title.service';
 import { CLIENT_AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
-import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
 import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
 import { Location } from '@angular/common';
@@ -83,7 +84,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	legalEntities: LegalEntityDto[];
 
-	options$: Observable<SettingsOptions>;
+	options$: Observable<[SettingsOptions, MappedTableCells]>;
 
 	modeControl$ = new BehaviorSubject(AgreementCreationMode.InheritedFromParent);
 
@@ -277,9 +278,6 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 				this.legalEntities = legalEntities.map(
 					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
 				);
-			}),
-			map(([options]) => {
-				return options;
 			})
 		);
 	}
@@ -403,7 +401,15 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 									tap(() => {
 										this.isDuplicateParentOptionsLoading$.next(false);
 									}),
-									map((response) => response.items)
+									withLatestFrom(this._contractsService.getEnumMap$()),
+									map(([response, maps]) => {
+										return response.items.map(
+											(item) =>
+												Object.assign(item, {
+													tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
+												}) as SimpleAgreementTemplatesListItemDto
+										);
+									})
 								);
 							})
 						),
@@ -424,7 +430,15 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 									tap(() => {
 										this.isDuplicateParentOptionsLoading$.next(false);
 									}),
-									map((response) => response.items)
+									withLatestFrom(this._contractsService.getEnumMap$()),
+									map(([response, maps]) => {
+										return response.items.map(
+											(item) =>
+												Object.assign(item, {
+													tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
+												}) as SimpleAgreementTemplatesListItemDto
+										);
+									})
 								);
 							})
 						),
