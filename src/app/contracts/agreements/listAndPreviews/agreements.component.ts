@@ -1,11 +1,22 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren, ViewEncapsulation, Injector, OnDestroy } from '@angular/core';
+import {
+	Component,
+	ElementRef,
+	OnInit,
+	QueryList,
+	ViewChildren,
+	ViewEncapsulation,
+	Injector,
+	OnDestroy,
+	ViewChild,
+	TemplateRef,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription } from 'rxjs';
-import { takeUntil, startWith, pairwise } from 'rxjs/operators';
+import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject } from 'rxjs';
+import { takeUntil, startWith, pairwise, switchMap } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
@@ -21,10 +32,9 @@ import {
 import {
 	AGREEMENT_BOTTOM_ACTIONS,
 	AGREEMENT_HEADER_CELLS,
+	BASE_AGREEMENT_ACTIONS,
 	DISPLAYED_COLUMNS,
 	INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE,
-	NON_WORKFLOW_AGREEMENT_ACTIONS,
-	WORKFLOW_AGREEMENT_ACTIONS,
 } from '../../shared/components/grid-table/agreements/entities/agreements.constants';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
@@ -35,6 +45,8 @@ import { GridHelpService } from '../../shared/services/mat-grid-service.service'
 import { DownloadFile } from '../../shared/utils/download-file';
 import { AgreementPreviewComponent } from './components/agreement-preview/agreement-preview.component';
 import { AgreementService } from './services/agreement.service';
+import { ActionDialogComponent } from '../../shared/components/popUps/action-dialog/action-dialog.component';
+import { DefaultFileUploaderComponent } from '../../shared/components/default-file-uploader/default-file-uploader.component';
 
 @Component({
 	selector: 'app-agreements',
@@ -49,8 +61,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 	displayedColumns = DISPLAYED_COLUMNS;
 	table$: Observable<ITableConfig>;
 
-	workflowActions = WORKFLOW_AGREEMENT_ACTIONS;
-	nonWorkflowAction = NON_WORKFLOW_AGREEMENT_ACTIONS;
+	baseActions = BASE_AGREEMENT_ACTIONS;
 	selectedItemsActions = AGREEMENT_BOTTOM_ACTIONS;
 
 	dataSource$: Observable<AgreementListItemDtoPaginatedList> = this._agreementService.getContracts$();
@@ -59,6 +70,10 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 	private _outsideClicksSub: Subscription;
 
 	private _unSubscribe$ = new Subject<void>();
+
+	@ViewChild('dialogFileUpload') diagloUploaderTemplate: TemplateRef<any>;
+	@ViewChild('fileUploader')
+	defaultFileUploaderComponent: DefaultFileUploaderComponent;
 
 	constructor(
 		private readonly _router: Router,
@@ -100,6 +115,53 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 
 	onAction($event: { row: AgreementListItemDto; action: string }) {
 		switch ($event.action) {
+			case 'UPLOAD_SIGNED_CONTRACT':
+				const acceptButtonDisabled$ = new BehaviorSubject(true);
+				let dialogRef = this._dialog.open(ActionDialogComponent, {
+					width: '500px',
+					height: '306px',
+					backdropClass: 'backdrop-modal--wrapper',
+					data: {
+						label: 'Upload contract',
+						message: 'The agreement will be marked as completed manually. Are you sure you wish to proceed?',
+						acceptButtonLabel: 'Upload',
+						cancelButtonLabel: 'Cancel',
+						template: this.diagloUploaderTemplate,
+						acceptButtonDisabled$: acceptButtonDisabled$,
+					},
+				});
+				dialogRef
+					.afterOpened()
+					.pipe(switchMap(() => this.defaultFileUploaderComponent.file$))
+					.subscribe(() => {
+						acceptButtonDisabled$.next(false);
+					});
+				dialogRef
+					.afterClosed()
+					.pipe(
+						switchMap(() => this.defaultFileUploaderComponent.file$),
+						tap(() => {
+							this.showMainSpinner();
+						}),
+						switchMap((file) =>
+							this._agreementServiceProxy.uploadSigned($event.row.agreementId, false, {
+								fileName: file.name,
+								data: file,
+							})
+						),
+						tap(() => {
+							this.hideMainSpinner();
+						})
+					)
+					.subscribe(() => {
+						this._snackBar.open('Signed contract uploaded', undefined, {
+							duration: 5000,
+						});
+						setTimeout(() => {
+							this._agreementService.reloadTable();
+						}, 500);
+					});
+				break;
 			case 'DOWNLOAD_PDF':
 				this._downloadFilesService.pdf($event.row.agreementId).subscribe((d) => {
 					DownloadFile(d as any, `${$event.row.agreementId}.pdf`);
@@ -209,6 +271,35 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 
 	private _mapTableItems(items: AgreementListItemDto[], maps: MappedTableCells): MappedAgreementTableItem[] {
 		return items.map((item: AgreementListItemDto) => {
+			let itemActions = [...this.baseActions];
+			if (item.isWorkflowRelated) {
+				itemActions.push({
+					label: 'Open workflow',
+					actionType: 'WORKFLOW_LINK',
+					actionIcon: 'open-workflow-icon',
+				});
+			} else {
+				itemActions.push(
+					{
+						label: 'Edit',
+						actionType: 'EDIT',
+						actionIcon: 'table-edit-icon',
+					},
+					{
+						label: 'Delete',
+						actionType: 'DELETE',
+						actionIcon: 'table-delete-icon',
+					}
+				);
+			}
+			if (item.status !== EnvelopeStatus.Completed) {
+				itemActions.unshift({
+					label: 'Upload signed contract',
+					actionType: 'UPLOAD_SIGNED_CONTRACT',
+					actionIcon: 'legal-contract-upload',
+				});
+			}
+
 			return <MappedAgreementTableItem>{
 				language: maps.language[item.languageId as AgreementLanguage],
 				countryCode: GetCountryCodeByLanguage(maps.language[item.languageId as AgreementLanguage]),
@@ -234,7 +325,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				isWorkflowRelated: item.isWorkflowRelated,
 				workflowId: item.workflowId,
 				receiveAgreementsFromOtherParty: item.receiveAgreementsFromOtherParty,
-				actionList: item.isWorkflowRelated ? this.workflowActions : this.nonWorkflowAction,
+				actionList: itemActions,
 			};
 		});
 	}
