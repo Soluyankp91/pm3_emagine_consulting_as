@@ -114,8 +114,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				dataToSend.startDate,
 				dataToSend.endDate,
                 // dataToSend.recipientClientIds,
-                dataToSend.recipientConsultantId, //recipientConsultantId
-				dataToSend.recipientSupplierId,
+                dataToSend.recipientConsultantId || undefined, //recipientConsultantId
+				dataToSend.recipientSupplierId || undefined,
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort

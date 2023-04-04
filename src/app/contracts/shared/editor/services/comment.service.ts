@@ -11,7 +11,7 @@ import { ClientRichEdit } from 'devexpress-richedit/lib/client/client-rich-edit'
 import { RunBase } from 'devexpress-richedit/lib/core/model/runs/run-base';
 
 const TEXT_HIGHLIGHT_FIELD: string = '__highlight_id';
-const TEXT_HIGHLIGHT_COLOR: string = '#c0d2f9';
+const TEXT_HIGHLIGHT_COLOR: string = '#DFDBFE';
 const TEXT_HIGHLIGHT_INITIAL_COLOR: string = 'Auto';
 const TEXT_HIGHLIGHT_FAKE_COLOR: string = 'HoneyDew';
 

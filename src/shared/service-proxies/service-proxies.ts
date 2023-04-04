@@ -2238,6 +2238,67 @@ export class AgreementServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    envelopeRelatedAgreements(agreementId: number): Observable<EnvelopeRelatedAgreementDto[]> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/envelope-related-agreements";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEnvelopeRelatedAgreements(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEnvelopeRelatedAgreements(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnvelopeRelatedAgreementDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnvelopeRelatedAgreementDto[]>;
+        }));
+    }
+
+    protected processEnvelopeRelatedAgreements(response: HttpResponseBase): Observable<EnvelopeRelatedAgreementDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnvelopeRelatedAgreementDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnvelopeRelatedAgreementDto[]>(null as any);
+    }
+
+    /**
      * @param reason (optional) 
      * @return Success
      */
@@ -19269,6 +19330,7 @@ export class AgreementDocumentFileVersionDto implements IAgreementDocumentFileVe
     description?: string | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
+    envelopeStatus?: EnvelopeStatus;
 
     constructor(data?: IAgreementDocumentFileVersionDto) {
         if (data) {
@@ -19287,6 +19349,7 @@ export class AgreementDocumentFileVersionDto implements IAgreementDocumentFileVe
             this.description = _data["description"];
             this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
             this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
+            this.envelopeStatus = _data["envelopeStatus"];
         }
     }
 
@@ -19305,6 +19368,7 @@ export class AgreementDocumentFileVersionDto implements IAgreementDocumentFileVe
         data["description"] = this.description;
         data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
+        data["envelopeStatus"] = this.envelopeStatus;
         return data;
     }
 }
@@ -19316,6 +19380,7 @@ export interface IAgreementDocumentFileVersionDto {
     description?: string | undefined;
     createdBy?: EmployeeDto;
     createdDateUtc?: moment.Moment;
+    envelopeStatus?: EnvelopeStatus;
 }
 
 export enum AgreementLanguage {
@@ -27017,6 +27082,46 @@ export enum EnvelopeProcessingPath {
     ReceiveFromOtherParty = 3,
 }
 
+export class EnvelopeRelatedAgreementDto implements IEnvelopeRelatedAgreementDto {
+    agreementId?: number;
+    agreementName?: string | undefined;
+
+    constructor(data?: IEnvelopeRelatedAgreementDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.agreementId = _data["agreementId"];
+            this.agreementName = _data["agreementName"];
+        }
+    }
+
+    static fromJS(data: any): EnvelopeRelatedAgreementDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EnvelopeRelatedAgreementDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["agreementId"] = this.agreementId;
+        data["agreementName"] = this.agreementName;
+        return data;
+    }
+}
+
+export interface IEnvelopeRelatedAgreementDto {
+    agreementId?: number;
+    agreementName?: string | undefined;
+}
+
 export enum EnvelopeStatus {
     Created = 1,
     CreatedInDocuSign = 2,
@@ -29731,7 +29836,6 @@ export class SaveAgreementDto implements ISaveAgreementDto {
     consultantPeriodId?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateVersion?: number | undefined;
     duplicationSourceAgreementId?: number | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
@@ -29767,7 +29871,6 @@ export class SaveAgreementDto implements ISaveAgreementDto {
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.creationMode = _data["creationMode"];
             this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
-            this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
             this.duplicationSourceAgreementId = _data["duplicationSourceAgreementId"];
             this.agreementType = _data["agreementType"];
             this.recipientTypeId = _data["recipientTypeId"];
@@ -29827,7 +29930,6 @@ export class SaveAgreementDto implements ISaveAgreementDto {
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["creationMode"] = this.creationMode;
         data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
-        data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
         data["duplicationSourceAgreementId"] = this.duplicationSourceAgreementId;
         data["agreementType"] = this.agreementType;
         data["recipientTypeId"] = this.recipientTypeId;
@@ -29880,7 +29982,6 @@ export interface ISaveAgreementDto {
     consultantPeriodId?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateVersion?: number | undefined;
     duplicationSourceAgreementId?: number | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
