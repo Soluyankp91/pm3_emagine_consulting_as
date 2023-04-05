@@ -67,14 +67,13 @@
         </ng-container>
         <ng-container *ngSwitchDefault>
             <app-contracts-main-data #mainDataComponent (editModeToggled)="toggleEditMode(true)" [readOnlyMode]="readOnlyMode" [canToggleEditMode]="canToggleEditMode"></app-contracts-main-data>
-            <ng-container
-                *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                <app-contracts-client-data #clientDataComponent [readOnlyMode]="readOnlyMode"
-                    [clientSpecialRateList]="clientSpecialRateList"
-                    [contractsMainForm]="mainDataComponent?.contractsMainForm"
-                    [clientSpecialFeeList]="clientSpecialFeeList"></app-contracts-client-data>
-            </ng-container>
-
+            <app-contracts-client-data #clientDataComponent [readOnlyMode]="readOnlyMode"
+                [hidden]="activeSideSection.typeId === workflowSideSections.StartConsultantPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod"
+                [periodId]="periodId"
+                [clientSpecialRateList]="clientSpecialRateList"
+                [contractsMainForm]="mainDataComponent?.contractsMainForm"
+                [clientSpecialFeeList]="clientSpecialFeeList">
+            </app-contracts-client-data>
             <app-contracts-consultant-data #consultantDataComponent [readOnlyMode]="readOnlyMode"
                 [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList"
                 [periodId]="periodId"

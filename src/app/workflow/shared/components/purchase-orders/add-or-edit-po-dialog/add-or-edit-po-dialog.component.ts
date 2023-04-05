@@ -106,7 +106,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			this.purchaseOrderForm.receiveDate.disable();
 		} else {
 			this.purchaseOrderForm.number.enable();
-			this.purchaseOrderForm.number.enable();
+			this.purchaseOrderForm.receiveDate.enable();
 		}
 	}
 
