@@ -15,8 +15,8 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject } from 'rxjs';
-import { takeUntil, startWith, pairwise, switchMap } from 'rxjs/operators';
+import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject, EMPTY } from 'rxjs';
+import { takeUntil, startWith, pairwise, switchMap, catchError } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
@@ -47,6 +47,8 @@ import { AgreementPreviewComponent } from './components/agreement-preview/agreem
 import { AgreementService } from './services/agreement.service';
 import { ActionDialogComponent } from '../../shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from '../../shared/components/default-file-uploader/default-file-uploader.component';
+import { ExtraHttpsService } from '../../shared/services/extra-https.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-agreements',
@@ -85,6 +87,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		private readonly _downloadFilesService: DownloadFilesService,
 		private readonly _snackBar: MatSnackBar,
 		private readonly _dialog: MatDialog,
+		private readonly _extraHttp: ExtraHttpsService,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
@@ -144,10 +147,49 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 							this.showMainSpinner();
 						}),
 						switchMap((file) =>
-							this._agreementServiceProxy.uploadSigned($event.row.agreementId, false, {
-								fileName: file.name,
-								data: file,
-							})
+							this._extraHttp
+								.uploadSigned($event.row.agreementId, false, {
+									fileName: file.name,
+									data: file,
+								})
+								.pipe(
+									catchError((errorResponse: HttpErrorResponse) => {
+										this.hideMainSpinner();
+
+										let dialogRef = this._dialog.open(ActionDialogComponent, {
+											width: '500px',
+											height: '350px',
+											backdropClass: 'backdrop-modal--wrapper',
+											data: {
+												label: 'Upload contract',
+												message:
+													'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?',
+												acceptButtonLabel: 'Upload',
+												cancelButtonLabel: 'Cancel',
+												template: this.diagloUploaderTemplate,
+												acceptButtonDisabled$: acceptButtonDisabled$,
+											},
+										});
+										dialogRef
+											.afterOpened()
+											.pipe(switchMap(() => this.defaultFileUploaderComponent.file$))
+											.subscribe(() => {
+												acceptButtonDisabled$.next(false);
+											});
+										return dialogRef.afterClosed().pipe(
+											switchMap(() => this.defaultFileUploaderComponent.file$),
+											tap(() => {
+												this.showMainSpinner();
+											}),
+											switchMap(() =>
+												this._extraHttp.uploadSigned($event.row.agreementId, true, {
+													fileName: file.name,
+													data: file,
+												})
+											)
+										);
+									})
+								)
 						),
 						tap(() => {
 							this.hideMainSpinner();
@@ -291,13 +333,6 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 						actionIcon: 'table-delete-icon',
 					}
 				);
-			}
-			if (item.status !== EnvelopeStatus.Completed) {
-				itemActions.unshift({
-					label: 'Upload signed contract',
-					actionType: 'UPLOAD_SIGNED_CONTRACT',
-					actionIcon: 'legal-contract-upload',
-				});
 			}
 
 			return <MappedAgreementTableItem>{

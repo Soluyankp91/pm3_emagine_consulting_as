@@ -220,6 +220,11 @@ export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const BASE_AGREEMENT_ACTIONS: Actions[] = [
 	{
+		label: 'Upload signed contract',
+		actionType: 'UPLOAD_SIGNED_CONTRACT',
+		actionIcon: 'legal-contract-upload',
+	},
+	{
 		label: 'Download *.pdf',
 		actionType: 'DOWNLOAD_PDF',
 		actionIcon: 'pdf-download-icon',

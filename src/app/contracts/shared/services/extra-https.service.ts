@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
-import { SaveAgreementTemplateDto } from 'src/shared/service-proxies/service-proxies';
+import { FileParameter, SaveAgreementTemplateDto } from 'src/shared/service-proxies/service-proxies';
 import { Observable, of, EMPTY } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
@@ -46,7 +46,7 @@ export class ExtraHttpsService {
 			);
 	}
 
-    agreementPatch(agreementTemplateId: number,body?: SaveAgreementTemplateDto | undefined): Observable<number> {
+	agreementPatch(agreementTemplateId: number, body?: SaveAgreementTemplateDto | undefined): Observable<number> {
 		let url = this.baseUrl + `/AgreementTemplate/${agreementTemplateId}`;
 		return this._http
 			.request('patch', url, {
@@ -75,5 +75,17 @@ export class ExtraHttpsService {
 					return response.agreementTemplateId as number;
 				})
 			);
+	}
+
+	uploadSigned(agreementId: number, forceUpdate: boolean, file: FileParameter): Observable<void> {
+		let url = this.baseUrl + `/Agreement/${agreementId}/upload-signed/${forceUpdate}`;
+
+		const content = new FormData();
+
+		content.append('file', file.data, file.fileName ? file.fileName : 'file');
+
+		return this._http.post<void>(url, content, {
+			context: manualErrorHandlerEnabledContextCreator(true),
+		});
 	}
 }
