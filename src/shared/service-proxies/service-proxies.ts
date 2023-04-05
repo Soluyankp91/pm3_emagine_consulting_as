@@ -1102,6 +1102,58 @@ export class AdminServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @param batchSize (optional) 
+     * @return Success
+     */
+    pullSupplierMembers(batchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/pull-supplier-members?";
+        if (batchSize === null)
+            throw new Error("The parameter 'batchSize' cannot be null.");
+        else if (batchSize !== undefined)
+            url_ += "batchSize=" + encodeURIComponent("" + batchSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPullSupplierMembers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPullSupplierMembers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processPullSupplierMembers(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -13853,6 +13905,74 @@ export class LookupServiceProxy {
             }));
         }
         return _observableOf<ContactSignerResultDto[]>(null as any);
+    }
+
+    /**
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
+     * @return Success
+     */
+    signerSupplierMembers(filter?: string | undefined, maxRecords?: number | undefined): Observable<SupplierMemberResultDto[]> {
+        let url_ = this.baseUrl + "/api/Lookup/SignerSupplierMembers?";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
+        if (maxRecords === null)
+            throw new Error("The parameter 'maxRecords' cannot be null.");
+        else if (maxRecords !== undefined)
+            url_ += "maxRecords=" + encodeURIComponent("" + maxRecords) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSignerSupplierMembers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSignerSupplierMembers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SupplierMemberResultDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SupplierMemberResultDto[]>;
+        }));
+    }
+
+    protected processSignerSupplierMembers(response: HttpResponseBase): Observable<SupplierMemberResultDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SupplierMemberResultDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SupplierMemberResultDto[]>(null as any);
     }
 
     /**
@@ -30974,6 +31094,74 @@ export class StringWrappedValueDto implements IStringWrappedValueDto {
 
 export interface IStringWrappedValueDto {
     value?: string | undefined;
+}
+
+export class SupplierMemberResultDto implements ISupplierMemberResultDto {
+    id?: number;
+    name?: string | undefined;
+    supplierId?: number;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    supplierCompanyName?: string | undefined;
+    vatNumber?: string | undefined;
+    isOwner?: boolean;
+    externalId?: string;
+
+    constructor(data?: ISupplierMemberResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.supplierId = _data["supplierId"];
+            this.email = _data["email"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.supplierCompanyName = _data["supplierCompanyName"];
+            this.vatNumber = _data["vatNumber"];
+            this.isOwner = _data["isOwner"];
+            this.externalId = _data["externalId"];
+        }
+    }
+
+    static fromJS(data: any): SupplierMemberResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SupplierMemberResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["supplierId"] = this.supplierId;
+        data["email"] = this.email;
+        data["phoneNumber"] = this.phoneNumber;
+        data["supplierCompanyName"] = this.supplierCompanyName;
+        data["vatNumber"] = this.vatNumber;
+        data["isOwner"] = this.isOwner;
+        data["externalId"] = this.externalId;
+        return data;
+    }
+}
+
+export interface ISupplierMemberResultDto {
+    id?: number;
+    name?: string | undefined;
+    supplierId?: number;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    supplierCompanyName?: string | undefined;
+    vatNumber?: string | undefined;
+    isOwner?: boolean;
+    externalId?: string;
 }
 
 export class SupplierResultDto implements ISupplierResultDto {
