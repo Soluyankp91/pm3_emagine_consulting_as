@@ -123,7 +123,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	async onSave() {
-		if (this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.value && this.editMode) {
+		if (
+			this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.value &&
+			this.masterTemplateFormGroup.initialValue.receiveAgreementsFromOtherParty === false &&
+			this.editMode
+		) {
 			let discard = await this._showDiscardDialog().afterClosed().toPromise();
 			if (!discard) {
 				return;
@@ -152,6 +156,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 					tap((template) => {
 						this.masterTemplateFormGroup.attachments.reset();
 						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
+					tap((template) => {
+						this.masterTemplateFormGroup.updateInitialFormValue({
+							receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
+						});
 					}),
 					tap(() => {
 						this.hideMainSpinner();
@@ -437,6 +446,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.agreementTemplateGET(this._templateId)
 			.pipe(
 				tap((template) => {
+					this.masterTemplateFormGroup.updateInitialFormValue({
+						receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
+					});
 					this._creationTitleService.updateReceiveAgreementsFromOtherParty(template.receiveAgreementsFromOtherParty);
 					if (template.creationMode === AgreementCreationMode.Duplicated) {
 						this._initMasterTemplateOptions();

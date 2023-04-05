@@ -122,6 +122,10 @@ export class MasterTemplateModel extends FormGroup {
 		return this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.asObservable();
 	}
 
+	updateInitialFormValue(data: { [key: string]: any }) {
+		this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.next({ ...this.initialValue, ...data });
+	}
+
 	private INITIAL_MASTER_TEMPLATE_FORM_VALUE$ = new BehaviorSubject<{
 		[key: string]: any;
 	}>({

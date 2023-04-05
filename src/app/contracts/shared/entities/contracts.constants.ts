@@ -86,6 +86,21 @@ export const AGREEMENTS_CREATION: CreationModeItem[] = [
 		value: AgreementCreationMode.FromScratch,
 	},
 ];
+
+export const WORKFLOW_TEMPLATE_TYPES = [
+	{
+		label: 'Client Specific Templates',
+		value: true,
+	},
+	{
+		label: 'Relevant Master Templates',
+		value: false,
+	},
+	{
+		label: 'All Master Templates',
+		value: 'undefined',
+	},
+];
 export const DEFINITION_MAX_SIZE = 4000;
 export const NOTES_MAX_SIZE = 4000;
 export const NAME_TEMPLATE_MAX_SIZE = 500;

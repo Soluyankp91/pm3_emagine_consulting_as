@@ -2,7 +2,7 @@ import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef, ViewEncapsul
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { combineLatest, Observable, Subject, of, BehaviorSubject, race, forkJoin, EMPTY } from 'rxjs';
+import { combineLatest, Observable, Subject, of, BehaviorSubject, race, forkJoin, ReplaySubject } from 'rxjs';
 import {
 	startWith,
 	switchMap,
@@ -18,7 +18,7 @@ import {
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { AGREEMENTS_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { AGREEMENTS_CREATION, WORKFLOW_TEMPLATE_TYPES } from 'src/app/contracts/shared/entities/contracts.constants';
 import { BaseEnumDto, MappedTableCells, SettingsPageOptions } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { AgreementModel } from 'src/app/contracts/shared/models/agreement-model';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
@@ -67,6 +67,11 @@ export enum RecipientDropdowns {
 export class SettingsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	creationRadioButtons = AGREEMENTS_CREATION;
 	creationModes = AgreementCreationMode;
+
+	workflowTemplateTypes = WORKFLOW_TEMPLATE_TYPES;
+	workflowTemplateTypeControl = new FormControl(WORKFLOW_TEMPLATE_TYPES[0].value);
+
+	workflowTemplateType$ = new BehaviorSubject(true);
 
 	recipientDropdowns = RecipientDropdowns;
 
@@ -243,7 +248,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				return;
 			}
 		}
-		if (this.agreementFormGroup.receiveAgreementsFromOtherParty.value && this.editMode) {
+		if (
+			this.agreementFormGroup.receiveAgreementsFromOtherParty.value &&
+			this.agreementFormGroup.initialValue.receiveAgreementsFromOtherParty === false &&
+			this.editMode
+		) {
 			let discard = await this._showDiscardDialog().afterClosed().toPromise();
 			if (!discard) {
 				return;
@@ -306,6 +315,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					}),
 					tap((agreement) => {
 						this.isLocked = agreement.isLocked;
+					}),
+					tap((agreement) => {
+						this.agreementFormGroup.updateInitialFormValue({
+							receiveAgreementsFromOtherParty: agreement.receiveAgreementsFromOtherParty,
+						});
 					}),
 					tap(() => {
 						this.hideMainSpinner();
@@ -909,14 +923,28 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				if (creationMode === AgreementCreationMode.InheritedFromParent) {
 					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null));
 					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
-					if ((!this.clientPeriodId && !this.consultantPeriodId) || index) {
-						this._subscribeOnParentChanges();
-					}
+
+					this._subscribeOnParentChanges();
+					this._subscribeOnTemplateTypeChanges();
 				} else if (creationMode === AgreementCreationMode.Duplicated) {
 					this.agreementFormGroup.addControl('duplicationSourceAgreementId', new FormControl(null));
 					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
 					this._subscribeOnDuplicateAgreementChanges();
 				}
+			});
+	}
+
+	private _subscribeOnTemplateTypeChanges() {
+		this.workflowTemplateTypeControl.valueChanges
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				map((v) => (typeof v === 'string' ? undefined : v))
+			)
+			.subscribe((v) => {
+				console.log(v);
+				this.workflowTemplateType$.next(v);
+				this.parentOptionsChanged$.next('');
+				this.agreementFormGroup.controls['parentAgreementTemplate'].reset();
 			});
 	}
 
@@ -1133,12 +1161,14 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								this.duplicateOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
-								return this._apiServiceProxy2.simpleList2(undefined, undefined, undefined, search, 1, 20).pipe(
-									tap(() => {
-										this.duplicateOptionsLoading$.next(false);
-									}),
-									map((response) => response.items)
-								);
+								return this._apiServiceProxy2
+									.simpleList2(this.workflowTemplateType$.value, undefined, undefined, search, 1, 20)
+									.pipe(
+										tap(() => {
+											this.duplicateOptionsLoading$.next(false);
+										}),
+										map((response) => response.items)
+									);
 							})
 						),
 						optionsChanged$: this.parentOptionsChanged$,
@@ -1158,6 +1188,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _preselectAgreement(agreementId: number) {
 		this._apiServiceProxy.agreementGET(agreementId).subscribe((agreement) => {
+			this.agreementFormGroup.updateInitialFormValue({
+				receiveAgreementsFromOtherParty: agreement.receiveAgreementsFromOtherParty,
+			});
 			this.currentAgreement = agreement;
 			this.isLocked = this.currentAgreement.isLocked;
 			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreement.receiveAgreementsFromOtherParty);
