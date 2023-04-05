@@ -23,6 +23,18 @@
 				</mat-radio-group>
 				<mat-divider class="divider"></mat-divider>
 				<div class="form-fields-container">
+					<ng-container *ngIf="(clientPeriodId || consultantPeriodId) && creationModeControlReplay$.value === creationModes.InheritedFromParent">
+						<mat-form-field appearance="outline">
+							<mat-label>Template type</mat-label>
+							<mat-select [formControl]="workflowTemplateTypeControl">
+								<ng-container *ngFor="let templateType of workflowTemplateTypes">
+									<mat-option [value]="templateType.value" placeholder="Template type">
+										{{ templateType.label }}
+									</mat-option>
+								</ng-container>
+							</mat-select>
+						</mat-form-field>
+					</ng-container>
 					<ng-container *ngIf="duplicateOrInherit$ | async as dropdownInfo">
 						<ng-container *ngIf="dropdownInfo.options$ | async as templateOptions">
 							<emg-dropdown-autocomplete-single-select
@@ -117,7 +129,9 @@
 													</div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.supplierId }}
-														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.vatNumber">
+															· {{ cell.vatNumber }}
+														</ng-container>
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }}, {{ cell.countryCode }}
 														</ng-container>
@@ -131,7 +145,9 @@
 												<div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.supplierId }}
-														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.vatNumber">
+															· {{ cell.vatNumber }}
+														</ng-container>
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }}, {{ cell.countryCode }}
 														</ng-container>
@@ -150,7 +166,9 @@
 													</div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.id }}
-														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.vatNumber">
+															· {{ cell.vatNumber }}
+														</ng-container>
 														<ng-container *ngIf="cell.addressCountryCode && cell.city">
 															· {{ cell.city }}, {{ cell.addressCountryCode }}
 														</ng-container>
@@ -165,7 +183,9 @@
 												<div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.id }}
-														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.vatNumber">
+															· {{ cell.vatNumber }}
+														</ng-container>
 														<ng-container *ngIf="cell.addressCountryCode && cell.city">
 															· {{ cell.city }}, {{ cell.addressCountryCode }}
 														</ng-container>
@@ -221,7 +241,9 @@
 													</div>
 													<div class="autocomplete-second-row">
 														#{{ cell.id }}
-														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.vatNumber">
+															· {{ cell.vatNumber }}
+														</ng-container>
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }}, {{ cell.countryCode }}
 														</ng-container>
@@ -235,7 +257,9 @@
 												<div>
 													<div class="autocomplete-second-row selected-option">
 														#{{ cell.id }}
-														<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
+														<ng-container *ngIf="cell.vatNumber">
+															· {{ cell.vatNumber }}
+														</ng-container>
 														<ng-container *ngIf="cell.countryCode && cell.city">
 															· {{ cell.city }} {{ cell.countryCode }}
 														</ng-container>

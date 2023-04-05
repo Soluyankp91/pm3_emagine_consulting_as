@@ -171,7 +171,11 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	async onSave() {
-		if (this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.value && this.editMode) {
+		if (
+			this.clientTemplateFormGroup.receiveAgreementsFromOtherParty.value &&
+			this.clientTemplateFormGroup.initialValue.receiveAgreementsFromOtherParty === false &&
+			this.editMode
+		) {
 			let discard = await this._showDiscardDialog().afterClosed().toPromise();
 			if (!discard) {
 				return;
@@ -217,6 +221,11 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					tap((template) => {
 						this.clientTemplateFormGroup.attachments.reset();
 						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
+					tap((template) => {
+						this.clientTemplateFormGroup.updateInitialFormValue({
+							receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
+						});
 					}),
 					tap(() => {
 						this.hideMainSpinner();
@@ -560,6 +569,9 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _preselectAgreementTemplate(agreementTemplateId: number) {
 		this._apiServiceProxy.agreementTemplateGET(agreementTemplateId).subscribe((agreementTemplate) => {
+			this.clientTemplateFormGroup.updateInitialFormValue({
+				receiveAgreementsFromOtherParty: agreementTemplate.receiveAgreementsFromOtherParty,
+			});
 			this.currentAgreementTemplate = agreementTemplate;
 			this.creationModeControl.setValue(agreementTemplate.creationMode);
 			this._creationTitleService.updateReceiveAgreementsFromOtherParty(agreementTemplate.receiveAgreementsFromOtherParty);

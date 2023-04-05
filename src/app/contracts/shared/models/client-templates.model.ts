@@ -19,7 +19,7 @@ export class ClientTemplatesModel extends FormGroup {
 			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
 			receiveAgreementsFromOtherParty: new FormControl(false),
 			isSignatureRequired: new FormControl(false, []),
-            isDefaultTemplate: new FormControl(false, []),
+			isDefaultTemplate: new FormControl(false, []),
 			isEnabled: new FormControl(false, []),
 			attachments: new FormControl([]),
 		});
@@ -119,7 +119,7 @@ export class ClientTemplatesModel extends FormGroup {
 		note: '',
 		receiveAgreementsFromOtherParty: false,
 		isSignatureRequired: false,
-        isDefaultTemplate: false,
+		isDefaultTemplate: false,
 		isEnabled: false,
 		attachments: [],
 	});
@@ -151,6 +151,10 @@ export class ClientTemplatesModel extends FormGroup {
 
 	get initial$() {
 		return this.INITIAL_CLIENT_TEMPLATE_FORM_VALUE$.asObservable();
+	}
+
+	updateInitialFormValue(patch: { [key: string]: any }) {
+		return this.INITIAL_CLIENT_TEMPLATE_FORM_VALUE$.next({ ...this.initialValue, ...patch });
 	}
 
 	reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
