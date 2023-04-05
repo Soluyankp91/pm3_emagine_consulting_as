@@ -268,7 +268,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		};
 
 		if (this.creationModeControlReplay$.value === 2) {
-			console.log(toSend.parentAgreementTemplate);
 			toSend.parentAgreementTemplateId =
 				toSend.parentAgreementTemplate.agreementTemplateId || this.currentAgreementTemplate.parentAgreementTemplateId;
 			toSend.parentAgreementTemplateVersion = toSend.parentAgreementTemplate.currentVersion;
