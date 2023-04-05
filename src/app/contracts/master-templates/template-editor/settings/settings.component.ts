@@ -346,6 +346,11 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 							width: '500px',
 							height: '240px',
 							backdropClass: 'backdrop-modal--wrapper',
+							data: {
+								label: 'Discard Changes',
+								message:
+									'Changing main template settings will result in discarding all the data that has been applied',
+							},
 						});
 						return dialogRef.afterClosed();
 					}
