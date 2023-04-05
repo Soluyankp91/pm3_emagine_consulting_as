@@ -34,7 +34,7 @@
                         </ng-container>
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantEmployment">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantEmployment' + consultantIndex">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16 u-mt--16">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Employment type</h2>
@@ -100,7 +100,7 @@
                     </div>
                     <ng-container *ngIf="consultant.value?.employmentTypeId  && (consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment)">
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantContractDuration">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContractDuration' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">2</span>
                                 <h2 class="workflow-section--header">Consultant contract duration</h2>
@@ -166,7 +166,7 @@
                                 </ng-container>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantProject">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantProject' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">3</span>
                                 <h2 class="workflow-section--header">Consultant project</h2>
@@ -414,7 +414,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantRatesFees">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantRatesFees' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">4</span>
                                 <h2 class="workflow-section--header">Rates and fees</h2>
@@ -721,7 +721,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantPayment">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantPayment' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
                                 <h2 class="workflow-section--header">Consultant payment</h2>
@@ -1045,7 +1045,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantContract">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContract' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">6</span>
                                 <h2 class="workflow-section--header">Consultant contract</h2>
@@ -1068,7 +1068,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantAccountManager">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantAccountManager' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">7</span>
                                 <h2 class="workflow-section--header">Account manager</h2>
