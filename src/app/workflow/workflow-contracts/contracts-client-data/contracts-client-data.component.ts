@@ -2,12 +2,9 @@ import { Component, Injector, Input, OnInit } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
-    AgreementServiceProxy,
 	AgreementSimpleListItemDto,
 	AgreementSimpleListItemDtoPaginatedList,
 	AgreementType,
-	AgreementValidityState,
-	ClientPeriodServiceProxy,
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
 	EnumEntityTypeDto,
@@ -16,14 +13,13 @@ import {
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
 	PeriodConsultantSpecialRateDto,
-    WorkflowAgreementsDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { forkJoin, of, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -56,7 +52,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
 		private _internalLookupService: InternalLookupService,
-		private _agreementService: AgreementServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy,
 	) {
@@ -156,8 +151,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.agreementId,
 				dataToSend.search,
 				undefined, // dataToSend.clientId,
-				// dataToSend.agreementType,
-				// dataToSend.validity,
 				dataToSend.legalEntityId,
 				dataToSend.salesTypeId,
 				dataToSend.contractTypeId,
@@ -165,8 +158,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				dataToSend.startDate,
 				dataToSend.endDate,
                 dataToSend.recipientClientIds,
-                // undefined, //recipientConsultantId
-                // undefined, //recipientSupplierId
 				dataToSend.pageNumber,
 				dataToSend.pageSize,
 				dataToSend.sort

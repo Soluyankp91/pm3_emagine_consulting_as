@@ -26,6 +26,7 @@ export class RemoveOrUploadAgrementDialogComponent {
 		public data: {
 			dialogMode: ERemoveOrOuploadDialogMode;
 			hideReason?: boolean;
+            message?: string;
 		},
 		private _dialogRef: MatDialogRef<SendEnvelopeDialogComponent>
 	) {}

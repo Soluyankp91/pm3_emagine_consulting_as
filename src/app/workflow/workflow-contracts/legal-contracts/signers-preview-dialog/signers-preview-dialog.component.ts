@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { EnvelopePreviewDto, SignerType } from 'src/shared/service-proxies/service-proxies';
 import {
-	DocuSignMenuItems,
+	DocuSignMenuItem,
 	EDocuSignMenuOption,
 	EEmailMenuOption,
 	EmailMenuItems,
@@ -23,7 +23,7 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 	signerType = SignerType;
 	signerTypeName = ESignerTypeName;
 	signerRole = ESignerRole;
-	docuSignMenuItems = DocuSignMenuItems;
+	docuSignMenuItem = DocuSignMenuItem;
 	emailMenuItems = EmailMenuItems;
 	constructor(
 		injector: Injector,

@@ -6,7 +6,7 @@
         <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
                 svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
-    <p class="text-600 dark-grey-color">{{dialogConfig.title}}</p>
+    <p class="text-600 dark-grey-color">{{data?.message ?? dialogConfig.title}}</p>
     <ng-container *ngIf="data?.dialogMode === dialogModes.UploadNewDocument">
         <ng-container *ngIf="!isFileAdded; else displayFile">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--20">
