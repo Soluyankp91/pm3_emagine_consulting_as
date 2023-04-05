@@ -76,7 +76,7 @@
 					</ng-container>
 					<div class="form-fields-container">
 						<div class="form-row">
-							<div class="row-cell" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">
+							<div class="row-cell">
 								<mat-form-field appearance="outline">
 									<mat-label>Recipient type</mat-label>
 									<mat-select formControlName="recipientTypeId" placeholder="Recipient type">
@@ -92,7 +92,7 @@
 								</mat-form-field>
 							</div>
 							<ng-container *ngIf="documentTypes$ | async as agreementTypes">
-								<div class="row-cell" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">
+								<div class="row-cell" >
 									<mat-form-field appearance="outline">
 										<mat-label>Document type</mat-label>
 										<mat-select formControlName="agreementType" placeholder="Document type">
@@ -118,7 +118,7 @@
 									[label]="recipientOptions.label"
 									[options]="options"
 									[outputProperty]="recipientOptions.outputProperty"
-									[ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }"
+									
 									(inputEmitter)="recipientOptionsChanged$.next($event)">
 									<ng-container [ngSwitch]="recipientOptions.dropdownType">
 										<ng-container *ngSwitchCase="recipientDropdowns.SUPPLIER">
@@ -289,7 +289,7 @@
 								#autosize="cdkTextareaAutosize"></textarea>
 							<mat-error><app-validator [control]="agreementFormGroup.definition"></app-validator></mat-error>
 						</mat-form-field>
-						<mat-form-field appearance="outline" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">
+						<mat-form-field appearance="outline" >
 							<mat-label>Internal legal entity</mat-label>
 							<mat-select formControlName="legalEntityId" placeholder="Internal legal entity">
 								<ng-container *ngFor="let legalEntity of options[0].legalEntities">
@@ -305,7 +305,7 @@
 							</mat-error>
 						</mat-form-field>
 						<div class="form-row">
-							<div class="row-cell" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">
+							<div class="row-cell" >
 								<mat-form-field appearance="outline">
 									<mat-label>Sales type</mat-label>
 									<mat-select formControlName="salesTypes" multiple placeholder="Sales types">
@@ -320,7 +320,7 @@
 									</mat-error>
 								</mat-form-field>
 							</div>
-							<div class="row-cell" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">
+							<div class="row-cell" >
 								<mat-form-field appearance="outline">
 									<mat-label>Delivery type</mat-label>
 									<mat-select formControlName="deliveryTypes" multiple placeholder="Delivery type">
@@ -337,7 +337,7 @@
 							</div>
 						</div>
 						<div class="form-row">
-							<div class="row-cell" [ngClass]="{ 'hide-control': clientPeriodId && isDefaultTemplate }">
+							<div class="row-cell" >
 								<mat-form-field appearance="outline">
 									<mat-label>Contract type</mat-label>
 									<mat-select formControlName="contractTypes" multiple placeholder="Contract type">
