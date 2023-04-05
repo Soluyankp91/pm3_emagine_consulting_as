@@ -34,7 +34,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contracts/send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
 import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
-import { FrameAgreementServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @NgModule({
 	declarations: [
@@ -66,11 +65,11 @@ import { FrameAgreementServiceProxy } from 'src/shared/service-proxies/service-p
 		SendEnvelopeDialogComponent,
 		SignersPreviewDialogComponent,
 		RemoveOrUploadAgrementDialogComponent,
-		
+
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
-	providers: [WorkflowCreateResolver, FrameAgreementServiceProxy],
+	providers: [WorkflowCreateResolver],
 })
 export class WorkflowModule {
 	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
