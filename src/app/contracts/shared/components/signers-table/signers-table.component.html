@@ -39,14 +39,14 @@
 										<ng-template let-cell="option" #optionTemplate>
 											<div>
 												<div class="autocomplete-first-row">
-													{{ cell.supplierName }}
+													{{ cell.name }}
 												</div>
 												<div class="autocomplete-second-row selected-option">
 													<ng-container *ngIf="cell.email"> {{ cell.email }} · </ng-container>
-													#{{ cell.supplierId }}
+													#{{ cell.id }}
 													<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
-													<ng-container *ngIf="cell.supplierCompany">
-														· {{ cell.supplierCompany }}
+													<ng-container *ngIf="cell.supplierCompanyName">
+														· {{ cell.supplierCompanyName }}
 													</ng-container>
 													<ng-container *ngIf="cell.city"> · {{ cell.city }} </ng-container>
 												</div>
@@ -55,10 +55,10 @@
 										<ng-template #selectedOption let-cell="selectedItem">
 											<div class="autocomplete-second-row selected-option">
 												<ng-container *ngIf="cell.email"> {{ cell.email }} · </ng-container>
-												#{{ cell.supplierId }}
+												#{{ cell.id }}
 												<ng-container *ngIf="cell.vatNumber"> · {{ cell.vatNumber }} </ng-container>
-												<ng-container *ngIf="cell.supplierCompany">
-													· {{ cell.supplierCompany }}
+												<ng-container *ngIf="cell.supplierCompanyName">
+													· {{ cell.supplierCompanyName }}
 												</ng-container>
 												<ng-container *ngIf="cell.city"> · {{ cell.city }} </ng-container>
 											</div>

@@ -223,8 +223,8 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 						return forkJoin([
 							of({
 								label: 'Suppliers',
-								labelKey: 'supplierCompanyName',
-								outputProperty: 'supplierId',
+								labelKey: 'name',
+								outputProperty: 'id',
 								dropdownType: SignerDropdowns.SUPPLIER,
 							}),
 							this._lookupService.signerSupplierMembers(search, 20).pipe(
