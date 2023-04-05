@@ -941,7 +941,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				map((v) => (typeof v === 'string' ? undefined : v))
 			)
 			.subscribe((v) => {
-				console.log(v);
 				this.workflowTemplateType$.next(v);
 				this.parentOptionsChanged$.next('');
 				this.agreementFormGroup.controls['parentAgreementTemplate'].reset();
