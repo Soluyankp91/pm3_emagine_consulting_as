@@ -15,6 +15,7 @@ import {
 	tap,
 	takeUntil,
 	distinctUntilChanged,
+	finalize,
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
@@ -937,7 +938,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _subscribeOnTemplateTypeChanges() {
 		this.workflowTemplateTypeControl.valueChanges
 			.pipe(
-				takeUntil(this._unSubscribe$),
+				takeUntil(
+					race([
+						this._unSubscribe$,
+						this.creationMode.valueChanges.pipe(
+							filter((v) => v !== this.creationModes.InheritedFromParent),
+							finalize(() => {
+								console.log('final');
+							})
+						),
+					]).pipe(tap(() => console.log('race')))
+				),
 				map((v) => (typeof v === 'string' ? undefined : v))
 			)
 			.subscribe((v) => {
@@ -1280,6 +1291,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	private _resetForm() {
 		this.agreementFormGroup.reset();
 		this.noExpirationDateControl.setValue(false);
+		this.workflowTemplateTypeControl.setValue(true);
 		this.preselectedFiles = [];
 		this.attachmentsFromParent = [];
 	}
