@@ -28,7 +28,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
     @Input() periodId: string;
     purchaseOrders: PurchaseOrderDto[] = [];
-    purchaseOrders$: Observable<PurchaseOrderDto[]>;
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	employmentTypes: EnumEntityTypeDto[];
@@ -130,9 +129,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		consultant.projectLines?.forEach((project: any) => {
 			this.addProjectLinesToConsultantData(consultantIndex, project);
 		});
-        consultant.timeReportingCaps?.forEach(cap => {
-            this.addConsultantCap(consultantIndex, cap);
-        })
+		consultant.timeReportingCaps?.forEach((cap) => {
+			this.addConsultantCap(consultantIndex, cap);
+		});
 		consultant.periodConsultantSpecialFees?.forEach((fee: any) => {
 			this.addClientFeesToConsultantData(consultantIndex, fee);
 		});
@@ -464,6 +463,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
             purchaseOrder: new UntypedFormControl(null),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
+        if (this.directClientId) {
+            this.getPOsToUpdateValues(this.directClientId);
+        }
 	}
 
 	editProjectLineValue(consultantIndex: number, projectLinesIndex: number, projectLineData: any, purchaseOrders?: PurchaseOrderDto[]) {
@@ -524,6 +526,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
 		projectLineRow.get('purchaseOrderId')?.setValue(projectLineData.purchaseOrderId, { emitEvent: false });
 		projectLineRow.get('purchaseOrder')?.setValue(null, { emitEvent: false });
+        this.getPOsToUpdateValues(this.directClientId);
 	}
 
 	duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
@@ -562,8 +565,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			?.setValue(!previousValue, { emitEvent: false });
 	}
 
-    getConsultantCapControls(consultantIndex: number) {
-        return (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls;
+    getConsultantCapControls(consultantIndex: number): AbstractControl[] | null {
+        return (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray)?.controls;
     }
 
     addConsultantCap(consultantIndex: number, cap?: TimeReportingCapDto) {
@@ -573,7 +576,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
 			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
 		});
-		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
+		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
 	}
 
     removeTimeReportingCap(consultantIndex: number, index: number) {

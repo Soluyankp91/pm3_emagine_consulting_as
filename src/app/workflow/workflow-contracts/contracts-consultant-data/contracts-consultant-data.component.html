@@ -126,10 +126,10 @@
                                             </mat-error>
                                         </mat-form-field>
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                            <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.IndividualCap && contractClientForm.clientTimeReportingCapId?.value?.id !== clientTimeReportingCaps.NoCap">
+                                            <ng-container *ngIf="consultant.value?.consultantTimeReportingCapId !== clientTimeReportingCaps.NoCap">
                                                 <ng-container formArrayName="timeReportingCaps" class="u-w--100">
-                                                    <ng-container *ngFor="let cap of getConsultantCapControls(consultantIndex); trackBy: trackByItem; index as i"
-                                                        [formArrayName]="i">
+                                                    <ng-container *ngFor="let cap of getConsultantCapControls(consultantIndex); trackBy: trackByItem; let capIndex = index"
+                                                        [formArrayName]="capIndex">
                                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding disabled-input u-mr--12 form-width-110">
                                                                 <mat-label>Max value</mat-label>
