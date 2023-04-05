@@ -55,18 +55,9 @@
             </mat-menu>
         </button>
         <button mat-flat-button class="signers-preview--dialog--actions-btn dialog-btn dialog-btn__positive"
-            [matMenuTriggerFor]="docuSignMenu">
-            Send via DocuSign
-            <mat-icon class="white-color">arrow_drop_down</mat-icon>
-            <mat-menu #docuSignMenu>
-                <ng-container *ngFor="let item of docuSignMenuItems; trackBy: trackById">
-                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="sendViaDocuSign(item.option)">
-                        <mat-icon [svgIcon]="item.icon"></mat-icon>
-                        {{item.name}}
-                    </button>
-                </ng-container>
-            </mat-menu>
+            appPreventDoubleClick
+            (throttledClick)="sendViaDocuSign(docuSignMenuItem.option)">
+            {{docuSignMenuItem.name}}
         </button>
     </div>
 </mat-dialog-actions>

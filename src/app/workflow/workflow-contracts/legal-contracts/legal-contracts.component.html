@@ -124,7 +124,7 @@
                                 <ng-container
                                     *ngIf="contract.value.agreementStatus !== legalContractStatus.Completed">
                                     <button class="menu-item green-color" mat-menu-item
-                                        (click)="openUploadSignedContractDialog(contract.value.agreementId)">
+                                        (click)="openUploadSignedContractDialog(contract.value.agreementId, contract.value.agreementStatus === legalContractStatus.Sent)">
                                         <mat-icon svgIcon="legal-contract-upload"></mat-icon>
                                         Upload signed contract
                                     </button>

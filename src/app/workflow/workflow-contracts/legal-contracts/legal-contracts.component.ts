@@ -136,13 +136,16 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		}
 	}
 
-	public openUploadSignedContractDialog(agreementId: number) {
+	public openUploadSignedContractDialog(agreementId: number, overrideDocument: boolean) {
 		this._closeMenu();
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument,
 			hideReason: true,
+			message: overrideDocument
+				? 'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?'
+				:  null,
 		};
 		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
