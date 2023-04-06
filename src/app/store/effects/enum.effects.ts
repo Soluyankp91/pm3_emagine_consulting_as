@@ -30,6 +30,10 @@ export class CoreEffects {
     this.actions$.pipe(
       ofType(coreError),
       switchMap((action) => {
+        // this.snackbar.open(action.error.message, 'OK', {
+        //   duration: 2000,
+        //   panelClass: ['error-snackbar'],
+        // });
         return of({ type: 'NO_ACTION' });
       }),
     ),
