@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, TemplateRef } from '@angular/core';
+import { Component, Inject, TemplateRef } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 
@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 	templateUrl: './action-dialog.component.html',
 	styleUrls: ['./action-dialog.component.scss'],
 })
-export class ActionDialogComponent implements OnInit {
+export class ActionDialogComponent {
 	label: string;
 	message: string;
 
@@ -28,6 +28,4 @@ export class ActionDialogComponent implements OnInit {
 		this.acceptButtonDisabled$ = data.acceptButtonDisabled$;
 		this.template = data.template;
 	}
-
-	ngOnInit(): void {}
 }

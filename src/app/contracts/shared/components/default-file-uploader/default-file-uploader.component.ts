@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ACCEPTED_EXTENSIONS, EXISTED_ICONS } from '../file-uploader/files';
 import { ReplaySubject } from 'rxjs';
+import { FileParameter } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
 	selector: 'app-default-file-uploader',
@@ -8,16 +9,14 @@ import { ReplaySubject } from 'rxjs';
 	styleUrls: ['./default-file-uploader.component.scss'],
 })
 export class DefaultFileUploaderComponent {
-	file$ = new ReplaySubject<File>(1);
+	file$ = new ReplaySubject<FileParameter & { icon?: string }>(1);
 	allowedExtensions = ACCEPTED_EXTENSIONS;
 
-	file: File & { icon: string; name: string };
 	constructor() {}
 
 	onFileAdded($event: EventTarget) {
 		let file = ($event as HTMLInputElement).files[0];
-		this.file = { ...file, icon: this._getIconName(file.name), name: file.name };
-		this.file$.next(file);
+		this.file$.next({ data: file, icon: this._getIconName(file.name), fileName: file.name });
 	}
 
 	private _getIconName(fileName: string): string {
