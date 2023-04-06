@@ -56,16 +56,14 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 	ngAfterViewInit(): void {
 		this.editor = create(this._elementRef.nativeElement, this.editorOptions);
 		this.editorService.registerRichEditor(this.editor);
+		this._initialized.next();
 
 		this._handleRibbonListChange();
 		this._registerTabChangeEvent();
-
-		this._initialized.next();
 	}
 
 	private _registerMergeFields(fields: IMergeField) {
 		let subscription = this._initialized.subscribe(() => {
-			if (this.readonly) return;
 			this.editorService.applyMergeFields(fields);
 		});
 		this._subscriptions.push(subscription);
@@ -74,6 +72,7 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 	private _registerTemplateChanges(template: File | Blob | ArrayBuffer | string | null) {
 		let subscription = this._initialized.subscribe(() => {
 			this.editorService.initialize(this.readonly);
+
 			if (template) {
 				this.editorService.loadDocument(template);
 			} else {
@@ -135,8 +134,6 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 
 			let left = `${commentEnabled ? currentLeft - diffCount / 2 : currentLeft}px`;
 			let maxWidth = `calc(100% - ${commentEnabled ? diffCount : 0}px)`;
-
-			console.log(left);
 
 			pageElem.style.maxWidth = maxWidth;
 			rulerElem.style.left = left;

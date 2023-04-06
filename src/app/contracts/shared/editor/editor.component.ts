@@ -120,15 +120,15 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.getTemplateVersions(this.templateId, () => {
 			if (!this.currentVersionIsSent) {
 				this.loadComments(this.templateId, true);
-
-				this._agreementService.getSimpleList().subscribe((res) => {
-					this.documentList$.next(res);
-				});
-
-				this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
-					this.mergeFields$.next(res);
-				});
 			}
+		});
+
+		this._agreementService.getSimpleList().subscribe((res) => {
+			this.documentList$.next(res);
+		});
+
+		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
+			this.mergeFields$.next(res);
 		});
 	}
 
