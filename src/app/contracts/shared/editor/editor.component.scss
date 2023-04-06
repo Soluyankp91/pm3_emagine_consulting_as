@@ -1,4 +1,4 @@
-@import "/src/app/shared/styles/config/_colors";
+@import '/src/app/shared/styles/config/_colors';
 
 .main {
 	&::before {
@@ -163,8 +163,8 @@
 				.dx-toolbar-item {
 					display: none;
 				}
-				.dx-toolbar-item:nth-child(4),
-				.dx-toolbar-item:nth-child(5) {
+				.dx-toolbar-item:nth-child(3),
+				.dx-toolbar-item:nth-child(4) {
 					display: table-cell;
 				}
 			}
