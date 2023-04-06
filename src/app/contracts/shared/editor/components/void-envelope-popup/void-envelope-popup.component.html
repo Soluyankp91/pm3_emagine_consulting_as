@@ -1,0 +1,57 @@
+<mat-dialog-content class="void-dialog">
+	<div mat-dialog-title class="header">
+		<h1>Void previous version</h1>
+		<button class="button-close" (click)="close()" mat-button>
+			<mat-icon class="header-close-icon">close</mat-icon>
+		</button>
+	</div>
+
+	<p class="subtitle">
+		Promoting draft to a new version of the agreement, will result in voiding entire envelope that has already been sent for
+		all the parties.
+	</p>
+
+	<ng-container *ngIf="agreements.length">
+		<p>The envelope consists of the following agreements:</p>
+
+		<div class="envelop-agreement-list">
+			<div *ngFor="let item of agreements" class="envelop-agreement">
+				<mat-icon svgIcon="file"></mat-icon>
+				<b class="envelop-agreement-name">{{ item.agreementName }}</b>
+			</div>
+		</div>
+	</ng-container>
+
+	<form *ngIf="form" [formGroup]="form">
+		<mat-form-field appearance="outline" class="textarea-form-field">
+			<mat-label>Reason for voiding contract</mat-label>
+			<textarea formControlName="voidingReason" [maxlength]="freeTextLimit" matInput class="text-area"></textarea>
+			<mat-error>
+				<div class="validator">
+					<p *ngIf="form.get('voidingReason').hasError('required')">Reason for voiding contract is required</p>
+					<p *ngIf="form.get('voidingReason').hasError('maxlength')">
+						Reason for voiding contract cannot be longer than {{ freeTextLimit }} characters
+					</p>
+				</div>
+			</mat-error>
+		</mat-form-field>
+
+		<mat-form-field appearance="outline" class="textarea-form-field">
+			<mat-label>Version description</mat-label>
+			<textarea formControlName="versionDescription" [maxlength]="freeTextLimit" matInput class="text-area"></textarea>
+			<mat-error>
+				<div class="validator">
+					<p *ngIf="form.get('versionDescription').hasError('required')">Version description is required</p>
+					<p *ngIf="form.get('versionDescription').hasError('maxlength')">
+						Version description cannot be longer than {{ freeTextLimit }} characters
+					</p>
+				</div>
+			</mat-error>
+		</mat-form-field>
+	</form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="actions flex-justify-between">
+	<button mat-button [mat-dialog-close]="false" class="dialog-btn dialog-btn__negative">Cancel</button>
+	<button (click)="submit()" [disabled]="form.invalid" mat-flat-button class="dialog-btn dialog-btn__positive">Proceed</button>
+</mat-dialog-actions>

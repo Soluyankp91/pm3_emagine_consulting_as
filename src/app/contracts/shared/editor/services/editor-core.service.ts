@@ -14,6 +14,7 @@ import {
 	RibbonButtonItemOptions,
 	RibbonTabType,
 	RichEdit,
+	FileTabCommandId,
 } from 'devexpress-richedit';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
@@ -63,16 +64,26 @@ export class EditorCoreService {
 		return this.editor ? this.editor.loadingPanel.enabled : false;
 	}
 
-	initialize(reference: RichEdit) {
-		this.editor = reference;
-		this.editorNative = reference['_native'];
-		this._customizeRibbonPanel();
-		this._registerDocumentEvents();
-		this._registerCustomEvents();
-		this._initCompareTab();
-		this._initComments();
-		this._registerCustomContextMenuItems();
-		this._registerCopyMergeFieldCommand();
+	registerRichEditor(editor: RichEdit) {
+		this.editor = editor;
+		this.editorNative = editor['_native'];
+	}
+
+	initialize(readonly: boolean = false) {
+		this.editor.readOnly = readonly;
+		if (!readonly) {
+			this._customizeRibbonPanel();
+			this._registerDocumentEvents();
+			this._registerCustomEvents();
+			this._initCompareTab();
+			this._initComments();
+			this._registerCustomContextMenuItems();
+			this._registerCopyMergeFieldCommand();
+		} else {
+			this.editor.updateRibbon((ribbon) => {
+				ribbon.activeTabIndex = 0;
+			});
+		}
 	}
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
@@ -105,6 +116,7 @@ export class EditorCoreService {
 
 	insertComments(comments: Array<AgreementCommentDto>) {
 		this._commentService.applyComments(comments as any);
+		this.removeUnsavedChanges();
 	}
 
 	insertMergeField(field: string, insertBreak: boolean = false) {
@@ -151,6 +163,7 @@ export class EditorCoreService {
 	}
 
 	removeUnsavedChanges() {
+		if (!this.editor) return;
 		this.editor.hasUnsavedChanges = false;
 		this.hasUnsavedChanges$.next(false);
 	}
@@ -189,7 +202,10 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.UpdateAllFields);
 		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldResults);
 
-		mergeTab.insertItem(new RibbonButtonItem(MailMergeTabItemId.UpdateAllFields, 'Show All Field Results', showAllFieldResultsBtnOpts), 3);
+		mergeTab.insertItem(
+			new RibbonButtonItem(MailMergeTabItemId.UpdateAllFields, 'Show All Field Results', showAllFieldResultsBtnOpts),
+			3
+		);
 
 		fileTab.removeItem(FileTabItemId.ExportDocument);
 		homeTab.removeItem(HomeTabItemId.Paste);

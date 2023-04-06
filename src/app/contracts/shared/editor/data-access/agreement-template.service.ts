@@ -7,7 +7,11 @@ import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
-import { AgreementTemplateServiceProxy, StringWrappedValueDto, UpdateCompletedTemplateDocumentFileDto } from 'src/shared/service-proxies/service-proxies';
+import {
+	AgreementTemplateServiceProxy,
+	StringWrappedValueDto,
+	UpdateCompletedTemplateDocumentFileDto,
+} from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
 import { IDocumentItem, IDocumentVersion } from '../entities';
@@ -20,10 +24,8 @@ export class AgreementTemplateService implements AgreementAbstractService {
 	constructor(
 		private httpClient: HttpClient,
 		private _dialog: MatDialog,
-		private _agreementTemplateService: AgreementTemplateServiceProxy,
-		) {
-
-		}
+		private _agreementTemplateService: AgreementTemplateServiceProxy
+	) {}
 
 	getTemplate(templateId: number, isComplete: boolean = true) {
 		const endpoint = `${this._baseUrl}/${templateId}/document-file/latest-template-version/${isComplete}`;
@@ -48,68 +50,65 @@ export class AgreementTemplateService implements AgreementAbstractService {
 	}
 
 	getSimpleList() {
-		return this._agreementTemplateService.simpleList2()
-			.pipe(
-				map(item => item.items as IDocumentItem[]),
-				catchError((error: HttpErrorResponse) => throwError(error.error))
-			);
+		return this._agreementTemplateService.simpleList2().pipe(
+			map((item) => item.items as IDocumentItem[]),
+			catchError((error: HttpErrorResponse) => throwError(error.error))
+		);
 	}
 
 	getTemplateVersions(templateId: number) {
-		return this._agreementTemplateService.templateVersions(templateId)
-			.pipe(
-				map(item => item as IDocumentVersion[]),
-				catchError((error: HttpErrorResponse) => throwError(error.error))
-			);
+		return this._agreementTemplateService.templateVersions(templateId).pipe(
+			map((item) => item as IDocumentVersion[]),
+			catchError((error: HttpErrorResponse) => throwError(error.error))
+		);
 	}
 
 	saveCurrentAsDraftTemplate(templateId: number, force: boolean, fileContent: StringWrappedValueDto) {
-		return this._agreementTemplateService
-			.documentFilePUT2(templateId, force, fileContent)
+		return this._agreementTemplateService.documentFilePUT2(templateId, force, fileContent);
 	}
 
 	saveCurrentAsCompleteTemplate(templateId: number, body: UpdateCompletedTemplateDocumentFileDto) {
-		return this._agreementTemplateService
-			.updateCompleted(templateId, body)
+		return this._agreementTemplateService.updateCompleted(templateId, body);
 	}
 
 	saveDraftAsDraftTemplate(templateId: number, force: boolean, fileContent: StringWrappedValueDto) {
 		const endpoint = `${this._baseUrl}/${templateId}/document-file/${force}`;
-		return this.httpClient
-			.put(endpoint, fileContent, {context: manualErrorHandlerEnabledContextCreator(true)}).pipe(
-				catchError(({error}: HttpErrorResponse) => {
-					if (error.error.code === 'contracts.documents.draft.locked') {
-						const ref = this._dialog.open(ConfirmPopupComponent, {
-							width: '500px',
-							height: '240px',
-							backdropClass: 'backdrop-modal--wrapper',
-							data: {
-								title: 'Override',
-								body: 'Are you sure you want to override the draft?'
-							}
-						});
-	
-						return ref.afterClosed().pipe(
-							filter(res => !!res),
-							switchMap(() => this.saveDraftAsDraftTemplate(templateId, true, fileContent).pipe(
-								catchError(error => EMPTY)
-							))
+		return this.httpClient.put(endpoint, fileContent, { context: manualErrorHandlerEnabledContextCreator(true) }).pipe(
+			catchError(({ error }: HttpErrorResponse) => {
+				if (error.error.code === 'contracts.documents.draft.locked') {
+					const ref = this._dialog.open(ConfirmPopupComponent, {
+						width: '500px',
+						height: '240px',
+						backdropClass: 'backdrop-modal--wrapper',
+						data: {
+							title: 'Override',
+							body: 'Are you sure you want to override the draft?',
+						},
+					});
+
+					return ref.afterClosed().pipe(
+						filter((res) => !!res),
+						switchMap(() =>
+							this.saveDraftAsDraftTemplate(templateId, true, fileContent).pipe(catchError((error) => EMPTY))
 						)
-					} else {
-						return of(error);
-					}
-				}),
-			);
+					);
+				} else {
+					return of(error);
+				}
+			})
+		);
 	}
 
 	saveDraftAsCompleteTemplate(templateId: number, body: UpdateCompletedTemplateDocumentFileDto) {
-		return this._agreementTemplateService
-			.completeTemplate(templateId, false, body).pipe(
-				catchError(error => of(null))
-			);
+		return this._agreementTemplateService.completeTemplate(templateId, false, body).pipe(catchError((error) => of(null)));
 	}
 
-	saveDraftAndCompleteTemplate(templateId: number, body: StringWrappedValueDto, doc: IDocumentItem, versions: IDocumentVersion[]) {
+	saveDraftAndCompleteTemplate(
+		templateId: number,
+		body: StringWrappedValueDto,
+		doc: IDocumentItem,
+		versions: IDocumentVersion[]
+	) {
 		return this.saveDraftAsDraftTemplate(templateId, false, body).pipe(
 			switchMap(() => {
 				const ref = this._dialog.open(SaveAsPopupComponent, {
@@ -117,30 +116,25 @@ export class AgreementTemplateService implements AgreementAbstractService {
 						document: doc,
 						base64: body.value,
 						isAgreement: false,
-						versions
+						versions,
 					},
 					width: '500px',
 					disableClose: true,
 					hasBackdrop: true,
 					backdropClass: 'backdrop-modal--wrapper',
-				})
+				});
 
 				return ref.afterClosed().pipe(
 					switchMap((res: UpdateCompletedTemplateDocumentFileDto) => {
 						if (res) {
-							return this.saveDraftAsCompleteTemplate(
-								templateId,
-								res
-							).pipe(
-								mapTo({})
-							)
+							return this.saveDraftAsCompleteTemplate(templateId, res).pipe(mapTo({}));
 						} else {
 							return of(null);
 						}
 					})
 				);
-			}),
-		)
+			})
+		);
 	}
 
 	getTemplatePDF(id: number) {
@@ -150,5 +144,13 @@ export class AgreementTemplateService implements AgreementAbstractService {
 				responseType: 'blob',
 			})
 			.pipe(catchError((error: HttpErrorResponse) => throwError(error.error)));
+	}
+
+	getEnvelopeRelatedAgreements(id: number) {
+		return of([]);
+	}
+
+	voidEnvelopeRelatedAgreement(id: number, reason: string) {
+		return of(null);
 	}
 }
