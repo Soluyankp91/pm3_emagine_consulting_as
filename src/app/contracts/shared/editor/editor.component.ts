@@ -515,12 +515,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 			singleEmail: singleEmail,
 			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
-		this._agreementServiceProxy.sendEmailEnvelope(input).subscribe(() =>
+		this._agreementServiceProxy.sendEmailEnvelope(input).subscribe(() => {
+			this.getTemplateVersions(this.templateId);
 			this._snackBar.open('Successfully sent!', '', {
 				duration: 2500,
 				panelClass: 'green-panel',
-			})
-		);
+			});
+		});
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption) {
@@ -529,12 +530,13 @@ export class EditorComponent implements OnInit, OnDestroy {
 			singleEnvelope: singleEnvelope,
 			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
 		});
-		this._agreementServiceProxy.sendDocusignEnvelope(input).subscribe(() =>
+		this._agreementServiceProxy.sendDocusignEnvelope(input).subscribe(() => {
+			this.getTemplateVersions(this.templateId);
 			this._snackBar.open('Successfully sent!', '', {
 				duration: 2500,
 				panelClass: 'green-panel',
-			})
-		);
+			});
+		});
 	}
 
 	cancel() {

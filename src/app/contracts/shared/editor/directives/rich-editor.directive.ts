@@ -59,14 +59,13 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 		this.editorService.registerRichEditor(this.editor);
 		this._initialized.next();
 
-		if (!this.readonly) {
-			this._handleRibbonListChange();
-			this._registerTabChangeEvent();
-		}
+		this._handleRibbonListChange();
+		this._registerTabChangeEvent();
 	}
 
 	private _registerMergeFields(fields: IMergeField) {
 		let subscription = this._initialized.subscribe(() => {
+			if (this.readonly) return;
 			this.editorService.applyMergeFields(fields);
 		});
 		this._subscriptions.push(subscription);
@@ -81,6 +80,8 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 				this.editorService.newDocument();
 			}
 			this.documentReady.emit();
+			this._updateCommentView(!this.readonly);
+			this._toggleCommentMode(!this.readonly);
 		});
 		this._subscriptions.push(subscription);
 	}
@@ -140,6 +141,13 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 			pageElem.style.maxWidth = maxWidth;
 			rulerElem.style.left = left;
 		}
+	}
+
+	private _toggleCommentMode(enabled: boolean) {
+		this.editor.events.customCommandExecuted._fireEvent(this.editor, {
+			commandName: ICustomCommand.ToggleCommentMode,
+			parameter: enabled,
+		});
 	}
 
 	ngOnDestroy(): void {

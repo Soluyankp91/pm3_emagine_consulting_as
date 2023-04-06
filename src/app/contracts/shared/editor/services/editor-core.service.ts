@@ -32,6 +32,7 @@ import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 
 @Injectable()
 export class EditorCoreService {
+	private _initialised = false;
 	afterViewInit$: ReplaySubject<void> = new ReplaySubject();
 	templateAsBase64$ = new BehaviorSubject<string>('');
 	hasUnsavedChanges$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -67,11 +68,14 @@ export class EditorCoreService {
 	registerRichEditor(editor: RichEdit) {
 		this.editor = editor;
 		this.editorNative = editor['_native'];
+		this.options.ribbon.getTab(RibbonTabType.File).removeItem(FileTabItemId.ExportDocument);
 	}
 
 	initialize(readonly: boolean = false) {
 		this.editor.readOnly = readonly;
+
 		if (!readonly) {
+			if (this._initialised) return;
 			this._customizeRibbonPanel();
 			this._registerDocumentEvents();
 			this._registerCustomEvents();
@@ -79,6 +83,7 @@ export class EditorCoreService {
 			this._initComments();
 			this._registerCustomContextMenuItems();
 			this._registerCopyMergeFieldCommand();
+			this._initialised = true;
 		} else {
 			this.editor.updateRibbon((ribbon) => {
 				ribbon.activeTabIndex = 0;
@@ -225,7 +230,6 @@ export class EditorCoreService {
 			this.afterViewInit$.complete();
 			this.toggleFields();
 			this.removeUnsavedChanges();
-			this.toggleHighlightView(true);
 			this.editor.events.contentInserted.addHandler((s, e) => {
 				const regex = /{[^}]*}/g;
 				const text = this.editor.document.getText(e.interval);
