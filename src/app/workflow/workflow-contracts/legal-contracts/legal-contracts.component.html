@@ -160,7 +160,7 @@
                                     </ng-container>
                                 </ng-container>
                                 <ng-container
-                                    *ngIf="(!(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath === legalContractPath.ReceiveFromOtherParty) && !(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath === legalContractPath.DocuSign) && !(contract.value.agreementStatus === legalContractStatus.Voided && contract.value.processingPath === legalContractPath.ReceiveFromOtherParty))">
+                                    *ngIf="(!(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath === legalContractPath.ReceiveFromOtherParty) && !(contract.value.agreementStatus === legalContractStatus.Completed && contract.value.processingPath === legalContractPath.DocuSign) && !(contract.value.agreementStatus === legalContractStatus.Voided && contract.value.processingPath === legalContractPath.ReceiveFromOtherParty)) || contract.value.agreementStatus === legalContractStatus.Sent">
                                     <button class="menu-item green-color" mat-menu-item
                                         (click)="editAgreement(contract.value.agreementId)">
                                         <mat-icon svgIcon="legal-contract-edit"></mat-icon>
