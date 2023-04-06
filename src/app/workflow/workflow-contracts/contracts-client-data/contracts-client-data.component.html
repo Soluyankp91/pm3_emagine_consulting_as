@@ -121,6 +121,7 @@
                                                 <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
                                                 <ng-container *ngIf="item?.agreementId !== undefined">
                                                     <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                        #{{item?.agreementId}} •
                                                         {{item.countryName}}
                                                         {{item.countryName ? '•' : ''}}
                                                         {{item.startDate | momentFormat}}
