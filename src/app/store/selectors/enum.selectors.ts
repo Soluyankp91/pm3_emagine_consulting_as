@@ -1,8 +1,22 @@
 import { createSelector } from '@ngrx/store';
-import { getCoreState } from 'src/app/store/reducers';
-import * as fromReducers from 'src/app/store/reducers/core.reducer';
+import { getEnumState } from 'src/app/store/reducers';
+import * as fromReducers from 'src/app/store/reducers/enum.reducer';
 
-export const getCurrencies = createSelector(
-  getCoreState,
-  fromReducers.getEmployeesState,
-);
+export const getCurrencies = createSelector(getEnumState, fromReducers.getCurrencies);
+export const getRateUnitTypes = createSelector(getEnumState, fromReducers.getRateUnitTypes);
+export const getDeliveryTypes = createSelector(getEnumState, fromReducers.getDeliveryTypes);
+export const getDiscounts = createSelector(getEnumState, fromReducers.getDiscounts);
+export const getProjectTypes = createSelector(getEnumState, fromReducers.getProjectTypes);
+export const getMargins = createSelector(getEnumState, fromReducers.getMargins);
+export const getEmploymentTypes = createSelector(getEnumState, fromReducers.getEmploymentTypes);
+export const getProjectCategories = createSelector(getEnumState, fromReducers.getProjectCategories);
+export const getInvoiceFrequencies = createSelector(getEnumState, fromReducers.getInvoiceFrequencies);
+export const getInvoicingTimes = createSelector(getEnumState, fromReducers.getInvoicingTimes);
+export const getCountries = createSelector(getEnumState, fromReducers.getCountries);
+export const getLegalEntities = createSelector(getEnumState, fromReducers.getLegalEntities);
+export const getCommissionTypes = createSelector(getEnumState, fromReducers.getCommissionTypes);
+export const getCommissionRecipientTypeList = createSelector(getEnumState, fromReducers.getCommissionRecipientTypeList);
+export const getCommissionFrequencies = createSelector(getEnumState, fromReducers.getCommissionFrequencies);
+export const getConsultantTimeReportingCapList = createSelector(getEnumState, fromReducers.getConsultantTimeReportingCapList);
+export const getExpectedWorkloadUnits = createSelector(getEnumState, fromReducers.getExpectedWorkloadUnits);
+export const getEmagineOffices = createSelector(getEnumState, fromReducers.getEmagineOffices);

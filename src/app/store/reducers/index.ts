@@ -6,13 +6,13 @@ import { InjectionToken } from '@angular/core';
 
 export interface State {
 	coreState: CoreState;
-    enumState: EnumState
+	enumState: EnumState;
 }
 
 export const ROOT_REDUCERS = new InjectionToken<ActionReducerMap<State, Action>>('Root reducers token', {
 	factory: () => ({
 		coreState: coreReducer,
-        enumState: enumReducer
+		enumState: enumReducer,
 	}),
 });
 
