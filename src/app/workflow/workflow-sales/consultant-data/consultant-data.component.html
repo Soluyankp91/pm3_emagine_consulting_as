@@ -245,7 +245,7 @@
                                                         <app-validator [control]="consultant.get('onsiteClientAddress')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
-                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
+                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [ngClass]="{'disabled-input': readOnlyMode}" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
                                                     <mat-label>Percentage onsite</mat-label>
                                                     <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
                                                     <mat-icon matSuffix svgIcon="percentage-icon"></mat-icon>

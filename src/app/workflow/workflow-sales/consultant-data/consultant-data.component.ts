@@ -161,7 +161,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				.at(consultantIndex)
 				.get('consultantWorkplaceClientAddress')
 				?.setValue(this.clientDataForm.directClientIdValue?.value, { emitEvent: false });
-                this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses);
+                this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses, true);
 		}
 	}
 
@@ -778,13 +778,15 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
     clientOfficeSelected(event: MatAutocompleteSelectedEvent, consultantIndex: number) {
-        this.getClientAddresses(consultantIndex, event.option.value?.clientAddresses)
+        this.getClientAddresses(consultantIndex, event.option.value?.clientAddresses, true)
         this.focusToggleMethod('auto');
     }
 
-    getClientAddresses(consultantIndex: number, clientAddresses: ClientAddressDto[]) {
-        this.consultants.at(consultantIndex).get('onsiteClientAddress').setValue(null);
+    getClientAddresses(consultantIndex: number, clientAddresses: ClientAddressDto[], clearExistingAddress = false) {
         this.onsiteClientAddresses[consultantIndex] = MapClientAddressList(clientAddresses);
+        if (clearExistingAddress) {
+            this.consultants.at(consultantIndex).get('onsiteClientAddress').setValue(null);
+        }
     }
 
     getConsultantCapControls(consultantIndex: number) {

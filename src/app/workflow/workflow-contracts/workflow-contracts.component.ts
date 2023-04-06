@@ -504,6 +504,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (this.clientDataComponent) {
             this.clientDataComponent.contractClientForm.clientRates.controls = [];
             this.clientDataComponent.contractClientForm.clientFees.controls = [];
+            this.clientDataComponent.contractClientForm.timeReportingCaps.controls = [];
             if (this.clientDataComponent.poComponent) {
                 this.clientDataComponent.poComponent.purchaseOrders.controls = [];
             }
