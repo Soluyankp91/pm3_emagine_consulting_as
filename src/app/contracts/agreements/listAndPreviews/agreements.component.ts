@@ -9,14 +9,15 @@ import {
 	OnDestroy,
 	ViewChild,
 	TemplateRef,
+	ChangeDetectorRef,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject } from 'rxjs';
-import { takeUntil, startWith, pairwise, switchMap } from 'rxjs/operators';
+import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject, EMPTY, of } from 'rxjs';
+import { takeUntil, startWith, pairwise, switchMap, catchError } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
@@ -28,6 +29,7 @@ import {
 	AgreementType,
 	AgreementDetailsPreviewDto,
 	EnvelopeStatus,
+	FileParameter,
 } from 'src/shared/service-proxies/service-proxies';
 import {
 	AGREEMENT_BOTTOM_ACTIONS,
@@ -35,6 +37,8 @@ import {
 	BASE_AGREEMENT_ACTIONS,
 	DISPLAYED_COLUMNS,
 	INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE,
+	INVALID_MANUAL_AGREEMENT_UPLOAD_MESSAGE,
+	MANUAL_AGREEMENT_UPLOAD_MESSAGE,
 } from '../../shared/components/grid-table/agreements/entities/agreements.constants';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
@@ -47,6 +51,7 @@ import { AgreementPreviewComponent } from './components/agreement-preview/agreem
 import { AgreementService } from './services/agreement.service';
 import { ActionDialogComponent } from '../../shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from '../../shared/components/default-file-uploader/default-file-uploader.component';
+import { ExtraHttpsService } from '../../shared/services/extra-https.service';
 
 @Component({
 	selector: 'app-agreements',
@@ -71,9 +76,13 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 
 	private _unSubscribe$ = new Subject<void>();
 
-	@ViewChild('dialogFileUpload') diagloUploaderTemplate: TemplateRef<any>;
-	@ViewChild('fileUploader')
-	defaultFileUploaderComponent: DefaultFileUploaderComponent;
+	@ViewChild('dialogFileUpload') dialogUploaderTemplate: TemplateRef<any>;
+	@ViewChildren(DefaultFileUploaderComponent, { read: DefaultFileUploaderComponent })
+	defaultFileUploaderComponents: QueryList<DefaultFileUploaderComponent>;
+
+	get defaultFileUploaderComponent(): DefaultFileUploaderComponent {
+		return this.defaultFileUploaderComponents.get(0) as DefaultFileUploaderComponent;
+	}
 
 	constructor(
 		private readonly _router: Router,
@@ -85,6 +94,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		private readonly _downloadFilesService: DownloadFilesService,
 		private readonly _snackBar: MatSnackBar,
 		private readonly _dialog: MatDialog,
+		private readonly _extraHttp: ExtraHttpsService,
+		private readonly _cdr: ChangeDetectorRef,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
@@ -123,10 +134,10 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 					backdropClass: 'backdrop-modal--wrapper',
 					data: {
 						label: 'Upload contract',
-						message: 'The agreement will be marked as completed manually. Are you sure you wish to proceed?',
+						message: MANUAL_AGREEMENT_UPLOAD_MESSAGE,
 						acceptButtonLabel: 'Upload',
 						cancelButtonLabel: 'Cancel',
-						template: this.diagloUploaderTemplate,
+						template: this.dialogUploaderTemplate,
 						acceptButtonDisabled$: acceptButtonDisabled$,
 					},
 				});
@@ -136,18 +147,71 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 					.subscribe(() => {
 						acceptButtonDisabled$.next(false);
 					});
+				let file$: ReplaySubject<FileParameter>;
 				dialogRef
 					.afterClosed()
 					.pipe(
-						switchMap(() => this.defaultFileUploaderComponent.file$),
+						switchMap((proceed) => {
+							if (!proceed) {
+								return EMPTY;
+							}
+							file$ = this.defaultFileUploaderComponent.file$;
+							return file$;
+						}),
 						tap(() => {
 							this.showMainSpinner();
 						}),
 						switchMap((file) =>
-							this._agreementServiceProxy.uploadSigned($event.row.agreementId, false, {
-								fileName: file.name,
-								data: file,
-							})
+							this._extraHttp
+								.uploadSigned($event.row.agreementId, false, {
+									fileName: file.fileName,
+									data: file.data,
+								})
+								.pipe(
+									catchError(() => {
+										this.hideMainSpinner();
+										dialogRef = this._dialog.open(ActionDialogComponent, {
+											width: '500px',
+											height: '350px',
+											backdropClass: 'backdrop-modal--wrapper',
+											data: {
+												label: 'Upload contract',
+												message: INVALID_MANUAL_AGREEMENT_UPLOAD_MESSAGE,
+												acceptButtonLabel: 'Upload',
+												cancelButtonLabel: 'Cancel',
+												template: this.dialogUploaderTemplate,
+												acceptButtonDisabled$: acceptButtonDisabled$,
+											},
+										});
+										dialogRef
+											.afterOpened()
+											.pipe(
+												tap(() => {
+													this._cdr.detectChanges();
+													this.defaultFileUploaderComponent.file$ = file$;
+												})
+											)
+											.subscribe();
+
+										return dialogRef.afterClosed().pipe(
+											switchMap((proceed) => {
+												if (!proceed) {
+													return EMPTY;
+												}
+												return file$;
+											}),
+											tap(() => {
+												this.showMainSpinner();
+											}),
+											switchMap(() =>
+												this._extraHttp.uploadSigned($event.row.agreementId, true, {
+													fileName: file.fileName,
+													data: file.data,
+												})
+											)
+										);
+									})
+								)
 						),
 						tap(() => {
 							this.hideMainSpinner();
@@ -192,6 +256,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				break;
 		}
 	}
+
+	catchManualUploadError() {}
 
 	onSelectionAction($event: { selectedRows: AgreementDetailsPreviewDto[]; action: string }) {
 		switch ($event.action) {
@@ -291,13 +357,6 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 						actionIcon: 'table-delete-icon',
 					}
 				);
-			}
-			if (item.status !== EnvelopeStatus.Completed) {
-				itemActions.unshift({
-					label: 'Upload signed contract',
-					actionType: 'UPLOAD_SIGNED_CONTRACT',
-					actionIcon: 'legal-contract-upload',
-				});
 			}
 
 			return <MappedAgreementTableItem>{

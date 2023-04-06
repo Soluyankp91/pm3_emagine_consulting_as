@@ -220,6 +220,11 @@ export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const BASE_AGREEMENT_ACTIONS: Actions[] = [
 	{
+		label: 'Upload signed contract',
+		actionType: 'UPLOAD_SIGNED_CONTRACT',
+		actionIcon: 'legal-contract-upload',
+	},
+	{
 		label: 'Download *.pdf',
 		actionType: 'DOWNLOAD_PDF',
 		actionIcon: 'pdf-download-icon',
@@ -330,3 +335,7 @@ export const STATUTES = [
 ];
 export const INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE =
 	'Invalid documents were selected. You can only download envelopes that contain a document. Please check if you are trying to download an Agreement that is set to always being received from other party.';
+export const MANUAL_AGREEMENT_UPLOAD_MESSAGE =
+	'The agreement will be marked as completed manually. Are you sure you wish to proceed?';
+export const INVALID_MANUAL_AGREEMENT_UPLOAD_MESSAGE =
+	'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?';
