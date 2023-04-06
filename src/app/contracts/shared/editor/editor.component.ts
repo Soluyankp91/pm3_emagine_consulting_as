@@ -46,6 +46,7 @@ import {
 } from 'src/app/workflow/workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.model';
 import { NotificationPopupComponent } from './components/notification-popup';
 import { CommentsAbstractService } from './data-access/comments-abstract.service';
+import { VoidEnvelopePopupComponent } from './components/void-envelope-popup/void-envelope-popup.component';
 
 @Component({
 	standalone: true,
@@ -57,6 +58,7 @@ import { CommentsAbstractService } from './data-access/comments-abstract.service
 		MatButtonModule,
 		RichEditorDirective,
 		SaveAsPopupComponent,
+		VoidEnvelopePopupComponent,
 		InsertMergeFieldPopupComponent,
 		CompareSelectVersionPopupComponent,
 		CompareSelectDocumentPopupComponent,
@@ -84,6 +86,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	commentSidebarEnabled$ = this._editorCoreService.commentSidebarEnabled$;
 	currentTemplateVersion: number | undefined;
+	currentVersionIsSent: boolean = null;
 	prevValue = 0;
 
 	isLoading: boolean = false;
@@ -114,16 +117,18 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.registerChangeVersionListener(this.selectedVersionControl);
 		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID);
 
-		this.getTemplateVersions(this.templateId);
-		this.loadComments(this.templateId, true);
+		this.getTemplateVersions(this.templateId, () => {
+			if (!this.currentVersionIsSent) {
+				this.loadComments(this.templateId, true);
 
-		this._agreementService.getSimpleList().subscribe((res) => {
-			this.documentList$.next(res);
-		});
+				this._agreementService.getSimpleList().subscribe((res) => {
+					this.documentList$.next(res);
+				});
 
-		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
-			this._editorCoreService.applyMergeFields(res);
-			this.mergeFields$.next(res);
+				this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
+					this.mergeFields$.next(res);
+				});
+			}
 		});
 	}
 
@@ -132,33 +137,28 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._destroy$.complete();
 	}
 
-	getTemplateVersions(templateId: number) {
+	getTemplateVersions(templateId: number, callback?: () => void) {
 		this._agreementService.getTemplateVersions(templateId).subscribe((res) => {
 			this.versions = res;
 			this.currentTemplateVersion = res.length ? res[res.length - 1].version : 1;
 			this.templateVersions$.next(res || []);
 			this.selectedVersionControl.setValue(this.currentTemplateVersion);
+			this.updateViewModeByVersion(this.currentTemplateVersion);
+			if (callback && typeof callback === 'function') {
+				callback();
+			}
 		});
 	}
 
 	loadTemplate(templateId: number, version: number) {
 		this.isLoading = true;
 		this.isPageLoading = true;
-
 		this._agreementService
 			.getTemplateByVersion(templateId, version)
-			.pipe(
-				catchError(() => {
-					this.isLoading = false;
-					this.isPageLoading = false;
-					return of(null);
-				})
-			)
+			.pipe(catchError(() => of(null)))
 			.subscribe((tmp) => {
 				this.template$.next(tmp);
 				this.loadComments(templateId, false);
-				this.isLoading = false;
-				this.isPageLoading = false;
 
 				if (tmp) {
 					if (version === this.versions[this.versions.length - 1].version) {
@@ -166,12 +166,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 					} else {
 						this.isLatestVersionSelected$.next(false);
 					}
-
-					this._editorCoreService.loadDocument(tmp);
 					this.selectedVersion = this.versions[version - 1];
 					this._chd.detectChanges();
 				} else {
-					this._editorCoreService.newDocument();
 					this.selectedVersion = null;
 				}
 			});
@@ -190,6 +187,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							if (confirmed) {
 								this.prevValue = version;
 								this._editorCoreService.removeUnsavedChanges();
+								this.updateViewModeByVersion(version);
 								this.loadTemplate(this.templateId, version);
 							} else {
 								control.setValue(this.prevValue, { emitEvent: false });
@@ -198,6 +196,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 					} else {
 						this.prevValue = version;
 						this._editorCoreService.removeUnsavedChanges();
+						this.updateViewModeByVersion(version);
 						this.loadTemplate(this.templateId, version);
 					}
 				})
@@ -214,6 +213,22 @@ export class EditorComponent implements OnInit, OnDestroy {
 		)
 			.pipe(takeUntil(this._destroy$))
 			.subscribe();
+	}
+
+	updateViewModeByVersion(version: number) {
+		let isAgreement = this._route.snapshot.data.isAgreement || false;
+		let versionMetaData = this.versions.find((v) => v.version === version);
+		this.currentVersionIsSent =
+			isAgreement &&
+			versionMetaData &&
+			versionMetaData.isCurrent &&
+			versionMetaData.envelopeStatus &&
+			versionMetaData.envelopeStatus === 3;
+	}
+
+	handleDocumentReady() {
+		this.isLoading = false;
+		this.isPageLoading = false;
 	}
 
 	mergeSelectedField(fields: string[]) {
@@ -326,62 +341,65 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	saveCurrentAsCompleteAgreementOnly() {
+		this.isLoading = true;
+		this._editorCoreService.toggleFields();
+		this._editorCoreService.setTemplateAsBase64((base64) => {
+			this._agreementService
+				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
+				.subscribe(() => {
+					this._updateCommentByNeeds();
+					this.getTemplateVersions(this.templateId);
+					this.cleanUp();
+				});
+		});
+	}
+
 	saveCurrentAsComplete(isAgreement: boolean) {
 		this.isLoading = true;
 		this._editorCoreService.toggleFields();
-
 		this._editorCoreService.setTemplateAsBase64((base64) => {
-			if (isAgreement) {
-				this._agreementService
-					.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
-					.subscribe(() => {
-						this._updateCommentByNeeds();
-						this.getTemplateVersions(this.templateId);
-						this.cleanUp();
-					});
-			} else {
-				this._dialog
-					.open(SaveAsPopupComponent, {
-						data: {
-							document: this.selectedVersion,
-							base64,
-							isAgreement,
-							versions: this.versions,
-						},
-						height: 'auto',
-						width: '540px',
-						maxWidth: '100%',
-						disableClose: true,
-						hasBackdrop: true,
-						backdropClass: 'backdrop-modal--wrapper',
-					})
-					.afterClosed()
-					.pipe(
-						map((res) => {
-							if (res) {
-								return res;
-							} else {
-								this.isLoading = false;
-								this._chd.detectChanges();
-								return null;
-							}
-						}),
-						filter((res) => !!res),
-						switchMap((res: CompleteTemplateDocumentFileDraftDto) =>
-							this._agreementService.saveCurrentAsCompleteTemplate(this.templateId, res).pipe(
-								tap(() => {
-									if (isAgreement) {
-										this._updateCommentByNeeds();
-										this.getTemplateVersions(this.templateId);
-									}
-								})
-							)
+			this._dialog
+				.open(SaveAsPopupComponent, {
+					data: {
+						document: this.selectedVersion,
+						base64,
+						isAgreement,
+						versions: this.versions,
+					},
+					height: 'auto',
+					width: '540px',
+					maxWidth: '100%',
+					disableClose: true,
+					hasBackdrop: true,
+					backdropClass: 'backdrop-modal--wrapper',
+				})
+				.afterClosed()
+				.pipe(
+					map((res) => {
+						if (res) {
+							return res;
+						} else {
+							this.isLoading = false;
+							this._chd.detectChanges();
+							return null;
+						}
+					}),
+					filter((res) => !!res),
+					switchMap((res: CompleteTemplateDocumentFileDraftDto) =>
+						this._agreementService.saveCurrentAsCompleteTemplate(this.templateId, res).pipe(
+							tap(() => {
+								if (isAgreement) {
+									this._updateCommentByNeeds();
+									this.getTemplateVersions(this.templateId);
+								}
+							})
 						)
 					)
-					.subscribe(() => {
-						this.cleanUp();
-					});
-			}
+				)
+				.subscribe(() => {
+					this.cleanUp();
+				});
 		});
 	}
 
@@ -473,6 +491,22 @@ export class EditorComponent implements OnInit, OnDestroy {
 				});
 			});
 		}
+	}
+
+	private _templateVoidingConfirmation() {
+		this._agreementService
+			.getEnvelopeRelatedAgreements(this.templateId)
+			.pipe(
+				switchMap((agreements) =>
+					this._dialog
+						.open(VoidEnvelopePopupComponent, {
+							width: '500px',
+							data: { agreements },
+						})
+						.afterClosed()
+				)
+			)
+			.subscribe(console.log);
 	}
 
 	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption) {

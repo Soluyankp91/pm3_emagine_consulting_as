@@ -25,31 +25,43 @@
 				<ng-container *ngIf="templateVersion">
 					<div class="tmp-version-row">
 						<span class="tmp-version-num">Version {{ templateVersion.version }}</span>
-						<span *ngIf="templateVersion.isCurrent" class="label label-success">Current</span>
-						<span *ngIf="templateVersion.isDraft" class="label label-warning">Draft</span>
+						<span *ngIf="templateVersion.isDraft" class="label label-info">Draft</span>
+						<span *ngIf="templateVersion.isCurrent && !currentVersionIsSent" class="label label-success"
+							>Current</span
+						>
+						<span *ngIf="templateVersion.isCurrent && currentVersionIsSent" class="label label-warning">Sent</span>
 						<span class="tmp-version-date">- {{ templateVersion.createdDateUtc | momentFormat }}</span>
 					</div>
 				</ng-container>
 			</ng-template>
 		</div>
 
-		<div richEditor class="editor" (saved)="saveAsComplete()"></div>
-		<div *ngIf="commentSidebarEnabled$ | async" class="comment-sidebar">
-			<app-comment-sidebar
-				@inOutPaneAnimation
-				(created)="createComment($event)"
-				(deleted)="deleteComment($event)"
-				(edited)="editComment($event)">
-			</app-comment-sidebar>
-		</div>
-		<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
-		</app-insert-merge-field-popup>
-		<app-compare-select-version-popup
-			[dataSource]="templateVersions$ | async"
-			(select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
-		<app-compare-select-document-popup
-			[dataSource]="documentList$ | async"
-			(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
+		<ng-container *ngIf="template$ | async as template">
+			<div
+				richEditor
+				class="editor"
+				[template]="template"
+				[readonly]="currentVersionIsSent"
+				[mergeFields]="mergeFields$ | async"
+				(documentReady)="handleDocumentReady()"
+				(saved)="saveAsComplete()"></div>
+			<div *ngIf="commentSidebarEnabled$ | async" class="comment-sidebar">
+				<app-comment-sidebar
+					@inOutPaneAnimation
+					(created)="createComment($event)"
+					(deleted)="deleteComment($event)"
+					(edited)="editComment($event)">
+				</app-comment-sidebar>
+			</div>
+			<app-insert-merge-field-popup [fields]="mergeFields$ | async" (mergeField)="mergeSelectedField($event)">
+			</app-insert-merge-field-popup>
+			<app-compare-select-version-popup
+				[dataSource]="templateVersions$ | async"
+				(select)="loadCompareTemplateByVersion($event)"></app-compare-select-version-popup>
+			<app-compare-select-document-popup
+				[dataSource]="documentList$ | async"
+				(select)="loadCompareDocumentTemplate($event)"></app-compare-select-document-popup>
+		</ng-container>
 	</div>
 	<!-- *ngIf="hasUnsavedChanges$ | async" -->
 	<ng-container *ngIf="isLatestVersionSelected$ | async; else prevVersions">
@@ -64,11 +76,15 @@
 				</ng-container>
 
 				<ng-container *ngIf="isAgreement$ | async">
-					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsComplete(true)">
-						Save as a new version
+					<button
+						[disabled]="isLoading"
+						mat-stroked-button
+						color="primary"
+						(click)="saveCurrentAsCompleteAgreementOnly()">
+						{{ currentVersionIsSent ? 'Promote to draft' : 'Save as a new version' }}
 					</button>
 
-					<ng-container *ngIf="versions.length < 2 && selectedVersion?.isCurrent">
+					<ng-container *ngIf="!currentVersionIsSent">
 						<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">Send</button>
 					</ng-container>
 				</ng-container>

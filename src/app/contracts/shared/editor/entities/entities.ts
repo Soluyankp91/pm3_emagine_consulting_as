@@ -67,6 +67,7 @@ export interface IDocumentVersion {
 	isDraft: boolean;
 	version: number;
 	createdBy: IDocumentCreator;
+	envelopeStatus?: number | null;
 }
 
 export interface IDocumentItem {
