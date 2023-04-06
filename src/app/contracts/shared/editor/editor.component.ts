@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, filter, map, mergeMap, pluck, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, pluck, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 
 // Project Specific
@@ -343,16 +343,24 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveCurrentAsCompleteAgreementOnly() {
 		this.isLoading = true;
-		this._editorCoreService.toggleFields();
-		this._editorCoreService.setTemplateAsBase64((base64) => {
-			this._agreementService
-				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
-				.subscribe(() => {
-					this._updateCommentByNeeds();
-					this.getTemplateVersions(this.templateId);
-					this.cleanUp();
-				});
-		});
+		this._agreementService
+			.unlockAgreementByConfirmation(this.templateId, this.selectedVersion.version)
+			.subscribe((editOpened) => {
+				if (editOpened) {
+					this._editorCoreService.toggleFields();
+					this._editorCoreService.setTemplateAsBase64((base64) => {
+						this._agreementService
+							.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
+							.subscribe(() => {
+								this._updateCommentByNeeds();
+								this.getTemplateVersions(this.templateId);
+								this.cleanUp();
+							});
+					});
+				} else {
+					this.isLoading = false;
+				}
+			});
 	}
 
 	saveCurrentAsComplete(isAgreement: boolean) {
@@ -491,22 +499,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 				});
 			});
 		}
-	}
-
-	private _templateVoidingConfirmation() {
-		this._agreementService
-			.getEnvelopeRelatedAgreements(this.templateId)
-			.pipe(
-				switchMap((agreements) =>
-					this._dialog
-						.open(VoidEnvelopePopupComponent, {
-							width: '500px',
-							data: { agreements },
-						})
-						.afterClosed()
-				)
-			)
-			.subscribe(console.log);
 	}
 
 	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption) {

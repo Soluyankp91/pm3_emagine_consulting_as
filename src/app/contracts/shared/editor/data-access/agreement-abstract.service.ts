@@ -24,4 +24,6 @@ export abstract class AgreementAbstractService {
 	abstract getTemplatePDF(id: number): Observable<Blob>;
 	abstract getEnvelopeRelatedAgreements(id: number): Observable<EnvelopeRelatedAgreementDto[]>;
 	abstract voidEnvelopeRelatedAgreement(id: number, reason: string): Observable<any>;
+	abstract unlockAgreement(id: number): Observable<boolean>;
+	abstract unlockAgreementByConfirmation(id: number, version: number): Observable<boolean>;
 }

@@ -1,14 +1,9 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	Inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-
 
 @Component({
 	standalone: true,
@@ -20,20 +15,21 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ConfirmPopupComponent {
 	constructor(
-        @Inject(MAT_DIALOG_DATA)
-        public data: {
-			title: string,
-			body: string
+		@Inject(MAT_DIALOG_DATA)
+		public data: {
+			title: string;
+			body: string;
+			confirmBtnText?: string;
+			cancelBtnText?: string;
 		},
-        private _dialogRef: MatDialogRef<ConfirmPopupComponent>,
-    ) {
-	}
-	
+		private _dialogRef: MatDialogRef<ConfirmPopupComponent>
+	) {}
+
 	submit() {
-		this._dialogRef.close(true)
+		this._dialogRef.close(true);
 	}
 
-    close(): void {
-        this._dialogRef.close();
-    }
+	close(): void {
+		this._dialogRef.close();
+	}
 }

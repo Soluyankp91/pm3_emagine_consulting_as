@@ -153,4 +153,12 @@ export class AgreementTemplateService implements AgreementAbstractService {
 	voidEnvelopeRelatedAgreement(id: number, reason: string) {
 		return of(null);
 	}
+
+	unlockAgreement(id: number) {
+		return of(true);
+	}
+
+	unlockAgreementByConfirmation(id: number, version: number) {
+		return of(true);
+	}
 }
