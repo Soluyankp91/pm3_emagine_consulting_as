@@ -26,6 +26,7 @@
 					<div class="tmp-version-row">
 						<span class="tmp-version-num">Version {{ templateVersion.version }}</span>
 						<span *ngIf="templateVersion.isDraft" class="label label-info">Draft</span>
+						<span *ngIf="templateVersion.envelopeStatus === 6" class="label label-voided">Voided</span>
 						<span
 							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus !== 3"
 							class="label label-success"

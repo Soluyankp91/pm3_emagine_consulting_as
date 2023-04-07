@@ -1,4 +1,4 @@
-import { Component, OnInit, Self, DoCheck, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, Self, DoCheck, ViewEncapsulation, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {
 	NgControl,
 	ControlValueAccessor,
@@ -27,7 +27,7 @@ export enum SignerDropdowns {
 	styleUrls: ['./signers-table.component.scss'],
 	encapsulation: ViewEncapsulation.None,
 })
-export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, ControlValueAccessor {
+export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, OnChanges, ControlValueAccessor {
 	formArray: FormArray;
 
 	options$ = this._contractService.signersEnum$$;
@@ -44,6 +44,8 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 	onChange: any = () => {};
 	onTouch: any = () => {};
 
+	@Input() supplier: { typeId: number; id: number } = { typeId: -1, id: 0 };
+
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -59,6 +61,9 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 	ngOnDestroy(): void {
 		this._unSubscribe$.next();
 		this._unSubscribe$.complete();
+	}
+	ngOnChanges(changes: SimpleChanges): void {
+		// console.log(this.supplier);
 	}
 
 	ngDoCheck(): void {
@@ -219,7 +224,7 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 					tap(() => {
 						this.isOptionsLoading$.next(true);
 					}),
-					switchMap((search: string) => {
+					switchMap((search: any) => {
 						return forkJoin([
 							of({
 								label: 'Suppliers',
@@ -227,7 +232,7 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, Contro
 								outputProperty: 'id',
 								dropdownType: SignerDropdowns.SUPPLIER,
 							}),
-							this._lookupService.signerSupplierMembers(search, 20).pipe(
+							this._lookupService.signerSupplierMembers(search, this.supplier.id || undefined, 20).pipe(
 								tap(() => {
 									this.isOptionsLoading$.next(false);
 								})

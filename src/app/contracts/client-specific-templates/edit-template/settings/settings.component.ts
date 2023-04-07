@@ -411,7 +411,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 								this.isDuplicateParentOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
-								return this._apiServiceProxy.simpleList2(true, undefined, undefined, search).pipe(
+								return this._apiServiceProxy.simpleList2(true, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, search).pipe(
 									tap(() => {
 										this.isDuplicateParentOptionsLoading$.next(false);
 									}),
@@ -440,7 +440,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 								this.isDuplicateParentOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
-								return this._apiServiceProxy.simpleList2(false, undefined, undefined, search).pipe(
+								return this._apiServiceProxy.simpleList2(false, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, search).pipe(
 									tap(() => {
 										this.isDuplicateParentOptionsLoading$.next(false);
 									}),

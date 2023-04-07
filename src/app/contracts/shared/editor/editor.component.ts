@@ -79,6 +79,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	templateVersions$ = new BehaviorSubject<IDocumentVersion[]>([]);
 	mergeFields$ = new BehaviorSubject<IMergeField>({});
 	isAgreement$ = this._route.data.pipe(pluck('isAgreement'));
+	isAgreement: boolean = false;
 
 	selectedVersion: IDocumentVersion = null;
 	versions: IDocumentVersion[] = [];
@@ -130,6 +131,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._mergeFieldsService.getMergeFields(this.templateId).subscribe((res) => {
 			this.mergeFields$.next(res);
 		});
+
+		this.isAgreement$.pipe(take(1)).subscribe(res => {
+			this.isAgreement = !!res;
+		})
 	}
 
 	ngOnDestroy(): void {
@@ -329,6 +334,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveCurrentAsDraft() {
 		this.isLoading = true;
 		this._editorCoreService.toggleFields();
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleMergedData();
+		}
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -343,6 +351,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveCurrentAsCompleteAgreementOnly() {
 		this.isLoading = true;
+		this._editorCoreService.toggleFields();
 		this._agreementService
 			.unlockAgreementByConfirmation(this.templateId, this.selectedVersion.version)
 			.subscribe((editOpened) => {
@@ -366,6 +375,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveCurrentAsComplete(isAgreement: boolean) {
 		this.isLoading = true;
 		this._editorCoreService.toggleFields();
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleMergedData();
+		}
+
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._dialog
 				.open(SaveAsPopupComponent, {
@@ -414,13 +427,19 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveDraftAsDraft() {
 		this.isLoading = true;
 		this._editorCoreService.toggleFields();
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleMergedData();
+		}
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
-				.subscribe(() => {
+				.subscribe((res) => {
 					this._updateCommentByNeeds();
 					this.cleanUp();
+					if (res) {
+						this.showSnackbar();
+					}
 				});
 		});
 	}
@@ -428,6 +447,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 	promoteToDraft() {
 		this.isLoading = true;
 		this._editorCoreService.toggleFields();
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleMergedData();
+		}
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -443,6 +465,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveDraftAsComplete() {
 		this.isLoading = true;
 		this._editorCoreService.toggleFields();
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleMergedData();
+		}
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -461,6 +486,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 					this.isLoading = false;
 					this._editorCoreService.removeUnsavedChanges();
+					this.cleanUp();
 					this._chd.detectChanges();
 				});
 		});
@@ -536,8 +562,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	cleanUp() {
-		this.showSnackbar();
 		this.isLoading = false;
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleFields();
+			this._editorCoreService.toggleMergedData();
+		}
+
 		this._editorCoreService.removeUnsavedChanges();
 		this._chd.detectChanges();
 	}
