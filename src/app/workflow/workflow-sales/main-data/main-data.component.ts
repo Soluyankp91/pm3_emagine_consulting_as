@@ -96,35 +96,49 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     private _getEnums() {
-        forkJoin({
-            currencies: this._internalLookupService.getCurrencies(),
-            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-            saleTypes: this._internalLookupService.getSaleTypes(),
-            projectTypes: this._internalLookupService.getProjectTypes(),
-            margins: this._internalLookupService.getMargins(),
-            contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
-            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
-            commissionTypes: this._internalLookupService.getCommissionTypes(),
-            commissionRecipientTypeList: this._internalLookupService.getCommissionRecipientTypes(),
-            legalEntities: this._internalLookupService.getLegalEntities(),
-            projectCategories: this._internalLookupService.getProjectCategory(),
-            discounts: this._internalLookupService.getDiscounts(),
-        })
-        .subscribe(result => {
-            this.currencies = result.currencies;
-            this.deliveryTypes = result.deliveryTypes;
-            this.saleTypes = result.saleTypes;
-            this.projectTypes = result.projectTypes;
-            this.margins = result.margins;
-            this.contractExpirationNotificationDuration = result.contractExpirationNotificationDuration;
-            this.commissionFrequencies = result.commissionFrequencies;
-            this.commissionTypes = result.commissionTypes;
-            this.commissionRecipientTypeList = result.commissionRecipientTypeList;
-            this.legalEntities = result.legalEntities;
-            this.projectCategories = result.projectCategories;
-            this.discounts = result.discounts;
-        });
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
+        this.projectTypes = this.getStaticEnumValue('projectTypes');
+        this.margins = this.getStaticEnumValue('margins');
+        this.contractExpirationNotificationDuration = this.getStaticEnumValue('contractExpirationNotificationInterval');
+        // this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
+        this.commissionFrequencies = this.getStaticEnumValue('commissionFrequencies');
+        this.commissionTypes = this.getStaticEnumValue('commissionTypes');
+        this.commissionRecipientTypeList = this.getStaticEnumValue('commissionRecipientTypes');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.projectCategories = this.getStaticEnumValue('projectCategories');
+        this.discounts = this.getStaticEnumValue('discounts');
+
+        // forkJoin({
+        //     currencies: this._internalLookupService.getCurrencies(),
+        //     deliveryTypes: this._internalLookupService.getDeliveryTypes(),
+        //     saleTypes: this._internalLookupService.getSaleTypes(),
+        //     projectTypes: this._internalLookupService.getProjectTypes(),
+        //     margins: this._internalLookupService.getMargins(),
+        //     contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
+        //     clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+        //     commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
+        //     commissionTypes: this._internalLookupService.getCommissionTypes(),
+        //     commissionRecipientTypeList: this._internalLookupService.getCommissionRecipientTypes(),
+        //     legalEntities: this._internalLookupService.getLegalEntities(),
+        //     projectCategories: this._internalLookupService.getProjectCategory(),
+        //     discounts: this._internalLookupService.getDiscounts(),
+        // })
+        // .subscribe(result => {
+        //     this.currencies = result.currencies;
+        //     this.deliveryTypes = result.deliveryTypes;
+        //     this.saleTypes = result.saleTypes;
+        //     this.projectTypes = result.projectTypes;
+        //     this.margins = result.margins;
+        //     this.contractExpirationNotificationDuration = result.contractExpirationNotificationDuration;
+        //     this.commissionFrequencies = result.commissionFrequencies;
+        //     this.commissionTypes = result.commissionTypes;
+        //     this.commissionRecipientTypeList = result.commissionRecipientTypeList;
+        //     this.legalEntities = result.legalEntities;
+        //     this.projectCategories = result.projectCategories;
+        //     this.discounts = result.discounts;
+        // });
     }
 
     private _subscriptions$() {

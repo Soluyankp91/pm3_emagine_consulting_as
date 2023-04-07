@@ -308,11 +308,12 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _getPeriodStepTypes() {
-		this._internalLookupService
-			.getWorkflowPeriodStepTypes()
-			.subscribe((result) => {
-				this.workflowPeriodStepTypes = result;
-			});
+        this.workflowPeriodStepTypes = this.getStaticEnumValue('workflowPeriodStepTypes');
+		// this._internalLookupService
+		// 	.getWorkflowPeriodStepTypes()
+		// 	.subscribe((result) => {
+		// 		this.workflowPeriodStepTypes = result;
+		// 	});
 	}
 
 	private _getSideMenu(autoUpdate?: boolean, initial?: boolean) {

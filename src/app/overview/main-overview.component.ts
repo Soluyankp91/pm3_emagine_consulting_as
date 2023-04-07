@@ -9,6 +9,7 @@ import {
 	EmployeeDto,
 	EmployeeServiceProxy,
 	EnumEntityTypeDto,
+	LegalEntityDto,
 	LookupServiceProxy,
 	MainOverviewItemPeriodDto,
 	MainOverviewServiceProxy,
@@ -191,10 +192,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.Overview);
-		this.getLegalEntities();
-		this.getSalesType();
-		this.getDeliveryTypes();
-		this.getMargins();
+        this._getEnums();
+		// this.getLegalEntities();
+		// this.getSalesType();
+		// this.getDeliveryTypes();
+		// this.getMargins();
 		this.getMainOverviewStatuses();
 		this.getOverviewViewTypes();
 		this.getCurrentUser();
@@ -536,28 +538,58 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	}
 
 	getLegalEntities() {
-		this.isCountriesLoading = true;
-		this._internalLookupService
-			.getLegalEntities()
-			.pipe(
-				finalize(() => (this.isCountriesLoading = false)),
-				map((entities) =>
-					entities.map((x) => {
-						return new SelectableCountry({
-							id: x.id!,
-							name: x.name!,
-							tenantName: x.tenantName!,
-							code: MapTenantCountryCode(x.tenantName!)!,
-							selected: false,
-							flag: x.tenantName!,
-						});
-					})
-				)
-			)
-			.subscribe((result) => {
-				this.legalEntities = result;
-			});
+        // this.legalEntities = this.getStaticEnumValue('legalEntities')?.map((x) => {
+        //     return new SelectableCountry({
+        //         id: x.id!,
+        //         name: x.name!,
+        //         tenantName: x.tenantName!,
+        //         code: MapTenantCountryCode(x.tenantName!)!,
+        //         selected: false,
+        //         flag: x.tenantName!,
+        //     });
+        // });
+		// this.isCountriesLoading = true;
+		// this._internalLookupService
+		// 	.getLegalEntities()
+		// 	.pipe(
+		// 		finalize(() => (this.isCountriesLoading = false)),
+		// 		map((entities) =>
+		// 			entities.map((x) => {
+		// 				return new SelectableCountry({
+		// 					id: x.id!,
+		// 					name: x.name!,
+		// 					tenantName: x.tenantName!,
+		// 					code: MapTenantCountryCode(x.tenantName!)!,
+		// 					selected: false,
+		// 					flag: x.tenantName!,
+		// 				});
+		// 			})
+		// 		)
+		// 	)
+		// 	.subscribe((result) => {
+		// 		this.legalEntities = result;
+		// 	});
 	}
+
+    private _getEnums() {
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
+        this.margins = this.getStaticEnumValue('margins');
+        this.legalEntities = this._mapLegalEntitiesIntoSelectable(this.getStaticEnumValue('legalEntities'));
+    }
+
+    private _mapLegalEntitiesIntoSelectable(entities: LegalEntityDto[]) {
+        return entities.map((x) => {
+            return new SelectableCountry({
+                id: x.id!,
+                name: x.name!,
+                tenantName: x.tenantName!,
+                code: MapTenantCountryCode(x.tenantName!)!,
+                selected: false,
+                flag: x.tenantName!,
+            })
+        });
+    }
 
 	getSalesType() {
 		this._internalLookupService

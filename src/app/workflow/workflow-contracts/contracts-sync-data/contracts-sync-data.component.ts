@@ -38,9 +38,15 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 	}
 
 	ngOnInit(): void {
-		this._getLegalContractStatuses();
-        this._getEmploymentTypes();
+        this._getEnums();
+		// this._getLegalContractStatuses();
+        // this._getEmploymentTypes();
 	}
+
+    private _getEnums() {
+        this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+    }
 	private _getLegalContractStatuses() {
 		this._internalLookupService.getLegalContractStatuses().subscribe((result) => (this.legalContractStatuses = result));
 	}

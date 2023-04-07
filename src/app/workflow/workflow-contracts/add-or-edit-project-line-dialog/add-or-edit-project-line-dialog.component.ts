@@ -119,13 +119,15 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     }
 
     getConsultantInsuranceOptions() {
-        this._internalLookupService.getConsultantInsuranceOptions()
-            .pipe(finalize(() => {
+        this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
 
-            }))
-            .subscribe(result => {
-                this.consultantInsuranceOptions = result;
-            });
+        // this._internalLookupService.getConsultantInsuranceOptions()
+        //     .pipe(finalize(() => {
+
+        //     }))
+        //     .subscribe(result => {
+        //         this.consultantInsuranceOptions = result;
+        //     });
     }
 
     fillForm(data: any) {

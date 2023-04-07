@@ -71,10 +71,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	currencies: EnumEntityTypeDto[];
 	signerRoles: EnumEntityTypeDto[];
-	clientExtensionDurations: EnumEntityTypeDto[];
-	clientExtensionDeadlines: EnumEntityTypeDto[];
+	extensionDurations: EnumEntityTypeDto[];
+	extensionDeadlines: EnumEntityTypeDto[];
 	legalEntities: LegalEntityDto[];
-	rateUnitTypes: EnumEntityTypeDto[];
+	unitTypes: EnumEntityTypeDto[];
 	invoiceFrequencies: EnumEntityTypeDto[];
 	invoicingTimes: EnumEntityTypeDto[];
 	clientTimeReportingCap: EnumEntityTypeDto[];
@@ -124,31 +124,42 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			legalEntities: this._internalLookupService.getLegalEntities(),
-			signerRoles: this._internalLookupService.getSignerRoles(),
-			clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
-			clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-			rateUnitTypes: this._internalLookupService.getUnitTypes(),
-			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-			valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-			periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.legalEntities = result.legalEntities;
-			this.signerRoles = result.signerRoles;
-			this.clientExtensionDurations = result.clientExtensionDurations;
-			this.clientExtensionDeadlines = result.clientExtensionDeadlines;
-			this.rateUnitTypes = result.rateUnitTypes;
-			this.invoiceFrequencies = result.invoiceFrequencies;
-			this.invoicingTimes = result.invoicingTimes;
-			this.clientTimeReportingCap = result.clientTimeReportingCap;
-			this.valueUnitTypes = result.valueUnitTypes;
-			this.periodUnitTypes = result.periodUnitTypes;
-		});
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.signerRoles = this.getStaticEnumValue('signerRoles');
+        this.extensionDurations = this.getStaticEnumValue('extensionDurations');
+        this.extensionDeadlines = this.getStaticEnumValue('extensionDeadlines');
+        this.unitTypes = this.getStaticEnumValue('unitTypes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+		// forkJoin({
+		// 	currencies: this._internalLookupService.getCurrencies(),
+		// 	legalEntities: this._internalLookupService.getLegalEntities(),
+		// 	signerRoles: this._internalLookupService.getSignerRoles(),
+		// 	extensionDurations: this._internalLookupService.getExtensionDurations(),
+		// 	extensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
+		// 	unitTypes: this._internalLookupService.getUnitTypes(),
+		// 	invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
+		// 	invoicingTimes: this._internalLookupService.getInvoicingTimes(),
+		// 	clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+		// 	valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+		// 	periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+		// }).subscribe((result) => {
+		// 	this.currencies = result.currencies;
+		// 	this.legalEntities = result.legalEntities;
+		// 	this.signerRoles = result.signerRoles;
+		// 	this.extensionDurations = result.extensionDurations;
+		// 	this.extensionDeadlines = result.extensionDeadlines;
+		// 	this.unitTypes = result.unitTypes;
+		// 	this.invoiceFrequencies = result.invoiceFrequencies;
+		// 	this.invoicingTimes = result.invoicingTimes;
+		// 	this.clientTimeReportingCap = result.clientTimeReportingCap;
+		// 	this.valueUnitTypes = result.valueUnitTypes;
+		// 	this.periodUnitTypes = result.periodUnitTypes;
+		// });
 	}
 
 	private _subscriptions$() {

@@ -103,34 +103,46 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     }
 
     private _getEnums() {
-        forkJoin({
-            employmentTypes: this._internalLookupService.getEmploymentTypes(),
-            emagineOffices: this._internalLookupService.getEmagineOfficeList(),
-            countries: this._internalLookupService.getCountries(),
-            expectedWorkloadUnits: this._internalLookupService.getExpectedWorkloadUnit(),
-            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-            legalEntities: this._internalLookupService.getLegalEntities(),
-            rateUnitTypes: this._internalLookupService.getUnitTypes(),
-            invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-            invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-            currencies: this._internalLookupService.getCurrencies(),
-            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-        })
-        .subscribe(result => {
-            this.employmentTypes = result.employmentTypes;
-            this.emagineOffices = result.emagineOffices;
-            this.countries = result.countries;
-            this.expectedWorkloadUnits = result.expectedWorkloadUnits;
-            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-            this.legalEntities = result.legalEntities;
-            this.rateUnitTypes = result.rateUnitTypes;
-            this.invoiceFrequencies = result.invoiceFrequencies;
-            this.invoicingTimes = result.invoicingTimes;
-            this.currencies = result.currencies;
-            this.valueUnitTypes = result.valueUnitTypes;
-            this.periodUnitTypes = result.periodUnitTypes;
-        });
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+        this.emagineOffices = this.getStaticEnumValue('emagineOffices');
+        this.countries = this.getStaticEnumValue('countries');
+        this.expectedWorkloadUnits = this.getStaticEnumValue('expectedWorkloadUnits');
+        this.consultantTimeReportingCapList = this.getStaticEnumValue('consultantTimeReportingCapList');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        // forkJoin({
+        //     employmentTypes: this._internalLookupService.getEmploymentTypes(),
+        //     emagineOffices: this._internalLookupService.getEmagineOfficeList(),
+        //     countries: this._internalLookupService.getCountries(),
+        //     expectedWorkloadUnits: this._internalLookupService.getExpectedWorkloadUnit(),
+        //     consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+        //     legalEntities: this._internalLookupService.getLegalEntities(),
+        //     rateUnitTypes: this._internalLookupService.getUnitTypes(),
+        //     invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
+        //     invoicingTimes: this._internalLookupService.getInvoicingTimes(),
+        //     currencies: this._internalLookupService.getCurrencies(),
+        //     valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+        //     periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+        // })
+        // .subscribe(result => {
+        //     this.employmentTypes = result.employmentTypes;
+        //     this.emagineOffices = result.emagineOffices;
+        //     this.countries = result.countries;
+        //     this.expectedWorkloadUnits = result.expectedWorkloadUnits;
+        //     this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
+        //     this.legalEntities = result.legalEntities;
+        //     this.rateUnitTypes = result.rateUnitTypes;
+        //     this.invoiceFrequencies = result.invoiceFrequencies;
+        //     this.invoicingTimes = result.invoicingTimes;
+        //     this.currencies = result.currencies;
+        //     this.valueUnitTypes = result.valueUnitTypes;
+        //     this.periodUnitTypes = result.periodUnitTypes;
+        // });
     }
 
     updateConsultantDates(event: MatSelectChange, consultantIndex: number) {

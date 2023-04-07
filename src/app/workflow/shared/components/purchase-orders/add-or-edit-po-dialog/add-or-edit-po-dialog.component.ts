@@ -147,15 +147,20 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	private _getEnums() {
-		forkJoin({
-			capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-			currencies: this._internalLookupService.getCurrencies(),
-			unitTypes: this._internalLookupService.getValueUnitTypes(),
-		}).subscribe((result) => {
-			this.capTypes = result.capTypes;
-			this.currencies = result.currencies;
-			this.eCurrencies = this.arrayToEnum(this.currencies);
-			this.unitTypes = result.unitTypes;
-		});
+        this.capTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.unitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
+
+		// forkJoin({
+		// 	capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
+		// 	currencies: this._internalLookupService.getCurrencies(),
+		// 	unitTypes: this._internalLookupService.getValueUnitTypes(),
+		// }).subscribe((result) => {
+		// 	this.capTypes = result.capTypes;
+		// 	this.currencies = result.currencies;
+		// 	this.eCurrencies = this.arrayToEnum(this.currencies);
+		// 	this.unitTypes = result.unitTypes;
+		// });
 	}
 }

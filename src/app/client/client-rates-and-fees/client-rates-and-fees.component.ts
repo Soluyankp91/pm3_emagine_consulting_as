@@ -57,12 +57,13 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
         });
-        this.getCurrencies();
-        this.getUnitTypes();
-        this.getSpecialRatesReportingUnits();
-        this.getSpecialFeeSpecifications();
-        this.getSpecialRateSpecifications();
-        this.getSpecialFeeFrequencies();
+        this._getEnums();
+        // this.getCurrencies();
+        // this.getUnitTypes();
+        // this.getSpecialRatesReportingUnits();
+        // this.getSpecialFeeSpecifications();
+        // this.getSpecialRateSpecifications();
+        // this.getSpecialFeeFrequencies();
 
         this.getClientRates();
         this.getClientFees();
@@ -71,6 +72,15 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    private _getEnums() {
+        this.currencies = this._internalLookupService.getEnumValue('currencies');
+        this.rateUnitTypes = this._internalLookupService.getEnumValue('rateUnitTypes');
+        this.clientSpecialRateReportUnits = this._internalLookupService.getEnumValue('clientSpecialRateReportUnits');
+        this.clientSpecialRateSpecifications = this._internalLookupService.getEnumValue('clientSpecialRateSpecifications');
+        this.clientSpecialFeeSpecifications = this._internalLookupService.getEnumValue('clientSpecialFeeSpecifications');
+        this.clientSpecialFeeFrequencies = this._internalLookupService.getEnumValue('clientSpecialFeeFrequencies');
     }
 
     getCurrencies() {

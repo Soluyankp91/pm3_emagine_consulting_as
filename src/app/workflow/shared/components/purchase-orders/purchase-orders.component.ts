@@ -149,14 +149,17 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _getEnums() {
-		forkJoin({
-			capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-			currencies: this._internalLookupService.getCurrencies(),
-		}).subscribe((result) => {
-			this.capTypes = result.capTypes;
-			this.currencies = result.currencies;
-			this.eCurrencies = this.arrayToEnum(this.currencies);
-		});
+        this.capTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
+		// forkJoin({
+		// 	capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
+		// 	currencies: this._internalLookupService.getCurrencies(),
+		// }).subscribe((result) => {
+		// 	this.capTypes = result.capTypes;
+		// 	this.currencies = result.currencies;
+		// 	this.eCurrencies = this.arrayToEnum(this.currencies);
+		// });
 	}
 
 	get purchaseOrders(): UntypedFormArray {

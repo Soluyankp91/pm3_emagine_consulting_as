@@ -595,25 +595,33 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
     }
 
     private _getEnums() {
-        forkJoin({
-            employmentTypes: this._internalLookupService.getEmploymentTypes(),
-            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-            currencies: this._internalLookupService.getCurrencies(),
-            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-            capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-        })
-        .subscribe(result => {
-            this.employmentTypes = result.employmentTypes;
-            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-            this.currencies = result.currencies;
-            this.eCurrencies = this.arrayToEnum(result.currencies);
-            this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-            this.valueUnitTypes = result.valueUnitTypes;
-            this.periodUnitTypes = result.periodUnitTypes;
-            this.capTypes = result.capTypes;
-        })
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+        this.consultantTimeReportingCapList = this.getStaticEnumValue('consultantTimeReportingCapList');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        this.capTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+
+        // forkJoin({
+        //     employmentTypes: this._internalLookupService.getEmploymentTypes(),
+        //     consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+        //     currencies: this._internalLookupService.getCurrencies(),
+        //     consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
+        //     valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+        //     periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+        //     capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
+        // })
+        // .subscribe(result => {
+        //     this.employmentTypes = result.employmentTypes;
+        //     this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
+        //     this.currencies = result.currencies;
+        //     this.eCurrencies = this.arrayToEnum(result.currencies);
+        //     this.consultantInsuranceOptions = result.consultantInsuranceOptions;
+        //     this.valueUnitTypes = result.valueUnitTypes;
+        //     this.periodUnitTypes = result.periodUnitTypes;
+        //     this.capTypes = result.capTypes;
+        // })
     }
 
     get timeReportingCaps(): UntypedFormArray {

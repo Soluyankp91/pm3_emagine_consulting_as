@@ -282,7 +282,7 @@
                             <mat-select [disabled]="readOnlyMode"
                                 [required]="!salesClientDataForm.noClientExtensionOption?.value"
                                 formControlName="clientExtensionDurationId" [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of clientExtensionDurations; trackBy: trackById">
+                                <ng-container *ngFor="let item of extensionDurations; trackBy: trackById">
                                     <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
@@ -298,7 +298,7 @@
                             <mat-select [disabled]="readOnlyMode"
                                 [required]="!salesClientDataForm.noClientExtensionOption?.value"
                                 formControlName="clientExtensionDeadlineId" [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of clientExtensionDeadlines; trackBy: trackById">
+                                <ng-container *ngFor="let item of extensionDeadlines; trackBy: trackById">
                                     <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
@@ -481,7 +481,7 @@
                                 [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1"
                                 formControlName="rateUnitTypeId" [disableOptionCentering]="true"
                                 [compareWith]="compareWithFn">
-                                <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
+                                <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
                                     <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>

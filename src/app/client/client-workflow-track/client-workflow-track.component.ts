@@ -57,8 +57,14 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
             this.clientId = +params.get('id')!;
             this.getWorkflowTrack();
         });
-        this.getDeliveryTypes();
-        this.getSaleTypes();
+        this._getEnums();
+        // this.getDeliveryTypes();
+        // this.getSaleTypes();
+    }
+
+    private _getEnums() {
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
     }
 
     getDeliveryTypes() {

@@ -164,7 +164,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	}
 
     private _getProjectCategories() {
-		this._internalLookupService.getProjectCategory().subscribe((result) => (this.projectCategories = result));
+        this.projectCategories = this.getStaticEnumValue('projectCategories');
+		// this._internalLookupService.getProjectCategory().subscribe((result) => (this.projectCategories = result));
 	}
 
 	private _resetWorkflowProgress() {

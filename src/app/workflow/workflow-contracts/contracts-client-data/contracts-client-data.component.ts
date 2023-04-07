@@ -67,17 +67,22 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	}
 
 	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.clientTimeReportingCap = result.clientTimeReportingCap;
-            this.valueUnitTypes = result.valueUnitTypes;
-            this.periodUnitTypes = result.periodUnitTypes;
-		});
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+
+		// forkJoin({
+		// 	currencies: this._internalLookupService.getCurrencies(),
+		// 	clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+        //     valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+        //     periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+		// }).subscribe((result) => {
+		// 	this.currencies = result.currencies;
+		// 	this.clientTimeReportingCap = result.clientTimeReportingCap;
+        //     this.valueUnitTypes = result.valueUnitTypes;
+        //     this.periodUnitTypes = result.periodUnitTypes;
+		// });
 	}
 
     getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {

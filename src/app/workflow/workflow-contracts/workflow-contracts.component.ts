@@ -405,40 +405,56 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
     private _getEnums() {
-        forkJoin({
-            currencies: this._internalLookupService.getCurrencies(),
-            clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
-            clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
-            discounts: this._internalLookupService.getDiscounts(),
-            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-            saleTypes: this._internalLookupService.getSaleTypes(),
-            projectTypes: this._internalLookupService.getProjectTypes(),
-            margins: this._internalLookupService.getMargins(),
-            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            employmentTypes: this._internalLookupService.getEmploymentTypes(),
-            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-            rateUnitTypes: this._internalLookupService.getUnitTypes(),
-            legalContractStatuses: this._internalLookupService.getLegalContractStatuses(),
-            consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-            projectCategories: this._internalLookupService.getProjectCategory()
-        })
-        .subscribe(result => {
-            this.currencies = result.currencies;
-            this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
-            this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
-            this.discounts = result.discounts;
-            this.deliveryTypes = result.deliveryTypes;
-            this.saleTypes = result.saleTypes;
-            this.projectTypes = result.projectTypes;
-            this.margins = result.margins;
-            this.clientTimeReportingCap = result.clientTimeReportingCap;
-            this.employmentTypes = result.employmentTypes;
-            this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-            this.rateUnitTypes = result.rateUnitTypes;
-            this.legalContractStatuses = result.legalContractStatuses;
-            this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-            this.projectCategories = result.projectCategories;
-        })
+        // NB: check spelling
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.clientSpecialRateReportUnits = this.getStaticEnumValue('currencies');
+        this.clientSpecialFeeFrequencies = this.getStaticEnumValue('currencies');
+        this.discounts = this.getStaticEnumValue('discounts');
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
+        this.projectTypes = this.getStaticEnumValue('projectTypes');
+        this.margins = this.getStaticEnumValue('margins');
+        this.clientTimeReportingCap = this.getStaticEnumValue('currencies');
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+        this.consultantTimeReportingCapList = this.getStaticEnumValue('consultantTimeReportingCapList');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
+        this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
+        this.projectCategories = this.getStaticEnumValue('projectCategories');
+        // forkJoin({
+        //     currencies: this._internalLookupService.getCurrencies(),
+        //     clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
+        //     clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
+        //     discounts: this._internalLookupService.getDiscounts(),
+        //     deliveryTypes: this._internalLookupService.getDeliveryTypes(),
+        //     saleTypes: this._internalLookupService.getSaleTypes(),
+        //     projectTypes: this._internalLookupService.getProjectTypes(),
+        //     margins: this._internalLookupService.getMargins(),
+        //     clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+        //     employmentTypes: this._internalLookupService.getEmploymentTypes(),
+        //     consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+        //     rateUnitTypes: this._internalLookupService.getUnitTypes(),
+        //     legalContractStatuses: this._internalLookupService.getLegalContractStatuses(),
+        //     consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
+        //     projectCategories: this._internalLookupService.getProjectCategory()
+        // })
+        // .subscribe(result => {
+        //     this.currencies = result.currencies;
+        //     this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
+        //     this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
+        //     this.discounts = result.discounts;
+        //     this.deliveryTypes = result.deliveryTypes;
+        //     this.saleTypes = result.saleTypes;
+        //     this.projectTypes = result.projectTypes;
+        //     this.margins = result.margins;
+        //     this.clientTimeReportingCap = result.clientTimeReportingCap;
+        //     this.employmentTypes = result.employmentTypes;
+        //     this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
+        //     this.rateUnitTypes = result.rateUnitTypes;
+        //     this.legalContractStatuses = result.legalContractStatuses;
+        //     this.consultantInsuranceOptions = result.consultantInsuranceOptions;
+        //     this.projectCategories = result.projectCategories;
+        // })
     }
 
 	toggleEditMode(isToggledFromUi?: boolean) {

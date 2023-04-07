@@ -85,7 +85,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	currencies: EnumEntityTypeDto[] = [];
 	invoicingTimes: EnumEntityTypeDto[] = [];
 	invoiceFrequencies: EnumEntityTypeDto[] = [];
-	nonStandartTerminationTimes: { [key: string]: string };
+	terminationTimes: { [key: string]: string };
 	terminationReasons: { [key: string]: string };
 
 	clientRateTypes = ClientRateTypes;
@@ -395,19 +395,24 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-			nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
-			terminationReasons: this._internalLookupService.getTerminationReasons(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.invoicingTimes = result.invoicingTimes;
-			this.invoiceFrequencies = result.invoiceFrequencies;
-			this.nonStandartTerminationTimes = result.nonStandartTerminationTimes;
-			this.terminationReasons = result.terminationReasons;
-		});
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.terminationTimes = this.getStaticEnumValue('terminationTimes');
+        this.terminationReasons = this.getStaticEnumValue('terminationReasons');
+		// forkJoin({
+		// 	currencies: this._internalLookupService.getCurrencies(),
+		// 	invoicingTimes: this._internalLookupService.getInvoicingTimes(),
+		// 	invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
+		// 	terminationTimes: this._internalLookupService.getTerminationTimes(),
+		// 	terminationReasons: this._internalLookupService.getTerminationReasons(),
+		// }).subscribe((result) => {
+		// 	this.currencies = result.currencies;
+		// 	this.invoicingTimes = result.invoicingTimes;
+		// 	this.invoiceFrequencies = result.invoiceFrequencies;
+		// 	this.terminationTimes = result.terminationTimes;
+		// 	this.terminationReasons = result.terminationReasons;
+		// });
 	}
 
 	saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {

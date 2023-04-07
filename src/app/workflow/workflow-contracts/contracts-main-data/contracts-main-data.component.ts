@@ -56,21 +56,28 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
 	}
 
 	private _getEnums() {
-		forkJoin({
-			saleTypes: this._internalLookupService.getSaleTypes(),
-			deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-			projectCategories: this._internalLookupService.getProjectCategory(),
-			projectTypes: this._internalLookupService.getProjectTypes(),
-			margins: this._internalLookupService.getMargins(),
-			discounts: this._internalLookupService.getDiscounts(),
-		}).subscribe((result) => {
-			this.saleTypes = result.saleTypes;
-			this.deliveryTypes = result.deliveryTypes;
-			this.projectCategories = result.projectCategories;
-			this.projectTypes = result.projectTypes;
-			this.margins = result.margins;
-			this.discounts = result.discounts;
-		});
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.projectCategories = this.getStaticEnumValue('projectCategories');
+        this.projectTypes = this.getStaticEnumValue('projectTypes');
+        this.margins = this.getStaticEnumValue('margins');
+        this.discounts = this.getStaticEnumValue('discounts');
+
+		// forkJoin({
+		// 	saleTypes: this._internalLookupService.getSaleTypes(),
+		// 	deliveryTypes: this._internalLookupService.getDeliveryTypes(),
+		// 	projectCategories: this._internalLookupService.getProjectCategory(),
+		// 	projectTypes: this._internalLookupService.getProjectTypes(),
+		// 	margins: this._internalLookupService.getMargins(),
+		// 	discounts: this._internalLookupService.getDiscounts(),
+		// }).subscribe((result) => {
+		// 	this.saleTypes = result.saleTypes;
+		// 	this.deliveryTypes = result.deliveryTypes;
+		// 	this.projectCategories = result.projectCategories;
+		// 	this.projectTypes = result.projectTypes;
+		// 	this.margins = result.margins;
+		// 	this.discounts = result.discounts;
+		// });
 	}
 
 	toggleEditMode() {
