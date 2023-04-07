@@ -26,10 +26,16 @@
 					<div class="tmp-version-row">
 						<span class="tmp-version-num">Version {{ templateVersion.version }}</span>
 						<span *ngIf="templateVersion.isDraft" class="label label-info">Draft</span>
-						<span *ngIf="templateVersion.isCurrent && !currentVersionIsSent" class="label label-success"
+						<span
+							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus !== 3"
+							class="label label-success"
 							>Current</span
 						>
-						<span *ngIf="templateVersion.isCurrent && currentVersionIsSent" class="label label-warning">Sent</span>
+						<span
+							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus === 3"
+							class="label label-warning"
+							>Sent</span
+						>
 						<span class="tmp-version-date">- {{ templateVersion.createdDateUtc | momentFormat }}</span>
 					</div>
 				</ng-container>
@@ -40,8 +46,8 @@
 			<div
 				richEditor
 				class="editor"
-				[template]="template"
 				[readonly]="currentVersionIsSent"
+				[template]="template"
 				[mergeFields]="mergeFields$ | async"
 				(documentReady)="handleDocumentReady()"
 				(saved)="saveAsComplete()"></div>
