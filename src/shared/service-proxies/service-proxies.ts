@@ -3527,6 +3527,12 @@ export class AgreementTemplateServiceProxy {
     /**
      * @param isClientTemplate (optional) 
      * @param agreementTemplateId (optional) 
+     * @param legalEntityId (optional) 
+     * @param salesTypeId (optional) 
+     * @param contractTypeId (optional) 
+     * @param deliveryTypeId (optional) 
+     * @param clientId (optional) 
+     * @param recipientTypeId (optional) 
      * @param isEnabled (optional) 
      * @param search (optional) 
      * @param pageNumber (optional) 
@@ -3534,7 +3540,7 @@ export class AgreementTemplateServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    simpleList2(isClientTemplate?: boolean | undefined, agreementTemplateId?: number | undefined, isEnabled?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
+    simpleList2(isClientTemplate?: boolean | undefined, agreementTemplateId?: number | undefined, legalEntityId?: number | undefined, salesTypeId?: number | undefined, contractTypeId?: number | undefined, deliveryTypeId?: number | undefined, clientId?: number | undefined, recipientTypeId?: number | undefined, isEnabled?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/AgreementTemplate/simple-list?";
         if (isClientTemplate === null)
             throw new Error("The parameter 'isClientTemplate' cannot be null.");
@@ -3544,6 +3550,30 @@ export class AgreementTemplateServiceProxy {
             throw new Error("The parameter 'agreementTemplateId' cannot be null.");
         else if (agreementTemplateId !== undefined)
             url_ += "AgreementTemplateId=" + encodeURIComponent("" + agreementTemplateId) + "&";
+        if (legalEntityId === null)
+            throw new Error("The parameter 'legalEntityId' cannot be null.");
+        else if (legalEntityId !== undefined)
+            url_ += "LegalEntityId=" + encodeURIComponent("" + legalEntityId) + "&";
+        if (salesTypeId === null)
+            throw new Error("The parameter 'salesTypeId' cannot be null.");
+        else if (salesTypeId !== undefined)
+            url_ += "SalesTypeId=" + encodeURIComponent("" + salesTypeId) + "&";
+        if (contractTypeId === null)
+            throw new Error("The parameter 'contractTypeId' cannot be null.");
+        else if (contractTypeId !== undefined)
+            url_ += "ContractTypeId=" + encodeURIComponent("" + contractTypeId) + "&";
+        if (deliveryTypeId === null)
+            throw new Error("The parameter 'deliveryTypeId' cannot be null.");
+        else if (deliveryTypeId !== undefined)
+            url_ += "DeliveryTypeId=" + encodeURIComponent("" + deliveryTypeId) + "&";
+        if (clientId === null)
+            throw new Error("The parameter 'clientId' cannot be null.");
+        else if (clientId !== undefined)
+            url_ += "ClientId=" + encodeURIComponent("" + clientId) + "&";
+        if (recipientTypeId === null)
+            throw new Error("The parameter 'recipientTypeId' cannot be null.");
+        else if (recipientTypeId !== undefined)
+            url_ += "RecipientTypeId=" + encodeURIComponent("" + recipientTypeId) + "&";
         if (isEnabled === null)
             throw new Error("The parameter 'isEnabled' cannot be null.");
         else if (isEnabled !== undefined)
@@ -13909,15 +13939,20 @@ export class LookupServiceProxy {
 
     /**
      * @param filter (optional) 
+     * @param supplierId (optional) 
      * @param maxRecords (optional) 
      * @return Success
      */
-    signerSupplierMembers(filter?: string | undefined, maxRecords?: number | undefined): Observable<SupplierMemberResultDto[]> {
+    signerSupplierMembers(filter?: string | undefined, supplierId?: number | undefined, maxRecords?: number | undefined): Observable<SupplierMemberResultDto[]> {
         let url_ = this.baseUrl + "/api/Lookup/SignerSupplierMembers?";
         if (filter === null)
             throw new Error("The parameter 'filter' cannot be null.");
         else if (filter !== undefined)
             url_ += "filter=" + encodeURIComponent("" + filter) + "&";
+        if (supplierId === null)
+            throw new Error("The parameter 'supplierId' cannot be null.");
+        else if (supplierId !== undefined)
+            url_ += "supplierId=" + encodeURIComponent("" + supplierId) + "&";
         if (maxRecords === null)
             throw new Error("The parameter 'maxRecords' cannot be null.");
         else if (maxRecords !== undefined)
@@ -19540,6 +19575,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
     clientPeriodId?: string | undefined;
     consultantPeriodId?: string | undefined;
     docuSignUrl?: string | undefined;
+    hasDraftVersion?: boolean;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
     receiveAgreementsFromOtherParty?: boolean;
@@ -19592,6 +19628,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
             this.clientPeriodId = _data["clientPeriodId"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.docuSignUrl = _data["docuSignUrl"];
+            this.hasDraftVersion = _data["hasDraftVersion"];
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
             this.envelopeProcessingPath = _data["envelopeProcessingPath"];
             this.receiveAgreementsFromOtherParty = _data["receiveAgreementsFromOtherParty"];
@@ -19644,6 +19681,7 @@ export class AgreementListItemDto implements IAgreementListItemDto {
         data["clientPeriodId"] = this.clientPeriodId;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["docuSignUrl"] = this.docuSignUrl;
+        data["hasDraftVersion"] = this.hasDraftVersion;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
         data["envelopeProcessingPath"] = this.envelopeProcessingPath;
         data["receiveAgreementsFromOtherParty"] = this.receiveAgreementsFromOtherParty;
@@ -19677,6 +19715,7 @@ export interface IAgreementListItemDto {
     clientPeriodId?: string | undefined;
     consultantPeriodId?: string | undefined;
     docuSignUrl?: string | undefined;
+    hasDraftVersion?: boolean;
     hasSignedDocumentFile?: boolean;
     envelopeProcessingPath?: EnvelopeProcessingPath;
     receiveAgreementsFromOtherParty?: boolean;
@@ -19925,6 +19964,7 @@ export class AgreementSimpleListItemDto implements IAgreementSimpleListItemDto {
     validity?: AgreementValidityState;
     startDate?: moment.Moment;
     endDate?: moment.Moment | undefined;
+    hasDraftVersion?: boolean;
     hasCurrentVersion?: boolean;
     hasSignedDocumentFile?: boolean;
 
@@ -19948,6 +19988,7 @@ export class AgreementSimpleListItemDto implements IAgreementSimpleListItemDto {
             this.validity = _data["validity"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.hasDraftVersion = _data["hasDraftVersion"];
             this.hasCurrentVersion = _data["hasCurrentVersion"];
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
         }
@@ -19971,6 +20012,7 @@ export class AgreementSimpleListItemDto implements IAgreementSimpleListItemDto {
         data["validity"] = this.validity;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["hasDraftVersion"] = this.hasDraftVersion;
         data["hasCurrentVersion"] = this.hasCurrentVersion;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
         return data;
@@ -19987,6 +20029,7 @@ export interface IAgreementSimpleListItemDto {
     validity?: AgreementValidityState;
     startDate?: moment.Moment;
     endDate?: moment.Moment | undefined;
+    hasDraftVersion?: boolean;
     hasCurrentVersion?: boolean;
     hasSignedDocumentFile?: boolean;
 }
@@ -21101,6 +21144,7 @@ export class AgreementTemplatesListItemDto implements IAgreementTemplatesListIte
     linkStateAccepted?: boolean | undefined;
     linkStateAcceptedDateUtc?: moment.Moment | undefined;
     linkStateAcceptedBy?: EmployeeDto;
+    hasDraftVersion?: boolean;
 
     constructor(data?: IAgreementTemplatesListItemDto) {
         if (data) {
@@ -21148,6 +21192,7 @@ export class AgreementTemplatesListItemDto implements IAgreementTemplatesListIte
             this.linkStateAccepted = _data["linkStateAccepted"];
             this.linkStateAcceptedDateUtc = _data["linkStateAcceptedDateUtc"] ? moment(_data["linkStateAcceptedDateUtc"].toString()) : <any>undefined;
             this.linkStateAcceptedBy = _data["linkStateAcceptedBy"] ? EmployeeDto.fromJS(_data["linkStateAcceptedBy"]) : <any>undefined;
+            this.hasDraftVersion = _data["hasDraftVersion"];
         }
     }
 
@@ -21195,6 +21240,7 @@ export class AgreementTemplatesListItemDto implements IAgreementTemplatesListIte
         data["linkStateAccepted"] = this.linkStateAccepted;
         data["linkStateAcceptedDateUtc"] = this.linkStateAcceptedDateUtc ? this.linkStateAcceptedDateUtc.toISOString() : <any>undefined;
         data["linkStateAcceptedBy"] = this.linkStateAcceptedBy ? this.linkStateAcceptedBy.toJSON() : <any>undefined;
+        data["hasDraftVersion"] = this.hasDraftVersion;
         return data;
     }
 }
@@ -21219,6 +21265,7 @@ export interface IAgreementTemplatesListItemDto {
     linkStateAccepted?: boolean | undefined;
     linkStateAcceptedDateUtc?: moment.Moment | undefined;
     linkStateAcceptedBy?: EmployeeDto;
+    hasDraftVersion?: boolean;
 }
 
 export class AgreementTemplatesListItemDtoPaginatedList implements IAgreementTemplatesListItemDtoPaginatedList {
@@ -30558,6 +30605,7 @@ export class SimpleAgreementTemplatesListItemDto implements ISimpleAgreementTemp
     createdDateUtc?: moment.Moment;
     isEnabled?: boolean;
     tenantIds?: number[] | undefined;
+    hasDraftVersion?: boolean;
     hasCurrentVersion?: boolean;
 
     constructor(data?: ISimpleAgreementTemplatesListItemDto) {
@@ -30586,6 +30634,7 @@ export class SimpleAgreementTemplatesListItemDto implements ISimpleAgreementTemp
                 for (let item of _data["tenantIds"])
                     this.tenantIds!.push(item);
             }
+            this.hasDraftVersion = _data["hasDraftVersion"];
             this.hasCurrentVersion = _data["hasCurrentVersion"];
         }
     }
@@ -30614,6 +30663,7 @@ export class SimpleAgreementTemplatesListItemDto implements ISimpleAgreementTemp
             for (let item of this.tenantIds)
                 data["tenantIds"].push(item);
         }
+        data["hasDraftVersion"] = this.hasDraftVersion;
         data["hasCurrentVersion"] = this.hasCurrentVersion;
         return data;
     }
@@ -30631,6 +30681,7 @@ export interface ISimpleAgreementTemplatesListItemDto {
     createdDateUtc?: moment.Moment;
     isEnabled?: boolean;
     tenantIds?: number[] | undefined;
+    hasDraftVersion?: boolean;
     hasCurrentVersion?: boolean;
 }
 
@@ -31851,6 +31902,7 @@ export class WorkflowAgreementDto implements IWorkflowAgreementDto {
     createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
     lastUpdateDateUtc?: moment.Moment;
+    hasDraftVersion?: boolean;
     hasSignedDocumentFile?: boolean;
     inEditByEmployeeDtos?: EmployeeDto[] | undefined;
     docuSignUrl?: string | undefined;
@@ -31875,6 +31927,7 @@ export class WorkflowAgreementDto implements IWorkflowAgreementDto {
             this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
             this.lastUpdatedBy = _data["lastUpdatedBy"] ? EmployeeDto.fromJS(_data["lastUpdatedBy"]) : <any>undefined;
             this.lastUpdateDateUtc = _data["lastUpdateDateUtc"] ? moment(_data["lastUpdateDateUtc"].toString()) : <any>undefined;
+            this.hasDraftVersion = _data["hasDraftVersion"];
             this.hasSignedDocumentFile = _data["hasSignedDocumentFile"];
             if (Array.isArray(_data["inEditByEmployeeDtos"])) {
                 this.inEditByEmployeeDtos = [] as any;
@@ -31903,6 +31956,7 @@ export class WorkflowAgreementDto implements IWorkflowAgreementDto {
         data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
         data["lastUpdatedBy"] = this.lastUpdatedBy ? this.lastUpdatedBy.toJSON() : <any>undefined;
         data["lastUpdateDateUtc"] = this.lastUpdateDateUtc ? this.lastUpdateDateUtc.toISOString() : <any>undefined;
+        data["hasDraftVersion"] = this.hasDraftVersion;
         data["hasSignedDocumentFile"] = this.hasSignedDocumentFile;
         if (Array.isArray(this.inEditByEmployeeDtos)) {
             data["inEditByEmployeeDtos"] = [];
@@ -31924,6 +31978,7 @@ export interface IWorkflowAgreementDto {
     createdDateUtc?: moment.Moment;
     lastUpdatedBy?: EmployeeDto;
     lastUpdateDateUtc?: moment.Moment;
+    hasDraftVersion?: boolean;
     hasSignedDocumentFile?: boolean;
     inEditByEmployeeDtos?: EmployeeDto[] | undefined;
     docuSignUrl?: string | undefined;

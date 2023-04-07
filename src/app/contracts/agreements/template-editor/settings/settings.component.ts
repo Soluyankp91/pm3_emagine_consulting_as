@@ -1165,7 +1165,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							}),
 							switchMap((search) => {
 								return this._apiServiceProxy2
-									.simpleList2(this.workflowTemplateType$.value, undefined, undefined, search, 1, 20)
+									.simpleList2(this.workflowTemplateType$.value, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, search, 1, 20)
 									.pipe(
 										tap(() => {
 											this.duplicateOptionsLoading$.next(false);

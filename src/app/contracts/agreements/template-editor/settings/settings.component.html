@@ -414,7 +414,7 @@
 					</ng-container>
 				</div>
 				<ng-container *ngIf="agreementFormGroup.value.isSignatureRequired">
-					<app-signers-table formControlName="signers"></app-signers-table>
+					<app-signers-table [supplier]="{typeId: agreementFormGroup.get('recipientTypeId').value, id: agreementFormGroup.get('recipientId').value}" formControlName="signers"></app-signers-table>
 				</ng-container>
 			</div>
 			<div class="left-panel-section">
