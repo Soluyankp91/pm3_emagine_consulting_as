@@ -290,27 +290,12 @@ export const STATUTES = [
 	{
 		id: 2,
 		name: 'Created in DocuSign',
-		color: '#0052B4',
+		color: '#50BEE8',
 	},
 	{
 		id: 3,
 		name: 'Sent',
-		color: '#0052B4',
-	},
-	{
-		id: 5,
-		name: 'Delivery failure',
-		color: '#ED2939',
-	},
-	{
-		id: 6,
-		name: 'Voided',
-		color: '#ED2939',
-	},
-	{
-		id: 8,
-		name: 'Declined',
-		color: '#ED2939',
+		color: '#FAAD19',
 	},
 	{
 		id: 9,
@@ -325,12 +310,27 @@ export const STATUTES = [
 	{
 		id: 11,
 		name: 'About to expire',
-		color: '#F3AB20',
+		color: '#F453B4',
 	},
 	{
 		id: 12,
 		name: 'Expired',
-		color: '#ED2939',
+		color: '#F453B4',
+	},
+	{
+		id: 6,
+		name: 'Voided',
+		color: '#FF7A78',
+	},
+	{
+		id: 5,
+		name: 'Delivery failure',
+		color: '#FF7A78',
+	},
+	{
+		id: 8,
+		name: 'Declined',
+		color: '#FF7A78',
 	},
 ];
 export const INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE =
