@@ -415,7 +415,20 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 							}),
 							switchMap((freeText: string) => {
 								return this._apiServiceProxy
-									.simpleList2(false, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, freeText, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT)
+									.simpleList2(
+										false,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										freeText,
+										1,
+										AUTOCOMPLETE_SEARCH_ITEMS_COUNT
+									)
 									.pipe(
 										tap(() => {
 											this.isMasterTemplateOptionsLoading$.next(false);
