@@ -2,19 +2,33 @@ import { OnDestroy, Component, OnInit, Injector, ChangeDetectorRef, ViewEncapsul
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { combineLatest, Observable, Subject, of, BehaviorSubject, race, forkJoin, ReplaySubject } from 'rxjs';
+import {
+	combineLatest,
+	Observable,
+	Subject,
+	of,
+	BehaviorSubject,
+	race,
+	forkJoin,
+	ReplaySubject,
+	concat,
+	merge,
+	timer,
+} from 'rxjs';
 import {
 	startWith,
 	switchMap,
 	take,
 	map,
 	debounceTime,
+	debounce,
 	filter,
 	skip,
 	withLatestFrom,
 	tap,
 	takeUntil,
 	distinctUntilChanged,
+	finalize,
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
@@ -80,6 +94,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	isDuplicating: boolean = false;
 
 	workflowSummary: WorkflowSummary;
+	workFlowMetadata: {
+		agreementTypeId: number;
+		recipientTypeId: number;
+		clientId: number;
+		legalEntityId: number;
+		salesTypeId: number;
+		deliveryTypeId: number;
+		contractType: number;
+	};
 	isDefaultTemplate: boolean;
 
 	possibleDocumentTypes: BaseEnumDto[];
@@ -117,6 +140,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	duplicateOptionsChanged$ = new BehaviorSubject('');
 	parentOptionsChanged$ = new BehaviorSubject('');
 	duplicateOptionsLoading$ = new BehaviorSubject(false);
+
+	defaultTemplate$ = new ReplaySubject(1);
 
 	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.InheritedFromParent);
 
@@ -392,6 +417,16 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						countryCode: countryCode,
 						country: MapCountryCodeTenant(countryCode),
 					};
+					this.workFlowMetadata = {
+						agreementTypeId: agreementTypeId,
+						recipientTypeId: recipientTypeId,
+						clientId: client.clientId,
+
+						legalEntityId: legalEntityId,
+						salesTypeId: salesTypeId,
+						deliveryTypeId: deliveryTypeId,
+						contractType: contractTypes[0],
+					};
 					this.agreementFormGroup.updateInitialFormValue({
 						agreementType: agreementTypeId,
 						recipientId: client.clientId,
@@ -416,6 +451,11 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							client.clientId
 						)
 						.pipe(
+							tap((defaultTemplateId) => {
+								this.parentOptionsChanged$.next(String(defaultTemplateId));
+								this.recipientOptionsChanged$.next(String(client.clientId));
+								this.defaultTemplate$.next();
+							}),
 							switchMap((defaultTemplateId) => {
 								if (defaultTemplateId) {
 									this.isDefaultTemplate = true;
@@ -423,7 +463,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										tap((defaultTemplate) => {
 											this.parentOptionsChanged$.next(String(defaultTemplateId));
 											this.isDuplicating = true;
-											this.recipientOptionsChanged$.next(String(client.clientId));
 
 											this.attachmentsFromParent = [
 												...(defaultTemplate.attachments as FileUpload[]),
@@ -547,6 +586,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						countryCode: countryCode,
 						country: MapCountryCodeTenant(countryCode),
 					};
+
+					this.workFlowMetadata = {
+						agreementTypeId: agreementTypeId,
+						recipientTypeId: recipientTypeId,
+						clientId: client.clientId,
+
+						legalEntityId: legalEntityId,
+						salesTypeId: salesTypeId,
+						deliveryTypeId: deliveryTypeId,
+						contractType: contractType,
+					};
 					this.agreementFormGroup.updateInitialFormValue({
 						agreementType: agreementTypeId,
 						recipientId: consultant.consultantId,
@@ -569,14 +619,17 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							client.clientId
 						)
 						.pipe(
+							tap((defaultTemplateId) => {
+								this.parentOptionsChanged$.next(String(defaultTemplateId));
+								this.recipientOptionsChanged$.next(String(consultant.consultantId));
+								this.defaultTemplate$.next();
+							}),
 							switchMap((defaultTemplateId) => {
 								if (defaultTemplateId) {
 									this.isDefaultTemplate = true;
 									return this._apiServiceProxy2.agreementTemplateGET(defaultTemplateId).pipe(
 										tap((defaultTemplate) => {
-											this.parentOptionsChanged$.next(String(defaultTemplateId));
 											this.isDuplicating = true;
-											this.recipientOptionsChanged$.next(String(consultant.consultantId));
 
 											this.attachmentsFromParent = [
 												...(defaultTemplate.attachments as FileUpload[]),
@@ -922,7 +975,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				if (creationMode === AgreementCreationMode.InheritedFromParent) {
 					this.agreementFormGroup.addControl('parentAgreementTemplate', new FormControl(null));
 					this.agreementFormGroup.addControl('parentSelectedAttachmentIds', new FormControl([]));
-
 					this._subscribeOnParentChanges();
 					this._subscribeOnTemplateTypeChanges();
 				} else if (creationMode === AgreementCreationMode.Duplicated) {
@@ -965,6 +1017,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.agreementFormGroup.controls['parentAgreementTemplate'].valueChanges
 			.pipe(
 				filter((val) => !!val),
+				filter((val) => typeof val === 'object'),
 				distinctUntilChanged(),
 				takeUntil(
 					race([
@@ -1157,15 +1210,37 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					});
 				} else if (creationMode === AgreementCreationMode.InheritedFromParent) {
 					return of<DuplicateOrParentOptions>({
-						options$: this.parentOptionsChanged$.pipe(
-							startWith(this.parentOptionsChanged$.value),
-							debounceTime(300),
+						options$: concat(
+							this.parentOptionsChanged$.pipe(
+								debounce((s) => {
+									if (this.clientPeriodId) {
+										return this.defaultTemplate$;
+									}
+									return of(s);
+								}),
+								take(1)
+							),
+							this.parentOptionsChanged$.pipe(debounceTime(300), skip(1))
+						).pipe(
 							tap(() => {
 								this.duplicateOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
 								return this._apiServiceProxy2
-									.simpleList2(this.workflowTemplateType$.value, undefined, undefined, search, 1, 20)
+									.simpleList2(
+										this.workflowTemplateType$.value,
+										undefined,
+										this.workFlowMetadata.legalEntityId,
+										this.workFlowMetadata.salesTypeId,
+										this.workFlowMetadata.contractType,
+										this.workFlowMetadata.deliveryTypeId,
+										this.workflowTemplateType$.value === true ? this.workFlowMetadata.clientId : undefined,
+										this.workFlowMetadata.recipientTypeId,
+										undefined,
+										search,
+										1,
+										20
+									)
 									.pipe(
 										tap(() => {
 											this.duplicateOptionsLoading$.next(false);

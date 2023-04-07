@@ -411,20 +411,33 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 								this.isDuplicateParentOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
-								return this._apiServiceProxy.simpleList2(true, undefined, undefined, search).pipe(
-									tap(() => {
-										this.isDuplicateParentOptionsLoading$.next(false);
-									}),
-									withLatestFrom(this._contractsService.getEnumMap$()),
-									map(([response, maps]) => {
-										return response.items.map(
-											(item) =>
-												Object.assign(item, {
-													tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
-												}) as SimpleAgreementTemplatesListItemDto
-										);
-									})
-								);
+								return this._apiServiceProxy
+									.simpleList2(
+										true,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										search
+									)
+									.pipe(
+										tap(() => {
+											this.isDuplicateParentOptionsLoading$.next(false);
+										}),
+										withLatestFrom(this._contractsService.getEnumMap$()),
+										map(([response, maps]) => {
+											return response.items.map(
+												(item) =>
+													Object.assign(item, {
+														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
+													}) as SimpleAgreementTemplatesListItemDto
+											);
+										})
+									);
 							})
 						),
 						optionsChanged$: this.duplicateOptionsChanged$,
@@ -440,20 +453,33 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 								this.isDuplicateParentOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
-								return this._apiServiceProxy.simpleList2(false, undefined, undefined, search).pipe(
-									tap(() => {
-										this.isDuplicateParentOptionsLoading$.next(false);
-									}),
-									withLatestFrom(this._contractsService.getEnumMap$()),
-									map(([response, maps]) => {
-										return response.items.map(
-											(item) =>
-												Object.assign(item, {
-													tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
-												}) as SimpleAgreementTemplatesListItemDto
-										);
-									})
-								);
+								return this._apiServiceProxy
+									.simpleList2(
+										false,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										search
+									)
+									.pipe(
+										tap(() => {
+											this.isDuplicateParentOptionsLoading$.next(false);
+										}),
+										withLatestFrom(this._contractsService.getEnumMap$()),
+										map(([response, maps]) => {
+											return response.items.map(
+												(item) =>
+													Object.assign(item, {
+														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
+													}) as SimpleAgreementTemplatesListItemDto
+											);
+										})
+									);
 							})
 						),
 						optionsChanged$: this.parentOptionsChanged$,
