@@ -382,6 +382,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 								label: 'Discard Changes',
 								message:
 									'Changing main template settings will result in discarding all the data that has been applied',
+								confirmButtonText: 'Discard',
 							},
 						});
 						return dialogRef.afterClosed();
@@ -729,6 +730,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 			data: {
 				label: 'Discard Changes',
 				message: `You\'ve selected “Always receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
+				confirmButtonText: 'Discard',
 			},
 		});
 	}
