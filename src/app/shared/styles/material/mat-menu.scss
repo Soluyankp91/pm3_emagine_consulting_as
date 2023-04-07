@@ -4,7 +4,7 @@
     min-height: 27px !important;
     min-width: unset !important;
     .mat-menu-content:not(:empty) {
-        padding: 0;
+        padding: 8px 0;
         .mat-menu-item {
             display: flex;
             align-items: center;

@@ -12,6 +12,7 @@ import {
 	ElementRef,
 	QueryList,
 	Inject,
+	ViewEncapsulation,
 } from '@angular/core';
 import { Observable, Subject, combineLatest, Subscription, BehaviorSubject, ReplaySubject, fromEvent } from 'rxjs';
 import { map, takeUntil, pairwise, startWith } from 'rxjs/operators';
@@ -44,6 +45,7 @@ import { ERouteTitleType } from 'src/shared/AppEnums';
 	templateUrl: './master-templates.component.html',
 	styleUrls: ['./master-templates.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	encapsulation: ViewEncapsulation.None,
 	providers: [GridHelpService],
 })
 export class MasterTemplatesComponent extends AppComponentBase implements OnInit, OnDestroy {
@@ -96,6 +98,11 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._unSubscribe$.complete();
 	}
 
+	resetAllTopFilters() {
+		this._masterTemplatesService.updateSearchFilter('');
+		this._masterTemplatesService.updateTenantFilter([]);
+	}
+
 	onSortChange($event: Sort) {
 		this._masterTemplatesService.updateSort($event);
 	}
@@ -116,7 +123,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 			}
 			case 'DUPLICATE': {
 				const params: Params = {
-					parentTemplateId: $event.row.agreementTemplateId,
+					id: $event.row.agreementTemplateId,
 				};
 				this._router.navigate(['create'], {
 					relativeTo: this._route,
@@ -171,18 +178,20 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 			return <BaseMappedAgreementTemplatesListItemDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
-				agreementType: maps.agreementType[item.agreementType as AgreementType],
-				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				agreementType: maps.agreementType[item.agreementType],
+				recipientTypeId: maps.recipientTypeId[item.recipientTypeId],
+                language: maps.language[item.language as AgreementLanguage],
+				countryCode: GetCountryCodeByLanguage(maps.language[item.language]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
+                createdBy: item.createdBy,
 				createdDateUtc: item.createdDateUtc,
-				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
+				lastUpdatedBy: item.lastUpdatedBy,
 				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				isEnabled: item.isEnabled,
+				actionList: this.actions,
 			};
 		});
 	}

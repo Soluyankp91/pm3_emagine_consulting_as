@@ -1,0 +1,15 @@
+@import 'mixins';
+
+@include table-header-cell;
+
+.small-profile-picture-avatar {
+	width: 22px;
+	height: 22px;
+	background-size: cover;
+	border-radius: 50%;
+	position: relative;
+}
+.custom-option {
+	display: flex;
+	gap: 8px;
+}

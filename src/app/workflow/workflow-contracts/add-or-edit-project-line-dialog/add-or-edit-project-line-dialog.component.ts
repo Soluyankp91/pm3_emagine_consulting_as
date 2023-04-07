@@ -167,6 +167,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.wasSynced?.setValue(data.wasSynced, {emitEvent: false});
         this.projectLineForm.isLineForFees?.setValue(data.isLineForFees, {emitEvent: false});
         this.projectLineForm.purchaseOrderId?.setValue(data.purchaseOrderId, {emitEvent: false});
+        this.projectLineForm.markedForLegacyDeletion?.setValue(data.markedForLegacyDeletion, {emitEvent: false});
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();
@@ -210,6 +211,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         } else {
             result.purchaseOrderId = undefined;
         }
+        result.markedForLegacyDeletion = this.projectLineForm.markedForLegacyDeletion?.value;
 
         this.onConfirmed.emit(result);
         this.closeInternal();

@@ -34,7 +34,7 @@ export class LogsComponent extends AppComponentBase implements OnInit {
 		this._setLoadingObservable();
 	}
 
-	emitFilter() {
+	emitNewestFirst() {
 		this.newestFirst = !this.newestFirst;
 		this._previewService.updateNewestFirst(this.newestFirst);
 	}

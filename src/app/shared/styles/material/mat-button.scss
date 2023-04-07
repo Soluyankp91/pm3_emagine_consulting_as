@@ -37,7 +37,7 @@
     border-radius: 5px;
     &.mat-button-disabled {
         background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
-        border: 2px solid rgba($color: $light-grey-color, $alpha: 0.55) !important;
+        border: 2px solid transparent !important;
     }
 }
 
@@ -232,6 +232,13 @@
             min-width: unset;
         }
 
+        &__positive-outline {
+            color: $green-color;
+            background: $white-color;
+            border-radius: 5px;
+            border: 1px solid $green-color;
+        }
+
         &__positive {
             color: $white-color;
             background: $green-color;
@@ -244,6 +251,9 @@
             border: 2px solid $red-color;
             box-sizing: border-box;
             border-radius: 5px;
+            &[disabled] {
+                border-color: transparent;
+            }
         }
     }
 }

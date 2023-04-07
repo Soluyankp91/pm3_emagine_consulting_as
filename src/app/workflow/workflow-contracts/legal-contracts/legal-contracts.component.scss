@@ -1,0 +1,65 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.legal-contract {
+    &--list {
+        height: 50px;
+        border: 1px solid $sand-color;
+        padding: 0 8px;
+        background-color: $white-color;
+
+        &-item {
+            @include fontOpenSans(14px, 600);
+            line-height: 140%;
+            color: #4a4e60;
+        }
+
+        &-header {
+            @include fontOpenSans(12px, 600);
+            line-height: 14px;
+            color: #898785;
+        }
+    }
+    &--status {
+        @include fontLineHeightAndSize(14px, 14px, 14px, 14px);
+        &__created,
+        &__createdInDocuSign {
+            color: #72A0F8;
+        }
+        &__sent {
+            color: #FAAD19;
+        }
+        &__deliveryFailure,
+        &__voided,
+        &__declined {
+            color: #FF7A78;
+        }
+        &__waitingForOthers {
+            color: #9747FF;
+        }
+        &__completed {
+            color: #25A89E;
+        }
+        &__aboutToExpire,
+        &__expired {
+            color: #F453B4;
+        }
+    }
+    &-mode {
+        &-active {
+            svg path {
+                fill: $green-color;
+            }
+        }
+        &-activeOutdatedTemplate {
+            svg path {
+                fill: #F3AB20;
+            }
+        }
+        &-inactive {
+            svg path {
+                fill: $light-grey-color;
+            }
+        }
+    }
+}

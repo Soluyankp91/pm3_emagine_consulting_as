@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
-import { AuthenticationResult } from '@azure/msal-browser';
+import { AuthenticationResult, SilentRequest } from '@azure/msal-browser';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class LocalHttpService {
@@ -22,6 +23,20 @@ export class LocalHttpService {
             forceRefresh: false
         }
         return this._authService.instance.acquireTokenSilent(params);
+    }
+
+    getTokenSilent(): Observable<AuthenticationResult> {
+        const params = {
+            scopes: ['openid', 'profile', environment.msalInterceptorConfigUrl],
+            redirectUri: '',
+            extraQueryParameters: undefined,
+            authority: environment.msalAuthorityUrl,
+            account: this._authService.instance.getActiveAccount()!,
+            correlationId: '',
+            forceRefresh: false
+        }
+        // this._authService.instance.getTokenCache(params);
+        return this._authService.acquireTokenSilent(params)
     }
 
     getToken(): string | any {

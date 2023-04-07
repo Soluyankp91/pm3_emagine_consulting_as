@@ -2,7 +2,7 @@ import { ClientAddressDto } from "src/shared/service-proxies/service-proxies";
 import { IClientAddress } from "./workflow-sales.model";
 
 export function MapClientAddressList(addresses: ClientAddressDto[]): IClientAddress[] {
-    let mappedData: IClientAddress[] = addresses.map(x => {
+    let mappedData: IClientAddress[] = addresses?.map(x => {
         return PackAddressIntoNewDto(x);
     });
     return mappedData;

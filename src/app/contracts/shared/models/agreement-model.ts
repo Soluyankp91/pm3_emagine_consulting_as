@@ -1,6 +1,7 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SignerType } from 'src/shared/service-proxies/service-proxies';
+import { DEFINITION_MAX_SIZE, NAME_TEMPLATE_MAX_SIZE, NOTES_MAX_SIZE } from '../entities/contracts.constants';
 
 export type SignerFormGroup = FormGroup<{
 	signerType: FormControl<null | SignerType>;
@@ -14,8 +15,8 @@ export class AgreementModel extends FormGroup {
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
 			recipientId: new FormControl(null, [Validators.required]),
-			nameTemplate: new FormControl(null, [Validators.required]),
-			definition: new FormControl(null),
+			nameTemplate: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			definition: new FormControl('', [Validators.maxLength(DEFINITION_MAX_SIZE)]),
 			legalEntityId: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
@@ -23,11 +24,11 @@ export class AgreementModel extends FormGroup {
 			language: new FormControl(null, [Validators.required]),
 			startDate: new FormControl(null, [Validators.required]),
 			endDate: new FormControl(null, [Validators.required]),
-			note: new FormControl(null),
-			isSignatureRequired: new FormControl(null),
+			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
+			receiveAgreementsFromOtherParty: new FormControl(false),
+			isSignatureRequired: new FormControl(false),
 			signers: new FormControl([]),
-			selectedInheritedFiles: new FormControl(null),
-			uploadedFiles: new FormControl(null),
+			attachments: new FormControl([]),
 		});
 	}
 
@@ -56,6 +57,10 @@ export class AgreementModel extends FormGroup {
 		super.removeControl(name, options);
 	}
 
+	reset(value?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
+		super.reset(this.initialValue, options);
+	}
+
 	get agreementType() {
 		return this.get('agreementType');
 	}
@@ -70,6 +75,10 @@ export class AgreementModel extends FormGroup {
 
 	get nameTemplate() {
 		return this.get('nameTemplate');
+	}
+
+	get definition() {
+		return this.get('definition');
 	}
 
 	get legalEntityId() {
@@ -92,6 +101,14 @@ export class AgreementModel extends FormGroup {
 		return this.get('language');
 	}
 
+	get startDate() {
+		return this.get('startDate');
+	}
+
+	get endDate() {
+		return this.get('endDate');
+	}
+
 	get date() {
 		return this.get('date') as FormGroup;
 	}
@@ -100,8 +117,24 @@ export class AgreementModel extends FormGroup {
 		return this.get('isSignatureRequired');
 	}
 
+	get note() {
+		return this.get('note');
+	}
+
+	get receiveAgreementsFromOtherParty() {
+		return this.get('receiveAgreementsFromOtherParty');
+	}
+
 	get signers() {
 		return this.get('signers');
+	}
+
+	get parentSelectedAttachmentIds() {
+		return this.get('parentSelectedAttachmentIds');
+	}
+
+	get attachments() {
+		return this.get('attachments');
 	}
 
 	get initial$() {
@@ -112,23 +145,27 @@ export class AgreementModel extends FormGroup {
 		return this.INITIAL_AGREEMENT_FORM_VALUE$.value;
 	}
 
+	updateInitialFormValue(data: { [key: string]: any }) {
+		this.INITIAL_AGREEMENT_FORM_VALUE$.next({ ...this.initialValue, ...data });
+	}
+
 	private INITIAL_AGREEMENT_FORM_VALUE$ = new BehaviorSubject<{ [key: string]: any }>({
 		agreementType: null,
 		recipientId: null,
 		recipientTypeId: null,
-		nameTemplate: null,
-		definition: null,
+		nameTemplate: '',
+		definition: '',
 		legalEntityId: null,
 		salesTypes: null,
 		deliveryTypes: null,
 		contractTypes: null,
 		language: null,
-		note: null,
+		receiveAgreementsFromOtherParty: false,
+		note: '',
 		startDate: null,
 		endDate: null,
-		isSignatureRequired: null,
+		isSignatureRequired: false,
 		signers: [],
-		selectedInheritedFiles: null,
-		uploadedFiles: null,
+		attachments: [],
 	});
 }

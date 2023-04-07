@@ -14,9 +14,10 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 import { MapClientAddressList } from '../workflow-sales.helpers';
 import {
 	AgreementServiceProxy,
-	AgreementSimpleListItemDto,
-	AgreementType,
 	ClientAddressDto,
+	AgreementSimpleListItemDto,
+	AgreementSimpleListItemDtoPaginatedList,
+	AgreementType,
 	ClientResultDto,
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
@@ -24,6 +25,7 @@ import {
 	ContactResultDto,
 	ContractSignerDto,
 	EnumEntityTypeDto,
+	FrameAgreementServiceProxy,
 	LegalEntityDto,
 	LookupServiceProxy,
 	PeriodClientSpecialFeeDto,
@@ -96,6 +98,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientSpecialFeeFilter = new UntypedFormControl('');
 	eTimeReportingCaps = ETimeReportingCaps;
 	ePurchaseOrderMode = EPurchaseOrderMode;
+	filteredFrameAgreements: AgreementSimpleListItemDto[];
+
+	selectedFrameAgreementId: number | null;
+
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -107,7 +113,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
 		private _agreementService: AgreementServiceProxy,
-		private _workflowDataService: WorkflowDataService
+		private _workflowDataService: WorkflowDataService,
+		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -352,60 +359,117 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this._workflowDataService.preselectFrameAgreement.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
 			this._checkAndPreselectFrameAgreement();
 		});
+
+		this.salesClientDataForm.frameAgreementId.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let dataToSend = {
+						recipientClientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						search: value ?? '',
+						maxRecordsCount: 1000,
+					};
+					if (value?.agreementId) {
+						dataToSend.search = value.agreementId ? value.agreementName : value;
+					}
+					if (dataToSend.recipientClientIds?.length) {
+						return this.getFrameAgreements(false, dataToSend.search);
+					} else {
+						return of([]);
+					}
+				})
+			)
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+				if (list?.items?.length) {
+					this.filteredFrameAgreements = list.items;
+					if (this.selectedFrameAgreementId) {
+						this.salesClientDataForm.frameAgreementId.setValue(
+							list.items.find((x) => x.agreementId === this.selectedFrameAgreementId),
+							{ emitEvent: false }
+						);
+						this.selectedFrameAgreementId = null;
+					}
+				} else {
+					this.filteredFrameAgreements = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
+				}
+			});
 	}
 
-	getFrameAgreements(agreementId: number | undefined = undefined, search: string = '') {
+	getPrimaryFrameAgreements() {
+		this.getFrameAgreements(true).subscribe((result) => {
+			this.filteredFrameAgreements = result.items;
+			if (this.selectedFrameAgreementId !== null) {
+				this.salesClientDataForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
+			} else if (result?.totalCount === 1) {
+				this._checkAndPreselectFrameAgreement();
+			} else if (result?.totalCount === 0) {
+				this.salesClientDataForm.frameAgreementId.setValue('');
+			}
+		});
+	}
+
+	getFrameAgreements(isInitial = false, search: string = '') {
 		let dataToSend = {
-			agreementId: agreementId,
+			agreementId: undefined,
 			search: search,
-			clientId: this.salesClientDataForm.directClientIdValue.value?.clientId,
+			clientId: this.salesClientDataForm.directClientIdValue.value.clientId,
 			agreementType: AgreementType.Frame,
 			validity: undefined,
-			legalEntityId: this.salesClientDataForm.pdcInvoicingEntityId.value ?? undefined,
-			salesTypeId: this.mainDataForm.salesTypeId.value ?? undefined,
+			legalEntityId: isInitial ? this.salesClientDataForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
 			contractTypeId: undefined,
-			deliveryTypeId: this.mainDataForm.deliveryTypeId.value ?? undefined,
-			startDate: this.salesClientDataForm.startDate.value ?? undefined,
-			endDate: this.salesClientDataForm.endDate.value ? this.salesClientDataForm.endDate.value : undefined,
+			deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
+			startDate: isInitial ? this.salesClientDataForm.startDate.value : undefined,
+			endDate: isInitial
+				? this.salesClientDataForm.endDate.value
+					? this.salesClientDataForm.endDate.value
+					: undefined
+				: undefined,
+			recipientClientIds: [
+				this.salesClientDataForm.directClientIdValue.value?.clientId,
+				this.salesClientDataForm.endClientIdValue.value?.clientId,
+			].filter(Boolean),
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
 		};
-		this._agreementService
-			.simpleList(
-				dataToSend.agreementId,
-				dataToSend.search,
-				dataToSend.clientId,
-				dataToSend.agreementType,
-				dataToSend.validity,
-				dataToSend.legalEntityId,
-				dataToSend.salesTypeId,
-				dataToSend.contractTypeId,
-				dataToSend.deliveryTypeId,
-				dataToSend.startDate,
-				dataToSend.endDate,
-				[], // recipientClientIds
-				undefined, // recipientConsultantId
-				undefined, // recipientSupplierId
-				dataToSend.pageNumber,
-				dataToSend.pageSize,
-				dataToSend.sort
-			)
-			.subscribe((result) => {
-				this.frameAgreements = result.items;
-			});
+		return this._frameAgreementServiceProxy.clientFrameAgreementList(
+			dataToSend.agreementId,
+			dataToSend.search,
+			undefined, // dataToSend.clientId,
+			dataToSend.legalEntityId,
+			dataToSend.salesTypeId,
+			dataToSend.contractTypeId,
+			dataToSend.deliveryTypeId,
+			dataToSend.startDate,
+			dataToSend.endDate,
+			dataToSend.recipientClientIds,
+			dataToSend.pageNumber,
+			dataToSend.pageSize,
+			dataToSend.sort
+		);
 	}
 
 	private _checkAndPreselectFrameAgreement() {
 		if (
 			this.salesClientDataForm.startDate.value &&
 			(this.salesClientDataForm.endDate.value || this.salesClientDataForm.noEndDate.value) &&
-			this.salesClientDataForm.directClientIdValue.value &&
+			this.salesClientDataForm.directClientIdValue.value?.clientId &&
 			this.mainDataForm.salesTypeId.value &&
 			this.mainDataForm.deliveryTypeId.value
 		) {
-			if (this.frameAgreements?.length === 1) {
-				this.salesClientDataForm.frameAgreementId.setValue(this.frameAgreements[0].agreementId, { emitEvent: false });
+			if (this.filteredFrameAgreements.length === 1) {
+				this.salesClientDataForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
 			}
 		}
 	}
@@ -420,28 +484,29 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
 		this.initContactSubs();
-		this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
-		this.onDirectClientSelected.emit(event);
+		this.salesClientDataForm.frameAgreementId.setValue('');
+        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
+        this.onDirectClientSelected.emit(event);
 	}
 
-	clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
-		this.getClientAddresses(event.option.value?.clientAddresses, clientType);
-		this.focusToggleMethod('auto');
-	}
+    clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
+        this.getClientAddresses(event.option.value?.clientAddresses, clientType);
+        this.focusToggleMethod('auto');
+    }
 
-	getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
-		switch (clientType) {
-			case EClientSelectionType.DirectClient:
-				this.directClientAddresses = MapClientAddressList(clientAddresses);
-				break;
-			case EClientSelectionType.EndClient:
-				this.endClientAddresses = MapClientAddressList(clientAddresses);
-				break;
-			case EClientSelectionType.InvoicingRecipient:
-				this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
-				break;
-		}
-	}
+    getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
+        switch (clientType) {
+            case EClientSelectionType.DirectClient:
+                this.directClientAddresses = MapClientAddressList(clientAddresses);
+                break;
+            case EClientSelectionType.EndClient:
+                this.endClientAddresses = MapClientAddressList(clientAddresses);
+                break;
+            case EClientSelectionType.InvoicingRecipient:
+                this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
+                break;
+        }
+    }
 
 	initContactSubs() {
 		this.salesClientDataForm.clientContactProjectManager.setValue('');

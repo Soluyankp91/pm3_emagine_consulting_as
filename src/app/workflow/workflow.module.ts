@@ -31,6 +31,12 @@ import { DocumentsComponent } from './shared/components/wf-documents/wf-document
 import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
 import { AddOrEditPoDialogComponent } from './shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
 import { PurchaseOrdersComponent } from './shared/components/purchase-orders/purchase-orders.component';
+import { LegalContractsComponent } from './workflow-contracts/legal-contracts/legal-contracts.component';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contracts/send-envelope-dialog/send-envelope-dialog.component';
+import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
+import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
 
 @NgModule({
 	declarations: [
@@ -58,14 +64,74 @@ import { PurchaseOrdersComponent } from './shared/components/purchase-orders/pur
 		ContractsClientDataComponent,
 		ToggleEditModeComponent,
 		DocumentsComponent,
-  AddOrEditPoDialogComponent,
-  PurchaseOrdersComponent,
+		AddOrEditPoDialogComponent,
+		PurchaseOrdersComponent,
+		LegalContractsComponent,
+		SendEnvelopeDialogComponent,
+		SignersPreviewDialogComponent,
+		RemoveOrUploadAgrementDialogComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
-	providers: [
-		WorkflowCreateResolver,
-		WorkflowPeriodResolver,
-	],
+	providers: [WorkflowCreateResolver, WorkflowPeriodResolver],
 })
-export class WorkflowModule {}
+export class WorkflowModule {
+	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+		iconRegistry.addSvgIcon(
+			'agreement-active-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-active-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-active-outdated-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-active-outdated-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-inactive-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-inactive-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'via-email-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-email-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'via-docusign-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-docusign-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'via-thirdparty-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/via-thirdparty-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-doc',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-doc.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-pdf',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-pdf.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'legal-contract-edit',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/legal-contract-edit.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'legal-contract-remove',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/legal-contract-remove.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'legal-contract-upload',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/legal-contract-upload.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'open-in-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/open-in-docusign.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'create-docusign-draft',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/create-docusign-draft.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'send-via-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
+		);
+	}
+}

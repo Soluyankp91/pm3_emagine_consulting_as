@@ -18,6 +18,12 @@
 }
 .flex-b-60 {
 	flex-basis: 60%;
+	max-width: 60%;
+	word-wrap: break-word;
+}
+.flex-gap-6 {
+    display: flex;
+    gap: 6px;
 }
 .icon {
 	width: 8px;

@@ -1,0 +1,53 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.notification-dialog {
+    border-bottom: 1px solid #e2e2e2;
+
+    p {
+        word-wrap: break-word;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        h1 {
+            @include fontOpenSans(21px, 800);
+            line-height: 120%;
+        }
+    }
+
+    .subtitle {
+        margin-bottom: 16px;
+    }
+
+    .content {
+       font-size: 14px;
+    }
+
+    .warn {
+        display: flex;
+
+        mat-icon {
+            margin-right: 6px;
+            color: #FF7A78;
+            width: 36px;
+        }
+
+        p {
+            color: #FF7A78;
+            font-weight: 700;
+        }
+    }
+    
+    .actions {
+        justify-content: space-between;
+        border-top: 1px solid $sand-color;
+    }
+
+    mat-dialog-actions {
+        padding: 0px !important;
+    }
+}

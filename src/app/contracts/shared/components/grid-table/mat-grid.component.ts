@@ -20,7 +20,6 @@ import {
 	TemplateRef,
 	Injector,
 	TrackByFunction,
-	ViewEncapsulation,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -38,7 +37,6 @@ import { FILTER_LABEL_MAP } from '../../entities/contracts.constants';
 	styleUrls: ['./mat-grid.component.scss'],
 	templateUrl: './mat-grid.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
 })
 export class MatGridComponent extends AppComponentBase implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 	@Input() displayedColumns: string[];
@@ -46,10 +44,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Input() cells: IColumn[];
 	@Input() selection: boolean = true;
 	@Input() actions: boolean = true;
-	@Input() actionsList: Actions[] = [];
 	@Input() selectedItemsActions: Actions[] = [];
 	@Input() selectedRowId: number | null;
 	@Input() rowIdProperty: string = 'agreementTemplateId';
+	@Input() sticky: boolean;
 
 	@Output() sortChange = new EventEmitter<Sort>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
@@ -57,6 +55,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@Output() selectedRowIdChange = new EventEmitter();
 	@Output() onAction = new EventEmitter();
 	@Output() onSelectionAction = new EventEmitter();
+	@Output() resetAllFilters = new EventEmitter();
 
 	@ContentChildren('customCells', {
 		descendants: false,
@@ -148,7 +147,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	async loadFilters() {
 		await Promise.all(
 			this.cells
-				.filter((cell) => cell.headerCell.type !== 'sort')
+				.filter((cell) => cell.headerCell.type !== 'default')
 				.map(async (cell, index) => {
 					if (cell.headerCell.filter) {
 						const componentInstance = await cell.headerCell.filter.component();

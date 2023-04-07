@@ -1,0 +1,100 @@
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
+
+.validator {
+	margin-left: -8px;
+	padding: 10px 0;
+	p {
+		@include fontOpenSans(100%, 600);
+		color: $red-message-color;
+		line-height: 1;
+	}
+}
+
+.void-dialog {
+	p {
+		word-wrap: break-word;
+	}
+
+	.header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		h1 {
+			@include fontOpenSans(30px, 800);
+			line-height: 120%;
+		}
+
+		.button-close {
+			position: relative;
+			right: -34px;
+			top: -17px;
+		}
+	}
+
+	.subtitle {
+		margin-bottom: 16px;
+	}
+
+	.content {
+		font-size: 14px;
+	}
+
+	.envelop-agreement-list {
+		margin-top: 24px;
+
+		.envelop-agreement {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20px;
+
+			.mat-icon {
+				width: 20px;
+				margin-right: 8px;
+			}
+		}
+	}
+
+	.warn {
+		display: flex;
+
+		mat-icon {
+			margin-right: 6px;
+			color: #ff7a78;
+			width: 36px;
+		}
+
+		p {
+			color: #ff7a78;
+			font-weight: 700;
+		}
+	}
+
+	.actions {
+		justify-content: space-between;
+		border-top: 1px solid $sand-color;
+	}
+
+	.textarea-form-field {
+		margin-bottom: 20px;
+		::ng-deep {
+			textarea {
+				height: 86px;
+				line-height: 18px;
+			}
+
+			.mat-form-field-outline {
+				height: 110px;
+			}
+		}
+	}
+
+	mat-form-field {
+		width: 100%;
+	}
+
+	mat-dialog-actions {
+		padding: 0px !important;
+	}
+}

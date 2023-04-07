@@ -12,6 +12,7 @@ import { MODE_FILTER_OPTIONS } from '../../client-template.constants';
 @Component({
 	selector: 'app-client-mode-filter',
 	templateUrl: './mode-filter.component.html',
+	styleUrls: ['./mode-filter.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
