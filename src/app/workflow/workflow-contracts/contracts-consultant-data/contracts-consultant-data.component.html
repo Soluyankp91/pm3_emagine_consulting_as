@@ -58,23 +58,22 @@
                                             <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
                                                 appPreventDoubleClick>
                                                 <div class="multilineDropdown-option--row">
+                                                    <ng-container *ngIf="item?.id !== undefined">
+                                                        <img class="image-thumbnail-small border-rounded-50 u-mr--10"
+                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                    </ng-container>
+                                                    <div
+                                                        class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                        <span class="multilineDropdown-option--column-client-name">{{
+                                                            item?.name }}</span>
                                                         <ng-container *ngIf="item?.id !== undefined">
-                                                            <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                                [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                            <span
+                                                                class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                {{item?.companyName ? item.companyName + ' | ' : ''}}
+                                                                {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
+                                                                {{item?.legacyId}}
+                                                            </span>
                                                         </ng-container>
-                                                        <div
-                                                            class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                            <span class="multilineDropdown-option--column-client-name">{{
-                                                                item?.name }}</span>
-                                                            <ng-container *ngIf="item?.id !== undefined">
-                                                                <span
-                                                                    class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                    {{item?.companyName ? item.companyName + ' | ' : ''}}
-                                                                    {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
-                                                                    {{item?.legacyId}}
-                                                                </span>
-                                                            </ng-container>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </mat-option>

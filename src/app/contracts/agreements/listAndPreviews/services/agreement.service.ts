@@ -73,7 +73,6 @@ export class AgreementService extends BaseContract {
 			tableFilters.envelopeProcessingPath.map((item) => item.id as number), //envelopeProcessingPath
 			page.pageIndex + 1,
 			page.pageSize,
-            undefined, // pageSize
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''
 		);
 	}
