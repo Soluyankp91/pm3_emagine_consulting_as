@@ -935,6 +935,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								label: 'Discard Changes',
 								message:
 									'Changing main template settings will result in discarding all the data that has been applied',
+								confirmButtonText: 'Discard',
 							},
 						});
 						return dialogRef.afterClosed();
@@ -1047,7 +1048,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this._cdr.detectChanges();
 				}),
 				tap((agreementTemplateDetailsDto) => {
-					if (this.clientPeriodId || this.consultantPeriodId) {
+					if ((this.clientPeriodId || this.consultantPeriodId) && this.workflowTemplateType$.value !== undefined) {
 						this.agreementFormGroup.patchValue({
 							nameTemplate: agreementTemplateDetailsDto.name,
 							definition: agreementTemplateDetailsDto.definition,
@@ -1061,7 +1062,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								? agreementTemplateDetailsDto.attachmentsFromParent
 								: [],
 							selectedInheritedFiles: [],
-							receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty
+							receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
 						});
 					} else {
 						this.agreementFormGroup.patchValue({
@@ -1232,12 +1233,24 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									.simpleList2(
 										this.workflowTemplateType$.value,
 										undefined,
-										this.workFlowMetadata.legalEntityId,
-										this.workFlowMetadata.salesTypeId,
-										this.workFlowMetadata.contractType,
-										this.workFlowMetadata.deliveryTypeId,
-										this.workflowTemplateType$.value === true ? this.workFlowMetadata.clientId : undefined,
-										this.workFlowMetadata.recipientTypeId,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.legalEntityId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.salesTypeId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.contractType
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.deliveryTypeId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value === true
+											? this.workFlowMetadata.clientId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.recipientTypeId
+											: undefined,
 										undefined,
 										search,
 										1,
@@ -1403,6 +1416,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			data: {
 				label: 'Discard Changes',
 				message: `You\'ve selected “Receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
+				confirmButtonText: 'Discard',
 			},
 		});
 	}
