@@ -151,6 +151,10 @@ export class EditorCoreService {
 		}
 	}
 
+	toggleMergedData() {
+		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+	}
+
 	toggleHighlightView(state: boolean) {
 		this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, state);
 	}

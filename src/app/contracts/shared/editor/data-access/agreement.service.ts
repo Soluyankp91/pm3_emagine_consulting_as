@@ -141,6 +141,7 @@ export class AgreementService implements AgreementAbstractService {
 				context: manualErrorHandlerEnabledContextCreator(true),
 			})
 			.pipe(
+				mapTo(true),
 				catchError(({ error }: HttpErrorResponse) => {
 					if (error.error.code === 'contracts.documents.draft.locked') {
 						const ref = this._dialog.open(ConfirmPopupComponent, {
@@ -154,10 +155,13 @@ export class AgreementService implements AgreementAbstractService {
 						});
 
 						return ref.afterClosed().pipe(
-							filter((res) => !!res),
-							switchMap(() =>
-								this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(catchError((error) => EMPTY))
-							)
+							switchMap((res) => {
+								if (res) {
+									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(catchError((error) => EMPTY))
+								} else {
+									return of(null)
+								}
+							})
 						);
 					} else {
 						return of(error);
