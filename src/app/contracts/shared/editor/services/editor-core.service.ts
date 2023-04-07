@@ -151,6 +151,10 @@ export class EditorCoreService {
 		}
 	}
 
+	toggleMergedData() {
+		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+	}
+
 	toggleHighlightView(state: boolean) {
 		this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, state);
 	}
@@ -230,6 +234,7 @@ export class EditorCoreService {
 			this.afterViewInit$.complete();
 			this.toggleFields();
 			this.removeUnsavedChanges();
+			this.toggleHighlightView(!this.editor.readOnly);
 			this.editor.events.contentInserted.addHandler((s, e) => {
 				const regex = /{[^}]*}/g;
 				const text = this.editor.document.getText(e.interval);

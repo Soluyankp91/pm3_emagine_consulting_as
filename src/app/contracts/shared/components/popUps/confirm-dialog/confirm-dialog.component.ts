@@ -9,9 +9,11 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class ConfirmDialogComponent {
 	label: string;
 	message: string;
+	confirmButtonText: string = 'Discard';
 
 	constructor(@Inject(MAT_DIALOG_DATA) data: any) {
 		this.label = data.label;
 		this.message = data.message;
+		this.confirmButtonText = data.confirmButtonText;
 	}
 }

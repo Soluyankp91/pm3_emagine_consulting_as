@@ -16,12 +16,73 @@ import { ConfirmPopupComponent } from '../components/confirm-popup';
 import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
 import { VoidEnvelopePopupComponent } from '../components/void-envelope-popup/void-envelope-popup.component';
+import { SaveAsPopupComponent } from '../components/save-as-popup';
 
 @Injectable()
 export class AgreementService implements AgreementAbstractService {
 	private readonly _baseUrl = `${environment.apiUrl}/api/Agreement`;
 
 	constructor(private _httpClient: HttpClient, private _dialog: MatDialog, private _agreementService: AgreementServiceProxy) {}
+
+	private _showSaveDraftAsDraftPopup(body: StringWrappedValueDto, doc: IDocumentItem, versions: IDocumentVersion[]) {
+		return this._dialog
+			.open(SaveAsPopupComponent, {
+				data: {
+					document: doc,
+					isAgreement: true,
+					base64: body.value,
+					versions,
+				},
+				width: '540px',
+				disableClose: true,
+				hasBackdrop: true,
+				backdropClass: 'backdrop-modal--wrapper',
+			})
+			.afterClosed();
+	}
+
+	private _showTemplateVoidingPopup(templateId: number) {
+		return this.getEnvelopeRelatedAgreements(templateId).pipe(
+			switchMap((agreements) =>
+				this._dialog
+					.open(VoidEnvelopePopupComponent, {
+						data: { agreements },
+						width: '540px',
+						disableClose: true,
+						hasBackdrop: true,
+						backdropClass: 'backdrop-modal--wrapper',
+					})
+					.afterClosed()
+					.pipe(
+						switchMap((res) => {
+							return res ? this.voidEnvelopeRelatedAgreement(templateId, res.reason) : of(null);
+						})
+					)
+			)
+		);
+	}
+
+	private _showTemplateVersionChangeConfirmationPopup(version: number) {
+		return this._dialog
+			.open(ConfirmPopupComponent, {
+				width: '540px',
+				backdropClass: 'backdrop-modal--wrapper',
+				data: {
+					title: 'Agreement number change',
+					body: `Promoting sent agreement to draft will result in the current agreement number ${version} change to ${
+						version + 1
+					}. Are you sure you want to proceed?`,
+					cancelBtnText: 'Cancel',
+					confirmBtnText: 'Proceed',
+				},
+			})
+			.afterClosed()
+			.pipe(map((res) => !!res));
+	}
+
+	private _getAgreement(agreementId: number) {
+		return this._agreementService.agreementGET(agreementId);
+	}
 
 	getTemplate(agreementId: number, isComplete: boolean = true) {
 		const endpoint = `${this._baseUrl}/${agreementId}/document-file/latest-agreement-version/${isComplete}`;
@@ -80,8 +141,9 @@ export class AgreementService implements AgreementAbstractService {
 				context: manualErrorHandlerEnabledContextCreator(true),
 			})
 			.pipe(
+				mapTo(true),
 				catchError(({ error }: HttpErrorResponse) => {
-					if (['contracts.agreement.locked', 'contracts.documents.draft.locked'].includes(error.error.code)) {
+					if (error.error.code === 'contracts.documents.draft.locked') {
 						const ref = this._dialog.open(ConfirmPopupComponent, {
 							width: '540px',
 							height: '240px',
@@ -93,10 +155,13 @@ export class AgreementService implements AgreementAbstractService {
 						});
 
 						return ref.afterClosed().pipe(
-							filter((res) => !!res),
-							switchMap(() =>
-								this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(catchError((error) => EMPTY))
-							)
+							switchMap((res) => {
+								if (res) {
+									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(catchError((error) => EMPTY))
+								} else {
+									return of(null)
+								}
+							})
 						);
 					} else {
 						return of(error);
@@ -116,34 +181,22 @@ export class AgreementService implements AgreementAbstractService {
 		doc: IDocumentItem,
 		versions: IDocumentVersion[]
 	) {
-		return this.saveDraftAsDraftTemplate(templateId, false, body).pipe(
-			switchMap(() =>
-				this.getEnvelopeRelatedAgreements(templateId).pipe(
-					switchMap((agreements) =>
-						this._dialog
-							.open(VoidEnvelopePopupComponent, {
-								data: { agreements },
-								width: '540px',
-								disableClose: true,
-								hasBackdrop: true,
-								backdropClass: 'backdrop-modal--wrapper',
-							})
-							.afterClosed()
-							.pipe(
-								switchMap((res) => {
-									return res
-										? this.voidEnvelopeRelatedAgreement(templateId, res.reason).pipe(
-												switchMap(() =>
-													this.saveDraftAsCompleteTemplate(templateId, body).pipe(mapTo({}))
-												)
-										  )
-										: null;
-								})
-							)
-					)
-				)
+		return this.saveDraftAsDraftTemplate(templateId, false, body)
+			.pipe(
+				switchMap(() => {
+					let agreementHasSentVersions = versions.some(
+						(version) => version.envelopeStatus && version.envelopeStatus === 3
+					);
+					return agreementHasSentVersions
+						? this._showTemplateVoidingPopup(templateId)
+						: this._showSaveDraftAsDraftPopup(body, doc, versions);
+				})
 			)
-		);
+			.pipe(
+				switchMap((confirmed) => {
+					return confirmed ? this.saveDraftAsCompleteTemplate(templateId, body).pipe(mapTo({})) : of(null);
+				})
+			);
 	}
 
 	getTemplatePDF(agreementId: number) {
@@ -166,6 +219,25 @@ export class AgreementService implements AgreementAbstractService {
 	}
 
 	voidEnvelopeRelatedAgreement(agreementId: number, reason: string) {
-		return this._agreementService.voidEnvelope(agreementId, reason).pipe(catchError((error: HttpErrorResponse) => of(null)));
+		return this._agreementService.voidEnvelope(agreementId, reason).pipe(
+			mapTo(true),
+			catchError((error: HttpErrorResponse) => of(null))
+		);
+	}
+
+	unlockAgreement(id: number) {
+		return this._agreementService.openEdit(id).pipe(mapTo(true));
+	}
+
+	unlockAgreementByConfirmation(id: number, version: number) {
+		return this._getAgreement(id).pipe(
+			switchMap(({ isLocked }) => {
+				return isLocked
+					? this._showTemplateVersionChangeConfirmationPopup(version).pipe(
+							switchMap((confirmed) => (confirmed ? this.unlockAgreement(id) : of(false)))
+					  )
+					: of(true);
+			})
+		);
 	}
 }
