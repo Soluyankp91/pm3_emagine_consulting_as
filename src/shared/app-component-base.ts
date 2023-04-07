@@ -8,6 +8,7 @@ import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
 import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
 import { EProfileImageLinkTypes } from "./AppEnums";
+import { InternalLookupService } from "src/app/shared/common/internal-lookup.service";
 
 export enum NotifySeverity {
 	Info = 1,
@@ -24,10 +25,12 @@ export abstract class AppComponentBase {
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
     imageType = EProfileImageLinkTypes;
+    internalLookupService: InternalLookupService;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
         this.matSnackbar = injector.get(MatSnackBar);
+        this.internalLookupService = injector.get(InternalLookupService);
     }
 
 	showNotify(severity: number, text: string, buttonText: string) {
@@ -212,6 +215,10 @@ export abstract class AppComponentBase {
             result[x.id] = x.name
         });
         return result;
+    }
+
+    getStaticEnumValue(key: string): any {
+        return this.internalLookupService.getEnumValue(key);
     }
 
 }

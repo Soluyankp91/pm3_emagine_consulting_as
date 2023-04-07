@@ -129,7 +129,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			this.workflowId = params.get('id')!;
 		});
 		this._resetWorkflowProgress();
-		this._internalLookupService.getData();
 		this._getClientPeriodTypes();
 		this._getTopLevelMenu();
 		this._getConsultantPeriodTypes();

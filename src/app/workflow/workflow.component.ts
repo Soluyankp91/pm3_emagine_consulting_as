@@ -228,12 +228,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.WfList);
-		this.getSyncStateStatuses();
+        this._getEnums();
+        // this._internalLookupService.getData();
+		// this.getSyncStateStatuses();
 		this.getCurrentUser();
-		this.getLegalEntities();
-		this.getSalesType();
-		this.getDeliveryTypes();
-		this.getWorkflowStatuses();
+		// this.getLegalEntities();
+		// this.getSalesType();
+		// this.getDeliveryTypes();
+		// this.getWorkflowStatuses();
         this.employees$ = this._store.select(getEmployees);
         this.accountManagerFilter.valueChanges
             .pipe(
@@ -524,29 +526,34 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this._internalLookupService.getLegalEntities().subscribe((result) => {
 			this.legalEntities = result;
 		});
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
 	}
 
 	getSalesType() {
 		this._internalLookupService.getSaleTypes().subscribe((result) => {
 			this.saleTypes = result;
 		});
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
 	}
 
 	getDeliveryTypes() {
 		this._internalLookupService.getDeliveryTypes().subscribe((result) => {
 			this.deliveryTypes = result;
 		});
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
 	}
 
 	getWorkflowStatuses() {
-		this._internalLookupService.getWorkflowStatuses().subscribe((result) => {
-			this.workflowStatuses = result;
-		});
+		// this._internalLookupService.getWorkflowStatuses().subscribe((result) => {
+		// 	this.workflowStatuses = result;
+		// });
+        this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
 	}
 	getSyncStateStatuses() {
-		this._internalLookupService.getSyncStateStatuses().subscribe((result) => {
-			this.syncStateStatuses = this.toArray(result);
-		});
+		// this._internalLookupService.getSyncStateStatuses().subscribe((result) => {
+		// 	this.syncStateStatuses = this.toArray(result);
+		// });
+        this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
 	}
 
 	getWorkflowList(filterChanged?: boolean) {
@@ -796,6 +803,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		event.stopPropagation();
 		this.syncStatusFilterControl(item);
 	}
+
+    private _getEnums() {
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
+        this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
+    }
 }
 
 export class WorkflowSourcingCreate {
