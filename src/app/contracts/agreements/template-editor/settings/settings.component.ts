@@ -1061,6 +1061,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								? agreementTemplateDetailsDto.attachmentsFromParent
 								: [],
 							selectedInheritedFiles: [],
+							receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty
 						});
 					} else {
 						this.agreementFormGroup.patchValue({
