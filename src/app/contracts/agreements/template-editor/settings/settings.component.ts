@@ -239,6 +239,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					label: 'Agreement number change',
 					message:
 						'Editing sent agreement settings will result in the current agreement number {number} change to {new number}. Are you sure you want to proceed?',
+					confirmButtonText: 'Proceed',
 				},
 			});
 			let proceed = await dialogRef.afterClosed().toPromise();
