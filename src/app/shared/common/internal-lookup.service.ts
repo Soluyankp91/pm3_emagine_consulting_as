@@ -46,6 +46,7 @@ export class InternalLookupService {
     valueUnitTypes: EnumEntityTypeDto[] = [];
     periodUnitTypes: EnumEntityTypeDto[] = [];
     purchaseOrderCapTypes: { [key: string]: string };
+    envelopeProcessingPaths: { [key: string]: string };
 
     constructor(private _enumService: EnumServiceProxy) {
     }
@@ -800,6 +801,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.purchaseOrderCapTypes = response;
                         observer.next(this.purchaseOrderCapTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getEnvelopeProcessingPaths(): Observable<{ [key: string]: string }> {
+        return new Observable<{ [key: string]: string }>((observer) => {
+            if (this.envelopeProcessingPaths !== undefined && this.envelopeProcessingPaths !== null) {
+                observer.next(this.envelopeProcessingPaths);
+                observer.complete();
+            } else {
+                this._enumService.envelopeProcessingPaths()
+                    .subscribe(response => {
+                        this.envelopeProcessingPaths = response;
+                        observer.next(this.envelopeProcessingPaths);
                         observer.complete();
                     }, error => {
                         observer.error(error);

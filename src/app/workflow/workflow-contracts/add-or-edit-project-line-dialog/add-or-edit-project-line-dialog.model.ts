@@ -24,6 +24,7 @@ export class ProjectLineForm extends UntypedFormGroup {
             wasSynced: new UntypedFormControl(false),
             isLineForFees: new UntypedFormControl(false),
             purchaseOrderId: new UntypedFormControl(null),
+            markedForLegacyDeletion: new UntypedFormControl(false),
         })
 
     }
@@ -89,5 +90,8 @@ export class ProjectLineForm extends UntypedFormGroup {
     }
     get purchaseOrderId() {
         return this.get('purchaseOrderId');
+    }
+    get markedForLegacyDeletion() {
+        return this.get('markedForLegacyDeletion');
     }
 }

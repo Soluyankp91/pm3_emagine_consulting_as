@@ -1,6 +1,6 @@
 import { SortDirection } from '@angular/material/sort';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { CountryDto } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto, EmployeeServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 import {
 	DEFAULT_SIZE_OPTION,
@@ -8,9 +8,12 @@ import {
 } from '../components/grid-table/master-templates/entities/master-templates.constants';
 import { isEqual } from 'lodash';
 import { PageDto, SortDto, TemplatePayload } from '../entities/contracts.interfaces';
+import { MapTenantCountryCode, MapTenantNameFromId } from 'src/shared/helpers/tenantHelper';
+
 export abstract class BaseContract {
 	abstract tableFilters$: BehaviorSubject<any>;
 	abstract sendPayload$(templatePayload: TemplatePayload<any>): Observable<any>;
+	abstract tenantOptionKey: string;
 
 	contractsLoading$$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
@@ -26,7 +29,9 @@ export abstract class BaseContract {
 
 	private _sort$: BehaviorSubject<SortDto> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
 
-	getContracts$() {
+	constructor(protected readonly _employeeServiceProxy: EmployeeServiceProxy) {}
+
+	getContracts$(): Observable<any> {
 		return combineLatest([
 			this.getTableFilters$(),
 			this.getSort$(),
@@ -67,7 +72,7 @@ export abstract class BaseContract {
 	}
 
 	updateTableFilters(data: any) {
-		this.tableFilters$.next(data);
+		this.tableFilters$.next({ ...this.tableFilters$.value, ...data });
 	}
 
 	updateTenantFilter(data: CountryDto[]) {
@@ -94,6 +99,25 @@ export abstract class BaseContract {
 		this.tableFilters$.next({
 			...this.tableFilters$.value,
 			id,
+		});
+	}
+
+	_preselectTenants() {
+		const localStorageTenants = localStorage.getItem(this.tenantOptionKey);
+		if (localStorageTenants) {
+			this.updateTenantFilter(this.getCountryDtoFromIds(JSON.parse(localStorageTenants)));
+		} else {
+			this._employeeServiceProxy.current().subscribe(({ tenantId }) => {
+				const name = MapTenantNameFromId(tenantId);
+				this.updateTenantFilter([new CountryDto({ id: tenantId, name: name, code: MapTenantCountryCode(name) })]);
+			});
+		}
+	}
+
+	getCountryDtoFromIds(ids: number[]) {
+		return ids.map((tenantId) => {
+			const name = MapTenantNameFromId(tenantId);
+			return new CountryDto({ id: tenantId, name: name, code: MapTenantCountryCode(name) });
 		});
 	}
 }

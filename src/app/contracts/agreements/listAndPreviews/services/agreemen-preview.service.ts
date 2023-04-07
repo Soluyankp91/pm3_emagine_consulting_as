@@ -3,10 +3,10 @@ import { map } from 'rxjs/operators';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
 import { BaseMappedAgreementListItemDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { DownloadFilesService } from 'src/app/contracts/shared/services/download-files.service';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
-	AgreementAttachmentServiceProxy,
-	AgreementDetailsDto,
+	AgreementDetailsPreviewDto,
 	AgreementLanguage,
 	AgreementServiceProxy,
 	AgreementType,
@@ -16,13 +16,14 @@ import {
 
 @Injectable()
 export class AgreementPreviewService extends BasePreview {
-	downloadAttachment = this._agreementAttachmentServiceProxy.agreementAttachment.bind(this._agreementAttachmentServiceProxy);
-	entityGet = this._agreementServiceProxy.agreementGET.bind(this._agreementServiceProxy);
+	downloadAgreementAttachment = this._downloadFilesService.agreementAttachment.bind(this._downloadFilesService);
+	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
+	entityGet = this._agreementServiceProxy.preview.bind(this._agreementServiceProxy);
 	entityMetadataLog = this._agreementServiceProxy.logs.bind(this._agreementServiceProxy);
 
 	constructor(
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
-		private readonly _agreementAttachmentServiceProxy: AgreementAttachmentServiceProxy,
+		private readonly _downloadFilesService: DownloadFilesService,
 		private readonly _lookupService: LookupServiceProxy,
 		private readonly _enumService: EnumServiceProxy,
 		protected readonly _contractService: ContractsService
@@ -30,7 +31,7 @@ export class AgreementPreviewService extends BasePreview {
 		super(_contractService);
 	}
 
-	mapEntityToSummary(row: AgreementDetailsDto, maps: MappedTableCells) {
+	mapEntityToSummary(row: AgreementDetailsPreviewDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementListItemDto>{
 			agreementName: row.name,
 			definition: row.definition,
@@ -38,8 +39,12 @@ export class AgreementPreviewService extends BasePreview {
 			agreementType: maps.agreementType[row.agreementType as AgreementType],
 			recipientTypeId: maps.recipientTypeId[row.recipientTypeId as number],
 			actualRecipient$: this._actualRecipient$(row.recipientTypeId, row.recipientId),
+			consultantName: row.consultantName,
+			companyName: row.companyName,
 
 			legalEntityId: maps.legalEntityIds[row.legalEntityId],
+			salesManager: row.saleManager ? row.saleManager.name : row.saleManager,
+			contractManager: row.contractManager ? row.contractManager.name : row.contractManager,
 			salesTypeIds: row.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 			deliveryTypeIds: row.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
 			contractTypeIds: row.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
@@ -49,16 +54,18 @@ export class AgreementPreviewService extends BasePreview {
 
 			agreementId: row.agreementId,
 			createdDateUtc: row.createdDateUtc,
-			createdBy: row.createdBy?.name,
+			createdBy: row.createdBy,
 			lastUpdateDateUtc: row.lastUpdateDateUtc,
-			lastUpdatedBy: row.lastUpdatedBy?.name,
+			lastUpdatedBy: row.lastUpdatedBy,
 			startDate: row.startDate,
 			endDate: row.endDate,
+			validity: row.validity,
 			duplicationSourceAgreementId: row.duplicationSourceAgreementId,
 			duplicationSourceAgreementName: row.duplicationSourceAgreementName,
 
 			parentAgreementTemplateId: row.parentAgreementTemplateId,
 			parentAgreementTemplateName: row.parentAgreementTemplateName,
+			parentAgreementTemplateIsMasterTemplate: row.parentAgreementTemplateIsMasterTemplate,
 		};
 	}
 

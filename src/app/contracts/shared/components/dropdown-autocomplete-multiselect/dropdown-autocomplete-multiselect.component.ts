@@ -1,5 +1,5 @@
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { IDropdownItem } from '../emagine-menu-multi-select/emagine-menu-multi-select.interfaces';
 import {
 	Component,
@@ -12,13 +12,18 @@ import {
 	forwardRef,
 	ChangeDetectorRef,
 	ViewChild,
+	ContentChild,
+	TemplateRef,
+	ElementRef,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatMenu } from '@angular/material/menu';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-multiselect',
 	templateUrl: './dropdown-autocomplete-multiselect.component.html',
+	styleUrls: ['dropdown-autocomplete-multiselect.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [
 		{
@@ -38,17 +43,23 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 	@Input() label: string;
 
 	@Input() idProperty: string | number = 'id';
+	@Input() optionsLoading: BehaviorSubject<boolean>;
 
 	@Output() emitText = new EventEmitter();
 
 	@ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+	@ViewChild('trigger', { read: ElementRef }) inputRef: ElementRef;
+
+	@ViewChild('menu', { read: MatMenu }) menu: MatMenu;
+
+	@ContentChild('triggerButton', { static: true }) triggerButton: TemplateRef<any>;
+	@ContentChild('optionTemplate', { static: true }) optionTemplate: TemplateRef<any>;
 
 	get idsToExclude() {
 		return Array.from(this.selectedOptions).map((selectedOption: IDropdownItem) => selectedOption.id);
 	}
 
 	isSearchNull: boolean;
-	selectedAll = false;
 
 	initialOptions: Set<IDropdownItem>;
 	availableOptions: Set<IDropdownItem>;
@@ -60,7 +71,7 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 	private onChange = (val: any) => {};
 	private onTouched = () => {};
 
-	constructor(private cdr: ChangeDetectorRef) {}
+	constructor(private _cdr: ChangeDetectorRef) {}
 
 	ngOnInit(): void {
 		this._subscribeOnTextInput();
@@ -85,40 +96,19 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 
 	writeValue(values: any[]): void {
 		this.selectedOptions.clear();
+		this.inputControl.setValue('');
 		values?.forEach((setValueOption) => {
-			this.initialOptions.forEach((option) => {
-				if (setValueOption.id === option.id) {
-					this.selectedOptions.add(option);
-					this.availableOptions.delete(option);
-				}
-			});
+			this.selectedOptions.add(setValueOption);
+			this.availableOptions.delete(setValueOption);
 		});
-		this.selectedAll = this.selectedOptions.size !== 0;
 
-		this.cdr.detectChanges();
-	}
-
-	toggleSelectAll() {
-		if (!this.selectedAll) {
-			this.availableOptions.forEach((option) => {
-				this.selectedOptions.add(option);
-			});
-			this.availableOptions.clear();
-		} else {
-			this.selectedOptions.forEach((option) => {
-				if (this.initialOptions.has(option)) {
-					this.availableOptions.add(option);
-				}
-			});
-			this.selectedOptions.clear();
-		}
-		this.selectedAll = !this.selectedAll;
+		this._cdr.detectChanges();
 	}
 
 	selectCheckBox(option: IDropdownItem) {
 		this.selectedOptions.add(option);
 		this.availableOptions.delete(option);
-		this._checkSelectionStatus();
+		this._cdr.detectChanges();
 	}
 
 	unSelectCheckBox(option: IDropdownItem) {
@@ -126,21 +116,18 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 			this.availableOptions.add(option);
 		}
 		this.selectedOptions.delete(option);
-		this._checkSelectionStatus();
+		this._cdr.detectChanges();
 	}
 
 	openPanel() {
 		setTimeout(() => {
 			this.trigger.openPanel();
-		}, 100);
+			this.inputRef.nativeElement.focus();
+		}, 150);
 	}
 
 	menuClosed() {
 		this._onChangeSelectedOptions();
-	}
-
-	private _checkSelectionStatus() {
-		this.selectedAll = this.selectedOptions.size !== 0;
 	}
 
 	private _onChangeSelectedOptions() {
@@ -156,7 +143,7 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 			.pipe(debounceTime(300), takeUntil(this.unSubscribe$), distinctUntilChanged())
 			.subscribe((nameFilter) => {
 				this.emitText.emit({
-					nameFilter: nameFilter || '',
+					filter: nameFilter || '',
 					idsToExclude: this.idsToExclude,
 				});
 			});

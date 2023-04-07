@@ -42,3 +42,29 @@
         }
     }
 }
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+	&.file-preview-backdrop {
+		background: #4A4E60;
+		opacity: 0.3 !important;
+	}
+}
+
+.signers-preview--modal {
+    position: absolute !important;
+    bottom: 0;
+    right: 0;
+    .mat-dialog-container {
+        border-radius: unset !important;
+
+        .mat-dialog-content {
+            margin: 0 !important;
+            padding: 0 0 60px !important;
+            overflow: hidden !important;
+        }
+
+        .mat-dialog-actions {
+            margin-bottom: 0 !important;
+        }
+    }
+}

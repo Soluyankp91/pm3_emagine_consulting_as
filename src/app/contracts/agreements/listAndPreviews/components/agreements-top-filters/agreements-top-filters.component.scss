@@ -1,0 +1,112 @@
+@import 'variables';
+@import 'mixins';
+
+.top-filters-container {
+	padding: 25px 50px 15px;
+}
+.add-button {
+	display: flex;
+	align-items: center;
+}
+.create-icon {
+	width: 38px;
+	height: 38px;
+
+	cursor: pointer;
+}
+.search-and-header-container {
+	display: flex;
+	justify-content: space-between;
+}
+.right-filters {
+	display: flex;
+	gap: 16px;
+}
+.left-filters,
+.icons-container {
+	display: flex;
+}
+.left-filters {
+	margin-top: 4px;
+	gap: 12px;
+	align-items: center;
+}
+.circle-counter {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 32px;
+	height: 32px;
+	background-color: #4a4e60;
+	border-radius: 50%;
+	color: rgb(255, 255, 255);
+	position: relative;
+	z-index: 2;
+}
+.salesManager-icon {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+}
+.vertical-divider {
+	height: 25px;
+}
+.clear-filter {
+	color: $secondary-3;
+	cursor: pointer;
+}
+.table-header {
+	@include table-header;
+}
+.flex-basis-200 {
+	flex-basis: 200px;
+}
+.profile-picture-avatar {
+	width: 32px;
+	height: 32px;
+	background-size: cover;
+	border-radius: 50%;
+	position: relative;
+}
+.small-profile-picture-avatar {
+	width: 22px;
+	height: 22px;
+	background-size: cover;
+	border-radius: 50%;
+	position: relative;
+}
+.custom-option {
+	display: flex;
+	gap: 8px;
+}
+.mg-left-8 {
+	margin-left: 8px;
+}
+.circle-counter {
+	width: 32px;
+	height: 32px;
+	position: relative;
+	background-color: #4a4e60;
+	border-radius: 50%;
+	color: rgb(255, 255, 255);
+}
+.flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.flag {
+	width: 18px;
+	height: 18px;
+	background-size: cover;
+	border-radius: 50%;
+}
+.loop-icon {
+	width: 16px;
+	height: 16px;
+}
+.input {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}

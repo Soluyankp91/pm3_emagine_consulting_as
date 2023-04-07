@@ -1,3 +1,7 @@
+
+@import 'mixins';
+@import 'variables';
+
 span:not(:first-child) {
 	right: 20px;
 }
@@ -10,17 +14,13 @@ span:not(:first-child) {
 	color: rgb(255, 255, 255);
 }
 .tenant {
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	background-size: cover;
+    @include big-icon;
 }
 .trigger-button {
 	width: 24px;
 	height: 24px;
 }
 .tenant-menu {
-	width: 213px;
 	display: flex;
 	align-items: center;
 }

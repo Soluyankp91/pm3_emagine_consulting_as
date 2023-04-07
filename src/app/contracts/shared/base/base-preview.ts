@@ -5,11 +5,11 @@ import { SortDto, MappedTableCells } from '../entities/contracts.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 
 export abstract class BasePreview {
-	constructor(protected _contractService: ContractsService) {}
 	contentLoading$ = new BehaviorSubject<boolean>(false);
 
 	protected _rowId$ = new BehaviorSubject<number | null>(null);
 	protected _newestFirst$ = new BehaviorSubject<boolean>(false);
+	protected _signingStatuses$ = new BehaviorSubject<boolean>(false);
 
 	protected _clientTemplateLinksSearch$?: BehaviorSubject<string | undefined>;
 	protected _clientTemplateLinksSort$?: BehaviorSubject<SortDto>;
@@ -43,7 +43,10 @@ export abstract class BasePreview {
 			return this.entityGet(rowId);
 		}),
 		map((template) => {
-			return template.attachments;
+			return {
+				attachments: template.attachments,
+				attachmentsFromParent: template.attachmentsFromParent,
+			};
 		}),
 		tap(() => {
 			this.contentLoading$.next(false);
@@ -67,6 +70,10 @@ export abstract class BasePreview {
 		})
 	);
 
+	downloadAgreementAttachment: (attachmentId: number) => Observable<Blob>;
+
+	constructor(protected _contractService: ContractsService) {}
+
 	updateCurrentRowId(id: number | null) {
 		this._rowId$.next(id);
 	}
@@ -85,8 +92,8 @@ export abstract class BasePreview {
 	abstract mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells): any;
 
 	abstract entityGet: (rowId: number) => Observable<any>;
-	abstract entityMetadataLog: (rowId: number, newestFirst: boolean) => Observable<any>;
-	abstract downloadAttachment: (attachmentId: number) => Observable<void>;
+	abstract entityMetadataLog: (rowId: number, newestFirst: boolean, signingStatuses?: boolean) => Observable<any>;
+	abstract downloadTemplateAttachment: (attachmentId: number) => Observable<Blob>;
 
 	getClientTemplateLinksSort$?() {
 		return this._clientTemplateLinksSort$.asObservable();

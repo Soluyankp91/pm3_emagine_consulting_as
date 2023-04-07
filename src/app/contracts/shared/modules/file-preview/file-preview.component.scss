@@ -1,0 +1,72 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h1 {
+		margin: 0;
+		padding: 1em;
+	}
+
+	.overlay-content {
+		padding: 1em;
+		background-color: white;
+	}
+
+	.viewer-header {
+		position: fixed;
+		width: 100%;
+		height: auto;
+		left: 0;
+		top: 0;
+		background-color: rgb(41 42 54 / 76%);
+		padding: 12px 26px;
+		display: flex;
+		justify-content: space-between;
+		box-sizing: border-box;
+		z-index: 999;
+
+		.source-name {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			font-weight: bold;
+			color: white;
+			font-family: sans-serif;
+
+			i {
+				margin-right: 12px;
+			}
+		}
+
+		.source-actions {
+			display: flex;
+			color: white;
+			font-size: 16px;
+			font-weight: bold;
+			gap: 20px;
+
+			mat-icon {
+				cursor: pointer;
+			}
+		}
+	}
+
+	mat-icon {
+		width: 24px;
+		margin-right: 10px;
+	}
+
+	.pdf-container {
+		width: 996px;
+		margin: auto;
+		height: 90vh;
+		display: block;
+		background-color: white;
+
+		pdf-viewer {
+			width: 100%;
+			height: 90vh;
+		}
+	}
+}

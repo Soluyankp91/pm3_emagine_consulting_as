@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren } from '@angular/core';
+import { Component, OnInit, Injector, Inject, QueryList, ElementRef, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
@@ -29,11 +29,14 @@ import { ClientTemplatePreviewComponent } from './preview/client-template-previe
 import { tapOnce } from '../../shared/operators/tapOnceOperator';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
 
 @Component({
 	selector: 'app-client-specific-templates',
 	styleUrls: ['./client-specific-templates.component.scss'],
 	templateUrl: './client-specific-templates.component.html',
+	encapsulation: ViewEncapsulation.None,
 	providers: [GridHelpService],
 })
 export class ClientSpecificTemplatesComponent extends AppComponentBase implements OnInit {
@@ -59,8 +62,9 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		private readonly _contractService: ContractsService,
 		private readonly _snackBar: MatSnackBar,
 		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
-		@Inject(DOCUMENT) private _document: Document,
-		private readonly _titleService: TitleService
+		private readonly _titleService: TitleService,
+		private readonly _dialog: MatDialog,
+		@Inject(DOCUMENT) private _document: Document
 	) {
 		super(_injector);
 	}
@@ -74,6 +78,11 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();
+	}
+
+	resetAllTopFilters() {
+		this._clientTemplatesService.updateSearchFilter('');
+		this._clientTemplatesService.updateTenantFilter([]);
 	}
 
 	navigateTo() {
@@ -126,14 +135,27 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	onSelectionAction($event: { selectedRows: AgreementTemplatesListItemDto[]; action: string }) {
 		switch ($event.action) {
 			case 'APPROVE': {
-				this.showMainSpinner();
-				const arr$: Observable<void>[] = [];
-				$event.selectedRows.forEach(({ agreementTemplateId }) => {
-					arr$.push(this._agreementTemplateServiceProxy.acceptLinkState(agreementTemplateId));
-				});
-				forkJoin(arr$).subscribe(() => {
-					this._clientTemplatesService.reloadTable();
-				});
+				if ($event.selectedRows.find((row) => !(row.linkStateAccepted === false))) {
+					let dialogRef = this._dialog.open(NotificationDialogComponent, {
+						width: '500px',
+						height: '240px',
+						backdropClass: 'backdrop-modal--wrapper',
+						data: {
+							label: 'Approve',
+							message: 'Invalid templates were selected. You can approve only templates marked as “To approve”.',
+						},
+					});
+					dialogRef.afterClosed().subscribe();
+				} else {
+					this.showMainSpinner();
+					const arr$: Observable<void>[] = [];
+					$event.selectedRows.forEach(({ agreementTemplateId }) => {
+						arr$.push(this._agreementTemplateServiceProxy.acceptLinkState(agreementTemplateId));
+					});
+					forkJoin(arr$).subscribe(() => {
+						this._clientTemplatesService.reloadTable();
+					});
+				}
 			}
 		}
 	}
@@ -170,18 +192,22 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				clientName: item.clientName,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				language: maps.language[item.language as AgreementLanguage],
+                countryCode: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
+				createdBy: item.createdBy,
 				createdDateUtc: item.createdDateUtc,
-				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
+				lastUpdatedBy: item.lastUpdatedBy,
 				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				linkState: item.linkState,
+                linkStateAcceptedBy: item.linkStateAcceptedBy,
+                linkStateAcceptedDateUtc: item.linkStateAcceptedDateUtc,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
+				actionList: this.actions,
 			};
 		});
 	}

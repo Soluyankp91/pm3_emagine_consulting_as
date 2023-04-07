@@ -1,24 +1,26 @@
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { DEFINITION_MAX_SIZE, NAME_TEMPLATE_MAX_SIZE, NOTES_MAX_SIZE } from '../entities/contracts.constants';
 
 export class MasterTemplateModel extends FormGroup {
 	constructor() {
 		super({
 			agreementType: new FormControl(null, [Validators.required]),
 			recipientTypeId: new FormControl(null, [Validators.required]),
-			name: new FormControl(null, [Validators.required]),
-			agreementNameTemplate: new FormControl(''),
-			definition: new FormControl(null),
+			name: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			agreementNameTemplate: new FormControl('', [Validators.required, Validators.maxLength(NAME_TEMPLATE_MAX_SIZE)]),
+			definition: new FormControl('', [Validators.maxLength(DEFINITION_MAX_SIZE)]),
 			legalEntities: new FormControl(null, [Validators.required]),
 			salesTypes: new FormControl(null, [Validators.required]),
 			deliveryTypes: new FormControl(null, [Validators.required]),
 			contractTypes: new FormControl(null, [Validators.required]),
 			language: new FormControl(null, [Validators.required]),
-			note: new FormControl(null),
-			isSignatureRequired: new FormControl(null),
-			isEnabled: new FormControl(null),
-			selectedInheritedFiles: new FormControl(null),
-			uploadedFiles: new FormControl(null),
+			receiveAgreementsFromOtherParty: new FormControl(false),
+			note: new FormControl('', [Validators.maxLength(NOTES_MAX_SIZE)]),
+			isSignatureRequired: new FormControl(false),
+			isEnabled: new FormControl(false),
+			isDefaultTemplate: new FormControl(false),
+			attachments: new FormControl([]),
 		});
 	}
 
@@ -43,6 +45,13 @@ export class MasterTemplateModel extends FormGroup {
 
 	reset(formState?: any, options?: { onlySelf?: boolean; emitEvent?: boolean }): void {
 		super.reset(formState ? formState : this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.value, options);
+	}
+	get initialValue() {
+		return this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.value;
+	}
+
+	get duplicationSourceAgreementTemplateId() {
+		return this.get('duplicationSourceAgreementTemplateId');
 	}
 
 	get agreementType() {
@@ -97,16 +106,24 @@ export class MasterTemplateModel extends FormGroup {
 		return this.get('isEnabled');
 	}
 
-	get selectedInheritedFiles() {
-		return this.get('selectedInheritedFiles');
+	get receiveAgreementsFromOtherParty() {
+		return this.get('receiveAgreementsFromOtherParty');
 	}
 
-	get uploadedFiles() {
-		return this.get('uploadedFiles');
+	get isDefaultTemplate() {
+		return this.get('isDefaultTemplate');
+	}
+
+	get attachments() {
+		return this.get('attachments');
 	}
 
 	get initial$() {
 		return this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.asObservable();
+	}
+
+	updateInitialFormValue(data: { [key: string]: any }) {
+		this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.next({ ...this.initialValue, ...data });
 	}
 
 	private INITIAL_MASTER_TEMPLATE_FORM_VALUE$ = new BehaviorSubject<{
@@ -114,18 +131,19 @@ export class MasterTemplateModel extends FormGroup {
 	}>({
 		agreementType: null,
 		recipientTypeId: null,
-		name: null,
+		name: '',
 		agreementNameTemplate: '',
-		definition: null,
+		definition: '',
 		legalEntities: null,
 		salesTypes: null,
 		deliveryTypes: null,
 		contractTypes: null,
 		language: null,
-		note: null,
-		isSignatureRequired: null,
-		isEnabled: null,
-		selectedInheritedFiles: null,
-		uploadedFiles: null,
+		note: '',
+		receiveAgreementsFromOtherParty: false,
+		isSignatureRequired: false,
+		isDefaultTemplate: false,
+		isEnabled: false,
+		attachments: [],
 	});
 }

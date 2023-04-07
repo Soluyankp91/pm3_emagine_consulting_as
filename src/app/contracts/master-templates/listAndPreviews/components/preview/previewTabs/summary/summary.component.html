@@ -23,6 +23,15 @@
 				<div class="label">{{ previewMap['definition'] }}</div>
 				<div class="fw-700 flex-b-60">{{ summaryItem.definition | emptyStringHandle }}</div>
 			</div>
+            <ng-container *ngIf="summaryItem.agreementStatus">
+				<div class="row-item">
+					<div class="label">{{ previewMap['agreementStatus'] }}</div>
+					<div class="fw-700 flex-b-60 flex-gap-6">
+						<emg-agreement-status [agreementStatus]="summaryItem.agreementStatus" [displayText]="true"></emg-agreement-status>
+                        <span> {{ summaryItem.lastUpdateDateUtc | momentFormat }} by {{ summaryItem.lastUpdatedBy.name }} </span>
+					</div>
+				</div>
+			</ng-container>
 			<div class="row-item">
 				<div class="label">{{ previewMap['agreementType'] }}</div>
 				<div class="fw-700 flex-b-60">{{ summaryItem.agreementType }}</div>
@@ -31,12 +40,26 @@
 				<div class="label">{{ previewMap['recipientTypeId'] }}</div>
 				<div class="fw-700 flex-b-60">{{ summaryItem.recipientTypeId }}</div>
 			</div>
-			<ng-container *ngIf="summaryItem.actualRecipient$">
-				<div class="row-item">
-					<div class="label">{{ previewMap['actualRecipient'] }}</div>
-					<div class="fw-700 flex-b-60">{{ summaryItem.actualRecipient$ | async }}</div>
-				</div>
-			</ng-container>
+            <ng-container *ngIf="summaryItem.actualRecipient$">
+                <ng-container *ngIf="summaryItem.actualRecipient$ | async as actualRecipient">
+                    <div class="row-item">
+                        <div class="label">{{ previewMap['actualRecipient'] }}</div>
+                        <div class="fw-700 flex-b-60">{{ actualRecipient }}</div>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="summaryItem.consultantName">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['consultantName']}}</div>
+                    <div class="fw-700 flex-b-60">{{ summaryItem.consultantName }}</div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="summaryItem.companyName">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['companyName']}}</div>
+                    <div class="fw-700 flex-b-60">{{ summaryItem.companyName }}</div>
+                </div>
+            </ng-container>
 
 			<mat-divider></mat-divider>
 			<ng-container *ngIf="summaryItem.legalEntityId">
@@ -45,6 +68,18 @@
 					<div class="fw-600 flex-b-60">{{ summaryItem.legalEntityId }}</div>
 				</div>
 			</ng-container>
+            <ng-container *ngIf="summaryItem.salesManager">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['salesManager']}}</div>
+                    <div class="fw-600 flex-b-60">{{ summaryItem.salesManager | emptyStringHandle }}</div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="summaryItem.contractManager">
+                <div class="row-item">
+                    <div class="label">{{ previewMap['contractManager']}}</div>
+                    <div class="fw-600 flex-b-60">{{ summaryItem.contractManager | emptyStringHandle  }}</div>
+                </div>
+            </ng-container>
 			<ng-container *ngIf="summaryItem.legalEntityIds">
 				<div class="row-item">
 					<div class="label">{{ previewMap['legalEntityIds'] }}</div>
@@ -80,7 +115,7 @@
 				<div class="row-item">
 					<div class="label">{{ previewMap['isEnabled'] }}</div>
 					<div class="fw-600 flex-b-60">
-						<emg-enabled [isEnabled]="summaryItem.isEnabled"></emg-enabled>
+						<emg-enabled [isEnabled]="summaryItem.isEnabled" [displayText]="true"></emg-enabled>
 					</div>
 				</div>
 			</ng-container>
@@ -102,13 +137,13 @@
 			<div class="row-item">
 				<div class="label">{{ previewMap['createdDateUtc'] }}, {{ previewMap['createdBy'] }}</div>
 				<div class="fw-600 flex-b-60">
-					{{ summaryItem.createdDateUtc | momentFormat }}, by {{ summaryItem.createdBy }}
+					{{ summaryItem.createdDateUtc | momentFormat }}, by {{ summaryItem.createdBy.name }}
 				</div>
 			</div>
 			<div class="row-item">
 				<div class="label">{{ previewMap['lastUpdateDateUtc'] }}, {{ previewMap['lastUpdatedBy'] }}</div>
 				<div class="fw-600 flex-b-60">
-					{{ summaryItem.lastUpdateDateUtc | momentFormat }}, by {{ summaryItem.lastUpdatedBy }}
+					{{ summaryItem.lastUpdateDateUtc | momentFormat }}, by {{ summaryItem.lastUpdatedBy.name }}
 				</div>
 			</div>
 			<ng-container *ngIf="summaryItem.startDate">
@@ -117,16 +152,30 @@
 					<div class="fw-600 flex-b-60">{{ summaryItem.startDate | momentFormat }}</div>
 				</div>
 			</ng-container>
-			<ng-container *ngIf="summaryItem.endDate">
-				<div class="row-item">
+			<ng-container *ngIf="summaryItem.endDate || summaryItem.endDate === null || summaryItem.endDate === undefined">
+                <div class="row-item">
 					<div class="label">{{ previewMap['endDate'] }}</div>
-					<div class="fw-600 flex-b-60">{{ summaryItem.endDate | momentFormat }}</div>
+                    <ng-container *ngIf="summaryItem.endDate;else DefinedDate">
+                        <div class="fw-600 flex-b-60">{{ summaryItem.endDate | momentFormat }}</div>
+                    </ng-container>
+					<ng-template #DefinedDate>
+                        <div class="fw-600 flex-b-60"> Indefinite</div>
+                    </ng-template>
+				</div>
+			</ng-container>
+            <ng-container *ngIf="summaryItem.duplicationSourceAgreementId">
+				<div class="row-item">
+					<div class="label">{{ previewMap['duplicationSourceAgreementName'] }}</div>
+					<div class="fw-600 flex-b-60 link" (click)="navigateToDuplicatedTemplate(summaryItem)">
+						<span>{{ summaryItem.duplicationSourceAgreementName }}</span>
+						<mat-icon svgIcon="right-arrow"></mat-icon>
+					</div>
 				</div>
 			</ng-container>
 			<ng-container *ngIf="summaryItem.duplicationSourceAgreementTemplateId">
 				<div class="row-item">
 					<div class="label">{{ previewMap['duplicationSourceAgreementTemplateId'] }}</div>
-					<div class="fw-600 flex-b-60 link" (click)="navigateToTemplate(summaryItem, true)">
+					<div class="fw-600 flex-b-60 link" (click)="navigateToDuplicatedTemplate(summaryItem)">
 						<span>{{ summaryItem.duplicationSourceAgreementTemplateName }}</span>
 						<mat-icon svgIcon="right-arrow"></mat-icon>
 					</div>
@@ -135,7 +184,7 @@
 			<ng-container *ngIf="summaryItem.parentAgreementTemplateId">
 				<div class="row-item">
 					<div class="label">{{ previewMap['parentAgreementTemplateId'] }}</div>
-					<div class="fw-600 flex-b-60 link" (click)="navigateToTemplate(summaryItem, false)">
+					<div class="fw-600 flex-b-60 link" (click)="navigateToParentTemplate(summaryItem)">
 						<span>{{ summaryItem.parentAgreementTemplateName }}</span>
 						<mat-icon svgIcon="right-arrow"></mat-icon>
 					</div>

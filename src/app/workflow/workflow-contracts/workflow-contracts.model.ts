@@ -225,15 +225,6 @@ export class WorkflowContractsTerminationConsultantsDataForm extends UntypedForm
         return this.get('consultantTerminationContractData') as UntypedFormArray;
     }
 }
-
-
-export enum LegalContractStatus {
-    NotAcceessible = 0,
-    NotYetCreated = 1,
-    SavedButNotGenerated = 2,
-    Done = 10
-}
-
 export class DocumentForm extends UntypedFormGroup {
     constructor() {
         super({
@@ -245,6 +236,14 @@ export class DocumentForm extends UntypedFormGroup {
         return this.get('documents') as UntypedFormArray;
     }
 }
+
+export enum LegalContractStatus {
+    NotAcceessible = 0,
+    NotYetCreated = 1,
+    SavedButNotGenerated = 2,
+    Done = 10
+}
+
 
 export enum ClientTimeReportingCaps {
     CapOnUnits = 1,

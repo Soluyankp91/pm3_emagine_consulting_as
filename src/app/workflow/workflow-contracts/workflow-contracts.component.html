@@ -4,7 +4,14 @@
             *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination" id="contractTerminationData">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractTerminationFinishContract">
-                    <h1 class="workflow-section--header-main">Termination data</h1>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                        <h1 class="workflow-section--header-main">Termination data</h1>
+                        <ng-container *ngIf="readOnlyMode">
+                            <div fxLayout="row" fxLayoutAlign="start start">
+                                <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
+                            </div>
+                        </ng-container>
+                    </div>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                         <span class="workflow-section--number">1</span>
                         <h2 class="workflow-section--header">Finish contract in PM</h2>
@@ -78,6 +85,7 @@
                 [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList"
                 [periodId]="periodId"
                 [contractsMainForm]="mainDataComponent?.contractsMainForm"
+                [periodId]="periodId"
                 [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-consultant-data>
 
             <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection" [periodId]="periodId"

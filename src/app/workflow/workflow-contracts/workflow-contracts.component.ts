@@ -935,6 +935,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             if (data.clientData.purchaseOrdersIds?.length) {
                 this.clientDataComponent?.poComponent?.getPurchaseOrders(data.clientData.purchaseOrdersIds, data.clientData.directClientId, this.periodId);
             }
+            this.clientDataComponent?.contractClientForm?.frameAgreementId.setValue(data?.clientData.frameAgreementId, {emitEvent: false});
+            this.clientDataComponent.selectedFrameAgreementId = data?.clientData.frameAgreementId ?? null;
+            this.clientDataComponent?.getInitialFrameAgreements();
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		if (data?.clientData?.periodClientSpecialRates?.length) {
@@ -950,13 +953,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
 				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
+				this.consultantDataComponent?.addConsultantDataToForm(consultant, index);
+                this.consultantDataComponent.selectedFrameAgreementList.push(consultant.frameAgreementId ?? null);
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();
 		}
         this.mainDataComponent.getPrimaryCategoryTree();
         if (this.isContractModuleEnabled) {
-            this.clientDataComponent?.getFrameAgreements();
+            this.clientDataComponent?.getFrameAgreements(true);
         }
 	}
 
@@ -1017,7 +1022,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		input.clientData.noSpecialFee = this.clientDataComponent?.contractClientForm.clientFees.value?.length === 0;
         input.clientData.purchaseOrdersIds = this.clientDataComponent?.poComponent?.purchaseOrders.value.map(x => x.id);
 		input.contractLinesDoneManuallyInOldPm = this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
-
+        input.clientData.frameAgreementId = this.clientDataComponent.contractClientForm.frameAgreementId.value?.agreementId;
 		input.mainData = new ContractsMainDataDto();
 		input.mainData.projectDescription = this.mainDataComponent?.contractsMainForm.projectDescription?.value;
 		input.mainData.projectName = this.mainDataComponent?.contractsMainForm.projectName?.value;
@@ -1167,7 +1172,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 		consultantData.specialContractTerms = consultantInput.specialContractTerms;
 		consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
-
+        consultantData.frameAgreementId = consultantInput.frameAgreementId?.agreementId;
 		consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 		if (consultantInput.clientFees?.length) {
 			for (let specialFee of consultantInput.clientFees) {

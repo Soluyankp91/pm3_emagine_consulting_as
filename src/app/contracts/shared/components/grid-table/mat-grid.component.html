@@ -1,104 +1,137 @@
 <div class="container">
-	<mat-chip-list>
-		<mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName" (click)="closeFilter(chip.formControl)">
-			<mat-icon svgIcon="close-button-icon"> </mat-icon>
-			<span>{{ chip.label }}</span>
-		</mat-chip>
-		<span *ngIf="matChips.length > 0">
-			<mat-chip (click)="closeAllFilters()">
-				<mat-icon svgIcon="close-button-icon"></mat-icon>
-				<p>Reset all Filters</p>
-			</mat-chip>
-		</span>
-	</mat-chip-list>
-	<mat-table
-		matSort
-		[dataSource]="tableConfig.items"
-		[matSortActive]="tableConfig.active"
-		[matSortDirection]="tableConfig.direction"
-		[formGroup]="formGroup"
-		(matSortChange)="sortChange.emit($event)">
-		<ng-container *ngIf="selection">
-			<ng-container matColumnDef="select">
-				<mat-header-cell *matHeaderCellDef>
-					<mat-checkbox
-						[checked]="selectionModel.hasValue() && isAllSelected()"
-						[indeterminate]="selectionModel.hasValue() && !isAllSelected()"
-						(change)="toggleAllRows()">
-					</mat-checkbox>
-				</mat-header-cell>
-				<mat-cell *matCellDef="let row">
-					<mat-checkbox
-						[checked]="selectionModel.isSelected(row)"
-						(click)="$event.stopPropagation()"
-						(change)="selectionModel.toggle(row)"></mat-checkbox>
+    <ng-container *ngIf="matChips.length">
+        <mat-chip-list class="mat-chip-list">
+            <mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName">
+                <mat-icon svgIcon="close-button-icon" class="close-button-icon" (click)="closeFilter(chip.formControl)"> </mat-icon>
+                <span class="chip-label">{{ chip.label }}</span>
+            </mat-chip>
+            <ng-container *ngIf="matChips.length">
+                <span class="close-filters" (click)="closeAllFilters()">
+                    <mat-icon svgIcon="close-button-icon-grey" class="close-button-icon"></mat-icon>
+                    <p class="reset-all-filters-label">Reset all Filters</p>
+                </span>
+            </ng-container>
+        </mat-chip-list>
+    </ng-container>
+	<div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !tableConfig.items.length }">
+		<mat-table
+			matSort
+			[dataSource]="tableConfig.items"
+			[matSortActive]="tableConfig.active"
+			[matSortDirection]="tableConfig.direction"
+			[ngClass]="{ 'hidden-table': !tableConfig.items.length }"
+			[formGroup]="formGroup"
+			(matSortChange)="sortChange.emit($event)">
+			<ng-container *ngIf="selection">
+				<ng-container matColumnDef="select" [sticky]="sticky">
+					<mat-header-cell *matHeaderCellDef class="select-column">
+						<mat-checkbox
+							[checked]="selectionModel.hasValue() && isAllSelected()"
+							[indeterminate]="selectionModel.hasValue() && !isAllSelected()"
+							(change)="toggleAllRows()"
+							class="select-padding-8">
+						</mat-checkbox>
+					</mat-header-cell>
+					<mat-cell *matCellDef="let row" class="select-column">
+						<mat-checkbox
+							[checked]="selectionModel.isSelected(row)"
+							(click)="$event.stopPropagation()"
+							(change)="selectionModel.toggle(row)"
+							class="select-padding-8"></mat-checkbox>
+					</mat-cell>
+				</ng-container>
+			</ng-container>
+			<ng-container
+				*ngFor="let item of cells; let i = index; trackBy: trackByCellColumnDef"
+				[matColumnDef]="item.matColumnDef"
+				[sticky]="item.sticky">
+				<ng-container [ngSwitch]="item.headerCell.type">
+					<ng-container *ngSwitchCase="headerCellEnum.DEFAULT">
+						<mat-header-cell
+							*matHeaderCellDef
+							mat-sort-header
+							[disabled]="!item.headerCell.sort"
+							class="table-header-cell {{ item.class | lowercase }} ">
+							{{ item.headerCell.title }}
+						</mat-header-cell>
+					</ng-container>
+					<ng-container *ngSwitchCase="headerCellEnum.FILTER">
+						<mat-header-cell *matHeaderCellDef class="{{ item.class }}">
+							<ng-container #filterContainer></ng-container>
+							<span mat-sort-header [disabled]="!item.headerCell.sort"></span>
+						</mat-header-cell>
+					</ng-container>
+				</ng-container>
+				<mat-cell *matCellDef="let element" [class]="item.class">
+					<ng-container
+						*ngIf="cellArr"
+						[ngTemplateOutlet]="cellArr[i]"
+						[ngTemplateOutletContext]="{ element: element }">
+					</ng-container>
 				</mat-cell>
 			</ng-container>
-		</ng-container>
-		<ng-container *ngFor="let item of cells; let i = index; trackBy: trackByCellColumnDef" [matColumnDef]="item.matColumnDef">
-			<ng-container [ngSwitch]="item.headerCell.type">
-				<ng-container *ngSwitchCase="headerCellEnum.SORT">
-					<mat-header-cell *matHeaderCellDef mat-sort-header class="column-filter">
-						{{ item.headerCell.title }}
-					</mat-header-cell>
-				</ng-container>
-				<ng-container *ngSwitchCase="headerCellEnum.FILTER">
-					<mat-header-cell *matHeaderCellDef>
-						<ng-container #filterContainer></ng-container>
-						<span mat-sort-header></span>
-					</mat-header-cell>
+			<ng-container *ngIf="actions">
+				<ng-container matColumnDef="actions" [stickyEnd]="sticky">
+					<mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
+					<mat-cell *matCellDef="let actionRow" class="actions-column">
+						<button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+							<mat-icon svgIcon="three-hor-dots"></mat-icon>
+						</button>
+						<mat-menu #menu="matMenu" class="custom">
+							<ng-container *ngFor="let action of actionRow.actionList; trackBy: trackByAction">
+								<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+									<mat-icon [svgIcon]="action.actionIcon" class="small-icon"></mat-icon>
+									<span> {{ action.label }}</span>
+								</button>
+							</ng-container>
+						</mat-menu>
+					</mat-cell>
 				</ng-container>
 			</ng-container>
-			<mat-cell *matCellDef="let element">
-				<ng-container *ngIf="cellArr" [ngTemplateOutlet]="cellArr[i]" [ngTemplateOutletContext]="{ element: element }">
-				</ng-container>
-			</mat-cell>
-		</ng-container>
-		<ng-container *ngIf="actions">
-			<ng-container matColumnDef="actions">
-				<mat-header-cell *matHeaderCellDef=""></mat-header-cell>
-				<mat-cell *matCellDef="let actionRow">
-					<button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-						<mat-icon svgIcon="three-hor-dots"></mat-icon>
-					</button>
-					<mat-menu #menu="matMenu">
-						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
-							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
-								<mat-icon [svgIcon]="action.actionIcon"></mat-icon>
-								<span> {{ action.label }}</span>
-							</button>
-						</ng-container>
-					</mat-menu>
-				</mat-cell>
-			</ng-container>
-		</ng-container>
 
-		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-		<mat-row
-			*matRowDef="let row; columns: displayedColumns"
-			[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
-			(click)="getTableRow(row); $event.stopPropagation()"></mat-row>
-	</mat-table>
+			<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+			<mat-row
+				*matRowDef="let row; columns: displayedColumns"
+				[ngClass]="{ highlight: selectedRowId === row[rowIdProperty] }"
+				(click)="getTableRow(row); $event.stopPropagation()"
+				class="row-hover"></mat-row>
+		</mat-table>
+		<ng-container *ngIf="!tableConfig.items.length">
+			<div class="no-items">
+				<mat-icon svgIcon="empty-table-icon" class="empty-table-icon"> </mat-icon>
+				<div class="no-items-text">
+					Sorry, no templates found for the selected filters. Change the search criteria or
+					<span class="highlighted-reset-filters" (click)="closeAllFilters(); resetAllFilters.emit()"
+						>Reset all filters</span
+					>
+				</div>
+			</div>
+		</ng-container>
+	</div>
 </div>
 <div class="bottom-panel">
-    <ng-container *ngIf="!selectionModel.isEmpty()">
-        <div class="selected-items-info">
-           {{selectionModel.selected.length}} selected
-        </div>
-        <ng-container *ngFor="let bottomAction of selectedItemsActions;trackBy: trackByAction">
-            <div class="bottom-action-item" (click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
-                <mat-icon [svgIcon]="bottomAction.actionIcon"></mat-icon>
-                <span>{{bottomAction.label}}</span>
-            </div>
-        </ng-container>
-    </ng-container>
-	<mat-paginator
-		class="paginator"
-		[showFirstLastButtons]="true"
-		[length]="tableConfig.totalCount"
-		[pageSizeOptions]="pageSizeOptions"
-		[pageSize]="tableConfig.pageSize"
-		[pageIndex]="tableConfig.pageIndex"
-		(page)="pageChange.emit($event)">
-	</mat-paginator>
+	<div class="fixed-container">
+		<div class="bottom-actions">
+			<ng-container *ngIf="!selectionModel.isEmpty()">
+				<div class="selected-items-info">{{ selectionModel.selected.length }} selected</div>
+				<ng-container *ngFor="let bottomAction of selectedItemsActions; trackBy: trackByAction">
+					<div
+						class="bottom-action-item"
+						(click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
+						<mat-icon [svgIcon]="bottomAction.actionIcon" class="small-icon"></mat-icon>
+						<span class="bottom-panel-label">{{ bottomAction.label }}</span>
+					</div>
+				</ng-container>
+			</ng-container>
+		</div>
+		<mat-paginator
+			class="paginator"
+			[showFirstLastButtons]="true"
+			[length]="tableConfig.totalCount"
+			[pageSizeOptions]="pageSizeOptions"
+			[pageSize]="tableConfig.pageSize"
+			[pageIndex]="tableConfig.pageIndex"
+			(page)="pageChange.emit($event)">
+		</mat-paginator>
+	</div>
 </div>

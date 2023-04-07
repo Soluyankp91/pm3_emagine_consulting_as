@@ -1,0 +1,53 @@
+<div class="merge-field-tree-list">
+	<dx-popup
+		title="Insert Merge Field"
+		[width]="450"
+		[height]="540"
+		[showTitle]="true"
+		[dragEnabled]="false"
+		[hideOnOutsideClick]="true"
+		[(visible)]="visibility"
+		[copyRootClassesToWrapper]="true"
+		(onHiding)="afterClosed()"
+		(onShown)="initialized()"
+		class="merge-field-insert-popup">
+		<div class="form">
+			<dx-tree-view
+				#treeView
+				[items]="dataSource"
+				dataStructure="plain"
+				parentIdExpr="parentID"
+				keyExpr="id"
+				displayExpr="displayName"
+				expandEvent="click"
+				searchMode="contains"
+				[focusStateEnabled]="true"
+				[height]="390"
+				[searchEnabled]="true"
+				[(searchValue)]="searchValue"
+				[showCheckBoxesMode]="'normal'"
+				[selectionMode]="'multiple'"
+				[selectNodesRecursive]="false"
+				(onItemClick)="treeViewItemClicked($event)"
+				(onItemRendered)="treeViewItemRendered($event)"
+				(onContentReady)="treeViewContentReady($event)"
+				(onSelectionChanged)="treeViewSelectionChanged($event)">
+			</dx-tree-view>
+		</div>
+		<div class="buttons-column button-group">
+			<div>
+				<dx-button
+					stylingMode="contained"
+					text="Insert"
+					[type]="selected.length ? 'default' : 'normal'"
+					[width]="120"
+					[disabled]="!selected.length"
+					(onClick)="applySelected()">
+				</dx-button>
+			</div>
+			<div>
+				<dx-button stylingMode="outlined" text="Close" type="normal" [width]="120" (onClick)="close()"> </dx-button>
+			</div>
+		</div>
+	</dx-popup>
+</div>

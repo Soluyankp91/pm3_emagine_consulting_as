@@ -1131,7 +1131,7 @@
 <ng-template #clientAdditionalInfo let-client="client">
     <div fxLayout="column" fxLayoutAlign="start start">
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button
+            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button type="button"
                 (click)="openClientInNewTab(client?.clientId)"
                 [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
@@ -1140,7 +1140,7 @@
         </ng-container>
 
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon orange-color" mat-flat-button
+            <button class="link-to-client-icon orange-color" mat-flat-button type="button"
                 (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
                 [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">

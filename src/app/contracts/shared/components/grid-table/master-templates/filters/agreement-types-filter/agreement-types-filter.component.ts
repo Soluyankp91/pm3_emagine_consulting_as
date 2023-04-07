@@ -13,6 +13,7 @@ import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.co
 @Component({
 	selector: 'app-agreement-types-filter',
 	templateUrl: './agreement-types-filter.component.html',
+	styleUrls: ['./agreement-types-filter.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class AgreementTypesFilterComponent implements IFilter {

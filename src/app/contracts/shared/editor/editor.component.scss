@@ -1,0 +1,338 @@
+@import '/src/app/shared/styles/config/_colors';
+
+.main {
+	&::before {
+		content: '';
+		transition: 0.24s all ease-in;
+		position: absolute;
+		width: 100%;
+		height: 100vh;
+		top: 0;
+		background-color: white;
+		z-index: 1101;
+		opacity: 0;
+		visibility: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&::after {
+		content: '';
+		visibility: hidden;
+		width: 50px;
+		height: 50px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		border-radius: 50%;
+		border: 5px solid transparent;
+		border-top-color: #17a297;
+		animation: spin 1s linear infinite;
+		z-index: 1111;
+	}
+
+	&.page-loading {
+		&::before {
+			visibility: visible;
+			opacity: 0.8;
+		}
+
+		&::after {
+			visibility: visible;
+			opacity: 0.4;
+		}
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.wrapper {
+	padding: 20px 60px 10px 60px;
+	display: block;
+	position: relative;
+	overflow: hidden;
+
+	.comment-sidebar {
+		display: block;
+		width: 294px;
+		height: calc(100vh - 334px);
+		position: absolute;
+		right: 57px;
+		top: 112px;
+		overflow: hidden;
+	}
+}
+
+.versions {
+	display: flex;
+	justify-content: flex-end;
+	position: fixed;
+	top: 12vh;
+	right: 57px;
+	z-index: 1;
+}
+
+::ng-deep {
+	mat-select.tmp-version-select {
+		& > .mat-select-trigger {
+			margin-right: 6px;
+		}
+
+		.mat-select-arrow {
+			width: 14px !important;
+			height: 8px !important;
+		}
+
+		.tmp-version-row {
+			font-weight: bold;
+
+			.label,
+			.tmp-version-num {
+				margin-right: 6px;
+			}
+
+			.tmp-version-num {
+				color: #4f5364 !important;
+			}
+
+			.tmp-version-date {
+				color: #9d9d9d !important;
+			}
+		}
+	}
+
+	.tmp-version-select-panel {
+		mat-option {
+			display: block;
+			padding: 10px 16px;
+			white-space: break-spaces;
+			height: initial !important;
+			line-height: initial !important;
+
+			.tmp-version-row {
+				font-weight: bold;
+
+				.label,
+				.tmp-version-num {
+					margin-right: 6px;
+				}
+
+				.tmp-version-num {
+					color: #4f5364 !important;
+				}
+
+				.tmp-version-date {
+					color: #9d9d9d !important;
+				}
+			}
+
+			.tmp-version-description {
+				font-size: 10px;
+				line-height: 12px;
+				margin-top: 10px;
+				color: #4f5364;
+			}
+
+			&:not(:last-child) {
+				border-bottom: 1px solid #eaeaea;
+			}
+		}
+
+		.mat-option.mat-selected:not(.mat-option-disabled) {
+			background-color: rgba($green-color-25, 0.4) !important;
+		}
+	}
+
+	.editor {
+		background-color: #f7f7f7;
+
+		&.readonly {
+			.dx-tabs-wrapper > .dx-tab:not(:first-child) {
+				display: none;
+			}
+
+			.dx-toolbar-items-container {
+				.dx-toolbar-item {
+					display: none;
+				}
+				.dx-toolbar-item:nth-child(3),
+				.dx-toolbar-item:nth-child(4) {
+					display: table-cell;
+				}
+			}
+		}
+
+		.dxreRuler {
+			transition: left 0.2s ease;
+		}
+		.dxreView {
+			max-width: 100%;
+			transition: max-width 0.2s ease;
+		}
+
+		.dx-tabpanel > .dx-tabpanel-tabs .dx-tabs {
+			.dx-tab {
+				.dx-tab-content {
+					color: black;
+
+					.dx-tab-text {
+						font-weight: 600;
+					}
+				}
+
+				&:nth-child(7) {
+					width: 120px;
+
+					&.dx-state-active {
+						background: white !important;
+					}
+
+					.dx-tab-content {
+						color: #17a297 !important;
+						display: block;
+						background: white;
+						padding: 3px;
+					}
+				}
+				&:nth-child(8) {
+					width: 112px;
+
+					&.dx-state-active {
+						background: white !important;
+					}
+
+					.dx-tab-content {
+						color: #17a297 !important;
+						display: block;
+						background: white;
+						padding: 3px;
+					}
+				}
+			}
+		}
+
+		&.painter-format {
+			.dxreColumn {
+				cursor: -webkit-image-set(
+							url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAWCAMAAACWh252AAAAQlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABz07T7AAAAFXRSTlMASwj1EeVcRbTw0S/B6oRlsKDcOTfaTrUAAAAAYUlEQVQoz8WORw7AIAwETTWQXvz/r0ZRmomA3MKcvNZotQB/oYIFEVRekMs8GZT76ejExcpKeBx08yq5MnHKwvOLBL4hKWR/PKQ2RIm+6ioJSLYkaGH6btB5wbcIzeihChva2Ah1iGy3cAAAAABJRU5ErkJggg==)
+								1x,
+							url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAsCAMAAADigU7NAAAAZlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACLZRe2AAAAIXRSTlMA9RAX0yUI40n4tQGJGsyU8VpHOOvGPNt8LV2hrG2aYUs0eqYlAAAAwklEQVRIx+3W2Q6CMBRF0cNYyuCI4Kz7/3/SJxODQqDEqJHz2GGlN23TSlO+LJ6ZzSNJ8rcz4zkAAPYkJSWAAxAX6yMsK8tmFcT31sTQiEk6kAt2Qf7Y8jQfTNcyzpA+FdZMFxBANApQs5vWfBJ4Ne59QNs29gbaDlJvQEPHvQ1w3saBQHtXzys+GuguYQL+BojgOgbIUqh9dyDLKUM2hRsQR/sQWwU1Xr72HQCAcCUVB8fH1Zp0mUmSdvNwMX13fic3WPk1hE3qWf0AAAAASUVORK5CYII=)
+								2x
+						)
+						5 10,
+					text;
+				width: 5px;
+				height: 5px;
+			}
+		}
+	}
+
+	.green-panel {
+		background: #17a297;
+
+		.mat-simple-snack-bar-content {
+			color: white;
+			font-weight: 700;
+		}
+	}
+
+	.versions {
+		.mat-form-field-outline {
+			height: 38px !important;
+		}
+
+		.mat-form-field-outline-start,
+		.mat-form-field-outline-gap,
+		.mat-form-field-outline-end {
+			border: none !important;
+		}
+	}
+}
+
+.save-actions {
+	display: flex;
+	align-items: center;
+	margin-top: 0px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	padding: 0px 60px;
+	padding-left: 90px;
+	background: white;
+	width: 100%;
+	height: 64px;
+	z-index: 111;
+	box-shadow: 0px 0px 22px -2px rgba(133, 133, 133, 0.53);
+
+	button {
+		font-weight: 700;
+		border-radius: 100px;
+
+		&:first-child {
+			margin-right: auto;
+			background: none;
+			color: grey;
+		}
+
+		&:last-child {
+			margin-left: 24px;
+		}
+	}
+
+	&.promote {
+		button {
+			color: #17a297;
+			margin: unset;
+			margin-left: auto;
+		}
+	}
+
+	&.loading {
+		&::after {
+			content: 'saving...';
+			position: absolute;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: grey;
+			opacity: 0.4;
+			color: white;
+			width: 92%;
+			height: 70px;
+			font-size: 26px;
+		}
+	}
+}
+
+.label {
+	display: inline-flex;
+	padding: 4px 10px;
+	justify-content: center;
+	align-items: center;
+	font-size: 10px;
+	border-radius: 16px;
+	line-height: 12px;
+	color: white;
+	vertical-align: middle;
+
+	&-success {
+		background-color: $green-color;
+	}
+	&-warning {
+		background-color: $yellow-color;
+	}
+	&-info {
+		background-color: $blue-color;
+	}
+	&-voided {
+		background-color: $red-color;
+	}
+}

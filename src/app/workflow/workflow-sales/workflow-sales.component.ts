@@ -648,6 +648,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				result?.salesClientData?.contractSigners?.forEach((signer: ContractSignerDto) => {
 					this.clientDataComponent?.addSignerToForm(signer);
 				});
+                this.clientDataComponent.selectedFrameAgreementId = result.salesClientData.frameAgreementId ?? null;
 				if (result.consultantSalesData?.length) {
 					result.consultantSalesData?.forEach((consultant) => {
 						this.consutlantDataComponent?.addConsultantForm(consultant);
@@ -668,7 +669,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
                 if (this.isContractModuleEnabled) {
-                    this.clientDataComponent?.getFrameAgreements();
+                    this.clientDataComponent?.getPrimaryFrameAgreements();
                 }
                 if (result.salesClientData.purchaseOrdersIds?.length) {
                     this.clientDataComponent?.poComponent?.getPurchaseOrders(result.salesClientData.purchaseOrdersIds, result.salesClientData.directClientIdValue);
@@ -1155,6 +1156,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (this.clientDataComponent.poComponent.purchaseOrders.value) {
             input.salesClientData.purchaseOrdersIds = this.clientDataComponent.poComponent.purchaseOrders.value?.map(x => x.id);
         }
+        input.salesClientData.frameAgreementId = this.clientDataComponent.salesClientDataForm.frameAgreementId.value?.agreementId;
 		input.consultantSalesData = new Array<ConsultantSalesDataDto>();
 		if (this.consutlantDataComponent?.consultants.value?.length) {
 			this.consutlantDataComponent?.consultants.value.forEach((consultant: any) => {

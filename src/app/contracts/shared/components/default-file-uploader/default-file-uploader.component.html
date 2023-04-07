@@ -1,0 +1,30 @@
+<ng-container *ngIf="file$ | async as file; else noFile">
+        <div class="file-container">
+            <div class="file-item-left">
+                <mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
+                <div class="file-label" [customTooltip]="file.fileName">{{ file.fileName }}</div>
+            </div>
+        </div>
+</ng-container>
+<ng-template #noFile>
+    <div class="file-uploader" appNewFileUploader (filesEmitter)="onFileAdded($event)">
+        <div (click)="fileInput.click()">
+            <button mat-button type="button" class="add-attachment-cell">
+                <div class="button-labels">
+                    <div class="add-button">
+                        <mat-icon svgIcon="add-signer-icon" class="small-icon"></mat-icon>
+                        <span class="add-label"> Add attachment</span>
+                    </div>
+                    <div class="upload-tip">Upload or drag and drop file here</div>
+                </div>
+            </button>
+        </div>
+        <input
+            #fileInput
+            multiple
+            type="file"
+            (change)="onFileAdded($event.target)"
+            [accept]="allowedExtensions"
+            [style.display]="'none'" />
+    </div>
+</ng-template>

@@ -1,29 +1,4 @@
+@import 'mixins';
 app-agreement-preview {
-	display: block;
-	position: absolute;
-	width: 842px;
-	right: 0;
-	background-color: #fff;
-	height: calc(100vh - 155px);
-	border: 1px solid #e6e6e5;
-	box-shadow: 0px 0px 16px 0px #00000014;
-	.mat-tab-header {
-		width: 840px;
-	}
-	.mat-tab-label {
-		justify-self: flex-end;
-		flex-grow: 1;
-		min-width: 20px;
-		padding: 0;
-	}
-	.wrapper {
-		min-height: 100%;
-		max-height: 100%;
-	}
-	.mat-tab-group {
-		height: calc(100vh - 155px);
-	}
-	.mat-tab-body-wrapper {
-		height: 100%;
-	}
+	@include preview-layout();
 }

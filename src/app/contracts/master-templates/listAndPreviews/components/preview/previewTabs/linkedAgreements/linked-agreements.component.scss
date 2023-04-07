@@ -5,7 +5,8 @@ app-linked-agreements {
 		overflow: auto;
 	}
 	.header-cell {
-		font-size: 12px;
+		font-size: 10px;
+		font-weight: 600;
 	}
 	.icon {
 		width: 8px;
@@ -20,8 +21,7 @@ app-linked-agreements {
 	.form-field {
 		width: 100%;
 	}
-	.input,
-	.input-label {
+	.input {
 		padding-left: 32px;
 		box-sizing: border-box;
 	}
@@ -42,5 +42,83 @@ app-linked-agreements {
 		display: flex;
 		gap: 7px;
 		cursor: pointer;
+	}
+	.recipient-cell {
+		font-size: 14px;
+		font-weight: 700 !important;
+
+		min-width: 156px;
+		max-width: 156px;
+
+		padding-left: 12px !important;
+	}
+	.table-agreement-cell {
+		font-size: 14px;
+		font-weight: 600;
+		padding: unset;
+	}
+	.overflow {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.padding-left-12 {
+		padding-left: 12px;
+	}
+	.enabled-header {
+		max-width: 15px;
+		min-width: 15px;
+		padding-left: 5px !important;
+	}
+	.enabled-column {
+		max-width: 15px;
+		min-width: 15px;
+		padding-left: 6px !important;
+	}
+	.mat-sort-header-arrow {
+		margin: 0;
+	}
+	.mode-header {
+		padding-left: 10px;
+		max-width: 51.5px;
+		min-width: 51.5px;
+	}
+	.mode-column {
+		max-width: 51.5px;
+		min-width: 51.5px;
+		display: flex;
+		justify-content: center;
+	}
+	.id-header {
+		min-width: 44px;
+		max-width: 44px;
+	}
+	.id-column {
+		min-width: 44px;
+		max-width: 44px;
+
+		padding-left: 0 !important;
+	}
+	.recipient-header {
+		min-width: 156px;
+		max-width: 156px;
+
+		padding-left: 12px;
+	}
+	.name-header {
+		min-width: 257px;
+		max-width: 257px;
+
+		padding-left: 12px;
+	}
+	.name-column {
+		min-width: 257px;
+		max-width: 257px;
+
+		padding-left: 12px;
+	}
+	.link-column {
+		min-width: 36px;
+		max-width: 36px;
 	}
 }

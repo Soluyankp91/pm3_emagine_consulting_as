@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { IConsultantAnchor } from './workflow-period/workflow-period.model';
 import { MultiSortList, WorkflowProgressStatus } from './workflow.model';
@@ -45,11 +45,8 @@ export class WorkflowDataService {
     resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
     updatePurchaseOrders = new EventEmitter();
     isContractModuleEnabled: boolean;
-    isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
 
-    constructor(private _configurationService: ConfigurationServiceProxy) {
-        this._getContractModuleConfig();
-    }
+    constructor() {}
 
     updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {
         for (const update in status) {
@@ -58,10 +55,6 @@ export class WorkflowDataService {
                 (this.workflowProgress[key] as any) = status[key];
             }
         }
-    }
-
-    private _getContractModuleConfig() {
-        this._configurationService.contractsEnabled().subscribe(result => this.isContractModuleEnabled = result);
     }
 
     sortMultiColumnSorting(sortingValuesArray: MultiSortList[]): MultiSortList[] {
@@ -80,7 +73,7 @@ export class WorkflowDataService {
     }
 
     get contractModuleEnabled() {
-        return this.isContractModuleEnabled;
+        return true;
     }
 
     get getWorkflowProgress() {

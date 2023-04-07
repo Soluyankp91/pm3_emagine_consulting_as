@@ -1,0 +1,74 @@
+$fab-btn-color: #565a6b;
+$fab-btn-bg-color: #e7e3e8;
+
+:host {
+	width: 100%;
+	height: calc(100vh - 252px);
+
+	pdf-viewer {
+		width: 100%;
+		height: 100%;
+
+		::ng-deep {
+			.ng2-pdf-viewer-container {
+				overflow-x: hidden;
+			}
+		}
+	}
+
+	.no-items {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		max-width: 176px;
+		color: #b6b4b2;
+	}
+
+	.pdf-wrapper {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.action-bar {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		padding: 28px;
+		bottom: 0px;
+		right: 0;
+
+		.action-button {
+			box-shadow: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: $fab-btn-color;
+			background-color: $fab-btn-bg-color;
+
+			mat-icon {
+				width: 22px;
+				height: 22px;
+				font-size: 22px;
+			}
+		}
+	}
+
+	.spinner-container {
+		background-color: unset;
+	}
+
+	.no-items {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		max-width: 176px;
+		color: #b6b4b2;
+	}
+}

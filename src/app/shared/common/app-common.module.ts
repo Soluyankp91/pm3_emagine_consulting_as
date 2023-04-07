@@ -40,7 +40,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		ExcludeIdsPipe,
 		ImageFallbackDirective,
 		ImgUrlPipe,
-		DisplayListPipe,
+		DisplayListPipe
 	],
 	imports: [
 		CommonModule,
