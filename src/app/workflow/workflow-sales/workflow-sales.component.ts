@@ -956,6 +956,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
             this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
             this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
+            this.clientDataComponent.salesClientDataForm.timeReportingCaps.controls = [];
             if (this.clientDataComponent.poComponent) {
                 this.clientDataComponent.poComponent.purchaseOrders.controls = [];
             }
