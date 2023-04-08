@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .inactive-status {
     color: #ffda44;
@@ -16,25 +17,31 @@
     transform: rotateY(180deg);
 }
 
-.contact-status-dot {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
-    &.active-status {
-        color:  rgba($color: $green-color, $alpha: 0.5);
-    }
-    &.deleted-status {
-        color: #F80830;
-    }
-    &.wrongfully-deleted-status {
-        color: $red-color;
-    }
-    &.non-active-status {
-        color:  rgba($color: $medium-grey-color, $alpha: 0.5);
-    }
-}
-
 .contact-deleted-row {
     background-color: rgba(255, 122, 120, 0.05);
+}
+
+.status {
+    &-dot {
+        @include fontLineHeightAndSize(16px, 18px, 16px, 16px);
+        &.not-active-flag {
+            color: $light-grey-color;
+        }
+        &.active-flag {
+            color: $green-color;
+        }
+        &.deleted-flag {
+            color: #FF7A78;
+        }
+        &.wrong-deleted-flag {
+            color: #F80830;
+        }
+        &.green-dot {
+            color: $green-color;
+        }
+        &.grey-dot {
+            color: $light-grey-color;
+        }
+    }
+
 }

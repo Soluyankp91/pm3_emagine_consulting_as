@@ -1,8 +1,9 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -17,13 +18,14 @@ import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy, ClientAddressDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../../workflow-data.service';
 import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../../workflow.model';
-import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { MapClientAddressList, PackAddressIntoNewDto } from '../workflow-sales.helpers';
+import { ClientRateTypes, ConsultantDiallogAction, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
 
 @Component({
 	selector: 'app-consultant-data',
@@ -31,6 +33,7 @@ import { ClientRateTypes, ConsultantDiallogAction, WorkflowSalesClientDataForm, 
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class ConsultantDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() isCompleted: boolean;
@@ -58,6 +61,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     currencies: EnumEntityTypeDto[];
     countries: CountryDto[];
     legalEntities: LegalEntityDto[];
+    valueUnitTypes: EnumEntityTypeDto[];
+    periodUnitTypes: EnumEntityTypeDto[];
 	filteredAccountManagers: EmployeeDto[] = [];
 	filteredConsultantClientAddresses: ClientResultDto[] = [];
 	filteredConsultantCountries: EnumEntityTypeDto[];
@@ -67,6 +72,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
+    onsiteClientAddresses = new Array<IClientAddress[]>();
+
+    eTimeReportingCaps = ETimeReportingCaps;
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -79,7 +87,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         private _workflowDataService: WorkflowDataService,
         private _lookupService: LookupServiceProxy,
         private _internalLookupService: InternalLookupService,
-        private _consultantPeriodSerivce: ConsultantPeriodServiceProxy
+        private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
         ) {
 		super(injector);
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
@@ -105,7 +113,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             rateUnitTypes: this._internalLookupService.getUnitTypes(),
             invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
             invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-            currencies: this._internalLookupService.getCurrencies()
+            currencies: this._internalLookupService.getCurrencies(),
+            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
         })
         .subscribe(result => {
             this.employmentTypes = result.employmentTypes;
@@ -118,6 +128,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             this.invoiceFrequencies = result.invoiceFrequencies;
             this.invoicingTimes = result.invoicingTimes;
             this.currencies = result.currencies;
+            this.valueUnitTypes = result.valueUnitTypes;
+            this.periodUnitTypes = result.periodUnitTypes;
         });
     }
 
@@ -149,6 +161,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				.at(consultantIndex)
 				.get('consultantWorkplaceClientAddress')
 				?.setValue(this.clientDataForm.directClientIdValue?.value, { emitEvent: false });
+                this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses, true);
 		}
 	}
 
@@ -180,6 +193,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 			consultantWorkplace: new UntypedFormControl(null),
 			consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
+            onsiteClientAddress: new UntypedFormControl(PackAddressIntoNewDto(consultant?.onsiteClientAddress) ?? null),
 			consultantWorkplaceEmagineOffice: new UntypedFormControl(
 				this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
 			),
@@ -203,7 +217,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantCapOnTimeReporting: new UntypedFormControl(
 				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)
 			), // ?? default value = no cap - id:4
-			consultantTimeReportingCapMaxValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
 			consultantProdataEntity: new UntypedFormControl(
 				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
 			),
@@ -232,6 +245,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			prodataToProdataInvoiceCurrency: new UntypedFormControl(
 				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null
 			),
+            timeReportingCaps: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
@@ -253,6 +267,15 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			),
 		});
 		this.consultants.push(form);
+        this.onsiteClientAddresses.push([]);
+        if (consultant?.onsiteClient?.clientId) {
+            this.getClientAddresses(this.consultants.length - 1, consultant?.onsiteClient.clientAddresses);
+        }
+        if (consultant?.timeReportingCaps?.length) {
+            for (let cap of consultant?.timeReportingCaps) {
+                this.addConsultantCap(this.consultants.length - 1, cap);
+            }
+        }
 		if (consultant?.periodConsultantSpecialRates?.length) {
 			for (let rate of consultant?.periodConsultantSpecialRates) {
 				this.addConsultantSpecialRate(this.consultants.length - 1, rate);
@@ -752,5 +775,49 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					this._workflowDataService.workflowOverviewUpdated.emit(true);
 				});
 		});
+	}
+
+    clientOfficeSelected(event: MatAutocompleteSelectedEvent, consultantIndex: number) {
+        this.getClientAddresses(consultantIndex, event.option.value?.clientAddresses, true)
+        this.focusToggleMethod('auto');
+    }
+
+    getClientAddresses(consultantIndex: number, clientAddresses: ClientAddressDto[], clearExistingAddress = false) {
+        this.onsiteClientAddresses[consultantIndex] = MapClientAddressList(clientAddresses);
+        if (clearExistingAddress) {
+            this.consultants.at(consultantIndex).get('onsiteClientAddress').setValue(null);
+        }
+    }
+
+    getConsultantCapControls(consultantIndex: number) {
+        return (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls;
+    }
+
+    addConsultantCap(consultantIndex: number, cap?: TimeReportingCapDto) {
+		const form = this._fb.group({
+            id: new UntypedFormControl(cap?.id?.value ?? null),
+			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
+			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
+			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+		});
+		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
+	}
+
+    removeTimeReportingCap(consultantIndex: number, index: number) {
+		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).removeAt(index);
+	}
+
+    capSelectionChange(event: MatSelectChange, consultantIndex: number) {
+        if (event.value === ETimeReportingCaps.NoCap) {
+            (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls = [];
+        }
+    }
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
+    }
+
+    get timeReportingCaps(): UntypedFormArray {
+		return this.consultantsForm.get('timeReportingCaps') as UntypedFormArray;
 	}
 }

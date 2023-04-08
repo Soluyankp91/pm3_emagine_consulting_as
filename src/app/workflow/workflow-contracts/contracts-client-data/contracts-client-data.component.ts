@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
@@ -13,12 +13,15 @@ import {
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
 	PeriodConsultantSpecialRateDto,
+    TimeReportingCapDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { forkJoin, of, Subject } from 'rxjs';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { WorkflowDataService } from '../../workflow-data.service';
+import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
+import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -27,16 +30,19 @@ import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 	styleUrls: ['../workflow-contracts.component.scss'],
 })
 export class ContractsClientDataComponent extends AppComponentBase implements OnInit {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+    @ViewChild('poComponent') poComponent: PurchaseOrdersComponent;
 	@Input() readOnlyMode: boolean;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
-	@Input() contractsMainForm: WorkflowContractsMainForm;
+    @Input() contractsMainForm: WorkflowContractsMainForm;
     @Input() periodId: string;
 	contractClientForm: WorkflowContractsClientDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
-
+    valueUnitTypes: EnumEntityTypeDto[];
+    periodUnitTypes: EnumEntityTypeDto[];
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
@@ -44,7 +50,9 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientSpecialFeeFilter = new UntypedFormControl('');
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
-	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+    frameAgreements: AgreementSimpleListItemDto[];
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+    ePurchaseOrderMode = EPurchaseOrderMode;
     filteredFrameAgreements: AgreementSimpleListItemDto[];
     selectedFrameAgreementId: number | null;
 	private _unsubscribe = new Subject();
@@ -108,9 +116,13 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		forkJoin({
 			currencies: this._internalLookupService.getCurrencies(),
 			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+            valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
+            periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.clientTimeReportingCap = result.clientTimeReportingCap;
+            this.valueUnitTypes = result.valueUnitTypes;
+            this.periodUnitTypes = result.periodUnitTypes;
 		});
 	}
 
@@ -314,11 +326,25 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
 	}
 
+    addTimeReportingCap(cap?: TimeReportingCapDto) {
+		const form = this._fb.group({
+            id: new UntypedFormControl(cap?.id?.value ?? null),
+			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
+			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
+			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+		});
+		this.contractClientForm.timeReportingCaps.push(form);
+	}
 
+	removeTimeReportingCap(index: number) {
+		this.timeReportingCaps.removeAt(index);
+	}
 
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
+    }
 
-
-	get clientRates(): UntypedFormArray {
+    get clientRates(): UntypedFormArray {
 		return this.contractClientForm.get('clientRates') as UntypedFormArray;
 	}
 
@@ -326,4 +352,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		return this.contractClientForm.get('clientFees') as UntypedFormArray;
 	}
 
+    get timeReportingCaps(): UntypedFormArray {
+        return this.contractClientForm.get('timeReportingCaps') as UntypedFormArray;
+    }
 }

@@ -7,8 +7,10 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientDetailsDto, ClientsServiceProxy, SyncClientFromCrmResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAddressDto, ClientDetailsDto, ClientsServiceProxy, SyncClientFromCrmResultDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
 import { HubspotSyncModalComponent } from './hubspot-sync-modal/hubspot-sync-modal.component';
 
@@ -21,6 +23,8 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     @ViewChild('documentsTab', {static: true}) documentsTab: ClientDocumentsComponent;
 
     client = new ClientDetailsDto();
+    clientAddress: ClientAddressDto;
+    clientAddressDisplay = '';
 
     clientFilterInput = new UntypedFormControl();
     clientId: number;
@@ -36,6 +40,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
         private dialog: MatDialog,
+        private _titleService: TitleService,
     ) {
         super(injector);
     }
@@ -60,6 +65,11 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.client = result;
+                this.clientAddress = result.clientAddresses?.find(x => x.isMainAddress);
+                if (this.clientAddress !== null && this.clientAddress !== undefined) {
+                    this.clientAddressDisplay = [this.clientAddress.address, this.clientAddress.address2, this.clientAddress.postCode, this.clientAddress.city, this.clientAddress.countryCode].filter(Boolean).join(', ');
+                }
+                this._titleService.setTitle(ERouteTitleType.ClientDetails, result.name);
             });
     }
 

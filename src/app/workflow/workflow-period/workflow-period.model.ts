@@ -1,4 +1,5 @@
 import { ConsultantResultDto, EmployeeDto, StepType, WorkflowProcessType, WorkflowStepStatus } from "src/shared/service-proxies/service-proxies";
+import { WorkflowTopSections } from "../workflow.model";
 
 export class StepWithAnchorsDto {
     typeId?: StepType;
@@ -152,6 +153,10 @@ export const SalesClientDataSections: SubItemDto[] = [
         anchor: 'salesClientInvoicingNumber'
     },
     {
+        name: 'Client PO + CAP',
+        anchor: 'salesClientPurchaseOrder'
+    },
+    {
         name: 'Rates and fees',
         anchor: 'salesClientRatesFees'
     },
@@ -233,6 +238,10 @@ export const ContractClientDataSections: SubItemDto[] = [
         anchor: 'contractFrameAgreement'
     },
     {
+        name: 'Client PO + CAP',
+        anchor: 'contractClientPurchaseOrders'
+    },
+    {
         name: 'Rates and fees',
         anchor: 'contractClientRatesFees'
     },
@@ -294,7 +303,7 @@ export const ContractSyncSections: SubItemDto[] = [
         anchor: 'contractSyncClientLegal'
     },
     {
-        name: 'Consutlant contract',
+        name: 'Consultant contract',
         anchor: 'contractSyncConsultantLegal'
     }
 ];
@@ -309,7 +318,7 @@ export const FinanceSections: SubItemDto[] = [
         anchor: 'financeDocuments'
     },
     {
-        name: 'Consutlants',
+        name: 'Consultants',
         anchor: 'financeConsultants'
     }
 ];
@@ -340,3 +349,8 @@ export const ContractTerminationSections: SubItemDto[] = [
         anchor: 'contractTerminationDocuments'
     }
 ];
+
+export class WorkflowPeriodResolverDto {
+	workflowId: string;
+	periodId: string;
+}

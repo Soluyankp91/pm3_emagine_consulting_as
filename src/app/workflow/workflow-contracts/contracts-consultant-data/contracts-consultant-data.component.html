@@ -14,12 +14,12 @@
                                     <img class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16"
                                         [ngSrc]="consultantPhotoUrl + consultant.value?.consultant?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
                                 </ng-container>
-                                <span class="workflow-form--consultants__name">
+                                <span class="workflow-form--consultants__name text-600 dark-grey-color">
                                     {{consultant.value?.consultant?.name}}
                                 </span>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="contractConsultantEmployment">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" [id]="'contractConsultantEmployment' + consultantIndex">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Employment type</h2>
                         </div>
@@ -42,59 +42,57 @@
                                 </mat-form-field>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <ng-container *ngIf="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11; else nameOnlyConsutlant">
-                                    <mat-form-field appearance="outline"
-                                        class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input autocompleteWithShevron"
-                                        [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}">
-                                        <mat-label>Consultant Name</mat-label>
-                                        <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
-                                            formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
-                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                            placeholder="Consultant name">
-                                            <span matSuffix class="shevron"></span>
-                                        <mat-autocomplete #consultantAutocomplete="matAutocomplete"
-                                            [displayWith]="displayNameFn">
-                                            <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
-                                                <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
-                                                    appPreventDoubleClick>
-                                                    <div class="multilineDropdown-option--row">
+                                <mat-form-field appearance="outline"
+                                    class="formFieldNoMarginPadding disabled-input autocompleteWithShevron form-width-450"
+                                    [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
+                                    [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
+                                    <mat-label>Consultant Name</mat-label>
+                                    <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
+                                        formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
+                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                        placeholder="Consultant name">
+                                        <span matSuffix class="shevron"></span>
+                                    <mat-autocomplete #consultantAutocomplete="matAutocomplete"
+                                        [displayWith]="displayNameFn">
+                                        <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
+                                            <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }"
+                                                appPreventDoubleClick>
+                                                <div class="multilineDropdown-option--row">
+                                                    <ng-container *ngIf="item?.id !== undefined">
+                                                        <img class="image-thumbnail-small border-rounded-50 u-mr--10"
+                                                            [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                    </ng-container>
+                                                    <div
+                                                        class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                        <span class="multilineDropdown-option--column-client-name">{{
+                                                            item?.name }}</span>
                                                         <ng-container *ngIf="item?.id !== undefined">
-                                                            <img class="image-thumbnail-small border-rounded-50 u-mr--10"
-                                                                [ngSrc]="consultantPhotoUrl + item?.externalId! + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                                            <span
+                                                                class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                {{item?.companyName ? item.companyName + ' | ' : ''}}
+                                                                {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
+                                                                {{item?.legacyId}}
+                                                            </span>
                                                         </ng-container>
-                                                        <div
-                                                            class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                            <span class="multilineDropdown-option--column-client-name">{{
-                                                                item?.name }}</span>
-                                                            <ng-container *ngIf="item?.id !== undefined">
-                                                                <span
-                                                                    class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                    {{item?.companyName ? item.companyName + ' | ' : ''}}
-                                                                    {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} /
-                                                                    {{item?.legacyId}}
-                                                                </span>
-                                                            </ng-container>
-                                                        </div>
                                                     </div>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                        <mat-error>
-                                            <app-validator [control]="consultant.get('consultant')"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-                                </ng-container>
-                                <ng-template #nameOnlyConsutlant>
-                                    <mat-form-field appearance="outline"
-                                        class="client-and-consultant-autocomplete formFieldNoMarginPadding filter-select disabled-input">
-                                        <mat-label>Consultant Name only</mat-label>
-                                        <input [disabled]="true" type="text" matInput formControlName="nameOnly"
-                                            placeholder="Consultant name only">
-                                        <mat-error>
-                                            <app-validator [control]="consultant.get('nameOnly')"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-                                </ng-template>
+                                                </div>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                                    <mat-error>
+                                        <app-validator [control]="consultant.get('consultant')"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline"
+                                    class="form-width-450 formFieldNoMarginPadding filter-select disabled-input"
+                                    [fxHide]="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11">
+                                    <mat-label>Consultant Name only</mat-label>
+                                    <input [disabled]="true" type="text" matInput formControlName="nameOnly"
+                                        placeholder="Consultant name only">
+                                    <mat-error>
+                                        <app-validator [control]="consultant.get('nameOnly')"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
                             </div>
                             <app-consultant-information [onlyAdditionalInfo]="true"
                                 [consultantData]="consultant?.value?.consultant"></app-consultant-information>
@@ -103,55 +101,78 @@
 
                     <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
                     <ng-container *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantInvoicing">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantInvoicing' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">2</span>
                                 <h2 class="workflow-section--header">Invoicing</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap; else noConsultantInvoicing">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <mat-form-field appearance="outline"
-                                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
-                                            <mat-label>Cap type</mat-label>
-                                            <mat-select [disabled]="true" formControlName="consultantCapOnTimeReporting"
-                                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <ng-container
-                                                    *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
-                                                    <mat-option [value]="item">
-                                                        {{ item?.name }}
+                                <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value === clientTimeReportingCaps.IndividualCap; else noConsultantInvoicing">
+                                    <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">
+                                            <mat-label>Shared cap on time reporting</mat-label>
+                                            <mat-select [disabled]="true" required formControlName="consultantTimeReportingCapId"
+                                                [disableOptionCentering]="true">
+                                                <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
+                                                    <mat-option [value]="item.id">
+                                                        {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-select>
                                             <mat-error>
                                                 <app-validator
-                                                    [control]="consultant.get('consultantCapOnTimeReporting')"></app-validator>
+                                                    [control]="consultant.get('consultantTimeReportingCapId')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
-                                        <ng-container *ngIf="consultant?.value?.consultantCapOnTimeReporting?.id !== 4">
-                                            <span class="workflow-darkblue--text">
-                                                <ng-container
-                                                    [ngSwitch]="consultant.value.consultantCapOnTimeReporting?.id">
-                                                    <ng-container *ngSwitchCase="1"> <!-- Cap on units -->
-                                                        <ng-container
-                                                            [ngSwitch]="consultant.value.consultantRateUnitType?.id">
-                                                            <ng-container *ngSwitchCase="1"> <!-- Per hour -->
-                                                                hours
-                                                            </ng-container>
-                                                            <ng-container *ngSwitchCase="2"> <!-- Per day -->
-                                                                days
-                                                            </ng-container>
-                                                            <ng-container *ngSwitchCase="4"> <!-- Per month -->
-                                                                months
-                                                            </ng-container>
-                                                        </ng-container>
-                                                    </ng-container>
-                                                    <ng-container *ngSwitchCase="2"> <!-- Cap on value -->
-                                                        {{consultant.value.consultantRateCurrency?.name}}
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <ng-container *ngIf="consultant.value?.consultantTimeReportingCapId !== clientTimeReportingCaps.NoCap">
+                                                <ng-container formArrayName="timeReportingCaps" class="u-w--100">
+                                                    <ng-container *ngFor="let cap of getConsultantCapControls(consultantIndex); trackBy: trackByItem; let capIndex = index"
+                                                        [formArrayName]="capIndex">
+                                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding disabled-input u-mr--12 form-width-110">
+                                                                <mat-label>Max value</mat-label>
+                                                                <input [disabled]="true"
+                                                                    required
+                                                                    autocomplete="off" matInput formControlName="timeReportingCapMaxValue" type="number">
+                                                                <mat-error>
+                                                                    <app-validator [control]="cap.get('timeReportingCapMaxValue')"></app-validator>
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-100">
+                                                                <mat-label>Unit</mat-label>
+                                                                <mat-select [disabled]="true" required formControlName="valueUnitId"
+                                                                    [disableOptionCentering]="true">
+                                                                    <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
+                                                                        <mat-option [value]="item.id">
+                                                                            {{ item.name }}
+                                                                        </mat-option>
+                                                                    </ng-container>
+                                                                </mat-select>
+                                                                <mat-error>
+                                                                    <app-validator [control]="cap.get('valueUnitId')"></app-validator>
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
+                                                                <mat-label>Period</mat-label>
+                                                                <mat-select [disabled]="true" required formControlName="periodUnitId"
+                                                                    [disableOptionCentering]="true">
+                                                                    <ng-container *ngFor="let item of periodUnitTypes; trackBy: trackById">
+                                                                        <mat-option [value]="item.id">
+                                                                            {{ item.name }}
+                                                                        </mat-option>
+                                                                    </ng-container>
+                                                                </mat-select>
+                                                                <mat-error>
+                                                                    <app-validator [control]="cap.get('periodUnitId')"></app-validator>
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                        </div>
                                                     </ng-container>
                                                 </ng-container>
-                                            </span>
-                                        </ng-container>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                 </ng-container>
                                 <ng-template #noConsultantInvoicing>
@@ -164,7 +185,7 @@
                                 </ng-template>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantContract">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantContract' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">3</span>
                                 <h2 class="workflow-section--header">Consultant contract terms</h2>
@@ -196,7 +217,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantPayment">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantPayment' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">4</span>
                                 <h2 class="workflow-section--header">Consultant payment</h2>
@@ -229,7 +250,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantFrameAgreement">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantRatesFees' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
                                 <h2 class="workflow-section--header">Frame agreement</h2>
@@ -876,7 +897,7 @@
                                 </ng-template>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantProjectLines">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantProjectLines' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">7</span>
                                 <h2 class="workflow-section--header">Project lines</h2>
@@ -945,11 +966,13 @@
                                                             </span>
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                                [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'"
+                                                                [matTooltip]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                                {{projectLine.value.invoicingReferenceNumber &&
-                                                                projectLine.value.invoicingReferenceNumber !== '' ?
-                                                                projectLine.value.invoicingReferenceNumber : '-'}}
+                                                                <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate">
+                                                                    <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
+                                                                        {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
+                                                                    </span>
+                                                                </ng-container>
                                                             </span>
                                                             <span fxFlex="10%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
@@ -1042,123 +1065,152 @@
                                                             </ng-container>
                                                         </div>
                                                     </mat-expansion-panel-header>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Project
-                                                            name</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            {{projectLine.value.projectName &&
-                                                            projectLine.value.projectName !== '' ?
-                                                            projectLine.value.projectName : '-'}}
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Invoicing
-                                                            ref person</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            <ng-container
-                                                                *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
-                                                                {{projectLine.value.invoicingReferencePerson?.firstName
-                                                                ? (projectLine.value.invoicingReferencePerson?.firstName
-                                                                + ' ' +
-                                                                projectLine.value.invoicingReferencePerson?.lastName) :
-                                                                '-'}}
-                                                            </ng-container>
-                                                            <ng-template #invoicingReferencePersonFreeText>
-                                                                {{projectLine.value.invoicingReferencePerson &&
-                                                                projectLine.value.invoicingReferencePerson !== '' ?
-                                                                projectLine.value.invoicingReferencePerson : '-'}}
-                                                            </ng-template>
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Debitor
-                                                            number</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            {{projectLine.value.debtorNumber &&
-                                                            projectLine.value.debtorNumber !== '' ?
-                                                            projectLine.value.debtorNumber : '-'}}
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Invoice
-                                                            recipient</span>
-                                                        <div fxLayout="column"
-                                                            class="project-line--expansion-additional__content">
-                                                            <ng-container
-                                                                *ngIf="projectLine.value.invoiceRecipient !== null && projectLine.value.invoiceRecipient !== ''; else noInvoiceRecipientTemplate">
-                                                                <span
-                                                                    class="text-bold">{{projectLine.value.invoiceRecipient?.clientName}}</span>
-                                                                <span>
-                                                                    {{projectLine.value.invoiceRecipient?.countryName ?
-                                                                    projectLine.value.invoiceRecipient?.countryName + '|' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.city ?
-                                                                    projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.address ?
-                                                                    projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.address2 ?
-                                                                    projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
-                                                                    {{projectLine.value.invoiceRecipient?.postCode}}
-                                                                </span>
-                                                            </ng-container>
+                                                    <div fxLayout="row" class="u-w--100">
+                                                        <div class="u-ml--30" fxFlex="5%">
                                                         </div>
-                                                        <ng-template #noInvoiceRecipientTemplate>
-                                                            -
-                                                        </ng-template>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Insurance</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            {{projectLine.value.consultantInsuranceOptionId ?
-                                                            consultantInsuranceOptions[projectLine.value.consultantInsuranceOptionId]
-                                                            : '-'}}
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Fees</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            <ng-container
-                                                                *ngIf="projectLine.value.isLineForFees; else noFeesBilledTemplate">
-                                                                <div fxLayout="row" fxLayoutAlign="start center">
-                                                                    <mat-icon svgIcon="check-circle-fill"
-                                                                        class="project-line--expansion-additional--fees-icon u-mr--10"></mat-icon>
-                                                                    Billed with this Project line
+                                                        <div class="project-line--expansion-additional__wrapper u-pt--16 u-w--100">
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Project
+                                                                    name</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    {{projectLine.value.projectName &&
+                                                                    projectLine.value.projectName !== '' ?
+                                                                    projectLine.value.projectName : '-'}}
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Current PO</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate">
+                                                                        <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
+                                                                            {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
+                                                                        </span>
+                                                                        • {{capTypes[order?.capForInvoicing?.type]}}:
+                                                                        <span class="color-black text-bold">
+                                                                            {{order?.capForInvoicing?.amountUsed ?? '0'}} / {{order?.capForInvoicing?.maxAmount}}
+                                                                            <ng-container [ngSwitch]="order?.capForInvoicing?.type">
+                                                                                <ng-container *ngSwitchCase="ePOCaps.CapOnUnits">
+                                                                                    {{eValueUnitType[order?.capForInvoicing?.valueUnitTypeId]}}
+                                                                                </ng-container>
+                                                                                <ng-container *ngSwitchCase="ePOCaps.CapOnValue">
+                                                                                    {{eCurrencies[order?.capForInvoicing?.currencyId]}}
+                                                                                </ng-container>
+                                                                                <ng-container *ngSwitchCase="ePOCaps.NoCap">
+                                                                                </ng-container>
+                                                                            </ng-container>
+                                                                        </span>
+                                                                    </ng-container>
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Debitor
+                                                                    number</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    {{projectLine.value.debtorNumber &&
+                                                                    projectLine.value.debtorNumber !== '' ?
+                                                                    projectLine.value.debtorNumber : '-'}}
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Invoice
+                                                                    recipient</span>
+                                                                <div fxLayout="column"
+                                                                    class="project-line--expansion-additional__content">
+                                                                    <ng-container
+                                                                        *ngIf="projectLine.value.invoiceRecipient !== null && projectLine.value.invoiceRecipient !== ''; else noInvoiceRecipientTemplate">
+                                                                        <span
+                                                                            class="text-bold">{{projectLine.value.invoiceRecipient?.clientName}}</span>
+                                                                        <span>
+                                                                            <ng-container *ngIf="projectLine.value.invoiceRecipient?.clientAddresses[0] as address">
+                                                                                {{address.address ? address.address + ', ' : ''}}
+                                                                                {{address.postCode}}
+                                                                                {{address.city ? address.city + ', ' : ''}}
+                                                                                {{address.countryCode}}
+                                                                            </ng-container>
+                                                                        </span>
+                                                                    </ng-container>
                                                                 </div>
-                                                            </ng-container>
-                                                            <ng-template #noFeesBilledTemplate>
-                                                                -
-                                                            </ng-template>
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Changed</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            {{projectLine.value.modificationDate ?
-                                                            (projectLine.value.modificationDate | momentFormat) : '-'}}
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Status</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            {{projectLine.value.markedForLegacyDeletion ? 'Delete from sync' : projectLine.value.wasSynced ? 'Synced' : 'Not synced'}}
-                                                        </span>
-                                                    </div>
-                                                    <div fxLayout="row" class="project-line--expansion-additional">
-                                                        <span fxFlex="15%"
-                                                            class="project-line--expansion-additional__header">Optional
-                                                            info</span>
-                                                        <span class="project-line--expansion-additional__content">
-                                                            {{projectLine.value.optionalInvoicingInfo &&
-                                                            projectLine.value.optionalInvoicingInfo !== '' ?
-                                                            projectLine.value.optionalInvoicingInfo : '-'}}
-                                                        </span>
+                                                                <ng-template #noInvoiceRecipientTemplate>
+                                                                    -
+                                                                </ng-template>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Invoicing
+                                                                    ref person</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    <ng-container
+                                                                        *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
+                                                                        {{projectLine.value.invoicingReferencePerson?.firstName
+                                                                        ? (projectLine.value.invoicingReferencePerson?.firstName
+                                                                        + ' ' +
+                                                                        projectLine.value.invoicingReferencePerson?.lastName) :
+                                                                        '-'}}
+                                                                    </ng-container>
+                                                                    <ng-template #invoicingReferencePersonFreeText>
+                                                                        {{projectLine.value.invoicingReferencePerson &&
+                                                                        projectLine.value.invoicingReferencePerson !== '' ?
+                                                                        projectLine.value.invoicingReferencePerson : '-'}}
+                                                                    </ng-template>
+                                                                </span>
+                                                            </div>
+
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Insurance</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    {{projectLine.value.consultantInsuranceOptionId ?
+                                                                    consultantInsuranceOptions[projectLine.value.consultantInsuranceOptionId]
+                                                                    : '-'}}
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Fees</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    <ng-container
+                                                                        *ngIf="projectLine.value.isLineForFees; else noFeesBilledTemplate">
+                                                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                                                            <mat-icon svgIcon="check-circle-fill"
+                                                                                class="project-line--expansion-additional--fees-icon u-mr--10"></mat-icon>
+                                                                            Billed with this Project line
+                                                                        </div>
+                                                                    </ng-container>
+                                                                    <ng-template #noFeesBilledTemplate>
+                                                                        -
+                                                                    </ng-template>
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Changed</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    {{projectLine.value.modificationDate ?
+                                                                    (projectLine.value.modificationDate | momentFormat) : '-'}}
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Status</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    {{projectLine.value.markedForLegacyDeletion ? 'Delete from sync' : projectLine.value.wasSynced ? 'Synced' : 'Not synced'}}
+                                                                </span>
+                                                            </div>
+                                                            <div fxLayout="row" class="project-line--expansion-additional">
+                                                                <span fxFlex="15%"
+                                                                    class="project-line--expansion-additional__header">Optional
+                                                                    info</span>
+                                                                <span class="project-line--expansion-additional__content">
+                                                                    {{projectLine.value.optionalInvoicingInfo &&
+                                                                    projectLine.value.optionalInvoicingInfo !== '' ?
+                                                                    projectLine.value.optionalInvoicingInfo : '-'}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </mat-expansion-panel>
                                             </ng-container>
@@ -1199,4 +1251,7 @@
             </div>
         </ng-container>
     </ng-container>
+    <button #submitFormBtn class="display-none" type="submit">Hidden button to set form submitted</button>
 </form>
+
+<ng-template #noTemplate>-</ng-template>

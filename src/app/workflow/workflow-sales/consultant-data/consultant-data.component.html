@@ -1,8 +1,8 @@
 <form [formGroup]="consultantsForm" id="consultantData" class="workflow-form--consultants u-w--100">
     <ng-container formArrayName="consultants" class="u-mb--20">
-        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
             <ng-container *ngFor="let consultant of consultantsForm.consultants?.controls; trackBy: trackByItem; let consultantIndex = index" [formGroupName]="consultantIndex">
-                <div class="u-w--100">
+                <div class="workflow-sales--process-data u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100" [id]="'salesConsultantDataAnchor' + consultantIndex">
                         <h1 class="workflow-section--header-main text-nowrap">Consultant data</h1>
                         <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod">
@@ -34,8 +34,8 @@
                         </ng-container>
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantEmployment">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantEmployment' + consultantIndex">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16 u-mt--16">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Employment type</h2>
                         </div>
@@ -57,7 +57,7 @@
                             </div>
                             <ng-container *ngIf="consultant.value?.employmentTypeId">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete autocompleteWithShevron" [fxHide]="consultant.value?.employmentTypeId === 10 || consultant.value?.employmentTypeId === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode, 'isPanelOpen': consultantAutocomplete.isOpen}">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-450 autocompleteWithShevron" [fxHide]="consultant.value?.employmentTypeId === 10 || consultant.value?.employmentTypeId === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode, 'isPanelOpen': consultantAutocomplete.isOpen}">
                                         <mat-label>Consultant Name</mat-label>
                                         <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
                                         <span matSuffix class="shevron"></span>
@@ -86,7 +86,7 @@
                                             <app-validator [control]="consultant.get('consultantName')"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select form-width-450" [fxHide]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
                                         <mat-label>Consultant Name only</mat-label>
                                         <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentTypeId === 10 || consultant.value?.employmentTypeId === 11" type="text" matInput formControlName="consultantNameOnly" placeholder="Consultant name only">
                                         <mat-error>
@@ -100,7 +100,7 @@
                     </div>
                     <ng-container *ngIf="consultant.value?.employmentTypeId  && (consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment)">
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantContractDuration">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContractDuration' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">2</span>
                                 <h2 class="workflow-section--header">Consultant contract duration</h2>
@@ -166,7 +166,7 @@
                                 </ng-container>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantProject">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantProject' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">3</span>
                                 <h2 class="workflow-section--header">Consultant project</h2>
@@ -179,51 +179,83 @@
                                             Onsite
                                         </mat-checkbox>
                                         <ng-container *ngIf="consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding autocompleteWithShevron u-mr--12 form-width-312" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': consultantClientAddressAuto.isOpen}">
-                                                <mat-label>Client</mat-label>
-                                                <input [disabled]="readOnlyMode" required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
-                                                <span matSuffix class="shevron"></span>
-                                                <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn"
-                                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
-                                                    <ng-container *ngFor="let client of filteredConsultantClientAddresses; trackBy: trackById">
-                                                        <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
-                                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                                <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                                                <ng-container *ngIf="client?.clientId !== undefined">
-                                                                    <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                        #{{client.clientId}} | {{client.city ?? ''}} {{client.tenantCountryCode ? ', ' + client.tenantCountryCode : ''}}
-                                                                    </span>
-                                                                </ng-container>
-                                                            </div>
-                                                        </mat-option>
+                                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete u-mr--12 form-width-330" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': consultantClientAddressAuto.isOpen, 'is-empty': !consultant.get('consultantWorkplaceClientAddress')?.value}">
+                                                        <mat-label>Client</mat-label>
+                                                        <input [disabled]="readOnlyMode" required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
+                                                        <ng-container *ngIf="consultant.get('consultantWorkplaceClientAddress')?.value?.clientId" matPrefix>
+                                                            <ng-container [ngTemplateOutlet]="clientPrefix"
+                                                                [ngTemplateOutletContext]="{client: consultant.get('consultantWorkplaceClientAddress')?.value}">
+                                                            </ng-container>
+                                                        </ng-container>
+                                                        <span matSuffix class="shevron"></span>
+                                                        <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn"
+                                                            (optionSelected)="clientOfficeSelected($event, consultantIndex)" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                            <ng-container *ngFor="let client of filteredConsultantClientAddresses; trackBy: trackById">
+                                                                <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
+                                                                    <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                                        <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
+                                                                        <ng-container *ngIf="client?.clientId !== undefined && client?.clientAddresses?.length">
+                                                                            <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                                #{{client.clientId}} | {{client.clientAddresses[0]?.city ?? ''}} {{client.clientAddresses[0]?.countryName ? ', ' + client.clientAddresses[0].countryName : ''}}
+                                                                            </span>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </mat-option>
+                                                            </ng-container>
+                                                        </mat-autocomplete>
+                                                        <mat-error>
+                                                            <app-validator [control]="consultant.get('consultantWorkplaceClientAddress')"></app-validator>
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                    <ng-container [ngTemplateOutlet]="clientAdditionalInfo" [ngTemplateOutletContext]="{client: consultant.value.consultantWorkplaceClientAddress}">
                                                     </ng-container>
-                                                </mat-autocomplete>
-                                                <mat-error>
-                                                    <app-validator [control]="consultant.get('consultantWorkplaceClientAddress')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
-                                                <mat-label>Add value %</mat-label>
-                                                <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
-                                                <mat-error>
-                                                    <app-validator [control]="consultant.get('consultantWorkplacePercentageOnSite')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </ng-container>
-                                    </div>
-                                    <ng-container *ngIf="consultant.get('consultantIsOnsiteWorkplace')?.value">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                            <div fxFlex="20%" class="u-mr--12">
-                                            </div>
-                                            <div fxLayout="column" fxLayoutAlign="start start">
-                                                <ng-container [ngTemplateOutlet]="clientAdditionalInfo" [ngTemplateOutletContext]="{client: consultant.value.consultantWorkplaceClientAddress}">
-                                                </ng-container>
+                                                </div>
                                                 <mat-checkbox [disabled]="readOnlyMode" color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" [checked]="clientDataForm.directClientIdValue?.value?.clientId === consultant.value.consultantWorkplaceClientAddress?.clientId" name="consultantIsOnsiteWorkplaceSameAsDirectClient" class="black-checkbox u-mt--5">
                                                     Same as direct client
                                                 </mat-checkbox>
+                                                <mat-form-field appearance="outline" [ngClass]="{'is-empty': !consultant.get('onsiteClientAddress')?.value}"
+                                                    class="formFieldNoMarginPadding filter-select form-width-330 client-address-autocomplete">
+                                                    <mat-label>Client address</mat-label>
+                                                    <mat-select [disabled]="readOnlyMode" formControlName="onsiteClientAddress"
+                                                        [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                                        <mat-select-trigger>
+                                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                                <span class="multilineDropdown-option--column-client-name">
+                                                                    {{consultant.value.onsiteClientAddress?.displayValue }}</span>
+                                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                    {{consultant.value.onsiteClientAddress?.addressType}}
+                                                                </span>
+                                                            </div>
+                                                        </mat-select-trigger>
+                                                        <ng-container *ngFor="let item of onsiteClientAddresses[consultantIndex]; trackBy: trackById">
+                                                            <mat-option [value]="item">
+                                                                <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                                    <span class="multilineDropdown-option--column-client-name">
+                                                                        {{item.displayValue }}</span>
+                                                                    <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                        {{item.addressType}}
+                                                                    </span>
+                                                                </div>
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        <app-validator [control]="consultant.get('onsiteClientAddress')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [ngClass]="{'disabled-input': readOnlyMode}" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
+                                                    <mat-label>Percentage onsite</mat-label>
+                                                    <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
+                                                    <mat-icon matSuffix svgIcon="percentage-icon"></mat-icon>
+                                                    <mat-error>
+                                                        <app-validator [control]="consultant.get('consultantWorkplacePercentageOnSite')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
                                             </div>
-                                        </div>
-                                    </ng-container>
+                                        </ng-container>
+                                    </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="readOnlyMode && !consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--12" fxFlex="20%">
                                             emagine Office
@@ -297,13 +329,14 @@
                                     </mat-form-field>
                                 </div>
 
-                                <!-- 'Individual cap' Id = 3 -->
-                                <div [fxHide]="clientDataForm.clientTimeReportingCapId?.value !== 3" class="u-w--100">
+                                <ng-container *ngIf="clientDataForm.clientTimeReportingCapId?.value === eTimeReportingCaps.IndividualCap">
                                     <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                             <mat-label>Cap type</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantCapOnTimeReporting" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantCapOnTimeReporting"
+                                                (selectionChange)="capSelectionChange($event, consultantIndex)"
+                                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -314,49 +347,74 @@
                                                 <app-validator [control]="consultant.get('consultantCapOnTimeReporting')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
-                                        <ng-container [ngSwitch]="consultant.value?.consultantCapOnTimeReporting?.id">
-                                            <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
-                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
-                                                    <mat-label>Max value</mat-label>
-                                                    <input [disabled]="readOnlyMode" [required]="clientDataForm.clientTimeReportingCapId?.value === 3 && (consultant.value?.consultantCapOnTimeReporting.id === 1 || consultant.value?.consultantCapOnTimeReporting.id === 2)" autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
-                                                    <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
-                                                    </mat-error>
-                                                </mat-form-field>
-                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text u-mt--5">
-                                                    <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
-                                                        <ng-container *ngSwitchCase="1"> <!-- Per hour -->
-                                                            hours
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="2"> <!-- Per day -->
-                                                            days
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="4"> <!-- Per month -->
-                                                            months
-                                                        </ng-container>
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <ng-container *ngIf="consultant.get('consultantCapOnTimeReporting').value?.id === eTimeReportingCaps.CapOnUnits">
+                                                <ng-container formArrayName="timeReportingCaps" class="u-w--100">
+                                                    <ng-container
+                                                        *ngFor="let cap of getConsultantCapControls(consultantIndex); trackBy: trackByItem; index as i"
+                                                        [formArrayName]="i">
+                                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-110"
+                                                                [ngClass]="{'disabled-input': readOnlyMode}">
+                                                                <mat-label>Max value</mat-label>
+                                                                <input [disabled]="readOnlyMode" required autocomplete="off" matInput formControlName="timeReportingCapMaxValue"
+                                                                    type="number">
+                                                                <mat-error>
+                                                                    <app-validator [control]="cap.get('timeReportingCapMaxValue')"></app-validator>
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-100">
+                                                                <mat-label>Unit</mat-label>
+                                                                <mat-select [disabled]="readOnlyMode" required formControlName="valueUnitId"
+                                                                    [disableOptionCentering]="true">
+                                                                    <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
+                                                                        <mat-option [value]="item.id">
+                                                                            {{ item.name }}
+                                                                        </mat-option>
+                                                                    </ng-container>
+                                                                </mat-select>
+                                                                <mat-error>
+                                                                    <app-validator [control]="cap.get('valueUnitId')"></app-validator>
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
+                                                                <mat-label>Period</mat-label>
+                                                                <mat-select [disabled]="readOnlyMode" required formControlName="periodUnitId"
+                                                                    [disableOptionCentering]="true">
+                                                                    <ng-container *ngFor="let item of periodUnitTypes; trackBy: trackById">
+                                                                        <mat-option [value]="item.id">
+                                                                            {{ item.name }}
+                                                                        </mat-option>
+                                                                    </ng-container>
+                                                                </mat-select>
+                                                                <mat-error>
+                                                                    <app-validator [control]="cap.get('periodUnitId')"></app-validator>
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                            <ng-container *ngIf="!readOnlyMode">
+                                                                <button mat-icon-button type="button" appPreventDoubleClick
+                                                                    (throttledClick)="removeTimeReportingCap(consultantIndex, i)" class="small-icon-button u-mt--5">
+                                                                    <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                                                </button>
+                                                            </ng-container>
+                                                        </div>
                                                     </ng-container>
-                                                </div>
+                                                </ng-container>
+                                                <ng-container *ngIf="!readOnlyMode">
+                                                    <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
+                                                        (throttledClick)="addConsultantCap(consultantIndex)">
+                                                        <mat-icon>add</mat-icon>
+                                                        Add Cap value
+                                                    </button>
+                                                </ng-container>
                                             </ng-container>
-                                            <ng-container *ngSwitchCase="2"> <!-- 'Cap on value' -->
-                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
-                                                    <mat-label>Max value</mat-label>
-                                                    <input [disabled]="readOnlyMode" required autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
-                                                    <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
-                                                    </mat-error>
-                                                </mat-form-field>
-                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text u-mt--5">
-                                                    {{consultant.value.consultantRateCurrency?.name}}
-                                                </div>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="4"> <!-- 'No cap' -->
-                                            </ng-container>
-                                        </ng-container>
+                                        </div>
                                     </div>
-                                </div>
+                                </ng-container>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantRatesFees">
+
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantRatesFees' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">4</span>
                                 <h2 class="workflow-section--header">Rates and fees</h2>
@@ -662,7 +720,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantPayment">
+
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantPayment' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
                                 <h2 class="workflow-section--header">Consultant payment</h2>
@@ -986,7 +1045,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantContract">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContract' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">6</span>
                                 <h2 class="workflow-section--header">Consultant contract</h2>
@@ -1009,7 +1068,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantAccountManager">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantAccountManager' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">7</span>
                                 <h2 class="workflow-section--header">Account manager</h2>
@@ -1066,48 +1125,38 @@
             </ng-container>
         </div>
     </ng-container>
+    <button #submitFormBtn class="display-none" type="submit">Hidden button to set form submitted</button>
 </form>
 
 <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100" [ngClass]="{'u-mt--10__reverse': client?.clientId}">
-        <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                Address:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{client?.address ? client?.address + ', ' : ''}}
-                {{client?.address2 ? client?.address2 + ', ' : ''}}
-                {{client?.city ? client?.city + ', ' : ''}}
-                {{client?.countryName ? client?.countryName + ', ' : ''}}
-                {{client?.postCode ? client?.postCode : ''}}
-            </span>
-        </ng-container>
+    <div fxLayout="column" fxLayoutAlign="start start">
         <ng-container *ngIf="client?.clientId">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                | Client ID:
-            </span>
-            <span class="workflow-sales--additional-address-hint">
-                {{client?.clientId ? '#' + client?.clientId : ''}}
-            </span>
-        </ng-container>
-
-        <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon u-ml--10" mat-icon-button
-                type="button"
+            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button type="button"
                 (click)="openClientInNewTab(client?.clientId)"
                 [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
+                Client profile
             </button>
         </ng-container>
 
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon" mat-icon-button
-                type="button"
+            <button class="link-to-client-icon orange-color" mat-flat-button type="button"
                 (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
                 [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
+                Hubspot
             </button>
         </ng-container>
     </div>
+</ng-template>
+
+<ng-template #clientPrefix let-client="client">
+    <ng-container *ngIf="client?.clientId !== undefined && client?.clientAddresses?.length">
+        <span
+            class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+            #{{client?.clientId}} | {{client?.clientAddresses[0]?.city ?? ''}} {{client?.clientAddresses[0]?.countryName ?
+            ', ' + client?.clientAddresses[0]?.countryName : ''}}
+        </span>
+    </ng-container>
 </ng-template>

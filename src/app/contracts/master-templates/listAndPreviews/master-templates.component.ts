@@ -38,6 +38,8 @@ import { PreviewTabsComponent } from './components/preview/preview.component';
 import { tapOnce } from '../../shared/operators/tapOnceOperator';
 import { DOCUMENT } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TitleService } from 'src/shared/common/services/title.service';
+import { ERouteTitleType } from 'src/shared/AppEnums';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -77,13 +79,15 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _injetor: Injector,
 		private readonly _cdr: ChangeDetectorRef,
 		private readonly _snackBar: MatSnackBar,
-		@Inject(DOCUMENT) private _document: Document
+		@Inject(DOCUMENT) private _document: Document,
+		private _titleService: TitleService
 	) {
 		super(_injetor);
 		this.trackById = this.createTrackByFn('id');
 	}
 
 	ngOnInit(): void {
+		this._titleService.setTitle(ERouteTitleType.ContractMasterTemplates);
 		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();

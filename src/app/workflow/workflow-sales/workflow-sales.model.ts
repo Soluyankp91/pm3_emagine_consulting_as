@@ -9,7 +9,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             deliveryTypeId: new UntypedFormControl(null, Validators.required),
             projectTypeId: new UntypedFormControl(null, Validators.required),
             marginId: new UntypedFormControl(null, Validators.required),
-            projectCategoryId: new UntypedFormControl(null, Validators.required),
+            projectCategoryId: new UntypedFormControl(null),
             primaryCategoryArea: new UntypedFormControl(null),
             primaryCategoryType: new UntypedFormControl(null),
             primaryCategoryRole: new UntypedFormControl(null),
@@ -22,6 +22,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
 
             salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new UntypedFormControl(null),
+            primarySourcer: new UntypedFormControl(null),
             contractExpirationNotification: new UntypedFormControl(null),
             customContractExpirationNotificationDate: new UntypedFormControl(null),
 
@@ -75,6 +76,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     get commissionAccountManagerIdValue () {
         return this.get('commissionAccountManagerIdValue');
     }
+    get primarySourcer () {
+        return this.get('primarySourcer');
+    }
     get contractExpirationNotification() {
         return this.get('contractExpirationNotification');
     }
@@ -95,7 +99,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             // Client
             differentEndClient: new UntypedFormControl(true),
             directClientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
+            directClientAddress: new UntypedFormControl(null),
             endClientIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['clientId'])),
+            endClientAddress: new UntypedFormControl(null),
             clientContactProjectManager: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
             // PDC Invoicing Entity (client)
 
@@ -104,7 +110,7 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false, Validators.required),
             invoicingReferenceNumber: new UntypedFormControl(null),
             clientInvoicingRecipientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
-
+            clientInvoicingRecipientAddress: new UntypedFormControl(null),
             // Client Invoicing Reference Person
             invoicePaperworkContactIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
@@ -150,7 +156,8 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
 
             // Client project
             clientTimeReportingCapId: new UntypedFormControl(false),
-            clientTimeReportingCapMaxValue: new UntypedFormControl(null)
+            timeReportingCaps: new UntypedFormArray([]),
+            purchaseOrders: new UntypedFormArray([]),
         });
     }
 
@@ -161,8 +168,14 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get directClientIdValue() {
         return this.get('directClientIdValue');
     }
+    get directClientAddress() {
+        return this.get('directClientAddress');
+    }
     get endClientIdValue() {
         return this.get('endClientIdValue');
+    }
+    get endClientAddress() {
+        return this.get('endClientAddress');
     }
     get clientContactProjectManager() {
         return this.get('clientContactProjectManager');
@@ -180,6 +193,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');
+    }
+    get clientInvoicingRecipientAddress() {
+        return this.get('clientInvoicingRecipientAddress');
     }
     get invoicePaperworkContactIdValue() {
         return this.get('invoicePaperworkContactIdValue');
@@ -276,14 +292,14 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     get noClientExtensionOption() {
         return this.get('noClientExtensionOption');
     }
-
-    // Client Porject
-
     get clientTimeReportingCapId() {
         return this.get('clientTimeReportingCapId');
     }
-    get clientTimeReportingCapMaxValue() {
-        return this.get('clientTimeReportingCapMaxValue');
+    get timeReportingCaps() {
+        return this.get('timeReportingCaps') as UntypedFormArray;
+    }
+    get purchaseOrders() {
+        return this.get('purchaseOrders') as UntypedFormArray;
     }
 
 }
@@ -292,7 +308,7 @@ export class WorkflowSalesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        })
+        });
 
     }
     get consultants() {
@@ -425,4 +441,30 @@ export enum EProjectTypes {
     VMSlowMargin = 6,
     NearshoreVMShighMargin = 7,
     NearshoreVMSlowMargin = 8
+}
+
+export interface IClientAddress {
+    id: number;
+    displayValue: string;
+    addressType: string;
+}
+
+export enum EClientSelectionType {
+    DirectClient = 1,
+    EndClient = 2,
+    InvoicingRecipient = 3,
+    ClientOffice = 4
+}
+
+export enum ETimeReportingCaps {
+    CapOnUnits = 1,
+    CapOnValue = 2,
+    IndividualCap = 3,
+    NoCap = 4
+}
+
+export enum EValueUnitTypes {
+    'Hours' = 1,
+    'Days' = 2,
+    'Months' = 4
 }

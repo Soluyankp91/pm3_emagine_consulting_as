@@ -138,20 +138,25 @@
 
 // END remove after we will have correct icons
 
-.project-line--expansion-additional {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 12px;
-    &__header {
-        color: $medium-grey-color;
-    }
-    &__content {
-        color: $dark-grey-color;
-    }
-    &--fees-icon {
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
+.project-line--expansion {
+    &-additional {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 12px;
+        &__wrapper {
+            border-top: 1px solid $sand-color;
+        }
+        &__header {
+            color: $medium-grey-color;
+        }
+        &__content {
+            color: $dark-grey-color;
+        }
+        &--fees-icon {
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+        }
     }
 }
 

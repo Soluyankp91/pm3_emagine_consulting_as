@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { DeliveryTypes, SalesTypes, WorkflowContractsMainForm } from '../workflow-contracts.model';
@@ -20,6 +20,7 @@ import { DocumentsComponent } from '../../shared/components/wf-documents/wf-docu
 })
 export class ContractsMainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild('mainDocuments', { static: false }) mainDocuments: DocumentsComponent;
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
 	@Input() canToggleEditMode: boolean;
 	@Output() editModeToggled = new EventEmitter<any>();
@@ -98,4 +99,8 @@ export class ContractsMainDataComponent extends AppComponentBase implements OnIn
 			)?.roles!;
 		}
 	}
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
+    }
 }

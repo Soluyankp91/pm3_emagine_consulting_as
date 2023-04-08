@@ -13,6 +13,11 @@ import { ClientWorkflowTrackComponent } from './client-workflow-track/client-wor
 import { AddFileDialogComponent } from './client-documents/add-file-dialog/add-file-dialog.component';
 import { HubspotSyncModalComponent } from './client-details/hubspot-sync-modal/hubspot-sync-modal.component';
 import { WfResponsibleComponent } from './wf-responsible/wf-responsible.component';
+import { ClientAddressComponent } from './client-address/client-address.component';
+import { AddAddressDialogComponent } from './client-address/add-address-dialog/add-address-dialog.component';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { AddressTableComponent } from './client-address/address-table/address-table.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +31,10 @@ import { WfResponsibleComponent } from './wf-responsible/wf-responsible.componen
         ClientWorkflowTrackComponent,
         AddFileDialogComponent,
         HubspotSyncModalComponent,
-        WfResponsibleComponent
+        WfResponsibleComponent,
+        ClientAddressComponent,
+        AddAddressDialogComponent,
+        AddressTableComponent
     ],
     imports: [
         CommonModule,
@@ -38,4 +46,19 @@ import { WfResponsibleComponent } from './wf-responsible/wf-responsible.componen
     exports: [],
     providers: [],
 })
-export class ClientModule {}
+export class ClientModule {
+    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+        iconRegistry.addSvgIcon(
+            'checkmark_icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/checkmark_icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'empty_icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/empty_icon.svg'
+            )
+        );
+    }
+}

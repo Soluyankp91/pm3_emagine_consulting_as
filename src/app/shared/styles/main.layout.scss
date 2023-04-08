@@ -102,6 +102,14 @@
     outline: 1px solid $sand-color;
 }
 
+mat-icon.shared-icon {
+    height: 16px;
+    &:hover {
+        svg>path[fill] {
+            fill: $green-color !important;
+        }
+    }
+}
 .legal-contract--mode {
     height: 20px !important;
     width: 20px !important;

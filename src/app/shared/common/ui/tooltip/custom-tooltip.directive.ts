@@ -20,7 +20,7 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit() {
-		if (!this.showToolTip) {
+		if (!this.showToolTip || !this.contentTemplate) {
 			return;
 		}
 

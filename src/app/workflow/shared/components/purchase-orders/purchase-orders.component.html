@@ -1,0 +1,141 @@
+<form [formGroup]="poForm">
+    <div class="inline-edit-form u-w--100">
+        <ng-container *ngIf="purchaseOrders?.controls?.length">
+            <ng-container [ngTemplateOutlet]="poHeader"></ng-container>
+        </ng-container>
+        <ng-container formArrayName="purchaseOrders" class="u-w--100">
+            <ng-container *ngFor="let order of poForm.purchaseOrders.controls; trackBy: trackByItem; index as i"
+                [formArrayName]="i">
+                <ng-container [ngTemplateOutlet]="poRow"
+                    [ngTemplateOutletContext]="{order: order.value, i: i,  isPreviousPO: false}">
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="poForm.purchaseOrders.controls?.length === 0 && readOnlyMode">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
+                    class="inline-form--row u-w--100 border-unset">
+                    <span class="light-grey-color text-600">
+                        No purchase orders
+                    </span>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+    <ng-container *ngIf="!readOnlyMode && mode !== ePurchaseOrderMode.ProjectLine">
+        <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
+            (throttledClick)="createOrEditPurchaseOrder()">
+            <mat-icon>add</mat-icon>
+            Add PO
+        </button>
+    </ng-container>
+    <ng-container *ngIf="purchaseOrders?.controls?.length === 0 && mode === ePurchaseOrderMode.ProjectLine">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="inline-form--row add-po u-w--100">
+            <span>
+                No purchase order
+            </span>
+            <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
+                (throttledClick)="createOrEditPurchaseOrder()">
+                <mat-icon>add</mat-icon>
+                Add PO
+            </button>
+        </div>
+    </ng-container>
+</form>
+
+<ng-template #poHeader>
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
+        class="inline-form--header__container u-w--100">
+        <span fxFlex class="inline-form--header u-w--100">
+            {{mode === ePurchaseOrderMode.ProjectLine ? 'PO number' : 'Invoicing Ref Nr (PO)'}}
+        </span>
+        <span fxFlex="80px" class="inline-form--header u-w--100">
+            Receive date
+        </span>
+        <span fxFlex="120px" class="inline-form--header u-w--100">
+            Cap type
+        </span>
+        <span fxFlex="100px" class="inline-form--header u-w--100">
+            Used
+        </span>
+        <span fxFlex="100px" class="inline-form--header u-w--100">
+            Max value
+        </span>
+        <span fxFlex="60px" class="inline-form--header u-w--100">
+            Units
+        </span>
+        <span fxFlex="40px" class="inline-form--header u-w--100">
+        </span>
+    </div>
+</ng-template>
+
+<ng-template #poRow let-order="order" let-i="i">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-form--row u-w--100">
+        <span fxFlex fxLayoutAlign="start center" class="u-w--100 text-truncate-ellipsis"
+            [ngClass]="order.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
+            [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
+            matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-') }}
+            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length > 1">
+                <mat-icon class="shared-icon u-ml--10 cursor-pointer" svgIcon="shared-icon"
+                    [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
+            </ng-container>
+        </span>
+        <span fxFlex="80px" class="u-w--100 text-truncate-ellipsis"
+            [matTooltip]="order.receiveDate !== null && order.receiveDate !== undefined ? (order.receiveDate | momentFormat) : '-'"
+            matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{ order.receiveDate !== null && order.receiveDate !== undefined ? (order.receiveDate | momentFormat) :
+            '-'}}
+        </span>
+        <span fxFlex="120px" class="u-w--100 text-truncate-ellipsis"
+            [matTooltip]="capTypes[order.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{capTypes[order.capForInvoicing?.type]}}
+        </span>
+        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+            [matTooltip]="order.capForInvoicing?.amountUsed ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{order.capForInvoicing?.amountUsed ?? '-'}}
+        </span>
+        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+            [matTooltip]="order.capForInvoicing?.maxAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{order.capForInvoicing?.maxAmount ?? '-'}}
+        </span>
+        <ng-container [ngSwitch]="order.capForInvoicing?.type">
+            <ng-container *ngSwitchCase="ePoCapType.CapOnUnits">
+                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
+                    [matTooltip]="eValueUnitType[order.capForInvoicing?.valueUnitTypeId]"
+                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                    {{eValueUnitType[order.capForInvoicing?.valueUnitTypeId]}}
+                </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="ePoCapType.CapOnValue">
+                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
+                    [matTooltip]="eCurrencies[order.capForInvoicing?.currencyId]" matTooltipClass="white-tooltip"
+                    appShowIfTruncated>
+                    {{eCurrencies[order.capForInvoicing?.currencyId]}}
+                </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="ePoCapType.NoCap">
+                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis">-</span>
+            </ng-container>
+        </ng-container>
+
+        <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
+            <ng-container *ngIf="!readOnlyMode && order?.isUserAllowedToEdit">
+                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
+                    [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
+                    <mat-icon svgIcon="3-dots"></mat-icon>
+                </button>
+                <mat-menu #poMenu>
+                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                        (throttledClick)="createOrEditPurchaseOrder(order, i)">
+                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
+                    </button>
+                    <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
+                        (throttledClick)="removePurchaseOrder(i)">
+                        <mat-icon svgIcon="close-icon"></mat-icon>
+                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
+                    </button>
+                </mat-menu>
+            </ng-container>
+        </div>
+    </div>
+</ng-template>

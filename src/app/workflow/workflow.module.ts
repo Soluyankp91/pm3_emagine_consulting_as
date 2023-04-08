@@ -28,6 +28,9 @@ import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-
 import { ContractsClientDataComponent } from './workflow-contracts/contracts-client-data/contracts-client-data.component';
 import { ToggleEditModeComponent } from './shared/components/toggle-edit-mode/toggle-edit-mode.component';
 import { DocumentsComponent } from './shared/components/wf-documents/wf-documents.component';
+import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
+import { AddOrEditPoDialogComponent } from './shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
+import { PurchaseOrdersComponent } from './shared/components/purchase-orders/purchase-orders.component';
 import { LegalContractsComponent } from './workflow-contracts/legal-contracts/legal-contracts.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -61,15 +64,16 @@ import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/lega
 		ContractsClientDataComponent,
 		ToggleEditModeComponent,
 		DocumentsComponent,
+		AddOrEditPoDialogComponent,
+		PurchaseOrdersComponent,
 		LegalContractsComponent,
 		SendEnvelopeDialogComponent,
 		SignersPreviewDialogComponent,
 		RemoveOrUploadAgrementDialogComponent,
-
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
-	providers: [WorkflowCreateResolver],
+	providers: [WorkflowCreateResolver, WorkflowPeriodResolver],
 })
 export class WorkflowModule {
 	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {

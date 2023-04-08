@@ -373,10 +373,15 @@ export class AdminServiceProxy {
     }
 
     /**
+     * @param customBatchSize (optional) 
      * @return Success
      */
-    fillIndexWithData(): Observable<void> {
-        let url_ = this.baseUrl + "/api/Admin/search-service/workflow/fill-index-with-data";
+    fillIndexWithData(customBatchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/workflow/fill-index-with-data?";
+        if (customBatchSize === null)
+            throw new Error("The parameter 'customBatchSize' cannot be null.");
+        else if (customBatchSize !== undefined)
+            url_ += "customBatchSize=" + encodeURIComponent("" + customBatchSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1035,6 +1040,303 @@ export class AdminServiceProxy {
     }
 
     protected processFillMissingClientPeriodsSeqNumbers(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param batchSize (optional) 
+     * @return Success
+     */
+    migrateInvoicingReferenceNumbersToPOs(batchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/migrate-InvoicingReferenceNumbers-to-POs?";
+        if (batchSize === null)
+            throw new Error("The parameter 'batchSize' cannot be null.");
+        else if (batchSize !== undefined)
+            url_ += "batchSize=" + encodeURIComponent("" + batchSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMigrateInvoicingReferenceNumbersToPOs(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMigrateInvoicingReferenceNumbersToPOs(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processMigrateInvoicingReferenceNumbersToPOs(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    matchupEmployeesToCrmOwners(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/MatchupEmployeesToCrmOwners";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMatchupEmployeesToCrmOwners(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMatchupEmployeesToCrmOwners(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processMatchupEmployeesToCrmOwners(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    clientsSyncParentsFromHubSpot(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/ClientsSyncParentsFromHubSpot";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientsSyncParentsFromHubSpot(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientsSyncParentsFromHubSpot(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processClientsSyncParentsFromHubSpot(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param limitToMaxEvents (optional) 
+     * @return Success
+     */
+    triggerMissingClientDomainEvents(limitToMaxEvents?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/TriggerMissingClientDomainEvents?";
+        if (limitToMaxEvents === null)
+            throw new Error("The parameter 'limitToMaxEvents' cannot be null.");
+        else if (limitToMaxEvents !== undefined)
+            url_ += "limitToMaxEvents=" + encodeURIComponent("" + limitToMaxEvents) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTriggerMissingClientDomainEvents(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTriggerMissingClientDomainEvents(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processTriggerMissingClientDomainEvents(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param limitToMaxEvents (optional) 
+     * @return Success
+     */
+    triggerMissingContactDomainEvents(limitToMaxEvents?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/TriggerMissingContactDomainEvents?";
+        if (limitToMaxEvents === null)
+            throw new Error("The parameter 'limitToMaxEvents' cannot be null.");
+        else if (limitToMaxEvents !== undefined)
+            url_ += "limitToMaxEvents=" + encodeURIComponent("" + limitToMaxEvents) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTriggerMissingContactDomainEvents(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTriggerMissingContactDomainEvents(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processTriggerMissingContactDomainEvents(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    updateAllContactAddressesInHubSpot(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/UpdateAllContactAddressesInHubSpot";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateAllContactAddressesInHubSpot(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateAllContactAddressesInHubSpot(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateAllContactAddressesInHubSpot(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5019,6 +5321,269 @@ export class AgreementTemplateCommentServiceProxy {
 }
 
 @Injectable()
+export class ClientAddressesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    clientAddressesGET(clientId: number): Observable<ClientAddressDto[]> {
+        let url_ = this.baseUrl + "/api/ClientAddresses/{clientId}";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientAddressesGET(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientAddressesGET(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientAddressDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientAddressDto[]>;
+        }));
+    }
+
+    protected processClientAddressesGET(response: HttpResponseBase): Observable<ClientAddressDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ClientAddressDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientAddressDto[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    clientAddressesPOST(clientId: number, body?: ClientAddressDto | undefined): Observable<ClientAddressDto[]> {
+        let url_ = this.baseUrl + "/api/ClientAddresses/{clientId}";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientAddressesPOST(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientAddressesPOST(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientAddressDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientAddressDto[]>;
+        }));
+    }
+
+    protected processClientAddressesPOST(response: HttpResponseBase): Observable<ClientAddressDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ClientAddressDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientAddressDto[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    clientAddressesPUT(body?: ClientAddressDto | undefined): Observable<ClientAddressDto[]> {
+        let url_ = this.baseUrl + "/api/ClientAddresses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientAddressesPUT(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientAddressesPUT(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientAddressDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientAddressDto[]>;
+        }));
+    }
+
+    protected processClientAddressesPUT(response: HttpResponseBase): Observable<ClientAddressDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ClientAddressDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientAddressDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    clientAddressesDELETE(clientAddressId: number): Observable<ClientAddressDto[]> {
+        let url_ = this.baseUrl + "/api/ClientAddresses/{clientAddressId}";
+        if (clientAddressId === undefined || clientAddressId === null)
+            throw new Error("The parameter 'clientAddressId' must be defined.");
+        url_ = url_.replace("{clientAddressId}", encodeURIComponent("" + clientAddressId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientAddressesDELETE(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientAddressesDELETE(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientAddressDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientAddressDto[]>;
+        }));
+    }
+
+    protected processClientAddressesDELETE(response: HttpResponseBase): Observable<ClientAddressDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ClientAddressDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientAddressDto[]>(null as any);
+    }
+}
+
+@Injectable()
 export class ClientDocumentsServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -7608,6 +8173,61 @@ export class ClientsServiceProxy {
     }
 
     /**
+     * @param clientAddressId (optional) 
+     * @return Success
+     */
+    contactAddress(contactId: number, clientAddressId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/contact-address/{contactId}?";
+        if (contactId === undefined || contactId === null)
+            throw new Error("The parameter 'contactId' must be defined.");
+        url_ = url_.replace("{contactId}", encodeURIComponent("" + contactId));
+        if (clientAddressId === null)
+            throw new Error("The parameter 'clientAddressId' cannot be null.");
+        else if (clientAddressId !== undefined)
+            url_ += "clientAddressId=" + encodeURIComponent("" + clientAddressId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContactAddress(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContactAddress(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processContactAddress(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     camImpersonationUrl(clientId: number): Observable<string> {
@@ -9953,6 +10573,122 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
+    valueUnitTypes(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/value-unit-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processValueUnitTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processValueUnitTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumEntityTypeDto[]>;
+        }));
+    }
+
+    protected processValueUnitTypes(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    periodUnitTypes(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/period-unit-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPeriodUnitTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPeriodUnitTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumEntityTypeDto[]>;
+        }));
+    }
+
+    protected processPeriodUnitTypes(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     salesTypes(): Observable<EnumEntityTypeDto[]> {
         let url_ = this.baseUrl + "/api/Enum/sales-types";
         url_ = url_.replace(/[?&]$/, "");
@@ -10760,6 +11496,66 @@ export class EnumServiceProxy {
             }));
         }
         return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    purchaseOrderCapType(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/purchase-order-cap-type";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderCapType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderCapType(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processPurchaseOrderCapType(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 
     /**
@@ -14797,6 +15593,201 @@ export class MergeFieldsServiceProxy {
             }));
         }
         return _observableOf<StringWrappedValueDto>(null as any);
+    }
+}
+
+@Injectable()
+export class PurchaseOrderServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param directClientId (optional) 
+     * @return Success
+     */
+    getPurchaseOrdersAvailableForClientPeriod(clientPeriodId: string, directClientId?: number | undefined): Observable<PurchaseOrderDto[]> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersAvailableForClientPeriod/{clientPeriodId}?";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        if (directClientId === null)
+            throw new Error("The parameter 'directClientId' cannot be null.");
+        else if (directClientId !== undefined)
+            url_ += "directClientId=" + encodeURIComponent("" + directClientId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPurchaseOrdersAvailableForClientPeriod(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPurchaseOrdersAvailableForClientPeriod(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PurchaseOrderDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PurchaseOrderDto[]>;
+        }));
+    }
+
+    protected processGetPurchaseOrdersAvailableForClientPeriod(response: HttpResponseBase): Observable<PurchaseOrderDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PurchaseOrderDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PurchaseOrderDto[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    purchaseOrderPOST(body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderPOST(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderPOST(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PurchaseOrderDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PurchaseOrderDto>;
+        }));
+    }
+
+    protected processPurchaseOrderPOST(response: HttpResponseBase): Observable<PurchaseOrderDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PurchaseOrderDto>(null as any);
+    }
+
+    /**
+     * @param currentClientPeriodId (optional) 
+     * @param body (optional) 
+     * @return Success
+     */
+    purchaseOrderPUT(currentClientPeriodId?: string | undefined, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder?";
+        if (currentClientPeriodId === null)
+            throw new Error("The parameter 'currentClientPeriodId' cannot be null.");
+        else if (currentClientPeriodId !== undefined)
+            url_ += "currentClientPeriodId=" + encodeURIComponent("" + currentClientPeriodId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderPUT(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderPUT(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PurchaseOrderDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PurchaseOrderDto>;
+        }));
+    }
+
+    protected processPurchaseOrderPUT(response: HttpResponseBase): Observable<PurchaseOrderDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PurchaseOrderDto>(null as any);
     }
 }
 
@@ -21704,12 +22695,20 @@ export interface IChangeConsultantPeriodDto {
 }
 
 export class ClientAddressDto implements IClientAddressDto {
+    id?: number | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
+    region?: string | undefined;
+    countryId?: number | undefined;
     countryCode?: string | undefined;
     countryName?: string | undefined;
+    isMainAddress?: boolean;
+    isWorkplaceAddress?: boolean;
+    isInvoiceAddress?: boolean;
+    debtorNumberForInvoiceAddress?: string | undefined;
+    isHidden?: boolean;
 
     constructor(data?: IClientAddressDto) {
         if (data) {
@@ -21722,12 +22721,20 @@ export class ClientAddressDto implements IClientAddressDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.address = _data["address"];
             this.address2 = _data["address2"];
             this.postCode = _data["postCode"];
             this.city = _data["city"];
+            this.region = _data["region"];
+            this.countryId = _data["countryId"];
             this.countryCode = _data["countryCode"];
             this.countryName = _data["countryName"];
+            this.isMainAddress = _data["isMainAddress"];
+            this.isWorkplaceAddress = _data["isWorkplaceAddress"];
+            this.isInvoiceAddress = _data["isInvoiceAddress"];
+            this.debtorNumberForInvoiceAddress = _data["debtorNumberForInvoiceAddress"];
+            this.isHidden = _data["isHidden"];
         }
     }
 
@@ -21740,23 +22747,39 @@ export class ClientAddressDto implements IClientAddressDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["address"] = this.address;
         data["address2"] = this.address2;
         data["postCode"] = this.postCode;
         data["city"] = this.city;
+        data["region"] = this.region;
+        data["countryId"] = this.countryId;
         data["countryCode"] = this.countryCode;
         data["countryName"] = this.countryName;
+        data["isMainAddress"] = this.isMainAddress;
+        data["isWorkplaceAddress"] = this.isWorkplaceAddress;
+        data["isInvoiceAddress"] = this.isInvoiceAddress;
+        data["debtorNumberForInvoiceAddress"] = this.debtorNumberForInvoiceAddress;
+        data["isHidden"] = this.isHidden;
         return data;
     }
 }
 
 export interface IClientAddressDto {
+    id?: number | undefined;
     address?: string | undefined;
     address2?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
+    region?: string | undefined;
+    countryId?: number | undefined;
     countryCode?: string | undefined;
     countryName?: string | undefined;
+    isMainAddress?: boolean;
+    isWorkplaceAddress?: boolean;
+    isInvoiceAddress?: boolean;
+    debtorNumberForInvoiceAddress?: string | undefined;
+    isHidden?: boolean;
 }
 
 export class ClientApplicationPermissionsModel implements IClientApplicationPermissionsModel {
@@ -22003,12 +23026,7 @@ export class ClientDetailsDto implements IClientDetailsDto {
     clientId?: number;
     name?: string | undefined;
     tenantId?: number;
-    address?: string | undefined;
-    address2?: string | undefined;
-    postCode?: string | undefined;
-    city?: string | undefined;
-    countryId?: number | undefined;
-    countryName?: string | undefined;
+    clientAddresses?: ClientAddressDto[] | undefined;
     phone?: string | undefined;
     website?: string | undefined;
 
@@ -22026,12 +23044,11 @@ export class ClientDetailsDto implements IClientDetailsDto {
             this.clientId = _data["clientId"];
             this.name = _data["name"];
             this.tenantId = _data["tenantId"];
-            this.address = _data["address"];
-            this.address2 = _data["address2"];
-            this.postCode = _data["postCode"];
-            this.city = _data["city"];
-            this.countryId = _data["countryId"];
-            this.countryName = _data["countryName"];
+            if (Array.isArray(_data["clientAddresses"])) {
+                this.clientAddresses = [] as any;
+                for (let item of _data["clientAddresses"])
+                    this.clientAddresses!.push(ClientAddressDto.fromJS(item));
+            }
             this.phone = _data["phone"];
             this.website = _data["website"];
         }
@@ -22049,12 +23066,11 @@ export class ClientDetailsDto implements IClientDetailsDto {
         data["clientId"] = this.clientId;
         data["name"] = this.name;
         data["tenantId"] = this.tenantId;
-        data["address"] = this.address;
-        data["address2"] = this.address2;
-        data["postCode"] = this.postCode;
-        data["city"] = this.city;
-        data["countryId"] = this.countryId;
-        data["countryName"] = this.countryName;
+        if (Array.isArray(this.clientAddresses)) {
+            data["clientAddresses"] = [];
+            for (let item of this.clientAddresses)
+                data["clientAddresses"].push(item.toJSON());
+        }
         data["phone"] = this.phone;
         data["website"] = this.website;
         return data;
@@ -22065,12 +23081,7 @@ export interface IClientDetailsDto {
     clientId?: number;
     name?: string | undefined;
     tenantId?: number;
-    address?: string | undefined;
-    address2?: string | undefined;
-    postCode?: string | undefined;
-    city?: string | undefined;
-    countryId?: number | undefined;
-    countryName?: string | undefined;
+    clientAddresses?: ClientAddressDto[] | undefined;
     phone?: string | undefined;
     website?: string | undefined;
 }
@@ -22276,13 +23287,7 @@ export class ClientListItemDto implements IClientListItemDto {
     crmClientId?: number | undefined;
     legacyClientId?: number | undefined;
     name?: string | undefined;
-    clientAddress_Address?: string | undefined;
-    clientAddress_Address2?: string | undefined;
-    clientAddress_PostCode?: string | undefined;
-    clientAddress_City?: string | undefined;
-    clientAddress_Country_Id?: number | undefined;
-    clientAddress_Country_Name?: string | undefined;
-    clientAddress_Country_Code?: string | undefined;
+    clientAddresses?: ClientAddressDto[] | undefined;
     phone?: string | undefined;
     owner_Id?: number | undefined;
     owner_Name?: string | undefined;
@@ -22306,13 +23311,11 @@ export class ClientListItemDto implements IClientListItemDto {
             this.crmClientId = _data["crmClientId"];
             this.legacyClientId = _data["legacyClientId"];
             this.name = _data["name"];
-            this.clientAddress_Address = _data["clientAddress_Address"];
-            this.clientAddress_Address2 = _data["clientAddress_Address2"];
-            this.clientAddress_PostCode = _data["clientAddress_PostCode"];
-            this.clientAddress_City = _data["clientAddress_City"];
-            this.clientAddress_Country_Id = _data["clientAddress_Country_Id"];
-            this.clientAddress_Country_Name = _data["clientAddress_Country_Name"];
-            this.clientAddress_Country_Code = _data["clientAddress_Country_Code"];
+            if (Array.isArray(_data["clientAddresses"])) {
+                this.clientAddresses = [] as any;
+                for (let item of _data["clientAddresses"])
+                    this.clientAddresses!.push(ClientAddressDto.fromJS(item));
+            }
             this.phone = _data["phone"];
             this.owner_Id = _data["owner_Id"];
             this.owner_Name = _data["owner_Name"];
@@ -22336,13 +23339,11 @@ export class ClientListItemDto implements IClientListItemDto {
         data["crmClientId"] = this.crmClientId;
         data["legacyClientId"] = this.legacyClientId;
         data["name"] = this.name;
-        data["clientAddress_Address"] = this.clientAddress_Address;
-        data["clientAddress_Address2"] = this.clientAddress_Address2;
-        data["clientAddress_PostCode"] = this.clientAddress_PostCode;
-        data["clientAddress_City"] = this.clientAddress_City;
-        data["clientAddress_Country_Id"] = this.clientAddress_Country_Id;
-        data["clientAddress_Country_Name"] = this.clientAddress_Country_Name;
-        data["clientAddress_Country_Code"] = this.clientAddress_Country_Code;
+        if (Array.isArray(this.clientAddresses)) {
+            data["clientAddresses"] = [];
+            for (let item of this.clientAddresses)
+                data["clientAddresses"].push(item.toJSON());
+        }
         data["phone"] = this.phone;
         data["owner_Id"] = this.owner_Id;
         data["owner_Name"] = this.owner_Name;
@@ -22359,13 +23360,7 @@ export interface IClientListItemDto {
     crmClientId?: number | undefined;
     legacyClientId?: number | undefined;
     name?: string | undefined;
-    clientAddress_Address?: string | undefined;
-    clientAddress_Address2?: string | undefined;
-    clientAddress_PostCode?: string | undefined;
-    clientAddress_City?: string | undefined;
-    clientAddress_Country_Id?: number | undefined;
-    clientAddress_Country_Name?: string | undefined;
-    clientAddress_Country_Code?: string | undefined;
+    clientAddresses?: ClientAddressDto[] | undefined;
     phone?: string | undefined;
     owner_Id?: number | undefined;
     owner_Name?: string | undefined;
@@ -22840,6 +23835,8 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
     marginTypeDto?: EnumEntityTypeDto;
     commissionAccountManager?: Pm3EmployeeDto;
     salesAccountManager?: Pm3EmployeeDto;
+    primarySourcer?: Pm3EmployeeDto;
+    otherCommissionedEmployees?: Pm3EmployeeDto[] | undefined;
     discount?: EnumEntityTypeDto;
     employmentType?: EnumEntityTypeDto;
     deliveryAccountManagerDto?: Pm3EmployeeDto;
@@ -22849,6 +23846,12 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
     endDate?: moment.Moment | undefined;
     invoicingReferenceContactDto?: ContactResultDto;
     evaluationReferenceContactDto?: ContactResultDto;
+    consultantInsuranceOption?: ConsultantInsuranceOption;
+    purchaseOrder?: PurchaseOrderDto;
+    clientInvoicingRecipientSameAsDirectClient?: boolean;
+    clientInvoicingRecipientLegacyId?: number | undefined;
+    clientInvoicingRecipientTenantId?: number | undefined;
+    clientInvoiceRecipientAddress?: ClientAddressDto;
 
     constructor(data?: IClientPeriodMainDataDto) {
         if (data) {
@@ -22873,6 +23876,12 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
             this.marginTypeDto = _data["marginTypeDto"] ? EnumEntityTypeDto.fromJS(_data["marginTypeDto"]) : <any>undefined;
             this.commissionAccountManager = _data["commissionAccountManager"] ? Pm3EmployeeDto.fromJS(_data["commissionAccountManager"]) : <any>undefined;
             this.salesAccountManager = _data["salesAccountManager"] ? Pm3EmployeeDto.fromJS(_data["salesAccountManager"]) : <any>undefined;
+            this.primarySourcer = _data["primarySourcer"] ? Pm3EmployeeDto.fromJS(_data["primarySourcer"]) : <any>undefined;
+            if (Array.isArray(_data["otherCommissionedEmployees"])) {
+                this.otherCommissionedEmployees = [] as any;
+                for (let item of _data["otherCommissionedEmployees"])
+                    this.otherCommissionedEmployees!.push(Pm3EmployeeDto.fromJS(item));
+            }
             this.discount = _data["discount"] ? EnumEntityTypeDto.fromJS(_data["discount"]) : <any>undefined;
             this.employmentType = _data["employmentType"] ? EnumEntityTypeDto.fromJS(_data["employmentType"]) : <any>undefined;
             this.deliveryAccountManagerDto = _data["deliveryAccountManagerDto"] ? Pm3EmployeeDto.fromJS(_data["deliveryAccountManagerDto"]) : <any>undefined;
@@ -22886,6 +23895,12 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.invoicingReferenceContactDto = _data["invoicingReferenceContactDto"] ? ContactResultDto.fromJS(_data["invoicingReferenceContactDto"]) : <any>undefined;
             this.evaluationReferenceContactDto = _data["evaluationReferenceContactDto"] ? ContactResultDto.fromJS(_data["evaluationReferenceContactDto"]) : <any>undefined;
+            this.consultantInsuranceOption = _data["consultantInsuranceOption"];
+            this.purchaseOrder = _data["purchaseOrder"] ? PurchaseOrderDto.fromJS(_data["purchaseOrder"]) : <any>undefined;
+            this.clientInvoicingRecipientSameAsDirectClient = _data["clientInvoicingRecipientSameAsDirectClient"];
+            this.clientInvoicingRecipientLegacyId = _data["clientInvoicingRecipientLegacyId"];
+            this.clientInvoicingRecipientTenantId = _data["clientInvoicingRecipientTenantId"];
+            this.clientInvoiceRecipientAddress = _data["clientInvoiceRecipientAddress"] ? ClientAddressDto.fromJS(_data["clientInvoiceRecipientAddress"]) : <any>undefined;
         }
     }
 
@@ -22910,6 +23925,12 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
         data["marginTypeDto"] = this.marginTypeDto ? this.marginTypeDto.toJSON() : <any>undefined;
         data["commissionAccountManager"] = this.commissionAccountManager ? this.commissionAccountManager.toJSON() : <any>undefined;
         data["salesAccountManager"] = this.salesAccountManager ? this.salesAccountManager.toJSON() : <any>undefined;
+        data["primarySourcer"] = this.primarySourcer ? this.primarySourcer.toJSON() : <any>undefined;
+        if (Array.isArray(this.otherCommissionedEmployees)) {
+            data["otherCommissionedEmployees"] = [];
+            for (let item of this.otherCommissionedEmployees)
+                data["otherCommissionedEmployees"].push(item.toJSON());
+        }
         data["discount"] = this.discount ? this.discount.toJSON() : <any>undefined;
         data["employmentType"] = this.employmentType ? this.employmentType.toJSON() : <any>undefined;
         data["deliveryAccountManagerDto"] = this.deliveryAccountManagerDto ? this.deliveryAccountManagerDto.toJSON() : <any>undefined;
@@ -22923,6 +23944,12 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["invoicingReferenceContactDto"] = this.invoicingReferenceContactDto ? this.invoicingReferenceContactDto.toJSON() : <any>undefined;
         data["evaluationReferenceContactDto"] = this.evaluationReferenceContactDto ? this.evaluationReferenceContactDto.toJSON() : <any>undefined;
+        data["consultantInsuranceOption"] = this.consultantInsuranceOption;
+        data["purchaseOrder"] = this.purchaseOrder ? this.purchaseOrder.toJSON() : <any>undefined;
+        data["clientInvoicingRecipientSameAsDirectClient"] = this.clientInvoicingRecipientSameAsDirectClient;
+        data["clientInvoicingRecipientLegacyId"] = this.clientInvoicingRecipientLegacyId;
+        data["clientInvoicingRecipientTenantId"] = this.clientInvoicingRecipientTenantId;
+        data["clientInvoiceRecipientAddress"] = this.clientInvoiceRecipientAddress ? this.clientInvoiceRecipientAddress.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -22940,6 +23967,8 @@ export interface IClientPeriodMainDataDto {
     marginTypeDto?: EnumEntityTypeDto;
     commissionAccountManager?: Pm3EmployeeDto;
     salesAccountManager?: Pm3EmployeeDto;
+    primarySourcer?: Pm3EmployeeDto;
+    otherCommissionedEmployees?: Pm3EmployeeDto[] | undefined;
     discount?: EnumEntityTypeDto;
     employmentType?: EnumEntityTypeDto;
     deliveryAccountManagerDto?: Pm3EmployeeDto;
@@ -22949,6 +23978,12 @@ export interface IClientPeriodMainDataDto {
     endDate?: moment.Moment | undefined;
     invoicingReferenceContactDto?: ContactResultDto;
     evaluationReferenceContactDto?: ContactResultDto;
+    consultantInsuranceOption?: ConsultantInsuranceOption;
+    purchaseOrder?: PurchaseOrderDto;
+    clientInvoicingRecipientSameAsDirectClient?: boolean;
+    clientInvoicingRecipientLegacyId?: number | undefined;
+    clientInvoicingRecipientTenantId?: number | undefined;
+    clientInvoiceRecipientAddress?: ClientAddressDto;
 }
 
 export class ClientPeriodSalesDataCommandDto implements IClientPeriodSalesDataCommandDto {
@@ -23386,12 +24421,8 @@ export interface IClientRequestTrackItemDtoPaginatedList {
 export class ClientResultDto implements IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
+    clientAddresses?: ClientAddressDto[] | undefined;
     vatNumber?: string | undefined;
-    address?: string | undefined;
-    address2?: string | undefined;
-    postCode?: string | undefined;
-    city?: string | undefined;
-    addressCountryCode?: string | undefined;
     tenantCountryCode?: string | undefined;
     readonly crmClientId?: number | undefined;
 
@@ -23408,12 +24439,12 @@ export class ClientResultDto implements IClientResultDto {
         if (_data) {
             this.clientId = _data["clientId"];
             this.clientName = _data["clientName"];
+            if (Array.isArray(_data["clientAddresses"])) {
+                this.clientAddresses = [] as any;
+                for (let item of _data["clientAddresses"])
+                    this.clientAddresses!.push(ClientAddressDto.fromJS(item));
+            }
             this.vatNumber = _data["vatNumber"];
-            this.address = _data["address"];
-            this.address2 = _data["address2"];
-            this.postCode = _data["postCode"];
-            this.city = _data["city"];
-            this.addressCountryCode = _data["addressCountryCode"];
             this.tenantCountryCode = _data["tenantCountryCode"];
             (<any>this).crmClientId = _data["crmClientId"];
         }
@@ -23430,12 +24461,12 @@ export class ClientResultDto implements IClientResultDto {
         data = typeof data === 'object' ? data : {};
         data["clientId"] = this.clientId;
         data["clientName"] = this.clientName;
+        if (Array.isArray(this.clientAddresses)) {
+            data["clientAddresses"] = [];
+            for (let item of this.clientAddresses)
+                data["clientAddresses"].push(item.toJSON());
+        }
         data["vatNumber"] = this.vatNumber;
-        data["address"] = this.address;
-        data["address2"] = this.address2;
-        data["postCode"] = this.postCode;
-        data["city"] = this.city;
-        data["addressCountryCode"] = this.addressCountryCode;
         data["tenantCountryCode"] = this.tenantCountryCode;
         data["crmClientId"] = this.crmClientId;
         return data;
@@ -23445,12 +24476,8 @@ export class ClientResultDto implements IClientResultDto {
 export interface IClientResultDto {
     clientId?: number;
     clientName?: string | undefined;
+    clientAddresses?: ClientAddressDto[] | undefined;
     vatNumber?: string | undefined;
-    address?: string | undefined;
-    address2?: string | undefined;
-    postCode?: string | undefined;
-    city?: string | undefined;
-    addressCountryCode?: string | undefined;
     tenantCountryCode?: string | undefined;
     crmClientId?: number | undefined;
 }
@@ -24206,8 +25233,7 @@ export class ConsultantContractsDataCommandDto implements IConsultantContractsDa
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -24241,8 +25267,11 @@ export class ConsultantContractsDataCommandDto implements IConsultantContractsDa
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
-            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
-            this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.specialContractTerms = _data["specialContractTerms"];
             this.noSpecialPaymentTerms = _data["noSpecialPaymentTerms"];
@@ -24288,8 +25317,11 @@ export class ConsultantContractsDataCommandDto implements IConsultantContractsDa
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
-        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
-        data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["specialContractTerms"] = this.specialContractTerms;
         data["noSpecialPaymentTerms"] = this.noSpecialPaymentTerms;
@@ -24328,8 +25360,7 @@ export interface IConsultantContractsDataCommandDto {
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -24354,8 +25385,7 @@ export class ConsultantContractsDataQueryDto implements IConsultantContractsData
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -24391,8 +25421,11 @@ export class ConsultantContractsDataQueryDto implements IConsultantContractsData
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
-            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
-            this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.specialContractTerms = _data["specialContractTerms"];
             this.noSpecialPaymentTerms = _data["noSpecialPaymentTerms"];
@@ -24440,8 +25473,11 @@ export class ConsultantContractsDataQueryDto implements IConsultantContractsData
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
-        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
-        data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["specialContractTerms"] = this.specialContractTerms;
         data["noSpecialPaymentTerms"] = this.noSpecialPaymentTerms;
@@ -24482,8 +25518,7 @@ export interface IConsultantContractsDataQueryDto {
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
-    consultantTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     noSpecialPaymentTerms?: boolean;
@@ -24557,6 +25592,12 @@ export interface IConsultantGanttRow {
     consultantId?: number | undefined;
     consultantExternalId?: string | undefined;
     ganttRowItems?: GanttRowItem[] | undefined;
+}
+
+export enum ConsultantInsuranceOption {
+    None = 0,
+    DkInsurance = 1,
+    PlMedicare = 4,
 }
 
 export class ConsultantNameWithRequestUrl implements IConsultantNameWithRequestUrl {
@@ -25242,6 +26283,8 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     isOnsiteWorkplace?: boolean | undefined;
     onsiteClientId?: number | undefined;
     onsiteClient?: ClientResultDto;
+    onsiteClientAddressId?: number | undefined;
+    onsiteClientAddress?: ClientAddressDto;
     isEmagineOfficeWorkplace?: boolean | undefined;
     emagineOfficeId?: number | undefined;
     isRemoteWorkplace?: boolean | undefined;
@@ -25251,7 +26294,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     expectedWorkloadHours?: number | undefined;
     expectedWorkloadUnitId?: number | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcPaymentEntityId?: number | undefined;
     consultantRate?: ConsultantRateDto;
     noSpecialRate?: boolean;
@@ -25291,6 +26334,8 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.isOnsiteWorkplace = _data["isOnsiteWorkplace"];
             this.onsiteClientId = _data["onsiteClientId"];
             this.onsiteClient = _data["onsiteClient"] ? ClientResultDto.fromJS(_data["onsiteClient"]) : <any>undefined;
+            this.onsiteClientAddressId = _data["onsiteClientAddressId"];
+            this.onsiteClientAddress = _data["onsiteClientAddress"] ? ClientAddressDto.fromJS(_data["onsiteClientAddress"]) : <any>undefined;
             this.isEmagineOfficeWorkplace = _data["isEmagineOfficeWorkplace"];
             this.emagineOfficeId = _data["emagineOfficeId"];
             this.isRemoteWorkplace = _data["isRemoteWorkplace"];
@@ -25300,7 +26345,11 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.expectedWorkloadHours = _data["expectedWorkloadHours"];
             this.expectedWorkloadUnitId = _data["expectedWorkloadUnitId"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
-            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.pdcPaymentEntityId = _data["pdcPaymentEntityId"];
             this.consultantRate = _data["consultantRate"] ? ConsultantRateDto.fromJS(_data["consultantRate"]) : <any>undefined;
             this.noSpecialRate = _data["noSpecialRate"];
@@ -25348,6 +26397,8 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["isOnsiteWorkplace"] = this.isOnsiteWorkplace;
         data["onsiteClientId"] = this.onsiteClientId;
         data["onsiteClient"] = this.onsiteClient ? this.onsiteClient.toJSON() : <any>undefined;
+        data["onsiteClientAddressId"] = this.onsiteClientAddressId;
+        data["onsiteClientAddress"] = this.onsiteClientAddress ? this.onsiteClientAddress.toJSON() : <any>undefined;
         data["isEmagineOfficeWorkplace"] = this.isEmagineOfficeWorkplace;
         data["emagineOfficeId"] = this.emagineOfficeId;
         data["isRemoteWorkplace"] = this.isRemoteWorkplace;
@@ -25357,7 +26408,11 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["expectedWorkloadHours"] = this.expectedWorkloadHours;
         data["expectedWorkloadUnitId"] = this.expectedWorkloadUnitId;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
-        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["pdcPaymentEntityId"] = this.pdcPaymentEntityId;
         data["consultantRate"] = this.consultantRate ? this.consultantRate.toJSON() : <any>undefined;
         data["noSpecialRate"] = this.noSpecialRate;
@@ -25398,6 +26453,8 @@ export interface IConsultantSalesDataDto {
     isOnsiteWorkplace?: boolean | undefined;
     onsiteClientId?: number | undefined;
     onsiteClient?: ClientResultDto;
+    onsiteClientAddressId?: number | undefined;
+    onsiteClientAddress?: ClientAddressDto;
     isEmagineOfficeWorkplace?: boolean | undefined;
     emagineOfficeId?: number | undefined;
     isRemoteWorkplace?: boolean | undefined;
@@ -25407,7 +26464,7 @@ export interface IConsultantSalesDataDto {
     expectedWorkloadHours?: number | undefined;
     expectedWorkloadUnitId?: number | undefined;
     consultantTimeReportingCapId?: number | undefined;
-    consultantTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcPaymentEntityId?: number | undefined;
     consultantRate?: ConsultantRateDto;
     noSpecialRate?: boolean;
@@ -25844,6 +26901,7 @@ export class ContactDto implements IContactDto {
     jobTitle?: string | undefined;
     mobilePhone?: string | undefined;
     phone?: string | undefined;
+    clientAddress?: ClientAddressDto;
     tenant?: Tenant;
     legacyContactId?: LegacyContactId;
     isDeleted?: boolean;
@@ -25870,6 +26928,7 @@ export class ContactDto implements IContactDto {
             this.jobTitle = _data["jobTitle"];
             this.mobilePhone = _data["mobilePhone"];
             this.phone = _data["phone"];
+            this.clientAddress = _data["clientAddress"] ? ClientAddressDto.fromJS(_data["clientAddress"]) : <any>undefined;
             this.tenant = _data["tenant"] ? Tenant.fromJS(_data["tenant"]) : <any>undefined;
             this.legacyContactId = _data["legacyContactId"] ? LegacyContactId.fromJS(_data["legacyContactId"]) : <any>undefined;
             this.isDeleted = _data["isDeleted"];
@@ -25896,6 +26955,7 @@ export class ContactDto implements IContactDto {
         data["jobTitle"] = this.jobTitle;
         data["mobilePhone"] = this.mobilePhone;
         data["phone"] = this.phone;
+        data["clientAddress"] = this.clientAddress ? this.clientAddress.toJSON() : <any>undefined;
         data["tenant"] = this.tenant ? this.tenant.toJSON() : <any>undefined;
         data["legacyContactId"] = this.legacyContactId ? this.legacyContactId.toJSON() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
@@ -25915,6 +26975,7 @@ export interface IContactDto {
     jobTitle?: string | undefined;
     mobilePhone?: string | undefined;
     phone?: string | undefined;
+    clientAddress?: ClientAddressDto;
     tenant?: Tenant;
     legacyContactId?: LegacyContactId;
     isDeleted?: boolean;
@@ -25932,6 +26993,7 @@ export class ContactResultDto implements IContactResultDto {
     mobilePhone?: string | undefined;
     phone?: string | undefined;
     email?: string | undefined;
+    clientAddress?: ClientAddressDto;
 
     constructor(data?: IContactResultDto) {
         if (data) {
@@ -25952,6 +27014,7 @@ export class ContactResultDto implements IContactResultDto {
             this.mobilePhone = _data["mobilePhone"];
             this.phone = _data["phone"];
             this.email = _data["email"];
+            this.clientAddress = _data["clientAddress"] ? ClientAddressDto.fromJS(_data["clientAddress"]) : <any>undefined;
         }
     }
 
@@ -25972,6 +27035,7 @@ export class ContactResultDto implements IContactResultDto {
         data["mobilePhone"] = this.mobilePhone;
         data["phone"] = this.phone;
         data["email"] = this.email;
+        data["clientAddress"] = this.clientAddress ? this.clientAddress.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -25985,6 +27049,7 @@ export interface IContactResultDto {
     mobilePhone?: string | undefined;
     phone?: string | undefined;
     email?: string | undefined;
+    clientAddress?: ClientAddressDto;
 }
 
 export class ContactSignerResultDto implements IContactSignerResultDto {
@@ -26223,8 +27288,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     noSpecialContractTerms?: boolean;
     frameAgreementId?: number | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
-    clientTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     clientRate?: ClientRateDto;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
@@ -26239,6 +27303,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     invoicingReferencePersonIdValue?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
+    purchaseOrdersIds?: number[] | undefined;
 
     constructor(data?: IContractsClientDataDto) {
         if (data) {
@@ -26255,8 +27320,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.frameAgreementId = _data["frameAgreementId"];
             this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
-            this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
-            this.clientTimeReportingCapCurrencyId = _data["clientTimeReportingCapCurrencyId"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
             this.noSpecialRate = _data["noSpecialRate"];
             if (Array.isArray(_data["periodClientSpecialRates"])) {
@@ -26279,6 +27347,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
             this.invoicingReferencePersonIdValue = _data["invoicingReferencePersonIdValue"];
             this.invoicingReferencePerson = _data["invoicingReferencePerson"] ? ContactResultDto.fromJS(_data["invoicingReferencePerson"]) : <any>undefined;
             this.invoicingReferencePersonDontShowOnInvoice = _data["invoicingReferencePersonDontShowOnInvoice"];
+            if (Array.isArray(_data["purchaseOrdersIds"])) {
+                this.purchaseOrdersIds = [] as any;
+                for (let item of _data["purchaseOrdersIds"])
+                    this.purchaseOrdersIds!.push(item);
+            }
         }
     }
 
@@ -26295,8 +27368,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["frameAgreementId"] = this.frameAgreementId;
         data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
-        data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
-        data["clientTimeReportingCapCurrencyId"] = this.clientTimeReportingCapCurrencyId;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
         data["noSpecialRate"] = this.noSpecialRate;
         if (Array.isArray(this.periodClientSpecialRates)) {
@@ -26319,6 +27395,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         data["invoicingReferencePersonIdValue"] = this.invoicingReferencePersonIdValue;
         data["invoicingReferencePerson"] = this.invoicingReferencePerson ? this.invoicingReferencePerson.toJSON() : <any>undefined;
         data["invoicingReferencePersonDontShowOnInvoice"] = this.invoicingReferencePersonDontShowOnInvoice;
+        if (Array.isArray(this.purchaseOrdersIds)) {
+            data["purchaseOrdersIds"] = [];
+            for (let item of this.purchaseOrdersIds)
+                data["purchaseOrdersIds"].push(item);
+        }
         return data;
     }
 }
@@ -26328,8 +27409,7 @@ export interface IContractsClientDataDto {
     noSpecialContractTerms?: boolean;
     frameAgreementId?: number | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
-    clientTimeReportingCapCurrencyId?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     clientRate?: ClientRateDto;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
@@ -26344,6 +27424,7 @@ export interface IContractsClientDataDto {
     invoicingReferencePersonIdValue?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
+    purchaseOrdersIds?: number[] | undefined;
 }
 
 export class ContractsMainDataDto implements IContractsMainDataDto {
@@ -27661,17 +28742,27 @@ export class HubSpotClientDto implements IHubSpotClientDto {
     address2?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
+    state?: string | undefined;
     country?: string | undefined;
-    tenantForCreation?: string | undefined;
     webDomain?: string | undefined;
+    website?: string | undefined;
     phone?: string | undefined;
+    tenantForCreation?: string | undefined;
     legacyClientId?: string | undefined;
     pmTenantId?: string | undefined;
+    importedId?: string | undefined;
     isArchived?: boolean;
-    owner?: string | undefined;
+    crmOwnerId?: string | undefined;
     petName?: string | undefined;
     industry?: string | undefined;
     numberOfEmployees?: string | undefined;
+    pmNotes?: string | undefined;
+    oldPmType?: string | undefined;
+    clientType?: string | undefined;
+    targetAccount?: boolean | undefined;
+    accountManager2CrmId?: string | undefined;
+    accountManager3CrmId?: string | undefined;
+    description?: string | undefined;
     contactAssociationIds?: CrmContactId[] | undefined;
     childrenCrmClientIds?: CrmClientId[] | undefined;
     parentCrmClientId?: CrmClientId;
@@ -27693,17 +28784,27 @@ export class HubSpotClientDto implements IHubSpotClientDto {
             this.address2 = _data["address2"];
             this.postCode = _data["postCode"];
             this.city = _data["city"];
+            this.state = _data["state"];
             this.country = _data["country"];
-            this.tenantForCreation = _data["tenantForCreation"];
             this.webDomain = _data["webDomain"];
+            this.website = _data["website"];
             this.phone = _data["phone"];
+            this.tenantForCreation = _data["tenantForCreation"];
             this.legacyClientId = _data["legacyClientId"];
             this.pmTenantId = _data["pmTenantId"];
+            this.importedId = _data["importedId"];
             this.isArchived = _data["isArchived"];
-            this.owner = _data["owner"];
+            this.crmOwnerId = _data["crmOwnerId"];
             this.petName = _data["petName"];
             this.industry = _data["industry"];
             this.numberOfEmployees = _data["numberOfEmployees"];
+            this.pmNotes = _data["pmNotes"];
+            this.oldPmType = _data["oldPmType"];
+            this.clientType = _data["clientType"];
+            this.targetAccount = _data["targetAccount"];
+            this.accountManager2CrmId = _data["accountManager2CrmId"];
+            this.accountManager3CrmId = _data["accountManager3CrmId"];
+            this.description = _data["description"];
             if (Array.isArray(_data["contactAssociationIds"])) {
                 this.contactAssociationIds = [] as any;
                 for (let item of _data["contactAssociationIds"])
@@ -27733,17 +28834,27 @@ export class HubSpotClientDto implements IHubSpotClientDto {
         data["address2"] = this.address2;
         data["postCode"] = this.postCode;
         data["city"] = this.city;
+        data["state"] = this.state;
         data["country"] = this.country;
-        data["tenantForCreation"] = this.tenantForCreation;
         data["webDomain"] = this.webDomain;
+        data["website"] = this.website;
         data["phone"] = this.phone;
+        data["tenantForCreation"] = this.tenantForCreation;
         data["legacyClientId"] = this.legacyClientId;
         data["pmTenantId"] = this.pmTenantId;
+        data["importedId"] = this.importedId;
         data["isArchived"] = this.isArchived;
-        data["owner"] = this.owner;
+        data["crmOwnerId"] = this.crmOwnerId;
         data["petName"] = this.petName;
         data["industry"] = this.industry;
         data["numberOfEmployees"] = this.numberOfEmployees;
+        data["pmNotes"] = this.pmNotes;
+        data["oldPmType"] = this.oldPmType;
+        data["clientType"] = this.clientType;
+        data["targetAccount"] = this.targetAccount;
+        data["accountManager2CrmId"] = this.accountManager2CrmId;
+        data["accountManager3CrmId"] = this.accountManager3CrmId;
+        data["description"] = this.description;
         if (Array.isArray(this.contactAssociationIds)) {
             data["contactAssociationIds"] = [];
             for (let item of this.contactAssociationIds)
@@ -27766,17 +28877,27 @@ export interface IHubSpotClientDto {
     address2?: string | undefined;
     postCode?: string | undefined;
     city?: string | undefined;
+    state?: string | undefined;
     country?: string | undefined;
-    tenantForCreation?: string | undefined;
     webDomain?: string | undefined;
+    website?: string | undefined;
     phone?: string | undefined;
+    tenantForCreation?: string | undefined;
     legacyClientId?: string | undefined;
     pmTenantId?: string | undefined;
+    importedId?: string | undefined;
     isArchived?: boolean;
-    owner?: string | undefined;
+    crmOwnerId?: string | undefined;
     petName?: string | undefined;
     industry?: string | undefined;
     numberOfEmployees?: string | undefined;
+    pmNotes?: string | undefined;
+    oldPmType?: string | undefined;
+    clientType?: string | undefined;
+    targetAccount?: boolean | undefined;
+    accountManager2CrmId?: string | undefined;
+    accountManager3CrmId?: string | undefined;
+    description?: string | undefined;
     contactAssociationIds?: CrmContactId[] | undefined;
     childrenCrmClientIds?: CrmClientId[] | undefined;
     parentCrmClientId?: CrmClientId;
@@ -29120,11 +30241,14 @@ export class ProjectLineDto implements IProjectLineDto {
     differentInvoiceRecipient?: boolean;
     invoiceRecipientId?: number | undefined;
     invoiceRecipient?: ClientResultDto;
+    invoiceRecipientAddressId?: number | undefined;
+    invoiceRecipientAddress?: ClientAddressDto;
     modifiedById?: number | undefined;
     modifiedBy?: EmployeeDto;
     modificationDate?: moment.Moment | undefined;
     consultantInsuranceOptionId?: number | undefined;
     isLineForFees?: boolean | undefined;
+    purchaseOrderId?: number | undefined;
     markedForLegacyDeletion?: boolean | undefined;
     wasSynced?: boolean | undefined;
 
@@ -29156,11 +30280,14 @@ export class ProjectLineDto implements IProjectLineDto {
             this.differentInvoiceRecipient = _data["differentInvoiceRecipient"];
             this.invoiceRecipientId = _data["invoiceRecipientId"];
             this.invoiceRecipient = _data["invoiceRecipient"] ? ClientResultDto.fromJS(_data["invoiceRecipient"]) : <any>undefined;
+            this.invoiceRecipientAddressId = _data["invoiceRecipientAddressId"];
+            this.invoiceRecipientAddress = _data["invoiceRecipientAddress"] ? ClientAddressDto.fromJS(_data["invoiceRecipientAddress"]) : <any>undefined;
             this.modifiedById = _data["modifiedById"];
             this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
             this.modificationDate = _data["modificationDate"] ? moment(_data["modificationDate"].toString()) : <any>undefined;
             this.consultantInsuranceOptionId = _data["consultantInsuranceOptionId"];
             this.isLineForFees = _data["isLineForFees"];
+            this.purchaseOrderId = _data["purchaseOrderId"];
             this.markedForLegacyDeletion = _data["markedForLegacyDeletion"];
             this.wasSynced = _data["wasSynced"];
         }
@@ -29192,11 +30319,14 @@ export class ProjectLineDto implements IProjectLineDto {
         data["differentInvoiceRecipient"] = this.differentInvoiceRecipient;
         data["invoiceRecipientId"] = this.invoiceRecipientId;
         data["invoiceRecipient"] = this.invoiceRecipient ? this.invoiceRecipient.toJSON() : <any>undefined;
+        data["invoiceRecipientAddressId"] = this.invoiceRecipientAddressId;
+        data["invoiceRecipientAddress"] = this.invoiceRecipientAddress ? this.invoiceRecipientAddress.toJSON() : <any>undefined;
         data["modifiedById"] = this.modifiedById;
         data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
         data["modificationDate"] = this.modificationDate ? this.modificationDate.format('YYYY-MM-DD') : <any>undefined;
         data["consultantInsuranceOptionId"] = this.consultantInsuranceOptionId;
         data["isLineForFees"] = this.isLineForFees;
+        data["purchaseOrderId"] = this.purchaseOrderId;
         data["markedForLegacyDeletion"] = this.markedForLegacyDeletion;
         data["wasSynced"] = this.wasSynced;
         return data;
@@ -29221,11 +30351,14 @@ export interface IProjectLineDto {
     differentInvoiceRecipient?: boolean;
     invoiceRecipientId?: number | undefined;
     invoiceRecipient?: ClientResultDto;
+    invoiceRecipientAddressId?: number | undefined;
+    invoiceRecipientAddress?: ClientAddressDto;
     modifiedById?: number | undefined;
     modifiedBy?: EmployeeDto;
     modificationDate?: moment.Moment | undefined;
     consultantInsuranceOptionId?: number | undefined;
     isLineForFees?: boolean | undefined;
+    purchaseOrderId?: number | undefined;
     markedForLegacyDeletion?: boolean | undefined;
     wasSynced?: boolean | undefined;
 }
@@ -29312,6 +30445,188 @@ export class ProjectTypeDto implements IProjectTypeDto {
 export interface IProjectTypeDto {
     id?: number;
     name?: string | undefined;
+}
+
+export class PurchaseOrderCapDto implements IPurchaseOrderCapDto {
+    type?: PurchaseOrderCapType;
+    valueUnitTypeId?: number | undefined;
+    maxAmount?: number | undefined;
+    currencyId?: number | undefined;
+    amountUsed?: number | undefined;
+
+    constructor(data?: IPurchaseOrderCapDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.type = _data["type"];
+            this.valueUnitTypeId = _data["valueUnitTypeId"];
+            this.maxAmount = _data["maxAmount"];
+            this.currencyId = _data["currencyId"];
+            this.amountUsed = _data["amountUsed"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderCapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderCapDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
+        data["valueUnitTypeId"] = this.valueUnitTypeId;
+        data["maxAmount"] = this.maxAmount;
+        data["currencyId"] = this.currencyId;
+        data["amountUsed"] = this.amountUsed;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderCapDto {
+    type?: PurchaseOrderCapType;
+    valueUnitTypeId?: number | undefined;
+    maxAmount?: number | undefined;
+    currencyId?: number | undefined;
+    amountUsed?: number | undefined;
+}
+
+export enum PurchaseOrderCapType {
+    CapOnUnits = 1,
+    CapOnValue = 2,
+    NoCap = 3,
+}
+
+export class PurchaseOrderCurrentContextDto implements IPurchaseOrderCurrentContextDto {
+    isUserAllowedToEdit?: boolean;
+    isSharedWithAnotherWorkflow?: boolean;
+
+    constructor(data?: IPurchaseOrderCurrentContextDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isUserAllowedToEdit = _data["isUserAllowedToEdit"];
+            this.isSharedWithAnotherWorkflow = _data["isSharedWithAnotherWorkflow"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderCurrentContextDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderCurrentContextDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isUserAllowedToEdit"] = this.isUserAllowedToEdit;
+        data["isSharedWithAnotherWorkflow"] = this.isSharedWithAnotherWorkflow;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderCurrentContextDto {
+    isUserAllowedToEdit?: boolean;
+    isSharedWithAnotherWorkflow?: boolean;
+}
+
+export class PurchaseOrderDto implements IPurchaseOrderDto {
+    id?: number | undefined;
+    number?: string | undefined;
+    numberMissingButRequired?: boolean | undefined;
+    receiveDate?: moment.Moment | undefined;
+    capForInvoicing?: PurchaseOrderCapDto;
+    createdBy?: EmployeeDto;
+    createdOnUtc?: moment.Moment | undefined;
+    modifiedBy?: EmployeeDto;
+    modifiedOnUtc?: moment.Moment | undefined;
+    workflowsIdsReferencingThisPo?: string[] | undefined;
+    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+
+    constructor(data?: IPurchaseOrderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.number = _data["number"];
+            this.numberMissingButRequired = _data["numberMissingButRequired"];
+            this.receiveDate = _data["receiveDate"] ? moment(_data["receiveDate"].toString()) : <any>undefined;
+            this.capForInvoicing = _data["capForInvoicing"] ? PurchaseOrderCapDto.fromJS(_data["capForInvoicing"]) : <any>undefined;
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
+            this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
+            this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
+            if (Array.isArray(_data["workflowsIdsReferencingThisPo"])) {
+                this.workflowsIdsReferencingThisPo = [] as any;
+                for (let item of _data["workflowsIdsReferencingThisPo"])
+                    this.workflowsIdsReferencingThisPo!.push(item);
+            }
+            this.purchaseOrderCurrentContextData = _data["purchaseOrderCurrentContextData"] ? PurchaseOrderCurrentContextDto.fromJS(_data["purchaseOrderCurrentContextData"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["number"] = this.number;
+        data["numberMissingButRequired"] = this.numberMissingButRequired;
+        data["receiveDate"] = this.receiveDate ? this.receiveDate.format('YYYY-MM-DD') : <any>undefined;
+        data["capForInvoicing"] = this.capForInvoicing ? this.capForInvoicing.toJSON() : <any>undefined;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
+        data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
+        data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
+        if (Array.isArray(this.workflowsIdsReferencingThisPo)) {
+            data["workflowsIdsReferencingThisPo"] = [];
+            for (let item of this.workflowsIdsReferencingThisPo)
+                data["workflowsIdsReferencingThisPo"].push(item);
+        }
+        data["purchaseOrderCurrentContextData"] = this.purchaseOrderCurrentContextData ? this.purchaseOrderCurrentContextData.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderDto {
+    id?: number | undefined;
+    number?: string | undefined;
+    numberMissingButRequired?: boolean | undefined;
+    receiveDate?: moment.Moment | undefined;
+    capForInvoicing?: PurchaseOrderCapDto;
+    createdBy?: EmployeeDto;
+    createdOnUtc?: moment.Moment | undefined;
+    modifiedBy?: EmployeeDto;
+    modifiedOnUtc?: moment.Moment | undefined;
+    workflowsIdsReferencingThisPo?: string[] | undefined;
+    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
 }
 
 export class RecipientPreviewDto implements IRecipientPreviewDto {
@@ -29622,15 +30937,19 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     differentEndClient?: boolean;
     directClientIdValue?: number | undefined;
     directClient?: ClientResultDto;
+    directClientAddressId?: number | undefined;
+    directClientAddress?: ClientAddressDto;
     endClientIdValue?: number | undefined;
     endClient?: ClientResultDto;
+    endClientAddressId?: number | undefined;
+    endClientAddress?: ClientAddressDto;
     clientContactProjectManager?: ContactResultDto;
     noClientExtensionOption?: boolean;
     clientExtensionDurationId?: number | undefined;
     clientExtensionDeadlineId?: number | undefined;
     clientExtensionSpecificDate?: moment.Moment | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcInvoicingEntityId?: number | undefined;
     clientRate?: ClientRateDto;
     noInvoicingReferenceNumber?: boolean;
@@ -29638,9 +30957,12 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     clientInvoicingRecipientSameAsDirectClient?: boolean;
     clientInvoicingRecipientIdValue?: number | undefined;
     clientInvoicingRecipient?: ClientResultDto;
+    clientInvoicingRecipientAddressId?: number | undefined;
+    clientInvoicingRecipientAddress?: ClientAddressDto;
     invoicingReferencePersonIdValue?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
+    purchaseOrdersIds?: number[] | undefined;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -29668,15 +30990,23 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.differentEndClient = _data["differentEndClient"];
             this.directClientIdValue = _data["directClientIdValue"];
             this.directClient = _data["directClient"] ? ClientResultDto.fromJS(_data["directClient"]) : <any>undefined;
+            this.directClientAddressId = _data["directClientAddressId"];
+            this.directClientAddress = _data["directClientAddress"] ? ClientAddressDto.fromJS(_data["directClientAddress"]) : <any>undefined;
             this.endClientIdValue = _data["endClientIdValue"];
             this.endClient = _data["endClient"] ? ClientResultDto.fromJS(_data["endClient"]) : <any>undefined;
+            this.endClientAddressId = _data["endClientAddressId"];
+            this.endClientAddress = _data["endClientAddress"] ? ClientAddressDto.fromJS(_data["endClientAddress"]) : <any>undefined;
             this.clientContactProjectManager = _data["clientContactProjectManager"] ? ContactResultDto.fromJS(_data["clientContactProjectManager"]) : <any>undefined;
             this.noClientExtensionOption = _data["noClientExtensionOption"];
             this.clientExtensionDurationId = _data["clientExtensionDurationId"];
             this.clientExtensionDeadlineId = _data["clientExtensionDeadlineId"];
             this.clientExtensionSpecificDate = _data["clientExtensionSpecificDate"] ? moment(_data["clientExtensionSpecificDate"].toString()) : <any>undefined;
             this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
-            this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
+            if (Array.isArray(_data["timeReportingCaps"])) {
+                this.timeReportingCaps = [] as any;
+                for (let item of _data["timeReportingCaps"])
+                    this.timeReportingCaps!.push(TimeReportingCapDto.fromJS(item));
+            }
             this.pdcInvoicingEntityId = _data["pdcInvoicingEntityId"];
             this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
             this.noInvoicingReferenceNumber = _data["noInvoicingReferenceNumber"];
@@ -29684,9 +31014,16 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.clientInvoicingRecipientSameAsDirectClient = _data["clientInvoicingRecipientSameAsDirectClient"];
             this.clientInvoicingRecipientIdValue = _data["clientInvoicingRecipientIdValue"];
             this.clientInvoicingRecipient = _data["clientInvoicingRecipient"] ? ClientResultDto.fromJS(_data["clientInvoicingRecipient"]) : <any>undefined;
+            this.clientInvoicingRecipientAddressId = _data["clientInvoicingRecipientAddressId"];
+            this.clientInvoicingRecipientAddress = _data["clientInvoicingRecipientAddress"] ? ClientAddressDto.fromJS(_data["clientInvoicingRecipientAddress"]) : <any>undefined;
             this.invoicingReferencePersonIdValue = _data["invoicingReferencePersonIdValue"];
             this.invoicingReferencePerson = _data["invoicingReferencePerson"] ? ContactResultDto.fromJS(_data["invoicingReferencePerson"]) : <any>undefined;
             this.invoicingReferencePersonDontShowOnInvoice = _data["invoicingReferencePersonDontShowOnInvoice"];
+            if (Array.isArray(_data["purchaseOrdersIds"])) {
+                this.purchaseOrdersIds = [] as any;
+                for (let item of _data["purchaseOrdersIds"])
+                    this.purchaseOrdersIds!.push(item);
+            }
             this.noSpecialRate = _data["noSpecialRate"];
             if (Array.isArray(_data["periodClientSpecialRates"])) {
                 this.periodClientSpecialRates = [] as any;
@@ -29726,15 +31063,23 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["differentEndClient"] = this.differentEndClient;
         data["directClientIdValue"] = this.directClientIdValue;
         data["directClient"] = this.directClient ? this.directClient.toJSON() : <any>undefined;
+        data["directClientAddressId"] = this.directClientAddressId;
+        data["directClientAddress"] = this.directClientAddress ? this.directClientAddress.toJSON() : <any>undefined;
         data["endClientIdValue"] = this.endClientIdValue;
         data["endClient"] = this.endClient ? this.endClient.toJSON() : <any>undefined;
+        data["endClientAddressId"] = this.endClientAddressId;
+        data["endClientAddress"] = this.endClientAddress ? this.endClientAddress.toJSON() : <any>undefined;
         data["clientContactProjectManager"] = this.clientContactProjectManager ? this.clientContactProjectManager.toJSON() : <any>undefined;
         data["noClientExtensionOption"] = this.noClientExtensionOption;
         data["clientExtensionDurationId"] = this.clientExtensionDurationId;
         data["clientExtensionDeadlineId"] = this.clientExtensionDeadlineId;
         data["clientExtensionSpecificDate"] = this.clientExtensionSpecificDate ? this.clientExtensionSpecificDate.toISOString() : <any>undefined;
         data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
-        data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
+        if (Array.isArray(this.timeReportingCaps)) {
+            data["timeReportingCaps"] = [];
+            for (let item of this.timeReportingCaps)
+                data["timeReportingCaps"].push(item.toJSON());
+        }
         data["pdcInvoicingEntityId"] = this.pdcInvoicingEntityId;
         data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
         data["noInvoicingReferenceNumber"] = this.noInvoicingReferenceNumber;
@@ -29742,9 +31087,16 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["clientInvoicingRecipientSameAsDirectClient"] = this.clientInvoicingRecipientSameAsDirectClient;
         data["clientInvoicingRecipientIdValue"] = this.clientInvoicingRecipientIdValue;
         data["clientInvoicingRecipient"] = this.clientInvoicingRecipient ? this.clientInvoicingRecipient.toJSON() : <any>undefined;
+        data["clientInvoicingRecipientAddressId"] = this.clientInvoicingRecipientAddressId;
+        data["clientInvoicingRecipientAddress"] = this.clientInvoicingRecipientAddress ? this.clientInvoicingRecipientAddress.toJSON() : <any>undefined;
         data["invoicingReferencePersonIdValue"] = this.invoicingReferencePersonIdValue;
         data["invoicingReferencePerson"] = this.invoicingReferencePerson ? this.invoicingReferencePerson.toJSON() : <any>undefined;
         data["invoicingReferencePersonDontShowOnInvoice"] = this.invoicingReferencePersonDontShowOnInvoice;
+        if (Array.isArray(this.purchaseOrdersIds)) {
+            data["purchaseOrdersIds"] = [];
+            for (let item of this.purchaseOrdersIds)
+                data["purchaseOrdersIds"].push(item);
+        }
         data["noSpecialRate"] = this.noSpecialRate;
         if (Array.isArray(this.periodClientSpecialRates)) {
             data["periodClientSpecialRates"] = [];
@@ -29777,15 +31129,19 @@ export interface ISalesClientDataDto {
     differentEndClient?: boolean;
     directClientIdValue?: number | undefined;
     directClient?: ClientResultDto;
+    directClientAddressId?: number | undefined;
+    directClientAddress?: ClientAddressDto;
     endClientIdValue?: number | undefined;
     endClient?: ClientResultDto;
+    endClientAddressId?: number | undefined;
+    endClientAddress?: ClientAddressDto;
     clientContactProjectManager?: ContactResultDto;
     noClientExtensionOption?: boolean;
     clientExtensionDurationId?: number | undefined;
     clientExtensionDeadlineId?: number | undefined;
     clientExtensionSpecificDate?: moment.Moment | undefined;
     clientTimeReportingCapId?: number | undefined;
-    clientTimeReportingCapMaxValue?: number | undefined;
+    timeReportingCaps?: TimeReportingCapDto[] | undefined;
     pdcInvoicingEntityId?: number | undefined;
     clientRate?: ClientRateDto;
     noInvoicingReferenceNumber?: boolean;
@@ -29793,9 +31149,12 @@ export interface ISalesClientDataDto {
     clientInvoicingRecipientSameAsDirectClient?: boolean;
     clientInvoicingRecipientIdValue?: number | undefined;
     clientInvoicingRecipient?: ClientResultDto;
+    clientInvoicingRecipientAddressId?: number | undefined;
+    clientInvoicingRecipientAddress?: ClientAddressDto;
     invoicingReferencePersonIdValue?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
+    purchaseOrdersIds?: number[] | undefined;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -29829,6 +31188,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     commissionAccountManagerData?: EmployeeDto;
     commissionedEmployeesIdValues?: number[] | undefined;
     commissionedEmployeesData?: EmployeeDto[] | undefined;
+    primarySourcerId?: number | undefined;
+    primarySourcer?: EmployeeDto;
     contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
@@ -29875,6 +31236,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
                 for (let item of _data["commissionedEmployeesData"])
                     this.commissionedEmployeesData!.push(EmployeeDto.fromJS(item));
             }
+            this.primarySourcerId = _data["primarySourcerId"];
+            this.primarySourcer = _data["primarySourcer"] ? EmployeeDto.fromJS(_data["primarySourcer"]) : <any>undefined;
             if (Array.isArray(_data["contractExpirationNotificationIntervalIds"])) {
                 this.contractExpirationNotificationIntervalIds = [] as any;
                 for (let item of _data["contractExpirationNotificationIntervalIds"])
@@ -29925,6 +31288,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
             for (let item of this.commissionedEmployeesData)
                 data["commissionedEmployeesData"].push(item.toJSON());
         }
+        data["primarySourcerId"] = this.primarySourcerId;
+        data["primarySourcer"] = this.primarySourcer ? this.primarySourcer.toJSON() : <any>undefined;
         if (Array.isArray(this.contractExpirationNotificationIntervalIds)) {
             data["contractExpirationNotificationIntervalIds"] = [];
             for (let item of this.contractExpirationNotificationIntervalIds)
@@ -29956,6 +31321,8 @@ export interface ISalesMainDataDto {
     commissionAccountManagerData?: EmployeeDto;
     commissionedEmployeesIdValues?: number[] | undefined;
     commissionedEmployeesData?: EmployeeDto[] | undefined;
+    primarySourcerId?: number | undefined;
+    primarySourcer?: EmployeeDto;
     contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
@@ -31453,6 +32820,90 @@ export enum TerminationTime {
     ContractDidNotStart = 3,
 }
 
+export class TimeReportingCapDto implements ITimeReportingCapDto {
+    id?: TimeReportingCapId;
+    timeReportingCapMaxValue?: number;
+    valueUnitId?: number;
+    periodUnitId?: number;
+
+    constructor(data?: ITimeReportingCapDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] ? TimeReportingCapId.fromJS(_data["id"]) : <any>undefined;
+            this.timeReportingCapMaxValue = _data["timeReportingCapMaxValue"];
+            this.valueUnitId = _data["valueUnitId"];
+            this.periodUnitId = _data["periodUnitId"];
+        }
+    }
+
+    static fromJS(data: any): TimeReportingCapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeReportingCapDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["timeReportingCapMaxValue"] = this.timeReportingCapMaxValue;
+        data["valueUnitId"] = this.valueUnitId;
+        data["periodUnitId"] = this.periodUnitId;
+        return data;
+    }
+}
+
+export interface ITimeReportingCapDto {
+    id?: TimeReportingCapId;
+    timeReportingCapMaxValue?: number;
+    valueUnitId?: number;
+    periodUnitId?: number;
+}
+
+export class TimeReportingCapId implements ITimeReportingCapId {
+    readonly value?: number;
+
+    constructor(data?: ITimeReportingCapId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): TimeReportingCapId {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeReportingCapId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface ITimeReportingCapId {
+    value?: number;
+}
+
 export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAttachmentFileInfoInputDto {
     clientAttachmentGuid?: string;
     headline?: string | undefined;
@@ -32692,6 +34143,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
     typeId?: WorkflowProcessType;
     name?: string | undefined;
     processId?: string | undefined;
+    clientPeriodId?: string | undefined;
     steps?: WorkflowListStepDto[] | undefined;
 
     constructor(data?: IWorkflowListProcessDto) {
@@ -32708,6 +34160,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
             this.typeId = _data["typeId"];
             this.name = _data["name"];
             this.processId = _data["processId"];
+            this.clientPeriodId = _data["clientPeriodId"];
             if (Array.isArray(_data["steps"])) {
                 this.steps = [] as any;
                 for (let item of _data["steps"])
@@ -32728,6 +34181,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
         data["typeId"] = this.typeId;
         data["name"] = this.name;
         data["processId"] = this.processId;
+        data["clientPeriodId"] = this.clientPeriodId;
         if (Array.isArray(this.steps)) {
             data["steps"] = [];
             for (let item of this.steps)
@@ -32741,6 +34195,7 @@ export interface IWorkflowListProcessDto {
     typeId?: WorkflowProcessType;
     name?: string | undefined;
     processId?: string | undefined;
+    clientPeriodId?: string | undefined;
     steps?: WorkflowListStepDto[] | undefined;
 }
 

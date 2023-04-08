@@ -56,6 +56,11 @@
         border-radius: 50% !important;
         margin-right: 5px;
     }
+    &--circled {
+        mat-icon {
+            background-color: transparent !important;
+        }
+    }
     @media screen and (max-width: 1440px) {
         mat-icon {
             width: 16px;
@@ -330,10 +335,29 @@
     }
 }
 
-.link-to-client-icon:disabled {
-    mat-icon {
-        svg path {
-            fill: $light-grey-color;
+.link-to-client-icon {
+    &.mat-flat-button {
+        background-color: transparent !important;
+        font-weight: 700;
+        padding: 0 !important;
+        &:not([disabled]):hover {
+            background-color: rgba(139,209,203,0.22);
+        }
+        .mat-button-wrapper {
+            @include flexCentered();
+            height: 24px;
+            line-height: 24px;
+            mat-icon {
+                @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
+                margin-right: 8px;
+            }
+        }
+    }
+    &:disabled {
+        mat-icon {
+            svg path {
+                fill: $light-grey-color;
+            }
         }
     }
 }

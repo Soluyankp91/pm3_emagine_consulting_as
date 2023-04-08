@@ -27,6 +27,8 @@ import { DOCUMENT } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClientTemplatePreviewComponent } from './preview/client-template-preview.component';
 import { tapOnce } from '../../shared/operators/tapOnceOperator';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
 
@@ -60,6 +62,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		private readonly _contractService: ContractsService,
 		private readonly _snackBar: MatSnackBar,
 		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+		private readonly _titleService: TitleService,
 		private readonly _dialog: MatDialog,
 		@Inject(DOCUMENT) private _document: Document
 	) {
@@ -71,6 +74,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	dataSource$ = this._clientTemplatesService.getContracts$();
 
 	ngOnInit(): void {
+		this._titleService.setTitle(ERouteTitleType.ContractClientTemplates);
 		this._initPreselectedFilters();
 		this._initTable$();
 		this._subscribeOnDataLoading();

@@ -148,7 +148,14 @@
                 </button>
             </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
+        <div fxLayout="row" [fxLayoutAlign]="isAdvancedFilters ? 'space-between center' : 'flex-end center'" class="u-w--100">
+            <ng-container *ngIf="isAdvancedFilters">
+                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--10" [ngClass]="{'selected-status': showPONumberMissing}" appPreventDoubleClick (throttledClick)="showPONumberMissing = !showPONumberMissing; updateAdvancedFiltersCounter(); getWorkflowList(true)">
+                    <span class="workflow-list--filter-type__name">
+                        PO number missing
+                    </span>
+                </span>
+            </ng-container>
             <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': advancedFiltersCounter > 0}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="filter-icon"></mat-icon>
                 <span class="advanced-filterd--btn-text u-ml--5">{{advancedFiltersCounter > 0 ? advancedFiltersCounter : ''}} Advanced filters</span>
@@ -234,9 +241,9 @@
                 </ng-container>
                 <ng-container matColumnDef="WorkflowId">
                     <mat-header-cell *matHeaderCellDef matSort [matSortActive]="sortingValues['WorkflowId'] === '' ? '' : 'WorkflowId'" [matSortDirection]="sortingValues['WorkflowId']" (matSortChange)="sortChanged($event)" mat-sort-header="WorkflowId" fxFlex="5%" fxLayoutAlign="start center">ID</mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowId" matTooltipClass="white-tooltip">
-                            {{row.workflowId}}
+                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="start center">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowSequenceIdCode" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.workflowSequenceIdCode}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -329,6 +336,7 @@
                     <mat-cell *matCellDef="let row" fxFlex="12%">
                         <div class="column">
                             <div *ngFor="let item of row.openProcesses; last as last"
+                                 (click)="openPeriod(row.workflowId, item.processId)"
                                  style="height: 50px;"
                                  class="flex-justify-center column"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">

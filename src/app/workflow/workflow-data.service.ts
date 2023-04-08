@@ -42,6 +42,8 @@ export class WorkflowDataService {
     preselectFrameAgreement = new EventEmitter();
 
     cancelForceEdit =  new EventEmitter<any>();
+    resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
+    updatePurchaseOrders = new EventEmitter();
     isContractModuleEnabled: boolean;
 
     constructor() {}

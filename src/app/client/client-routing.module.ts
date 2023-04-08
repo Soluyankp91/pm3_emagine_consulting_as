@@ -8,6 +8,7 @@ import { ClientRatesAndFeesComponent } from './client-rates-and-fees/client-rate
 import { ClientDocumentsComponent } from './client-documents/client-documents.component';
 import { ClientContactsComponent } from './client-contacts/client-contacts.component';
 import { WfResponsibleComponent } from './wf-responsible/wf-responsible.component';
+import { ClientAddressComponent } from './client-address/client-address.component';
 
 const routes: Routes = [
     {
@@ -46,6 +47,10 @@ const routes: Routes = [
             {
                 path: 'wf-responsible',
                 component: WfResponsibleComponent
+            },
+            {
+                path: 'address',
+                component: ClientAddressComponent
             }
         ]
     }

@@ -16,6 +16,8 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject, EMPTY, of } from 'rxjs';
 import { takeUntil, startWith, pairwise, switchMap, catchError } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
@@ -96,12 +98,14 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		private readonly _dialog: MatDialog,
 		private readonly _extraHttp: ExtraHttpsService,
 		private readonly _cdr: ChangeDetectorRef,
-		private readonly _injector: Injector
+		private readonly _injector: Injector,
+        private readonly _titleService: TitleService,
 	) {
 		super(_injector);
 	}
 
 	ngOnInit(): void {
+		this._titleService.setTitle(ERouteTitleType.ContractAgreement);
 		this._initTable$();
 		this._initPreselectedFilters();
 		this._subscribeOnOuterClicks();

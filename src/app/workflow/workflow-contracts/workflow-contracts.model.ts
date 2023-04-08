@@ -111,8 +111,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             endClientId: new UntypedFormControl(null),
             pdcInvoicingEntityId: new UntypedFormControl(null),
             clientTimeReportingCapId: new UntypedFormControl(null),
-            clientTimeReportingCapMaxValue: new UntypedFormControl(null),
-            clientTimeReportingCapCurrencyId: new UntypedFormControl(null),
+            timeReportingCaps: new UntypedFormArray([]),
             rateUnitType: new UntypedFormControl(null),
             currency: new UntypedFormControl(null),
             clientRate: new UntypedFormControl(null),
@@ -129,7 +128,6 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             noSpecialContractTerms: new UntypedFormControl(null),
             clientRates: new UntypedFormArray([]),
             clientFees: new UntypedFormArray([]),
-
         });
     }
 
@@ -145,11 +143,8 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     get clientTimeReportingCapId() {
         return this.get('clientTimeReportingCapId');
     }
-    get clientTimeReportingCapMaxValue() {
-        return this.get('clientTimeReportingCapMaxValue');
-    }
-    get clientTimeReportingCapCurrencyId() {
-        return this.get('clientTimeReportingCapCurrencyId');
+    get timeReportingCaps() {
+        return this.get('timeReportingCaps') as UntypedFormArray;
     }
     get rateUnitType() {
         return this.get('rateUnitType');
@@ -199,7 +194,7 @@ export class WorkflowContractsConsultantsDataForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        })
+        });
     }
     get consultants() {
         return this.get('consultants') as UntypedFormArray;
@@ -210,7 +205,7 @@ export class WorkflowConsultantsLegalContractForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([])
-        })
+        });
 
     }
     get consultants() {
@@ -223,7 +218,7 @@ export class WorkflowContractsTerminationConsultantsDataForm extends UntypedForm
     constructor() {
         super({
             consultantTerminationContractData: new UntypedFormArray([])
-        })
+        });
 
     }
     get consultantTerminationContractData() {

@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Component, Injector, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -34,12 +34,15 @@ import {
 	WorkflowServiceProxy,
 	WorkflowStepStatus,
 } from 'src/shared/service-proxies/service-proxies';
+import { PurchaseOrdersComponent } from '../shared/components/purchase-orders/purchase-orders.component';
+import { EPurchaseOrderMode } from '../shared/components/purchase-orders/purchase-orders.model';
 import { WFDocument } from '../shared/components/wf-documents/wf-documents.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model';
+import { WorkflowDiallogAction, WorkflowProgressStatus, WorkflowTopSections } from '../workflow.model';
+import { FormatDate } from './workflow-overview.helper';
 import { EStepActionTooltip, IWFOverviewDocuments } from './workflow-overview.model';
 
 @Component({
@@ -49,12 +52,13 @@ import { EStepActionTooltip, IWFOverviewDocuments } from './workflow-overview.mo
 })
 export class WorkflowOverviewComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild('gantt') ganttComponent: NgxGanttComponent;
+	@ViewChild('purchaseOrder') purchaseOrder: PurchaseOrdersComponent;
 
-	@Input() workflowId: string;
-	@Input() periodId: string | undefined;
-	@Input() clientPeriods: ClientPeriodDto[] | undefined;
+	workflowId: string;
+	clientPeriods: ClientPeriodDto[] | undefined;
 
 	documentsPeriod = new UntypedFormControl(null);
+    periodId: string | undefined;
 
 	componentInitalized = false;
 	workflowStepStatus = WorkflowStepStatus;
@@ -90,31 +94,32 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	pageSizeOptions = [5, 10, 20, 50, 100];
 	individualConsultantActionsAvailable: boolean;
     showAllDocument = false;
+    ePurchaseOrderMode = EPurchaseOrderMode;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
 		public _workflowDataService: WorkflowDataService,
 		private _workflowService: WorkflowServiceProxy,
-		private activatedRoute: ActivatedRoute,
-		private overlay: Overlay,
-		private dialog: MatDialog,
+		private _activatedRoute: ActivatedRoute,
+		private _overlay: Overlay,
+		private _dialog: MatDialog,
 		private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
 		private _clientPeriodService: ClientPeriodServiceProxy,
 		private _workflowDocumentsService: WorkflowDocumentServiceProxy,
-        private localHttpService: LocalHttpService,
-        private httpClient: HttpClient
+        private _localHttpService: LocalHttpService,
+        private _httpClient: HttpClient
 	) {
 		super(injector);
 	}
 
 	ngOnInit(): void {
-		this.activatedRoute.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
+		this._activatedRoute.parent.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.workflowId = params.get('id')!;
+            this._getClientPeriods();
+            this.componentInitalized = true;
+            this.individualConsultantActionsAvailable = environment.dev;
+            this._getOverviewData();
 		});
-		this.componentInitalized = true;
-		this.individualConsultantActionsAvailable = environment.dev;
-        this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
-		this._getOverviewData();
 
 		this._workflowDataService.workflowOverviewUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
 			this._getOverviewData();
@@ -126,14 +131,34 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		this._unsubscribe.complete();
 	}
 
+    private _setWFProgress() {
+        let newStatus = new WorkflowProgressStatus();
+        newStatus.currentStepIsCompleted = false;
+        newStatus.currentStepIsForcefullyEditing = false;
+        newStatus.currentlyActiveSideSection = 0;
+        newStatus.currentlyActiveStep = 0;
+        newStatus.stepSpecificPermissions = {
+            StartEdit: false,
+            Edit: false,
+            Completion: false,
+        };
+        newStatus.currentlyActivePeriodId = this.periodId;
+        newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    }
+
+    public openPeriod(process: WorkflowProcessDto) {
+        // TODO: navigate to period once we have periodId in a response
+    }
+
     private _getOverviewData() {
-        this.getChartData();
-        this.getWorkflowHistory();
+        this._getChartData();
+        this._getWorkflowHistory();
         this.getDocuments();
     }
 
-	getDocuments() {
-        const periodFilter = this.documentsPeriod.value === 'All' ? undefined : this.documentsPeriod.value;
+	public getDocuments() {
+        const periodFilter = this.documentsPeriod.value === 'All' || this.documentsPeriod.value === null ? undefined : this.documentsPeriod.value;
 		this._workflowDocumentsService
 			.overviewAll(this.workflowId, periodFilter)
 			.subscribe((result) => {
@@ -153,7 +178,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			});
 	}
 
-	getChartData() {
+	private _getChartData() {
 		this.overviewGroups = [];
 		this.overviewItems = [];
 		this._workflowService.overview(this.workflowId).subscribe((result) => {
@@ -186,9 +211,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			if (
 				oldestDateClientArray![0]!.endDate === undefined ||
 				oldestDateClientArray![0]!.endDate.toDate().getTime() <
-					this.formatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()
+                    FormatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()
 			) {
-				endDate = this.formatDate(startOfClientArray![0]?.startDate!.toDate()!);
+				endDate = FormatDate(startOfClientArray![0]?.startDate!.toDate()!);
 			}
 
 			this.viewOptions.start = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
@@ -209,7 +234,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 					title: x.name!,
 				});
 
-				items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
+				items = [...items, ...this._formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
 			});
 
 			result.consultantGanttRows!.map((x, index) => {
@@ -220,7 +245,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 					origin: x,
 				});
 
-				items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
+				items = [...items, ...this._formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
 			});
 
 			this.overviewGroups = groups;
@@ -228,16 +253,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		});
 	}
 
-	formatDate(date: any) {
-		var d = new Date(date),
-			month = d.getMonth() + 3,
-			day = d.getDate() - d.getDate(),
-			year = d.getFullYear();
-
-		return new Date(year, month, day);
-	}
-
-	formatItems(length: number, parent: GanttRowItem[], group: string) {
+	private _formatItems(length: number, parent: GanttRowItem[], group: string) {
 		const items = [];
 		for (let i = 0; i < length; i++) {
 			items.push({
@@ -256,36 +272,48 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		return items;
 	}
 
-	getColorForConsultantsOverview(item: WorkflowProcessType | undefined) {
-		switch (item) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.ChangeClientPeriod:
-			case WorkflowProcessType.ExtendClientPeriod:
-				return 'rgba(23, 162, 151, 1)';
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				return 'rgba(106, 71, 184, 1)';
-			case WorkflowProcessType.TerminateConsultant:
-			case WorkflowProcessType.TerminateWorkflow:
-				return 'rgba(255, 122, 120, 1)';
-			default:
-				break;
-		}
-	}
-	getWorkflowHistory() {
-		this._workflowService
-			.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize)
-			.subscribe((result) => {
-				if (result.items) {
-					this.workflowHistory = result.items;
-					this.historyTotalCount = result.totalCount;
-				}
-			});
-	}
+    getColorForConsultantsOverview(item: WorkflowProcessType | undefined) {
+        switch (item) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                return 'rgba(23, 162, 151, 1)';
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return 'rgba(106, 71, 184, 1)';
+            case WorkflowProcessType.TerminateConsultant:
+            case WorkflowProcessType.TerminateWorkflow:
+                return 'rgba(255, 122, 120, 1)';
+            default:
+                break;
+        }
+    }
+
+    private _getWorkflowHistory() {
+        this._workflowService.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
+            if (result.items) {
+                this.workflowHistory = result.items;
+                this.historyTotalCount = result.totalCount;
+            }
+        })
+    }
+
+    private _getClientPeriods() {
+        this._workflowService.clientPeriods(this.workflowId)
+            .subscribe(result => {
+                this.periodId = result.clientPeriods?.length ? result.clientPeriods[0].id : '';
+                this.clientPeriods = result.clientPeriods;
+                this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
+                if (result.directClientId) {
+                    this.purchaseOrder.getPurchaseOrders([], result.directClientId, this.periodId);
+                }
+                this._setWFProgress();
+            })
+    }
 
 	terminateConsultant(consultantInfo: ConsultantGanttRow) {
-		const scrollStrategy = this.overlay.scrollStrategies.reposition();
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			confirmationMessageTitle: `Terminate consultant`,
@@ -294,9 +322,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			confirmButtonText: 'Terminate',
 			isNegative: true,
 		};
-		const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 		dialogRef.componentInstance.onConfirmed.subscribe(() => {
-			this.terminateConsultantStart(1); //FIXME: add real id when BE will be fixed
+			this.terminateConsultantStart(consultantInfo.consultantId);
 		});
 	}
 
@@ -307,7 +335,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	}
 
 	changeConsultantData(consultantInfo: ConsultantGanttRow) {
-		const scrollStrategy = this.overlay.scrollStrategies.reposition();
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			dialogType: ConsultantDiallogAction.Change,
@@ -317,7 +345,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			confirmButtonText: 'Create',
 			isNegative: false,
 		};
-		const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
 		dialogRef.componentInstance.onConfirmed.subscribe((result) => {
 			let input = new ChangeConsultantPeriodDto();
 			input.cutoverDate = result.newCutoverDate;
@@ -329,7 +357,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	}
 
 	extendConsultant(consultantInfo: ConsultantGanttRow) {
-		const scrollStrategy = this.overlay.scrollStrategies.reposition();
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			dialogType: ConsultantDiallogAction.Extend,
@@ -339,7 +367,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			confirmButtonText: 'Create',
 			isNegative: false,
 		};
-		const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
 		dialogRef.componentInstance.onConfirmed.subscribe((result) => {
 			let input = new ExtendConsultantPeriodDto();
 			input.startDate = result.startDate;
@@ -351,13 +379,13 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		});
 	}
 
-	historyPageChanged(event?: any): void {
+	public historyPageChanged(event?: any): void {
 		this.historyPageNumber = event.pageIndex + 1;
 		this.historyDeafultPageSize = event.pageSize;
-		this.getWorkflowHistory();
+		this._getWorkflowHistory();
 	}
 
-	getAvailableConsultantForChangeOrExtend() {
+	public getAvailableConsultantForChangeOrExtend() {
 		if (!this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId) {
 			let newStatus = new WorkflowProgressStatus();
 			newStatus.currentlyActivePeriodId = this.periodId;
@@ -370,15 +398,15 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe((result) => {
 				if (result.length) {
-					this.addExtension(result);
+					this._addExtension(result);
 				} else {
 					this.showNotify(NotifySeverity.Error, 'There are no available consultants for this action', 'Ok');
 				}
 			});
 	}
 
-	addExtension(availableConsultants: AvailableConsultantDto[]) {
-		const scrollStrategy = this.overlay.scrollStrategies.reposition();
+	private _addExtension(availableConsultants: AvailableConsultantDto[]) {
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			dialogType: WorkflowDiallogAction.Extend,
@@ -388,7 +416,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			isNegative: false,
 			consultantData: availableConsultants,
 		};
-		const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(WorkflowActionsDialogComponent, MediumDialogConfig);
 		dialogRef.componentInstance.onConfirmed.subscribe((result: ExtendClientPeriodDto) => {
 			if (result) {
 				this.showMainSpinner();
@@ -406,10 +434,10 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		return step;
 	}
 
-    downloadDocument(item: IWFOverviewDocuments) {
-		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+    public downloadDocument(item: IWFOverviewDocuments) {
+		this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
 			const fileUrl = `${this.apiUrl}/api/WorkflowDocument/${item.id}`;
-			this.httpClient
+			this._httpClient
 				.get(fileUrl, {
 					headers: new HttpHeaders({
 						Authorization: `Bearer ${response.accessToken}`,

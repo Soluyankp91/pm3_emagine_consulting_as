@@ -110,6 +110,11 @@ mat-table.white-table {
             }
         }
     }
+    &.hidden-header {
+        mat-header-row {
+            display: none !important;
+        }
+    }
     mat-row {
         height: 50px;
         border-radius: 0;

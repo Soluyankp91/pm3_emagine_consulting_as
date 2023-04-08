@@ -37,14 +37,14 @@
             &-consultant-name {
                 text-transform: none;
                 color: $medium-grey-color;
-                font-weight: 600
+                font-weight: 600;
             }
             &-section {
                 @include fontOpenSans(12px, 700);
                 line-height: 12px;
                 color: $medium-grey-color;
-                &:first-of-type {
-                    margin-top: 10px;
+                &:last-of-type {
+                    margin-bottom: 0px !important;
                 }
                 &:hover {
                     color: $dark-grey-color;
@@ -130,4 +130,9 @@
         height: 24px;
         line-height: 24px;
     }
+}
+
+
+.routerStarted {
+    background-color: red;
 }
