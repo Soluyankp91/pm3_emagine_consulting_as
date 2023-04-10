@@ -18,10 +18,10 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { EmployeesFilterComponent } from './shared/components/grid-table/master-templates/filters/employees-filter/employees-filter.component';
 import { AgreementTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-types-filter/agreement-types-filter.component';
-import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component';
-import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component';
-import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component';
-import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component';
+import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter.component';
+import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter.component';
+import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter.component';
+import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter.component';
 import { SalesTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/sales-types-filter/sales-types-filter.component';
 import { AutoNameComponent } from './shared/components/auto-name/auto-name.component';
 import { MatMenuSingleSelectComponent } from './shared/components/emagine-menu-single-select/emagine-menu-single-select.component';
@@ -45,7 +45,7 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
-import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
+import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled.component';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
@@ -71,11 +71,25 @@ import { ClientTemplateModeComponent } from './shared/components/client-mode/cli
 import { AgreementService } from './agreements/listAndPreviews/services/agreement.service';
 import { StatusesFilterComponent } from './shared/components/grid-table/agreements/filters/statuses-filter/statuses-filter.component';
 import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
-import { AgreementDevExpress } from './agreements/template-editor/editor/agreement-editor/agreement-editor.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
+import { TableArrayFormatPipe } from './shared/pipes/table-array-format.pipe';
+import { AgreementsTopFiltersComponent } from './agreements/listAndPreviews/components/agreements-top-filters/agreements-top-filters.component';
+import { EditorComponent } from './shared/editor/editor.component';
+import { EditorPreviewComponent } from './shared/editor-preview/editor-preview.component';
+import { NotificationDialogComponent } from './shared/components/popUps/notification-dialog/notification-dialog.component';
+import { DownloadFilesService } from './shared/services/download-files.service';
+import { TemplatePdfPreviewComponent } from './shared/template-pdf-preview/template-pdf-preview.component';
+import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
+import { ExtraHttpsService } from './shared/services/extra-https.service';
+import { DefaultTemplateComponent } from './shared/components/popUps/default-template/default-template.component';
+import { WorkflowInfoDisplayPanelComponent } from './shared/components/workflow-info-display-panel/workflow-info-display-panel.component';
+import { EnvelopePathFilterComponent } from './shared/components/grid-table/agreements/filters/envelope-path-filter/envelope-path-filter.component';
+import { EnvelopePathComponent } from './shared/components/envelope-path/envelope-path.component';
+import { ActionDialogComponent } from './shared/components/popUps/action-dialog/action-dialog.component';
+import { DefaultFileUploaderComponent } from './shared/components/default-file-uploader/default-file-uploader.component';
+
 @NgModule({
 	declarations: [
 		ContractComponent,
@@ -125,7 +139,6 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 		ApprovalFilterComponent,
 		AgreementModeFilterComponent,
 		SettingsComponent,
-		AgreementDevExpress,
 		SalesManagersFilterComponent,
 		ContractManagerFilterComponent,
 		AgreementModeComponent,
@@ -134,6 +147,16 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 		SignersTableComponent,
 		ClientTemplatePreviewComponent,
 		AgreementPreviewComponent,
+		TableArrayFormatPipe,
+		AgreementsTopFiltersComponent,
+		NotificationDialogComponent,
+		StrInitialsPipe,
+		DefaultTemplateComponent,
+		WorkflowInfoDisplayPanelComponent,
+		EnvelopePathFilterComponent,
+		EnvelopePathComponent,
+		ActionDialogComponent,
+  DefaultFileUploaderComponent,
 	],
 	imports: [
 		CommonModule,
@@ -145,6 +168,8 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 
 		// Standalone
 		EditorComponent,
+		EditorPreviewComponent,
+		TemplatePdfPreviewComponent,
 	],
 	providers: [
 		ContractsService,
@@ -159,6 +184,8 @@ import { AgreementPreviewComponent } from './agreements/listAndPreviews/componen
 		AgreementTemplateAttachmentServiceProxy,
 		AgreementAttachmentServiceProxy,
 		CreationTitleService,
+		DownloadFilesService,
+		ExtraHttpsService,
 	],
 })
 export class ContractsModule {
@@ -173,6 +200,10 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'close-button-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/close-button-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'close-button-icon-grey',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/close-button-icon-grey.svg')
 		);
 		iconRegistry.addSvgIcon('plus-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/plus-icon.svg'));
 		iconRegistry.addSvgIcon(
@@ -244,6 +275,22 @@ export class ContractsModule {
 			'no-items-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-items-icon.svg')
 		);
+		iconRegistry.addSvgIcon(
+			'download-doc',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-doc.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'download-pdf',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/download-pdf.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'send-via-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'create-docusign-draft',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/create-docusign-draft.svg')
+		);
 		iconRegistry.addSvgIcon('asc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/asc-arrow.svg'));
 		iconRegistry.addSvgIcon('desc-arrow', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/desc-arrow.svg'));
 		iconRegistry.addSvgIcon(
@@ -267,5 +314,92 @@ export class ContractsModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/duplicate-icon.svg')
 		);
 		iconRegistry.addSvgIcon('copy-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/copy-icon.svg'));
+
+		iconRegistry.addSvgIcon(
+			'avatar-placeholder',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/avatar-placeholder.svg')
+		);
+
+		iconRegistry.addSvgIcon(
+			'send-reminder-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/send-reminder-icon.svg')
+		);
+
+		iconRegistry.addSvgIcon(
+			'download-agreement-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/download-agreement-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'pdf-download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/pdf-download-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'doc-download-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/doc-download-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'open-workflow-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/open-workflow-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'table-delete-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/table-delete-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-invalid-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-invalid-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'mat-select-focused-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/mat-select-focused-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'add-signer-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/add-signer-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'empty-table-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'empty-table-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
+		);
+		iconRegistry.addSvgIcon('xls', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/xls-icon.svg'));
+		iconRegistry.addSvgIcon('msg', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/msg-icon.svg'));
+		iconRegistry.addSvgIcon('ppt', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/ppt-icon.svg'));
+		iconRegistry.addSvgIcon(
+			'no-extension',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/no-extension-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'envelope-email',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-email-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'envelope-docusign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-docusign-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'envelope-other-party',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/envelope-other-party-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'agreement-not-started-yet-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/agreement-not-started-yet-icon.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'information-tip-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/information-tip-icon.svg')
+		);
+		iconRegistry.addSvgIcon('loop-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/loop-icon.svg'));
+		iconRegistry.addSvgIcon(
+			'legal-contract-upload',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contract-upload.svg')
+		);
 	}
 }

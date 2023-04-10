@@ -157,7 +157,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	ngOnInit(): void {
-		this.activatedRoute.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
+		this.activatedRoute.parent.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.workflowId = params.get('id')!;
 		});
 		this._workflowDataService.updateWorkflowProgressStatus({
@@ -653,6 +653,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				result?.salesClientData?.contractSigners?.forEach((signer: ContractSignerDto) => {
 					this.clientDataComponent?.addSignerToForm(signer);
 				});
+                this.clientDataComponent.selectedFrameAgreementId = result.salesClientData.frameAgreementId ?? null;
 				if (result.consultantSalesData?.length) {
 					result.consultantSalesData?.forEach((consultant) => {
 						this.consutlantDataComponent?.addConsultantForm(consultant);
@@ -673,7 +674,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
                 this.mainDataComponent?.getPrimaryCategoryTree();
                 if (this.isContractModuleEnabled) {
-                    this.clientDataComponent?.getFrameAgreements();
+                    this.clientDataComponent?.getPrimaryFrameAgreements();
                 }
                 if (result.salesClientData.purchaseOrdersIds?.length) {
                     this.clientDataComponent?.poComponent?.getPurchaseOrders(result.salesClientData.purchaseOrdersIds, result.salesClientData.directClientIdValue);
@@ -961,6 +962,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
             this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
             this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
+            this.clientDataComponent.salesClientDataForm.timeReportingCaps.controls = [];
             if (this.clientDataComponent.poComponent) {
                 this.clientDataComponent.poComponent.purchaseOrders.controls = [];
             }
@@ -1159,6 +1161,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (this.clientDataComponent.poComponent.purchaseOrders.value) {
             input.salesClientData.purchaseOrdersIds = this.clientDataComponent.poComponent.purchaseOrders.value?.map(x => x.id);
         }
+        input.salesClientData.frameAgreementId = this.clientDataComponent.salesClientDataForm.frameAgreementId.value?.agreementId;
 		input.consultantSalesData = new Array<ConsultantSalesDataDto>();
 		if (this.consutlantDataComponent?.consultants.value?.length) {
 			this.consutlantDataComponent?.consultants.value.forEach((consultant: any) => {
@@ -1207,7 +1210,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
-			consultantInput.onsiteClientAddress = consultant.onsiteClientAddress;
+			consultantInput.onsiteClientAddress = FindClientAddress(consultant.consultantWorkplaceClientAddress?.clientAddresses, consultant.onsiteClientAddress?.id);
 			consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
 			consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
 			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;

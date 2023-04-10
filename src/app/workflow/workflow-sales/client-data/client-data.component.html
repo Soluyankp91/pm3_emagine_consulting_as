@@ -479,8 +479,7 @@
                             <mat-label>Unit type</mat-label>
                             <mat-select [disabled]="readOnlyMode"
                                 [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1"
-                                formControlName="rateUnitTypeId" [disableOptionCentering]="true"
-                                [compareWith]="compareWithFn">
+                                formControlName="rateUnitTypeId" [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
                                     <mat-option [value]="item.id">
                                         {{ item.name }}
@@ -608,25 +607,38 @@
             <div class="workflow-section--content">
                 <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
                             <mat-label>Frame agreement</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="frameAgreementId"
-                                [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of frameAgreements; trackBy: trackById">
-                                    <mat-option [value]="item.agreementId">
+                            <input [disabled]="readOnlyMode" #frameAgreementInput type="text"
+                                matInput [matAutocomplete]="frameAgreementAutocomplete"
+                                formControlName="frameAgreementId" appPreventDoubleClick
+                                (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
+                                <span matSuffix class="shevron"></span>
+                            <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
+                                [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                <ng-container *ngFor="let item of filteredFrameAgreements; trackBy: trackByAgreementId">
+                                    <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                         <div class="multilineDropdown-option--row">
                                             <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                 <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
-                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
-                                                    {{item.countryName}}
-                                                    {{item.countryName ? '•' : '' + item.startDate | momentFormat}}
-                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : '' + item.endDate | momentFormat}}
-                                                </span>
+                                                <ng-container *ngIf="item?.agreementId !== undefined">
+                                                    <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                        #{{item?.agreementId}} •
+                                                        {{item.countryName}}
+                                                        {{item.countryName ? '•' : ''}}
+                                                        {{item.startDate | momentFormat}}
+                                                        {{item.startDate !== null && item.startDate !== undefined ? '-' : ''}}
+                                                        {{item.endDate | momentFormat}}
+                                                    </span>
+                                                </ng-container>
                                             </div>
                                         </div>
                                     </mat-option>
                                 </ng-container>
-                            </mat-select>
+                            </mat-autocomplete>
                             <mat-error>
                                 <app-validator [control]="salesClientDataForm.frameAgreementId"></app-validator>
                             </mat-error>
@@ -698,7 +710,7 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientPurchaseOrder">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">5</span>
+                <span class="workflow-section--number">6</span>
                 <h2 class="workflow-section--header">Client purchase order + cap</h2>
             </div>
             <div class="workflow-section--content">
@@ -789,7 +801,7 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientRatesFees">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">6</span>
+                <span class="workflow-section--number">7</span>
                 <h2 class="workflow-section--header">Client rates and fees</h2>
             </div>
             <div class="workflow-section--content">
@@ -1082,7 +1094,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesClientEvaluation">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                <span class="workflow-section--number">7</span>
+                <span class="workflow-section--number">8</span>
                 <h2 class="workflow-section--header">Client evaluation</h2>
             </div>
             <div class="workflow-section--content">
@@ -1277,7 +1289,7 @@
     <div fxLayout="row wrap" fxLayoutAlign="end center" class="u-w--100">
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon green-color u-mr--8" mat-flat-button (click)="openClientInNewTab(client?.clientId)"
-                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip" type="button">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                 Client profile
             </button>
@@ -1286,7 +1298,7 @@
         <ng-container *ngIf="client?.clientId">
             <button class="link-to-client-icon orange-color" mat-flat-button (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
-                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
+                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip" type="button">
                 <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
                 Hubspot
             </button>

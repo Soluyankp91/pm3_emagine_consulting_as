@@ -1,27 +1,29 @@
-<div class="wrapper">
-	<mat-tab-group>
-		<mat-tab label="Summary">
-			<ng-template matTabContent>
-				<app-summary></app-summary>
-			</ng-template>
-		</mat-tab>
-		<mat-tab label="Preview"></mat-tab>
-		<mat-tab label="Attachments">
-			<ng-template matTabContent>
-				<app-attachments></app-attachments>
-			</ng-template>
-		</mat-tab>
-		<mat-tab label="Log">
-			<ng-template matTabContent>
-				<app-logs></app-logs>
-			</ng-template>
-		</mat-tab>
-		<mat-tab disabled>
-			<ng-template mat-tab-label>
-				<button mat-icon-button (click)="closePanel()">
-					<mat-icon svgIcon="close-button-icon"></mat-icon>
-				</button>
-			</ng-template>
-		</mat-tab>
-	</mat-tab-group>
-</div>
+<mat-tab-group>
+	<mat-tab label="Summary" labelClass="summary-tab">
+		<ng-template matTabContent>
+			<app-summary></app-summary>
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Preview" labelClass="preview-tab">
+		<ng-template matTabContent>
+			<app-template-pdf-preview [templateId]="currentId" [fileName]="fileName"></app-template-pdf-preview>
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Attachments" labelClass="attachments-tab">
+		<ng-template matTabContent>
+			<app-attachments></app-attachments>
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Log" labelClass="log-tab">
+		<ng-template matTabContent>
+			<app-logs></app-logs>
+		</ng-template>
+	</mat-tab>
+	<mat-tab disabled labelClass="close-arrow-tab">
+		<ng-template mat-tab-label>
+			<button mat-icon-button (click)="closePanel()">
+				<mat-icon svgIcon="close-button-icon"></mat-icon>
+			</button>
+		</ng-template>
+	</mat-tab>
+</mat-tab-group>

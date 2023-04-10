@@ -6,7 +6,10 @@
 		(menuOpened)="isOpened = true"
 		(menuClosed)="onMenuClosed()">
 		<div class="align-items">
-			<span [ngClass]="isOpened ? ['opened__green', 'icon__margin'] : 'closed__grey'"
+			<span
+				[ngClass]="{
+					'selected-filters': selectedItems.length || isOpened
+				}"
 				><ng-container
 					*ngIf="triggerButton"
 					[ngTemplateOutlet]="triggerButton"
@@ -14,7 +17,11 @@
 			</span>
 		</div>
 	</button>
-	<mat-menu #menu="matMenu" (closed)="isOpened = false" backdropClass="mat-menu-content-wrapper">
+	<mat-menu
+		#menu="matMenu"
+		(closed)="isOpened = false"
+		backdropClass="mat-menu-content-wrapper"
+		backdropClass="app-contract-backdrop">
 		<div class="scrollbar-container">
 			<ng-container *ngFor="let option of options; trackBy: trackById.bind(this)">
 				<mat-checkbox
@@ -27,7 +34,7 @@
 						[ngTemplateOutlet]="optionPrefix"
 						[ngTemplateOutletContext]="{ $implicit: option }">
 					</ng-container>
-					{{ option[displayedProperty] }}
+					<span class="option-name"> {{ option[displayedProperty] }} </span>
 				</mat-checkbox>
 			</ng-container>
 		</div>

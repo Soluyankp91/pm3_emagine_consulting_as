@@ -63,7 +63,7 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 			internalLegalContractDoneStatusId: new UntypedFormControl(consultant.internalLegalContractDoneStatusId),
 			consultantLegalContractDoneStatusId: new UntypedFormControl(consultant.consultantLegalContractDoneStatusId),
 			pdcPaymentEntityId: new UntypedFormControl(consultant.pdcPaymentEntityId),
-		}, {updateOn: 'submit'});
+		});
 		this.contractsSyncDataForm.consultants.push(form);
 	}
 

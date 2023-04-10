@@ -1,5 +1,8 @@
 .attachments-container {
 	padding: 32px;
+	display: flex;
+	flex-direction: column;
+	gap: 25px;
 }
 .attachment-container {
 	display: flex;

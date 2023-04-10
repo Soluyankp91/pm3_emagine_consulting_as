@@ -1,7 +1,6 @@
 <ng-container *ngIf="clientTemplateLinks$ | async as clientTemplateLinks; else loading">
-	<ng-container *ngIf="clientTemplateLinks.length || searchControl.value ">
+	<ng-container *ngIf="clientTemplateLinks.length || searchControl.value">
 		<mat-form-field class="form-field">
-			<mat-label class="input-label">Search</mat-label>
 			<input matInput class="input" placeholder="Search" [formControl]="searchControl" />
 		</mat-form-field>
 	</ng-container>
@@ -17,20 +16,32 @@
 						(matSortChange)="onSortChanges($event)">
 						<ng-container matColumnDef="isEnabled">
 							<mat-header-cell
-								class="header-cell"
+								class="header-cell enabled-header"
 								*matHeaderCellDef
 								mat-sort-header
 								(click)="$event.stopPropagation()">
 								<mat-icon svgIcon="three-lines" class="isEnabled-icon"></mat-icon>
 							</mat-header-cell>
-							<mat-cell *matCellDef="let template">
-                                <emg-enabled [isEnabled]="template.isEnabled"></emg-enabled>
+							<mat-cell *matCellDef="let template" class="enabled-column">
+								<emg-enabled [isEnabled]="template.isEnabled"></emg-enabled>
 							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="linkState">
-							<mat-header-cell class="header-cell" *matHeaderCellDef>Mode</mat-header-cell>
-							<mat-cell *matCellDef="let template">
-								<emg-client-template-mode [linkState]="template.linkState" [iconWidth]="20" [iconHeight]="16"></emg-client-template-mode>
+							<mat-header-cell class="header-cell" *matHeaderCellDef class="mode-header">Mode</mat-header-cell>
+							<mat-cell *matCellDef="let template" class="mode-column">
+								<emg-client-template-mode
+									[linkState]="template.linkState"
+									[iconWidth]="20"
+									[iconHeight]="16"></emg-client-template-mode>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="linkStateAccepted">
+							<mat-header-cell class="header-cell" *matHeaderCellDef class="approval-header">Apvl</mat-header-cell>
+							<mat-cell *matCellDef="let template" class="approval-column">
+								<emg-approval
+									[linkStateAccepted]="template.linkStateAccepted"
+									[iconWidth]="23"
+									[iconHeight]="16"></emg-approval>
 							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="agreementTemplateId">
@@ -39,42 +50,66 @@
 								*matHeaderCellDef
 								mat-sort-header
 								(click)="$event.stopPropagation()"
+								class="id-header"
 								>ID</mat-header-cell
 							>
-							<mat-cell *matCellDef="let template">{{ template.agreementTemplateId }}</mat-cell>
+							<mat-cell *matCellDef="let template" class="table-client-cell id-column">
+								<div class="overflow" [customTooltip]="template.name">
+									{{ template.agreementTemplateId }}
+								</div>
+							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="clientName">
 							<mat-header-cell
-								class="header-cell"
+								class="header-cell client-column"
 								*matHeaderCellDef
 								mat-sort-header
 								(click)="$event.stopPropagation()"
+								class="client-header"
 								>Client name</mat-header-cell
 							>
-							<mat-cell *matCellDef="let template">{{ template.clientName }}</mat-cell>
+							<mat-cell *matCellDef="let template" class="client-cell">
+								<div class="overflow" [customTooltip]="template.name">
+									{{ template.clientName }}
+								</div>
+							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="name">
 							<mat-header-cell
 								class="header-cell"
 								*matHeaderCellDef
 								mat-sort-header
-								(click)="$event.stopPropagation()">
+								(click)="$event.stopPropagation()"
+								class="name-header">
 								Client specific template</mat-header-cell
 							>
-							<mat-cell *matCellDef="let template">{{ template.name }}</mat-cell>
+							<mat-cell *matCellDef="let template" class="table-client-cell name-cell">
+								<div class="overflow" [customTooltip]="template.name">
+									{{ template.name }}
+								</div>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="agreementTemplateLink">
+							<mat-header-cell class="header-cell" *matHeaderCellDef mat-sort-header> </mat-header-cell>
+							<mat-cell *matCellDef="let template" class="link-column">
+								<div class="link" (click)="navigateToTemplate(template.agreementTemplateId)">
+									<mat-icon svgIcon="right-arrow"></mat-icon>
+								</div>
+							</mat-cell>
 						</ng-container>
 						<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 						<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 					</mat-table>
 				</ng-container>
 			</ng-container>
-			<ng-template #noItems>             <div class="no-items">
-                <div>
-                    <mat-icon svgIcon="no-items-icon"></mat-icon>
-                </div>
-                <div>There are no linked
-                    client templates for this template</div>
-            </div></ng-template>
+			<ng-template #noItems>
+				<div class="no-items">
+					<div>
+						<mat-icon svgIcon="no-items-icon"></mat-icon>
+					</div>
+					<div>There are no linked client templates for this template</div>
+				</div></ng-template
+			>
 		</div>
 	</ng-container>
 </ng-container>

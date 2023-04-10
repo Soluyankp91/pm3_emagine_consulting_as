@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getAllRouteParams } from '../../utils/allRouteParams';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CreationTitleService } from '../../services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-master-template-creation',
@@ -18,12 +19,15 @@ export class SettingsTabComponent implements OnInit {
 	defaultName: string;
 
 	templateName$: Observable<string>;
-	tenants$: Observable<(LegalEntityDto & { code: string })[] | null>;
+	tenants$: Observable<(LegalEntityDto & { code: string })[]>;
+
+	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
 		private readonly _router: Router,
 		private _route: ActivatedRoute,
-		private readonly _creationTitleService: CreationTitleService
+		private readonly _creationTitleService: CreationTitleService,
+		private readonly _cdr: ChangeDetectorRef
 	) {}
 
 	ngOnInit(): void {
@@ -32,6 +36,7 @@ export class SettingsTabComponent implements OnInit {
 		this.templateName$ = this._creationTitleService.templateName$;
 		this.tenants$ = this._creationTitleService.tenants$;
 		this._setTabs();
+		this._subscribeOnReceiveAgreementsFromOtherParty();
 	}
 
 	private _setTabs() {
@@ -54,16 +59,29 @@ export class SettingsTabComponent implements OnInit {
 		}
 		this.tabs = [
 			{
-				link: '',
+				link: '../create',
 				label: 'Settings',
 				icon: 'cog-icon',
 			},
 			{
-				link: '',
+				link: undefined,
 				label: 'Editor',
 				disabled: true,
 				icon: 'editor-icon',
 			},
 		];
+	}
+
+	private _subscribeOnReceiveAgreementsFromOtherParty() {
+		this._creationTitleService.alwaysReceiveFromOtherParty$
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((alwaysReceiveFromOtherParty) => {
+				if (alwaysReceiveFromOtherParty) {
+					this.tabs[1].disabled = true;
+				} else {
+					this.tabs[1].disabled = false;
+				}
+				this._cdr.detectChanges();
+			});
 	}
 }

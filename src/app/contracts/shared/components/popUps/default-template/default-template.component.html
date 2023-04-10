@@ -1,0 +1,141 @@
+<div class="container">
+	<div class="preinfo">
+		<div class="default-template-header">Default template overlay</div>
+		<div class="description">
+			There is already a default template for agreements of this type that consist of overlying data for the following
+			values: ID, Template name, Legal entity, Sales Type, Delivery Type and Contract Type.
+		</div>
+		<div class="table-header">The list of overlaying templates:</div>
+	</div>
+	<mat-table [dataSource]="tableData" class="default-mat-table">
+		<ng-container matColumnDef="agreementTemplateId">
+			<mat-header-cell *matHeaderCellDef class="header-cell id-column">ID</mat-header-cell>
+			<mat-cell *matCellDef="let row" class="id-column">
+				<div class="table-cell">
+					{{ row.agreementTemplateId }}
+				</div>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="templateName">
+			<mat-header-cell *matHeaderCellDef class="header-cell template-name">Template Name</mat-header-cell>
+			<mat-cell *matCellDef="let row" class="template-name">
+				<div class="table-cell template-name-cell">
+					{{ row.templateName }}
+				</div>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="overlappingLegalEntities">
+			<mat-header-cell *matHeaderCellDef class="header-cell legal-entity"> Legal entity </mat-header-cell>
+			<mat-cell *matCellDef="let row" class="legal-entity">
+				<ng-container *ngIf="row.overlappingLegalEntities.length; else noItems">
+					<div
+						class="table-cell"
+						[customTooltip]="overlappingLegalEntitiesTool"
+						[showAlways]="!!(row.overlappingSalesTypes.length - 1)">
+						{{ row.overlappingLegalEntities | tableArrayFormat }}
+					</div>
+					<ng-template #overlappingLegalEntitiesTool>
+						<div>
+							<ng-container *ngFor="let legalEntity of row.overlappingLegalEntities">
+								<div class="tooltip-menu">
+									<span>{{ legalEntity }}</span>
+								</div>
+							</ng-container>
+						</div>
+					</ng-template>
+				</ng-container>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="overlappingSalesTypes">
+			<mat-header-cell *matHeaderCellDef class="header-cell sales-type"> Sales type </mat-header-cell>
+			<mat-cell *matCellDef="let row" class="sales-type">
+				<ng-container *ngIf="row.overlappingSalesTypes.length; else noItems">
+					<div
+						class="table-cell"
+						[customTooltip]="overlappingSalesTypesTool"
+						[showAlways]="!!(row.overlappingSalesTypes.length - 1)">
+						{{ row.overlappingSalesTypes | tableArrayFormat }}
+					</div>
+					<ng-template #overlappingSalesTypesTool>
+						<div>
+							<ng-container *ngFor="let saleType of row.overlappingSalesTypes">
+								<div class="tooltip-menu">
+									<span>{{ saleType }}</span>
+								</div>
+							</ng-container>
+						</div>
+					</ng-template>
+				</ng-container>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="overlappingDeliveryTypes">
+			<mat-header-cell *matHeaderCellDef class="header-cell delivery-type"> Delivery type</mat-header-cell>
+			<mat-cell *matCellDef="let row" class="delivery-type">
+				<ng-container *ngIf="row.overlappingDeliveryTypes.length; else noItems">
+					<div
+						class="table-cell"
+						[customTooltip]="overlappingDeliveryTypesTool"
+						[showAlways]="!!(row.overlappingDeliveryTypes.length - 1)">
+						{{ row.overlappingDeliveryTypes | tableArrayFormat }}
+					</div>
+					<ng-template #overlappingDeliveryTypesTool>
+						<div>
+							<ng-container *ngFor="let deliveryType of row.overlappingDeliveryTypes">
+								<div class="tooltip-menu">
+									<span>{{ deliveryType }}</span>
+								</div>
+							</ng-container>
+						</div>
+					</ng-template>
+				</ng-container>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="overlappingContractTypes">
+			<mat-header-cell *matHeaderCellDef class="header-cell contract-type"> Contract type</mat-header-cell>
+			<mat-cell *matCellDef="let row" class="contract-type">
+				<ng-container *ngIf="row.overlappingContractTypes.length; else noItems">
+					<div
+						class="table-cell"
+						[customTooltip]="overlappingContractTypesTool"
+						[showAlways]="!!(row.overlappingContractTypes.length - 1)">
+						{{ row.overlappingContractTypes | tableArrayFormat }}
+					</div>
+					<ng-template #overlappingContractTypesTool>
+						<div>
+							<ng-container *ngFor="let contractType of row.overlappingContractTypes">
+								<div class="tooltip-menu">
+									<span>{{ contractType }}</span>
+								</div>
+							</ng-container>
+						</div>
+					</ng-template>
+				</ng-container>
+			</mat-cell>
+		</ng-container>
+
+		<ng-container matColumnDef="link">
+			<mat-header-cell *matHeaderCellDef class="link"></mat-header-cell>
+			<mat-cell *matCellDef="let row" class="link">
+				<mat-icon svgIcon="right-arrow" class="link-cell" (click)="navigateToTemplate(row.agreementTemplateId)"></mat-icon>
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row *matHeaderRowDef="displayedColumns" class="mat-header-row"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+	</mat-table>
+</div>
+<div class="bottom-section">
+    <mat-divider></mat-divider>
+
+    <div mat-dialog-actions class="actions">
+        <button mat-button [mat-dialog-close]="false" class="cancel-button">Close</button>
+    </div>
+</div>
+<ng-template #noItems>
+	<div class="no-items">-</div>
+</ng-template>

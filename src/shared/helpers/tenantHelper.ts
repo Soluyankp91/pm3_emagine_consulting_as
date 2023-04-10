@@ -78,6 +78,32 @@ export function MapTenantCountryCode(name: string) {
             break;
     }
 }
+export function MapCountryCodeTenant(name: string) {
+    switch (name) {
+        case 'DK':
+            return 'Denmark';
+        case 'SE':
+            return 'Sweden';
+        case 'PL':
+            return 'Poland';
+        case 'NL':
+            return 'Netherlands';
+        case 'DE':
+            return 'Germany';
+        case 'NO':
+            return 'Norway';
+        case 'FR':
+            return 'France';
+        case 'IN':
+            return 'India';
+        case 'EU':
+            return 'International';
+        case 'GB':
+            return 'United Kingdom';
+        default:
+            break;
+    }
+}
 
 export function GetCountryCodeByLanguage(name: string) {
     switch (name) {

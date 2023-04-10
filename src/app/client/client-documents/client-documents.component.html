@@ -119,7 +119,8 @@
                             </ng-container>
                         </form>
                         <div fxLayout="row" fxLayoutAlign="center center">
-                            <app-file-uploader (filesAdded)="openDialogToAddFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+                            <app-file-uploader (filesAdded)="openDialogToAddFile($event)" [buttonText]="'Add document'" [withoutDisplay]="true"
+                                [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
                         </div>
                         <ng-container *ngIf="isGeneralDocumentsLoading">
                             <div class="spinner-container">

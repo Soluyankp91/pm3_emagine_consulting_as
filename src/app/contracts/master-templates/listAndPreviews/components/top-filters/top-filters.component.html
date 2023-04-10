@@ -1,52 +1,38 @@
 <div [formGroup]="topFiltersFormGroup" class="top-filters">
 	<div class="left-panel">
-		<div class="country-filter" *ngIf="tenantFilter$ | async as tenants">
+		<ng-container *ngIf="tenantFilter$ | async as tenants">
 			<emg-multi-select [options]="tenants" formControlName="tenantIds">
 				<ng-template #triggerButton let-selectedItems>
-					<ng-container *ngIf="!selectedItems.length; else itemsPresent">
+					<ng-container *ngIf="selectedItems.length; else noItems">
+						<div class="icons-container">
+							<emg-tenants [tenants]="selectedItems"></emg-tenants></div
+					></ng-container>
+					<ng-template #noItems>
 						<mat-icon
 							svgIcon="euro-union-icon"
-							class="country-filter-icon"
-							[style.width]="'32px !important'"
-							[style.height]="'32px !important'">
-						</mat-icon
-					></ng-container>
-					<ng-template #itemsPresent>
-						<div class="icons-container">
-							<div class="circle-counter">
-								<span>{{ selectedItems.length }}</span>
-							</div>
-							<div class="icon-container" [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
-								<mat-icon svgIcon="dropdown-icon"></mat-icon>
-							</div>
-							<mat-menu #menu="matMenu">
-								<ng-container *ngFor="let tenant of selectedItems">
-									<div mat-menu-item class="displayed-countries">
-										<span class="fi fi-{{ tenant.code | lowercase }} flag"></span>
-										<span class>{{ tenant.name }}</span>
-									</div>
-								</ng-container>
-							</mat-menu>
-						</div>
+							class="default-tenant-icon">
+						</mat-icon>
 					</ng-template>
 				</ng-template>
 				<ng-template #optionPrefix let-option>
 					<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
 				</ng-template>
+				<ng-template #optionPrefix let-option>
+					<span matPrefix class="fi fi-{{ option.code | lowercase }} flag"></span>
+				</ng-template>
 			</emg-multi-select>
-		</div>
-		<h4 class="master-templates-header">{{ pageHeader }}</h4>
+		</ng-container>
+		<h4 class="page-header">{{ pageHeader }}</h4>
 	</div>
 	<div class="right-panel">
 		<div class="search-block">
 			<mat-form-field appearance="outline">
-				<mat-label>Search</mat-label>
-				<input matInput formControlName="search" placeholder="search" />
+				<div class="input">
+					<mat-icon svgIcon="loop-icon" class="loop-icon"></mat-icon>
+					<input matInput formControlName="search" placeholder="Search" />
+				</div>
 			</mat-form-field>
 		</div>
-		<div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
-			<mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
-			<div>Create</div>
-		</div>
+		<mat-icon svgIcon="create-icon" class="create-icon" (click)="navigateTo()"></mat-icon>
 	</div>
 </div>

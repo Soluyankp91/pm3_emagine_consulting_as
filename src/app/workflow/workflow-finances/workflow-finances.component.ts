@@ -341,7 +341,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             checkInvoicingSettingsOnConsultant: new UntypedFormControl(consultant.checkInvoicingSettingsOnConsultant),
             creditorCreatedInNavision: new UntypedFormControl(consultant.creditorCreatedInNavision),
             consultant: new UntypedFormControl(consultant?.consultant)
-        }, {updateOn: 'submit'});
+        });
         this.financesConsultantsForm.consultants.push(form);
     }
 

@@ -2,11 +2,14 @@ import { SortDirection } from '@angular/material/sort';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import {
+	AgreementCreationMode,
 	AgreementTemplateMetadataLogListItemDto,
 	AgreementTemplateParentChildLinkState,
+	AgreementValidityState,
 	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
+	EnvelopeProcessingPath,
 	EnvelopeStatus,
 	LegalEntityDto,
 	LogOperationType,
@@ -38,13 +41,18 @@ export interface ClientFiltersEnum extends MasterFiltersEnum {
 	linkStateAccepted: BaseEnumDto[];
 }
 export interface AgreementFiltersEnum {
-	language: BaseEnumDto[];
+	languageId: BaseEnumDto[];
 	id: number[];
+	legalEntityId: LegalEntityDto[];
 	agreementType: BaseEnumDto[];
 	recipientTypeId: EnumEntityTypeDto[];
-	mode: BaseEnumDto[];
+	salesTypeIds: EnumEntityTypeDto[];
+	deliveryTypeIds: EnumEntityTypeDto[];
+	contractTypeIds: EnumEntityTypeDto[];
+	validity: BaseEnumDto[];
 	status: BaseEnumDto[];
-	saleManager: EmployeeDto[];
+	envelopeProcessingPath: BaseEnumDto[];
+	salesManager: EmployeeDto[];
 	contractManager: EmployeeDto[];
 }
 
@@ -63,7 +71,7 @@ export interface PageDto {
 }
 export type TemplatePayload<T> = [T, SortDto, PageDto, CountryDto[], string, any];
 export interface BaseEnumDto {
-	id: number | string;
+	id: number | string | boolean;
 	name: string;
 }
 export interface MappedTableCells {
@@ -100,11 +108,10 @@ export interface BaseAgreementTemplate {
 	salesTypeIds: string[];
 	deliveryTypeIds: string[];
 
-	createdBy: string;
+	createdBy: EmployeeDto;
 	createdDateUtc: moment.Moment;
-	lastUpdatedBy: string;
+	lastUpdatedBy: EmployeeDto;
 	lastUpdateDateUtc?: moment.Moment;
-	lastUpdatedByLowerCaseInitials?: string;
 	createdByLowerCaseInitials?: string;
 	duplicationSourceAgreementTemplateId?: number;
 	duplicationSourceAgreementTemplateName?: string;
@@ -117,22 +124,35 @@ export interface BaseMappedAgreementTemplatesListItemDto extends BaseAgreementTe
 	name?: string;
 	legalEntityIds?: string[];
 	isEnabled?: boolean;
+	actionList?: Actions[];
 }
 export interface BaseMappedAgreementListItemDto extends BaseAgreementTemplate {
 	agreementId?: number;
 	agreementName?: string;
-	actualRecipient$: Observable<any>;
+	actualRecipient$?: Observable<any>;
+	consultantName: string;
+	companyName: string;
 
 	agreementStatus?: EnvelopeStatus;
 	legalEntityId?: string;
+	salesManager: string;
+	contractManager: string;
 
 	startDate?: moment.Moment;
 	endDate?: moment.Moment;
+	validity: AgreementValidityState;
+
+	duplicationSourceAgreementId: number;
+	duplicationSourceAgreementName: string;
+
+	parentAgreementTemplateIsMasterTemplate: boolean;
 }
 export type AgreementTemplate = BaseMappedAgreementTemplatesListItemDto & BaseMappedAgreementListItemDto;
 export interface ClientMappedTemplatesListDto extends BaseMappedAgreementTemplatesListItemDto {
 	clientName: string;
 	linkState: AgreementTemplateParentChildLinkState;
+	linkStateAcceptedBy: EmployeeDto;
+	linkStateAcceptedDateUtc: moment.Moment;
 	linkStateAccepted: boolean | undefined;
 }
 export interface MasterTemplatePreview {
@@ -150,3 +170,36 @@ export const OperationsTypeMap = {
 	[LogOperationType.Update]: 'changed',
 	[LogOperationType.Delete]: 'deleted',
 };
+
+export interface MappedAgreementTableItem {
+	language: string;
+	countryCode: string;
+	agreementId: number;
+	agreementName: string;
+	actualRecipientName: string;
+	recipientTypeId: string;
+	agreementType: string;
+	legalEntityId: string;
+	clientName: string;
+	companyName: string;
+	consultantName: string;
+	salesTypeIds: string[];
+	deliveryTypeIds: string[];
+	contractTypeIds: string[];
+	mode: AgreementValidityState;
+	status: EnvelopeStatus;
+	envelopeProcessingPath: EnvelopeProcessingPath;
+	startDate: moment.Moment;
+	endDate: moment.Moment;
+	salesManager: EmployeeDto;
+	contractManager: EmployeeDto;
+	isWorkflowRelated: boolean;
+	workflowId: string;
+	receiveAgreementsFromOtherParty?: boolean;
+	actionList: Actions[];
+}
+export interface CreationModeItem {
+	label: string;
+	value: AgreementCreationMode;
+	infoTip?: string;
+}

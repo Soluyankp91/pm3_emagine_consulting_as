@@ -1,8 +1,8 @@
 <form [formGroup]="consultantsForm" id="consultantData" class="workflow-form--consultants u-w--100">
     <ng-container formArrayName="consultants" class="u-mb--20">
-        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
             <ng-container *ngFor="let consultant of consultantsForm.consultants?.controls; trackBy: trackByItem; let consultantIndex = index" [formGroupName]="consultantIndex">
-                <div class="u-w--100">
+                <div class="workflow-sales--process-data u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100" [id]="'salesConsultantDataAnchor' + consultantIndex">
                         <h1 class="workflow-section--header-main text-nowrap">Consultant data</h1>
                         <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod">
@@ -34,8 +34,8 @@
                         </ng-container>
                     </div>
 
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantEmployment">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantEmployment' + consultantIndex">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16 u-mt--16">
                             <span class="workflow-section--number">1</span>
                             <h2 class="workflow-section--header">Employment type</h2>
                         </div>
@@ -100,7 +100,7 @@
                     </div>
                     <ng-container *ngIf="consultant.value?.employmentTypeId  && (consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment)">
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantContractDuration">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContractDuration' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">2</span>
                                 <h2 class="workflow-section--header">Consultant contract duration</h2>
@@ -166,7 +166,7 @@
                                 </ng-container>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantProject">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantProject' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">3</span>
                                 <h2 class="workflow-section--header">Consultant project</h2>
@@ -245,7 +245,7 @@
                                                         <app-validator [control]="consultant.get('onsiteClientAddress')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
-                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
+                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [ngClass]="{'disabled-input': readOnlyMode}" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
                                                     <mat-label>Percentage onsite</mat-label>
                                                     <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
                                                     <mat-icon matSuffix svgIcon="percentage-icon"></mat-icon>
@@ -414,7 +414,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantRatesFees">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantRatesFees' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">4</span>
                                 <h2 class="workflow-section--header">Rates and fees</h2>
@@ -721,7 +721,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantPayment">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantPayment' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
                                 <h2 class="workflow-section--header">Consultant payment</h2>
@@ -1045,7 +1045,7 @@
                             </div>
                         </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantContract">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContract' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">6</span>
                                 <h2 class="workflow-section--header">Consultant contract</h2>
@@ -1068,7 +1068,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesConsultantAccountManager">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantAccountManager' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">7</span>
                                 <h2 class="workflow-section--header">Account manager</h2>
@@ -1131,7 +1131,7 @@
 <ng-template #clientAdditionalInfo let-client="client">
     <div fxLayout="column" fxLayoutAlign="start start">
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button
+            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button type="button"
                 (click)="openClientInNewTab(client?.clientId)"
                 [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
@@ -1140,7 +1140,7 @@
         </ng-container>
 
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon orange-color" mat-flat-button
+            <button class="link-to-client-icon orange-color" mat-flat-button type="button"
                 (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
                 [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">

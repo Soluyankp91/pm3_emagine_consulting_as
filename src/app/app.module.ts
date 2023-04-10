@@ -592,13 +592,16 @@ export class AppModule {
 			'percentage-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/percentage-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
-			'shared-icon',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/shared-icon.svg')
+		iconRegistry.addSvgIcon('shared-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/shared-icon.svg'));
+		iconRegistry.addSvgIcon('change-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/change-icon.svg'));
+
+		iconRegistry.addSvgIcon(
+			'warning-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/warning-icon.svg')
 		);
-        iconRegistry.addSvgIcon(
-			'change-icon',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/change-icon.svg')
+		iconRegistry.addSvgIcon(
+			'chevron-green-big',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-green-big.svg')
 		);
 	}
 }

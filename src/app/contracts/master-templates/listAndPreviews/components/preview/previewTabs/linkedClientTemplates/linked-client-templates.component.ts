@@ -5,6 +5,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AgreementTemplateChildTemplateDto } from 'src/shared/service-proxies/service-proxies';
 import { FormControl } from '@angular/forms';
 import { SortDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-linked-client-templates',
@@ -19,11 +20,11 @@ export class LinkedClientTemplatesComponent implements OnInit, OnDestroy {
 
 	searchControl = new FormControl<string>('');
 
-	displayedColumns = ['isEnabled', 'linkState', 'agreementTemplateId', 'clientName', 'name'];
+	displayedColumns = ['isEnabled', 'linkState', 'linkStateAccepted', 'agreementTemplateId', 'clientName', 'name', 'agreementTemplateLink'];
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(private readonly _previewService: PreviewService) {}
+	constructor(private readonly _previewService: PreviewService, private readonly _router: Router) {}
 
 	ngOnInit(): void {
 		this._setClientTemplateLinksObservable();
@@ -39,6 +40,14 @@ export class LinkedClientTemplatesComponent implements OnInit, OnDestroy {
 
 	onSortChanges(sort: SortDto) {
 		this._previewService.updateClientTemplatesSort(sort);
+	}
+	navigateToTemplate(agreementTemplateId: number) {
+		const url = this._router.serializeUrl(
+			this._router.createUrlTree(['/app/contracts/client-specific-templates'], {
+				queryParams: { templateId: agreementTemplateId },
+			})
+		);
+		window.open(url, '_blank');
 	}
 
 	private _setClientTemplateLinksObservable() {

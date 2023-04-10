@@ -13,19 +13,18 @@ import {
 	AgreementTemplateAttachmentServiceProxy,
 	AgreementTemplateChildAgreementDto,
 	AgreementTemplateChildTemplateDto,
-	AgreementTemplateDetailsDto,
+	AgreementTemplateDetailsPreviewDto,
 	AgreementTemplateServiceProxy,
 	AgreementType,
 } from 'src/shared/service-proxies/service-proxies';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
+import { DownloadFilesService } from 'src/app/contracts/shared/services/download-files.service';
 
 @Injectable()
 export class PreviewService extends BasePreview {
-	entityGet = this._agreementTemplateServiceProxy.agreementTemplateGET.bind(this._agreementTemplateServiceProxy);
+	entityGet = this._agreementTemplateServiceProxy.preview2.bind(this._agreementTemplateServiceProxy);
 	entityMetadataLog = this._agreementTemplateServiceProxy.metadataLog.bind(this._agreementTemplateServiceProxy);
-	downloadAttachment = this._agreementTemplateAttachmentServiceProxy.agreementTemplateAttachment.bind(
-		this._agreementTemplateAttachmentServiceProxy
-	);
+	downloadTemplateAttachment = this._downloadFilesService.agreementTemplateAttachment.bind(this._downloadFilesService);
 
 	protected _clientTemplateLinksSearch$ = new BehaviorSubject<string | undefined>('');
 	protected _clientTemplateLinksSort$ = new BehaviorSubject<SortDto>({
@@ -42,6 +41,7 @@ export class PreviewService extends BasePreview {
 	constructor(
 		private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy,
 		private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+		private readonly _downloadFilesService: DownloadFilesService,
 		protected readonly _contractService: ContractsService
 	) {
 		super(_contractService);
@@ -131,7 +131,7 @@ export class PreviewService extends BasePreview {
 		this._agreementsLinksSort$.next(sort);
 	}
 
-	mapEntityToSummary(row: AgreementTemplateDetailsDto, maps: MappedTableCells) {
+	mapEntityToSummary(row: AgreementTemplateDetailsPreviewDto, maps: MappedTableCells) {
 		return <BaseMappedAgreementTemplatesListItemDto>{
 			name: row.name,
 			clientName: row.clientName,
@@ -151,9 +151,9 @@ export class PreviewService extends BasePreview {
 
 			agreementTemplateId: row.agreementTemplateId,
 			createdDateUtc: row.createdDateUtc,
-			createdBy: row.createdBy?.name,
+			createdBy: row.createdBy,
 			lastUpdateDateUtc: row.lastUpdateDateUtc,
-			lastUpdatedBy: row.lastUpdatedBy?.name,
+			lastUpdatedBy: row.lastUpdatedBy,
 			duplicationSourceAgreementTemplateId: row.duplicationSourceAgreementTemplateId,
 			duplicationSourceAgreementTemplateName: row.duplicationSourceAgreementTemplateName,
 
