@@ -167,59 +167,72 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._getEnums();
 		this.getSalesStepData();
 
-		this._workflowDataService.startClientPeriodSalesSaved.pipe(takeUntil(this._unsubscribe)).subscribe((isDraft: boolean) => {
-			if (isDraft && !this.editEnabledForcefuly) {
-				this.saveStartChangeOrExtendClientPeriodSales(isDraft);
-			} else {
-				if (this.validateSalesForm()) {
-					this.saveStartChangeOrExtendClientPeriodSales(isDraft);
-				} else {
-					this.scrollToFirstError(isDraft);
-				}
-			}
-		});
-		this._workflowDataService.consultantStartChangeOrExtendSalesSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
-				} else {
-					if (this.validateSalesForm()) {
-						this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
+        this._workflowDataService.salesStepSaved
+            .pipe(takeUntil(this._unsubscribe)).subscribe((isDraft: boolean) => {
+                if (isDraft && !this.editEnabledForcefuly) {
+                    this.saveSalesStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveSalesStep(isDraft);
+                    } else {
+                        this.scrollToFirstError(isDraft);
+                    }
+                }
+            });
 
-		// Termination
-		this._workflowDataService.consultantTerminationSalesSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveTerminationConsultantSalesStep(isDraft);
-				} else {
-					if (this.validateSalesForm()) {
-						this.saveTerminationConsultantSalesStep(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
+		// this._workflowDataService.startClientPeriodSalesSaved.pipe(takeUntil(this._unsubscribe)).subscribe((isDraft: boolean) => {
+		// 	if (isDraft && !this.editEnabledForcefuly) {
+		// 		this.saveStartChangeOrExtendClientPeriodSales(isDraft);
+		// 	} else {
+		// 		if (this.validateSalesForm()) {
+		// 			this.saveStartChangeOrExtendClientPeriodSales(isDraft);
+		// 		} else {
+		// 			this.scrollToFirstError(isDraft);
+		// 		}
+		// 	}
+		// });
+		// this._workflowDataService.consultantStartChangeOrExtendSalesSaved
+		// 	.pipe(takeUntil(this._unsubscribe))
+		// 	.subscribe((isDraft: boolean) => {
+		// 		if (isDraft && !this.editEnabledForcefuly) {
+		// 			this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
+		// 		} else {
+		// 			if (this.validateSalesForm()) {
+		// 				this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
+		// 			} else {
+		// 				this.scrollToFirstError(isDraft);
+		// 			}
+		// 		}
+		// 	});
 
-		this._workflowDataService.workflowTerminationSalesSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveWorkflowTerminationSalesStep(isDraft);
-				} else {
-					if (this.validateSalesForm()) {
-						this.saveWorkflowTerminationSalesStep(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
+		// // Termination
+		// this._workflowDataService.consultantTerminationSalesSaved
+		// 	.pipe(takeUntil(this._unsubscribe))
+		// 	.subscribe((isDraft: boolean) => {
+		// 		if (isDraft && !this.editEnabledForcefuly) {
+		// 			this.saveTerminationConsultantSalesStep(isDraft);
+		// 		} else {
+		// 			if (this.validateSalesForm()) {
+		// 				this.saveTerminationConsultantSalesStep(isDraft);
+		// 			} else {
+		// 				this.scrollToFirstError(isDraft);
+		// 			}
+		// 		}
+		// 	});
+
+		// this._workflowDataService.workflowTerminationSalesSaved
+		// 	.pipe(takeUntil(this._unsubscribe))
+		// 	.subscribe((isDraft: boolean) => {
+		// 		if (isDraft && !this.editEnabledForcefuly) {
+		// 			this.saveWorkflowTerminationSalesStep(isDraft);
+		// 		} else {
+		// 			if (this.validateSalesForm()) {
+		// 				this.saveWorkflowTerminationSalesStep(isDraft);
+		// 			} else {
+		// 				this.scrollToFirstError(isDraft);
+		// 			}
+		// 		}
+		// 	});
 
 		this._workflowDataService.workflowSideSectionChanged
 			.pipe(takeUntil(this._unsubscribe))

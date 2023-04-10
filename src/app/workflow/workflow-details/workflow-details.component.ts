@@ -177,75 +177,93 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	}
 
 	public saveOrCompleteStep(isDraft: boolean, event?: KeyboardEvent) {
-		switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.ChangeClientPeriod:
-			case WorkflowProcessType.ExtendClientPeriod:
-				switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-					case StepType.Sales:
-						this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
-						break;
-					case StepType.Contract:
-						let bypassLegalValidation = event?.altKey && event?.shiftKey;
-						this._workflowDataService.startClientPeriodContractsSaved.emit({
-							isDraft: isDraft,
-							bypassLegalValidation: bypassLegalValidation,
-						});
-						break;
-					case StepType.Finance:
-						this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
-						break;
-				}
-				break;
+        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+            case StepType.Sales:
+                this._workflowDataService.salesStepSaved.emit(isDraft);
+                break;
+            case StepType.Contract:
+                let bypassLegalValidation = event?.altKey && event?.shiftKey;
+                this._workflowDataService.contractStepSaved.emit({
+                    isDraft: isDraft,
+                    bypassLegalValidation: bypassLegalValidation,
+                });
+                break;
+            case StepType.Finance:
+                this._workflowDataService.financeStepSaved.emit(isDraft);
+                break;
+            case StepType.Sourcing:
+                this._workflowDataService.sourcingStepSaved.emit(isDraft);
+                break;
+        }
+		// switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+		// 	case WorkflowProcessType.StartClientPeriod:
+		// 	case WorkflowProcessType.ChangeClientPeriod:
+		// 	case WorkflowProcessType.ExtendClientPeriod:
+		// 		switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+		// 			case StepType.Sales:
+		// 				this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
+		// 				break;
+		// 			case StepType.Contract:
+		// 				let bypassLegalValidation = event?.altKey && event?.shiftKey;
+		// 				this._workflowDataService.startClientPeriodContractsSaved.emit({
+		// 					isDraft: isDraft,
+		// 					bypassLegalValidation: bypassLegalValidation,
+		// 				});
+		// 				break;
+		// 			case StepType.Finance:
+		// 				this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
+		// 				break;
+		// 		}
+		// 		break;
 
-			case WorkflowProcessType.TerminateWorkflow:
-				switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-					case StepType.Sales:
-						this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
-						break;
-					case StepType.Contract:
-						this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
-						break;
-					case StepType.Sourcing:
-						this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
-						break;
-				}
-				break;
+		// 	case WorkflowProcessType.TerminateWorkflow:
+		// 		switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+		// 			case StepType.Sales:
+		// 				this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
+		// 				break;
+		// 			case StepType.Contract:
+		// 				this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
+		// 				break;
+		// 			case StepType.Sourcing:
+		// 				this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
+		// 				break;
+		// 		}
+		// 		break;
 
-			case WorkflowProcessType.TerminateConsultant:
-				switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-					case StepType.Sales:
-						this._workflowDataService.consultantTerminationSalesSaved.emit(isDraft);
-						break;
-					case StepType.Contract:
-						this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(isDraft);
-						break;
-					case StepType.Sourcing:
-						this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(isDraft);
-						break;
-				}
-				break;
+		// 	case WorkflowProcessType.TerminateConsultant:
+		// 		switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+		// 			case StepType.Sales:
+		// 				this._workflowDataService.consultantTerminationSalesSaved.emit(isDraft);
+		// 				break;
+		// 			case StepType.Contract:
+		// 				this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(isDraft);
+		// 				break;
+		// 			case StepType.Sourcing:
+		// 				this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(isDraft);
+		// 				break;
+		// 		}
+		// 		break;
 
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-					case StepType.Sales:
-						this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
-						break;
-					case StepType.Contract:
-						let bypassLegalValidation = event?.altKey && event?.shiftKey;
-						this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit({
-							isDraft,
-							bypassLegalValidation: bypassLegalValidation,
-						});
-						break;
-					case StepType.Finance:
-						this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
-						break;
-				}
-				break;
-		}
+		// 	case WorkflowProcessType.StartConsultantPeriod:
+		// 	case WorkflowProcessType.ChangeConsultantPeriod:
+		// 	case WorkflowProcessType.ExtendConsultantPeriod:
+		// 		switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+		// 			case StepType.Sales:
+		// 				this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
+		// 				break;
+		// 			case StepType.Contract:
+		// 				let bypassLegalValidation = event?.altKey && event?.shiftKey;
+		// 				this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit({
+		// 					isDraft,
+		// 					bypassLegalValidation: bypassLegalValidation,
+		// 				});
+		// 				break;
+		// 			case StepType.Finance:
+		// 				this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
+		// 				break;
+		// 		}
+		// 		break;
+		// }
 	}
 
 	public addTermination() {
