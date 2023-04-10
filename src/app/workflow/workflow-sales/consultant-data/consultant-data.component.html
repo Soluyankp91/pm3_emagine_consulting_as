@@ -337,7 +337,7 @@
                                             <mat-select [disabled]="readOnlyMode" required formControlName="consultantCapOnTimeReporting"
                                                 (selectionChange)="capSelectionChange($event, consultantIndex)"
                                                 [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
+                                                <ng-container *ngFor="let item of consultantTimeReportingCap; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>

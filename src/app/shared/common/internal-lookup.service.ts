@@ -64,7 +64,7 @@ export class InternalLookupService {
             invoicingTimes: this.getInvoicingTimes(),
             saleTypes: this.getSaleTypes(),
             projectTypes: this.getProjectTypes(),
-            unitTypes: this.getUnitTypes(),
+            rateUnitTypes: this.getRateUnitTypes(),
             invoiceFrequencies: this.getInvoiceFrequencies(),
             signerRoles: this.getSignerRoles(),
             margins: this.getMargins(),
@@ -135,7 +135,7 @@ export class InternalLookupService {
         });
     }
 
-    getUnitTypes(): Observable<EnumEntityTypeDto[]> {
+    getRateUnitTypes(): Observable<EnumEntityTypeDto[]> {
         return new Observable<EnumEntityTypeDto[]>((observer) => {
             if (this.rateUnitTypes.length) {
                 observer.next(this.rateUnitTypes);

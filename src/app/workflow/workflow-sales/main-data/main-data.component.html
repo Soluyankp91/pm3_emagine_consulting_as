@@ -302,7 +302,7 @@
                                                 (selectionChange)="commissionRecipientTypeChanged(i)"
                                                 [compareWith]="compareWithFn">
                                                 <ng-container
-                                                    *ngFor="let item of commissionRecipientTypeList; trackBy: trackById">
+                                                    *ngFor="let item of commissionRecipientTypes; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -631,7 +631,7 @@
                                 <mat-option [value]="999">
                                     Manual date
                                 </mat-option>
-                                <ng-container *ngFor="let item of contractExpirationNotificationDuration | keyvalue">
+                                <ng-container *ngFor="let item of contractExpirationNotificationInterval | keyvalue">
                                     <mat-option [value]="+item.key">
                                         {{ item.value }}
                                     </mat-option>

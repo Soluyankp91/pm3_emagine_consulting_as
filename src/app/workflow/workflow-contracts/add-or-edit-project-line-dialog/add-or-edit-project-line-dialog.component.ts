@@ -2,8 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Inject, Injector, OnDestroy, On
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientResultDto, ContactResultDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
@@ -41,7 +40,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>,
         private _lookupService: LookupServiceProxy,
-        private _internalLookupService: InternalLookupService,
         private router: Router
     ) {
         super(injector);
@@ -120,14 +118,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     getConsultantInsuranceOptions() {
         this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
-
-        // this._internalLookupService.getConsultantInsuranceOptions()
-        //     .pipe(finalize(() => {
-
-        //     }))
-        //     .subscribe(result => {
-        //         this.consultantInsuranceOptions = result;
-        //     });
     }
 
     fillForm(data: any) {

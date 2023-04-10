@@ -1,9 +1,8 @@
 import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	ClientPeriodContractsDataCommandDto,
@@ -90,10 +89,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	projectTypes: EnumEntityTypeDto[] = [];
 	margins: EnumEntityTypeDto[] = [];
 	clientTimeReportingCap: EnumEntityTypeDto[] = [];
-	clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
-	clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
+	specialRateReportUnits: EnumEntityTypeDto[] = [];
+	specialFeeFrequencies: EnumEntityTypeDto[] = [];
 	employmentTypes: EnumEntityTypeDto[] = [];
-	consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+	consultantTimeReportingCap: EnumEntityTypeDto[] = [];
 	rateUnitTypes: EnumEntityTypeDto[] = [];
 	legalContractStatuses: { [key: string]: string };
 	consultantInsuranceOptions: { [key: string]: string };
@@ -123,7 +122,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _fb: UntypedFormBuilder,
 		private _clientPeriodService: ClientPeriodServiceProxy,
 		private _workflowDataService: WorkflowDataService,
-		private _internalLookupService: InternalLookupService,
 		private _workflowServiceProxy: WorkflowServiceProxy,
 		private _consultantPeriodService: ConsultantPeriodServiceProxy,
 		private _clientService: ClientsServiceProxy,
@@ -405,56 +403,21 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
     private _getEnums() {
-        // NB: check spelling
         this.currencies = this.getStaticEnumValue('currencies');
-        this.clientSpecialRateReportUnits = this.getStaticEnumValue('currencies');
-        this.clientSpecialFeeFrequencies = this.getStaticEnumValue('currencies');
+        this.specialRateReportUnits = this.getStaticEnumValue('specialRateReportUnits');
+        this.specialFeeFrequencies = this.getStaticEnumValue('specialFeeFrequencies');
         this.discounts = this.getStaticEnumValue('discounts');
         this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
         this.saleTypes = this.getStaticEnumValue('saleTypes');
         this.projectTypes = this.getStaticEnumValue('projectTypes');
         this.margins = this.getStaticEnumValue('margins');
-        this.clientTimeReportingCap = this.getStaticEnumValue('currencies');
+        this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
         this.employmentTypes = this.getStaticEnumValue('employmentTypes');
-        this.consultantTimeReportingCapList = this.getStaticEnumValue('consultantTimeReportingCapList');
+        this.consultantTimeReportingCap = this.getStaticEnumValue('consultantTimeReportingCap');
         this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
         this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
         this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
         this.projectCategories = this.getStaticEnumValue('projectCategories');
-        // forkJoin({
-        //     currencies: this._internalLookupService.getCurrencies(),
-        //     clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
-        //     clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
-        //     discounts: this._internalLookupService.getDiscounts(),
-        //     deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-        //     saleTypes: this._internalLookupService.getSaleTypes(),
-        //     projectTypes: this._internalLookupService.getProjectTypes(),
-        //     margins: this._internalLookupService.getMargins(),
-        //     clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-        //     employmentTypes: this._internalLookupService.getEmploymentTypes(),
-        //     consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-        //     rateUnitTypes: this._internalLookupService.getUnitTypes(),
-        //     legalContractStatuses: this._internalLookupService.getLegalContractStatuses(),
-        //     consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-        //     projectCategories: this._internalLookupService.getProjectCategory()
-        // })
-        // .subscribe(result => {
-        //     this.currencies = result.currencies;
-        //     this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
-        //     this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
-        //     this.discounts = result.discounts;
-        //     this.deliveryTypes = result.deliveryTypes;
-        //     this.saleTypes = result.saleTypes;
-        //     this.projectTypes = result.projectTypes;
-        //     this.margins = result.margins;
-        //     this.clientTimeReportingCap = result.clientTimeReportingCap;
-        //     this.employmentTypes = result.employmentTypes;
-        //     this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-        //     this.rateUnitTypes = result.rateUnitTypes;
-        //     this.legalContractStatuses = result.legalContractStatuses;
-        //     this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-        //     this.projectCategories = result.projectCategories;
-        // })
     }
 
 	toggleEditMode(isToggledFromUi?: boolean) {

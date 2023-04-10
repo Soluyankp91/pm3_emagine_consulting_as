@@ -10,8 +10,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { getEmployees } from 'src/app/store/selectors/core.selectors';
 import { Store } from '@ngrx/store';
-import { merge, Observable, of, Subject, Subscription } from 'rxjs';
-import { debounceTime, filter, finalize, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { merge, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, finalize, map, startWith, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ERouteTitleType } from 'src/shared/AppEnums';
@@ -22,7 +22,6 @@ import {
 	EmployeeServiceProxy,
 	EnumEntityTypeDto,
 	LegalEntityDto,
-	LookupServiceProxy,
 	StartNewWorkflowInputDto,
 	SyncStateStatus,
 	WorkflowAlreadyExistsDto,
@@ -34,7 +33,6 @@ import {
 	WorkflowStepStatus,
 } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
-import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
@@ -156,8 +154,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _workflowService: WorkflowServiceProxy,
 		private overlay: Overlay,
 		private dialog: MatDialog,
-		private _internalLookupService: InternalLookupService,
-		private _lookupService: LookupServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
 		private _activatedRoute: ActivatedRoute,
         private _workflowDataService: WorkflowDataService,
@@ -188,54 +184,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				this.updateAdvancedFiltersCounter();
 				this.getWorkflowList(true);
 			});
-
-		// this.accountManagerFilter.valueChanges
-		// 	.pipe(
-		// 		takeUntil(this._unsubscribe),
-		// 		debounceTime(500),
-		// 		switchMap((value: any) => {
-		// 			let toSend = {
-		// 				name: value,
-		// 				maxRecordsCount: 1000,
-		// 				showAll: true,
-		// 				excludeIds: this.selectedAccountManagers.map((x) => +x.id),
-		// 			};
-		// 			if (value?.id) {
-		// 				toSend.name = value.id ? value.name : value;
-		// 			}
-		// 			this.isLoading = true;
-		// 			return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-		// 		})
-		// 	)
-		// 	.subscribe((list: EmployeeDto[]) => {
-		// 		if (list.length) {
-		// 			this.filteredAccountManagers = list.map((x) => {
-		// 				return new SelectableEmployeeDto({
-		// 					id: x.id!,
-		// 					name: x.name!,
-		// 					externalId: x.externalId!,
-		// 					selected: false,
-		// 				});
-		// 			});
-		// 		} else {
-		// 			this.filteredAccountManagers = [
-		// 				{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
-		// 			];
-		// 		}
-		// 		this.isLoading = false;
-		// 	});
 	}
 
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.WfList);
         this._getEnums();
-        // this._internalLookupService.getData();
-		// this.getSyncStateStatuses();
 		this.getCurrentUser();
-		// this.getLegalEntities();
-		// this.getSalesType();
-		// this.getDeliveryTypes();
-		// this.getWorkflowStatuses();
         this.employees$ = this._store.select(getEmployees);
         this.accountManagerFilter.valueChanges
             .pipe(
@@ -520,40 +474,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			default:
 				return '';
 		}
-	}
-
-	getLegalEntities() {
-		this._internalLookupService.getLegalEntities().subscribe((result) => {
-			this.legalEntities = result;
-		});
-        this.legalEntities = this.getStaticEnumValue('legalEntities');
-	}
-
-	getSalesType() {
-		this._internalLookupService.getSaleTypes().subscribe((result) => {
-			this.saleTypes = result;
-		});
-        this.saleTypes = this.getStaticEnumValue('saleTypes');
-	}
-
-	getDeliveryTypes() {
-		this._internalLookupService.getDeliveryTypes().subscribe((result) => {
-			this.deliveryTypes = result;
-		});
-        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
-	}
-
-	getWorkflowStatuses() {
-		// this._internalLookupService.getWorkflowStatuses().subscribe((result) => {
-		// 	this.workflowStatuses = result;
-		// });
-        this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
-	}
-	getSyncStateStatuses() {
-		// this._internalLookupService.getSyncStateStatuses().subscribe((result) => {
-		// 	this.syncStateStatuses = this.toArray(result);
-		// });
-        this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
 	}
 
 	getWorkflowList(filterChanged?: boolean) {

@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { forkJoin, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -326,20 +326,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this.getSalesStepData();
 	}
 
-
-	get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
-	}
-
-	get readOnlyMode() {
-		return (
-			this.isCompleted ||
-			(!this.permissionsForCurrentUser!['StartEdit'] &&
-				!this.permissionsForCurrentUser!['Edit'] &&
-				!this.permissionsForCurrentUser!['Completion'])
-		);
-	}
-
 	clientPeriodDatesChanged() {
 		for (let consultant of this.consutlantDataComponent?.consultants.controls) {
 			if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
@@ -392,27 +378,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
-	}
-
-	private _getEnums() {
-        this.currencies = this.getStaticEnumValue('currencies');
-        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
-        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
-        this.terminationTimes = this.getStaticEnumValue('terminationTimes');
-        this.terminationReasons = this.getStaticEnumValue('terminationReasons');
-		// forkJoin({
-		// 	currencies: this._internalLookupService.getCurrencies(),
-		// 	invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-		// 	invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-		// 	terminationTimes: this._internalLookupService.getTerminationTimes(),
-		// 	terminationReasons: this._internalLookupService.getTerminationReasons(),
-		// }).subscribe((result) => {
-		// 	this.currencies = result.currencies;
-		// 	this.invoicingTimes = result.invoicingTimes;
-		// 	this.invoiceFrequencies = result.invoiceFrequencies;
-		// 	this.terminationTimes = result.terminationTimes;
-		// 	this.terminationReasons = result.terminationReasons;
-		// });
 	}
 
 	saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {
@@ -492,7 +457,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesMainData?.primarySourcer,
 					{ emitEvent: false }
 				);
-				let expirationNotificationIntervals = result.salesMainData?.contractExpirationNotificationIntervalIds;
+				let expirationNotificationIntervals = new Array<number>(...result.salesMainData?.contractExpirationNotificationIntervalIds);
 				if (
 					result?.salesMainData?.customContractExpirationNotificationDate !== null &&
 					result?.salesMainData?.customContractExpirationNotificationDate !== undefined
@@ -1355,4 +1320,25 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             this.submitFormBtn.nativeElement.click();
         }
     }
+
+    private _getEnums() {
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.terminationTimes = this.getStaticEnumValue('terminationTimes');
+        this.terminationReasons = this.getStaticEnumValue('terminationReasons');
+	}
+
+    get canToggleEditMode() {
+		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
+	}
+
+	get readOnlyMode() {
+		return (
+			this.isCompleted ||
+			(!this.permissionsForCurrentUser!['StartEdit'] &&
+				!this.permissionsForCurrentUser!['Edit'] &&
+				!this.permissionsForCurrentUser!['Completion'])
+		);
+	}
 }

@@ -39,20 +39,8 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 
 	ngOnInit(): void {
         this._getEnums();
-		// this._getLegalContractStatuses();
-        // this._getEmploymentTypes();
 	}
 
-    private _getEnums() {
-        this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
-        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
-    }
-	private _getLegalContractStatuses() {
-		this._internalLookupService.getLegalContractStatuses().subscribe((result) => (this.legalContractStatuses = result));
-	}
-	private _getEmploymentTypes() {
-		this._internalLookupService.getEmploymentTypes().subscribe((result) => (this.employmentTypes = result));
-	}
 	addConsultantLegalContract(consultant: ConsultantContractsDataQueryDto) {
 		const form = this._fb.group({
 			consultantId: new UntypedFormControl(consultant.consultantId),
@@ -101,4 +89,9 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 				return '';
 		}
 	}
+
+    private _getEnums() {
+        this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+    }
 }

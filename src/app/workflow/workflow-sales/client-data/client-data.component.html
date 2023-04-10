@@ -480,7 +480,7 @@
                             <mat-select [disabled]="readOnlyMode"
                                 [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1"
                                 formControlName="rateUnitTypeId" [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
+                                <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
                                     <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>

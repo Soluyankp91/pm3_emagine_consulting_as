@@ -4,9 +4,8 @@ import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormContr
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { EValueUnitTypes } from '../../workflow-sales/workflow-sales.model';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AgreementSimpleListItemDto,
@@ -48,7 +47,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	employmentTypes: EnumEntityTypeDto[];
-	consultantTimeReportingCapList: EnumEntityTypeDto[];
+	consultantTimeReportingCap: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
 	consultantInsuranceOptions: { [key: string]: string };
 	filteredConsultants: ConsultantResultDto[] = [];
@@ -61,7 +60,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantFeeEditing = false;
 	eValueUnitType = EValueUnitTypes;
 	ePOCaps = PurchaseOrderCapType;
-	capTypes: { [key: string]: string };
+	purchaseOrderCapTypes: { [key: string]: string };
 	eCurrencies: { [key: number]: string };
 	directClientId: number;
 	filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
@@ -73,7 +72,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		private overlay: Overlay,
 		private dialog: MatDialog,
 		private _fb: UntypedFormBuilder,
-		private _internalLookupService: InternalLookupService,
 		private _purchaseOrderService: PurchaseOrderServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
@@ -754,55 +752,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		});
 	}
 
-	// private _getEnums() {
-	// 	forkJoin({
-	// 		employmentTypes: this._internalLookupService.getEmploymentTypes(),
-	// 		consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-	// 		currencies: this._internalLookupService.getCurrencies(),
-	// 		consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-	// 		valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-	// 		periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-	// 		capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-	// 	}).subscribe((result) => {
-	// 		this.employmentTypes = result.employmentTypes;
-	// 		this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-	// 		this.currencies = result.currencies;
-	// 		this.eCurrencies = this.arrayToEnum(result.currencies);
-	// 		this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-	// 		this.valueUnitTypes = result.valueUnitTypes;
-	// 		this.periodUnitTypes = result.periodUnitTypes;
-	// 		this.capTypes = result.capTypes;
-	// 	});
-	// }
-
     private _getEnums() {
         this.employmentTypes = this.getStaticEnumValue('employmentTypes');
-        this.consultantTimeReportingCapList = this.getStaticEnumValue('consultantTimeReportingCapList');
+        this.consultantTimeReportingCap = this.getStaticEnumValue('consultantTimeReportingCap');
         this.currencies = this.getStaticEnumValue('currencies');
         this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
         this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
         this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
-        this.capTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
-
-        // forkJoin({
-        //     employmentTypes: this._internalLookupService.getEmploymentTypes(),
-        //     consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-        //     currencies: this._internalLookupService.getCurrencies(),
-        //     consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-        //     valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-        //     periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-        //     capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-        // })
-        // .subscribe(result => {
-        //     this.employmentTypes = result.employmentTypes;
-        //     this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-        //     this.currencies = result.currencies;
-        //     this.eCurrencies = this.arrayToEnum(result.currencies);
-        //     this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-        //     this.valueUnitTypes = result.valueUnitTypes;
-        //     this.periodUnitTypes = result.periodUnitTypes;
-        //     this.capTypes = result.capTypes;
-        // })
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
     }
 
     get timeReportingCaps(): UntypedFormArray {

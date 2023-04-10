@@ -6,14 +6,13 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { forkJoin, merge, of, Subject } from 'rxjs';
+import { merge, of, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { MapClientAddressList } from '../workflow-sales.helpers';
 import {
-	AgreementServiceProxy,
 	ClientAddressDto,
 	AgreementSimpleListItemDto,
 	AgreementSimpleListItemDtoPaginatedList,
@@ -76,7 +75,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	extensionDurations: EnumEntityTypeDto[];
 	extensionDeadlines: EnumEntityTypeDto[];
 	legalEntities: LegalEntityDto[];
-	unitTypes: EnumEntityTypeDto[];
+	rateUnitTypes: EnumEntityTypeDto[];
 	invoiceFrequencies: EnumEntityTypeDto[];
 	invoicingTimes: EnumEntityTypeDto[];
 	clientTimeReportingCap: EnumEntityTypeDto[];
@@ -112,7 +111,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _httpClient: HttpClient,
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
-		private _agreementService: AgreementServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
 	) {
@@ -128,292 +126,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
-	}
-
-	private _getEnums() {
-        this.currencies = this.getStaticEnumValue('currencies');
-        this.legalEntities = this.getStaticEnumValue('legalEntities');
-        this.signerRoles = this.getStaticEnumValue('signerRoles');
-        this.extensionDurations = this.getStaticEnumValue('extensionDurations');
-        this.extensionDeadlines = this.getStaticEnumValue('extensionDeadlines');
-        this.unitTypes = this.getStaticEnumValue('unitTypes');
-        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
-        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
-        this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
-        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
-        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
-		// forkJoin({
-		// 	currencies: this._internalLookupService.getCurrencies(),
-		// 	legalEntities: this._internalLookupService.getLegalEntities(),
-		// 	signerRoles: this._internalLookupService.getSignerRoles(),
-		// 	extensionDurations: this._internalLookupService.getExtensionDurations(),
-		// 	extensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-		// 	unitTypes: this._internalLookupService.getUnitTypes(),
-		// 	invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-		// 	invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-		// 	clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-		// 	valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-		// 	periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-		// }).subscribe((result) => {
-		// 	this.currencies = result.currencies;
-		// 	this.legalEntities = result.legalEntities;
-		// 	this.signerRoles = result.signerRoles;
-		// 	this.extensionDurations = result.extensionDurations;
-		// 	this.extensionDeadlines = result.extensionDeadlines;
-		// 	this.unitTypes = result.unitTypes;
-		// 	this.invoiceFrequencies = result.invoiceFrequencies;
-		// 	this.invoicingTimes = result.invoicingTimes;
-		// 	this.clientTimeReportingCap = result.clientTimeReportingCap;
-		// 	this.valueUnitTypes = result.valueUnitTypes;
-		// 	this.periodUnitTypes = result.periodUnitTypes;
-		// });
-	}
-
-	private _subscriptions$() {
-		this.salesClientDataForm.directClientIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.clientId) {
-						toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
-					}
-					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ClientResultDto[]) => {
-				if (list.length) {
-					this.filteredDirectClients = list;
-				} else {
-					this.filteredDirectClients = [
-						new ClientResultDto({
-							clientName: 'No records found',
-							clientId: undefined,
-						}),
-					];
-				}
-			});
-
-		this.salesClientDataForm.endClientIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.clientId) {
-						toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
-					}
-					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ClientResultDto[]) => {
-				if (list.length) {
-					this.filteredEndClients = list;
-				} else {
-					this.filteredEndClients = [
-						new ClientResultDto({
-							clientName: 'No records found',
-							clientId: undefined,
-						}),
-					];
-				}
-			});
-
-		this.salesClientDataForm.invoicePaperworkContactIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						clientIds: [
-							this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							this.salesClientDataForm.endClientIdValue?.value?.clientId,
-						].filter(Boolean),
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
-					}
-					if (toSend.clientIds?.length) {
-						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredReferencePersons = list;
-				} else {
-					this.filteredReferencePersons = [
-						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
-					];
-				}
-			});
-
-		this.salesClientDataForm.clientContactProjectManager?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						clientIds: [
-							this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							this.salesClientDataForm.endClientIdValue?.value?.clientId,
-						].filter(Boolean),
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
-					}
-					if (toSend.clientIds?.length) {
-						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredProjectManagers = list;
-				} else {
-					this.filteredProjectManagers = [
-						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
-					];
-				}
-			});
-
-		this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.clientId) {
-						toSend.name = value.clientId ? value.clientName : value;
-					}
-					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ClientResultDto[]) => {
-				if (list.length) {
-					this.filteredClientInvoicingRecipients = list;
-				} else {
-					this.filteredClientInvoicingRecipients = [
-						new ClientResultDto({ clientName: 'No records found', clientId: undefined }),
-					];
-				}
-			});
-
-		this.salesClientDataForm.evaluationsReferencePersonIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						clientIds: [
-							this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							this.salesClientDataForm.endClientIdValue?.value?.clientId,
-						].filter(Boolean),
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
-					}
-					if (toSend.clientIds?.length) {
-						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredEvaluationReferencePersons = list;
-				} else {
-					this.filteredEvaluationReferencePersons = [
-						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
-					];
-				}
-			});
-
-		merge(
-			this.salesClientDataForm.startDate!.valueChanges,
-			this.salesClientDataForm.endDate!.valueChanges,
-			this.salesClientDataForm.noEndDate!.valueChanges
-		)
-			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
-			.subscribe(() => {
-				this.clientPeriodDatesChanged.emit();
-				this._checkAndPreselectFrameAgreement();
-			});
-
-		this._workflowDataService.preselectFrameAgreement.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
-			this._checkAndPreselectFrameAgreement();
-		});
-
-		this.salesClientDataForm.frameAgreementId.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let dataToSend = {
-						recipientClientIds: [
-							this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							this.salesClientDataForm.endClientIdValue?.value?.clientId,
-						].filter(Boolean),
-						search: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.agreementId) {
-						dataToSend.search = value.agreementId ? value.agreementName : value;
-					}
-					if (dataToSend.recipientClientIds?.length) {
-						return this.getFrameAgreements(false, dataToSend.search);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
-				if (list?.items?.length) {
-					this.filteredFrameAgreements = list.items;
-					if (this.selectedFrameAgreementId) {
-						this.salesClientDataForm.frameAgreementId.setValue(
-							list.items.find((x) => x.agreementId === this.selectedFrameAgreementId),
-							{ emitEvent: false }
-						);
-						this.selectedFrameAgreementId = null;
-					}
-				} else {
-					this.filteredFrameAgreements = [
-						new AgreementSimpleListItemDto({
-							agreementName: 'No records found',
-							agreementId: undefined,
-						}),
-					];
-				}
-			});
 	}
 
 	getPrimaryFrameAgreements() {
@@ -771,6 +483,267 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	submitForm() {
 		this.submitFormBtn.nativeElement.click();
+	}
+
+    private _getEnums() {
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.signerRoles = this.getStaticEnumValue('signerRoles');
+        this.extensionDurations = this.getStaticEnumValue('extensionDurations');
+        this.extensionDeadlines = this.getStaticEnumValue('extensionDeadlines');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+	}
+
+    private _subscriptions$() {
+		this.salesClientDataForm.directClientIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value ?? '',
+						maxRecordsCount: 1000,
+					};
+					if (value?.clientId) {
+						toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
+					}
+					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+				})
+			)
+			.subscribe((list: ClientResultDto[]) => {
+				if (list.length) {
+					this.filteredDirectClients = list;
+				} else {
+					this.filteredDirectClients = [
+						new ClientResultDto({
+							clientName: 'No records found',
+							clientId: undefined,
+						}),
+					];
+				}
+			});
+
+		this.salesClientDataForm.endClientIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value ?? '',
+						maxRecordsCount: 1000,
+					};
+					if (value?.clientId) {
+						toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
+					}
+					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+				})
+			)
+			.subscribe((list: ClientResultDto[]) => {
+				if (list.length) {
+					this.filteredEndClients = list;
+				} else {
+					this.filteredEndClients = [
+						new ClientResultDto({
+							clientName: 'No records found',
+							clientId: undefined,
+						}),
+					];
+				}
+			});
+
+		this.salesClientDataForm.invoicePaperworkContactIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.firstName : value;
+					}
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
+				})
+			)
+			.subscribe((list: ContactResultDto[]) => {
+				if (list.length) {
+					this.filteredReferencePersons = list;
+				} else {
+					this.filteredReferencePersons = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
+				}
+			});
+
+		this.salesClientDataForm.clientContactProjectManager?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.firstName : value;
+					}
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
+				})
+			)
+			.subscribe((list: ContactResultDto[]) => {
+				if (list.length) {
+					this.filteredProjectManagers = list;
+				} else {
+					this.filteredProjectManagers = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
+				}
+			});
+
+		this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value ?? '',
+						maxRecordsCount: 1000,
+					};
+					if (value?.clientId) {
+						toSend.name = value.clientId ? value.clientName : value;
+					}
+					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+				})
+			)
+			.subscribe((list: ClientResultDto[]) => {
+				if (list.length) {
+					this.filteredClientInvoicingRecipients = list;
+				} else {
+					this.filteredClientInvoicingRecipients = [
+						new ClientResultDto({ clientName: 'No records found', clientId: undefined }),
+					];
+				}
+			});
+
+		this.salesClientDataForm.evaluationsReferencePersonIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.firstName : value;
+					}
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
+				})
+			)
+			.subscribe((list: ContactResultDto[]) => {
+				if (list.length) {
+					this.filteredEvaluationReferencePersons = list;
+				} else {
+					this.filteredEvaluationReferencePersons = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
+				}
+			});
+
+		merge(
+			this.salesClientDataForm.startDate!.valueChanges,
+			this.salesClientDataForm.endDate!.valueChanges,
+			this.salesClientDataForm.noEndDate!.valueChanges
+		)
+			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+			.subscribe(() => {
+				this.clientPeriodDatesChanged.emit();
+				this._checkAndPreselectFrameAgreement();
+			});
+
+		this._workflowDataService.preselectFrameAgreement.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
+			this._checkAndPreselectFrameAgreement();
+		});
+
+		this.salesClientDataForm.frameAgreementId.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let dataToSend = {
+						recipientClientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						search: value ?? '',
+						maxRecordsCount: 1000,
+					};
+					if (value?.agreementId) {
+						dataToSend.search = value.agreementId ? value.agreementName : value;
+					}
+					if (dataToSend.recipientClientIds?.length) {
+						return this.getFrameAgreements(false, dataToSend.search);
+					} else {
+						return of([]);
+					}
+				})
+			)
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+				if (list?.items?.length) {
+					this.filteredFrameAgreements = list.items;
+					if (this.selectedFrameAgreementId) {
+						this.salesClientDataForm.frameAgreementId.setValue(
+							list.items.find((x) => x.agreementId === this.selectedFrameAgreementId),
+							{ emitEvent: false }
+						);
+						this.selectedFrameAgreementId = null;
+					}
+				} else {
+					this.filteredFrameAgreements = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
+				}
+			});
 	}
 
 	get clientRates(): UntypedFormArray {

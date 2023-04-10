@@ -3,7 +3,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil, map } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import {
 	EmployeeDto,
@@ -17,7 +17,6 @@ import {
 	MainOverviewStatusDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { SelectableIdNameDto } from '../client/client.model';
-import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { OverviewFilterColors, OverviewFlag, OverviewProcessColors, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
@@ -131,7 +130,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	constructor(
 		injector: Injector,
 		private _lookupService: LookupServiceProxy,
-		private _internalLookupService: InternalLookupService,
 		private _mainOverviewService: MainOverviewServiceProxy,
 		private router: Router,
 		private _employeeService: EmployeeServiceProxy,
@@ -193,10 +191,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.Overview);
         this._getEnums();
-		// this.getLegalEntities();
-		// this.getSalesType();
-		// this.getDeliveryTypes();
-		// this.getMargins();
 		this.getMainOverviewStatuses();
 		this.getOverviewViewTypes();
 		this.getCurrentUser();
@@ -537,40 +531,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.changeViewType(true);
 	}
 
-	getLegalEntities() {
-        // this.legalEntities = this.getStaticEnumValue('legalEntities')?.map((x) => {
-        //     return new SelectableCountry({
-        //         id: x.id!,
-        //         name: x.name!,
-        //         tenantName: x.tenantName!,
-        //         code: MapTenantCountryCode(x.tenantName!)!,
-        //         selected: false,
-        //         flag: x.tenantName!,
-        //     });
-        // });
-		// this.isCountriesLoading = true;
-		// this._internalLookupService
-		// 	.getLegalEntities()
-		// 	.pipe(
-		// 		finalize(() => (this.isCountriesLoading = false)),
-		// 		map((entities) =>
-		// 			entities.map((x) => {
-		// 				return new SelectableCountry({
-		// 					id: x.id!,
-		// 					name: x.name!,
-		// 					tenantName: x.tenantName!,
-		// 					code: MapTenantCountryCode(x.tenantName!)!,
-		// 					selected: false,
-		// 					flag: x.tenantName!,
-		// 				});
-		// 			})
-		// 		)
-		// 	)
-		// 	.subscribe((result) => {
-		// 		this.legalEntities = result;
-		// 	});
-	}
-
     private _getEnums() {
         this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
         this.saleTypes = this.getStaticEnumValue('saleTypes');
@@ -590,33 +550,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             })
         });
     }
-
-	getSalesType() {
-		this._internalLookupService
-			.getSaleTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.saleTypes = result;
-			});
-	}
-
-	getDeliveryTypes() {
-		this._internalLookupService
-			.getDeliveryTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.deliveryTypes = result;
-			});
-	}
-
-	getMargins() {
-		this._internalLookupService
-			.getMargins()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.margins = result;
-			});
-	}
 
 	getMainOverviewStatuses() {
 		this._mainOverviewService.statuses().subscribe((result) => {

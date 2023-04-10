@@ -128,12 +128,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		this._activatedRoute.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.workflowId = params.get('id')!;
 		});
+        this._getEnums();
 		this._resetWorkflowProgress();
-		this._getClientPeriodTypes();
 		this._getTopLevelMenu();
-		this._getConsultantPeriodTypes();
-		this._getPeriodStepTypes();
-		this._getProjectCategories();
 
 		this._workflowDataService.workflowTopSectionUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
 			this._getTopLevelMenu(value);
@@ -163,105 +160,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		this._unsubscribe.complete();
 	}
 
-    private _getProjectCategories() {
-        this.projectCategories = this.getStaticEnumValue('projectCategories');
-		// this._internalLookupService.getProjectCategory().subscribe((result) => (this.projectCategories = result));
-	}
-
-	private _resetWorkflowProgress() {
-		let newStatus = new WorkflowProgressStatus();
-		newStatus.started = true;
-		newStatus.currentStepIsCompleted = false;
-		newStatus.currentStepIsForcefullyEditing = false;
-		newStatus.currentlyActivePeriodId = '';
-		newStatus.currentlyActiveSection = 0;
-		newStatus.currentlyActiveSideSection = 0;
-		newStatus.currentlyActiveStep = 0;
-		newStatus.stepSpecificPermissions = {
-			StartEdit: false,
-			Edit: false,
-			Completion: false,
-		};
-		this._workflowDataService.updateWorkflowProgressStatus(newStatus);
-	}
-
 	public cancelForceEdit() {
 		this._workflowDataService.cancelForceEdit.emit();
-	}
-
-	private _getClientPeriodTypes() {
-		this._internalLookupService
-			.getWorkflowClientPeriodTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.workflowClientPeriodTypes = result;
-			});
-	}
-
-	private _getConsultantPeriodTypes() {
-		this._internalLookupService
-			.getWorkflowConsultantPeriodTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.workflowConsultantPeriodTypes = result;
-			});
-	}
-
-	private _getPeriodStepTypes() {
-		this._internalLookupService
-			.getWorkflowPeriodStepTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.workflowPeriodStepTypes = result;
-			});
-	}
-
-	private _getTopLevelMenu(value?: boolean) {
-		this.showMainSpinner();
-		this._workflowServiceProxy
-			.clientPeriods(this.workflowId)
-			.pipe(
-				finalize(() => {
-					this.hideMainSpinner();
-				})
-			)
-			.subscribe((result) => {
-				this.clientPeriods = result.clientPeriods;
-				this.workflowDirectClient = result.directClientName;
-				this.workflowEndClient = result.endClientName;
-				this.workflowDirectClientId = result.directClientId;
-				this.workflowEndClientId = result.endClientId;
-				this.endClientCrmId = result.endClientCrmId;
-				this.directClientCrmId = result.directClientCrmId;
-				this.workflowConsultants = result.consultantNamesWithRequestUrls!;
-				this.workflowId = result.workflowId!;
-                this.workflowSequenceIdCode = result.workflowSequenceIdCode;
-				this.workflowConsultantsList = result.consultantNamesWithRequestUrls
-					?.map((x) => {
-						let result = '• ';
-						if (x.consultantName) {
-							result += x.consultantName;
-						}
-						if (x.consultantId) {
-							result += (x.consultantName?.length ? ' | ' : '') + '#' + x.consultantId;
-						}
-						if (x.companyName) {
-							result += (x.consultantName?.length || x.consultantId ? ' | ' : '') + x.companyName;
-						}
-						return result;
-					})
-					.join('\n');
-				if (result.workflowStatusId) {
-					this.workflowStatusId = result.workflowStatusId;
-					this.workflowStatusName = result.isDeleted ? 'Deleted workflow' : getWorkflowStatus(result.workflowStatusId);
-					this.workflowStatusIcon = result.isDeleted ? 'deleted-status' : getStatusIcon(result.workflowStatusId);
-				}
-				if (value) {
-					this._router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
-					this.topMenuTabs.realignInkBar();
-				}
-                this._titleService.setTitle(ERouteTitleType.WfDetails, result.directClientName ?? '', result.workflowSequenceIdCode);
-			});
 	}
 
 	public mapSideSectionName(value: number | undefined) {
@@ -402,19 +302,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			});
 	}
 
-	private _getCategoryForMigrate(workflowAction: number, availableConsultants: AvailableConsultantDto[]) {
-		this._workflowServiceProxy.getCategoryForMigrate(this.workflowId).subscribe((result) => {
-			switch (workflowAction) {
-				case WorkflowDiallogAction.Change:
-					this.changeWorkflow(availableConsultants, result);
-					break;
-				case WorkflowDiallogAction.Extend:
-					this.addExtension(availableConsultants, result);
-					break;
-			}
-		});
-	}
-
 	public addExtension(availableConsultants: AvailableConsultantDto[], migrationResult: CategoryForMigrateDto) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		DialogConfig600.scrollStrategy = scrollStrategy;
@@ -483,16 +370,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 					});
 			}
 		});
-	}
-
-	private  _processRatesAfterChangeOrExtend(specialRatesWarnings: string[] | undefined, specialFeesWarnings: string[] | undefined) {
-		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		BigDialogConfig.scrollStrategy = scrollStrategy;
-		BigDialogConfig.data = {
-			specialRatesWarnings: specialRatesWarnings,
-			specialFeesWarnings: specialFeesWarnings,
-		};
-		this._dialog.open(RateAndFeesWarningsDialogComponent, BigDialogConfig);
 	}
 
 	public addConsultant() {
@@ -578,6 +455,102 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             duration: 3000,
         });
     }
+
+    private _processRatesAfterChangeOrExtend(specialRatesWarnings: string[] | undefined, specialFeesWarnings: string[] | undefined) {
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		BigDialogConfig.scrollStrategy = scrollStrategy;
+		BigDialogConfig.data = {
+			specialRatesWarnings: specialRatesWarnings,
+			specialFeesWarnings: specialFeesWarnings,
+		};
+		this._dialog.open(RateAndFeesWarningsDialogComponent, BigDialogConfig);
+	}
+
+    private _getTopLevelMenu(value?: boolean) {
+		this.showMainSpinner();
+		this._workflowServiceProxy
+			.clientPeriods(this.workflowId)
+			.pipe(
+				finalize(() => {
+					this.hideMainSpinner();
+				})
+			)
+			.subscribe((result) => {
+				this.clientPeriods = result.clientPeriods;
+				this.workflowDirectClient = result.directClientName;
+				this.workflowEndClient = result.endClientName;
+				this.workflowDirectClientId = result.directClientId;
+				this.workflowEndClientId = result.endClientId;
+				this.endClientCrmId = result.endClientCrmId;
+				this.directClientCrmId = result.directClientCrmId;
+				this.workflowConsultants = result.consultantNamesWithRequestUrls!;
+				this.workflowId = result.workflowId!;
+                this.workflowSequenceIdCode = result.workflowSequenceIdCode;
+				this.workflowConsultantsList = result.consultantNamesWithRequestUrls
+					?.map((x) => {
+						let result = '• ';
+						if (x.consultantName) {
+							result += x.consultantName;
+						}
+						if (x.consultantId) {
+							result += (x.consultantName?.length ? ' | ' : '') + '#' + x.consultantId;
+						}
+						if (x.companyName) {
+							result += (x.consultantName?.length || x.consultantId ? ' | ' : '') + x.companyName;
+						}
+						return result;
+					})
+					.join('\n');
+				if (result.workflowStatusId) {
+					this.workflowStatusId = result.workflowStatusId;
+					this.workflowStatusName = result.isDeleted ? 'Deleted workflow' : getWorkflowStatus(result.workflowStatusId);
+					this.workflowStatusIcon = result.isDeleted ? 'deleted-status' : getStatusIcon(result.workflowStatusId);
+				}
+				if (value) {
+					this._router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
+					this.topMenuTabs.realignInkBar();
+				}
+                this._titleService.setTitle(ERouteTitleType.WfDetails, result.directClientName ?? '', result.workflowSequenceIdCode);
+			});
+	}
+
+    private _getCategoryForMigrate(workflowAction: number, availableConsultants: AvailableConsultantDto[]) {
+		this._workflowServiceProxy.getCategoryForMigrate(this.workflowId).subscribe((result) => {
+			switch (workflowAction) {
+				case WorkflowDiallogAction.Change:
+					this.changeWorkflow(availableConsultants, result);
+					break;
+				case WorkflowDiallogAction.Extend:
+					this.addExtension(availableConsultants, result);
+					break;
+			}
+		});
+	}
+
+
+    private _getEnums() {
+        this.projectCategories = this.getStaticEnumValue('projectCategories');
+        this.workflowClientPeriodTypes = this.getStaticEnumValue('workflowClientPeriodTypes');
+        this.workflowConsultantPeriodTypes = this.getStaticEnumValue('workflowConsultantPeriodTypes');
+        this.workflowPeriodStepTypes = this.getStaticEnumValue('workflowPeriodStepTypes');
+	}
+
+	private _resetWorkflowProgress() {
+		let newStatus = new WorkflowProgressStatus();
+		newStatus.started = true;
+		newStatus.currentStepIsCompleted = false;
+		newStatus.currentStepIsForcefullyEditing = false;
+		newStatus.currentlyActivePeriodId = '';
+		newStatus.currentlyActiveSection = 0;
+		newStatus.currentlyActiveSideSection = 0;
+		newStatus.currentlyActiveStep = 0;
+		newStatus.stepSpecificPermissions = {
+			StartEdit: false,
+			Edit: false,
+			Completion: false,
+		};
+		this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+	}
 
 	get isProgressTrackVisible() {
 		return !environment.production;

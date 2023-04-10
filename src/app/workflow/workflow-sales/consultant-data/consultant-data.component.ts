@@ -10,7 +10,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { forkJoin, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { finalize, takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -54,7 +54,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     employmentTypes: EnumEntityTypeDto[];
     emagineOffices: EnumEntityTypeDto[];
     expectedWorkloadUnits: EnumEntityTypeDto[];
-    consultantTimeReportingCapList: EnumEntityTypeDto[];
+    consultantTimeReportingCap: EnumEntityTypeDto[];
     rateUnitTypes: EnumEntityTypeDto[];
     invoiceFrequencies: EnumEntityTypeDto[];
     invoicingTimes: EnumEntityTypeDto[];
@@ -100,49 +100,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
-    }
-
-    private _getEnums() {
-        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
-        this.emagineOffices = this.getStaticEnumValue('emagineOffices');
-        this.countries = this.getStaticEnumValue('countries');
-        this.expectedWorkloadUnits = this.getStaticEnumValue('expectedWorkloadUnits');
-        this.consultantTimeReportingCapList = this.getStaticEnumValue('consultantTimeReportingCapList');
-        this.legalEntities = this.getStaticEnumValue('legalEntities');
-        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
-        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
-        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
-        this.currencies = this.getStaticEnumValue('currencies');
-        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
-        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
-        // forkJoin({
-        //     employmentTypes: this._internalLookupService.getEmploymentTypes(),
-        //     emagineOffices: this._internalLookupService.getEmagineOfficeList(),
-        //     countries: this._internalLookupService.getCountries(),
-        //     expectedWorkloadUnits: this._internalLookupService.getExpectedWorkloadUnit(),
-        //     consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-        //     legalEntities: this._internalLookupService.getLegalEntities(),
-        //     rateUnitTypes: this._internalLookupService.getUnitTypes(),
-        //     invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-        //     invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-        //     currencies: this._internalLookupService.getCurrencies(),
-        //     valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-        //     periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-        // })
-        // .subscribe(result => {
-        //     this.employmentTypes = result.employmentTypes;
-        //     this.emagineOffices = result.emagineOffices;
-        //     this.countries = result.countries;
-        //     this.expectedWorkloadUnits = result.expectedWorkloadUnits;
-        //     this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-        //     this.legalEntities = result.legalEntities;
-        //     this.rateUnitTypes = result.rateUnitTypes;
-        //     this.invoiceFrequencies = result.invoiceFrequencies;
-        //     this.invoicingTimes = result.invoicingTimes;
-        //     this.currencies = result.currencies;
-        //     this.valueUnitTypes = result.valueUnitTypes;
-        //     this.periodUnitTypes = result.periodUnitTypes;
-        // });
     }
 
     updateConsultantDates(event: MatSelectChange, consultantIndex: number) {
@@ -227,7 +184,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				this.findItemById(this.expectedWorkloadUnits, consultant?.expectedWorkloadUnitId) ?? null
 			),
 			consultantCapOnTimeReporting: new UntypedFormControl(
-				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)
+				this.findItemById(this.consultantTimeReportingCap, consultant?.consultantTimeReportingCapId ?? 4)
 			), // ?? default value = no cap - id:4
 			consultantProdataEntity: new UntypedFormControl(
 				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
@@ -827,6 +784,21 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     submitForm() {
         this.submitFormBtn.nativeElement.click();
+    }
+
+    private _getEnums() {
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+        this.emagineOffices = this.getStaticEnumValue('emagineOffices');
+        this.countries = this.getStaticEnumValue('countries');
+        this.expectedWorkloadUnits = this.getStaticEnumValue('expectedWorkloadUnits');
+        this.consultantTimeReportingCap = this.getStaticEnumValue('consultantTimeReportingCap');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
     }
 
     get timeReportingCaps(): UntypedFormArray {

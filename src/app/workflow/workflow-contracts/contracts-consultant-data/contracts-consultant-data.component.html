@@ -114,7 +114,7 @@
                                             <mat-label>Shared cap on time reporting</mat-label>
                                             <mat-select [disabled]="true" required formControlName="consultantTimeReportingCapId"
                                                 [disableOptionCentering]="true">
-                                                <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
+                                                <ng-container *ngFor="let item of consultantTimeReportingCap; trackBy: trackById">
                                                     <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -1087,7 +1087,7 @@
                                                                         <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
                                                                             {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
                                                                         </span>
-                                                                        • {{capTypes[order?.capForInvoicing?.type]}}:
+                                                                        • {{purchaseOrderCapTypes[order?.capForInvoicing?.type]}}:
                                                                         <span class="color-black text-bold">
                                                                             {{order?.capForInvoicing?.amountUsed ?? '0'}} / {{order?.capForInvoicing?.maxAmount}}
                                                                             <ng-container [ngSwitch]="order?.capForInvoicing?.type">

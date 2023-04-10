@@ -2,8 +2,6 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
@@ -31,7 +29,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	poForm: PoForm;
 	eValueUnitType = EValueUnitTypes;
 	ePoCapType = PurchaseOrderCapType;
-	capTypes: { [key: string]: string };
+	purchaseOrderCapTypes: { [key: string]: string };
 	purchaseOrdersList: PurchaseOrderDto[];
 	ePurchaseOrderMode = EPurchaseOrderMode;
 	eCurrencies: { [key: number]: string };
@@ -41,7 +39,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
 		private _fb: UntypedFormBuilder,
-		private readonly _internalLookupService: InternalLookupService,
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy
 	) {
 		super(injector);
@@ -149,17 +146,9 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	}
 
 	private _getEnums() {
-        this.capTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
         this.currencies = this.getStaticEnumValue('currencies');
         this.eCurrencies = this.arrayToEnum(this.currencies);
-		// forkJoin({
-		// 	capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-		// 	currencies: this._internalLookupService.getCurrencies(),
-		// }).subscribe((result) => {
-		// 	this.capTypes = result.capTypes;
-		// 	this.currencies = result.currencies;
-		// 	this.eCurrencies = this.arrayToEnum(this.currencies);
-		// });
 	}
 
 	get purchaseOrders(): UntypedFormArray {
