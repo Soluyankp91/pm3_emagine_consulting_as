@@ -43,6 +43,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			isEdit: boolean;
 			clientPeriodId: string;
 			directClientId?: number;
+			addedPoIds: number[];
 		},
 		private _dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
 		private readonly _internalLookupService: InternalLookupService,
@@ -142,7 +143,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this._purchaseOrderService
 			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
 			.subscribe((result) => {
-				this.purchaseOrders = result;
+				this.purchaseOrders = this._filterOutAddedPOs(result);
 			});
 	}
 
@@ -157,5 +158,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			this.eCurrencies = this.arrayToEnum(this.currencies);
 			this.unitTypes = result.unitTypes;
 		});
+	}
+
+	private _filterOutAddedPOs(list: PurchaseOrderDto[]) {
+		return list.filter((x) => !this.data?.addedPoIds.includes(x.id));
 	}
 }
