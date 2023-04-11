@@ -448,32 +448,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe(() => this.getWorkflowList());
 	}
 
-	getFlagColor(flag: number): string {
-		switch (flag) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-				return 'workflow-flag--sales';
-			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				return 'workflow-flag--extension';
-			default:
-				return '';
-		}
-	}
-
-	mapFlagTooltip(flag: number): string {
-		switch (flag) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-				return 'New Sales';
-			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				return 'Has Extension';
-			default:
-				return '';
-		}
-	}
-
 	getWorkflowList(filterChanged?: boolean) {
 		let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
 		let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
@@ -696,15 +670,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getCurrentUser();
 	}
 
-	onOpenedMenu() {
-        setTimeout(() => {
-            this.trigger.openPanel();
-        }, 100);
-	}
+	// onOpenedMenu() {
+    //     setTimeout(() => {
+    //         this.trigger.openPanel();
+    //     }, 100);
+	// }
 
-	displayNameFn(option: any) {
-		return option?.name;
-	}
+	// displayNameFn(option: any) {
+	// 	return option?.name;
+	// }
 
 	syncStatusFilterControl(item: ISelectableIdNameDto) {
 		const index = this.selectedSyncStateStatuses.findIndex((x) => x.id === item.id);
