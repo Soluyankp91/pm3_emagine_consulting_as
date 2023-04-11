@@ -144,7 +144,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
             .pipe(
                 map(list => {
-                    return this._filterOutAddedPOs(list);
+                    return list.filter((x) => !this.data?.addedPoIds.includes(x.id));
                 }))
 			.subscribe((result) => {
 				this.purchaseOrders = result;
@@ -162,9 +162,5 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			this.eCurrencies = this.arrayToEnum(this.currencies);
 			this.unitTypes = result.unitTypes;
 		});
-	}
-
-	private _filterOutAddedPOs(list: PurchaseOrderDto[]) {
-		return list.filter((x) => !this.data?.addedPoIds.includes(x.id));
 	}
 }
