@@ -44,6 +44,7 @@ import {
 import {} from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import { ContractsClientDataComponent } from './contracts-client-data/contracts-client-data.component';
@@ -145,7 +146,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			currentStepIsCompleted: this.isCompleted,
 			currentStepIsForcefullyEditing: false,
 		});
-		if (this.permissionsForCurrentUser!['StartEdit']) {
+		if (this.permissionsForCurrentUser![EPermissions.StartEdit]) {
 			this.startEditContractStep();
 		} else {
 			this.getContractStepData();
@@ -1260,7 +1261,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
+		return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
 	}
 
 	get readOnlyMode() {

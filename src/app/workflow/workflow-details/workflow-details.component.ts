@@ -101,6 +101,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     ePeriodIcon = EProcessIcon;
     ePeriodAbbreviation = EPeriodAbbreviation;
     ePeriodName = EPeriodName;
+    eStepPermissions = EPermissions;
 
 	private _unsubscribe = new Subject();
 	constructor(

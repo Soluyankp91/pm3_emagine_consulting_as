@@ -6,6 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -42,7 +43,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     ngOnInit(): void {
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
 
-        if (this.permissionsForCurrentUser!["StartEdit"]) {
+        if (this.permissionsForCurrentUser![EPermissions.StartEdit]) {
             this.startEditSourcingStep();
         } else {
             this.getSourcingStepData();
@@ -295,6 +296,6 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     get canToggleEditMode() {
-        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
+        return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
     }
 }

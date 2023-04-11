@@ -7,6 +7,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientPeriodFinanceDataCommandDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowDocumentCommandDto, WorkflowDocumentServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
@@ -51,7 +52,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
     ngOnInit(): void {
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
-        if (this.permissionsForCurrentUser!["StartEdit"]) {
+        if (this.permissionsForCurrentUser![EPermissions.StartEdit]) {
             this.startEditFinanceStep();
         } else {
             this.getFinanceStepData();
@@ -156,7 +157,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     get canToggleEditMode() {
-        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
+        return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
     }
 
     startEditFinanceStep() {

@@ -23,6 +23,7 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
 import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../../workflow-data.service';
+import { EPermissions } from '../../workflow-details/workflow-details.model';
 
 @Component({
 	selector: 'app-main-data',
@@ -83,6 +84,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		recipient: any;
 	};
 	areaTypeRoleRequired = true;
+    eStepPermission = EPermissions;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,

@@ -51,6 +51,7 @@ import {
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
@@ -96,6 +97,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
     isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+    eStepPermission = EPermissions;
 
 	private _unsubscribe = new Subject();
 
@@ -1343,15 +1345,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
     get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
+		return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
 	}
 
 	get readOnlyMode() {
 		return (
 			this.isCompleted ||
-			(!this.permissionsForCurrentUser!['StartEdit'] &&
-				!this.permissionsForCurrentUser!['Edit'] &&
-				!this.permissionsForCurrentUser!['Completion'])
+			(!this.permissionsForCurrentUser![EPermissions.StartEdit] &&
+				!this.permissionsForCurrentUser![EPermissions.Edit] &&
+				!this.permissionsForCurrentUser![EPermissions.Completion])
 		);
 	}
 }
