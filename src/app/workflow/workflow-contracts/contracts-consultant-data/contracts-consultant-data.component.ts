@@ -237,9 +237,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				consultant.employmentTypeId !== EmploymentTypes.FeeOnly &&
 				consultant.employmentTypeId !== EmploymentTypes.Recruitment
 			) {
-				// this.manageFrameAgreementAutocomplete(consultant.consultantId, consultantIndex);
 				this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
-
 				this.getInitialFrameAgreements(consultant, consultantIndex);
 			}
 		}

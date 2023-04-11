@@ -953,7 +953,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
 				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
-				this.consultantDataComponent?.addConsultantDataToForm(consultant, index);
                 this.consultantDataComponent.selectedFrameAgreementList.push(consultant.frameAgreementId ?? null);
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
