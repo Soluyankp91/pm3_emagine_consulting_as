@@ -1,0 +1,72 @@
+<ng-container
+*ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
+(clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
+(clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantRateUnitType?.id) &&
+(clientDataForm.normalRate?.value && consultant.value?.consultantRate); else calculateMarginNotPossible">
+<span>
+<ng-container
+*ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantMargin">
+<ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateMarginNotPossible">
+Calculated margin
+{{ (consultant?.value?.consultantPDCRate * 1 - consultant.value?.consultantRate * 1)/
+clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
+</ng-container>
+</ng-container>
+<ng-template #consultantMargin>
+Calculated margin
+{{ (clientDataForm.normalRate?.value * 1 - consultant.value?.consultantRate * 1)/
+clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
+</ng-template>
+</span>
+</ng-container>
+<ng-template #calculateMarginNotPossible>
+Calculate margin is not possible
+</ng-template>
+
+<ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
+(clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
+(clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantPDCRateUnitType?.id) &&
+(clientDataForm.normalRate?.value && consultant.value?.consultantPDCRate); else calculatePDCMarginNotPossible">
+<span>
+Calculated margin
+{{ (clientDataForm.normalRate?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
+</span>
+</ng-container>
+<ng-template #calculatePDCMarginNotPossible>
+Calculate margin is not possible
+</ng-template>
+
+
+<ng-container
+*ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
+(clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
+(clientDataForm.normalRate?.value && consultant.value?.consultantRate); else calculateFixedMarginNotPossible">
+<span>
+<ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantFixedMargin">
+<ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateFixedMarginNotPossible">
+Calculated margin
+{{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
+</ng-container>
+</ng-container>
+<ng-template #consultantFixedMargin>
+Calculated margin
+{{ (clientDataForm.normalRate?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
+</ng-template>
+</span>
+</ng-container>
+<ng-template #calculateFixedMarginNotPossible>
+Calculate margin is not possible
+</ng-template>
+
+
+<ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
+(clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
+(clientDataForm.normalRate?.value && consultant.value?.consultantPDCRate); else calculateFixedPDCMarginNotPossible">
+<span>
+Calculated margin
+{{ (clientDataForm.normalRate?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
+</span>
+</ng-container>
+<ng-template #calculateFixedPDCMarginNotPossible>
+    Calculate margin is not possible
+</ng-template>
