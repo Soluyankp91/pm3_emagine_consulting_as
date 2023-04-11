@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angu
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { forkJoin } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
@@ -142,8 +142,12 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	private _getPurchaseOrders() {
 		this._purchaseOrderService
 			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
+            .pipe(
+                map(list => {
+                    return this._filterOutAddedPOs(list);
+                }))
 			.subscribe((result) => {
-				this.purchaseOrders = this._filterOutAddedPOs(result);
+				this.purchaseOrders = result;
 			});
 	}
 
