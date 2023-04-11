@@ -46,6 +46,7 @@ import {
 	SelectableEmployeeDto,
 	StepTypes,
 	SyncStatusIcon,
+	WorkflowSourcingCreate,
 	WorkflowStatusMenuList,
 } from './workflow.model';
 
@@ -163,7 +164,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		super(injector);
 
 		this._activatedRoute.data.pipe(takeUntil(this._unsubscribe)).subscribe((source) => {
-			let data = source['data'];
+			let data: WorkflowSourcingCreate = source['data'];
 			if (data?.existingWorkflowId) {
 				this.navigateToWorkflowDetails(data?.existingWorkflowId);
 			} else if (data?.requestId && data?.requestConsultantId) {
@@ -191,23 +192,20 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this._getEnums();
 		this.getCurrentUser();
         this.employees$ = this._store.select(getEmployees);
-        this.accountManagerFilter.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribe),
-                debounceTime(500),
-                startWith(''),
-                // switchMap((value: any) => {
-
-                // })
-                map((value) => {
-                    this.isLoading = true;
-                    return this._filterEmployees(value);
-                })
-            )
-            .subscribe((result) => {
-                this.filteredAccountManagers$ = result;
-                this.isLoading = false;
-            });
+        // this.accountManagerFilter.valueChanges
+        //     .pipe(
+        //         takeUntil(this._unsubscribe),
+        //         debounceTime(500),
+        //         startWith(''),
+        //         map((value) => {
+        //             this.isLoading = true;
+        //             return this._filterEmployees(value);
+        //         })
+        //     )
+        //     .subscribe((result) => {
+        //         this.filteredAccountManagers$ = result;
+        //         this.isLoading = false;
+        //     });
 	}
 
     managersChanged(event: SelectableEmployeeDto[]) {
@@ -215,47 +213,47 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getWorkflowList(true);
     }
 
-    private _filterEmployees(value: string): Observable<SelectableEmployeeDto[]> {
-        const filterValue = value.toLowerCase();
-        const noResults = new SelectableEmployeeDto({
-            id: 'no-data',
-            name: 'No employees found',
-            externalId: '',
-            selected: false
-        });
-        const result = this.employees$.pipe(
-			map((response) => response
-                .filter((option) => option.name.toLowerCase().includes(filterValue))
-                .filter((option) => !this.selectedAccountManagers.map((y) => y.id).includes(option.id))
-                .map((item, index, list) => {
-                    return new SelectableEmployeeDto({
-                        id: item.id!,
-                        name: item.name!,
-                        externalId: item.externalId!,
-                        selected: false,
-                    });
-                })
-            )
-		);
-        if (value === '') {
-            return this.employees$.pipe(
-				map((response) =>
-					response
-						.filter((x) => !this.selectedAccountManagers.map((y) => y.id).includes(x.id))
-						.map((item, index, list) => {
-                            return new SelectableEmployeeDto({
-                                id: item.id!,
-                                name: item.name!,
-                                externalId: item.externalId!,
-                                selected: false,
-                            });
-						})
-				)
-			);
-        } else {
-            return result;
-        }
-    }
+    // private _filterEmployees(value: string): Observable<SelectableEmployeeDto[]> {
+    //     const filterValue = value.toLowerCase();
+    //     const noResults = new SelectableEmployeeDto({
+    //         id: 'no-data',
+    //         name: 'No employees found',
+    //         externalId: '',
+    //         selected: false
+    //     });
+    //     const result = this.employees$.pipe(
+	// 		map((response) => response
+    //             .filter((option) => option.name.toLowerCase().includes(filterValue))
+    //             .filter((option) => !this.selectedAccountManagers.map((y) => y.id).includes(option.id))
+    //             .map((item, index, list) => {
+    //                 return new SelectableEmployeeDto({
+    //                     id: item.id!,
+    //                     name: item.name!,
+    //                     externalId: item.externalId!,
+    //                     selected: false,
+    //                 });
+    //             })
+    //         )
+	// 	);
+    //     if (value === '') {
+    //         return this.employees$.pipe(
+	// 			map((response) =>
+	// 				response
+	// 					.filter((x) => !this.selectedAccountManagers.map((y) => y.id).includes(x.id))
+	// 					.map((item, index, list) => {
+    //                         return new SelectableEmployeeDto({
+    //                             id: item.id!,
+    //                             name: item.name!,
+    //                             externalId: item.externalId!,
+    //                             selected: false,
+    //                         });
+	// 					})
+	// 			)
+	// 		);
+    //     } else {
+    //         return result;
+    //     }
+    // }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -733,33 +731,21 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 }
 
-export class WorkflowSourcingCreate {
-	public requestId: number;
-	public requestConsultantId: number;
-	public existingWorkflowId: string | undefined;
+// @Injectable()
+// export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
+// 	constructor(private _workflowService: WorkflowServiceProxy) {}
 
-	constructor(requestId: number, requestConsultantId: number, existingWorkflowId: string | undefined) {
-		this.requestId = requestId;
-		this.requestConsultantId = requestConsultantId;
-		this.existingWorkflowId = existingWorkflowId;
-	}
-}
-
-@Injectable()
-export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
-	constructor(private _workflowService: WorkflowServiceProxy) {}
-
-	resolve(route: ActivatedRouteSnapshot): Observable<WorkflowSourcingCreate> {
-		let requestId = route.queryParams['requestId'];
-		let requestConsultantId = route.queryParams['requestConsultantId'];
-		return this._workflowService.workflowExists(requestConsultantId).pipe(
-			map((value: WorkflowAlreadyExistsDto) => {
-				return {
-					requestId: requestId,
-					requestConsultantId: requestConsultantId,
-					existingWorkflowId: value?.existingWorkflowId,
-				};
-			})
-		);
-	}
-}
+// 	resolve(route: ActivatedRouteSnapshot): Observable<WorkflowSourcingCreate> {
+// 		let requestId = route.queryParams['requestId'];
+// 		let requestConsultantId = route.queryParams['requestConsultantId'];
+// 		return this._workflowService.workflowExists(requestConsultantId).pipe(
+// 			map((value: WorkflowAlreadyExistsDto) => {
+// 				return {
+// 					requestId: requestId,
+// 					requestConsultantId: requestConsultantId,
+// 					existingWorkflowId: value?.existingWorkflowId,
+// 				};
+// 			})
+// 		);
+// 	}
+// }

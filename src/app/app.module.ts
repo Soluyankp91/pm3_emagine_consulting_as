@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppCommonModule } from './shared/common/app-common.module';

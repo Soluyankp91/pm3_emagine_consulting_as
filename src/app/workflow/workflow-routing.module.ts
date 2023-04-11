@@ -1,10 +1,11 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
+import { WorkflowComponent } from './workflow.component';
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
 import { WorkflowPeriodComponent } from './workflow-period/workflow-period.component';
 import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview.component';
 import { WorkflowPeriodResolver } from './workflow-period/workflow-period.resolver';
+import { WorkflowCreateResolver } from './workflow.resolver';
 
 const routes: Routes = [
     {
@@ -40,12 +41,6 @@ const routes: Routes = [
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    // providers: [
-    //     {
-    //         provide: RouteReuseStrategy,
-    //         useClass: CustomReuseStrategy
-    //     }
-    // ],
     exports: [RouterModule]
 })
 export class WorkflowRoutingModule {}

@@ -208,3 +208,15 @@ export function MapSortingValues(values: { [key: string]: SortDirection }): Mult
 		return { column: k, order: null, direction: '' };
 	});
 }
+
+export class WorkflowSourcingCreate {
+	public requestId: number;
+	public requestConsultantId: number;
+	public existingWorkflowId: string | undefined;
+
+	constructor(requestId: number, requestConsultantId: number, existingWorkflowId: string | undefined) {
+		this.requestId = requestId;
+		this.requestConsultantId = requestConsultantId;
+		this.existingWorkflowId = existingWorkflowId;
+	}
+}
