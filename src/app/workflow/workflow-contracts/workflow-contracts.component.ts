@@ -58,6 +58,8 @@ import {
 	WorkflowConsultantsLegalContractForm,
 	WorkflowContractsTerminationConsultantsDataForm,
 } from './workflow-contracts.model';
+import { ClientRateTypes } from '../workflow-sales/workflow-sales.model';
+import { MapClientAddressList } from '../workflow-sales/workflow-sales.helpers';
 
 @Component({
 	selector: 'app-workflow-contracts',
@@ -116,6 +118,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
     purchaseOrderIds: number[];
     directClientId: number;
+    clientRateTypes = ClientRateTypes;
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -924,6 +927,35 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
 				{ emitEvent: false }
 			);
+            this.clientDataComponent?.contractClientForm.normalRate?.setValue(
+				this.findItemById(this.currencies, data.clientData.clientRate?.normalRate),
+				{ emitEvent: false }
+			);
+            let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+            if (data.clientData?.clientRate?.isFixedRate) {
+                clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+            } else if (data.clientData?.clientRate?.isTimeBasedRate) {
+                clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+            }
+            this.clientDataComponent?.contractClientForm.clientRateType?.setValue(clientRateType, {
+                emitEVent: false,
+            });
+            this.clientDataComponent?.contractClientForm.invoiceCurrencyId?.setValue(data.clientData.clientRate.invoiceCurrencyId, {
+                emitEVent: false,
+            });
+            this.clientDataComponent?.contractClientForm.invoiceFrequencyId?.setValue(data.clientData.clientRate.invoiceFrequencyId, {
+                emitEVent: false,
+            });
+            this.clientDataComponent?.contractClientForm.invoicingTimeId?.setValue(data.clientData.clientRate.invoicingTimeId, {
+                emitEVent: false,
+            });
+            this.clientDataComponent?.contractClientForm.manualDate?.setValue(data.clientData.clientRate.manualDate, {
+                emitEVent: false,
+            });
+            if (data.clientData.clientInvoicingRecipient?.clientId) {
+                this.clientDataComponent.filteredClientInvoicingRecipients = [data.clientData.clientInvoicingRecipient];
+                this.clientDataComponent.invoicingRecipientsAddresses = MapClientAddressList(data.clientData.clientInvoicingRecipient.clientAddresses);
+            }
 			if (data.clientData.noSpecialContractTerms) {
 				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
 			}
@@ -989,7 +1021,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 input.clientData.timeReportingCaps.push(capInput);
             }
         }
-		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.clientRate?.value;
+		input.clientData.clientRate = this.clientDataComponent?.contractClientForm.normalRate?.value;
 		input.clientData.pdcInvoicingEntityId = this.clientDataComponent?.contractClientForm.pdcInvoicingEntityId?.value;
 		input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
 		if (this.clientDataComponent?.contractClientForm.clientRates.value?.length) {
