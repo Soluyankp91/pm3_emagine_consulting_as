@@ -1358,6 +1358,105 @@ export class AdminServiceProxy {
     /**
      * @return Success
      */
+    sendFinanceDataToLegacyPm(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/SendFinanceDataToLegacyPm";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSendFinanceDataToLegacyPm(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSendFinanceDataToLegacyPm(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSendFinanceDataToLegacyPm(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param tenantId (optional) 
+     * @return Success
+     */
+    retrieveFinanceDataFromLegacyPm(tenantId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/migration-sync/RetrieveFinanceDataFromLegacyPm?";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "tenantId=" + encodeURIComponent("" + tenantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRetrieveFinanceDataFromLegacyPm(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRetrieveFinanceDataFromLegacyPm(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRetrieveFinanceDataFromLegacyPm(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     updateClientsVatNumber(fillEmptyOnly: boolean): Observable<void> {
         let url_ = this.baseUrl + "/api/Admin/temp/update-clients-vat-number/{fillEmptyOnly}";
         if (fillEmptyOnly === undefined || fillEmptyOnly === null)
@@ -30507,7 +30606,8 @@ export enum PurchaseOrderCapType {
 
 export class PurchaseOrderCurrentContextDto implements IPurchaseOrderCurrentContextDto {
     isUserAllowedToEdit?: boolean;
-    isSharedWithAnotherWorkflow?: boolean;
+    existsInThisWorkflow?: boolean;
+    existsInAnotherWorkflow?: boolean;
 
     constructor(data?: IPurchaseOrderCurrentContextDto) {
         if (data) {
@@ -30521,7 +30621,8 @@ export class PurchaseOrderCurrentContextDto implements IPurchaseOrderCurrentCont
     init(_data?: any) {
         if (_data) {
             this.isUserAllowedToEdit = _data["isUserAllowedToEdit"];
-            this.isSharedWithAnotherWorkflow = _data["isSharedWithAnotherWorkflow"];
+            this.existsInThisWorkflow = _data["existsInThisWorkflow"];
+            this.existsInAnotherWorkflow = _data["existsInAnotherWorkflow"];
         }
     }
 
@@ -30535,14 +30636,16 @@ export class PurchaseOrderCurrentContextDto implements IPurchaseOrderCurrentCont
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["isUserAllowedToEdit"] = this.isUserAllowedToEdit;
-        data["isSharedWithAnotherWorkflow"] = this.isSharedWithAnotherWorkflow;
+        data["existsInThisWorkflow"] = this.existsInThisWorkflow;
+        data["existsInAnotherWorkflow"] = this.existsInAnotherWorkflow;
         return data;
     }
 }
 
 export interface IPurchaseOrderCurrentContextDto {
     isUserAllowedToEdit?: boolean;
-    isSharedWithAnotherWorkflow?: boolean;
+    existsInThisWorkflow?: boolean;
+    existsInAnotherWorkflow?: boolean;
 }
 
 export class PurchaseOrderDto implements IPurchaseOrderDto {

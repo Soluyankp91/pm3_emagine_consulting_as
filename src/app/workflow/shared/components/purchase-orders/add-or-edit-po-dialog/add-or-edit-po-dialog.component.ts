@@ -33,6 +33,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	ePOSource = EPOSource;
 	ePOCaps = PurchaseOrderCapType;
 	purchaseOrders: PurchaseOrderDto[];
+	filteredPurchaseOrders: PurchaseOrderDto[];
 	existingPo: PurchaseOrderDto;
 	eValueUnitType = EValueUnitTypes;
 	constructor(
@@ -121,6 +122,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.existingPo = new PurchaseOrderDto();
 		if (event.value === EPOSource.DifferentWF || event.value === EPOSource.ExistingPO) {
 			this._disableAllEditableInputs();
+			this.filteredPurchaseOrders = this._filterOutPOs(event.value as EPOSource);
 		} else {
 			this.purchaseOrderForm.enable();
 		}
@@ -142,10 +144,11 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	private _getPurchaseOrders() {
 		this._purchaseOrderService
 			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
-            .pipe(
-                map(list => {
-                    return list.filter((x) => !this.data?.addedPoIds.includes(x.id));
-                }))
+			.pipe(
+				map((list) => {
+					return list.filter((x) => !this.data?.addedPoIds.includes(x.id));
+				})
+			)
 			.subscribe((result) => {
 				this.purchaseOrders = result;
 			});
@@ -162,5 +165,12 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			this.eCurrencies = this.arrayToEnum(this.currencies);
 			this.unitTypes = result.unitTypes;
 		});
+	}
+
+	private _filterOutPOs(poSource: EPOSource) {
+		const poExistsOnThisWf = poSource === EPOSource.ExistingPO;
+		return this.purchaseOrders.filter(
+			(x) => x.purchaseOrderCurrentContextData.existsInThisWorkflow === poExistsOnThisWf
+		);
 	}
 }
