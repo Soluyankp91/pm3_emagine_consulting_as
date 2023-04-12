@@ -1231,7 +1231,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							switchMap((search) => {
 								return this._apiServiceProxy2
 									.simpleList2(
-										this.workFlowMetadata && this.workflowTemplateType$.value
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
 											? this.workflowTemplateType$.value
 											: undefined,
 										undefined,
