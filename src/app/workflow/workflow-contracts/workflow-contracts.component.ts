@@ -59,7 +59,7 @@ import {
 	WorkflowContractsTerminationConsultantsDataForm,
 } from './workflow-contracts.model';
 import { ClientRateTypes } from '../workflow-sales/workflow-sales.model';
-import { MapClientAddressList } from '../workflow-sales/workflow-sales.helpers';
+import { MapClientAddressList, PackAddressIntoNewDto } from '../workflow-sales/workflow-sales.helpers';
 
 @Component({
 	selector: 'app-workflow-contracts',
@@ -956,6 +956,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.clientDataComponent.filteredClientInvoicingRecipients = [data.clientData.clientInvoicingRecipient];
                 this.clientDataComponent.invoicingRecipientsAddresses = MapClientAddressList(data.clientData.clientInvoicingRecipient.clientAddresses);
             }
+            // FIXME: uncomment once BE is deployed
+            // if (data?.clientData?.clientInvoicingRecipientAddress) {
+            //     this.clientDataComponent.contractClientForm.clientInvoicingRecipientAddress.setValue(PackAddressIntoNewDto(data?.clientData?.), {emitEvent: false});
+            // }
 			if (data.clientData.noSpecialContractTerms) {
 				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
 			}
