@@ -1,0 +1,101 @@
+<ng-container [ngSwitch]="marginType">
+    <ng-container *ngSwitchCase="eMarginType.PlainFixed">
+        <ng-container
+            *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantCurrencyId) &&
+            (data.clientUnitTypeId === data.consultantUnitTypeId) &&
+            (data.clientRate && data.consultantRate); else calculateMarginNotPossible">
+            <ng-container
+                *ngIf="data.clientPdcEntity !== data.consultantPdcEntity; else consultantMargin">
+                <ng-container *ngIf="data.consultantPDCRate; else calculateMarginNotPossible">
+                    <ng-container [ngTemplateOutlet]="differentPDCMargin"></ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.PlainTimeBased">
+        <ng-container
+            *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantCurrencyId) &&
+            (data.clientUnitTypeId === data.consultantUnitTypeId) &&
+            (data.clientRate && data.consultantRate); else calculateMarginNotPossible">
+            <ng-container
+                *ngIf="data.clientPdcEntity !== data.consultantPdcEntity; else consultantMargin">
+                <ng-container *ngIf="data.consultantPDCRate; else calculateMarginNotPossible">
+                    <ng-container [ngTemplateOutlet]="differentPDCMargin"></ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.PDCFixed">
+        <ng-container *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantPDCCurrencyId) &&
+            (data.clientRate && data.consultantPDCRate); else calculateMarginNotPossible">
+            <ng-container [ngTemplateOutlet]="PDCtoPDCMargin"></ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.PDCTimeBased">
+        <ng-container *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+                (data.clientCurrencyId === data.consultantPDCCurrencyId) &&
+                (data.clientUnitTypeId && data.consultantPDCUnitTypeId) &&
+                (data.clientRate && data.consultantPDCRate); else calculateMarginNotPossible">
+                <ng-container [ngTemplateOutlet]="PDCtoPDCMargin"></ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.TotalFixedMargin">
+        <ng-container
+            *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantCurrencyId) &&
+            (data.clientUnitTypeId === data.consultantUnitTypeId) &&
+            (data.clientRate && data.consultantRate); else calculateMarginNotPossible">
+            <ng-container [ngTemplateOutlet]="totalMargin"></ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.TotalTimeBasedMargin">
+        <ng-container
+            *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantCurrencyId) &&
+            (data.clientRate && data.consultantRate); else calculateMarginNotPossible">
+            <ng-container [ngTemplateOutlet]="totalMargin"></ng-container>
+        </ng-container>
+    </ng-container>
+</ng-container>
+
+<ng-template #differentPDCMargin>
+    <ng-container [ngTemplateOutlet]="marginLayout"
+        [ngTemplateOutletContext]="{margin: (data.consultantPDCRate * 1 - data.consultantRate * 1)/data.clientRate * 1 | percent: '1.2'}">
+    </ng-container>
+</ng-template>
+
+<ng-template #consultantMargin>
+    <ng-container [ngTemplateOutlet]="marginLayout"
+        [ngTemplateOutletContext]="{margin: (data.clientRate * 1 - data.consultantRate * 1)/data.clientRate * 1 | percent: '1.2'}">
+    </ng-container>
+</ng-template>
+
+<ng-template #PDCtoPDCMargin>
+    <ng-container [ngTemplateOutlet]="marginLayout"
+        [ngTemplateOutletContext]="{margin: (data.clientRate * 1 - data.consultantPDCRate * 1)/ data.clientRate * 1 | percent: '1.2'}">
+    </ng-container>
+</ng-template>
+
+<ng-template #totalMargin>
+    <ng-container [ngTemplateOutlet]="marginLayout"
+        [ngTemplateOutletContext]="{margin: (data.clientRate * 1 - data.consultantRate * 1)/ data.clientRate * 1 | percent: '1.2', totalMargin: true}">
+    </ng-container>
+</ng-template>
+
+<ng-template #marginLayout let-margin="margin" let-totalMargin="totalMargin">
+    <div [fxLayout]="totalMargin ? 'column' : 'row'" [fxLayoutAlign]="totalMargin ? 'start start' : 'start center'">
+        <span class="margin-header text-bold u-mr--5">
+            {{totalMargin ? 'Calculated total margin' : 'Calculated margin'}}
+        </span>
+        <span class="margin-value text-bold">
+            {{margin}}
+        </span>
+    </div>
+</ng-template>
+
+<ng-template #calculateMarginNotPossible>
+    Calculate margin is not possible
+</ng-template>

@@ -797,26 +797,9 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
-                                                    <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
-                                                        (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
-                                                        (clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantRateUnitType?.id) &&
-                                                        (clientDataForm.normalRate?.value && consultant.value?.consultantRate); else calculateMarginNotPossible">
-                                                        <span>
-                                                            <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantMargin">
-                                                                <ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateMarginNotPossible">
-                                                                    Calculated margin
-                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
-                                                                </ng-container>
-                                                            </ng-container>
-                                                            <ng-template #consultantMargin>
-                                                                Calculated margin
-                                                                {{ (clientDataForm.normalRate?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
-                                                            </ng-template>
-                                                        </span>
+                                                    <ng-container [ngTemplateOutlet]="marginComponent"
+                                                        [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.PlainTimeBased}">
                                                     </ng-container>
-                                                    <ng-template #calculateMarginNotPossible>
-                                                        Calculate margin is not possible
-                                                    </ng-template>
                                                 </div>
                                             </div>
                                             <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId">
@@ -855,17 +838,15 @@
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
-                                                        <span *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
-                                                                (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
-                                                                (clientDataForm.rateUnitTypeId?.value === consultant.value?.consultantPDCRateUnitType?.id) &&
-                                                                (clientDataForm.normalRate?.value && consultant.value?.consultantPDCRate); else calculatePDCMarginNotPossible">
-                                                                    Calculated margin
-                                                                    {{ (clientDataForm.normalRate?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
-                                                        </span>
-                                                        <ng-template #calculatePDCMarginNotPossible>
-                                                            Calculate margin is not possible
-                                                        </ng-template>
+                                                        <ng-container [ngTemplateOutlet]="marginComponent"
+                                                            [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.PDCTimeBased}">
+                                                        </ng-container>
                                                     </div>
+                                                </div>
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <ng-container [ngTemplateOutlet]="marginComponent"
+                                                        [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.TotalTimeBasedMargin}">
+                                                    </ng-container>
                                                 </div>
                                             </ng-container>
                                         </ng-container>
@@ -892,25 +873,9 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
-                                                    <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
-                                                        (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
-                                                        (clientDataForm.normalRate?.value && consultant.value?.consultantRate); else calculateFixedMarginNotPossible">
-                                                        <span>
-                                                            <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId; else consultantFixedMargin">
-                                                                <ng-container *ngIf="consultant?.value?.consultantPDCRate; else calculateFixedMarginNotPossible">
-                                                                    Calculated margin
-                                                                    {{ (consultant?.value?.consultantPDCRate * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
-                                                                </ng-container>
-                                                            </ng-container>
-                                                            <ng-template #consultantFixedMargin>
-                                                                Calculated margin
-                                                                {{ (clientDataForm.normalRate?.value * 1 -  consultant.value?.consultantRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
-                                                            </ng-template>
-                                                        </span>
+                                                    <ng-container [ngTemplateOutlet]="marginComponent"
+                                                        [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.PlainFixed}">
                                                     </ng-container>
-                                                    <ng-template #calculateFixedMarginNotPossible>
-                                                        Calculate margin is not possible
-                                                    </ng-template>
                                                 </div>
                                             </div>
                                             <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId)">
@@ -936,18 +901,15 @@
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
-                                                        <ng-container *ngIf="(clientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
-                                                            (clientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&
-                                                            (clientDataForm.normalRate?.value && consultant.value?.consultantPDCRate); else calculateFixedPDCMarginNotPossible">
-                                                            <span>
-                                                                Calculated margin
-                                                                {{ (clientDataForm.normalRate?.value * 1 -  consultant?.value?.consultantPDCRate * 1)/ clientDataForm.normalRate?.value * 1 | percent: '1.2'}}
-                                                            </span>
+                                                        <ng-container [ngTemplateOutlet]="marginComponent"
+                                                            [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.PDCFixed}">
                                                         </ng-container>
-                                                        <ng-template #calculateFixedPDCMarginNotPossible>
-                                                            Calculate margin is not possible
-                                                        </ng-template>
                                                     </div>
+                                                </div>
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <ng-container [ngTemplateOutlet]="marginComponent"
+                                                        [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.TotalFixedMargin}">
+                                                    </ng-container>
                                                 </div>
                                             </ng-container>
                                         </ng-container>
@@ -1160,3 +1122,21 @@
         </span>
     </ng-container>
 </ng-template>
+
+<ng-template #marginComponent let-consultant="consultant" let-type="type">
+    <calculated-margin [marginType]="type"
+        [data]="{clientRate: clientDataForm.normalRate?.value,clientCurrencyId: clientDataForm.clientCurrency?.value?.id,
+            clientUnitTypeId: clientDataForm.rateUnitTypeId?.value,
+            clientPaymentType: clientDataForm.clientRateAndInvoicing?.value?.id,
+            clientPdcEntity: clientDataForm.value?.pdcInvoicingEntityId,
+            consultantRate: consultant.value?.consultantRate,
+            consultantCurrencyId: consultant.value?.consultantRateCurrency?.id,
+            consultantUnitTypeId: consultant.value?.consultantRateUnitType?.id,
+            consultantPDCRate: consultant?.value?.consultantPDCRate,
+            consultantPDCCurrencyId: consultant.value?.consultantPDCRateCurrency?.id,
+            consultantPDCUnitTypeId: consultant.value?.consultantPDCRateUnitType?.id,
+            consultantPaymentType: consultant.value?.consultantPaymentType?.id,
+            consultantPdcEntity: consultant.value?.consultantProdataEntity?.id}">
+    </calculated-margin>
+</ng-template>
+

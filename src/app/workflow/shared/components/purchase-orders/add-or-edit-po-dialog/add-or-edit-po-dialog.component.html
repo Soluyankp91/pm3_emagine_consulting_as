@@ -65,6 +65,11 @@
                                     [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
                             </mat-option>
                         </ng-container>
+                        <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
+                            <mat-option class="no-data">
+                                No purchase orders
+                            </mat-option>
+                        </ng-container>
                     </mat-select>
                     <mat-error>
                         <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>

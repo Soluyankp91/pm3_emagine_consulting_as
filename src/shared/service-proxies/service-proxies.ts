@@ -27397,9 +27397,9 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     endClientId?: number | undefined;
     pdcInvoicingEntityId?: number | undefined;
     invoicingReferenceNumber?: string | undefined;
-    clientInvoicingRecipientIdValue?: number | undefined;
+    clientInvoicingRecipientSameAsDirectClient?: boolean;
     clientInvoicingRecipient?: ClientResultDto;
-    invoicingReferencePersonIdValue?: number | undefined;
+    clientInvoicingRecipientAddress?: ClientAddressDto;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
     purchaseOrdersIds?: number[] | undefined;
@@ -27441,9 +27441,9 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
             this.endClientId = _data["endClientId"];
             this.pdcInvoicingEntityId = _data["pdcInvoicingEntityId"];
             this.invoicingReferenceNumber = _data["invoicingReferenceNumber"];
-            this.clientInvoicingRecipientIdValue = _data["clientInvoicingRecipientIdValue"];
+            this.clientInvoicingRecipientSameAsDirectClient = _data["clientInvoicingRecipientSameAsDirectClient"];
             this.clientInvoicingRecipient = _data["clientInvoicingRecipient"] ? ClientResultDto.fromJS(_data["clientInvoicingRecipient"]) : <any>undefined;
-            this.invoicingReferencePersonIdValue = _data["invoicingReferencePersonIdValue"];
+            this.clientInvoicingRecipientAddress = _data["clientInvoicingRecipientAddress"] ? ClientAddressDto.fromJS(_data["clientInvoicingRecipientAddress"]) : <any>undefined;
             this.invoicingReferencePerson = _data["invoicingReferencePerson"] ? ContactResultDto.fromJS(_data["invoicingReferencePerson"]) : <any>undefined;
             this.invoicingReferencePersonDontShowOnInvoice = _data["invoicingReferencePersonDontShowOnInvoice"];
             if (Array.isArray(_data["purchaseOrdersIds"])) {
@@ -27489,9 +27489,9 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         data["endClientId"] = this.endClientId;
         data["pdcInvoicingEntityId"] = this.pdcInvoicingEntityId;
         data["invoicingReferenceNumber"] = this.invoicingReferenceNumber;
-        data["clientInvoicingRecipientIdValue"] = this.clientInvoicingRecipientIdValue;
+        data["clientInvoicingRecipientSameAsDirectClient"] = this.clientInvoicingRecipientSameAsDirectClient;
         data["clientInvoicingRecipient"] = this.clientInvoicingRecipient ? this.clientInvoicingRecipient.toJSON() : <any>undefined;
-        data["invoicingReferencePersonIdValue"] = this.invoicingReferencePersonIdValue;
+        data["clientInvoicingRecipientAddress"] = this.clientInvoicingRecipientAddress ? this.clientInvoicingRecipientAddress.toJSON() : <any>undefined;
         data["invoicingReferencePerson"] = this.invoicingReferencePerson ? this.invoicingReferencePerson.toJSON() : <any>undefined;
         data["invoicingReferencePersonDontShowOnInvoice"] = this.invoicingReferencePersonDontShowOnInvoice;
         if (Array.isArray(this.purchaseOrdersIds)) {
@@ -27518,9 +27518,9 @@ export interface IContractsClientDataDto {
     endClientId?: number | undefined;
     pdcInvoicingEntityId?: number | undefined;
     invoicingReferenceNumber?: string | undefined;
-    clientInvoicingRecipientIdValue?: number | undefined;
+    clientInvoicingRecipientSameAsDirectClient?: boolean;
     clientInvoicingRecipient?: ClientResultDto;
-    invoicingReferencePersonIdValue?: number | undefined;
+    clientInvoicingRecipientAddress?: ClientAddressDto;
     invoicingReferencePerson?: ContactResultDto;
     invoicingReferencePersonDontShowOnInvoice?: boolean;
     purchaseOrdersIds?: number[] | undefined;
