@@ -26,10 +26,7 @@ import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purc
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ClientRateTypes, IClientAddress } from '../../workflow-sales/workflow-sales.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthenticationResult } from '@azure/msal-browser';
 import { Router } from '@angular/router';
-import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -77,8 +74,6 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy,
         private _router: Router,
-        private _localHttpService: LocalHttpService,
-        private _httpClient: HttpClient
 	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
@@ -375,30 +370,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	}
 
 	openInHubspot(client: ClientResultDto) {
-		if (this._internalLookupService.hubspotClientUrl?.length) {
-			if (client.crmClientId !== null && client.crmClientId !== undefined) {
-				window.open(
-					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
-					'_blank'
-				);
-			}
-		} else {
-			this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-				this._httpClient
-					.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
-						headers: new HttpHeaders({
-							Authorization: `Bearer ${response.accessToken}`,
-						}),
-						responseType: 'text',
-					})
-					.subscribe((result: string) => {
-						this._internalLookupService.hubspotClientUrl = result;
-						if (client.crmClientId !== null && client.crmClientId !== undefined) {
-							window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-						}
-					});
-			});
-		}
+		this._workflowDataService.openInHubspot(client);
 	}
 
     get clientRates(): UntypedFormArray {

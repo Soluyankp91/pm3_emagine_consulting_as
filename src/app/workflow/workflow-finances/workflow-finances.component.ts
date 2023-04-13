@@ -207,7 +207,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 		this._clientPeriodSerivce
 			.editStart2(this.periodId!)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe((result) => {
+			.subscribe(() => {
 				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
 				this.getFinanceStepData();
 			});
@@ -218,7 +218,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 		this._consultantPeriodSerivce
 			.editStart4(this.periodId!)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe((result) => {
+			.subscribe(() => {
 				this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
 				this.getFinanceStepData();
 			});
