@@ -49,6 +49,7 @@
 				class="editor"
 				[readonly]="currentVersionIsSent"
 				[template]="template"
+				[exportWithMergedData]="!isAgreement"
 				[mergeFields]="mergeFields$ | async"
 				(documentReady)="handleDocumentReady()"
 				(saved)="saveAsComplete()"></div>

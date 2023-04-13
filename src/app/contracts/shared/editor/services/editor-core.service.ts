@@ -3,18 +3,20 @@ import { Clipboard } from '@angular/cdk/clipboard';
 
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import {
+	CommandId,
+	ContextMenuCommandId,
+	FileTabCommandId,
 	FileTabItemId,
 	HomeTabCommandId,
 	HomeTabItemId,
 	MailMergeTabCommandId,
-	ContextMenuCommandId,
 	MailMergeTabItemId,
 	Options,
 	RibbonButtonItem,
 	RibbonButtonItemOptions,
+	RibbonSubMenuItem,
 	RibbonTabType,
 	RichEdit,
-	FileTabCommandId,
 } from 'devexpress-richedit';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
@@ -29,6 +31,7 @@ import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
 import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
 import { AgreementCommentDto, AgreementTemplateCommentDto } from '../../../../../shared/service-proxies/service-proxies';
 import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
+import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/items/menu';
 
 @Injectable()
 export class EditorCoreService {
@@ -71,8 +74,12 @@ export class EditorCoreService {
 		this.options.ribbon.getTab(RibbonTabType.File).removeItem(FileTabItemId.ExportDocument);
 	}
 
-	initialize(readonly: boolean = false) {
+	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
 		this.editor.readOnly = readonly;
+
+		if (exportWithMergedData) {
+			this._customizeDownloadDocument();
+		}
 
 		if (!readonly) {
 			if (this._initialised) return;
@@ -303,6 +310,15 @@ export class EditorCoreService {
 				case ICustomCommand.RibbonTabChange:
 					this._onRibbonTabChange(e.parameter);
 					break;
+				case ICustomCommand.DownloadMDWordDoc:
+					this._downloadWithMergedData(FileTabCommandId.DownloadDocx);
+					break;
+				case ICustomCommand.DownloadMDRichText:
+					this._downloadWithMergedData(FileTabCommandId.DownloadRtf);
+					break;
+				case ICustomCommand.DownloadMDPlainText:
+					this._downloadWithMergedData(FileTabCommandId.DownloadTxt);
+					break;
 			}
 		});
 	}
@@ -438,5 +454,30 @@ export class EditorCoreService {
 
 	private _onRibbonTabChange(param: string) {
 		this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, param !== 'compare');
+	}
+
+	private _customizeDownloadDocument() {
+		const fileTab = this.options.ribbon.getTab(RibbonTabType.File);
+		fileTab.removeItem(FileTabItemId.Download);
+
+		fileTab.insertItem(
+			new RibbonMenuItem(
+				ICustomCommand.DownloadMD,
+				'Download',
+				[
+					new RibbonSubMenuItem(ICustomCommand.DownloadMDWordDoc, 'Word Document (*.docx)'),
+					new RibbonSubMenuItem(ICustomCommand.DownloadMDRichText, 'Rich Text Format (*.rtf)'),
+					new RibbonSubMenuItem(ICustomCommand.DownloadMDPlainText, 'Plain Text (*.txt)'),
+				],
+				{ icon: 'dxre-icon-Download', showText: true }
+			),
+			2
+		);
+	}
+
+	private _downloadWithMergedData(command: CommandId) {
+		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+		this.editor.executeCommand(command);
+		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
 	}
 }
