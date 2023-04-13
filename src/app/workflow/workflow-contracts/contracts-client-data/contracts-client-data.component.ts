@@ -370,7 +370,16 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	}
 
 	openInHubspot(client: ClientResultDto) {
-		this._workflowDataService.openInHubspot(client);
+        if (this._internalLookupService.hubspotClientUrl?.length) {
+			if (client.crmClientId !== null && client.crmClientId !== undefined) {
+				window.open(
+					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
+					'_blank'
+				);
+			}
+		} else {
+            this._workflowDataService.openInHubspot(client);
+        }
 	}
 
     get clientRates(): UntypedFormArray {

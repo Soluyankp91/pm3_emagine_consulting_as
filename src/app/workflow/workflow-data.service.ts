@@ -81,30 +81,21 @@ export class WorkflowDataService {
     }
 
     openInHubspot(client: ClientResultDto) {
-		if (this._internalLookupService.hubspotClientUrl?.length) {
-			if (client.crmClientId !== null && client.crmClientId !== undefined) {
-				window.open(
-					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
-					'_blank'
-				);
-			}
-		} else {
-			this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-				this._httpClient
-					.get(`${API_BASE_URL}/api/Clients/HubspotPartialUrlAsync`, {
-						headers: new HttpHeaders({
-							Authorization: `Bearer ${response.accessToken}`,
-						}),
-						responseType: 'text',
-					})
-					.subscribe((result: string) => {
-						this._internalLookupService.hubspotClientUrl = result;
-						if (client.crmClientId !== null && client.crmClientId !== undefined) {
-							window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-						}
-					});
-			});
-		}
+        this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            this._httpClient
+                .get(`${API_BASE_URL}/api/Clients/HubspotPartialUrlAsync`, {
+                    headers: new HttpHeaders({
+                        Authorization: `Bearer ${response.accessToken}`,
+                    }),
+                    responseType: 'text',
+                })
+                .subscribe((result: string) => {
+                    this._internalLookupService.hubspotClientUrl = result;
+                    if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                        window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+                    }
+                });
+        });
 	}
 
     get contractModuleEnabled() {
