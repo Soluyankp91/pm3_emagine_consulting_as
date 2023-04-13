@@ -632,6 +632,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				);
 				if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
+                    this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(result.salesClientData?.directClient);
 				}
 				this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(
 					result?.salesClientData?.invoicingReferencePerson,

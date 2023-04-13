@@ -5,6 +5,8 @@ export enum TenantEnum {
     "NL" = 8,
     "DE" = 10,
     "NO" = 17,
+    "GB" = 20,
     "EU" = 25,
-    "FR" = 27
+    "FR" = 27,
+    "IN" = 29
 }
