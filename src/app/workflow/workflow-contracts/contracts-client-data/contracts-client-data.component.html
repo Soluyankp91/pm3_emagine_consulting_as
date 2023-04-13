@@ -174,7 +174,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <div class="form-width-330 u-mr--12">
                                     <ng-container
-                                        *ngIf="!readOnlyMode || contractClientForm.clientInvoicingRecipientSameAsDirectClient?.value">
+                                        *ngIf="contractClientForm.clientInvoicingRecipientSameAsDirectClient?.value">
                                         <mat-checkbox [disabled]="true" color="accent"
                                             formControlName="clientInvoicingRecipientSameAsDirectClient"
                                             name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox">
@@ -694,21 +694,19 @@
 </form>
 
 <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="column" fxLayoutAlign="start start">
+    <div fxLayout="row wrap" fxLayoutAlign="end center" class="u-w--100">
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button type="button"
-                (click)="openClientInNewTab(client?.clientId)"
-                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+            <button class="link-to-client-icon green-color u-mr--8" mat-flat-button (click)="openClientInNewTab(client?.clientId)"
+                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip" type="button">
                 <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                 Client profile
             </button>
         </ng-container>
 
         <ng-container *ngIf="client?.clientId">
-            <button class="link-to-client-icon orange-color" mat-flat-button type="button"
-                (click)="openInHubspot(client)"
+            <button class="link-to-client-icon orange-color" mat-flat-button (click)="openInHubspot(client)"
                 [disabled]="client.crmClientId === null || client.crmClientId === undefined"
-                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
+                [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip" type="button">
                 <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
                 Hubspot
             </button>

@@ -242,9 +242,9 @@
 
                                 <ng-container *ngIf="consultant.value.pdcPaymentEntityId">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
+                                        <mat-form-field appearance="outline" class="disabled-input formFieldNoMarginPadding filter-select form-width-150">
                                             <mat-label>Price</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantPaymentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="true" required formControlName="consultantPaymentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <ng-container *ngFor="let item of clientRateTypes; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -260,7 +260,7 @@
                                     <ng-container class="u-w--100" [ngSwitch]="consultant.value.consultantPaymentType?.id">
                                         <ng-container *ngSwitchCase="1"> <!-- 'Time based' -->
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding disabled-input u-mr--12 form-width-150">
                                                     <mat-label>Rate</mat-label>
                                                     <input [disabled]="true" required autocomplete="off" matInput formControlName="consultantRate" type="number">
                                                     <mat-error>
@@ -301,7 +301,7 @@
                                             </div>
                                             <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding disabled-input u-mr--12 form-width-150">
                                                         <mat-label>e-to-e rate</mat-label>
                                                         <input [disabled]="true" required autocomplete="off" matInput formControlName="consultantPDCRate" type="number">
                                                         <mat-error>

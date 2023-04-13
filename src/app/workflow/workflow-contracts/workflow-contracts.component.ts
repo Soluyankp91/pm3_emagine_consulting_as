@@ -927,8 +927,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
 				{ emitEvent: false }
 			);
-            this.clientDataComponent?.contractClientForm.normalRate?.setValue(
-				this.findItemById(this.currencies, data.clientData.clientRate?.normalRate),
+            this.clientDataComponent?.contractClientForm.normalRate?.setValue( data.clientData.clientRate?.normalRate,
 				{ emitEvent: false }
 			);
             let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
@@ -952,14 +951,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this.clientDataComponent?.contractClientForm.manualDate?.setValue(data.clientData.clientRate.manualDate, {
                 emitEVent: false,
             });
+            this.clientDataComponent.contractClientForm?.clientInvoicingRecipientSameAsDirectClient?.setValue(
+				data.clientData.clientInvoicingRecipientSameAsDirectClient,
+				{ emitEvent: false }
+			);
             if (data.clientData.clientInvoicingRecipient?.clientId) {
                 this.clientDataComponent.filteredClientInvoicingRecipients = [data.clientData.clientInvoicingRecipient];
                 this.clientDataComponent.invoicingRecipientsAddresses = MapClientAddressList(data.clientData.clientInvoicingRecipient.clientAddresses);
             }
-            // FIXME: uncomment once BE is deployed
-            // if (data?.clientData?.clientInvoicingRecipientAddress) {
-            //     this.clientDataComponent.contractClientForm.clientInvoicingRecipientAddress.setValue(PackAddressIntoNewDto(data?.clientData?.), {emitEvent: false});
-            // }
+            if (data?.clientData?.clientInvoicingRecipientAddress) {
+                this.clientDataComponent.contractClientForm.clientInvoicingRecipientAddress.setValue(PackAddressIntoNewDto(data?.clientData?.clientInvoicingRecipientAddress), {emitEvent: false});
+            }
 			if (data.clientData.noSpecialContractTerms) {
 				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
 			}

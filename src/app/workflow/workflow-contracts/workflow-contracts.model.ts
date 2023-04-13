@@ -128,6 +128,7 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             invoicingReferencePersonIdValue: new UntypedFormControl(null),
             invoicingReferencePerson: new UntypedFormControl(null),
             invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
+            clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false),
 
             specialContractTerms: new UntypedFormControl(null, Validators.required),
             noSpecialContractTerms: new UntypedFormControl(null),
