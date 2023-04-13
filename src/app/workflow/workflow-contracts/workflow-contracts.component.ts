@@ -552,21 +552,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				.clientContractsPUT(this.periodId!, input)
 				.pipe(
 					finalize(() => {
+                        this._tempUpdateDocuments();
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe({
-                    next: () => {
-                        this.validationTriggered = false;
-                        this._workflowDataService.workflowOverviewUpdated.emit(true);
-                        if (this.editEnabledForcefuly) {
-                            this.toggleEditMode();
-                        }
-                        this.getContractStepData();
-                    },
-                    error: () => {
-                        this._tempUpdateDocuments();
+				.subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
                     }
+                    this.getContractStepData();
 				});
 		} else {
 			this._clientPeriodService
@@ -574,19 +570,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				.pipe(
 					finalize(() => {
 						this.bypassLegalValidation = false;
+                        this._tempUpdateDocuments();
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe({
-                    next: () => {
-                        this.validationTriggered = false;
-                        this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-                        this._workflowDataService.workflowOverviewUpdated.emit(true);
-                        this.getContractStepData();
-                    },
-                    error: () => {
-                        this._tempUpdateDocuments();
-                    }
+				.subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    this.getContractStepData();
 				});
 		}
 	}
@@ -738,41 +730,32 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				.terminationContractPUT(this.workflowId!, input)
 				.pipe(
 					finalize(() => {
+						this._tempUpdateDocuments();
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe({
-					next: () => {
-						this.validationTriggered = false;
-						this._workflowDataService.workflowOverviewUpdated.emit(true);
-						if (this.editEnabledForcefuly) {
-							this.toggleEditMode();
-						}
-						this.getContractStepData();
-					},
-					error: () => {
-                        this.hideMainSpinner();
-                        this._tempUpdateDocuments();
-                    }
-                });
+				.subscribe(() => {
+					this.validationTriggered = false;
+					this._workflowDataService.workflowOverviewUpdated.emit(true);
+					if (this.editEnabledForcefuly) {
+						this.toggleEditMode();
+					}
+					this.getContractStepData();
+				});
 		} else {
 			this._workflowServiceProxy
 				.terminationContractComplete(this.workflowId!, input)
 				.pipe(
 					finalize(() => {
+						this._tempUpdateDocuments();
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe({
-                    next: () => {
-                        this.validationTriggered = false;
-                        this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
-                        this._workflowDataService.workflowOverviewUpdated.emit(true);
-                        this.getContractStepData();
-                    },
-                    error: () => {
-                        this._tempUpdateDocuments();
-                    }
+				.subscribe(() => {
+					this.validationTriggered = false;
+					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
+					this._workflowDataService.workflowOverviewUpdated.emit(true);
+					this.getContractStepData();
 				});
 		}
 	}
