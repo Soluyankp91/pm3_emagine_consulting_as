@@ -3,7 +3,7 @@ import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } 
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { EValueUnitTypes } from '../../workflow-sales/workflow-sales.model';
+import { ClientRateTypes, EValueUnitTypes } from '../../workflow-sales/workflow-sales.model';
 import { forkJoin, Subject } from 'rxjs';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -18,6 +18,7 @@ import {
 	ConsultantResultDto,
 	EnumEntityTypeDto,
 	FrameAgreementServiceProxy,
+	LegalEntityDto,
 	PeriodConsultantSpecialFeeDto,
 	PeriodConsultantSpecialRateDto,
 	ProjectLineDto,
@@ -30,6 +31,7 @@ import { WorkflowDataService } from '../../workflow-data.service';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
+import { MarginType } from '../../shared/components/calculated-margin/calculated-margin.model';
 
 @Component({
 	selector: 'app-contracts-consultant-data',
@@ -50,6 +52,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	employmentTypes: EnumEntityTypeDto[];
 	consultantTimeReportingCapList: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
+    legalEntities: LegalEntityDto[];
+    rateUnitTypes: EnumEntityTypeDto[];
 	consultantInsuranceOptions: { [key: string]: string };
 	filteredConsultants: ConsultantResultDto[] = [];
 	valueUnitTypes: EnumEntityTypeDto[];
@@ -67,6 +71,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 	selectedFrameAgreementList = new Array<null | number>();
+    clientRateTypes = ClientRateTypes;
+    eMarginType = MarginType;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -177,6 +183,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 
 	addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number, directClientId?: number) {
 		this.directClientId = directClientId;
+        let consultantRate = this.findItemById(this.clientRateTypes, 1); // 1: time based
+		if (consultant?.consultantRate?.isFixedRate) {
+			consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
+		}
 		const form = this._fb.group({
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
 			consultantId: new UntypedFormControl(consultant?.consultantId),
@@ -187,13 +197,24 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			noEndDate: new UntypedFormControl(consultant?.noEndDate),
 			consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
 			consultantTimeReportingCapId: new UntypedFormControl(consultant?.consultantTimeReportingCapId),
+            consultantProdataEntity: new UntypedFormControl(
+				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
+			),
+			consultantPaymentType: new UntypedFormControl(consultantRate),
+			consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
 			consultantRateUnitType: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.rateUnitTypeId)
+				this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
 			),
 			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.currencyId)
+				this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null
 			),
-			consultantRate: new UntypedFormControl(consultant.consultantRate),
+			consultantPDCRate: new UntypedFormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
+			consultantPDCRateUnitType: new UntypedFormControl(
+				this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
+			),
+			consultantPDCRateCurrency: new UntypedFormControl(
+				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null
+			),
 			noSpecialContractTerms: new UntypedFormControl(consultant?.noSpecialContractTerms),
 			specialContractTerms: new UntypedFormControl(
 				{
@@ -237,9 +258,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				consultant.employmentTypeId !== EmploymentTypes.FeeOnly &&
 				consultant.employmentTypeId !== EmploymentTypes.Recruitment
 			) {
-				// this.manageFrameAgreementAutocomplete(consultant.consultantId, consultantIndex);
 				this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
-
 				this.getInitialFrameAgreements(consultant, consultantIndex);
 			}
 		}
@@ -763,6 +782,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
 			periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
 			capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
+			legalEntities: this._internalLookupService.getLegalEntities(),
+			rateUnitTypes: this._internalLookupService.getUnitTypes(),
 		}).subscribe((result) => {
 			this.employmentTypes = result.employmentTypes;
 			this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
@@ -772,6 +793,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			this.valueUnitTypes = result.valueUnitTypes;
 			this.periodUnitTypes = result.periodUnitTypes;
 			this.capTypes = result.capTypes;
+			this.legalEntities = result.legalEntities;
+			this.rateUnitTypes = result.rateUnitTypes;
 		});
 	}
 

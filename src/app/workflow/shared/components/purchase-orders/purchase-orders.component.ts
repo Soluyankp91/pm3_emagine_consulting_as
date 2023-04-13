@@ -60,6 +60,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			isEdit: !!purchaseOrder,
 			clientPeriodId: this.periodId,
 			directClientId: this.directClientId,
+			addedPoIds: this.purchaseOrders.value.map((x) => x.id),
 		};
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
 

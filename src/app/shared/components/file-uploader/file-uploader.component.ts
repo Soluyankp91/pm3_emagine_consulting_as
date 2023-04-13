@@ -4,7 +4,7 @@ import { FileUploaderFile, FileUploaderHelper } from './file-uploader.model';
 import { FileDragAndDropEvent } from './file-drag-and-drop.directive';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
-const DefaultAcceptedTypes = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jpg', 'jpeg', 'png', 'svg', 'msg', 'eml'];
+const DefaultAcceptedTypes = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt', '.jpg', '.jpeg', '.png', '.svg', '.msg', '.eml'];
 @Component({
   selector: 'app-file-uploader',
   templateUrl: './file-uploader.component.html',
@@ -152,7 +152,7 @@ export class FileUploaderComponent implements OnInit {
     }
 
     public validateFileType(name: String) {
-        let ext = name.substring(name.lastIndexOf('.') + 1);
+        let ext = name.substring(name.lastIndexOf('.'));
         if (this.acceptedTypes.includes(ext.toLowerCase())) {
             this.acceptedFileType = true;
             return true;

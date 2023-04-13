@@ -10,7 +10,7 @@
                     [ngTemplateOutletContext]="{order: order.value, i: i,  isPreviousPO: false}">
                 </ng-container>
             </ng-container>
-            <ng-container *ngIf="poForm.purchaseOrders.controls?.length === 0 && readOnlyMode">
+            <ng-container *ngIf="poForm.purchaseOrders.controls?.length === 0 && (readOnlyMode || mode === ePurchaseOrderMode.WFOverview)">
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
                     class="inline-form--row u-w--100 border-unset">
                     <span class="light-grey-color text-600">
@@ -20,7 +20,7 @@
             </ng-container>
         </ng-container>
     </div>
-    <ng-container *ngIf="!readOnlyMode && mode !== ePurchaseOrderMode.ProjectLine">
+    <ng-container *ngIf="!readOnlyMode && mode !== ePurchaseOrderMode.ProjectLine && mode !== ePurchaseOrderMode.WFOverview">
         <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
             (throttledClick)="createOrEditPurchaseOrder()">
             <mat-icon>add</mat-icon>

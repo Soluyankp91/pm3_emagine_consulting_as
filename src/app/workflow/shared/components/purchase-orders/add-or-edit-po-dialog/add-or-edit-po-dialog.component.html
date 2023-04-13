@@ -59,10 +59,15 @@
                                     [ngTemplateOutletContext]="{order: purchaseOrderForm.existingPo?.value}"></ng-container>
                             </ng-container>
                         </mat-select-trigger>
-                        <ng-container *ngFor="let item of purchaseOrders; trackBy: trackById">
+                        <ng-container *ngFor="let item of filteredPurchaseOrders; trackBy: trackById">
                             <mat-option [value]="item">
                                 <ng-container [ngTemplateOutlet]="poNumberInfo"
                                     [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
+                            </mat-option>
+                        </ng-container>
+                        <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
+                            <mat-option class="no-data">
+                                No purchase orders
                             </mat-option>
                         </ng-container>
                     </mat-select>

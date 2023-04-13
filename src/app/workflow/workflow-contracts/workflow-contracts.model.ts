@@ -114,15 +114,21 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             timeReportingCaps: new UntypedFormArray([]),
             rateUnitType: new UntypedFormControl(null),
             currency: new UntypedFormControl(null),
-            clientRate: new UntypedFormControl(null),
+            normalRate: new UntypedFormControl(null),
+            clientRateType: new UntypedFormControl(null),
             frameAgreementId: new UntypedFormControl(null),
-
+            invoiceCurrencyId: new UntypedFormControl(null),
+            invoiceFrequencyId: new UntypedFormControl(null),
+            invoicingTimeId: new UntypedFormControl(null),
+            manualDate: new UntypedFormControl(null),
             invoicingReferenceNumber: new UntypedFormControl(null),
             clientInvoicingRecipientIdValue: new UntypedFormControl(null),
+            clientInvoicingRecipientAddress: new UntypedFormControl(null),
             clientInvoicingRecipient: new UntypedFormControl(null),
             invoicingReferencePersonIdValue: new UntypedFormControl(null),
             invoicingReferencePerson: new UntypedFormControl(null),
             invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
+            clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false),
 
             specialContractTerms: new UntypedFormControl(null, Validators.required),
             noSpecialContractTerms: new UntypedFormControl(null),
@@ -152,17 +158,38 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     get currency() {
         return this.get('currency');
     }
-    get clientRate() {
-        return this.get('clientRate');
+    get normalRate() {
+        return this.get('normalRate');
+    }
+    get clientRateType() {
+        return this.get('clientRateType');
     }
     get frameAgreementId() {
         return this.get('frameAgreementId');
+    }
+    get invoiceCurrencyId() {
+        return this.get('invoiceCurrencyId');
+    }
+    get invoiceFrequencyId() {
+        return this.get('invoiceFrequencyId');
+    }
+    get invoicingTimeId() {
+        return this.get('invoicingTimeId');
+    }
+    get manualDate() {
+        return this.get('manualDate');
     }
     get invoicingReferenceNumber() {
         return this.get('invoicingReferenceNumber');
     }
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');
+    }
+    get clientInvoicingRecipientAddress() {
+        return this.get('clientInvoicingRecipientAddress');
+    }
+    get clientInvoicingRecipientSameAsDirectClient() {
+        return this.get('clientInvoicingRecipientSameAsDirectClient');
     }
     get clientInvoicingRecipient() {
         return this.get('clientInvoicingRecipient');

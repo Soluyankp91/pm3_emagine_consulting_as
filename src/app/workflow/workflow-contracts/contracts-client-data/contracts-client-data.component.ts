@@ -5,10 +5,12 @@ import {
 	AgreementSimpleListItemDto,
 	AgreementSimpleListItemDtoPaginatedList,
 	AgreementType,
+	ClientResultDto,
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
 	EnumEntityTypeDto,
 	FrameAgreementServiceProxy,
+	LegalEntityDto,
 	PeriodClientSpecialFeeDto,
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
@@ -23,6 +25,8 @@ import { WorkflowDataService } from '../../workflow-data.service';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ClientRateTypes, IClientAddress } from '../../workflow-sales/workflow-sales.model';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -41,8 +45,12 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
+    legalEntities: LegalEntityDto[];
     valueUnitTypes: EnumEntityTypeDto[];
     periodUnitTypes: EnumEntityTypeDto[];
+    invoicingTimes: EnumEntityTypeDto[];
+    invoiceFrequencies: EnumEntityTypeDto[];
+    rateUnitTypes: EnumEntityTypeDto[];
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
@@ -55,6 +63,9 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
     ePurchaseOrderMode = EPurchaseOrderMode;
     filteredFrameAgreements: AgreementSimpleListItemDto[];
     selectedFrameAgreementId: number | null;
+    clientRateTypes = ClientRateTypes;
+    filteredClientInvoicingRecipients: ClientResultDto[];
+    invoicingRecipientsAddresses: IClientAddress[];
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -62,6 +73,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		private _internalLookupService: InternalLookupService,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy,
+        private _router: Router,
 	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
@@ -118,11 +130,19 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
             valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
             periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+            legalEntities: this._internalLookupService.getLegalEntities(),
+            invoicingTimes: this._internalLookupService.getInvoicingTimes(),
+            invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
+            rateUnitTypes: this._internalLookupService.getUnitTypes(),
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
 			this.clientTimeReportingCap = result.clientTimeReportingCap;
             this.valueUnitTypes = result.valueUnitTypes;
             this.periodUnitTypes = result.periodUnitTypes;
+            this.legalEntities = result.legalEntities;
+            this.invoicingTimes = result.invoicingTimes;
+            this.invoiceFrequencies = result.invoiceFrequencies;
+            this.rateUnitTypes = result.rateUnitTypes;
 		});
 	}
 
@@ -199,7 +219,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		clientRate.reportingUnit = rate.specialRateReportingUnit;
 		clientRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (clientRate.rateSpecifiedAs?.id === 1) {
-			clientRate.clientRate = +((this.contractClientForm.clientRate?.value?.normalRate * rate.clientRate!) / 100).toFixed(
+			clientRate.clientRate = +((this.contractClientForm.normalRate?.value?.normalRate * rate.clientRate!) / 100).toFixed(
 				2
 			);
 			clientRate.clientRateCurrencyId = this.contractClientForm.currency?.value?.id;
@@ -343,6 +363,24 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
     submitForm() {
         this.submitFormBtn.nativeElement.click();
     }
+
+    openClientInNewTab(clientId: string) {
+		const url = this._router.serializeUrl(this._router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
+		window.open(url, '_blank');
+	}
+
+	openInHubspot(client: ClientResultDto) {
+        if (this._internalLookupService.hubspotClientUrl?.length) {
+			if (client.crmClientId !== null && client.crmClientId !== undefined) {
+				window.open(
+					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
+					'_blank'
+				);
+			}
+		} else {
+            this._workflowDataService.openInHubspot(client);
+        }
+	}
 
     get clientRates(): UntypedFormArray {
 		return this.contractClientForm.get('clientRates') as UntypedFormArray;
