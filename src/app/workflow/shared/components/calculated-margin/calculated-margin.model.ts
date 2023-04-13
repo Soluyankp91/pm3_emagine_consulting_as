@@ -2,7 +2,9 @@ export enum MarginType {
     PDCFixed = 1,
     PlainFixed = 2,
     PDCTimeBased = 3,
-    PlainTimeBased = 4
+    PlainTimeBased = 4,
+    TotalFixedMargin = 5,
+    TotalTimeBasedMargin = 6
 }
 
 export interface IMarginConfig {

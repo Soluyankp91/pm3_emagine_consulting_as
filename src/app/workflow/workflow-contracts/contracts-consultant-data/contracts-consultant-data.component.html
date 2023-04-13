@@ -340,6 +340,11 @@
                                                         </ng-container>
                                                     </div>
                                                 </div>
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <ng-container [ngTemplateOutlet]="marginComponent"
+                                                        [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.TotalTimeBasedMargin}">
+                                                    </ng-container>
+                                                </div>
                                             </ng-container>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="2"> <!-- 'Fixed' -->
@@ -397,6 +402,11 @@
                                                             [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.PDCFixed}">
                                                         </ng-container>
                                                     </div>
+                                                </div>
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <ng-container [ngTemplateOutlet]="marginComponent"
+                                                        [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.TotalFixedMargin}">
+                                                    </ng-container>
                                                 </div>
                                             </ng-container>
                                         </ng-container>

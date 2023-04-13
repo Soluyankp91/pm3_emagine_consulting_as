@@ -42,6 +42,23 @@
                 <ng-container [ngTemplateOutlet]="PDCtoPDCMargin"></ng-container>
         </ng-container>
     </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.TotalFixedMargin">
+        <ng-container
+            *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantCurrencyId) &&
+            (data.clientUnitTypeId === data.consultantUnitTypeId) &&
+            (data.clientRate && data.consultantRate); else calculateMarginNotPossible">
+            <ng-container [ngTemplateOutlet]="totalMargin"></ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="eMarginType.TotalTimeBasedMargin">
+        <ng-container
+            *ngIf="(data.clientPaymentType === data.consultantPaymentType) &&
+            (data.clientCurrencyId === data.consultantCurrencyId) &&
+            (data.clientRate && data.consultantRate); else calculateMarginNotPossible">
+            <ng-container [ngTemplateOutlet]="totalMargin"></ng-container>
+        </ng-container>
+    </ng-container>
 </ng-container>
 
 <ng-template #differentPDCMargin>
@@ -62,10 +79,16 @@
     </ng-container>
 </ng-template>
 
-<ng-template #marginLayout let-margin="margin">
-    <div fxLayout="row" fxLayoutAlign="start center">
+<ng-template #totalMargin>
+    <ng-container [ngTemplateOutlet]="marginLayout"
+        [ngTemplateOutletContext]="{margin: (data.clientRate * 1 - data.consultantRate * 1)/ data.clientRate * 1 | percent: '1.2', totalMargin: true}">
+    </ng-container>
+</ng-template>
+
+<ng-template #marginLayout let-margin="margin" let-totalMargin="totalMargin">
+    <div [fxLayout]="totalMargin ? 'column' : 'row'" [fxLayoutAlign]="totalMargin ? 'start start' : 'start center'">
         <span class="margin-header text-bold u-mr--5">
-            Calculated margin
+            {{totalMargin ? 'Calculated total margin' : 'Calculated margin'}}
         </span>
         <span class="margin-value text-bold">
             {{margin}}

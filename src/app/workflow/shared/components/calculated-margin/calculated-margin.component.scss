@@ -3,8 +3,10 @@
 .margin {
     &-header {
         color: rgba($color: $dark-grey-color, $alpha: 0.77);
+        font-size: 12px;
     }
     &-value {
-        color: $dark-grey-color
+        color: $dark-grey-color;
+        font-size: 12px;
     }
 }
