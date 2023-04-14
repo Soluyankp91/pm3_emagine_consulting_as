@@ -486,10 +486,12 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this.initContactSubs();
 		this.salesClientDataForm.frameAgreementId.setValue('');
         this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
+        this.clearClientAddress(EClientSelectionType.DirectClient);
         this.onDirectClientSelected.emit(event);
 	}
 
     clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
+        this.clearClientAddress(clientType);
         this.getClientAddresses(event.option.value?.clientAddresses, clientType);
         this.focusToggleMethod('auto');
     }
@@ -504,6 +506,20 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
                 break;
             case EClientSelectionType.InvoicingRecipient:
                 this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
+                break;
+        }
+    }
+
+    clearClientAddress(clientType: EClientSelectionType) {
+        switch (clientType) {
+            case EClientSelectionType.DirectClient:
+                this.salesClientDataForm.directClientAddress.reset(null);
+                break;
+            case EClientSelectionType.EndClient:
+                this.salesClientDataForm.endClientAddress.reset(null);
+                break;
+            case EClientSelectionType.InvoicingRecipient:
+                this.salesClientDataForm.clientInvoicingRecipientAddress.reset(null);
                 break;
         }
     }
@@ -761,6 +777,16 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	submitForm() {
 		this.submitFormBtn.nativeElement.click();
 	}
+
+    setClientInvoicingRecipient(sameAsDirectClient: boolean, directClient: ClientResultDto) {
+        if (sameAsDirectClient) {
+			this.salesClientDataForm.clientInvoicingRecipientIdValue!.disable();
+			this.salesClientDataForm.clientInvoicingRecipientIdValue!.setValue(directClient);
+            this.getClientAddresses(directClient?.clientAddresses, EClientSelectionType.InvoicingRecipient);
+		} else {
+			this.salesClientDataForm.clientInvoicingRecipientIdValue!.enable();
+		}
+    }
 
 	get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;

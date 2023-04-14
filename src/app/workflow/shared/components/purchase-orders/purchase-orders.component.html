@@ -74,7 +74,7 @@
             [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
             matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-') }}
-            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length > 1">
+            <ng-container *ngIf="order?.existsInAnotherWorkflow">
                 <mat-icon class="shared-icon u-ml--10 cursor-pointer" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
             </ng-container>
@@ -118,22 +118,26 @@
         </ng-container>
 
         <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
-            <ng-container *ngIf="!readOnlyMode && order?.isUserAllowedToEdit">
+            <ng-container *ngIf="!readOnlyMode">
                 <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
                     [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
                     <mat-icon svgIcon="3-dots"></mat-icon>
                 </button>
                 <mat-menu #poMenu>
-                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="createOrEditPurchaseOrder(order, i)">
-                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
-                    </button>
-                    <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="removePurchaseOrder(i)">
-                        <mat-icon svgIcon="close-icon"></mat-icon>
-                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
-                    </button>
+                    <ng-container *ngIf="order?.isUserAllowedToEdit">
+                        <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                            (throttledClick)="createOrEditPurchaseOrder(order, i)">
+                            <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                            {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="mode !== ePurchaseOrderMode.WFOverview">
+                        <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
+                            (throttledClick)="removePurchaseOrder(i)">
+                            <mat-icon svgIcon="close-icon"></mat-icon>
+                            {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
+                        </button>
+                    </ng-container>
                 </mat-menu>
             </ng-container>
         </div>

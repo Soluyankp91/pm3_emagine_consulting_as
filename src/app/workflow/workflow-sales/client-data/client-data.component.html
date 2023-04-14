@@ -434,7 +434,7 @@
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent"
                                             formControlName="clientInvoicingRecipientSameAsDirectClient"
                                             name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox"
-                                            (change)="setValueAndToggleDisalbeState(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue, salesClientDataForm.directClientIdValue?.value)">
+                                            (change)="setClientInvoicingRecipient(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.directClientIdValue?.value)">
                                             Same as direct client
                                         </mat-checkbox>
                                     </ng-container>
