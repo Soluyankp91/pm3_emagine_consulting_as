@@ -1,17 +1,1 @@
-<mat-dialog-content class="notification-dialog">
-    <div mat-dialog-title class="header">
-        <h1>
-            {{data.title}}
-        </h1>
-        <button (click)="close()" mat-button>
-            <mat-icon class="header-close-icon" >close</mat-icon>
-        </button>
-    </div>
-
-    <p class="subtitle">{{data.body}}</p>
-
-</mat-dialog-content>
-
-<mat-dialog-actions class="actions flex-end">
-    <button [mat-dialog-close]="false" mat-flat-button class="dialog-btn dialog-btn__positive">Close</button>
-</mat-dialog-actions>
+<app-editor-popup-wrapper [configs]="popupConfigs"></app-editor-popup-wrapper>

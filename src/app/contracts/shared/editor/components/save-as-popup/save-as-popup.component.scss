@@ -1,80 +1,40 @@
-@import "/src/app/shared/styles/config/_colors";
-@import "/src/app/shared/styles/config/_mixins";
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
 
-.save-as-dialog {
-    p {
-        word-wrap: break-word;
-    }
+.save-as-dialog-form {
+	.content {
+		font-size: 14px;
+	}
 
-    .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        
-        h1 {
-            @include fontOpenSans(30px, 800);
-            line-height: 120%;
-        }
-    }
+	.textarea-form-field {
+		margin-bottom: 20px;
+		::ng-deep {
+			textarea {
+				height: 86px;
+				line-height: 18px;
+			}
 
-    .subtitle {
-        margin-bottom: 16px;
-    }
+			.mat-form-field-outline {
+				height: 110px;
+			}
+		}
+	}
 
-    .content {
-       font-size: 14px;
-    }
+	mat-form-field {
+		width: 100%;
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
 
-    .warn {
-        display: flex;
+	mat-checkbox {
+		margin-bottom: 18px;
+		font-weight: 700;
 
-        mat-icon {
-            margin-right: 6px;
-            color: #FF7A78;
-            width: 36px;
-        }
-
-        p {
-            color: #FF7A78;
-            font-weight: 700;
-        }
-    }
-    
-    .actions {
-        justify-content: space-between;
-        border-top: 1px solid $sand-color;
-    }
-
-    .textarea-form-field {
-        margin-bottom: 20px;
-        ::ng-deep {
-            textarea {
-                height: 86px;
-                line-height: 18px;
-            }
-
-            .mat-form-field-outline {
-                height: 110px;
-            }
-        }
-    }
-
-    mat-form-field {
-        width: 100%;
-    }
-
-    mat-checkbox {
-        margin-bottom: 18px;
-        font-weight: 700;
-
-        ::ng-deep {
-            .mat-checkbox-layout {
-                white-space: normal;
-            }
-        }
-    }
-
-    mat-dialog-actions {
-        padding: 0px !important;
-    }
+		::ng-deep {
+			.mat-checkbox-layout {
+				white-space: normal;
+			}
+		}
+	}
 }

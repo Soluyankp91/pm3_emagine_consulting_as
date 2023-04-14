@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { EditorPopupConfigs, EditorPopupWrapperComponent } from '../editor-popup-wrapper';
 
 @Component({
 	standalone: true,
@@ -11,9 +9,10 @@ import { MatIconModule } from '@angular/material/icon';
 	templateUrl: './confirm-popup.component.html',
 	styleUrls: ['./confirm-popup.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [CommonModule, MatDialogModule, MatIconModule, MatButtonModule, MatFormFieldModule],
+	imports: [CommonModule, EditorPopupWrapperComponent],
 })
 export class ConfirmPopupComponent {
+	popupConfigs: EditorPopupConfigs;
 	constructor(
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
@@ -23,7 +22,14 @@ export class ConfirmPopupComponent {
 			cancelBtnText?: string;
 		},
 		private _dialogRef: MatDialogRef<ConfirmPopupComponent>
-	) {}
+	) {
+		this.popupConfigs = {
+			title: data.title,
+			subtitle: data.body,
+			confirmButtonLabel: data.confirmBtnText || 'Yes',
+			rejectButtonLabel: data.cancelBtnText || 'No',
+		};
+	}
 
 	submit() {
 		this._dialogRef.close(true);
