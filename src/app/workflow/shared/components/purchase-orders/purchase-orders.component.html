@@ -118,17 +118,19 @@
         </ng-container>
 
         <div fxFlex="40px" fxLayoutAlign="end center" class="u-w--100">
-            <ng-container *ngIf="!readOnlyMode && order?.isUserAllowedToEdit">
+            <ng-container *ngIf="!readOnlyMode">
                 <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
                     [matMenuTriggerFor]="poMenu" class="three-dots-actions-btn">
                     <mat-icon svgIcon="3-dots"></mat-icon>
                 </button>
                 <mat-menu #poMenu>
-                    <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="createOrEditPurchaseOrder(order, i)">
-                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
-                    </button>
+                    <ng-container *ngIf="order?.isUserAllowedToEdit">
+                        <button class="menu-item green-color" mat-menu-item appPreventDoubleClick
+                            (throttledClick)="createOrEditPurchaseOrder(order, i)">
+                            <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                            {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
+                        </button>
+                    </ng-container>
                     <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
                         (throttledClick)="removePurchaseOrder(i)">
                         <mat-icon svgIcon="close-icon"></mat-icon>
