@@ -99,6 +99,7 @@
             <ng-container formGroupName="capForInvoicing">
                 <h3 class="workflow-gray--header u-mb--10">Shared Cap for Invoicing</h3>
                 <mat-button-toggle-group
+                    (change)="sharedCapTypeChange($event.value)"
                     [ngClass]="{'mat-form-field-invalid': !purchaseOrderForm.capForInvoicing.type?.valid}"
                     class="workflow-toggle-buttons" formControlName="type" required>
                     <ng-container *ngFor="let item of capTypes | keyvalue; trackBy: trackByKey">
@@ -168,7 +169,7 @@
     <div class="multilineDropdown-option--column text-truncate-ellipsis">
         <span class="multilineDropdown-option--column-client-name flex-items-center"
             [ngClass]="{'medium-grey-color': order?.numberMissingButRequired}">
-            <ng-container *ngIf="order.purchaseOrderCurrentContextData?.isSharedWithAnotherWorkflow && isList">
+            <ng-container *ngIf="order.purchaseOrderCurrentContextData?.existsInAnotherWorkflow && isList">
                 <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
             </ng-container>

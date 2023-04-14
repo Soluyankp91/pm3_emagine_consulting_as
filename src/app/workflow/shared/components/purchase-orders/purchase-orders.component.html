@@ -74,7 +74,7 @@
             [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
             matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-') }}
-            <ng-container *ngIf="order.workflowsIdsReferencingThisPo?.length > 1">
+            <ng-container *ngIf="order?.existsInAnotherWorkflow">
                 <mat-icon class="shared-icon u-ml--10 cursor-pointer" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
             </ng-container>
@@ -131,11 +131,13 @@
                             {{mode === ePurchaseOrderMode.ProjectLine ? 'Edit PO' : 'Edit'}}
                         </button>
                     </ng-container>
-                    <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
-                        (throttledClick)="removePurchaseOrder(i)">
-                        <mat-icon svgIcon="close-icon"></mat-icon>
-                        {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
-                    </button>
+                    <ng-container *ngIf="mode !== ePurchaseOrderMode.WFOverview">
+                        <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
+                            (throttledClick)="removePurchaseOrder(i)">
+                            <mat-icon svgIcon="close-icon"></mat-icon>
+                            {{mode === ePurchaseOrderMode.ProjectLine ? 'Remove' : 'Delete'}}
+                        </button>
+                    </ng-container>
                 </mat-menu>
             </ng-container>
         </div>

@@ -128,6 +128,24 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		}
 	}
 
+	sharedCapTypeChange(capType: number) {
+		switch (capType) {
+			case PurchaseOrderCapType.CapOnUnits:
+				this.purchaseOrderForm.capForInvoicing.maxAmount.reset(null);
+				this.purchaseOrderForm.capForInvoicing.currencyId.reset(null);
+				break;
+			case PurchaseOrderCapType.CapOnValue:
+				this.purchaseOrderForm.capForInvoicing.maxAmount.reset(null);
+				this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.reset(null);
+				break;
+			case PurchaseOrderCapType.NoCap:
+				this.purchaseOrderForm.capForInvoicing.maxAmount.reset(null);
+				this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.reset(null);
+				this.purchaseOrderForm.capForInvoicing.currencyId.reset(null);
+				break;
+		}
+	}
+
 	private _disableAllEditableInputs() {
 		this.purchaseOrderForm.number.disable({ emitEvent: false });
 		this.purchaseOrderForm.receiveDate.disable({ emitEvent: false });
