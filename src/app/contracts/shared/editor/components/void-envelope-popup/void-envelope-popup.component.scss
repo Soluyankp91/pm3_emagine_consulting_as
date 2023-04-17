@@ -10,37 +10,7 @@
 		line-height: 1;
 	}
 }
-
-.void-dialog {
-	p {
-		word-wrap: break-word;
-	}
-
-	.header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		h1 {
-			@include fontOpenSans(30px, 800);
-			line-height: 120%;
-		}
-
-		.button-close {
-			position: relative;
-			right: -34px;
-			top: -17px;
-		}
-	}
-
-	.subtitle {
-		margin-bottom: 16px;
-	}
-
-	.content {
-		font-size: 14px;
-	}
-
+.voiding-form {
 	.envelop-agreement-list {
 		margin-top: 24px;
 
@@ -54,26 +24,6 @@
 				margin-right: 8px;
 			}
 		}
-	}
-
-	.warn {
-		display: flex;
-
-		mat-icon {
-			margin-right: 6px;
-			color: #ff7a78;
-			width: 36px;
-		}
-
-		p {
-			color: #ff7a78;
-			font-weight: 700;
-		}
-	}
-
-	.actions {
-		justify-content: space-between;
-		border-top: 1px solid $sand-color;
 	}
 
 	.textarea-form-field {
@@ -92,9 +42,8 @@
 
 	mat-form-field {
 		width: 100%;
-	}
-
-	mat-dialog-actions {
-		padding: 0px !important;
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
 	}
 }

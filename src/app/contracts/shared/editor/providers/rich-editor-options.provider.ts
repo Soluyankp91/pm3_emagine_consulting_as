@@ -8,9 +8,9 @@ export const RichEditorOptionsProvider: FactoryProvider = {
 	useFactory: () => {
 		let options = createOptions();
 		options.unit = 1;
-		options.width = 'calc(100vw - 160px)';
+		options.width = '100%';
 		options.height = 'calc(100vh - 220px)';
-		
+
 		options.mailMerge.viewMergedData = true;
 		options.confirmOnLosingChanges.enabled = false;
 		return options;
