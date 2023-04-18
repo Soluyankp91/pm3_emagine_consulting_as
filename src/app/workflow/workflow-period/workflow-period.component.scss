@@ -103,13 +103,12 @@
     }
 }
 .section-anchor--chevron {
-    width: 20px !important;
-    height: 20px !important;
-    margin-top: -4px;
+    width: 14px !important;
+    height: 12px !important;
+    margin-top: -2px;
     transition: transform .3s ease-in-out;
     &.active-chevron {
         transform: rotate(180deg);
-        margin-top: 0;
     }
 }
 .active-anchor {

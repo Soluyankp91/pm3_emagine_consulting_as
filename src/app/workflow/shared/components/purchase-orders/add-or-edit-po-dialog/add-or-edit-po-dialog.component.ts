@@ -11,6 +11,7 @@ import {
 	EnumEntityTypeDto,
 	PurchaseOrderCapDto,
 	PurchaseOrderCapType,
+	PurchaseOrderCurrentContextDto,
 	PurchaseOrderDto,
 	PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
@@ -71,32 +72,26 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		let input = new PurchaseOrderDto(form);
 		input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
-		if (
-			this.purchaseOrderForm.poSource.value === EPOSource.ExistingPO ||
-			this.purchaseOrderForm.poSource.value === EPOSource.DifferentWF
-		) {
-			this.onConfirmed.emit(this.existingPo);
-			this.hideMainSpinner();
-			this._closeInternal();
+		if (form.id !== null) {
+			this._purchaseOrderService
+				.purchaseOrderPUT(this.data?.clientPeriodId, input)
+				.pipe(finalize(() => this.hideMainSpinner()))
+				.subscribe((result) => {
+					this._workflowDataService.updatePurchaseOrders.emit();
+					this.onConfirmed.emit(result);
+					this._closeInternal();
+				});
 		} else {
-			if (form.id !== null) {
-				this._purchaseOrderService
-					.purchaseOrderPUT(this.data?.clientPeriodId, input)
-					.pipe(finalize(() => this.hideMainSpinner()))
-					.subscribe((result) => {
-						this._workflowDataService.updatePurchaseOrders.emit();
-						this.onConfirmed.emit(result);
-						this._closeInternal();
+			this._purchaseOrderService
+				.purchaseOrderPOST(input)
+				.pipe(finalize(() => this.hideMainSpinner()))
+				.subscribe((result) => {
+					result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto({
+						isUserAllowedToEdit: true,
 					});
-			} else {
-				this._purchaseOrderService
-					.purchaseOrderPOST(input)
-					.pipe(finalize(() => this.hideMainSpinner()))
-					.subscribe((result) => {
-						this.onConfirmed.emit(result);
-						this._closeInternal();
-					});
-			}
+					this.onConfirmed.emit(result);
+					this._closeInternal();
+				});
 		}
 	}
 
@@ -115,16 +110,36 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	poSelected(event: MatSelectChange) {
 		this.existingPo = event.value;
 		this.purchaseOrderForm.patchValue(event.value, { emitEvent: false });
-		this._disableAllEditableInputs();
+		if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
+			this._disableAllEditableInputs();
+		}
 	}
 
 	poSourceChange(event: MatSelectChange) {
 		this.existingPo = new PurchaseOrderDto();
 		if (event.value === EPOSource.DifferentWF || event.value === EPOSource.ExistingPO) {
-			this._disableAllEditableInputs();
+			this.purchaseOrderForm.existingPo.reset(null, { emitEvent: false });
 			this.filteredPurchaseOrders = this._filterOutPOs(event.value as EPOSource);
 		} else {
 			this.purchaseOrderForm.enable();
+		}
+	}
+
+	sharedCapTypeChange(capType: number) {
+		switch (capType) {
+			case PurchaseOrderCapType.CapOnUnits:
+				this.purchaseOrderForm.capForInvoicing.maxAmount.reset(null);
+				this.purchaseOrderForm.capForInvoicing.currencyId.reset(null);
+				break;
+			case PurchaseOrderCapType.CapOnValue:
+				this.purchaseOrderForm.capForInvoicing.maxAmount.reset(null);
+				this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.reset(null);
+				break;
+			case PurchaseOrderCapType.NoCap:
+				this.purchaseOrderForm.capForInvoicing.maxAmount.reset(null);
+				this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.reset(null);
+				this.purchaseOrderForm.capForInvoicing.currencyId.reset(null);
+				break;
 		}
 	}
 

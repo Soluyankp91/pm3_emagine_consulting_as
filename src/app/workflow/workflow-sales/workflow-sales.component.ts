@@ -632,6 +632,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				);
 				if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
+                    this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(result.salesClientData?.directClient);
 				}
 				this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(
 					result?.salesClientData?.invoicingReferencePerson,
@@ -1118,10 +1119,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.value?.id;
 		input.salesClientData.clientRate!.invoicingTimeId =
 			this.clientDataComponent?.salesClientDataForm.clientInvoiceTime?.value?.id;
-		input.salesClientData.noInvoicingReferenceNumber = this.clientDataComponent?.salesClientDataForm.invoicingReferenceNumber
-			?.value
-			? false
-			: true;
 		input.salesClientData.clientInvoicingRecipientIdValue =
 			this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
 		input.salesClientData.clientInvoicingRecipientAddressId =

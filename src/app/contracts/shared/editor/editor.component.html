@@ -49,6 +49,7 @@
 				class="editor"
 				[readonly]="currentVersionIsSent"
 				[template]="template"
+				[exportWithMergedData]="!isAgreement"
 				[mergeFields]="mergeFields$ | async"
 				(documentReady)="handleDocumentReady()"
 				(saved)="saveAsComplete()"></div>
@@ -74,7 +75,7 @@
 	<ng-container *ngIf="isLatestVersionSelected$ | async; else prevVersions">
 		<ng-container *ngIf="selectedVersion?.isCurrent">
 			<div class="save-actions">
-				<button mat-button color="accent" (click)="cancel()">Close</button>
+				<button class="close-btn" mat-button color="accent" (click)="cancel()">Close</button>
 
 				<ng-container *ngIf="!(isAgreement$ | async)">
 					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
@@ -104,7 +105,7 @@
 
 		<ng-container *ngIf="selectedVersion?.isDraft">
 			<div class="save-actions">
-				<button [disabled]="isLoading" mat-button color="accent" (click)="cancel()">Close</button>
+				<button class="close-btn" [disabled]="isLoading" mat-button color="accent" (click)="cancel()">Close</button>
 
 				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
 					<span>Save as a draft</span>

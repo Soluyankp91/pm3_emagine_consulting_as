@@ -30,7 +30,7 @@ import {
 import { WorkflowDataService } from '../../workflow-data.service';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
-import { ClientTimeReportingCaps, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
+import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
 import { MarginType } from '../../shared/components/calculated-margin/calculated-margin.model';
 
 @Component({
@@ -43,7 +43,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@Input() readOnlyMode: boolean;
 	@Input() periodId: string;
 	@Input() contractsMainForm: any;
-	@Input() contractClientForm: any;
+	@Input() contractClientForm: WorkflowContractsClientDataForm;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
 	purchaseOrders: PurchaseOrderDto[] = [];
@@ -238,6 +238,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			clientFees: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
 			projectLines: new UntypedFormArray([], Validators.minLength(1)),
+            timeReportingCaps: new UntypedFormArray([]),
 		});
 		this.contractsConsultantsDataForm.consultants.push(form);
 		consultant.projectLines?.forEach((project: any) => {
@@ -535,6 +536,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
+			invoiceRecipientAddress: this.contractClientForm.clientInvoicingRecipientAddress?.value,
 			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value
 				? null
 				: this.contractClientForm.invoicingReferencePerson?.value,

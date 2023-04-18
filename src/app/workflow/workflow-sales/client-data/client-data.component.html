@@ -434,7 +434,7 @@
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent"
                                             formControlName="clientInvoicingRecipientSameAsDirectClient"
                                             name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox"
-                                            (change)="setValueAndToggleDisalbeState(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue, salesClientDataForm.directClientIdValue?.value)">
+                                            (change)="setClientInvoicingRecipient(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.directClientIdValue?.value)">
                                             Same as direct client
                                         </mat-checkbox>
                                     </ng-container>
@@ -663,15 +663,6 @@
             </div>
             <div class="workflow-section--content">
                 <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-312"
-                            [ngClass]="{'disabled-input': readOnlyMode}">
-                            <mat-label>Invoicing Reference Number</mat-label>
-                            <input [disabled]="readOnlyMode" autocomplete="off" matInput
-                                formControlName="invoicingReferenceNumber" type="text">
-                        </mat-form-field>
-                    </div>
-
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-312"

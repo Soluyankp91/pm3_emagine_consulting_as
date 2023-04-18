@@ -9,7 +9,7 @@
       justify-content: space-between;
       height: 100%;
       min-width: 44px;
-      margin-top: 32px;
+      margin-top: 0;
       &-item {
         display: flex;
         align-items: center;
@@ -19,6 +19,10 @@
         border-left: 4px solid transparent;
         &:not(&:last-of-type) {
           margin-bottom: 10px;
+        }
+        &.home-logo {
+            pointer-events: none;
+            border-bottom: 1px solid $sand-color;
         }
         &__link {
           display: flex;
@@ -50,6 +54,9 @@
         }
         &:focus {
             outline: none !important;
+        }
+        &:not(.active) mat-icon[svgIcon="contracts-icon"]{
+           fill: rgb(84, 110, 122);
         }
         &.active,
         &:hover {
