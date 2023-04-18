@@ -72,7 +72,7 @@ export class AddressTableComponent extends AppComponentBase {
 		this._clientAddressesService
 			.clientAddressesDELETE(row.id)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe();
+			.subscribe(() => this.onGetTable.emit());
 	}
 
 	private _updateClientAddress(address: any) {

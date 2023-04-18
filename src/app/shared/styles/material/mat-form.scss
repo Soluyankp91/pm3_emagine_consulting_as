@@ -499,6 +499,7 @@
 
 .multilineDropdown {
     &-option {
+        height: 48px;
         &--row {
             display: flex;
             flex-direction: row;
