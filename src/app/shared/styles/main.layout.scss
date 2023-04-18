@@ -51,6 +51,9 @@
         &:focus {
             outline: none !important;
         }
+        &:not(.active) mat-icon[svgIcon="contracts-icon"]{
+           fill: rgb(84, 110, 122);
+        }
         &.active,
         &:hover {
           background: $white-color;

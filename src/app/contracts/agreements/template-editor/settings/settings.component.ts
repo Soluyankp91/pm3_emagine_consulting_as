@@ -59,6 +59,7 @@ import {
 	AgreementType,
 	SignerType,
 	ConsultantPeriodServiceProxy,
+	MergeFieldsServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { DuplicateOrParentOptions, ParentTemplateDto, WorkflowSummary } from './settings.interfaces';
 import { EditorObserverService } from '../../../shared/services/editor-observer.service';
@@ -173,6 +174,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _cdr: ChangeDetectorRef,
 		private readonly _location: Location,
 		private readonly _creationTitleService: CreationTitleService,
+		private readonly _mergeFieldsServiceProxy: MergeFieldsServiceProxy,
 		private _editorObserverService: EditorObserverService
 	) {
 		super(_injector);
@@ -478,7 +480,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												agreementType: agreementTypeId,
 												recipientTypeId: recipientTypeId,
 												recipientId: client.clientId,
-												nameTemplate: defaultTemplate.name,
+												nameTemplate: defaultTemplate.agreementNameTemplate,
 												definition: defaultTemplate.definition,
 												legalEntityId: legalEntityId,
 												salesTypes: [salesTypeId],
@@ -737,9 +739,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnTemplateNameChanges() {
-		this.agreementFormGroup.nameTemplate.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((name: string) => {
-			this._creationTitleService.updateTemplateName(name);
-		});
+		this.agreementFormGroup.nameTemplate.valueChanges
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				switchMap((name: string) => {
+					if (!name.length) {
+						return of('');
+					}
+					return this._mergeFieldsServiceProxy
+						.format(this.currentAgreement ? this.currentAgreement.agreementId : undefined, name)
+						.pipe(map((v) => v.value));
+				})
+			)
+			.subscribe((name: string) => {
+				this._creationTitleService.updateTemplateName(name);
+			});
 	}
 
 	private _subsribeOnLegEntitiesChanges() {
@@ -1050,7 +1064,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				tap((agreementTemplateDetailsDto) => {
 					if ((this.clientPeriodId || this.consultantPeriodId) && this.workflowTemplateType$.value !== undefined) {
 						this.agreementFormGroup.patchValue({
-							nameTemplate: agreementTemplateDetailsDto.name,
+							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,
 							language: agreementTemplateDetailsDto.language,
 							isSignatureRequired: this.agreementFormGroup.initialValue.signers.length
@@ -1068,7 +1082,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						this.agreementFormGroup.patchValue({
 							agreementType: agreementTemplateDetailsDto.agreementType,
 							recipientTypeId: agreementTemplateDetailsDto.recipientTypeId,
-							nameTemplate: agreementTemplateDetailsDto.name,
+							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,
 							salesTypes: agreementTemplateDetailsDto.salesTypeIds,
 							deliveryTypes: agreementTemplateDetailsDto.deliveryTypeIds,
