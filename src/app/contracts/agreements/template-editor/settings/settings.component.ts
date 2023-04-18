@@ -743,7 +743,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				switchMap((name: string) => {
-					if (!name.length) {
+					if (name && !name.length) {
 						return of('');
 					}
 					return this._mergeFieldsServiceProxy
