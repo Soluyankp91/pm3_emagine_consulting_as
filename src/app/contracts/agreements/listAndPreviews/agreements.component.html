@@ -106,7 +106,7 @@
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
 				<div class="table-cell">
-					<emg-agreement-status [agreementStatus]="cell.status"></emg-agreement-status>
+					<app-agreement-logs [agreementId]="cell.agreementId" [agreementStatus]="cell.status"></app-agreement-logs>
 				</div>
 			</ng-template>
 			<ng-template let-cell="element" #customCells>
