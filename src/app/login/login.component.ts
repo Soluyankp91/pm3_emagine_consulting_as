@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
 import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { PmValues } from './entities/login.entities';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -13,6 +13,8 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class LoginComponent implements OnInit, OnDestroy {
     isIframe = false;
     loginDisplay = false;
+    pmValues = PmValues;
+
     private readonly _destroying$ = new Subject<void>();
     constructor(
         @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
@@ -91,5 +93,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._destroying$.next(undefined);
         this._destroying$.complete();
     }
+
+    trackById(index: number, item: any) {
+		return item.id;
+	}
 
 }

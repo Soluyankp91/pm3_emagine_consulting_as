@@ -1,8 +1,12 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { map, tap } from 'rxjs/operators';
+import { API_BASE_URL, ClientResultDto, ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { IConsultantAnchor } from './workflow-period/workflow-period.model';
 import { MultiSortList, WorkflowProgressStatus } from './workflow.model';
+import { AuthenticationResult } from '@azure/msal-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { InternalLookupService } from '../shared/common/internal-lookup.service';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 @Injectable({
     providedIn: 'root'
@@ -43,12 +47,14 @@ export class WorkflowDataService {
 
     cancelForceEdit =  new EventEmitter<any>();
     resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
+    updatePurchaseOrders = new EventEmitter();
     isContractModuleEnabled: boolean;
-    isContractModuleEnabled2 = this._configurationService.contractsEnabled().subscribe(result => result);
 
-    constructor(private _configurationService: ConfigurationServiceProxy) {
-        this._getContractModuleConfig();
-    }
+    constructor(
+        private readonly _internalLookupService: InternalLookupService,
+        private _localHttpService: LocalHttpService,
+        private _httpClient: HttpClient
+    ) {}
 
     updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {
         for (const update in status) {
@@ -57,10 +63,6 @@ export class WorkflowDataService {
                 (this.workflowProgress[key] as any) = status[key];
             }
         }
-    }
-
-    private _getContractModuleConfig() {
-        this._configurationService.contractsEnabled().subscribe(result => this.isContractModuleEnabled = result);
     }
 
     sortMultiColumnSorting(sortingValuesArray: MultiSortList[]): MultiSortList[] {
@@ -78,8 +80,26 @@ export class WorkflowDataService {
 		});
     }
 
+    openInHubspot(client: ClientResultDto) {
+        this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            this._httpClient
+                .get(`${API_BASE_URL}/api/Clients/HubspotPartialUrlAsync`, {
+                    headers: new HttpHeaders({
+                        Authorization: `Bearer ${response.accessToken}`,
+                    }),
+                    responseType: 'text',
+                })
+                .subscribe((result: string) => {
+                    this._internalLookupService.hubspotClientUrl = result;
+                    if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                        window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+                    }
+                });
+        });
+	}
+
     get contractModuleEnabled() {
-        return this.isContractModuleEnabled;
+        return true;
     }
 
     get getWorkflowProgress() {

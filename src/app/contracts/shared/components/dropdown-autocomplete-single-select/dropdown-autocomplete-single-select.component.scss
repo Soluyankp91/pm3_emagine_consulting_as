@@ -1,0 +1,14 @@
+:host {
+	width: 100%;
+}
+.scroll-container {
+	height: 100%;
+	overflow: auto;
+}
+.no-items {
+	color: rgba(56, 72, 83, 0.87);
+	font-weight: 700;
+}
+.spinner {
+	margin: 0 auto;
+}

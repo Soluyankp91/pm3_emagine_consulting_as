@@ -1,0 +1,49 @@
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
+
+.validator {
+	margin-left: -8px;
+	padding: 10px 0;
+	p {
+		@include fontOpenSans(100%, 600);
+		color: $red-message-color;
+		line-height: 1;
+	}
+}
+.voiding-form {
+	.envelop-agreement-list {
+		margin-top: 24px;
+
+		.envelop-agreement {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20px;
+
+			.mat-icon {
+				width: 20px;
+				margin-right: 8px;
+			}
+		}
+	}
+
+	.textarea-form-field {
+		margin-bottom: 20px;
+		::ng-deep {
+			textarea {
+				height: 86px;
+				line-height: 18px;
+			}
+
+			.mat-form-field-outline {
+				height: 110px;
+			}
+		}
+	}
+
+	mat-form-field {
+		width: 100%;
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
+}

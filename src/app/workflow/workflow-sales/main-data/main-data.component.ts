@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, merge, of, Subject } from 'rxjs';
@@ -19,6 +19,7 @@ import { WorkflowDataService } from '../../workflow-data.service';
 	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
     @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
 	@Input() periodId: string | undefined;
     @Input() readOnlyMode: boolean;
@@ -55,6 +56,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 
     filteredSalesAccountManagers: EmployeeDto[] = [];
 	filteredCommisionAccountManagers: EmployeeDto[] = [];
+    filteredPrimarySourcers: EmployeeDto[] = [];
     filteredEmployees: EmployeeDto[] = [];
 
     filteredRecipients: any[] = [];
@@ -182,6 +184,38 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 						new EmployeeDto(
                             {
                                 name: 'No managers found',
+                                externalId: '',
+                                id: undefined
+                            }
+                        )
+					];
+				}
+			});
+
+        this.salesMainDataForm.primarySourcer?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+                startWith(''),
+				switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id ? value.name : value;
+                    }
+                    return this._lookupService.employees(value);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredPrimarySourcers = list;
+				} else {
+					this.filteredPrimarySourcers = [
+						new EmployeeDto(
+                            {
+                                name: 'No sourcers found',
                                 externalId: '',
                                 id: undefined
                             }
@@ -557,6 +591,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             }
         }
         return workflowDocumentsCommandDto;
+    }
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
     }
 
     get commissionedUsers() {

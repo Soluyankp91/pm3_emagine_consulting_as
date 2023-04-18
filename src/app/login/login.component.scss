@@ -1,5 +1,76 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
 .login {
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(125.84deg, #0E8E84 0%, #CDFF96 179.24%);
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    &-vector {
+        width: 1200px;
+        height: 1200px;
+        z-index: 0;
+        opacity: 0.22;
+        &.top {
+            position: absolute;
+            top: -385px;
+            right: 0;
+        }
+        &.bottom {
+            position: absolute;
+            bottom: -495px;
+            right: 0;
+        }
+    }
+    &-main {
+        border-right: 1px solid $sand-color;
+        z-index: 1;
+        &--content {
+            margin-left: 56px;
+            h1 {
+                @include fontAtyp(62px, 500);
+                color: $dark-grey-color;
+            }
+            p {
+                @include fontAtyp(18px, 500);
+                color: $medium-grey-color;
+            }
+        }
+    }
+    &-side {
+        z-index: 1;
+        h2 {
+            @include fontAtyp(14px, 400);
+            color: $medium-grey-color;
+        }
+    }
+    &-icon {
+        position: absolute;
+        top: 47px;
+        left: 50px;
+        width: 210px;
+        height: 35px;
+    }
+
+    &-values {
+        &:not(:last-of-type) {
+            margin-bottom: 50px;
+        }
+        &--icon {
+            @include fontLineHeightAndSize(50px, 50px, 50px, 50px);
+        }
+        &--name {
+            @include fontAtyp(20px, 500);
+            display: flex;
+            align-items: center;
+            color: $dark-grey-color;
+            &::before {
+                content: '•';
+                color: $light-grey-color;
+                margin: 0 15px;
+            }
+        }
+    }
+
 }

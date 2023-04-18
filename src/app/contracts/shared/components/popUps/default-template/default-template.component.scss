@@ -1,0 +1,109 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.container {
+    height: calc(100% - 72px);
+	padding: 32px 40px 0px 40px;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+}
+.default-mat-table {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+.default-template-header {
+	font-size: 30px;
+	font-weight: 800;
+}
+.actions {
+	justify-content: flex-end;
+    margin: 0 40px;
+}
+.description,
+.table-header {
+	font-size: 14px;
+	font-weight: 600;
+}
+.cancel-button {
+	font-size: 14px;
+	font-weight: 700;
+    padding: 8px 30px;
+    line-height: 14px;
+
+	color: #fff;
+	background-color: #17a297;
+}
+.preinfo {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+.header-cell {
+	padding-left: 16px;
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 14px;
+}
+.mat-header-row {
+	min-height: 20px;
+}
+.table-cell {
+	padding-left: 16px;
+	font-size: 14px;
+	font-weight: 600;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.id-column {
+	max-width: 35px;
+	min-width: 35px;
+	.table-cell {
+		padding: 0 !important;
+	}
+}
+.template-name {
+	max-width: 188px;
+	min-width: 185px;
+}
+.legal-entity {
+	max-width: 139px;
+	min-width: 139px;
+}
+.sales-type {
+	max-width: 141px;
+	min-width: 141px;
+}
+.delivery-type {
+	max-width: 96px;
+	min-width: 96px;
+}
+.contract-type {
+	max-width: 86px;
+	min-width: 86px;
+}
+.link {
+	max-width: 21px;
+	min-width: 21px;
+}
+.link-cell {
+	padding-left: 11px;
+    cursor: pointer;
+}
+.template-name-cell {
+	font-weight: 700;
+}
+.no-items {
+	display: flex;
+	justify-content: center;
+}
+.bottom-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 15px;
+}

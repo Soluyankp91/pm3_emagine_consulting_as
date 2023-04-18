@@ -1,0 +1,9 @@
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
+
+:host {
+	app-editor-popup-wrapper {
+		min-width: 400px;
+		display: block;
+	}
+}

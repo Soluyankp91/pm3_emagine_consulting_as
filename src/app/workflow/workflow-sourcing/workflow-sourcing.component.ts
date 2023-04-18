@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
@@ -15,6 +15,7 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
     styleUrls: ['./workflow-sourcing.component.scss']
 })
 export class WorkflowSourcingComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
@@ -91,6 +92,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     validateFinanceForm() {
+        this.submitForm();
         this.sourcingConsultantsDataForm.markAllAsTouched();
         return this.sourcingConsultantsDataForm.valid;
     }
@@ -259,14 +261,6 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         }
     }
 
-    get readOnlyMode() {
-        return this.isCompleted;
-    }
-
-    get canToggleEditMode() {
-        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
-    }
-
     toggleEditMode() {
         this.isCompleted = !this.isCompleted;
         this.editEnabledForcefuly = !this.editEnabledForcefuly;
@@ -276,5 +270,17 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
     resetForm() {
         this.sourcingConsultantsDataForm.consultantTerminationSourcingData.controls = [];
+    }
+
+    submitForm() {
+        this.submitFormBtn.nativeElement.click();
+    }
+
+    get readOnlyMode() {
+        return this.isCompleted;
+    }
+
+    get canToggleEditMode() {
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 }

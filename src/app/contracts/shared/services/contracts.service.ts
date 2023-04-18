@@ -131,7 +131,6 @@ export class ContractsService {
 					this.deliveryTypes$$.next(deliveryTypes);
 					this.employmentTypes$$.next(employmentTypes);
 					this.employees$$.next(employees);
-
 					let mappedEnums: MappedTableCells = {
 						language: this._mapItems(agreementLanguages),
 						agreementType: this._mapItems(agreementTypes),

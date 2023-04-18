@@ -40,7 +40,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		ExcludeIdsPipe,
 		ImageFallbackDirective,
 		ImgUrlPipe,
-		DisplayListPipe,
+		DisplayListPipe
 	],
 	imports: [
 		CommonModule,
@@ -73,7 +73,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgOptimizedImage,
 		ImgUrlPipe,
 		DisplayListPipe,
-        TooltipModule
+        TooltipModule,
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })

@@ -1,0 +1,40 @@
+@import '/src/app/shared/styles/config/_colors';
+@import '/src/app/shared/styles/config/_mixins';
+
+.save-as-dialog-form {
+	.content {
+		font-size: 14px;
+	}
+
+	.textarea-form-field {
+		margin-bottom: 20px;
+		::ng-deep {
+			textarea {
+				height: 86px;
+				line-height: 18px;
+			}
+
+			.mat-form-field-outline {
+				height: 110px;
+			}
+		}
+	}
+
+	mat-form-field {
+		width: 100%;
+		&:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
+
+	mat-checkbox {
+		margin-bottom: 18px;
+		font-weight: 700;
+
+		::ng-deep {
+			.mat-checkbox-layout {
+				white-space: normal;
+			}
+		}
+	}
+}

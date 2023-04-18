@@ -114,21 +114,26 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             timeReportingCaps: new UntypedFormArray([]),
             rateUnitType: new UntypedFormControl(null),
             currency: new UntypedFormControl(null),
-            clientRate: new UntypedFormControl(null),
+            normalRate: new UntypedFormControl(null),
+            clientRateType: new UntypedFormControl(null),
             frameAgreementId: new UntypedFormControl(null),
-
+            invoiceCurrencyId: new UntypedFormControl(null),
+            invoiceFrequencyId: new UntypedFormControl(null),
+            invoicingTimeId: new UntypedFormControl(null),
+            manualDate: new UntypedFormControl(null),
             invoicingReferenceNumber: new UntypedFormControl(null),
             clientInvoicingRecipientIdValue: new UntypedFormControl(null),
+            clientInvoicingRecipientAddress: new UntypedFormControl(null),
             clientInvoicingRecipient: new UntypedFormControl(null),
             invoicingReferencePersonIdValue: new UntypedFormControl(null),
             invoicingReferencePerson: new UntypedFormControl(null),
             invoicingReferencePersonDontShowOnInvoice: new UntypedFormControl(false),
+            clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false),
 
             specialContractTerms: new UntypedFormControl(null, Validators.required),
             noSpecialContractTerms: new UntypedFormControl(null),
             clientRates: new UntypedFormArray([]),
             clientFees: new UntypedFormArray([]),
-
         });
     }
 
@@ -153,17 +158,38 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     get currency() {
         return this.get('currency');
     }
-    get clientRate() {
-        return this.get('clientRate');
+    get normalRate() {
+        return this.get('normalRate');
+    }
+    get clientRateType() {
+        return this.get('clientRateType');
     }
     get frameAgreementId() {
         return this.get('frameAgreementId');
+    }
+    get invoiceCurrencyId() {
+        return this.get('invoiceCurrencyId');
+    }
+    get invoiceFrequencyId() {
+        return this.get('invoiceFrequencyId');
+    }
+    get invoicingTimeId() {
+        return this.get('invoicingTimeId');
+    }
+    get manualDate() {
+        return this.get('manualDate');
     }
     get invoicingReferenceNumber() {
         return this.get('invoicingReferenceNumber');
     }
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');
+    }
+    get clientInvoicingRecipientAddress() {
+        return this.get('clientInvoicingRecipientAddress');
+    }
+    get clientInvoicingRecipientSameAsDirectClient() {
+        return this.get('clientInvoicingRecipientSameAsDirectClient');
     }
     get clientInvoicingRecipient() {
         return this.get('clientInvoicingRecipient');
@@ -195,7 +221,7 @@ export class WorkflowContractsConsultantsDataForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([], Validators.minLength(1))
-        })
+        });
     }
     get consultants() {
         return this.get('consultants') as UntypedFormArray;
@@ -206,7 +232,7 @@ export class WorkflowConsultantsLegalContractForm extends UntypedFormGroup {
     constructor() {
         super({
             consultants: new UntypedFormArray([])
-        })
+        });
 
     }
     get consultants() {
@@ -219,22 +245,13 @@ export class WorkflowContractsTerminationConsultantsDataForm extends UntypedForm
     constructor() {
         super({
             consultantTerminationContractData: new UntypedFormArray([])
-        })
+        });
 
     }
     get consultantTerminationContractData() {
         return this.get('consultantTerminationContractData') as UntypedFormArray;
     }
 }
-
-
-export enum LegalContractStatus {
-    NotAcceessible = 0,
-    NotYetCreated = 1,
-    SavedButNotGenerated = 2,
-    Done = 10
-}
-
 export class DocumentForm extends UntypedFormGroup {
     constructor() {
         super({
@@ -246,6 +263,14 @@ export class DocumentForm extends UntypedFormGroup {
         return this.get('documents') as UntypedFormArray;
     }
 }
+
+export enum LegalContractStatus {
+    NotAcceessible = 0,
+    NotYetCreated = 1,
+    SavedButNotGenerated = 2,
+    Done = 10
+}
+
 
 export enum ClientTimeReportingCaps {
     CapOnUnits = 1,

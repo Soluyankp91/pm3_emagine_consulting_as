@@ -1,26 +1,45 @@
-import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, Self, ContentChild, TemplateRef } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnDestroy,
+	OnInit,
+	EventEmitter,
+	Output,
+	Self,
+	ContentChild,
+	TemplateRef,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+} from '@angular/core';
 import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { RequiredValidator } from '../../validators/customRequireValidator';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-single-select',
 	templateUrl: './dropdown-autocomplete-single-select.component.html',
+	styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
+	//changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() options: Item[];
 	@Input() labelKey: string = 'name';
 	@Input() outputProperty: string = 'id';
 	@Input() label: string = 'label';
-	@Input() width: string;
+	@Input() displayError: boolean = true;
+	@Input() appearance: MatFormFieldAppearance = 'outline';
+	@Input() panelWidth: string | number;
 	@Input() unwrapFunction?: (arg: any) => {};
+	@Input() isOptionsLoading: BehaviorSubject<boolean>;
 
 	@Output() inputEmitter = new EventEmitter<string>();
 
 	@ContentChild('optionTemplate') optionTemplate: TemplateRef<any>;
+	@ContentChild('selectedOption') selectedOptionTemplate: TemplateRef<any>;
 
 	get control() {
 		return this.ngControl.control as AbstractControl;
@@ -38,7 +57,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 
 	private _unSubscribe$ = new Subject();
 
-	constructor(@Self() private readonly ngControl: NgControl) {
+	constructor(@Self() private readonly ngControl: NgControl, private readonly _cdr: ChangeDetectorRef) {
 		ngControl.valueAccessor = this;
 	}
 
@@ -50,9 +69,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	ngDoCheck(): void {
 		if (this.control?.touched) {
 			this.inputControl.markAsTouched();
-			this.inputControl.updateValueAndValidity({
-				emitEvent: false,
-			});
+			this.inputControl.updateValueAndValidity();
 		}
 	}
 
@@ -72,6 +89,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 			this.onChange(this.unwrapFunction(selectedOption));
 		}
 		this.selectedItem = selectedOption;
+		this._cdr.detectChanges();
 	}
 
 	trackById(index: number, item: Item) {
@@ -98,6 +116,9 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 			emitEvent: false,
 			onlySelf: true,
 		});
+		if (this.unwrapFunction) {
+			this.onChange(this.unwrapFunction(preselectedOption));
+		}
 	}
 
 	setDisabledState(isDisabled: boolean): void {

@@ -1,26 +1,66 @@
 <ng-container [ngSwitch]="linkState">
 	<ng-container *ngSwitchCase="null">
-		<mat-icon svgIcon="not-applicable-icon" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="not-applicable-icon"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[0]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="0">
-		<mat-icon svgIcon="not-applicable-icon" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="not-applicable-icon"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[0]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="1">
-		<mat-icon svgIcon="fully-unlinked" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="fully-unlinked"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[1]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="2">
-		<mat-icon svgIcon="document-unlinked" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="document-unlinked"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[2]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="3">
-		<mat-icon svgIcon="document-unlinked" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="document-unlinked"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[3]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="4">
-		<mat-icon svgIcon="summary-unlinked" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="summary-unlinked"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[4]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="5">
-		<mat-icon svgIcon="summary-unlinked" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="summary-unlinked"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[5]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 	<ng-container *ngSwitchCase="7">
-		<mat-icon svgIcon="fully-linked" [style.width.px]="iconWidth" [style.height.px]="iconHeight"></mat-icon>
+		<mat-icon
+			svgIcon="fully-linked"
+			[style.width.px]="iconWidth"
+			[style.height.px]="iconHeight"
+			[customTooltip]="modeEnum[7]"
+			[showAlways]="true"></mat-icon>
 	</ng-container>
 </ng-container>

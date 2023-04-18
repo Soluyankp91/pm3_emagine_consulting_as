@@ -38,15 +38,20 @@
                 "output": "./"
               }
             ],
+            "stylePreprocessorOptions": {
+                "includePaths": [
+                    "./src/app/contracts/shared/styles"
+                ]
+            },
             "styles": [
               "node_modules/devextreme/dist/css/dx.light.css",
               "node_modules/devexpress-richedit/dist/dx.richedit.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/app/shared/core.scss",
-              "src/styles.scss",
               "./node_modules/flag-icons/sass/flag-icons.scss",
               "node_modules/@worktile/gantt/styles/index.scss",
-              "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
+              "node_modules/ngx-spinner/animations/ball-clip-rotate.css",
+              "src/app/shared/core.scss",
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/devexpress-richedit/dist/pdfkit.js"
@@ -139,6 +144,9 @@
           "configurations": {
             "production": {
               "browserTarget": "PM3:build:production"
+            },
+            "qa": {
+              "browserTarget": "PM3:build:qa"
             },
             "development": {
               "browserTarget": "PM3:build:development"

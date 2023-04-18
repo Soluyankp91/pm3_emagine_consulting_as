@@ -6,8 +6,9 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
-import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
+import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
 import { EProfileImageLinkTypes } from "./AppEnums";
+import { MomentFormatPipe } from "./common/pipes/moment-format.pipe";
 
 export enum NotifySeverity {
 	Info = 1,
@@ -23,7 +24,6 @@ export abstract class AppComponentBase {
     momentFormatType = AppConsts.momentFormatType;
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
-
     imageType = EProfileImageLinkTypes;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
@@ -31,9 +31,9 @@ export abstract class AppComponentBase {
         this.matSnackbar = injector.get(MatSnackBar);
     }
 
-	showNotify(severity: number, text: string, buttonText: string) {
+	showNotify(severity: number, text: string, buttonText: string = 'OK') {
 		const className = this.mapSeverity(severity);
-		this.matSnackbar.open(text, buttonText, { duration: 20000, panelClass: [className, 'general-snackbar'] });
+		this.matSnackbar.open(text, buttonText, { duration: 3000, panelClass: [className, 'general-snackbar'] });
 	}
 
 	mapSeverity(severity: number) {
@@ -153,19 +153,27 @@ export abstract class AppComponentBase {
 	}
 
 	// TODO: move all others trackBy methods here
+    trackByKey(index: number, item: any) {
+		return item.key;
+	}
+
 	trackById(index: number, item: any) {
-		return item.id;
+		return item?.id;
+	}
+
+    trackByAgreementId(index: number, item: any) {
+		return item?.agreementId;
 	}
 
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
-		return item.documentStorageGuid;
+		return item?.documentStorageGuid;
 	}
 
     trackByItem(index: number, item: any) {
         return item;
     }
     trackByOperationId(index: number, item: WorkflowHistoryDto) {
-        return item.operationId;
+        return item?.operationId;
     }
 
 	displayConsultantNameFn(option: any) {
@@ -194,6 +202,15 @@ export abstract class AppComponentBase {
 		}
 	}
 
+    displayAgreementNameFn(option: AgreementSimpleListItemDto) {
+        if (option?.agreementId) {
+            let momentFormatPipe = new MomentFormatPipe();
+            return `${option?.agreementName}, ${option?.countryName} ${option?.countryName ? '•' : ''} ${momentFormatPipe.transform(option?.startDate)} ${option?.startDate !== null && option?.startDate !== undefined ? '-' : ''} ${momentFormatPipe.transform(option?.endDate)}`;
+        } else {
+            return '';
+        }
+    }
+
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
 	}
@@ -202,5 +219,13 @@ export abstract class AppComponentBase {
 		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
 		b.style.overflow = overflowStyle;
 	}
+
+    arrayToEnum(list: EnumEntityTypeDto[]) {
+        let result: { [key: number]: string} = {};
+        list.forEach(x => {
+            result[x.id] = x.name
+        });
+        return result;
+    }
 
 }

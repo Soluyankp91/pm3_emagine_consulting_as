@@ -1,0 +1,12 @@
+<emg-multi-select
+	*ngIf="legalEntities$ | async as legalEntities"
+	[options]="legalEntities"
+	[displayedProperty]="'name'"
+	[formControl]="filterFormControl">
+	<ng-template #triggerButton>
+		<div class="table-header-cell">{{ labelMap[tableFilter] }}</div>
+	</ng-template>
+    <ng-template let-option #optionPrefix>
+		<span class="prefix">{{ option.prefix }} · </span>
+	</ng-template>
+</emg-multi-select>

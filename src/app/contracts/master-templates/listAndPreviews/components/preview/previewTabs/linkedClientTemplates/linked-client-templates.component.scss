@@ -5,7 +5,8 @@ app-linked-client-templates {
 		overflow: auto;
 	}
 	.header-cell {
-		font-size: 12px;
+		font-size: 10px;
+		font-weight: 600;
 	}
 	.icon {
 		width: 8px;
@@ -20,8 +21,7 @@ app-linked-client-templates {
 	.form-field {
 		width: 100%;
 	}
-	.input,
-	.input-label {
+	.input {
 		padding-left: 32px;
 		box-sizing: border-box;
 	}
@@ -37,5 +37,97 @@ app-linked-client-templates {
 		text-align: center;
 		max-width: 176px;
 		color: #b6b4b2;
+	}
+	.link {
+		display: flex;
+		gap: 7px;
+		cursor: pointer;
+	}
+	.table-client-cell {
+		font-size: 14px;
+		font-weight: 600;
+	}
+	.mat-sort-header-arrow {
+		margin: 0;
+	}
+
+	.enabled-header {
+		max-width: 15px;
+		min-width: 15px;
+		padding-left: 5px !important;
+	}
+	.enabled-column {
+		max-width: 15px;
+		min-width: 15px;
+		padding-left: 6px !important;
+	}
+
+	.mode-header {
+		padding-left: 10px;
+		max-width: 51.5px;
+		min-width: 51.5px;
+	}
+	.mode-column {
+		padding-left: 10px;
+		max-width: 51.5px;
+		min-width: 51.5px;
+		display: flex;
+		justify-content: center;
+	}
+
+	.approval-header {
+		padding-left: 8px;
+		max-width: 45.5px;
+		min-width: 45.5px;
+	}
+	.approval-column {
+		max-width: 45.5px;
+		min-width: 45.5px;
+		display: flex;
+		justify-content: center;
+	}
+	.id-column {
+		min-width: 44px;
+		max-width: 44px;
+
+		padding-left: 0 !important;
+	}
+	.id-header {
+		min-width: 44px;
+		max-width: 44px;
+	}
+	.client-header {
+		padding-left: 12px;
+		min-width: 156px;
+		max-width: 156px;
+	}
+	.client-cell {
+		padding-left: 12px;
+		min-width: 156px;
+		max-width: 156px;
+
+		font-weight: 700;
+	}
+	.name-header {
+		min-width: 228px;
+		max-width: 228px;
+
+		padding-left: 12px;
+	}
+	.name-cell {
+		min-width: 208px;
+		max-width: 208px;
+
+		padding-left: 12px;
+	}
+	.link-column {
+		min-width: 36px;
+		max-width: 36px;
+	}
+
+	.overflow {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }

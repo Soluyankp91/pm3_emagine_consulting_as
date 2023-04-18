@@ -1,0 +1,31 @@
+<div id="outerContainer">
+	<div [@fade] *ngIf="source.type === 'pdf'">
+		<ng-container>
+			<div class="viewer-header">
+				<div class="source-name">
+					<mat-icon svgIcon="pdf"></mat-icon>
+					<span>{{ source.name || 'unknown' }}</span>
+				</div>
+				<div class="source-actions">
+					<mat-icon title="download" (click)="downloadSource(source)">save_alt</mat-icon>
+					<mat-icon title="close" (click)="close()">close</mat-icon>
+				</div>
+			</div>
+		</ng-container>
+		<div class="pdf-container">
+			<pdf-viewer
+				[src]="source.url"
+				[rotation]="0"
+				[original-size]="false"
+				[show-all]="true"
+				[fit-to-page]="false"
+				[zoom]="1"
+				[zoom-scale]="'page-width'"
+				[stick-to-page]="false"
+				[render-text]="true"
+				[external-link-target]="'blank'"
+				[autoresize]="true"
+				[show-borders]="false"></pdf-viewer>
+		</div>
+	</div>
+</div>

@@ -24,6 +24,8 @@ import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
+import { ERouteTitleType } from 'src/shared/AppEnums';
+import { TitleService } from 'src/shared/common/services/title.service';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.3';
 
@@ -131,7 +133,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		private _internalLookupService: InternalLookupService,
 		private _mainOverviewService: MainOverviewServiceProxy,
 		private router: Router,
-		private _employeeService: EmployeeServiceProxy
+		private _employeeService: EmployeeServiceProxy,
+        private _titleService: TitleService,
 	) {
 		super(injector);
 		this.accountManagerFilter.valueChanges
@@ -187,6 +190,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	}
 
 	ngOnInit(): void {
+        this._titleService.setTitle(ERouteTitleType.Overview);
 		this.getLegalEntities();
 		this.getSalesType();
 		this.getDeliveryTypes();

@@ -1,6 +1,6 @@
 import { OverlayRef, Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { ComponentRef, Directive, ElementRef, HostListener, Input, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { ComponentRef, Directive, ElementRef, HostListener, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { CustomTooltipComponent } from './custom-tooltip.component';
 
 @Directive({

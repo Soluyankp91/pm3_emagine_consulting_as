@@ -3,10 +3,8 @@
         <app-main-data #mainDataComponent [periodId]="periodId" [readOnlyMode]="readOnlyMode" [editEnabledForcefuly]="editEnabledForcefuly"
             [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
             [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></app-main-data>
-        <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
-            <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode" [mainDataForm]="mainDataComponent?.salesMainDataForm" [isContractModuleEnabled]="isContractModuleEnabled" [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
-            </app-client-data>
-        </ng-container>
+        <app-client-data [hidden]="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod)" #clientDataComponent [periodId]="periodId" [readOnlyMode]="readOnlyMode" [mainDataForm]="mainDataComponent?.salesMainDataForm" [isContractModuleEnabled]="isContractModuleEnabled" [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
+        </app-client-data>
         <app-consultant-data #consutlantDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection"
             [isCompleted]="isCompleted" [editEnabledForcefuly]="editEnabledForcefuly"
             [clientDataForm]="clientDataComponent?.salesClientDataForm" [mainDataForm]="mainDataComponent?.salesMainDataForm"
@@ -206,5 +204,6 @@
                 </div>
             </div>
         </div>
+        <button #submitFormBtn class="display-none" type="submit">Hidden button to set form submitted</button>
     </form>
 </ng-template>

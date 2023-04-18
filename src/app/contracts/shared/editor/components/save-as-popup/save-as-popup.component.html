@@ -1,0 +1,25 @@
+<app-editor-popup-wrapper [configs]="popupConfig" (onConfirmed)="submit()">
+	<form class="save-as-dialog-form" *ngIf="form" [formGroup]="form">
+		<ng-container *ngIf="form.get('versionDescription')">
+			<mat-form-field appearance="outline" class="textarea-form-field">
+				<mat-label>Version description</mat-label>
+				<textarea
+					[formControlName]="'versionDescription'"
+					[maxlength]="descriptionLimit"
+					[cdkTextareaAutosize]="false"
+					matInput
+					class="text-area"></textarea>
+			</mat-form-field>
+		</ng-container>
+
+		<ng-container *ngIf="!data.isAgreement">
+			<mat-checkbox [formControlName]="'propagateChangesToDerivedTemplates'" color="primary" class="u-w--100 u-mr--16">
+				Propagate changes to all derived templates
+			</mat-checkbox>
+
+			<mat-checkbox [formControlName]="'markActiveAgreementsAsOutdated'" color="primary" class="u-w--100 u-mr--16">
+				Mark active agreements based on this templates as outdated
+			</mat-checkbox>
+		</ng-container>
+	</form>
+</app-editor-popup-wrapper>

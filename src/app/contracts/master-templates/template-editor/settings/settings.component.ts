@@ -2,26 +2,17 @@ import {
 	map,
 	switchMap,
 	tap,
-	skip,
 	takeUntil,
 	filter,
 	finalize,
 	distinctUntilChanged,
-	catchError,
 	debounceTime,
 	withLatestFrom,
 	take,
+	startWith,
 } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject, of, EMPTY, merge, combineLatest } from 'rxjs';
-import {
-	Component,
-	OnInit,
-	ChangeDetectionStrategy,
-	ChangeDetectorRef,
-	ViewEncapsulation,
-	OnDestroy,
-	Injector,
-} from '@angular/core';
+import { Subject, BehaviorSubject, Observable, of, race, combineLatest } from 'rxjs';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, Injector } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
 	AgreementCreationMode,
@@ -31,7 +22,6 @@ import {
 	LegalEntityDto,
 	SaveAgreementTemplateDto,
 	SimpleAgreementTemplatesListItemDto,
-	SimpleAgreementTemplatesListItemDtoPaginatedList,
 } from 'src/shared/service-proxies/service-proxies';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MasterTemplateModel } from '../../../shared/models/master-template.model';
@@ -44,52 +34,48 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
-import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
+import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';
+import { GetDocumentTypesByRecipient } from 'src/app/contracts/shared/utils/relevant-document-type';
+import { ExtraHttpsService } from 'src/app/contracts/shared/services/extra-https.service';
+import { Location } from '@angular/common';
 
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',
 	styleUrls: ['./settings.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
 })
 export class CreateMasterTemplateComponent extends AppComponentBase implements OnInit, OnDestroy {
-	editMode = false;
-	currentTemplate: { [key: string]: any };
+	creationRadioButtons = MASTER_CREATION;
 
-	initialLoading = true;
+	nextButtonLabel: string;
+
+	editMode = false;
+	currentTemplate: AgreementTemplateDetailsDto;
+
+	possibleDocumentTypes: BaseEnumDto[];
+	documentTypes$: Observable<BaseEnumDto[]>;
 
 	legalEntities: LegalEntityDto[];
 
 	preselectedFiles: FileUpload[] = [];
 
-	creationModes = AgreementCreationMode;
-	agreementCreationMode = new FormControl(AgreementCreationMode.FromScratch);
-
-	createControl = new FormControl();
-	duplicateTemplateControl = new FormControl();
+	agreementCreationMode = new FormControl({ value: AgreementCreationMode.Duplicated, disabled: true });
+	creationModeControlReplay$ = new BehaviorSubject<AgreementCreationMode>(AgreementCreationMode.Duplicated);
 
 	isFormDirty = false;
 
 	masterTemplateFormGroup = new MasterTemplateModel();
 
-	options$: Observable<[SettingsOptions, MappedTableCells]> = combineLatest([
-		this._contractsService.settingsPageOptions$(),
-		this._contractsService.getEnumMap$().pipe(take(1)),
-	]).pipe(
-		tap(([{ legalEntities }, maps]) => {
-			this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
-		})
-	);
+	options$: Observable<[SettingsOptions, MappedTableCells]>;
 
-	modeControl$ = new BehaviorSubject(AgreementCreationMode.FromScratch);
-	masterTemplateOptions$: Observable<SimpleAgreementTemplatesListItemDto[] | null>;
-	masterTemplateOptionsChanged$ = new Subject<string>();
-	nullOptions$ = new Subject<null>();
-	creationChange$ = new Subject<null | ''>();
+	modeControl$ = new BehaviorSubject(AgreementCreationMode.Duplicated);
+	masterTemplateOptions$: Observable<{ options$: Observable<any>; optionsChanged$: BehaviorSubject<string> } | null>;
+	masterTemplateOptionsChanged$ = new BehaviorSubject<string>('');
+	isMasterTemplateOptionsLoading$ = new BehaviorSubject(false);
 
-	private _initialFormValue$ = this.masterTemplateFormGroup.initial$;
 	private _unSubscribe$ = new Subject<void>();
 
 	private _templateId: number;
@@ -102,27 +88,33 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		private readonly _router: Router,
 		private readonly _route: ActivatedRoute,
 		private readonly _creationTitleService: CreationTitleService,
+		private readonly _extraHttp: ExtraHttpsService,
+		private readonly _location: Location,
 		private _injector: Injector
 	) {
 		super(_injector);
 	}
 
 	ngOnInit(): void {
-		if (this._route.snapshot.params.id) {
-			this.editMode = true;
-			this._templateId = this._route.snapshot.params.id;
-			this.masterTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', this.duplicateTemplateControl);
-			this.duplicateTemplateControl.disable({ emitEvent: false });
-			this._prefillForm();
-		} else {
-			this.agreementCreationMode.disable({ emitEvent: false });
-			this._subscribeOnDuplicateControlChanges();
-			this._subscribeOnDirtyStatus();
-			this._subscribeOnCreationModeResolver();
-		}
+		this._setDocumentType();
+		this._setOptions();
 		this._subscribeOnTemplateNameChanges();
 		this._subsribeOnLegEntitiesChanges();
-		this._initMasterTemplateOptions();
+		this._subscribeOnAgreementsFromOtherParty();
+		if (this._route.snapshot.params.id) {
+			this.editMode = true;
+			this.nextButtonLabel = 'Save';
+			this._templateId = this._route.snapshot.params.id;
+			this._prefillForm();
+		} else {
+			this.nextButtonLabel = 'Next';
+			this._subscribeOnModeReplay();
+			this._subscribeOnDirtyStatus();
+			this._initMasterTemplateOptions();
+			this._subscribeOnCreationModeResolver();
+			this._subscribeOnCreationMode();
+			this._subscribeOnQueryParams();
+		}
 	}
 
 	ngOnDestroy(): void {
@@ -130,115 +122,197 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this._unSubscribe$.complete();
 	}
 
-	onSave() {
+	async onSave() {
+		if (
+			this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.value &&
+			this.masterTemplateFormGroup.initialValue.receiveAgreementsFromOtherParty === false &&
+			this.editMode
+		) {
+			let discard = await this._showDiscardDialog().afterClosed().toPromise();
+			if (!discard) {
+				return;
+			}
+		}
 		if (!this.masterTemplateFormGroup.valid) {
 			this.masterTemplateFormGroup.markAllAsTouched();
 			return;
 		}
 		const toSend = new SaveAgreementTemplateDto({
 			creationMode: this.editMode ? this.currentTemplate.creationMode : this.agreementCreationMode.value,
-			attachments: this._agreementTemplateAttachmentDto(),
 			...this.masterTemplateFormGroup.getRawValue(),
+			attachments: this._agreementTemplateAttachmentDto(),
 		});
-
+		this.showMainSpinner();
 		if (this.editMode) {
-			toSend.duplicationSourceAgreementTemplateId = this.currentTemplate.duplicationSourceAgreementTemplateId;
-			this.showMainSpinner();
-			this._apiServiceProxy
-				.agreementTemplatePATCH(this._templateId, toSend)
+			this._extraHttp
+				.agreementPatch(this.currentTemplate.agreementTemplateId, toSend)
 				.pipe(
-					finalize(() => {
+					switchMap(() => {
+						return this._apiServiceProxy.preview2(this.currentTemplate.agreementTemplateId);
+					}),
+					tap(() => {
+						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
+					}),
+					tap((template) => {
+						this.masterTemplateFormGroup.attachments.reset();
+						this.preselectedFiles = template.attachments as FileUpload[];
+					}),
+					tap((template) => {
+						this.masterTemplateFormGroup.updateInitialFormValue({
+							receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
+						});
+					}),
+					tap(() => {
 						this.hideMainSpinner();
 					})
 				)
-				.subscribe(() => {
-					this._navigateOnAction();
-				});
-			return;
+				.subscribe();
+		} else {
+			this.showMainSpinner();
+			this._extraHttp
+				.agreementPost(new SaveAgreementTemplateDto(toSend))
+				.pipe(
+					takeUntil(this._unSubscribe$),
+					finalize(() => this.hideMainSpinner()),
+					tap((templateId: number | undefined) => {
+						if (toSend.receiveAgreementsFromOtherParty) {
+							this.navigateToEdit(templateId);
+						} else {
+							this.navigateToEditor(templateId);
+						}
+					})
+				)
+				.subscribe();
 		}
-		this.showMainSpinner();
-		this._apiServiceProxy
-			.agreementTemplatePOST(new SaveAgreementTemplateDto(new SaveAgreementTemplateDto(toSend)))
-			.pipe(
-				takeUntil(this._unSubscribe$),
-				map((result) => result.agreementTemplateId),
-				finalize(() => this.hideMainSpinner())
-			)
-			.subscribe((templateId: number | undefined) => {
-				this._navigateOnAction(templateId);
-			});
 	}
 
-	onCancel() {
-		this._navigateOnAction();
+	onModeControlChange(creationMode: AgreementCreationMode) {
+		this.modeControl$.next(creationMode);
 	}
 
-	private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {
-		const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
-			? this.masterTemplateFormGroup.uploadedFiles?.value
-			: [];
-		const selectedInheritedFiles = this.masterTemplateFormGroup.selectedInheritedFiles?.value
-			? this.masterTemplateFormGroup.selectedInheritedFiles?.value
-			: [];
-		return [...uploadedFiles, ...selectedInheritedFiles].map((attachment: FileUpload) => {
-			return new AgreementTemplateAttachmentDto(attachment);
+	private _subscribeOnQueryParams() {
+		this._route.queryParams.pipe(takeUntil(this._unSubscribe$)).subscribe(({ id }) => {
+			if (id) {
+				this.agreementCreationMode.setValue(AgreementCreationMode.Duplicated);
+				this.masterTemplateOptionsChanged$.next(String(id));
+				this.masterTemplateFormGroup.duplicationSourceAgreementTemplateId.setValue(id);
+			}
 		});
 	}
 
-	private _onCreationModeChange() {
-		let mode = this.agreementCreationMode.value;
-		if (mode === AgreementCreationMode.FromScratch) {
-			this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
-			this._router.navigate([], {
-				relativeTo: this._route,
-				queryParams: {},
+	private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {
+		return this.masterTemplateFormGroup.attachments.value.map((attachment: FileUpload) => {
+			return new AgreementTemplateAttachmentDto(attachment);
+		});
+	}
+	private _subscribeOnCreationMode() {
+		this.creationModeControlReplay$
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				tap(() => {
+					this.masterTemplateOptionsChanged$.next('');
+				})
+			)
+			.subscribe((mode) => {
+				if (mode === AgreementCreationMode.Duplicated) {
+					this.masterTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', new FormControl(null));
+					this._subscribeOnDuplicateControlChanges();
+				} else {
+					this.masterTemplateFormGroup.removeControl('duplicationSourceAgreementTemplateId');
+				}
 			});
-		} else {
-			this.masterTemplateFormGroup.addControl('duplicationSourceAgreementTemplateId', this.duplicateTemplateControl);
-		}
+	}
+
+	private _subscribeOnModeReplay() {
+		this.agreementCreationMode.valueChanges.pipe(takeUntil(this._unSubscribe$), distinctUntilChanged()).subscribe((val) => {
+			this.creationModeControlReplay$.next(val);
+		});
 	}
 
 	private _resetForm() {
 		this.masterTemplateFormGroup.reset();
-		this.duplicateTemplateControl.reset();
 		this.preselectedFiles = [];
 	}
 
-	private _navigateOnAction(templateId?: number) {
-		if (!this.editMode && templateId) {
-			return this._router.navigate([`../${templateId}/editor`], {
-				relativeTo: this._route,
-			});
-		}
-		if (this.editMode) {
-			return this._router.navigate(['../../'], {
-				relativeTo: this._route,
-			});
-		}
-		return this._router.navigate(['../'], {
+	navigateBack() {
+		this._location.back();
+	}
+
+	navigateToEdit(templateId: number) {
+		this._router.navigate([`../${templateId}/settings`], {
 			relativeTo: this._route,
 		});
 	}
 
+	navigateToEditor(templateId: number) {
+		this._router.navigate([`../${templateId}/editor`], {
+			relativeTo: this._route,
+		});
+	}
+
+	private _setOptions() {
+		this.options$ = combineLatest([
+			this._contractsService.settingsPageOptions$().pipe(
+				tap(({ agreementTypes }) => {
+					this.possibleDocumentTypes = agreementTypes;
+				})
+			),
+			this._contractsService.getEnumMap$().pipe(take(1)),
+		]).pipe(
+			tap(([{ legalEntities }, maps]) => {
+				this.legalEntities = legalEntities.map(
+					(i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] }
+				);
+			})
+		);
+	}
+
+	private _setDocumentType() {
+		this.documentTypes$ = (this.masterTemplateFormGroup.recipientTypeId.valueChanges as Observable<number>).pipe(
+			switchMap((recipientTypeId) => {
+				if (recipientTypeId) {
+					return of(GetDocumentTypesByRecipient(this.possibleDocumentTypes, recipientTypeId));
+				}
+				return of(null);
+			})
+		);
+	}
+
 	private _subscribeOnDuplicateControlChanges() {
-		this.duplicateTemplateControl.valueChanges
+		this.masterTemplateFormGroup.duplicationSourceAgreementTemplateId.valueChanges
 			.pipe(
-				takeUntil(this._unSubscribe$),
+				takeUntil(
+					race([
+						this.agreementCreationMode.valueChanges.pipe(
+							filter((creationMode) => creationMode !== AgreementCreationMode.Duplicated)
+						),
+						this._unSubscribe$,
+					])
+				),
 				filter((val: number | null | undefined) => !!val),
-				distinctUntilChanged(),
 				tap((agreementTemplateId) => {
 					const queryParams: Params = {
-						parentTemplateId: `${agreementTemplateId}`,
+						id: `${agreementTemplateId}`,
 					};
 					this._router.navigate([], {
 						queryParams: queryParams,
 					});
+				}),
+				tap(() => {
+					this.showMainSpinner();
+				}),
+				switchMap((parentTemplateId) => this._apiServiceProxy.preview2(parentTemplateId)),
+				tap((template) => {
+					this._onDuplicateChanged(template);
+				}),
+				tap(() => {
+					this.hideMainSpinner();
 				})
 			)
 			.subscribe();
 	}
 
-	private _onDuplicateChanges(template: AgreementTemplateDetailsDto) {
+	private _onDuplicateChanged(template: AgreementTemplateDetailsDto) {
 		this.masterTemplateFormGroup.patchValue({
 			isEnabled: template.isEnabled,
 			agreementType: template.agreementType,
@@ -252,18 +326,13 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			deliveryTypes: template.deliveryTypeIds,
 			language: template.language,
 			note: template.note,
+			receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
 			isSignatureRequired: template.isSignatureRequired,
-			defaultTemplate: template.documentFileProvidedByClient,
+			isDefaultTemplate: template.isDefaultTemplate,
 			selectedInheritedFiles: null,
 			uploadedFiles: null,
 		});
-		this.preselectedFiles = template.attachments?.map(
-			(attachment) =>
-				({
-					agreementTemplateAttachmentId: attachment.agreementTemplateAttachmentId,
-					name: attachment.name,
-				} as FileUpload)
-		) as FileUpload[];
+		this.preselectedFiles = template.attachments as FileUpload[];
 		this._cdr.detectChanges();
 	}
 
@@ -271,11 +340,18 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this.modeControl$
 			.pipe(
 				takeUntil(this._unSubscribe$),
-				skip(1),
 				switchMap(() => {
 					if (this.isFormDirty) {
 						let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-							width: '280px',
+							width: '500px',
+							height: '240px',
+							backdropClass: 'backdrop-modal--wrapper',
+							data: {
+								label: 'Discard Changes',
+								message:
+									'Changing main template settings will result in discarding all the data that has been applied',
+								confirmButtonText: 'Discard',
+							},
 						});
 						return dialogRef.afterClosed();
 					}
@@ -285,13 +361,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.subscribe((discard) => {
 				if (discard) {
 					this.agreementCreationMode.setValue(this.modeControl$.value);
-					if (!(this.modeControl$.value === this.creationModes.FromScratch)) {
-						this._onCreationModeChange();
-						this._resetForm();
-						this.creationChange$.next('');
-						return;
-					}
-					this.creationChange$.next(null);
+					this._resetForm();
 				}
 			});
 	}
@@ -324,7 +394,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			.pipe(
 				takeUntil(this._unSubscribe$),
 				map(() => this.masterTemplateFormGroup.getRawValue()),
-				dirtyCheck(this._initialFormValue$)
+				dirtyCheck(this.masterTemplateFormGroup.initial$)
 			)
 			.subscribe((isDirty) => {
 				this.isFormDirty = isDirty;
@@ -332,129 +402,155 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	}
 
 	private _initMasterTemplateOptions() {
-		const freeText$: Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> = this.masterTemplateOptionsChanged$.pipe(
-			takeUntil(this._unSubscribe$),
-			distinctUntilChanged(),
-			debounceTime(500),
-			switchMap((freeText: string) => {
-				return this._apiServiceProxy.simpleList2(
-					false,
-					undefined,
-					undefined,
-					freeText,
-					1,
-					AUTOCOMPLETE_SEARCH_ITEMS_COUNT
-				);
-			})
-		);
-		const routeParams$: Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> = this._route.queryParams.pipe(
-			takeUntil(this._unSubscribe$),
-			distinctUntilChanged(),
-			map((queryParams) => queryParams.parentTemplateId),
-			switchMap((parentTemplateId: number) => {
-				if (!parentTemplateId) {
-					this.agreementCreationMode.setValue(this.creationModes.FromScratch);
-					this.nullOptions$.next(null);
-					return EMPTY;
+		this.masterTemplateOptions$ = this.creationModeControlReplay$.pipe(
+			switchMap((creationMode) => {
+				if (creationMode === AgreementCreationMode.Duplicated) {
+					return of({
+						options$: this.masterTemplateOptionsChanged$.pipe(
+							takeUntil(this._unSubscribe$),
+							startWith(this.masterTemplateOptionsChanged$.value),
+							distinctUntilChanged(),
+							debounceTime(500),
+							tap(() => {
+								this.isMasterTemplateOptionsLoading$.next(true);
+							}),
+							switchMap((freeText: string) => {
+								return this._apiServiceProxy
+									.simpleList2(
+										false,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										undefined,
+										freeText,
+										1,
+										AUTOCOMPLETE_SEARCH_ITEMS_COUNT
+									)
+									.pipe(
+										tap(() => {
+											this.isMasterTemplateOptionsLoading$.next(false);
+										}),
+										withLatestFrom(this._contractsService.getEnumMap$()),
+										map(([response, maps]) => {
+											return response.items.map(
+												(item) =>
+													Object.assign(item, {
+														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
+													}) as SimpleAgreementTemplatesListItemDto
+											);
+										})
+									);
+							})
+						),
+						optionsChanged$: this.masterTemplateOptionsChanged$,
+					});
+				} else {
+					return of(null);
 				}
-				this.showMainSpinner();
-				return this._apiServiceProxy.agreementTemplateGET(parentTemplateId);
-			}),
-			tap(() => {
-				if (this.agreementCreationMode.value === this.creationModes.FromScratch) {
-					this.agreementCreationMode.setValue(this.creationModes.Duplicated);
-				}
-				this._onCreationModeChange();
-			}),
-			catchError(() => {
-				this.agreementCreationMode.setValue(this.creationModes.FromScratch);
-				this._onCreationModeChange();
-				this.hideMainSpinner();
-				return EMPTY;
-			}),
-			switchMap((parentTemplate) =>
-				this._apiServiceProxy
-					.simpleList2(false, undefined, undefined, parentTemplate.name, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT)
-					.pipe(
-						finalize(() => {
-							setTimeout(() => {
-								this.duplicateTemplateControl.setValue(parentTemplate.agreementTemplateId as number, {
-									emitEvent: false,
-								});
-								this._onDuplicateChanges(parentTemplate);
-								this.hideMainSpinner();
-							});
-						})
-					)
-			)
-		);
-		const nullOptions$: Observable<null> = this.nullOptions$.pipe(
-			takeUntil(this._unSubscribe$),
-			tap(() => {
-				this._onCreationModeChange();
-				this._resetForm();
-			})
-		);
-		const creationChange$: Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> = this.creationChange$.pipe(
-			takeUntil(this._unSubscribe$),
-			switchMap((val) => {
-				if (val === null) {
-					this.nullOptions$.next(null);
-					return EMPTY;
-				}
-				return this._apiServiceProxy.simpleList2(false, undefined, undefined, val, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT);
-			})
-		);
-		this.masterTemplateOptions$ = merge(freeText$, routeParams$, nullOptions$, creationChange$).pipe(
-			withLatestFrom(this._contractsService.getEnumMap$()),
-			map(([response, maps]) => {
-				return response && response.items
-					? response.items?.map(
-							(item) =>
-								//@ts-ignore
-								<SimpleAgreementTemplatesListItemDto>{
-									...item,
-									tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
-								}
-					  )
-					: null;
 			})
 		);
 	}
 
+	private _disableFields() {
+		this.masterTemplateFormGroup.agreementType.disable({ emitEvent: false });
+		this.masterTemplateFormGroup.recipientTypeId.disable({ emitEvent: false });
+	}
+
 	private _prefillForm() {
-		this.showMainSpinner();
 		this._apiServiceProxy
 			.agreementTemplateGET(this._templateId)
 			.pipe(
-				tap((template: AgreementTemplateDetailsDto) => {
-					if (template.duplicationSourceAgreementTemplateId) {
-						this.masterTemplateOptionsChanged$.next(template.name);
-						return;
+				tap((template) => {
+					this.masterTemplateFormGroup.updateInitialFormValue({
+						receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
+					});
+					this._creationTitleService.updateReceiveAgreementsFromOtherParty(template.receiveAgreementsFromOtherParty);
+					if (template.creationMode === AgreementCreationMode.Duplicated) {
+						this._initMasterTemplateOptions();
+						this.masterTemplateFormGroup.addControl(
+							'duplicationSourceAgreementTemplateId',
+							new FormControl({
+								value: template.duplicationSourceAgreementTemplateId,
+								disabled: true,
+							})
+						);
+						this.masterTemplateOptionsChanged$.next(String(template.duplicationSourceAgreementTemplateId));
 					}
 				}),
-				finalize(() => this.hideMainSpinner())
+				tap((template) => {
+					this.agreementCreationMode.setValue(template.creationMode);
+					this.currentTemplate = template;
+					this.preselectedFiles = template.attachments as FileUpload[];
+					this._cdr.detectChanges();
+
+					this.masterTemplateFormGroup.patchValue({
+						agreementType: template.agreementType,
+						recipientTypeId: template.recipientTypeId,
+						duplicationSourceAgreementTemplateId: template.duplicationSourceAgreementTemplateId,
+						name: template.name,
+						agreementNameTemplate: template.agreementNameTemplate,
+						definition: template.definition,
+						legalEntities: template.legalEntityIds,
+						salesTypes: template.salesTypeIds,
+						deliveryTypes: template.deliveryTypeIds,
+						contractTypes: template.contractTypeIds,
+						language: template.language,
+						note: template.note,
+						isSignatureRequired: template.isSignatureRequired,
+						isEnabled: template.isEnabled,
+						receiveAgreementsFromOtherParty: template.receiveAgreementsFromOtherParty,
+						isDefaultTemplate: template.isDefaultTemplate,
+						selectedInheritedFiles: template.attachments,
+					});
+				}),
+				tap(() => {
+					this._disableFields();
+				})
 			)
-			.subscribe((template: AgreementTemplateDetailsDto) => {
-				this.currentTemplate = template;
-				this.preselectedFiles = template.attachments as FileUpload[];
-				this._cdr.detectChanges();
-				this.masterTemplateFormGroup.patchValue({
-					agreementType: template.agreementType,
-					recipientTypeId: template.recipientTypeId,
-					duplicationSourceAgreementTemplateId: template.duplicationSourceAgreementTemplateId,
-					name: template.name,
-					agreementNameTemplate: template.agreementNameTemplate,
-					definition: template.definition,
-					legalEntities: template.legalEntityIds,
-					salesTypes: template.salesTypeIds,
-					deliveryTypes: template.deliveryTypeIds,
-					contractTypes: template.contractTypeIds,
-					language: template.language,
-					isSignatureRequired: template.isSignatureRequired,
-					isEnabled: template.isEnabled,
-					selectedInheritedFiles: template.attachments,
-				});
+			.subscribe();
+	}
+
+	private _subscribeOnAgreementsFromOtherParty() {
+		this.masterTemplateFormGroup.receiveAgreementsFromOtherParty.valueChanges
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe((receiveAgreementsFromOtherParty) => {
+				if (receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Complete';
+					this.masterTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.masterTemplateFormGroup.addControl('isSignatureRequired', new FormControl(false));
+				}
+				if (receiveAgreementsFromOtherParty && this.editMode) {
+					this.nextButtonLabel = 'Save';
+					this.masterTemplateFormGroup.removeControl('isSignatureRequired');
+				}
+				if (!receiveAgreementsFromOtherParty && !this.editMode) {
+					this.nextButtonLabel = 'Next';
+					this.masterTemplateFormGroup.addControl(
+						'isSignatureRequired',
+						new FormControl(this.masterTemplateFormGroup.initialValue.isSignatureRequired)
+					);
+				}
 			});
+	}
+
+	private _showDiscardDialog() {
+		return this._dialog.open(ConfirmDialogComponent, {
+			width: '500px',
+			minHeight: '240px',
+			height: 'auto',
+			backdropClass: 'backdrop-modal--wrapper',
+			data: {
+				label: 'Discard Changes',
+				message: `You\'ve selected “Always receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
+				confirmButtonText: 'Discard',
+			},
+		});
 	}
 }

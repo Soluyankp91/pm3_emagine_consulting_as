@@ -1,5 +1,5 @@
-import { Component, Self, ViewEncapsulation, OnInit, DoCheck } from '@angular/core';
-import { UntypedFormControl, NgControl, Validators } from '@angular/forms';
+import { Component, Self, ViewEncapsulation, OnInit, DoCheck, Input } from '@angular/core';
+import { UntypedFormControl, NgControl } from '@angular/forms';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, EMPTY } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -11,11 +11,14 @@ import { map, switchMap, tap } from 'rxjs/operators';
 	encapsulation: ViewEncapsulation.None,
 })
 export class AutoNameComponent implements OnInit, DoCheck {
+	@Input() showSampleLabel = 'Show sample data';
+	@Input() label = 'Auto-name for actual agreements';
+	@Input() currentAgreementId;
+
 	get control() {
 		return this.ngControl.control;
 	}
 
-	label = 'Auto-name for actual agreements';
 	options: string[];
 
 	textControl = new UntypedFormControl('');
@@ -50,10 +53,14 @@ export class AutoNameComponent implements OnInit, DoCheck {
 		if (!val) {
 			this.showSample = false;
 			this.textControl.enable();
-			this.textControl.reset();
+			this.textControl.reset('');
 			return;
 		}
 		this.textControl.setValue(val, { emitEvent: false });
+		//reset checkbox
+		if (this.showSample) {
+			this.retriewTemplate$.next();
+		}
 	}
 
 	onChange: any = () => {};
@@ -95,7 +102,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 				if (this.showSample) {
 					this.textControlBufferValue = this.textControl.value ? this.textControl.value : '';
 					this.textControl.disable({ emitEvent: false });
-					return this.mergeFieldsServiceProxy.format(undefined, this.textControlBufferValue).pipe(
+					return this.mergeFieldsServiceProxy.format(this.currentAgreementId, this.textControlBufferValue).pipe(
 						map((v) => v.value),
 						tap((templatePreview: string | undefined) => {
 							this.textControl.setValue(templatePreview, {
@@ -115,7 +122,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 	}
 
 	private _initValidators() {
-		let validators = [Validators.required];
+		let validators = [this.control.validator];
 
 		this.textControl.setValidators(validators);
 		this.textControl.updateValueAndValidity();

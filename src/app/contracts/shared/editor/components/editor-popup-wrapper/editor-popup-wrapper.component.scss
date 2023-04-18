@@ -1,0 +1,41 @@
+:host {
+	.editor-popup-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin: 0 0 24px !important;
+	}
+	.editor-popup-subheader {
+		font-family: 'Open Sans', sans-serif;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 160%;
+		color: #898785;
+		margin-bottom: 8px;
+		word-wrap: break-word;
+	}
+
+	.editor-popup-actions {
+		justify-content: space-between;
+		border-top: 1px solid #e7e3e8;
+		margin-bottom: 0 !important;
+		padding: 16px 40px;
+		min-height: 40px !important;
+		align-items: unset;
+	}
+
+	.warn {
+		display: flex;
+
+		mat-icon {
+			margin-right: 6px;
+			color: #ff7a78;
+			width: 36px;
+		}
+
+		p {
+			color: #ff7a78;
+			font-weight: 700;
+		}
+	}
+}
