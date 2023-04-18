@@ -1,4 +1,4 @@
-import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { ClientAddressDto, CountryDto } from "src/shared/service-proxies/service-proxies";
 
 export class ClientAddressForm extends UntypedFormGroup {
@@ -6,11 +6,11 @@ export class ClientAddressForm extends UntypedFormGroup {
         super({
             id: new UntypedFormControl(address?.id ?? null),
             isMainAddress: new UntypedFormControl(address?.isMainAddress ?? false),
-            country: new UntypedFormControl(address?.countryId ? new CountryDto({id: address?.countryId, code: address?.countryCode, name: address?.countryName}) : null),
-            address: new UntypedFormControl(address?.address ?? null),
+            country: new UntypedFormControl(address?.countryId ? new CountryDto({id: address?.countryId, code: address?.countryCode, name: address?.countryName}) : null, Validators.required),
+            address: new UntypedFormControl(address?.address ?? null, Validators.required),
             address2: new UntypedFormControl(address?.address2 ?? null),
-            postCode: new UntypedFormControl(address?.postCode ?? null),
-            city: new UntypedFormControl(address?.city ?? null),
+            postCode: new UntypedFormControl(address?.postCode ?? null, Validators.required),
+            city: new UntypedFormControl(address?.city ?? null, Validators.required),
             region: new UntypedFormControl(address?.region ?? null),
             isWorkplaceAddress: new UntypedFormControl(address?.isWorkplaceAddress ?? false),
             isInvoiceAddress: new UntypedFormControl(address?.isInvoiceAddress ?? false),

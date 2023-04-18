@@ -28,9 +28,17 @@
         z-index: 1;
         &--content {
             margin-left: 56px;
+            &-header {
+                mat-icon {
+                    height: 71px !important;
+                    width: 71px !important;
+                }
+            }
             h1 {
-                @include fontAtyp(62px, 500);
+                @include fontAtyp(62px, 700);
                 color: $dark-grey-color;
+                line-height: 1;
+                margin-bottom: 10px;
             }
             p {
                 @include fontAtyp(18px, 500);
@@ -55,13 +63,13 @@
 
     &-values {
         &:not(:last-of-type) {
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
         &--icon {
             @include fontLineHeightAndSize(50px, 50px, 50px, 50px);
         }
         &--name {
-            @include fontAtyp(20px, 500);
+            @include fontAtyp(20px, 400);
             display: flex;
             align-items: center;
             color: $dark-grey-color;

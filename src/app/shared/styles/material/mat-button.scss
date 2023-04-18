@@ -513,3 +513,16 @@
         @include fontOpenSans(12px, 700);
     }
 }
+
+.login-btn {
+    height: 39px !important;
+    padding: 0 24px !important;
+    border-radius: 100px !important;
+    .mat-button-wrapper {
+        font-family: 'Avenir' !important;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 19px;
+        color: $white-color;
+    }
+}
