@@ -5,17 +5,15 @@
                 <ng-container matColumnDef="consultant">
                     <mat-header-cell *matHeaderCellDef fxFlex="25%"> Consultant </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="25%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.consultants | displayList:  'name'" matTooltipClass="white-tooltip">
+                        <span class="flex-items-center text-truncate-ellipsis text-bold" [matTooltip]="row.consultants | displayList:  'name'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                                 {{row.consultants?.length + ' Consultants'}}
                             </ng-container>
                             <ng-template #singleConsultantDisplay>
-                                <span class="flex-items-center">
-                                    <ng-container *ngIf="row.consultants[0]?.name">
-                                        <img class="border-rounded-50 image-thumbnail-small u-mr--10" [ngSrc]="consultantPhotoUrl + row.consultants[0].externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
-                                    </ng-container>
-                                    {{row.consultants[0]?.name ?? '-'}}
-                                </span>
+                                <ng-container *ngIf="row.consultants[0]?.name">
+                                    <img class="border-rounded-50 image-thumbnail-small u-mr--10" [ngSrc]="consultantPhotoUrl + row.consultants[0].externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
+                                </ng-container>
+                                {{row.consultants[0]?.name ?? '-'}}
                             </ng-template>
                         </span>
                     </mat-cell>

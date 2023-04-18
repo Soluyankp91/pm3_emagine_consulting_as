@@ -84,16 +84,14 @@
                         <mat-icon [svgIcon]="row.isHidden ? 'icon-show' : 'icon-hide'"></mat-icon>
                         {{row.isHidden ? 'Show address' : 'Hide address'}}
                     </button>
-                    <div (click)="$event.stopPropagation()" [matTooltip]="'It is not possible to delete an address, which is being used on Workflows'" matTooltipClass="white-tooltip">
-                        <button
-                            class="menu-item menu-item--cancel"
-                            mat-menu-item
-                            [disabled]="row.isMainAddress"
-                            appPreventDoubleClick (throttledClick)="deleteAddress(row)">
-                            <mat-icon svgIcon="close-icon"></mat-icon>
-                            Delete
-                        </button>
-                    </div>
+                    <button
+                        class="menu-item menu-item--cancel"
+                        mat-menu-item
+                        [disabled]="row.isMainAddress"
+                        appPreventDoubleClick (throttledClick)="deleteAddress(row)">
+                        <mat-icon svgIcon="close-icon"></mat-icon>
+                        Delete
+                    </button>
                 </mat-menu>
             </mat-cell>
         </ng-container>
