@@ -571,8 +571,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		}
 	}
 
-    public copyPeriodId(event: Event, fullDisplayId: string) {
-        event.stopPropagation();
+    public copyPeriodId(fullDisplayId: string) {
         this._clipboard.copy(fullDisplayId);
         this._snackBar.open('Period ID copied to clipboard', undefined, {
             duration: 3000,

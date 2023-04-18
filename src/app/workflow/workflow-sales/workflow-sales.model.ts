@@ -108,7 +108,6 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             // Client Invoicing Recipient
             pdcInvoicingEntityId: new UntypedFormControl(null, Validators.required),
             clientInvoicingRecipientSameAsDirectClient: new UntypedFormControl(false, Validators.required),
-            invoicingReferenceNumber: new UntypedFormControl(null),
             clientInvoicingRecipientIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
             clientInvoicingRecipientAddress: new UntypedFormControl(null),
             // Client Invoicing Reference Person
@@ -187,9 +186,6 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
     get clientInvoicingRecipientSameAsDirectClient() {
         return this.get('clientInvoicingRecipientSameAsDirectClient');
-    }
-    get invoicingReferenceNumber() {
-        return this.get('invoicingReferenceNumber');
     }
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');

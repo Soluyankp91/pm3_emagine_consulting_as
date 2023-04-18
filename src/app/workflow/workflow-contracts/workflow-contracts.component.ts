@@ -457,9 +457,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	updateConsultantStepAnchors() {
 		let consultantNames = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value.map((item: any) => {
 			if (item.consultantType?.id === EmploymentTypes.FeeOnly || item.consultantType?.id === EmploymentTypes.Recruitment) {
-				return { employmentType: item.employmentType?.id, name: item.nameOnly };
+				return { employmentType: item.consultantType?.id, name: item.nameOnly };
 			} else {
-				return { employmentType: item.employmentType?.id, name: item.consultant?.name };
+				return { employmentType: item.consultantType?.id, name: item.consultant?.name };
 			}
 		});
 		this._workflowDataService.consultantsAddedToStep.emit({

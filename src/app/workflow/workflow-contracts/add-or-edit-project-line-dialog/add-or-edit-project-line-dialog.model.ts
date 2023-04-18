@@ -17,6 +17,7 @@ export class ProjectLineForm extends UntypedFormGroup {
             debtorNumber: new UntypedFormControl(null),
             differentDebtorNumber: new UntypedFormControl(false),
             invoiceRecipientId: new UntypedFormControl(null),
+            invoiceRecipientAddress: new UntypedFormControl(null),
             differentInvoiceRecipient: new UntypedFormControl(false),
             modifiedById: new UntypedFormControl(null),
             modificationDate: new UntypedFormControl(null),
@@ -69,6 +70,9 @@ export class ProjectLineForm extends UntypedFormGroup {
     }
     get invoiceRecipientId() {
         return this.get('invoiceRecipientId');
+    }
+    get invoiceRecipientAddress() {
+        return this.get('invoiceRecipientAddress');
     }
     get differentInvoiceRecipient() {
         return this.get('differentInvoiceRecipient');

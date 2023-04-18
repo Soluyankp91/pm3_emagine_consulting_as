@@ -108,7 +108,7 @@
                             </div>
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value === clientTimeReportingCaps.IndividualCap; else noConsultantInvoicing">
-                                    <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
+                                    <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">
                                             <mat-label>Shared cap on time reporting</mat-label>
@@ -340,7 +340,7 @@
                                                         </ng-container>
                                                     </div>
                                                 </div>
-                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                                     <ng-container [ngTemplateOutlet]="marginComponent"
                                                         [ngTemplateOutletContext]="{consultant: consultant, type: eMarginType.TotalTimeBasedMargin}">
                                                     </ng-container>
@@ -1158,12 +1158,12 @@
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
                                                                 [matTooltip]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number"
-                                                                matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                                <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate">
-                                                                    <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
-                                                                        {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
-                                                                    </span>
-                                                                </ng-container>
+                                                                matTooltipClass="white-tooltip" >
+                                                                <!-- <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate"> -->
+                                                                    <!-- <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"> -->
+                                                                        {{projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number}}
+                                                                    <!-- </span> -->
+                                                                <!-- </ng-container> -->
                                                             </span>
                                                             <span fxFlex="10%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
@@ -1179,7 +1179,7 @@
                                                                 {{projectLine.value.endDate ? (projectLine.value.endDate
                                                                 | momentFormat) : '-'}}
                                                             </span>
-                                                            <span fxFlex="1 0 15%"
+                                                            <span fxFlex="15%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
                                                                 [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>

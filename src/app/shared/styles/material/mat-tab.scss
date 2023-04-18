@@ -250,6 +250,9 @@ nav.workflow-content--tabs {
     .mat-tab-body-wrapper .mat-tab-body-content {
         overflow: visible !important;
     }
+    .mat-tab-link.cdk-program-focused:not(.mat-tab-disabled) {
+        background-color: unset !important;
+    }
 }
 
 
