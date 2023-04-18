@@ -342,12 +342,12 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="pagination-container u-w--100">
-            <mat-paginator #historyPaginator [length]="historyTotalCount" [pageSize]="historyDeafultPageSize" [pageIndex]="historyPageNumber-1"
-                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="historyPageChanged($event)">
-            </mat-paginator>
-        </div>
-    </ng-container>
+        <!-- </div> -->
+            <div class="pagination-container u-w--100">
+                <mat-paginator #historyPaginator [length]="historyTotalCount" [pageSize]="historyDeafultPageSize" [pageIndex]="historyPageNumber-1"
+                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="historyPageChanged($event)">
+                </mat-paginator>
+            </div>
+        </ng-container>
     <app-latest-changes></app-latest-changes>
 </div>
