@@ -291,7 +291,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
     private _getWorkflowHistory() {
-        this._workflowService.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
+        this._workflowService.history2(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
             if (result.items) {
                 this.workflowHistory = result.items;
                 this.historyTotalCount = result.totalCount;

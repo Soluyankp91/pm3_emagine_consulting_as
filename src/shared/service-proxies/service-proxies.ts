@@ -4358,56 +4358,6 @@ export class AgreementTemplateServiceProxy {
     /**
      * @return Success
      */
-    agreementTemplateDELETE(agreementTemplateId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}";
-        if (agreementTemplateId === undefined || agreementTemplateId === null)
-            throw new Error("The parameter 'agreementTemplateId' must be defined.");
-        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementTemplateDELETE(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAgreementTemplateDELETE(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processAgreementTemplateDELETE(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
     preview2(agreementTemplateId: number): Observable<AgreementTemplateDetailsPreviewDto> {
         let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/preview";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
@@ -7607,6 +7557,60 @@ export class ClientsServiceProxy {
             }));
         }
         return _observableOf<ClientListItemDtoPaginatedList>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    history(clientId: number): Observable<HistoryPropertiesDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/Clients/{clientId}/history";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processHistory(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processHistory(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+        }));
+    }
+
+    protected processHistory(response: HttpResponseBase): Observable<HistoryPropertiesDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = HistoryPropertiesDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<HistoryPropertiesDtoPaginatedList>(null as any);
     }
 
     /**
@@ -16821,6 +16825,60 @@ export class WorkflowServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    historyNew(workflowId: string): Observable<HistoryPropertiesDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/history-new";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processHistoryNew(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processHistoryNew(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+        }));
+    }
+
+    protected processHistoryNew(response: HttpResponseBase): Observable<HistoryPropertiesDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = HistoryPropertiesDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<HistoryPropertiesDtoPaginatedList>(null as any);
+    }
+
+    /**
      * @param workflowId (optional) 
      * @param workflowStatus (optional) 
      * @return Success
@@ -17110,7 +17168,7 @@ export class WorkflowServiceProxy {
      * @param pageSize (optional) 
      * @return Success
      */
-    history(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
+    history2(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/history?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -17134,11 +17192,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processHistory(response_);
+            return this.processHistory2(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processHistory(response_ as any);
+                    return this.processHistory2(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<WorkflowHistoryDtoPaginatedList>;
                 }
@@ -17147,7 +17205,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processHistory(response: HttpResponseBase): Observable<WorkflowHistoryDtoPaginatedList> {
+    protected processHistory2(response: HttpResponseBase): Observable<WorkflowHistoryDtoPaginatedList> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -28882,6 +28940,174 @@ export interface IGanttRowItem {
     processTypeId?: WorkflowProcessType;
     startDate?: moment.Moment | undefined;
     endDate?: moment.Moment | undefined;
+}
+
+export class HistoryPropertiesDto implements IHistoryPropertiesDto {
+    actionName?: string | undefined;
+    entityName?: string | undefined;
+    entityKeyFull?: string | undefined;
+    entityKeyValue?: string | undefined;
+    readonly entityNameWithKeyValue?: string | undefined;
+    propertyName?: string | undefined;
+    oldValue?: string | undefined;
+    newValue?: string | undefined;
+    workflowId?: string | undefined;
+    clientPeriodId?: string | undefined;
+    clientPeriodDisplayId?: string | undefined;
+    consultantPeriodId?: string | undefined;
+    consultantId?: number | undefined;
+    clientId?: number | undefined;
+    occurredAtUtc?: moment.Moment;
+    userId?: number | undefined;
+    userName?: string | undefined;
+
+    constructor(data?: IHistoryPropertiesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.actionName = _data["actionName"];
+            this.entityName = _data["entityName"];
+            this.entityKeyFull = _data["entityKeyFull"];
+            this.entityKeyValue = _data["entityKeyValue"];
+            (<any>this).entityNameWithKeyValue = _data["entityNameWithKeyValue"];
+            this.propertyName = _data["propertyName"];
+            this.oldValue = _data["oldValue"];
+            this.newValue = _data["newValue"];
+            this.workflowId = _data["workflowId"];
+            this.clientPeriodId = _data["clientPeriodId"];
+            this.clientPeriodDisplayId = _data["clientPeriodDisplayId"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
+            this.consultantId = _data["consultantId"];
+            this.clientId = _data["clientId"];
+            this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
+        }
+    }
+
+    static fromJS(data: any): HistoryPropertiesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new HistoryPropertiesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["actionName"] = this.actionName;
+        data["entityName"] = this.entityName;
+        data["entityKeyFull"] = this.entityKeyFull;
+        data["entityKeyValue"] = this.entityKeyValue;
+        data["entityNameWithKeyValue"] = this.entityNameWithKeyValue;
+        data["propertyName"] = this.propertyName;
+        data["oldValue"] = this.oldValue;
+        data["newValue"] = this.newValue;
+        data["workflowId"] = this.workflowId;
+        data["clientPeriodId"] = this.clientPeriodId;
+        data["clientPeriodDisplayId"] = this.clientPeriodDisplayId;
+        data["consultantPeriodId"] = this.consultantPeriodId;
+        data["consultantId"] = this.consultantId;
+        data["clientId"] = this.clientId;
+        data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        return data;
+    }
+}
+
+export interface IHistoryPropertiesDto {
+    actionName?: string | undefined;
+    entityName?: string | undefined;
+    entityKeyFull?: string | undefined;
+    entityKeyValue?: string | undefined;
+    entityNameWithKeyValue?: string | undefined;
+    propertyName?: string | undefined;
+    oldValue?: string | undefined;
+    newValue?: string | undefined;
+    workflowId?: string | undefined;
+    clientPeriodId?: string | undefined;
+    clientPeriodDisplayId?: string | undefined;
+    consultantPeriodId?: string | undefined;
+    consultantId?: number | undefined;
+    clientId?: number | undefined;
+    occurredAtUtc?: moment.Moment;
+    userId?: number | undefined;
+    userName?: string | undefined;
+}
+
+export class HistoryPropertiesDtoPaginatedList implements IHistoryPropertiesDtoPaginatedList {
+    items?: HistoryPropertiesDto[] | undefined;
+    pageIndex?: number;
+    readonly totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
+
+    constructor(data?: IHistoryPropertiesDtoPaginatedList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(HistoryPropertiesDto.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            (<any>this).totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.pageSize = _data["pageSize"];
+            (<any>this).hasPreviousPage = _data["hasPreviousPage"];
+            (<any>this).hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): HistoryPropertiesDtoPaginatedList {
+        data = typeof data === 'object' ? data : {};
+        let result = new HistoryPropertiesDtoPaginatedList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["pageSize"] = this.pageSize;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IHistoryPropertiesDtoPaginatedList {
+    items?: HistoryPropertiesDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class HubSpotClientDto implements IHubSpotClientDto {

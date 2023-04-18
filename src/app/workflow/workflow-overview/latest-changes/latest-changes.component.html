@@ -11,67 +11,78 @@
         </mat-select>
     </mat-form-field>
     <ng-container *ngIf="(workflowHistory$ | async)?.items as workflowHistory; else noLatestChanges">
-        <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--header">
-            <div fxFlex="120px">
-                Changed Date
-            </div>
-            <div fxFlex="250px">
-                Event
-            </div>
-            <div fxFlex="200px">
-                Changed field
-            </div>
-            <div fxFlex>
-                Old value
-            </div>
-            <div fxFlex>
-                New value
-            </div>
-            <div fxFlex="100px">
-                Period
-            </div>
-            <div fxFlex="100px">
-                PeriodId
-            </div>
-            <div fxFlex="70px" fxLayoutAlign="center center">
-                By
-            </div>
-        </div>
-        <ng-container *ngFor="let item of workflowHistory; trackBy: trackByOperationId;">
-            <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--row">
-                <div fxFlex="120px">
-                    <span class="dark-grey-color u-mr--5">{{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
-                    <span class="medium-grey-color text-600">{{item.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
-                </div>
-                <div fxFlex="250px" class="dark-grey-color text-bold">
-                    {{item.eventName}}
-                </div>
-
-                <div fxFlex="200px" class="dark-grey-color text-600">
+        <mat-table
+            class="white-table"
+            matSort
+            [dataSource]="workflowHistory">
+            <ng-container matColumnDef="changedDate">
+                <mat-header-cell *matHeaderCellDef>
+                    Changed Date
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span class="dark-grey-color u-mr--5">{{row.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
+                    <span class="medium-grey-color text-600">{{row.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actionName">
+                <mat-header-cell *matHeaderCellDef>
+                    Event
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="text-bold">
+                    {{row.actionName ?? '-'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="propertyName">
+                <mat-header-cell *matHeaderCellDef>
                     Changed field
-                </div>
-
-                <div fxFlex class="dark-grey-color text-600">
-                    Old value
-                </div>
-
-                <div fxFlex class="dark-grey-color text-600">
-                    New value
-                </div>
-
-                <div fxFlex="100px" class="dark-grey-color text-600">
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    {{row.propertyName ?? '-'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="oldValue">
+                <mat-header-cell *matHeaderCellDef>
+                    Old Value
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    {{row.oldValue ?? '-'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="newValue">
+                <mat-header-cell *matHeaderCellDef>
+                    New Value
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    {{row.newValue ?? '-'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="period">
+                <mat-header-cell *matHeaderCellDef>
                     Period
-                </div>
-
-                <div fxFlex="100px" class="dark-grey-color text-600">
-                    PeriodId
-                </div>
-
-                <div fxFlex="70px" fxLayoutAlign="center center">
-                    <img class="border-rounded-50" [matTooltip]="item.initiatedBy?.name" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + item.initiatedBy?.externalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
-                </div>
-            </div>
-        </ng-container>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    {{row.clientPeriodDisplayId ?? '-'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="periodID">
+                <mat-header-cell *matHeaderCellDef>
+                    Period ID
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    {{row.periodId ?? '-'}}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="by">
+                <mat-header-cell *matHeaderCellDef>
+                    By
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <img class="border-rounded-50" [matTooltip]="row.userName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.userId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+        </mat-table>
     </ng-container>
     <ng-template #noLatestChanges>
         <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--row">
