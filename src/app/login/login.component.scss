@@ -38,6 +38,9 @@
                 @include fontAtyp(62px, 700);
                 color: $dark-grey-color;
                 line-height: 1;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-shadow: #999 0.1px 0px 0px, #999 -0.1px 0px 0px;
             }
             p {
                 @include fontAtyp(18px, 500);
