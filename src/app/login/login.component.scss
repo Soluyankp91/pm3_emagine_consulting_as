@@ -35,7 +35,7 @@
                 }
             }
             h1 {
-                @include fontAtypDisplayBold(62px, 700);
+                @include fontAtyp(62px, 700);
                 color: $dark-grey-color;
                 line-height: 1;
             }
