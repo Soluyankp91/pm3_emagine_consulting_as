@@ -87,6 +87,13 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		this.purchaseOrders.removeAt(orderIndex);
 	}
 
+    updatePOs(purchaseOrder: PurchaseOrderDto) {
+        const POtoUpdate = this.purchaseOrders.controls.find(x => x.value.id === purchaseOrder.id);
+        if (POtoUpdate) {
+            POtoUpdate.patchValue(purchaseOrder);
+        }
+    }
+
 	private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
 		switch (this.mode) {
 			case EPurchaseOrderMode.WFOverview:
