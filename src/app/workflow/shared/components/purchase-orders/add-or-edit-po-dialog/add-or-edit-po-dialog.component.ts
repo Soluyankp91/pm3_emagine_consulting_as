@@ -116,7 +116,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	poSourceChange(event: MatSelectChange) {
-		this.existingPo = new PurchaseOrderDto();
+		this._clearData();
 		if (event.value === EPOSource.DifferentWF || event.value === EPOSource.ExistingPO) {
 			this.purchaseOrderForm.existingPo.reset(null, { emitEvent: false });
 			this.filteredPurchaseOrders = this._filterOutPOs(event.value as EPOSource);
@@ -181,5 +181,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	private _filterOutPOs(poSource: EPOSource) {
 		const poExistsOnThisWf = poSource === EPOSource.ExistingPO;
 		return this.purchaseOrders.filter((x) => x.purchaseOrderCurrentContextData.existsInThisWorkflow === poExistsOnThisWf);
+	}
+
+	private _clearData() {
+		this.existingPo = new PurchaseOrderDto();
+		this.purchaseOrderForm.reset(null);
 	}
 }

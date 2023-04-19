@@ -892,9 +892,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.mainDataComponent?.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data.mainData.marginId), {
 				emitEvent: false,
 			});
-			if (data.mainData.noRemarks) {
-				this.mainDataComponent?.contractsMainForm.remarks?.disable();
-			}
+			data.mainData.noRemarks
+				? this.mainDataComponent?.contractsMainForm.remarks?.disable()
+				: this.mainDataComponent?.contractsMainForm.remarks?.enable();
 			if (data?.workflowDocuments?.length) {
 				this.mainDataComponent.mainDocuments?.addExistingFile(data.workflowDocuments);
 			}
@@ -1309,7 +1309,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				projectLineInput.wasSynced = projectLine.wasSynced;
 				projectLineInput.isLineForFees = projectLine.isLineForFees;
 				projectLineInput.purchaseOrderId = projectLine.purchaseOrderId;
-
+                projectLineInput.invoiceRecipientAddressId = projectLine.invoiceRecipientAddressId;
+                projectLineInput.invoiceRecipientAddress = projectLine.invoiceRecipientAddress;
 				consultantData.projectLines.push(projectLineInput);
 			}
 		}

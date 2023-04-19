@@ -10,7 +10,7 @@ import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
-import { FindClientAddress, MapClientAddressList } from '../../workflow-sales/workflow-sales.helpers';
+import { FindClientAddress, MapClientAddressList, PackAddressIntoNewDto } from '../../workflow-sales/workflow-sales.helpers';
 import { IClientAddress } from '../../workflow-sales/workflow-sales.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
@@ -164,7 +164,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         if (data?.invoiceRecipient) {
             this._getAddresses(data?.invoiceRecipient.clientAddresses)
         }
-        this.projectLineForm.invoiceRecipientAddress?.setValue(data.invoiceRecipientAddress, {emitEvent: false});
+        this.projectLineForm.invoiceRecipientAddress?.setValue(PackAddressIntoNewDto(data.invoiceRecipientAddress), {emitEvent: false});
         this.projectLineForm.differentInvoiceRecipient?.setValue(data.differentInvoiceRecipient ?? false, {emitEvent: false});
         if (!data.differentInvoiceRecipient) {
             this.projectLineForm.invoiceRecipientId?.disable();

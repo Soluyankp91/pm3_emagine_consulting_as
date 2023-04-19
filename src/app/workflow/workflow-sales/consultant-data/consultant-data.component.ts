@@ -488,7 +488,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		this.addConsultantSpecialRate(consultantIndex, consultantRate);
 	}
 
-	addConsultantSpecialRate(consultantIndex: NumberSymbol, consultantRate?: PeriodConsultantSpecialRateDto) {
+	addConsultantSpecialRate(consultantIndex: number, consultantRate?: PeriodConsultantSpecialRateDto) {
 		const form = this._fb.group({
 			id: new UntypedFormControl(consultantRate?.id ?? null),
 			clientSpecialRateId: new UntypedFormControl(consultantRate?.clientSpecialRateId ?? null),
