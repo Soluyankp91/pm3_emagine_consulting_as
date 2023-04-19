@@ -1,4 +1,4 @@
-import { EventEmitter, Inject, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
@@ -49,6 +49,7 @@ export class EditorCoreService {
 
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
+		private _zone: NgZone,
 		private _compareService: CompareService,
 		private _commentService: CommentService,
 		private clipboard: Clipboard
@@ -253,7 +254,9 @@ export class EditorCoreService {
 
 		this.editor.events.documentChanged.addHandler(() => {
 			if (!this._compareService.isCompareMode) {
-				this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
+				this._zone.run(() => {
+					this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
+				});
 			}
 		});
 
