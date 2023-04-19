@@ -661,7 +661,7 @@
                         <input [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
                             matInput [matAutocomplete]="primarySourcerAutocomplete"
                             formControlName="primarySourcer" appPreventDoubleClick
-                            (throttledClick)="$event.stopPropagation()" placeholder="Select priamry sourcer">
+                            (throttledClick)="$event.stopPropagation()" placeholder="Select primary sourcer">
                             <span matSuffix class="shevron"></span>
                         <mat-autocomplete #primarySourcerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                             (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"

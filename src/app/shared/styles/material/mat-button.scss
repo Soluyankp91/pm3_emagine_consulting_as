@@ -524,5 +524,9 @@
         font-size: 14px;
         line-height: 19px;
         color: $white-color;
+        mat-icon svg {
+            width: 20px;
+            height: 20px;
+        }
     }
 }
