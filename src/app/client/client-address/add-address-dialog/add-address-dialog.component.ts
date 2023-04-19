@@ -44,6 +44,10 @@ export class AddAddressDialogComponent extends AppComponentBase implements OnIni
 	}
 
 	public confirm() {
+		if (this.clientAddressForm.invalid) {
+			this.clientAddressForm.markAllAsTouched();
+			return;
+		}
 		this.onConfirmed.emit(this.clientAddressForm.value);
 		this._closeInternal();
 	}
