@@ -1300,6 +1300,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				if (projectLineInput.differentInvoiceRecipient) {
 					projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
 					projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+					projectLineInput.invoiceRecipientAddressId = projectLine.invoiceRecipientAddressId;
+					projectLineInput.invoiceRecipientAddress = projectLine.invoiceRecipientAddress;
 				}
 				projectLineInput.modifiedById = projectLine.modifiedById;
 				projectLineInput.modifiedBy = projectLine.modifiedBy;
@@ -1309,8 +1311,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				projectLineInput.wasSynced = projectLine.wasSynced;
 				projectLineInput.isLineForFees = projectLine.isLineForFees;
 				projectLineInput.purchaseOrderId = projectLine.purchaseOrderId;
-                projectLineInput.invoiceRecipientAddressId = projectLine.invoiceRecipientAddressId;
-                projectLineInput.invoiceRecipientAddress = projectLine.invoiceRecipientAddress;
 				consultantData.projectLines.push(projectLineInput);
 			}
 		}

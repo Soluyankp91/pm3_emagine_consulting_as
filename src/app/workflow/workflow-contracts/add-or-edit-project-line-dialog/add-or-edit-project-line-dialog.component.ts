@@ -168,6 +168,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.differentInvoiceRecipient?.setValue(data.differentInvoiceRecipient ?? false, {emitEvent: false});
         if (!data.differentInvoiceRecipient) {
             this.projectLineForm.invoiceRecipientId?.disable();
+            this.projectLineForm.invoiceRecipientAddress?.disable();
         }
         this.projectLineForm.consultantInsuranceOptionId?.setValue(data.consultantInsuranceOptionId ?? 0, {emitEvent: false});
         this.projectLineForm.modificationDate?.setValue(data.modificationDate, {emitEvent: false});
@@ -260,6 +261,16 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     recipientSelected(event: MatAutocompleteSelectedEvent) {
         this._getAddresses(event.option.value?.clientAddresses);
+    }
+
+    toggleDIsabledStateForInvoicing(disableInputs: boolean) {
+        if (disableInputs) {
+            this.projectLineForm.invoiceRecipientAddress.disable({emitEvent: false});
+            this.projectLineForm.invoiceRecipientId.disable({emitEvent: false});
+        } else {
+            this.projectLineForm.invoiceRecipientAddress.enable({emitEvent: false});
+            this.projectLineForm.invoiceRecipientId.enable({emitEvent: false});
+        }
     }
 
     private _getAddresses(clientAddresses: ClientAddressDto[]) {
