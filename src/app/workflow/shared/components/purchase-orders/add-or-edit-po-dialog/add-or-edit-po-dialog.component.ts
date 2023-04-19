@@ -192,7 +192,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.purchaseOrderForm.number.setValue(null);
 		this.purchaseOrderForm.existingPo.setValue(null);
 		this.purchaseOrderForm.receiveDate.setValue(null);
-		this.purchaseOrderForm.numberMissingButRequired.setValue(null);
+		this.purchaseOrderForm.numberMissingButRequired.setValue(false);
 		this.purchaseOrderForm.capForInvoicing.maxAmount.setValue(null);
 		this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.setValue(null);
 		this.purchaseOrderForm.capForInvoicing.currencyId.setValue(null);
