@@ -139,8 +139,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
 		this._workflowDataService.updatePurchaseOrders
 			.pipe(takeUntil(this._unsubscribe))
-			.subscribe(() =>
-				this.clientDataComponent.poComponent.getPurchaseOrders(this.purchaseOrderIds, this.directClientId, this.periodId)
+			.subscribe((result: PurchaseOrderDto) =>
+				this.clientDataComponent.poComponent.updatePOs(result)
 			);
 	}
 

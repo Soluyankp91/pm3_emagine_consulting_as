@@ -77,7 +77,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				.purchaseOrderPUT(this.data?.clientPeriodId, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
 				.subscribe((result) => {
-					this._workflowDataService.updatePurchaseOrders.emit();
+					this._workflowDataService.updatePurchaseOrders.emit(result);
+					result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
+						this.existingPo.purchaseOrderCurrentContextData
+					);
 					this.onConfirmed.emit(result);
 					this._closeInternal();
 				});
@@ -185,6 +188,14 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 
 	private _clearData() {
 		this.existingPo = new PurchaseOrderDto();
-		this.purchaseOrderForm.reset(null);
+		this.purchaseOrderForm.id.setValue(null);
+		this.purchaseOrderForm.number.setValue(null);
+		this.purchaseOrderForm.existingPo.setValue(null);
+		this.purchaseOrderForm.receiveDate.setValue(null);
+		this.purchaseOrderForm.numberMissingButRequired.setValue(null);
+		this.purchaseOrderForm.capForInvoicing.maxAmount.setValue(null);
+		this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.setValue(null);
+		this.purchaseOrderForm.capForInvoicing.currencyId.setValue(null);
 	}
+
 }
