@@ -32,6 +32,7 @@ import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
 import { MarginType } from '../../shared/components/calculated-margin/calculated-margin.model';
+import { FindClientAddress } from '../../workflow-sales/workflow-sales.helpers';
 
 @Component({
 	selector: 'app-contracts-consultant-data',
@@ -536,7 +537,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
-			invoiceRecipientAddress: this.contractClientForm.clientInvoicingRecipientAddress?.value,
+			invoiceRecipientAddress: FindClientAddress(
+                this.contractClientForm.clientInvoicingRecipient?.value?.clientAddresses,
+                this.contractClientForm.clientInvoicingRecipientAddress?.value?.id
+            ),
 			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value
 				? null
 				: this.contractClientForm.invoicingReferencePerson?.value,
@@ -574,16 +578,16 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			},
 		});
 
-		dialogRef.componentInstance.onConfirmed.subscribe((projectLine, purchaseOrders) => {
+		dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
 			if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
-				this.editProjectLineValue(index, projectLinesIndex, projectLine, purchaseOrders);
+				this.editProjectLineValue(index, projectLinesIndex, projectLine);
 			} else {
-				this.addProjectLinesToConsultantData(index, projectLine, purchaseOrders);
+				this.addProjectLinesToConsultantData(index, projectLine);
 			}
 		});
 	}
 
-	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto, purchaseOrders?: PurchaseOrderDto[]) {
+	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
 		if (projectLine) {
 			if (!projectLine?.differentDebtorNumber) {
 				projectLine!.debtorNumber = this.contractsMainForm.customDebtorNumber?.value;
@@ -630,6 +634,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			isLineForFees: new UntypedFormControl(projectLine?.isLineForFees),
 			purchaseOrderId: new UntypedFormControl(projectLine?.purchaseOrderId),
 			purchaseOrder: new UntypedFormControl(null),
+            invoiceRecipientAddressId: new UntypedFormControl(projectLine?.invoiceRecipientAddressId),
+            invoiceRecipientAddress: new UntypedFormControl(projectLine?.invoiceRecipientAddress),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
 		if (this.directClientId) {
@@ -640,8 +646,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	editProjectLineValue(
 		consultantIndex: number,
 		projectLinesIndex: number,
-		projectLineData: any,
-		purchaseOrders?: PurchaseOrderDto[]
+		projectLineData: any
 	) {
 		const projectLineRow = (
 			this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray
@@ -700,6 +705,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
 		projectLineRow.get('purchaseOrderId')?.setValue(projectLineData.purchaseOrderId, { emitEvent: false });
 		projectLineRow.get('purchaseOrder')?.setValue(null, { emitEvent: false });
+		projectLineRow.get('invoiceRecipientAddressId')?.setValue(projectLineData.invoiceRecipientAddressId, { emitEvent: false });
+		projectLineRow.get('invoiceRecipientAddress')?.setValue(projectLineData.invoiceRecipientAddress, { emitEvent: false });
 		this.getPOsToUpdateValues(this.directClientId);
 	}
 
