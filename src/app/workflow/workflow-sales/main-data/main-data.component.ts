@@ -323,8 +323,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 					projectTypeId === this.eProjectTypes.VMSlowMargin ||
                     this.salesMainDataForm.salesTypeId?.value === SalesTypes.ThirdPartyMgmt
 				) {
+                    // this.areaTypeRoleRequired = false;
 					this.makeAreaTypeRoleNotRequired();
 				} else {
+                    // this.areaTypeRoleRequired = true;
 					this.makeAreaTypeRoleRequired();
 				}
 			});
@@ -345,8 +347,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			projectTypeId === this.eProjectTypes.VMSlowMargin ||
 			value === this.salesTypesEnum.ThirdPartyMgmt
 		) {
+            // this.areaTypeRoleRequired = false;
 			this.makeAreaTypeRoleNotRequired();
 		} else {
+            // this.areaTypeRoleRequired = true;
 			this.makeAreaTypeRoleRequired();
 		}
 	}
@@ -355,20 +359,23 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
-        this.updateStateAreaTypeRole();
+        // this.updateStateAreaTypeRole();
     }
 
     makeAreaTypeRoleNotRequired() {
         this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
-        this.updateStateAreaTypeRole();
+        // this.updateStateAreaTypeRole();
     }
 
     updateStateAreaTypeRole() {
-        this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({emitEvent: false});
-        this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({emitEvent: false});
-        this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryArea?.setErrors({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryType?.setErrors({emitEvent: false});
+        this.salesMainDataForm.primaryCategoryRole?.setErrors({emitEvent: false});
+        // this.salesMainDataForm.primaryCategoryArea?.markAsTouched();
+        // this.salesMainDataForm.primaryCategoryType?.markAsTouched();
+        // this.salesMainDataForm.primaryCategoryRole?.markAsTouched();
     }
 
     commissionRecipientTypeChanged(index: number) {

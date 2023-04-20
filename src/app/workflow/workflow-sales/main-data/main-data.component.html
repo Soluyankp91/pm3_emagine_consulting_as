@@ -136,7 +136,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Area</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [required]="areaTypeRoleRequired" [disabled]="readOnlyMode" formControlName="primaryCategoryArea" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of primaryCategoryAreas; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -149,7 +149,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
                                     <mat-label>Type</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [required]="areaTypeRoleRequired" [disabled]="readOnlyMode" formControlName="primaryCategoryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of primaryCategoryTypes; trackBy: trackById">
                                             <mat-option [value]="item">
                                                 {{ item.name }}
@@ -162,7 +162,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                                     <mat-label>Role</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" formControlName="primaryCategoryRole" [disableOptionCentering]="true"
+                                    <mat-select [required]="areaTypeRoleRequired" [disabled]="readOnlyMode" formControlName="primaryCategoryRole" [disableOptionCentering]="true"
                                         [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of primaryCategoryRoles; trackBy: trackById">
                                             <mat-option [value]="item">

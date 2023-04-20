@@ -68,11 +68,11 @@
                                         <ng-container *ngIf="step.name === selectedStep.name">
                                             <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--35 u-mt--8">
                                                 <ng-container *ngFor="let item of step.menuAnchors; trackBy: trackByItem">
-                                                    <div class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
+                                                    <div class="workflow-navigation--step__anchor" appPreventDoubleClick
                                                         (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item)"
                                                         [ngxScrollTo]="item.anchor!"
                                                         [ngxScrollToOffset]="-120"
-                                                        [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
+                                                        [ngClass]="{'active-anchor': item.anchor === selectedAnchor, 'u-mb--10': item.anchor !== selectedAnchor && !item.anchorsOpened}">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
                                                             <span class="workflow-navigation--step__anchor-name">
                                                                 {{item.name}}
@@ -87,9 +87,9 @@
                                                             </span>
                                                         </ng-container>
                                                         <ng-container *ngIf="item.subItems?.length && item.anchor === selectedAnchor || item.anchorsOpened">
-                                                            <div class="side-nav--container u-pl--12 u-mt--8">
+                                                            <div class="side-nav--container u-pl--12 u-mt--18 u-mb--18">
                                                                 <ng-container *ngFor="let section of item.subItems; trackBy: trackByItem; index as i">
-                                                                    <div class="workflow-navigation--step__anchor-section u-mb--15" (click)="$event.stopPropagation(); scrollToSection(section.anchor!)" [ngxScrollTo]="section.anchor!" [ngxScrollToOffset]="-120">
+                                                                    <div class="workflow-navigation--step__anchor-section u-mb--18" (click)="$event.stopPropagation(); scrollToSection(section.anchor!)" [ngxScrollTo]="section.anchor!" [ngxScrollToOffset]="-120">
                                                                         {{i + 1}} • {{section.name}}
                                                                     </div>
                                                                 </ng-container>

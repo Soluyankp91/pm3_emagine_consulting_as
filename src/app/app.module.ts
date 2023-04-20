@@ -552,14 +552,6 @@ export class AppModule {
 			'chevron-green-big',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-green-big.svg')
 		);
-		iconRegistry.addSvgIcon(
-			'login-top-vector',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/logn-top-vector.svg')
-		);
-		iconRegistry.addSvgIcon(
-			'login-bottom-vector',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/logn-bottom-vector.svg')
-		);
 		iconRegistry.addSvgIcon('login-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-logo.svg'));
 		iconRegistry.addSvgIcon(
 			'dedicated-icon',
