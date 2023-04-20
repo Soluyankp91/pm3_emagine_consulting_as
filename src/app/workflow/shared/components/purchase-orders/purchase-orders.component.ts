@@ -97,7 +97,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
 		switch (this.mode) {
 			case EPurchaseOrderMode.WFOverview:
-				list.filter((item) => item.workflowsIdsReferencingThisPo.includes(this.workflowId)).forEach((order) => {
+				list.filter((item) => item.purchaseOrderCurrentContextData?.existsInThisWorkflow).forEach((order) => {
 					this._addPurchaseOrder(order);
 				});
 				break;
