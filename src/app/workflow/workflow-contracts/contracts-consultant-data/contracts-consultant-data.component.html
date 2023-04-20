@@ -227,7 +227,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
                                         <mat-label>emagine payment entity (consultant)</mat-label>
-                                        <mat-select [disabled]="true" required formControlName="pdcPaymentEntityId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-select [disabled]="true" required formControlName="pdcPaymentEntityId" [disableOptionCentering]="true">
                                             <ng-container *ngFor="let item of legalEntities; trackBy: trackById">
                                                 <mat-option [value]="item.id">
                                                     {{ item.tenantName + ' ' + '(' + item.name + ')' }}
