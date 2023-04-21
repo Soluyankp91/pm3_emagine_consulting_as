@@ -15823,11 +15823,16 @@ export class PurchaseOrderServiceProxy {
     }
 
     /**
+     * @param currentClientPeriodId (optional) 
      * @param body (optional) 
      * @return Success
      */
-    purchaseOrderPOST(body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
-        let url_ = this.baseUrl + "/api/PurchaseOrder";
+    purchaseOrderPOST(currentClientPeriodId?: string | undefined, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder?";
+        if (currentClientPeriodId === null)
+            throw new Error("The parameter 'currentClientPeriodId' cannot be null.");
+        else if (currentClientPeriodId !== undefined)
+            url_ += "currentClientPeriodId=" + encodeURIComponent("" + currentClientPeriodId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
