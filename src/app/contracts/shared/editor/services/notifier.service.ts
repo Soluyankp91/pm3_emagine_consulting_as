@@ -80,7 +80,7 @@ export class NotifierService {
 				return {
 					id: NotificationType.ChangesSaved,
 					text: 'Changes has been saved successfully',
-					icon: 'check-circle',
+					icon: 'approved',
 					type: 'success',
 				};
 			case NotificationType.ChangesNotSavedYet:
@@ -102,7 +102,7 @@ export class NotifierService {
 				return {
 					id: NotificationType.VersionCreatedSuccess,
 					text: `<strong>Version ${params.version}</strong> has been created successfully`,
-					icon: 'check-circle',
+					icon: 'approved',
 					type: 'success',
 				};
 			case NotificationType.EnvelopeBeingVoided:
@@ -119,7 +119,7 @@ export class NotifierService {
 					text: `Envelope with version ${params.version} has been voided successfully. Version ${
 						params.version + 1
 					} has been created successfully`,
-					icon: 'check-circle',
+					icon: 'approved',
 					type: 'success',
 				};
 			case NotificationType.SavingAsADraft:
@@ -134,14 +134,14 @@ export class NotifierService {
 				return {
 					id: NotificationType.DraftSavedSuccess,
 					text: `Draft of the Version ${params.version} has been saved successfully`,
-					icon: 'check-circle',
+					icon: 'approved',
 					type: 'success',
 				};
 			case NotificationType.SentSuccessfully:
 				return {
 					id: NotificationType.SentSuccessfully,
 					text: `${params.filename} has been sent successfully`,
-					icon: 'check-circle',
+					icon: 'approved',
 					type: 'success',
 				};
 			case NotificationType.SendingInProgress:

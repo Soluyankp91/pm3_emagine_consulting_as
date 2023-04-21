@@ -66,7 +66,6 @@ export class AgreementService implements AgreementAbstractService {
 		return this._dialog
 			.open(ConfirmPopupComponent, {
 				width: '540px',
-				backdropClass: 'backdrop-modal--wrapper',
 				data: {
 					title: 'Agreement number change',
 					body: `Promoting sent agreement to draft will result in the current agreement number ${version} change to ${
@@ -146,8 +145,6 @@ export class AgreementService implements AgreementAbstractService {
 					if (error.error.code === 'contracts.documents.draft.locked') {
 						const ref = this._dialog.open(ConfirmPopupComponent, {
 							width: '540px',
-							height: '240px',
-							backdropClass: 'backdrop-modal--wrapper',
 							data: {
 								title: 'Override',
 								body: 'Are you sure you want to override the draft?',
@@ -157,9 +154,11 @@ export class AgreementService implements AgreementAbstractService {
 						return ref.afterClosed().pipe(
 							switchMap((res) => {
 								if (res) {
-									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(catchError((error) => EMPTY))
+									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(
+										catchError((error) => EMPTY)
+									);
 								} else {
-									return of(null)
+									return of(null);
 								}
 							})
 						);

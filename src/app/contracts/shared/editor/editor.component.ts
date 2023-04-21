@@ -349,11 +349,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveCurrentAsDraft() {
 		let version = this.selectedVersion.version + 1;
 		this.isLoading = true;
-		this._notifierService.notify(NotificationType.VersionBeingCreated, { version });
 		this._editorCoreService.toggleFields();
 		if (!this.isAgreement) {
 			this._editorCoreService.toggleMergedData();
 		}
+		this._notifierService.notify(NotificationType.VersionBeingCreated, { version });
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -361,8 +361,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 				.subscribe(() => {
 					this._updateCommentByNeeds();
 					this.getTemplateVersions(this.templateId);
-					this._notifierService.notify(NotificationType.VersionCreatedSuccess, { version });
 					this.cleanUp();
+					this._notifierService.notify(NotificationType.VersionCreatedSuccess, { version });
 				});
 		});
 	}
@@ -370,8 +370,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveCurrentAsCompleteAgreementOnly() {
 		let version = this.selectedVersion.version + 1;
 		this.isLoading = true;
-		this._notifierService.notify(NotificationType.VersionBeingCreated, { version });
 		this._editorCoreService.toggleFields();
+		this._notifierService.notify(NotificationType.VersionBeingCreated, { version });
 		this._agreementService
 			.unlockAgreementByConfirmation(this.templateId, this.selectedVersion.version)
 			.subscribe((editOpened) => {
@@ -383,8 +383,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 							.subscribe(() => {
 								this._updateCommentByNeeds();
 								this.getTemplateVersions(this.templateId);
-								this._notifierService.notify(NotificationType.VersionCreatedSuccess, { version });
 								this.cleanUp();
+								this._notifierService.notify(NotificationType.VersionCreatedSuccess, { version });
 							});
 					});
 				} else {
@@ -451,22 +451,19 @@ export class EditorComponent implements OnInit, OnDestroy {
 	saveDraftAsDraft() {
 		let version = this.currentTemplateVersion;
 		this.isLoading = true;
-		this._notifierService.notify(NotificationType.SavingAsADraft, { version });
 		this._editorCoreService.toggleFields();
 		if (!this.isAgreement) {
 			this._editorCoreService.toggleMergedData();
 		}
 
+		this._notifierService.notify(NotificationType.SavingAsADraft, { version });
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe((res) => {
 					this._updateCommentByNeeds();
 					this.cleanUp();
-					this._notifierService.notify(NotificationType.Noop);
-					if (res) {
-						this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
-					}
+					this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
 				});
 		});
 	}
@@ -512,9 +509,17 @@ export class EditorComponent implements OnInit, OnDestroy {
 					this.versions
 				)
 				.subscribe((res) => {
-					if (res) {
-						this._updateCommentByNeeds();
-						this.getTemplateVersions(this.templateId);
+					if (!res) {
+						this.isLoading = false;
+						return this._notifierService.notifyPrevState();
+					}
+
+					this._editorCoreService.removeUnsavedChanges();
+					this.cleanUp();
+					this._chd.detectChanges();
+					this._updateCommentByNeeds();
+					this.getTemplateVersions(this.templateId, () => {
+						this.isLoading = false;
 						if (sentVersion) {
 							this._notifierService.notify(NotificationType.EnvelopeVoidedSuccess, {
 								version: sentVersion.version,
@@ -522,14 +527,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 						} else {
 							this._notifierService.notify(NotificationType.ChangesSaved);
 						}
-					} else {
-						this._notifierService.notifyPrevState();
-					}
-
-					this.isLoading = false;
-					this._editorCoreService.removeUnsavedChanges();
-					this.cleanUp();
-					this._chd.detectChanges();
+					});
 				});
 		});
 	}

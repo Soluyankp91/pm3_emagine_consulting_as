@@ -602,6 +602,10 @@ export class AppModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-green-big.svg')
 		);
 		iconRegistry.addSvgIcon('home-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/menu/home-logo.svg'));
-		iconRegistry.addSvgIcon('login-PM-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-PM-logo.svg'));
+		iconRegistry.addSvgIcon(
+			'login-PM-logo',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-PM-logo.svg')
+		);
+		iconRegistry.addSvgIcon('approved', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approve.svg'));
 	}
 }

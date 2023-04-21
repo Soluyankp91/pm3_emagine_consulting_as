@@ -151,11 +151,17 @@ export class EditorCoreService {
 	}
 
 	toggleFields(showResult: boolean = true) {
+		let hasUnsavedChanges = this.editor.hasUnsavedChanges;
+		this.editor.history.beginTransaction();
 		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
 		if (showResult) {
 			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
 		} else {
 			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldCodes);
+		}
+		this.editor.history.endTransaction();
+		if (!hasUnsavedChanges) {
+			this.editor.history.clear();
 		}
 	}
 
