@@ -517,7 +517,7 @@
                 <ng-container *ngIf="!readOnlyMode">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                         <button class="rates-and-fees--btn button-add" mat-flat-button
-                            [ngClass]="{'u-mt--10': contractClientForm.clientRates.controls.length}"
+                            [ngClass]="{'u-mt--16': contractClientForm.clientRates.controls.length}"
                             [matMenuTriggerFor]="clientSpecialRateMenu" [disabled]="isClientRateEditing"
                             #clientRateMenuTrigger="matMenuTrigger"
                             (menuOpened)="clientSpecialRateFilter!.setValue(''); clientSpecialRateSelect.open();">
@@ -652,7 +652,7 @@
                 <ng-container *ngIf="!readOnlyMode">
                     <div fxLayout="row" fxLayoutAlign="start start">
                         <button class="rates-and-fees--btn button-add" mat-flat-button
-                            [ngClass]="{'u-mt--10': contractClientForm.clientFees.controls.length}"
+                            [ngClass]="{'u-mt--16': contractClientForm.clientFees.controls.length}"
                             [matMenuTriggerFor]="clientSpecialFeeMenu" [disabled]="isClientFeeEditing"
                             #clientFeeMenuTrigger="matMenuTrigger"
                             (menuOpened)="clientSpecialFeeFilter!.setValue(''); clientSpecialFeeSelect.open();">

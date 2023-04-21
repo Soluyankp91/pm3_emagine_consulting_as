@@ -1,21 +1,22 @@
-import { Directive, ElementRef, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
 
 @Directive({
     selector: '[matTooltip][appShowIfTruncated]'
   })
-  export class ShowIfTruncatedDirective implements OnInit {
+  export class ShowIfTruncatedDirective{
     constructor(
-      private matTooltip: MatTooltip,
-      private elementRef: ElementRef<HTMLElement>
+      private _matTooltip: MatTooltip,
+      private _elementRef: ElementRef<HTMLElement>
     ) {
     }
 
-    public ngOnInit(): void {
-      // Wait for DOM update
-      setTimeout(() => {
-        const element = this.elementRef.nativeElement;
-        this.matTooltip.disabled = element.scrollWidth <= element.clientWidth;
-      });
+    @HostListener("mouseenter", ["$event.target"])
+    private _truncateOrNot() {
+        // Wait for DOM update
+        setTimeout(() => {
+            const element = this._elementRef.nativeElement;
+            this._matTooltip.disabled = element.scrollWidth <= element.clientWidth;
+        }, 0);
     }
   }
