@@ -86,7 +86,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				});
 		} else {
 			this._purchaseOrderService
-				.purchaseOrderPOST(input)
+				.purchaseOrderPOST(this.data?.clientPeriodId, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
 				.subscribe((result) => {
 					result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto({
@@ -161,7 +161,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 
 	private _getPurchaseOrders() {
 		this._purchaseOrderService
-			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
+			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId)
 			.pipe(map((pos: PurchaseOrderDto[]) => pos.filter((po) => !this.data?.addedPoIds.includes(po.id))))
 			.subscribe((filteredPos) => {
 				this.purchaseOrders = filteredPos;
