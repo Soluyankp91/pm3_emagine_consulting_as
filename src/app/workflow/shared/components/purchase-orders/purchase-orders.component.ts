@@ -128,6 +128,9 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		formRow
 			.get('isUserAllowedToEdit')
 			.setValue(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit, { emitEvent: false });
+        formRow
+			.get('purchaseOrderCurrentContextData')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData, { emitEvent: false });
 		const capForInvoicingForm = formRow.get('capForInvoicing') as UntypedFormGroup;
 		capForInvoicingForm.get('type').setValue(purchaseOrder?.capForInvoicing?.type, { emitEvent: false });
 		capForInvoicingForm
@@ -160,6 +163,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			existsInAnotherWorkflow: new UntypedFormControl(
 				purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow
 			),
+			purchaseOrderCurrentContextData: new UntypedFormControl(purchaseOrder?.purchaseOrderCurrentContextData),
 		});
 		this.purchaseOrders.push(form);
 	}
