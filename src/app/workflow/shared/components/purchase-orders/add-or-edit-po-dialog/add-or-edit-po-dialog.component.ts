@@ -54,6 +54,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	) {
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
+        this.existingPo = new PurchaseOrderDto(this.data?.purchaseOrder);
 	}
 
 	ngOnInit(): void {
