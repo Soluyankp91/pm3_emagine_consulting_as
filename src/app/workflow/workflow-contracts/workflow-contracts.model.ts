@@ -3,34 +3,34 @@ import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } fr
 export class WorkflowContractsMainForm extends UntypedFormGroup {
     constructor() {
         super({
-            salesType: new UntypedFormControl(null),
-            deliveryType: new UntypedFormControl(null),
-            projectType: new UntypedFormControl(null),
-            margin: new UntypedFormControl(null),
+            salesTypeId: new UntypedFormControl(null),
+            deliveryTypeId: new UntypedFormControl(null),
+            projectTypeId: new UntypedFormControl(null),
+            marginId: new UntypedFormControl(null),
             projectDescription: new UntypedFormControl(null, Validators.required),
             projectCategory: new UntypedFormControl(null),
             primaryCategoryArea: new UntypedFormControl(null),
             primaryCategoryType: new UntypedFormControl(null),
             primaryCategoryRole: new UntypedFormControl(null),
             projectName: new UntypedFormControl(null, Validators.required),
-            discounts: new UntypedFormControl(null),
+            discountId: new UntypedFormControl(null),
             remarks: new UntypedFormControl(null, Validators.required),
             noRemarks: new UntypedFormControl(false),
             customDebtorNumber: new UntypedFormControl(null)
         });
     }
 
-    get salesType() {
-        return this.get('salesType');
+    get salesTypeId() {
+        return this.get('salesTypeId');
     }
-    get deliveryType() {
-        return this.get('deliveryType');
+    get deliveryTypeId() {
+        return this.get('deliveryTypeId');
     }
-    get projectType() {
-        return this.get('projectType');
+    get projectTypeId() {
+        return this.get('projectTypeId');
     }
-    get margin() {
-        return this.get('margin');
+    get marginId() {
+        return this.get('marginId');
     }
     get projectDescription() {
         return this.get('projectDescription');
@@ -50,8 +50,8 @@ export class WorkflowContractsMainForm extends UntypedFormGroup {
     get projectName() {
         return this.get('projectName');
     }
-    get discounts() {
-        return this.get('discounts');
+    get discountId() {
+        return this.get('discountId');
     }
     get remarks() {
         return this.get('remarks');
@@ -112,10 +112,10 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
             pdcInvoicingEntityId: new UntypedFormControl(null),
             clientTimeReportingCapId: new UntypedFormControl(null),
             timeReportingCaps: new UntypedFormArray([]),
-            rateUnitType: new UntypedFormControl(null),
-            currency: new UntypedFormControl(null),
+            rateUnitTypeId: new UntypedFormControl(null),
+            currencyId: new UntypedFormControl(null),
             normalRate: new UntypedFormControl(null),
-            clientRateType: new UntypedFormControl(null),
+            clientRateTypeId: new UntypedFormControl(null),
             frameAgreementId: new UntypedFormControl(null),
             invoiceCurrencyId: new UntypedFormControl(null),
             invoiceFrequencyId: new UntypedFormControl(null),
@@ -152,17 +152,17 @@ export class WorkflowContractsClientDataForm extends UntypedFormGroup {
     get timeReportingCaps() {
         return this.get('timeReportingCaps') as UntypedFormArray;
     }
-    get rateUnitType() {
-        return this.get('rateUnitType');
+    get rateUnitTypeId() {
+        return this.get('rateUnitTypeId');
     }
-    get currency() {
-        return this.get('currency');
+    get currencyId() {
+        return this.get('currencyId');
     }
     get normalRate() {
         return this.get('normalRate');
     }
-    get clientRateType() {
-        return this.get('clientRateType');
+    get clientRateTypeId() {
+        return this.get('clientRateTypeId');
     }
     get frameAgreementId() {
         return this.get('frameAgreementId');

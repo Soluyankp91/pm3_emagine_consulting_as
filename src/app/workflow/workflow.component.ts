@@ -704,22 +704,3 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
     }
 }
-
-// @Injectable()
-// export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
-// 	constructor(private _workflowService: WorkflowServiceProxy) {}
-
-// 	resolve(route: ActivatedRouteSnapshot): Observable<WorkflowSourcingCreate> {
-// 		let requestId = route.queryParams['requestId'];
-// 		let requestConsultantId = route.queryParams['requestConsultantId'];
-// 		return this._workflowService.workflowExists(requestConsultantId).pipe(
-// 			map((value: WorkflowAlreadyExistsDto) => {
-// 				return {
-// 					requestId: requestId,
-// 					requestConsultantId: requestConsultantId,
-// 					existingWorkflowId: value?.existingWorkflowId,
-// 				};
-// 			})
-// 		);
-// 	}
-// }

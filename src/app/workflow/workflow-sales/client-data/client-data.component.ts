@@ -43,6 +43,7 @@ import {
 } from '../workflow-sales.model';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
+import { ERateType } from '../../workflow.model';
 
 @Component({
 	selector: 'app-client-data',
@@ -71,6 +72,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	filteredContractSigners: ContactResultDto[];
 
 	currencies: EnumEntityTypeDto[];
+    eCurrencies: { [key: number]: string };
 	signerRoles: EnumEntityTypeDto[];
 	extensionDurations: EnumEntityTypeDto[];
 	extensionDeadlines: EnumEntityTypeDto[];
@@ -98,8 +100,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	eTimeReportingCaps = ETimeReportingCaps;
 	ePurchaseOrderMode = EPurchaseOrderMode;
 	filteredFrameAgreements: AgreementSimpleListItemDto[];
-
 	selectedFrameAgreementId: number | null;
+    eRateType = ERateType;
 
 	private _unsubscribe = new Subject();
 	constructor(
@@ -201,7 +203,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		if (value.id) {
 			this.salesClientDataForm.rateUnitTypeId?.setValue(null, { emitEvent: false });
 			this.salesClientDataForm.normalRate?.setValue(null, { emitEvent: false });
-			this.salesClientDataForm.clientCurrency?.setValue(null, { emitEvent: false });
+			this.salesClientDataForm.clientCurrencyId?.setValue(null, { emitEvent: false });
 		}
 	}
 
@@ -268,7 +270,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (formattedRate.rateSpecifiedAs?.id === 1) {
 			formattedRate.clientRate = +((this.salesClientDataForm?.normalRate?.value * rate.clientRate!) / 100).toFixed(2);
-			formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrency?.value?.id;
+			formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrencyId?.value;
 		} else {
 			formattedRate.clientRate = rate.clientRate;
 			formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
@@ -286,9 +288,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
 			rateSpecifiedAs: new UntypedFormControl(clientRate?.rateSpecifiedAs ?? null),
 			clientRate: new UntypedFormControl(clientRate?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null
-			),
+			clientRateCurrencyId: new UntypedFormControl(clientRate?.clientRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
 		this.salesClientDataForm.clientRates.push(form);
@@ -321,8 +321,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		const rateRow = this.clientRates.at(rateIndex);
 		rateRow.get('clientRate')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
 		rateRow
-			.get('clientRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), { emitEvent: false });
+			.get('clientRateCurrencyId')
+			?.setValue(this.clientRateToEdit.clientRateCurrencyId, { emitEvent: false });
 		this.clientRateToEdit = new PeriodClientSpecialFeeDto();
 		this.isClientRateEditing = false;
 		this.clientRates.at(rateIndex).get('editable')?.setValue(false, { emitEvent: false });
@@ -349,9 +349,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
 			frequency: new UntypedFormControl(clientFee?.frequency ?? null),
 			clientRate: new UntypedFormControl(clientFee?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null
-			),
+			clientRateCurrencyId: new UntypedFormControl(clientFee?.clientRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientFee ? false : true),
 		});
 		this.salesClientDataForm.clientFees.push(form);
@@ -385,7 +383,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		feeRow.get('clientRate')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
 		feeRow
 			.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), { emitEvent: false });
+			?.setValue(this.clientFeeToEdit.clientRateCurrencyId, { emitEvent: false });
 		this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
 		this.isClientFeeEditing = false;
 		this.clientFees.at(feeIndex).get('editable')?.setValue(false, { emitEvent: false });
@@ -503,6 +501,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
     private _getEnums() {
         this.currencies = this.getStaticEnumValue('currencies');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
         this.legalEntities = this.getStaticEnumValue('legalEntities');
         this.signerRoles = this.getStaticEnumValue('signerRoles');
         this.extensionDurations = this.getStaticEnumValue('extensionDurations');

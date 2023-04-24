@@ -17,42 +17,42 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-372">
                         <mat-label>Project Type (Legacy)</mat-label>
-                        <mat-select required [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                        <mat-select required [disabled]="true" formControlName="projectTypeId" [disableOptionCentering]="true">
                             <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
-                                <mat-option [value]="item">
+                                <mat-option [value]="item.id">
                                     {{ item.name }}
                                 </mat-option>
                             </ng-container>
                         </mat-select>
                         <mat-error>
-                            <app-validator [control]="contractsMainForm.projectType"></app-validator>
+                            <app-validator [control]="contractsMainForm.projectTypeId"></app-validator>
                         </mat-error>
                     </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="start start">
                     <h3 class="workflow-darkblue--text u-mt--15 u-mb--10">Sales type</h3>
                     <mat-button-toggle-group [disabled]="true"
-                        [ngClass]="{'mat-form-field-invalid': !contractsMainForm.salesType?.valid}" class="workflow-toggle-buttons"
-                        formControlName="salesType" required>
+                        [ngClass]="{'mat-form-field-invalid': !contractsMainForm.salesTypeId?.valid}" class="workflow-toggle-buttons"
+                        formControlName="salesTypeId" required>
                         <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
-                            <ng-container *ngIf="item.id === contractsMainForm.salesType?.value?.id">
-                                <mat-button-toggle [value]="item">{{item.name}}</mat-button-toggle>
+                            <ng-container *ngIf="item.id === contractsMainForm.salesTypeId?.value">
+                                <mat-button-toggle [value]="item.id">{{item.name}}</mat-button-toggle>
                             </ng-container>
                         </ng-container>
                     </mat-button-toggle-group>
                     <mat-error>
-                        <app-validator [withoutFormField]="true" *ngIf="contractsMainForm.salesType?.touched"
-                            [control]="contractsMainForm.salesType"></app-validator>
+                        <app-validator [withoutFormField]="true" *ngIf="contractsMainForm.salesTypeId?.touched"
+                            [control]="contractsMainForm.salesTypeId"></app-validator>
                     </mat-error>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="start start">
                     <h3 class="workflow-darkblue--text u-mt--20 u-mb--10">Delivery type</h3>
                     <mat-button-toggle-group [disabled]="true"
-                        [ngClass]="{'mat-form-field-invalid': !contractsMainForm.deliveryType?.valid}" class="workflow-toggle-buttons"
-                        formControlName="deliveryType" required>
+                        [ngClass]="{'mat-form-field-invalid': !contractsMainForm.deliveryTypeId?.valid}" class="workflow-toggle-buttons"
+                        formControlName="deliveryTypeId" required>
                         <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                            <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id !== salesTypesEnum.ManagedService)">
-                                <ng-container *ngIf="item.id === contractsMainForm.deliveryType?.value?.id">
+                            <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesTypeId?.value === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesTypeId?.value !== salesTypesEnum.ManagedService)">
+                                <ng-container *ngIf="item.id === contractsMainForm.deliveryTypeId?.value">
                                     <mat-button-toggle [value]="item">
                                         {{ item.name }}
                                     </mat-button-toggle>
@@ -61,26 +61,26 @@
                         </ng-container>
                     </mat-button-toggle-group>
                     <mat-error>
-                        <ng-container *ngIf="contractsMainForm.deliveryType?.touched">
-                            <app-validator [withoutFormField]="true" [control]="contractsMainForm.deliveryType"></app-validator>
+                        <ng-container *ngIf="contractsMainForm.deliveryTypeId?.touched">
+                            <app-validator [withoutFormField]="true" [control]="contractsMainForm.deliveryTypeId"></app-validator>
                         </ng-container>
                     </mat-error>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--15">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-180">
                         <mat-label>Margin</mat-label>
-                        <mat-select [disabled]="true" formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                        <mat-select [disabled]="true" formControlName="marginId" [disableOptionCentering]="true" required>
                             <mat-option class="mat-select-clear-option">
                                 Clear
                             </mat-option>
                             <ng-container *ngFor="let item of margins; trackBy: trackById">
-                                <mat-option [value]="item">
+                                <mat-option [value]="item.id">
                                     {{ item.name }}
                                 </mat-option>
                             </ng-container>
                         </mat-select>
                         <mat-error>
-                            <app-validator [control]="contractsMainForm.margin"></app-validator>
+                            <app-validator [control]="contractsMainForm.marginId"></app-validator>
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -120,19 +120,18 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
                         <mat-label>Discounts</mat-label>
-                        <mat-select [disabled]="true" formControlName="discounts" [disableOptionCentering]="true"
-                            [compareWith]="compareWithFn">
+                        <mat-select [disabled]="true" formControlName="discountId" [disableOptionCentering]="true">
                             <mat-option class="mat-select-clear-option">
                                 Clear
                             </mat-option>
                             <ng-container *ngFor="let item of discounts; trackBy: trackById">
-                                <mat-option [value]="item">
+                                <mat-option [value]="item.id">
                                     {{ item?.name }}
                                 </mat-option>
                             </ng-container>
                         </mat-select>
                         <mat-error>
-                            <app-validator [control]="contractsMainForm.discounts"></app-validator>
+                            <app-validator [control]="contractsMainForm.discountId"></app-validator>
                         </mat-error>
                     </mat-form-field>
                 </div>

@@ -262,15 +262,15 @@
                                         </mat-checkbox>
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [fxHide]="!consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
                                             <mat-label>emagine Office address</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" [required]="consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value" formControlName="consultantWorkplaceEmagineOffice" [disableOptionCentering]="true">
+                                            <mat-select [disabled]="readOnlyMode" [required]="consultantsForm.consultants.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value" formControlName="emagineOfficeId" [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of emagineOffices; trackBy: trackById">
-                                                    <mat-option [value]="item">
+                                                    <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-select>
                                             <mat-error>
-                                                <app-validator [control]="consultant.get('consultantWorkplaceEmagineOffice')"></app-validator>
+                                                <app-validator [control]="consultant.get('emagineOfficeId')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
@@ -316,9 +316,9 @@
                                     </mat-form-field>
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
                                         <mat-label>Period</mat-label>
-                                        <mat-select [disabled]="readOnlyMode" required formControlName="expectedWorkloadUnitId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-select [disabled]="readOnlyMode" required formControlName="expectedWorkloadUnitId" [disableOptionCentering]="true">
                                             <ng-container *ngFor="let item of expectedWorkloadUnits; trackBy: trackById">
-                                                <mat-option [value]="item">
+                                                <mat-option [value]="item.id">
                                                     {{ item.name }}
                                                 </mat-option>
                                             </ng-container>
@@ -334,9 +334,9 @@
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                             <mat-label>Cap type</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantCapOnTimeReporting"
+                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantTimeReportingCapId"
                                                 (selectionChange)="capSelectionChange($event, consultantIndex)"
-                                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of consultantTimeReportingCap; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -344,11 +344,11 @@
                                                 </ng-container>
                                             </mat-select>
                                             <mat-error>
-                                                <app-validator [control]="consultant.get('consultantCapOnTimeReporting')"></app-validator>
+                                                <app-validator [control]="consultant.get('consultantTimeReportingCapId')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                            <ng-container *ngIf="consultant.get('consultantCapOnTimeReporting').value?.id === eTimeReportingCaps.CapOnUnits">
+                                            <ng-container *ngIf="consultant.get('consultantTimeReportingCapId').value === eTimeReportingCaps.CapOnUnits">
                                                 <ng-container formArrayName="timeReportingCaps" class="u-w--100">
                                                     <ng-container
                                                         *ngFor="let cap of getConsultantCapControls(consultantIndex); trackBy: trackByItem; index as i"
@@ -429,7 +429,7 @@
                                             <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
                                                 Reporting unit
                                             </span>
-                                            <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId">
+                                            <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId">
                                                 <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                                     emagine rate
                                                 </span>
@@ -451,16 +451,16 @@
                                                     <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{rate.value.reportingUnit?.name ?? '-'}}
                                                     </span>
-                                                    <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId">
+                                                    <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId">
                                                         <ng-container *ngIf="rate.value.editable; else consutlantProDataRateCurrencyDisplay">
                                                             <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
-                                                                    <input [required]="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId" matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
+                                                                    <input [required]="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId" matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
                                                                 </mat-form-field>
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
-                                                                    <mat-select [required]="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId" formControlName="prodataToProdataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                                    <mat-select [required]="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId" formControlName="prodataToProdataRateCurrencyId" placeholder="Currency" [disableOptionCentering]="true">
                                                                         <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                            <mat-option [value]="item">
+                                                                            <mat-option [value]="item.id">
                                                                                 {{ item.name }}
                                                                             </mat-option>
                                                                         </ng-container>
@@ -469,8 +469,8 @@
                                                             </div>
                                                         </ng-container>
                                                         <ng-template #consutlantProDataRateCurrencyDisplay>
-                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate !== null && rate.value.prodataToProdataRateCurrency?.name ? rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                                {{rate.value.prodataToProdataRate !== null && rate.value.prodataToProdataRateCurrency?.name ? rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name : '-'}}
+                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate !== null && eCurrencies[rate.value.prodataToProdataRateCurrencyId]?.length ? rate.value.prodataToProdataRate + ' ' + eCurrencies[rate.value.prodataToProdataRateCurrencyId] : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                                {{rate.value.prodataToProdataRate !== null && eCurrencies[rate.value.prodataToProdataRateCurrencyId]?.length ? rate.value.prodataToProdataRate + ' ' + eCurrencies[rate.value.prodataToProdataRateCurrencyId] : '-'}}
                                                             </span>
                                                         </ng-template>
                                                     </ng-container>
@@ -481,9 +481,9 @@
                                                                 <input required matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
-                                                                <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                                <mat-select required formControlName="consultantRateCurrencyId" placeholder="Currency" [disableOptionCentering]="true">
                                                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                        <mat-option [value]="item">
+                                                                        <mat-option [value]="item.id">
                                                                             {{ item.name }}
                                                                         </mat-option>
                                                                     </ng-container>
@@ -492,8 +492,8 @@
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consutlantRateCurrencyDisplay>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{rate.value.consultantRate !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate !== null && eCurrencies[rate.value.consultantRateCurrencyId]?.length ? rate.value.consultantRate + ' ' + eCurrencies[rate.value.consultantRateCurrencyId] : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{rate.value.consultantRate !== null && eCurrencies[rate.value.consultantRateCurrencyId]?.length ? rate.value.consultantRate + ' ' + eCurrencies[rate.value.consultantRateCurrencyId] : '-'}}
                                                         </span>
                                                     </ng-template>
                                                     <ng-container *ngIf="rate.value.editable; else consultantRateActionDisplay">
@@ -572,13 +572,13 @@
                                 <div class="inline-edit-form u-w--100">
                                     <ng-container *ngIf="consultant.value.specialFees?.length">
                                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-pt--10 u-w--100">
-                                            <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
+                                            <span fxFlex="1 0 20%" class="workflow-sales-inline--form__header u-w--100">
                                                 Fee name
                                             </span>
                                             <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
                                                 Frequency
                                             </span>
-                                            <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId">
+                                            <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId">
                                                 <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                                     emagine fee
                                                 </span>
@@ -594,22 +594,22 @@
                                         <ng-container *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;" [formArrayName]="specialFeeIndex">
                                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
                                                 <ng-container>
-                                                    <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                    <span fxFlex="1 0 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeName ?? '-'}}
                                                     </span>
                                                     <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.frequency?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.frequency?.name ?? '-'}}
                                                     </span>
-                                                    <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId">
+                                                    <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId">
                                                         <ng-container *ngIf="fee.value.editable; else proDataFeeCurrencyDisplay">
                                                             <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
-                                                                    <input [required]="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId" matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
+                                                                    <input [required]="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId" matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
                                                                 </mat-form-field>
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
-                                                                    <mat-select [required]="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId" formControlName="prodataToProdataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                                    <mat-select [required]="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId" formControlName="prodataToProdataRateCurrencyId" placeholder="Currency" [disableOptionCentering]="true">
                                                                         <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                            <mat-option [value]="item">
+                                                                            <mat-option [value]="item.id">
                                                                                 {{ item.name }}
                                                                             </mat-option>
                                                                         </ng-container>
@@ -618,8 +618,8 @@
                                                             </div>
                                                         </ng-container>
                                                         <ng-template #proDataFeeCurrencyDisplay>
-                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate !== null && fee.value.prodataToProdataRateCurrency?.name ? fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                                {{fee.value.prodataToProdataRate !== null && fee.value.prodataToProdataRateCurrency?.name ? fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name : '-'}}
+                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate !== null && eCurrencies[fee.value.prodataToProdataRateCurrencyId]?.length ? fee.value.prodataToProdataRate + ' ' + eCurrencies[fee.value.prodataToProdataRateCurrencyId] : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                                {{fee.value.prodataToProdataRate !== null && eCurrencies[fee.value.prodataToProdataRateCurrencyId]?.length ? fee.value.prodataToProdataRate + ' ' + eCurrencies[fee.value.prodataToProdataRateCurrencyId] : '-'}}
                                                             </span>
                                                         </ng-template>
                                                     </ng-container>
@@ -630,9 +630,9 @@
                                                                 <input required matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
-                                                                <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                                <mat-select required formControlName="consultantRateCurrencyId" placeholder="Currency" [disableOptionCentering]="true">
                                                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                        <mat-option [value]="item">
+                                                                        <mat-option [value]="item.id">
                                                                             {{ item.name }}
                                                                         </mat-option>
                                                                     </ng-container>
@@ -641,8 +641,8 @@
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consultantFeeCurrencyDisplay>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{fee.value.consultantRate !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate !== null && eCurrencies[fee.value.consultantRateCurrencyId]?.length ? fee.value.consultantRate + ' ' + eCurrencies[fee.value.consultantRateCurrencyId] : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{fee.value.consultantRate !== null && eCurrencies[fee.value.consultantRateCurrencyId]?.length ? fee.value.consultantRate + ' ' + eCurrencies[fee.value.consultantRateCurrencyId] : '-'}}
                                                         </span>
                                                     </ng-template>
 
@@ -730,38 +730,38 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
                                         <mat-label>emagine payment entity (consultant)</mat-label>
-                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-select [disabled]="readOnlyMode" required formControlName="pdcPaymentEntityId" [disableOptionCentering]="true">
                                             <ng-container *ngFor="let item of legalEntities; trackBy: trackById">
-                                                <mat-option [value]="item">
+                                                <mat-option [value]="item.id">
                                                     {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
                                         <mat-error>
-                                            <app-validator [control]="consultant.get('consultantProdataEntity')"></app-validator>
+                                            <app-validator [control]="consultant.get('pdcPaymentEntityId')"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
 
-                                <ng-container *ngIf="consultant.value.consultantProdataEntity?.id">
+                                <ng-container *ngIf="consultant.value.pdcPaymentEntityId">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
                                             <mat-label>Price</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantPaymentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantRateTypeId" [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of clientRateTypes; trackBy: trackById">
-                                                    <mat-option [value]="item">
+                                                    <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-select>
                                             <mat-error>
-                                                <app-validator [control]="consultant.get('consultantPaymentType')"></app-validator>
+                                                <app-validator [control]="consultant.get('consultantRateTypeId')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
 
-                                    <ng-container class="u-w--100" [ngSwitch]="consultant.value.consultantPaymentType?.id">
-                                        <ng-container *ngSwitchCase="1"> <!-- 'Time based' -->
+                                    <ng-container class="u-w--100" [ngSwitch]="consultant.value.consultantRateTypeId">
+                                        <ng-container *ngSwitchCase="eRateType.TimeBased">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Rate</mat-label>
@@ -772,28 +772,28 @@
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                     <mat-label>Unit type</mat-label>
-                                                    <mat-select [disabled]="readOnlyMode" required formControlName="consultantRateUnitType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="updateProdataUnitType($event, consultantIndex)">
+                                                    <mat-select [disabled]="readOnlyMode" required formControlName="rateUnitTypeId" [disableOptionCentering]="true" (selectionChange)="updateProdataUnitType($event, consultantIndex)">
                                                         <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
-                                                            <mat-option [value]="item">
+                                                            <mat-option [value]="item.id">
                                                                 {{ item.name }}
                                                             </mat-option>
                                                         </ng-container>
                                                     </mat-select>
                                                     <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantRateUnitType')"></app-validator>
+                                                        <app-validator [control]="consultant.get('rateUnitTypeId')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                     <mat-label>Currency</mat-label>
-                                                    <mat-select [disabled]="readOnlyMode" required formControlName="consultantRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select [disabled]="readOnlyMode" required formControlName="consultantRateCurrencyId" [disableOptionCentering]="true">
                                                         <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                            <mat-option [value]="item">
+                                                            <mat-option [value]="item.id">
                                                                 {{ item.name }}
                                                             </mat-option>
                                                         </ng-container>
                                                     </mat-select>
                                                     <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantRateCurrency')"></app-validator>
+                                                        <app-validator [control]="consultant.get('consultantRateCurrencyId')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -802,7 +802,7 @@
                                                     </ng-container>
                                                 </div>
                                             </div>
-                                            <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId">
+                                            <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                         <mat-label>e-to-e rate</mat-label>
@@ -813,28 +813,28 @@
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Unit type</mat-label>
-                                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantPDCRateUnitType" [disableOptionCentering]="true" [disabled]="true" [compareWith]="compareWithFn">
+                                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantPDCRateUnitTypeId" [disableOptionCentering]="true" [disabled]="true">
                                                             <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
-                                                                <mat-option [value]="item">
+                                                                <mat-option [value]="item.id">
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
                                                         <mat-error>
-                                                            <app-validator [control]="consultant.get('consultantPDCRateUnitType')"></app-validator>
+                                                            <app-validator [control]="consultant.get('consultantPDCRateUnitTypeId')"></app-validator>
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Currency</mat-label>
-                                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantPDCRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantPDCRateCurrencyId" [disableOptionCentering]="true">
                                                             <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                <mat-option [value]="item">
+                                                                <mat-option [value]="item.id">
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
                                                         <mat-error>
-                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrency')"></app-validator>
+                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrencyId')"></app-validator>
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -850,7 +850,7 @@
                                                 </div>
                                             </ng-container>
                                         </ng-container>
-                                        <ng-container *ngSwitchCase="2"> <!-- 'Fixed' -->
+                                        <ng-container *ngSwitchCase="eRateType.Fixed">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Rate</mat-label>
@@ -861,15 +861,15 @@
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                     <mat-label>Currency</mat-label>
-                                                    <mat-select [disabled]="readOnlyMode" required formControlName="consultantRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select [disabled]="readOnlyMode" required formControlName="consultantRateCurrencyId" [disableOptionCentering]="true">
                                                         <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                            <mat-option [value]="item">
+                                                            <mat-option [value]="item.id">
                                                                 {{ item.name }}
                                                             </mat-option>
                                                         </ng-container>
                                                     </mat-select>
                                                     <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantRateCurrency')"></app-validator>
+                                                        <app-validator [control]="consultant.get('consultantRateCurrencyId')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -878,7 +878,7 @@
                                                     </ng-container>
                                                 </div>
                                             </div>
-                                            <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId)">
+                                            <ng-container *ngIf="consultant.value?.pdcPaymentEntityId && (consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId)">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                         <mat-label>e-to-e rate</mat-label>
@@ -889,15 +889,15 @@
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Currency</mat-label>
-                                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantPDCRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantPDCRateCurrencyId" [disableOptionCentering]="true">
                                                             <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                <mat-option [value]="item">
+                                                                <mat-option [value]="item.id">
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
                                                         <mat-error>
-                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrency')"></app-validator>
+                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrencyId')"></app-validator>
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -916,10 +916,10 @@
                                         <ng-container *ngSwitchDefault>
                                         </ng-container>
                                     </ng-container>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="consultant.value.consultantPaymentType?.id !== 1"> <!-- id: 1 - Time based -->
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [ngClass]="{'u-mr--12': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}" [fxHide]="clientDataForm.clientRateAndInvoicing?.value?.id !== 2">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="consultant.value.consultantRateTypeId !== eRateType.TimeBased">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [ngClass]="{'u-mr--12': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}" [fxHide]="clientDataForm.clientRateTypeId?.value !== eRateType.Fixed">
                                             <mat-label>Invoicing frequency</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" [required]="consultant.value.consultantPaymentType?.id === 1 && clientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="readOnlyMode" [required]="consultant.value.consultantRateTypeId === eRateType.TimeBased && clientDataForm.clientRateTypeId?.value?.id === eRateType.Fixed" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <ng-container *ngFor="let item of invoiceFrequencies; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -944,10 +944,10 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="consultant.value.consultantPaymentType?.id !== 2"> <!-- id: 2 - Fixed -->
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="consultant.value.consultantRateTypeId !== eRateType.Fixed">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [ngClass]="{'u-mr--12': consultant.value.consultantInvoicingTime?.name === 'Manual date'}">
                                             <mat-label>Invoicing time</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" [required]="consultant.value.consultantPaymentType?.id === 2" formControlName="consultantInvoicingTime" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="readOnlyMode" [required]="consultant.value.consultantRateTypeId === eRateType.Fixed" formControlName="consultantInvoicingTime" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <ng-container *ngFor="let item of invoicingTimes; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
@@ -973,18 +973,18 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="(!clientDataForm.value?.pdcInvoicingEntityId || !consultant.value?.consultantProdataEntity?.id) || (consultant.value?.consultantProdataEntity?.id === clientDataForm.value?.pdcInvoicingEntityId)">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="(!clientDataForm.value?.pdcInvoicingEntityId || !consultant.value?.pdcPaymentEntityId) || (consultant.value?.pdcPaymentEntityId === clientDataForm.value?.pdcInvoicingEntityId)">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-150">
                                             <mat-label>emagine invoicing currency</mat-label>
-                                            <mat-select [disabled]="readOnlyMode" [required]="(clientDataForm.value?.pdcInvoicingEntityId && consultant.value?.consultantProdataEntity?.id) && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId)" formControlName="prodataToProdataInvoiceCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="readOnlyMode" [required]="(clientDataForm.value?.pdcInvoicingEntityId && consultant.value?.pdcPaymentEntityId) && (consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId)" formControlName="prodataToProdataInvoiceCurrencyId" [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                    <mat-option [value]="item">
+                                                    <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
                                             </mat-select>
                                             <mat-error>
-                                                <app-validator [control]="consultant.get('prodataToProdataInvoiceCurrency')"></app-validator>
+                                                <app-validator [control]="consultant.get('prodataToProdataInvoiceCurrencyId')"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
@@ -1036,7 +1036,7 @@
                                 <h2 class="workflow-section--header">Account manager</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <ng-container *ngIf="(consultant.value?.consultantProdataEntity?.id && clientDataForm.value?.pdcInvoicingEntityId) && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId); else noDeliveryAccountManager">
+                                <ng-container *ngIf="(consultant.value?.pdcPaymentEntityId && clientDataForm.value?.pdcInvoicingEntityId) && (consultant.value?.pdcPaymentEntityId !== clientDataForm.value?.pdcInvoicingEntityId); else noDeliveryAccountManager">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': deliveryManagerAutocomplete.isOpen}">
                                             <mat-label>Delivery Account manager</mat-label>
@@ -1125,18 +1125,18 @@
 
 <ng-template #marginComponent let-consultant="consultant" let-type="type">
     <calculated-margin [marginType]="type"
-        [data]="{clientRate: clientDataForm.normalRate?.value,clientCurrencyId: clientDataForm.clientCurrency?.value?.id,
+        [data]="{clientRate: clientDataForm.normalRate?.value,clientCurrencyId: clientDataForm.clientCurrencyId?.value,
             clientUnitTypeId: clientDataForm.rateUnitTypeId?.value,
-            clientPaymentType: clientDataForm.clientRateAndInvoicing?.value?.id,
+            clientPaymentType: clientDataForm.clientRateTypeId,
             clientPdcEntity: clientDataForm.value?.pdcInvoicingEntityId,
             consultantRate: consultant.value?.consultantRate,
-            consultantCurrencyId: consultant.value?.consultantRateCurrency?.id,
-            consultantUnitTypeId: consultant.value?.consultantRateUnitType?.id,
+            consultantCurrencyId: consultant.value?.consultantRateCurrencyId,
+            consultantUnitTypeId: consultant.value?.rateUnitTypeId,
             consultantPDCRate: consultant?.value?.consultantPDCRate,
-            consultantPDCCurrencyId: consultant.value?.consultantPDCRateCurrency?.id,
-            consultantPDCUnitTypeId: consultant.value?.consultantPDCRateUnitType?.id,
-            consultantPaymentType: consultant.value?.consultantPaymentType?.id,
-            consultantPdcEntity: consultant.value?.consultantProdataEntity?.id}">
+            consultantPDCCurrencyId: consultant.value?.consultantPDCRateCurrencyId,
+            consultantPDCUnitTypeId: consultant.value?.consultantPDCRateUnitTypeId,
+            consultantPaymentType: consultant.value?.consultantRateTypeId,
+            consultantPdcEntity: consultant.value?.pdcPaymentEntityId}">
     </calculated-margin>
 </ng-template>
 

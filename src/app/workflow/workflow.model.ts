@@ -220,3 +220,8 @@ export class WorkflowSourcingCreate {
 		this.existingWorkflowId = existingWorkflowId;
 	}
 }
+
+export enum ERateType {
+    TimeBased = 1,
+    Fixed = 2
+}

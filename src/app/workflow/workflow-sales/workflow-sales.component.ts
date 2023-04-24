@@ -53,7 +53,7 @@ import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { EmploymentTypes } from '../workflow.model';
+import { ERateType, EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
@@ -562,13 +562,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesClientData?.clientTimeReportingCapId ?? 1,
 					{ emitEvent: false }
 				); // default idValue = 1
-				let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+				let clientRateType = ERateType.TimeBased; // default value
 				if (result.salesClientData?.clientRate?.isFixedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+					clientRateType = ERateType.Fixed;
 				} else if (result.salesClientData?.clientRate?.isTimeBasedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+					clientRateType = ERateType.TimeBased;
 				}
-				this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {
+				this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.setValue(clientRateType, {
 					emitEVent: false,
 				});
 				this.clientDataComponent?.salesClientDataForm.normalRate?.setValue(
@@ -583,10 +583,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEVent: false,
 					}
 				);
-				this.clientDataComponent?.salesClientDataForm.clientCurrency?.setValue(
-					this.findItemById(this.currencies, result.salesClientData?.clientRate?.currencyId),
-					{ emitEVent: false }
-				);
+				this.clientDataComponent?.salesClientDataForm.clientCurrencyId?.setValue(result.salesClientData?.clientRate?.currencyId, { emitEVent: false });
 				this.clientDataComponent?.salesClientDataForm.manualDate?.setValue(
 					result.salesClientData?.clientRate?.manualDate,
 					{
@@ -599,15 +596,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEVent: false,
 					}
 				);
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
-					// Time based
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.TimeBased) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoiceFrequencies, result.salesClientData?.clientRate?.invoiceFrequencyId),
 						{ emitEVent: false }
 					);
 				}
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
-					// Fixed
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.Fixed) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceTime?.setValue(
 						this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId),
 						{ emitEVent: false }
@@ -855,13 +850,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				let clientDto = new ClientResultDto();
 				clientDto.clientId = result.directClientIdValue;
 				this.clientDataComponent?.salesClientDataForm.directClientIdValue?.setValue(clientDto, { emitEvent: false });
-				let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+				let clientRateType = ERateType.TimeBased; // default value is 'Time based'
 				if (result.clientRate?.isFixedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+					clientRateType = ERateType.Fixed;
 				} else if (result.clientRate?.isTimeBasedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+					clientRateType = ERateType.TimeBased; // 1: 'Time based'
 				}
-				this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {
+				this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.setValue(clientRateType, {
 					emitEVent: false,
 				});
 				this.clientDataComponent?.salesClientDataForm.pdcInvoicingEntityId?.setValue(
@@ -876,22 +871,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.clientDataComponent?.salesClientDataForm.rateUnitTypeId?.setValue(result.clientRate?.rateUnitTypeId, {
 					emitEVent: false,
 				});
-				this.clientDataComponent?.salesClientDataForm.clientCurrency?.setValue(
-					this.findItemById(this.currencies, result.clientRate?.currencyId),
-					{ emitEVent: false }
-				);
+				this.clientDataComponent?.salesClientDataForm.clientCurrencyId?.setValue(result.clientRate?.currencyId, { emitEVent: false });
 				this.clientDataComponent?.salesClientDataForm.invoiceCurrencyId?.setValue(result.clientRate?.invoiceCurrencyId, {
 					emitEVent: false,
 				});
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
-					// Time based
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.TimeBased) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoiceFrequencies, result.clientRate?.invoiceFrequencyId),
 						{ emitEVent: false }
 					);
 				}
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
-					// Fixed
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.Fixed) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoicingTimes, result.clientRate?.invoicingTimeId),
 						{ emitEVent: false }
@@ -1098,10 +1088,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		);
 		input.salesClientData.clientRate = new ClientRateDto(this.clientDataComponent?.salesClientDataForm.value);
 		input.salesClientData.clientRate!.isTimeBasedRate =
-			this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
+			this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.TimeBased;
 		input.salesClientData.clientRate!.isFixedRate =
-			this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
-		input.salesClientData.clientRate!.currencyId = this.clientDataComponent?.salesClientDataForm.clientCurrency?.value?.id;
+			this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.Fixed;
+		input.salesClientData.clientRate!.currencyId = this.clientDataComponent?.salesClientDataForm.clientCurrencyId?.value;
 		input.salesClientData.clientRate!.invoiceFrequencyId =
 			this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.value?.id;
 		input.salesClientData.clientRate!.invoicingTimeId =
@@ -1129,7 +1119,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			input.salesClientData!.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
 			this.clientDataComponent?.salesClientDataForm.clientRates.value.forEach((rate: any) => {
 				let clientRate = new PeriodClientSpecialRateDto(rate);
-				clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+				clientRate.clientRateCurrencyId = rate.clientRateCurrencyId;
 				input.salesClientData!.periodClientSpecialRates?.push(clientRate);
 			});
 		} else {
@@ -1139,7 +1129,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			input.salesClientData!.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
 			this.clientDataComponent?.salesClientDataForm.clientFees.value.forEach((fee: any) => {
 				let clientFee = new PeriodClientSpecialFeeDto(fee);
-				clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
+				clientFee.clientRateCurrencyId = fee.clientRateCurrencyId;
 				input.salesClientData!.periodClientSpecialFees?.push(clientFee);
 			});
 		} else {
@@ -1215,21 +1205,21 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				consultant.consultantWorkplaceClientAddress?.clientAddresses,
 				consultant.onsiteClientAddress?.id
 			);
-			consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
+			consultantInput.emagineOfficeId = consultant.emagineOfficeId;
 			consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
-			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
-			consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
-			consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
+			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
+			consultantInput.consultantTimeReportingCapId = consultant.consultantTimeReportingCapId;
+			consultantInput.pdcPaymentEntityId = consultant.pdcPaymentEntityId;
 
 			consultantInput.consultantRate = new ConsultantRateDto();
-			consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
-			consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2; // 2: 'Fixed';
+			consultantInput.consultantRate.isTimeBasedRate = consultant.consultantRateTypeId === ERateType.TimeBased;
+			consultantInput.consultantRate.isFixedRate = consultant.consultantRateTypeId === ERateType.Fixed;
 			consultantInput.consultantRate.normalRate = consultant.consultantRate;
-			consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
-			consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
+			consultantInput.consultantRate.currencyId = consultant.consultantRateCurrencyId;
+			consultantInput.consultantRate.rateUnitTypeId = consultant.rateUnitTypeId;
 			consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
-			consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
-			consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrency?.id;
+			consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrencyId;
+			consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
 			if (consultantInput.consultantRate.isTimeBasedRate) {
 				consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
 			}
@@ -1244,7 +1234,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				for (let rate of consultant.specialRates) {
 					let consultantSpecialRate = new PeriodConsultantSpecialRateDto(rate);
 					consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
-					consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
 				}
 			} else {
@@ -1255,7 +1244,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				for (let fee of consultant.specialFees) {
 					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto(fee);
 					consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
-					consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
 				}
 			} else {

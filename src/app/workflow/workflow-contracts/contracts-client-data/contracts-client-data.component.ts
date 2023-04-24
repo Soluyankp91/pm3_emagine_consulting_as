@@ -27,6 +27,7 @@ import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ClientRateTypes, IClientAddress } from '../../workflow-sales/workflow-sales.model';
 import { Router } from '@angular/router';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { ERateType } from '../../workflow.model';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -45,6 +46,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	clientTimeReportingCap: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
+    eCurrencies: { [key: number]: string };
 	valueUnitTypes: EnumEntityTypeDto[];
 	periodUnitTypes: EnumEntityTypeDto[];
 	legalEntities: LegalEntityDto[];
@@ -64,6 +66,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	filteredFrameAgreements: AgreementSimpleListItemDto[];
 	selectedFrameAgreementId: number | null;
 	clientRateTypes = ClientRateTypes;
+    eRateType = ERateType;
 	filteredClientInvoicingRecipients: ClientResultDto[];
 	invoicingRecipientsAddresses: IClientAddress[];
 	private _unsubscribe = new Subject();
@@ -152,9 +155,9 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			agreementType: AgreementType.Frame,
 			validity: undefined,
 			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
-			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesTypeId.value : undefined,
 			contractTypeId: undefined,
-			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryTypeId.value : undefined,
 			startDate: undefined,
 			endDate: undefined,
 			recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(
@@ -185,10 +188,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		if (
 			this.contractClientForm.directClientId.value !== null &&
 			this.contractClientForm.directClientId.value !== undefined &&
-			this.contractsMainForm.salesType.value?.id !== null &&
-			this.contractsMainForm.salesType.value?.id !== undefined &&
-			this.contractsMainForm.deliveryType.value?.id !== null &&
-			this.contractsMainForm.deliveryType.value?.id !== undefined
+			this.contractsMainForm.salesTypeId.value !== null &&
+			this.contractsMainForm.salesTypeId.value !== undefined &&
+			this.contractsMainForm.deliveryTypeId.value !== null &&
+			this.contractsMainForm.deliveryTypeId.value !== undefined
 		) {
 			if (this.filteredFrameAgreements.length === 1) {
 				this.contractClientForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
@@ -204,10 +207,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		clientRate.reportingUnit = rate.specialRateReportingUnit;
 		clientRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (clientRate.rateSpecifiedAs?.id === 1) {
-			clientRate.clientRate = +((this.contractClientForm.normalRate?.value?.normalRate * rate.clientRate!) / 100).toFixed(
+			clientRate.clientRate = +((this.contractClientForm.normalRate?.value * rate.clientRate!) / 100).toFixed(
 				2
 			);
-			clientRate.clientRateCurrencyId = this.contractClientForm.currency?.value?.id;
+			clientRate.clientRateCurrencyId = this.contractClientForm.currencyId?.value;
 		} else {
 			clientRate.clientRate = rate.clientRate;
 			clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
@@ -223,9 +226,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
 			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
 			clientRateValue: new UntypedFormControl(clientRate?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null
-			),
+			clientRateCurrencyId: new UntypedFormControl(clientRate?.clientRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
 		this.contractClientForm.clientRates.push(form);
@@ -242,14 +243,14 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			this.isClientRateEditing = false;
 		} else {
 			// make editable
-			const clientFeeValue = this.clientRates.at(index).value;
+			const clientRateValue = this.clientRates.at(index).value;
 			this.clientRateToEdit = new PeriodClientSpecialRateDto({
-				id: clientFeeValue.id,
-				clientSpecialRateId: clientFeeValue.clientSpecialRateId,
-				rateName: clientFeeValue.rateName,
-				reportingUnit: clientFeeValue.reportingUnit,
-				clientRate: clientFeeValue.clientRateValue,
-				clientRateCurrencyId: clientFeeValue.clientRateCurrency?.id,
+				id: clientRateValue.id,
+				clientSpecialRateId: clientRateValue.clientSpecialRateId,
+				rateName: clientRateValue.rateName,
+				reportingUnit: clientRateValue.reportingUnit,
+				clientRate: clientRateValue.clientRateValue,
+				clientRateCurrencyId: clientRateValue.clientRateCurrencyId,
 			});
 			this.isClientRateEditing = true;
 		}
@@ -257,17 +258,17 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	}
 
 	cancelEditClientRate(index: number) {
-		const rateRow = this.clientFees.at(index);
+		const rateRow = this.clientRates.at(index);
 		rateRow?.get('clientRateValue')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
 		rateRow
 			?.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), { emitEvent: false });
+			?.setValue(this.clientRateToEdit.clientRateCurrencyId, { emitEvent: false });
 		this.clientRateToEdit = new PeriodConsultantSpecialRateDto();
 		this.isClientRateEditing = false;
 		this.clientRates.at(index).get('editable')?.setValue(false, { emitEvent: false });
 	}
 
-	selectClientFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
+	selectClientFee(fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
 		const clientFee = new PeriodClientSpecialFeeDto();
 		clientFee.id = undefined;
 		clientFee.clientSpecialFeeId = fee.id;
@@ -286,9 +287,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
 			feeFrequency: new UntypedFormControl(clientFee?.frequency ?? null),
 			clientRateValue: new UntypedFormControl(clientFee?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null
-			),
+			clientRateCurrencyId: new UntypedFormControl( clientFee?.clientRateCurrencyId ?? null),
 
 			editable: new UntypedFormControl(clientFee ? false : true),
 		});
@@ -313,7 +312,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 				feeName: clientFeeValue.feeName,
 				frequency: clientFeeValue.feeFrequency,
 				clientRate: clientFeeValue.clientRateValue,
-				clientRateCurrencyId: clientFeeValue.clientRateCurrency?.id,
+				clientRateCurrencyId: clientFeeValue.clientRateCurrencyId,
 			});
 			this.isClientFeeEditing = true;
 		}
@@ -325,7 +324,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		feeRow?.get('clientRateValue')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
 		feeRow
 			?.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), { emitEvent: false });
+			?.setValue(this.clientFeeToEdit.clientRateCurrencyId, { emitEvent: false });
 		this.clientFeeToEdit = new PeriodConsultantSpecialFeeDto();
 		this.isClientFeeEditing = false;
 		this.clientFees.at(index).get('editable')?.setValue(false, { emitEvent: false });
@@ -369,6 +368,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 
 	private _getEnums() {
 		this.currencies = this.getStaticEnumValue('currencies');
+		this.eCurrencies = this.arrayToEnum(this.currencies);
 		this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
 		this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
 		this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
