@@ -199,7 +199,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 			consultantWorkplace: new UntypedFormControl(null),
 			consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
-            consultantOnsiteWorkplaceSameAsDirectClient: new UntypedFormControl(false),
+            consultantOnsiteWorkplaceSameAsDirectClient: new UntypedFormControl(false), //FIXME: consultant?.consultantOnsiteWorkplaceSameAsDirectClient add this once BE will have this in a response
             onsiteClientAddress: new UntypedFormControl(PackAddressIntoNewDto(consultant?.onsiteClientAddress) ?? null),
 			consultantWorkplaceEmagineOffice: new UntypedFormControl(
 				this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
