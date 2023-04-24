@@ -199,7 +199,7 @@
                                     <span class="tab-header--name" [ngClass]="ePeriodClass[tab.typeId]">
                                         {{clientPeriods?.length > 5 ? ePeriodAbbreviation[tab.typeId] : ePeriodName[tab.typeId]}}
                                     </span>
-                                    <span (click)="$event.preventDefault(); copyPeriodId($event, tab.fullDisplayId)" class="tab-header--id" [matTooltip]="'Copy period id'" matTooltipClass="white-tooltip">
+                                    <span (click)="copyPeriodId(tab.fullDisplayId)" class="tab-header--id" [matTooltip]="'Copy period id'" matTooltipClass="white-tooltip">
                                         {{tab.fullDisplayId}}
                                     </span>
                                 </span>

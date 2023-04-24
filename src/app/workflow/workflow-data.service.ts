@@ -1,8 +1,12 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { map, tap } from 'rxjs/operators';
-import { ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { API_BASE_URL, ClientResultDto, ConfigurationServiceProxy, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { IConsultantAnchor } from './workflow-period/workflow-period.model';
 import { MultiSortList, WorkflowProgressStatus } from './workflow.model';
+import { AuthenticationResult } from '@azure/msal-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { InternalLookupService } from '../shared/common/internal-lookup.service';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 @Injectable({
     providedIn: 'root'
@@ -50,7 +54,11 @@ export class WorkflowDataService {
     updatePurchaseOrders = new EventEmitter();
     isContractModuleEnabled: boolean;
 
-    constructor() {}
+    constructor(
+        private readonly _internalLookupService: InternalLookupService,
+        private _localHttpService: LocalHttpService,
+        private _httpClient: HttpClient
+    ) {}
 
     updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {
         for (const update in status) {
@@ -75,6 +83,24 @@ export class WorkflowDataService {
 			return a.order < b.order ? -1 : 1;
 		});
     }
+
+    openInHubspot(client: ClientResultDto) {
+        this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            this._httpClient
+                .get(`${API_BASE_URL}/api/Clients/HubspotPartialUrlAsync`, {
+                    headers: new HttpHeaders({
+                        Authorization: `Bearer ${response.accessToken}`,
+                    }),
+                    responseType: 'text',
+                })
+                .subscribe((result: string) => {
+                    this._internalLookupService.hubspotClientUrl = result;
+                    if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                        window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+                    }
+                });
+        });
+	}
 
     get contractModuleEnabled() {
         return true;

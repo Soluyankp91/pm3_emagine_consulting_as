@@ -26,6 +26,7 @@ import { IConsultantAnchor, WorkflowProcessWithAnchorsDto } from '../../workflow
 import { EmploymentTypes } from '../../workflow.model';
 import { MapClientAddressList, PackAddressIntoNewDto } from '../workflow-sales.helpers';
 import { ClientRateTypes, ConsultantDiallogAction, ETimeReportingCaps, IClientAddress, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from '../workflow-sales.model';
+import { MarginType } from '../../shared/components/calculated-margin/calculated-margin.model';
 
 @Component({
 	selector: 'app-consultant-data',
@@ -73,7 +74,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
     onsiteClientAddresses = new Array<IClientAddress[]>();
-
+    eMarginType = MarginType;
     eTimeReportingCaps = ETimeReportingCaps;
     private _unsubscribe = new Subject();
 	constructor(

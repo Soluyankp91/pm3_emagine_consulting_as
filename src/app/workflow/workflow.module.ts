@@ -37,6 +37,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contracts/send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
 import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
+import { CalculatedMarginComponent } from './shared/components/calculated-margin/calculated-margin.component';
 
 @NgModule({
 	declarations: [
@@ -70,6 +71,7 @@ import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/lega
 		SendEnvelopeDialogComponent,
 		SignersPreviewDialogComponent,
 		RemoveOrUploadAgrementDialogComponent,
+  CalculatedMarginComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],

@@ -4,10 +4,12 @@ import {
 	AgreementSimpleListItemDto,
 	AgreementSimpleListItemDtoPaginatedList,
 	AgreementType,
+	ClientResultDto,
 	ClientSpecialFeeDto,
 	ClientSpecialRateDto,
 	EnumEntityTypeDto,
 	FrameAgreementServiceProxy,
+	LegalEntityDto,
 	PeriodClientSpecialFeeDto,
 	PeriodClientSpecialRateDto,
 	PeriodConsultantSpecialFeeDto,
@@ -22,6 +24,9 @@ import { WorkflowDataService } from '../../workflow-data.service';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ClientRateTypes, IClientAddress } from '../../workflow-sales/workflow-sales.model';
+import { Router } from '@angular/router';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 
 @Component({
 	selector: 'app-contracts-client-data',
@@ -42,6 +47,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	currencies: EnumEntityTypeDto[];
 	valueUnitTypes: EnumEntityTypeDto[];
 	periodUnitTypes: EnumEntityTypeDto[];
+	legalEntities: LegalEntityDto[];
+	invoicingTimes: EnumEntityTypeDto[];
+	invoiceFrequencies: EnumEntityTypeDto[];
+	rateUnitTypes: EnumEntityTypeDto[];
 	clientSpecialRateFilter = new UntypedFormControl('');
 	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
@@ -54,12 +63,17 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 	ePurchaseOrderMode = EPurchaseOrderMode;
 	filteredFrameAgreements: AgreementSimpleListItemDto[];
 	selectedFrameAgreementId: number | null;
+	clientRateTypes = ClientRateTypes;
+	filteredClientInvoicingRecipients: ClientResultDto[];
+	invoicingRecipientsAddresses: IClientAddress[];
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
 		private _workflowDataService: WorkflowDataService,
-		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
+		private _frameAgreementServiceProxy: FrameAgreementServiceProxy,
+		private _internalLookupService: InternalLookupService,
+		private _router: Router
 	) {
 		super(injector);
 		this.contractClientForm = new WorkflowContractsClientDataForm();
@@ -154,13 +168,13 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 			dataToSend.agreementId,
 			dataToSend.search,
 			undefined, // dataToSend.clientId,
-			dataToSend.legalEntityId,
-			dataToSend.salesTypeId,
-			dataToSend.contractTypeId,
-			dataToSend.deliveryTypeId,
-			dataToSend.startDate,
-			dataToSend.endDate,
-			dataToSend.recipientClientIds,
+			dataToSend.legalEntityId ?? undefined,
+			dataToSend.salesTypeId ?? undefined,
+			dataToSend.contractTypeId ?? undefined,
+			dataToSend.deliveryTypeId ?? undefined,
+			dataToSend.startDate ?? undefined,
+			dataToSend.endDate ?? undefined,
+			dataToSend.recipientClientIds ?? undefined,
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort
@@ -190,7 +204,7 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		clientRate.reportingUnit = rate.specialRateReportingUnit;
 		clientRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (clientRate.rateSpecifiedAs?.id === 1) {
-			clientRate.clientRate = +((this.contractClientForm.clientRate?.value?.normalRate * rate.clientRate!) / 100).toFixed(
+			clientRate.clientRate = +((this.contractClientForm.normalRate?.value?.normalRate * rate.clientRate!) / 100).toFixed(
 				2
 			);
 			clientRate.clientRateCurrencyId = this.contractClientForm.currency?.value?.id;
@@ -333,6 +347,24 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 
 	submitForm() {
 		this.submitFormBtn.nativeElement.click();
+	}
+
+	openClientInNewTab(clientId: string) {
+		const url = this._router.serializeUrl(this._router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
+		window.open(url, '_blank');
+	}
+
+	openInHubspot(client: ClientResultDto) {
+		if (this._internalLookupService.hubspotClientUrl?.length) {
+			if (client.crmClientId !== null && client.crmClientId !== undefined) {
+				window.open(
+					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
+					'_blank'
+				);
+			}
+		} else {
+			this._workflowDataService.openInHubspot(client);
+		}
 	}
 
 	private _getEnums() {

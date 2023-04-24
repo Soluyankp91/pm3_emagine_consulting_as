@@ -122,8 +122,8 @@ export const SalesMainDataSections: SubItemDto[] = [
         anchor: 'salesMainInvoicing'
     },
     {
-        name: 'Account manager',
-        anchor: 'salesMainAccountManager'
+        name: 'Emagine responsible',
+        anchor: 'salesEmagineResponsible'
     },
     {
         name: 'Documents',
@@ -230,6 +230,10 @@ export const ContractClientDataSections: SubItemDto[] = [
         anchor: 'contractClientInvoicing'
     },
     {
+        name: 'Client invoicing',
+        anchor: 'contractClientPayment'
+    },
+    {
         name: 'Client contract',
         anchor: 'contractClientContract'
     },
@@ -260,7 +264,7 @@ export const ContractPlaceholderConsultantAnchors: SubItemDto[] = [
 
 export const ContractConsultantDataSections: SubItemDto[] = [
     {
-        name: 'Employemnt type',
+        name: 'Employment type',
         anchor: 'contractConsultantEmployment'
     },
     {

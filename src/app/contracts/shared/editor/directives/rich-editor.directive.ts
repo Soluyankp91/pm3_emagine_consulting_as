@@ -34,6 +34,8 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 
 	@Input() readonly = false;
 
+	@Input() exportWithMergedData = false;
+
 	@Input() set template(template: File | Blob | ArrayBuffer | string | null) {
 		this._registerTemplateChanges(template);
 	}
@@ -71,7 +73,7 @@ export class RichEditorDirective implements AfterViewInit, OnDestroy {
 
 	private _registerTemplateChanges(template: File | Blob | ArrayBuffer | string | null) {
 		let subscription = this._initialized.subscribe(() => {
-			this.editorService.initialize(this.readonly);
+			this.editorService.initialize(this.readonly, this.exportWithMergedData);
 
 			if (template) {
 				this.editorService.loadDocument(template);

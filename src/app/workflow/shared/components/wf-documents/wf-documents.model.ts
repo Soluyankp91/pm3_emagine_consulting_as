@@ -92,6 +92,10 @@ export class WFDocument {
                     return 'ppt';
                 case '.xml':
                     return 'xml';
+                case '.eml':
+                    return 'eml';
+                case '.msg':
+                    return 'msg';
                 default:
                     return 'file'
             }
@@ -100,7 +104,7 @@ export class WFDocument {
     }
 
     private static _getFileExtensionFromName(fileName: string) {
-        const extensions = /(\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.txt|\.jpg|\.jpeg|\.svg|\.png)$/i;
+        const extensions = /(\.pdf|\.doc|\.docx|\.xls|\.xlsx|\.txt|\.jpg|\.jpeg|\.svg|\.png|\.eml|\.msg|\.ppt|\.pptx)$/i;
         if (!fileName) {
             return '';
         }

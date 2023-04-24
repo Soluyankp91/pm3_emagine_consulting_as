@@ -4,11 +4,14 @@ import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientResultDto, ContactResultDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAddressDto, ClientResultDto, ContactResultDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
+import { FindClientAddress, MapClientAddressList } from '../../workflow-sales/workflow-sales.helpers';
+import { IClientAddress } from '../../workflow-sales/workflow-sales.model';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'app-add-or-edit-project-line-dialog',
@@ -27,6 +30,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     filteredClientInvoicingRecipients: any[] = [];
     consultantInsuranceOptions: { [key: string]: string; };
     ePurchaseOrderMode = EPurchaseOrderMode;
+    recipientAddresses: IClientAddress[] = [];
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -149,6 +153,10 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         }
 
         this.projectLineForm.invoiceRecipientId?.setValue(data.invoiceRecipient, {emitEvent: false});
+        if (data?.invoiceRecipient) {
+            this._getAddresses(data?.invoiceRecipient.clientAddresses)
+        }
+        this.projectLineForm.invoiceRecipientAddress?.setValue(data.invoiceRecipientAddress, {emitEvent: false});
         this.projectLineForm.differentInvoiceRecipient?.setValue(data.differentInvoiceRecipient ?? false, {emitEvent: false});
         if (!data.differentInvoiceRecipient) {
             this.projectLineForm.invoiceRecipientId?.disable();
@@ -192,6 +200,11 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.differentInvoiceRecipient = this.projectLineForm.differentInvoiceRecipient?.value;
         result.invoiceRecipientId = this.projectLineForm.invoiceRecipientId?.value?.clientId;
         result.invoiceRecipient = this.projectLineForm.invoiceRecipientId?.value;
+        result.invoiceRecipientAddressId = this.projectLineForm.invoiceRecipientAddress?.value?.id;
+        result.invoiceRecipientAddress = FindClientAddress(
+			this.projectLineForm.invoiceRecipientId?.value?.clientAddresses,
+			this.projectLineForm.invoiceRecipientAddress?.value?.id
+		);
         result.modifiedById = this.projectLineForm.modifiedById?.value?.id;
         result.modifiedBy = this.projectLineForm.modifiedById?.value;
         result.modificationDate = this.projectLineForm.modificationDate?.value;
@@ -230,15 +243,23 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         return option?.clientName?.trim();
     }
 
-    private closeInternal(): void {
-        this.dialogRef.close();
-    }
-
     openInNewTab(clientId: number | undefined) {
         const url = this.router.serializeUrl(
             this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
         );
         window.open(url, '_blank');
+    }
+
+    recipientSelected(event: MatAutocompleteSelectedEvent) {
+        this._getAddresses(event.option.value?.clientAddresses);
+    }
+
+    private _getAddresses(clientAddresses: ClientAddressDto[]) {
+        this.recipientAddresses = MapClientAddressList(clientAddresses);
+    }
+
+    private closeInternal(): void {
+        this.dialogRef.close();
     }
 
 }

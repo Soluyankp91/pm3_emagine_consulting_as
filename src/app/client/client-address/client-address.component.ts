@@ -53,6 +53,7 @@ export class ClientAddressComponent extends AppComponentBase implements OnInit {
 	public addAddress() {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {};
 		const dialogRef = this._dialog.open(AddAddressDialogComponent, MediumDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((newAddress) => {

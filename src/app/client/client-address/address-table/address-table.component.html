@@ -17,7 +17,10 @@
             <mat-header-cell *matHeaderCellDef fxFlex="150px"> Country </mat-header-cell>
             <mat-cell *matCellDef="let row" fxFlex="150px">
                 <span class="text-truncate-ellipsis" [ngClass]="{'text-bold': row.isMainAddress}" [matTooltip]="row?.country" matTooltipClass="white-tooltip" appShowIfTruncated>
-                    <span class="country-flag fi fi-{{row?.countryCode | lowercase }} fib"></span>&nbsp;{{row?.countryName ?? '-'}}
+                    <ng-container *ngIf="row?.countryCode; else noDataTemplate">
+                        <span class="country-flag fi fi-{{row?.countryCode | lowercase }} fib"></span>
+                    </ng-container>
+                    &nbsp;{{row?.countryName ?? '-'}}
                 </span>
             </mat-cell>
         </ng-container>
@@ -57,7 +60,7 @@
             <mat-header-cell *matHeaderCellDef fxFlex> Debitor number </mat-header-cell>
             <mat-cell *matCellDef="let row" fxFlex>
                 <span class="text-truncate-ellipsis flex-items-center" [ngClass]="{'text-bold': row.isMainAddress}" [matTooltip]="row?.debtorNumberForInvoiceAddress" matTooltipClass="white-tooltip" appShowIfTruncated>
-                    {{row?.debtorNumberForInvoiceAddress}}
+                    {{row?.debtorNumberForInvoiceAddress ?? '-'}}
                 </span>
             </mat-cell>
         </ng-container>
@@ -81,16 +84,14 @@
                         <mat-icon [svgIcon]="row.isHidden ? 'icon-show' : 'icon-hide'"></mat-icon>
                         {{row.isHidden ? 'Show address' : 'Hide address'}}
                     </button>
-                    <div (click)="$event.stopPropagation()" [matTooltip]="'It is not possible to delete an address, which is being used on Workflows'" matTooltipClass="white-tooltip">
-                        <button
-                            class="menu-item menu-item--cancel"
-                            mat-menu-item
-                            [disabled]="row.isMainAddress"
-                            appPreventDoubleClick (throttledClick)="deleteAddress(row)">
-                            <mat-icon svgIcon="close-icon"></mat-icon>
-                            Delete
-                        </button>
-                    </div>
+                    <button
+                        class="menu-item menu-item--cancel"
+                        mat-menu-item
+                        [disabled]="row.isMainAddress"
+                        appPreventDoubleClick (throttledClick)="deleteAddress(row)">
+                        <mat-icon svgIcon="close-icon"></mat-icon>
+                        Delete
+                    </button>
                 </mat-menu>
             </mat-cell>
         </ng-container>

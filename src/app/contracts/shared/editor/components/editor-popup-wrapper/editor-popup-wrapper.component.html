@@ -1,0 +1,31 @@
+<mat-dialog-content>
+	<div mat-dialog-title class="editor-popup-header">
+		<h1>{{ configs.title }}</h1>
+		<button mat-dialog-close class="dialog-close--button" mat-icon-button (click)="reject()">
+			<mat-icon svgIcon="dialog-close-icon"></mat-icon>
+		</button>
+	</div>
+	<h3 class="editor-popup-subheader" *ngIf="configs.subtitle">{{ configs.subtitle }}</h3>
+
+	<ng-content></ng-content>
+	<ng-container *ngIf="configs.warning">
+		<div class="warn">
+			<mat-icon>warning</mat-icon>
+			<p>Any significant changes should be promoted to a new version via Draft mode.</p>
+		</div>
+	</ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions class="editor-popup-actions">
+	<button *ngIf="!configs.hideRejectButton" mat-button [mat-dialog-close]="false" class="dialog-btn dialog-btn__negative">
+		{{ configs.rejectButtonLabel }}
+	</button>
+	<button
+		*ngIf="!configs.hideConfirmButton"
+		(click)="confirm()"
+		[disabled]="confirmButtonDisabled"
+		mat-flat-button
+		class="dialog-btn dialog-btn__positive">
+		{{ configs.confirmButtonLabel }}
+	</button>
+</mat-dialog-actions>

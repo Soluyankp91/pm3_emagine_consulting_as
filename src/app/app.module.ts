@@ -319,7 +319,7 @@ export class AppModule {
 		);
 
 		iconRegistry.addSvgIcon('eml', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/file-uploader/eml.svg'));
-
+		iconRegistry.addSvgIcon('msg', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/file-uploader/msg.svg'));
 		iconRegistry.addSvgIcon('ppt', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/file-uploader/ppt.svg'));
 
 		iconRegistry.addSvgIcon('xml', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/file-uploader/xml.svg'));
@@ -602,5 +602,6 @@ export class AppModule {
 			'chevron-green-big',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-green-big.svg')
 		);
+		iconRegistry.addSvgIcon('home-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/menu/home-logo.svg'));
 	}
 }

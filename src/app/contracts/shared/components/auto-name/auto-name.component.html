@@ -1,36 +1,27 @@
 <div class="auto-name-container">
-    <mat-form-field
-    class="full-width"
-    appearance="outline"
->
-    <mat-label>{{ label }}</mat-label>
-    <input
-        type="text"
-        aria-label="text"
-        matInput
-        [formControl]="textControl"
-        [placeholder]="label"
-        [matAutocomplete]="auto"
-    />
-    <mat-error
-        ><app-validator [control]="textControl"></app-validator
-    ></mat-error>
-    <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of options;trackBy:trackByItem">
-            <div class="auto-name-alignment"
-                (click)="$event.stopPropagation(); addAutoName(option)"
-            >
-                <span>{{ option }}</span>
-                <mat-icon svgIcon="plus-icon"></mat-icon>
-            </div>
-        </mat-option>
-    </mat-autocomplete>
-</mat-form-field>
-<mat-checkbox
-    [disabled]="!textControl.valid && !textControl.disabled"
-    [checked]="showSample"
-    (change)="this.retriewTemplate$.next()"
->
-    Show sample data
-</mat-checkbox>
+	<mat-form-field class="full-width" appearance="outline">
+		<mat-label>{{ label }}</mat-label>
+		<input
+			type="text"
+			aria-label="text"
+			matInput
+			[formControl]="textControl"
+			[placeholder]="label"
+			[matAutocomplete]="auto" />
+		<mat-error><app-validator [control]="textControl"></app-validator></mat-error>
+		<mat-autocomplete #auto="matAutocomplete">
+			<mat-option *ngFor="let option of options; trackBy: trackByItem">
+				<div class="auto-name-alignment" (click)="$event.stopPropagation(); addAutoName(option)">
+					<span>{{ option }}</span>
+					<mat-icon svgIcon="plus-icon"></mat-icon>
+				</div>
+			</mat-option>
+		</mat-autocomplete>
+	</mat-form-field>
+	<mat-checkbox
+		[disabled]="!textControl.valid && !textControl.disabled"
+		[checked]="showSample"
+		(change)="this.retriewTemplate$.next()">
+		{{ showSampleLabel }}
+	</mat-checkbox>
 </div>

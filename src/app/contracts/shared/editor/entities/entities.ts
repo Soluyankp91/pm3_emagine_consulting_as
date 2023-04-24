@@ -13,6 +13,10 @@ export enum ICustomCommand {
 	ShowMergeFieldPopup = 'SHOW_MERGE_FIELD_POPUP',
 	FormatPainter = 'FORMAT_PAINTER',
 	CopyMergeFields = 'COPY_MERGE_FIELDS',
+	DownloadMD = 'DOWNLOAD_WITH_MERGED_DATA',
+	DownloadMDWordDoc = 'DOWNLOAD_WITH_MERGED_DATA_WORD_DOC',
+	DownloadMDRichText = 'DOWNLOAD_WITH_MERGED_DATA_RICH_TEXT',
+	DownloadMDPlainText = 'DOWNLOAD_WITH_MERGED_DATA_PLAIN_TEXT',
 
 	// Compare
 	SelectDocument = 'COMPARE_TAB_SELECT_DOCUMENT',

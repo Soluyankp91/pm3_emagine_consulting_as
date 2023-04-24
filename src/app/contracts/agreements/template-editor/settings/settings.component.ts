@@ -59,6 +59,7 @@ import {
 	AgreementType,
 	SignerType,
 	ConsultantPeriodServiceProxy,
+	MergeFieldsServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { DuplicateOrParentOptions, ParentTemplateDto, WorkflowSummary } from './settings.interfaces';
 import { EditorObserverService } from '../../../shared/services/editor-observer.service';
@@ -173,6 +174,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		private readonly _cdr: ChangeDetectorRef,
 		private readonly _location: Location,
 		private readonly _creationTitleService: CreationTitleService,
+		private readonly _mergeFieldsServiceProxy: MergeFieldsServiceProxy,
 		private _editorObserverService: EditorObserverService
 	) {
 		super(_injector);
@@ -478,7 +480,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												agreementType: agreementTypeId,
 												recipientTypeId: recipientTypeId,
 												recipientId: client.clientId,
-												nameTemplate: defaultTemplate.name,
+												nameTemplate: defaultTemplate.agreementNameTemplate,
 												definition: defaultTemplate.definition,
 												legalEntityId: legalEntityId,
 												salesTypes: [salesTypeId],
@@ -737,9 +739,21 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _subscribeOnTemplateNameChanges() {
-		this.agreementFormGroup.nameTemplate.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((name: string) => {
-			this._creationTitleService.updateTemplateName(name);
-		});
+		this.agreementFormGroup.nameTemplate.valueChanges
+			.pipe(
+				takeUntil(this._unSubscribe$),
+				switchMap((name: string) => {
+					if (!name) {
+						return of('');
+					}
+					return this._mergeFieldsServiceProxy
+						.format(this.currentAgreement ? this.currentAgreement.agreementId : undefined, name)
+						.pipe(map((v) => v.value));
+				})
+			)
+			.subscribe((name: string) => {
+				this._creationTitleService.updateTemplateName(name);
+			});
 	}
 
 	private _subsribeOnLegEntitiesChanges() {
@@ -935,6 +949,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								label: 'Discard Changes',
 								message:
 									'Changing main template settings will result in discarding all the data that has been applied',
+								confirmButtonText: 'Discard',
 							},
 						});
 						return dialogRef.afterClosed();
@@ -1047,9 +1062,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					this._cdr.detectChanges();
 				}),
 				tap((agreementTemplateDetailsDto) => {
-					if (this.clientPeriodId || this.consultantPeriodId) {
+					if ((this.clientPeriodId || this.consultantPeriodId) && this.workflowTemplateType$.value !== undefined) {
 						this.agreementFormGroup.patchValue({
-							nameTemplate: agreementTemplateDetailsDto.name,
+							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,
 							language: agreementTemplateDetailsDto.language,
 							isSignatureRequired: this.agreementFormGroup.initialValue.signers.length
@@ -1061,13 +1076,13 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								? agreementTemplateDetailsDto.attachmentsFromParent
 								: [],
 							selectedInheritedFiles: [],
-							receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty
+							receiveAgreementsFromOtherParty: agreementTemplateDetailsDto.receiveAgreementsFromOtherParty,
 						});
 					} else {
 						this.agreementFormGroup.patchValue({
 							agreementType: agreementTemplateDetailsDto.agreementType,
 							recipientTypeId: agreementTemplateDetailsDto.recipientTypeId,
-							nameTemplate: agreementTemplateDetailsDto.name,
+							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,
 							salesTypes: agreementTemplateDetailsDto.salesTypeIds,
 							deliveryTypes: agreementTemplateDetailsDto.deliveryTypeIds,
@@ -1230,14 +1245,28 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							switchMap((search) => {
 								return this._apiServiceProxy2
 									.simpleList2(
-										this.workflowTemplateType$.value,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workflowTemplateType$.value
+											: undefined,
 										undefined,
-										this.workFlowMetadata.legalEntityId,
-										this.workFlowMetadata.salesTypeId,
-										this.workFlowMetadata.contractType,
-										this.workFlowMetadata.deliveryTypeId,
-										this.workflowTemplateType$.value === true ? this.workFlowMetadata.clientId : undefined,
-										this.workFlowMetadata.recipientTypeId,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.legalEntityId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.salesTypeId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.contractType
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.deliveryTypeId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value === true
+											? this.workFlowMetadata.clientId
+											: undefined,
+										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
+											? this.workFlowMetadata.recipientTypeId
+											: undefined,
 										undefined,
 										search,
 										1,
@@ -1403,6 +1432,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			data: {
 				label: 'Discard Changes',
 				message: `You\'ve selected “Receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
+				confirmButtonText: 'Discard',
 			},
 		});
 	}
