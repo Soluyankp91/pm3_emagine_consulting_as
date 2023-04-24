@@ -13,7 +13,6 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { MapClientAddressList } from '../workflow-sales.helpers';
 import {
-	AgreementServiceProxy,
 	ClientAddressDto,
 	AgreementSimpleListItemDto,
 	AgreementSimpleListItemDtoPaginatedList,
@@ -112,7 +111,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _httpClient: HttpClient,
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
-		private _agreementService: AgreementServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
 	) {
@@ -485,44 +483,69 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	directClientSelected(event: MatAutocompleteSelectedEvent) {
 		this.initContactSubs();
 		this.salesClientDataForm.frameAgreementId.setValue('');
-        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
-        this.clearClientAddress(EClientSelectionType.DirectClient);
-        this.onDirectClientSelected.emit(event);
+		this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
+		this.clearClientAddress(EClientSelectionType.DirectClient);
+		this.preselectInvoicingRecipient(event);
+		this.onDirectClientSelected.emit(event);
 	}
 
-    clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
-        this.clearClientAddress(clientType);
-        this.getClientAddresses(event.option.value?.clientAddresses, clientType);
-        this.focusToggleMethod('auto');
-    }
+	directClientAddressSelected() {
+		this.preselectInvoicingRecipientAddress();
+		this._workflowDataService.onDirectClientAddressSelected.emit();
+	}
 
-    getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
-        switch (clientType) {
-            case EClientSelectionType.DirectClient:
-                this.directClientAddresses = MapClientAddressList(clientAddresses);
-                break;
-            case EClientSelectionType.EndClient:
-                this.endClientAddresses = MapClientAddressList(clientAddresses);
-                break;
-            case EClientSelectionType.InvoicingRecipient:
-                this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
-                break;
-        }
-    }
+	preselectInvoicingRecipient(event: MatAutocompleteSelectedEvent) {
+		if (this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient.value) {
+			this.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(
+				this.salesClientDataForm.directClientIdValue.value,
+				{ emitEvent: false }
+			);
+			this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.InvoicingRecipient);
+		}
+	}
 
-    clearClientAddress(clientType: EClientSelectionType) {
-        switch (clientType) {
-            case EClientSelectionType.DirectClient:
-                this.salesClientDataForm.directClientAddress.reset(null);
-                break;
-            case EClientSelectionType.EndClient:
-                this.salesClientDataForm.endClientAddress.reset(null);
-                break;
-            case EClientSelectionType.InvoicingRecipient:
-                this.salesClientDataForm.clientInvoicingRecipientAddress.reset(null);
-                break;
-        }
-    }
+	preselectInvoicingRecipientAddress() {
+		if (this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient.value) {
+			this.salesClientDataForm.clientInvoicingRecipientAddress.setValue(
+				this.salesClientDataForm.directClientAddress.value,
+				{ emitEvent: false }
+			);
+		}
+	}
+
+	clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
+		this.clearClientAddress(clientType);
+		this.getClientAddresses(event.option.value?.clientAddresses, clientType);
+		this.focusToggleMethod('auto');
+	}
+
+	getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
+		switch (clientType) {
+			case EClientSelectionType.DirectClient:
+				this.directClientAddresses = MapClientAddressList(clientAddresses);
+				break;
+			case EClientSelectionType.EndClient:
+				this.endClientAddresses = MapClientAddressList(clientAddresses);
+				break;
+			case EClientSelectionType.InvoicingRecipient:
+				this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
+				break;
+		}
+	}
+
+	clearClientAddress(clientType: EClientSelectionType) {
+		switch (clientType) {
+			case EClientSelectionType.DirectClient:
+				this.salesClientDataForm.directClientAddress.reset(null);
+				break;
+			case EClientSelectionType.EndClient:
+				this.salesClientDataForm.endClientAddress.reset(null);
+				break;
+			case EClientSelectionType.InvoicingRecipient:
+				this.salesClientDataForm.clientInvoicingRecipientAddress.reset(null);
+				break;
+		}
+	}
 
 	initContactSubs() {
 		this.salesClientDataForm.clientContactProjectManager.setValue('');
@@ -669,13 +692,11 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	addSignerToForm(signer?: ContractSignerDto) {
-		const form = this._fb.group(
-			{
-				clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
-				signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
-				clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
-			}
-		);
+		const form = this._fb.group({
+			clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
+			signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
+			clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
+		});
 		this.salesClientDataForm.contractSigners.push(form);
 		this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
 	}
@@ -778,15 +799,20 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this.submitFormBtn.nativeElement.click();
 	}
 
-    setClientInvoicingRecipient(sameAsDirectClient: boolean, directClient: ClientResultDto) {
-        if (sameAsDirectClient) {
-			this.salesClientDataForm.clientInvoicingRecipientIdValue!.disable();
+	setClientInvoicingRecipient(sameAsDirectClient: boolean, directClient: ClientResultDto) {
+		if (sameAsDirectClient) {
+			this.salesClientDataForm.clientInvoicingRecipientIdValue!.disable({ emitEvent: false });
+			this.salesClientDataForm.clientInvoicingRecipientAddress!.disable({ emitEvent: false });
 			this.salesClientDataForm.clientInvoicingRecipientIdValue!.setValue(directClient);
-            this.getClientAddresses(directClient?.clientAddresses, EClientSelectionType.InvoicingRecipient);
+			this.salesClientDataForm.clientInvoicingRecipientAddress!.setValue(
+				this.salesClientDataForm.directClientAddress.value
+			);
+			this.getClientAddresses(directClient?.clientAddresses, EClientSelectionType.InvoicingRecipient);
 		} else {
-			this.salesClientDataForm.clientInvoicingRecipientIdValue!.enable();
+			this.salesClientDataForm.clientInvoicingRecipientIdValue!.enable({ emitEvent: false });
+			this.salesClientDataForm.clientInvoicingRecipientAddress!.enable({ emitEvent: false });
 		}
-    }
+	}
 
 	get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;

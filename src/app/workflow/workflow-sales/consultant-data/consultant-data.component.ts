@@ -92,6 +92,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         ) {
 		super(injector);
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
+        this._workflowDataService.onDirectClientAddressSelected.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
+			this._preselectDirectClientAddress();
+		});
 	}
 
 	ngOnInit(): void {
@@ -157,13 +160,15 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
     changeConsultantWorkplace(event: MatCheckboxChange, consultantIndex: number) {
+        const consultant = this.consultants.at(consultantIndex);
 		if (event.checked) {
-			this.consultants
-				.at(consultantIndex)
-				.get('consultantWorkplaceClientAddress')
-				?.setValue(this.clientDataForm.directClientIdValue?.value, { emitEvent: false });
-                this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses, true);
-		}
+			this.consultants.at(consultantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.clientDataForm.directClientIdValue?.value);
+            this.consultants.at(consultantIndex).get('onsiteClientAddress')?.setValue(this.clientDataForm.directClientAddress?.value);
+            this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses);
+		// } else {
+        //     this.consultants.at(consultantIndex).get('consultantWorkplaceClientAddress')?.enable({ emitEvent: false });
+		// 	this.consultants.at(consultantIndex).get('onsiteClientAddress')?.enable({ emitEvent: false });
+        }
 	}
 
 	addConsultantForm(consultant?: ConsultantSalesDataDto) {
@@ -194,6 +199,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 			consultantWorkplace: new UntypedFormControl(null),
 			consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
+            consultantOnsiteWorkplaceSameAsDirectClient: new UntypedFormControl(false),
             onsiteClientAddress: new UntypedFormControl(PackAddressIntoNewDto(consultant?.onsiteClientAddress) ?? null),
 			consultantWorkplaceEmagineOffice: new UntypedFormControl(
 				this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
@@ -816,6 +822,15 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     submitForm() {
         this.submitFormBtn.nativeElement.click();
+    }
+
+    private _preselectDirectClientAddress() {
+        this.consultants.controls.forEach(consultant => {
+            if (consultant.get('consultantOnsiteWorkplaceSameAsDirectClient').value) {
+                consultant.get('consultantWorkplaceClientAddress')?.setValue(this.clientDataForm.directClientIdValue?.value, { emitEvent: false });
+                consultant.get('onsiteClientAddress')?.setValue(this.clientDataForm.directClientAddress?.value, { emitEvent: false });
+            }
+        });
     }
 
     get timeReportingCaps(): UntypedFormArray {
