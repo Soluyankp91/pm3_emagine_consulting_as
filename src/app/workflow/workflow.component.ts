@@ -115,7 +115,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	isAdvancedFilters = false;
 	showOnlyWorkflowsWithNewSales = false;
 	showOnlyWorkflowsWithExtensions = false;
-    showPONumberMissing = false;
+	showPONumberMissing = false;
 	showPendingSteps = false;
 	showUpcomingSteps = false;
 	includeTerminated = false;
@@ -145,8 +145,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	syncStateStatuses: ISelectableIdNameDto[] = [];
 	selectedSyncStateStatuses: ISelectableIdNameDto[] = [];
 
-    employees$: Observable<EmployeeDto[]>;
-    filteredAccountManagers$: Observable<SelectableEmployeeDto[]>;
+	employees$: Observable<EmployeeDto[]>;
+	filteredAccountManagers$: Observable<SelectableEmployeeDto[]>;
 
 	private _unsubscribe = new Subject();
 	constructor(
@@ -157,9 +157,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private dialog: MatDialog,
 		private _employeeService: EmployeeServiceProxy,
 		private _activatedRoute: ActivatedRoute,
-        private _workflowDataService: WorkflowDataService,
-        private _titleService: TitleService,
-        private _store: Store
+		private _workflowDataService: WorkflowDataService,
+		private _titleService: TitleService,
+		private _store: Store
 	) {
 		super(injector);
 
@@ -188,72 +188,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	ngOnInit(): void {
-        this._titleService.setTitle(ERouteTitleType.WfList);
-        this._getEnums();
+		this._titleService.setTitle(ERouteTitleType.WfList);
+		this._getEnums();
 		this.getCurrentUser();
-        this.employees$ = this._store.select(getEmployees);
-        // this.accountManagerFilter.valueChanges
-        //     .pipe(
-        //         takeUntil(this._unsubscribe),
-        //         debounceTime(500),
-        //         startWith(''),
-        //         map((value) => {
-        //             this.isLoading = true;
-        //             return this._filterEmployees(value);
-        //         })
-        //     )
-        //     .subscribe((result) => {
-        //         this.filteredAccountManagers$ = result;
-        //         this.isLoading = false;
-        //     });
+		this.employees$ = this._store.select(getEmployees);
 	}
 
-    managersChanged(event: SelectableEmployeeDto[]) {
-        this.selectedAccountManagers = event;
+	managersChanged(event: SelectableEmployeeDto[]) {
+		this.selectedAccountManagers = event;
 		this.getWorkflowList(true);
-    }
-
-    // private _filterEmployees(value: string): Observable<SelectableEmployeeDto[]> {
-    //     const filterValue = value.toLowerCase();
-    //     const noResults = new SelectableEmployeeDto({
-    //         id: 'no-data',
-    //         name: 'No employees found',
-    //         externalId: '',
-    //         selected: false
-    //     });
-    //     const result = this.employees$.pipe(
-	// 		map((response) => response
-    //             .filter((option) => option.name.toLowerCase().includes(filterValue))
-    //             .filter((option) => !this.selectedAccountManagers.map((y) => y.id).includes(option.id))
-    //             .map((item, index, list) => {
-    //                 return new SelectableEmployeeDto({
-    //                     id: item.id!,
-    //                     name: item.name!,
-    //                     externalId: item.externalId!,
-    //                     selected: false,
-    //                 });
-    //             })
-    //         )
-	// 	);
-    //     if (value === '') {
-    //         return this.employees$.pipe(
-	// 			map((response) =>
-	// 				response
-	// 					.filter((x) => !this.selectedAccountManagers.map((y) => y.id).includes(x.id))
-	// 					.map((item, index, list) => {
-    //                         return new SelectableEmployeeDto({
-    //                             id: item.id!,
-    //                             name: item.name!,
-    //                             externalId: item.externalId!,
-    //                             selected: false,
-    //                         });
-	// 					})
-	// 			)
-	// 		);
-    //     } else {
-    //         return result;
-    //     }
-    // }
+	}
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -267,7 +211,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.salesTypeControl.value,
 			this.deliveryTypesControl.value,
 			this.workflowStatusControl.value,
-            this.showPONumberMissing
+			this.showPONumberMissing
 		).filter((item) => item !== null && item !== undefined && item).length;
 	}
 
@@ -285,7 +229,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			syncStateStatus: this.selectedSyncStateStatuses,
 			showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
 			showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
-            showPONumberMissing: this.showPONumberMissing,
+			showPONumberMissing: this.showPONumberMissing,
 			showPendingSteps: this.showPendingSteps,
 			pendingStepType: this.pendingStepType,
 			showUpcomingSteps: this.showUpcomingSteps,
@@ -312,7 +256,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.invoicingEntityControl.setValue(filters.invoicingEntity, { emitEvent: false });
 			this.showOnlyWorkflowsWithNewSales = filters.showOnlyWorkflowsWithNewSales;
 			this.showOnlyWorkflowsWithExtensions = filters.showOnlyWorkflowsWithExtensions;
-            this.showPONumberMissing = filters.showPONumberMissing;
+			this.showPONumberMissing = filters.showPONumberMissing;
 			this.showPendingSteps = filters.showPendingSteps;
 			this.pendingStepType = filters.pendingStepType;
 			this.showUpcomingSteps = filters.showUpcomingSteps;
@@ -526,9 +470,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-    openPeriod(workflowId: string, processId: string) {
-        this.router.navigateByUrl(`/app/workflow/${workflowId}/${processId}`)
-    }
+	openPeriod(workflowId: string, processId: string) {
+		this.router.navigateByUrl(`/app/workflow/${workflowId}/${processId}`);
+	}
 
 	pageChanged(event?: any): void {
 		this.pageNumber = event.pageIndex + 1;
@@ -553,7 +497,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			}
 			dedicatedColumn.order = event.direction !== '' ? order : null;
 		}
-        this.sortingValuesArray = this._workflowDataService.sortMultiColumnSorting(this.sortingValuesArray);
+		this.sortingValuesArray = this._workflowDataService.sortMultiColumnSorting(this.sortingValuesArray);
 		let sorting = this.sortingValuesArray
 			.map((item) => {
 				if (item.order !== null) {
@@ -566,25 +510,25 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getWorkflowList();
 	}
 
-    resetSorting() {
-        this.sortingValues = {
-            WorkflowId: '',
-            clientName: '',
-            SalesTypeId: '',
-            DeliveryTypeId: '',
-            StartDate: '',
-            ActualEndDate: '',
-            ConsultantName: '',
-            WorkflowStatus: '',
-            startDateOfOpenedPeriodOrLastClientPeriod: '',
-            syncStateStatus: '',
-        };
-        this.sortingValuesArray = Object.keys(this.sortingValues).map((k) => {
-            return { column: k, order: null, direction: '' };
-        });
-        this.sorting = '';
-        this.getWorkflowList();
-    }
+	resetSorting() {
+		this.sortingValues = {
+			WorkflowId: '',
+			clientName: '',
+			SalesTypeId: '',
+			DeliveryTypeId: '',
+			StartDate: '',
+			ActualEndDate: '',
+			ConsultantName: '',
+			WorkflowStatus: '',
+			startDateOfOpenedPeriodOrLastClientPeriod: '',
+			syncStateStatus: '',
+		};
+		this.sortingValuesArray = Object.keys(this.sortingValues).map((k) => {
+			return { column: k, order: null, direction: '' };
+		});
+		this.sorting = '';
+		this.getWorkflowList();
+	}
 
 	optionClicked(
 		event: Event,
@@ -657,7 +601,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.workflowStatusControl.setValue(null, { emitEvent: false });
 		this.showOnlyWorkflowsWithNewSales = false;
 		this.showOnlyWorkflowsWithExtensions = false;
-        this.showPONumberMissing = false;
+		this.showPONumberMissing = false;
 		this.pendingStepType = null;
 		this.showPendingSteps = false;
 		this.upcomingStepType = null;
@@ -671,9 +615,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	// onOpenedMenu() {
-    //     setTimeout(() => {
-    //         this.trigger.openPanel();
-    //     }, 100);
+	//     setTimeout(() => {
+	//         this.trigger.openPanel();
+	//     }, 100);
 	// }
 
 	// displayNameFn(option: any) {
@@ -696,11 +640,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.syncStatusFilterControl(item);
 	}
 
-    private _getEnums() {
-        this.legalEntities = this.getStaticEnumValue('legalEntities');
-        this.saleTypes = this.getStaticEnumValue('saleTypes');
-        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
-        this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
-        this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
-    }
+	private _getEnums() {
+		this.legalEntities = this.getStaticEnumValue('legalEntities');
+		this.saleTypes = this.getStaticEnumValue('saleTypes');
+		this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+		this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
+		this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
+	}
 }

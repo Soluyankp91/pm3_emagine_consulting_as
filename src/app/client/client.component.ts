@@ -98,39 +98,39 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         });
 
 
-        this.accountManagerFilter.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(500),
-            switchMap((value: any) => {
-                let toSend = {
-                    name: value,
-                    maxRecordsCount: 1000,
-                    showAll: true,
-                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
-                };
-                if (value?.id) {
-                    toSend.name = value.id
-                        ? value.name
-                        : value;
-                }
-                this.isManagersLoading = true;
-                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-            }),
-        ).subscribe((list: EmployeeDto[]) => {
-            if (list.length) {
-                this.filteredAccountManagers = list.map(x => {
-                    return new SelectableEmployeeDto({
-                        id: x.id!,
-                        name: x.name!,
-                        externalId: x.externalId!,
-                        selected: false
-                    })
-                });
-            } else {
-                this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
-            }
-            this.isManagersLoading = false;
-        });
+        // this.accountManagerFilter.valueChanges.pipe(
+        //     takeUntil(this._unsubscribe),
+        //     debounceTime(500),
+        //     switchMap((value: any) => {
+        //         let toSend = {
+        //             name: value,
+        //             maxRecordsCount: 1000,
+        //             showAll: true,
+        //             excludeIds: this.selectedAccountManagers.map(x => +x.id)
+        //         };
+        //         if (value?.id) {
+        //             toSend.name = value.id
+        //                 ? value.name
+        //                 : value;
+        //         }
+        //         this.isManagersLoading = true;
+        //         return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
+        //     }),
+        // ).subscribe((list: EmployeeDto[]) => {
+        //     if (list.length) {
+        //         this.filteredAccountManagers = list.map(x => {
+        //             return new SelectableEmployeeDto({
+        //                 id: x.id!,
+        //                 name: x.name!,
+        //                 externalId: x.externalId!,
+        //                 selected: false
+        //             })
+        //         });
+        //     } else {
+        //         this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
+        //     }
+        //     this.isManagersLoading = false;
+        // });
     }
 
     ngOnInit(): void {
@@ -166,6 +166,11 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                 );
             });
     }
+
+    managersChanged(event: SelectableEmployeeDto[]) {
+		this.selectedAccountManagers = event;
+		this.getClientsGrid(true);
+	}
 
     private _filterCountries(value: string): SelectableCountry[] {
         const filterValue = value.toLowerCase();

@@ -136,41 +136,41 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         private _titleService: TitleService,
 	) {
 		super(injector);
-		this.accountManagerFilter.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ? value : '',
-						maxRecordsCount: 1000,
-						showAll: true,
-						excludeIds: this.selectedAccountManagers.map((x) => +x.id),
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.name : value;
-					}
-					this.isLoading = true;
-					return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredAccountManagers = list.map((x) => {
-						return new SelectableEmployeeDto({
-							id: x.id!,
-							name: x.name!,
-							externalId: x.externalId!,
-							selected: false,
-						});
-					});
-				} else {
-					this.filteredAccountManagers = [
-						{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
-					];
-				}
-				this.isLoading = false;
-			});
+		// this.accountManagerFilter.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			let toSend = {
+		// 				name: value ? value : '',
+		// 				maxRecordsCount: 1000,
+		// 				showAll: true,
+		// 				excludeIds: this.selectedAccountManagers.map((x) => +x.id),
+		// 			};
+		// 			if (value?.id) {
+		// 				toSend.name = value.id ? value.name : value;
+		// 			}
+		// 			this.isLoading = true;
+		// 			return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
+		// 		})
+		// 	)
+		// 	.subscribe((list: EmployeeDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredAccountManagers = list.map((x) => {
+		// 				return new SelectableEmployeeDto({
+		// 					id: x.id!,
+		// 					name: x.name!,
+		// 					externalId: x.externalId!,
+		// 					selected: false,
+		// 				});
+		// 			});
+		// 		} else {
+		// 			this.filteredAccountManagers = [
+		// 				{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
+		// 			];
+		// 		}
+		// 		this.isLoading = false;
+		// 	});
 
 		merge(
 			this.invoicingEntityControl.valueChanges,
@@ -199,6 +199,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
+	}
+
+	managersChanged(event: SelectableEmployeeDto[]) {
+		this.selectedAccountManagers = event;
+		this.changeViewType(true);
 	}
 
 	updateAdvancedFiltersCounter() {
@@ -509,27 +514,27 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		}
 	}
 
-	optionClicked(
-		event: Event,
-		item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto,
-		list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]
-	) {
-		event.stopPropagation();
-		this.toggleSelection(item, list);
-	}
+	// optionClicked(
+	// 	event: Event,
+	// 	item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto,
+	// 	list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]
+	// ) {
+	// 	event.stopPropagation();
+	// 	this.toggleSelection(item, list);
+	// }
 
-	toggleSelection(item: any, list: any) {
-		item.selected = !item.selected;
-		if (item.selected) {
-			if (!list.includes(item)) {
-				list.push(item);
-			}
-		} else {
-			const i = list.findIndex((value: any) => value.name === item.name);
-			list.splice(i, 1);
-		}
-		this.changeViewType(true);
-	}
+	// toggleSelection(item: any, list: any) {
+	// 	item.selected = !item.selected;
+	// 	if (item.selected) {
+	// 		if (!list.includes(item)) {
+	// 			list.push(item);
+	// 		}
+	// 	} else {
+	// 		const i = list.findIndex((value: any) => value.name === item.name);
+	// 		list.splice(i, 1);
+	// 	}
+	// 	this.changeViewType(true);
+	// }
 
     private _getEnums() {
         this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
@@ -728,15 +733,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.changeViewType();
 	}
 
-	openMenu(event: any) {
-		event.stopPropagation();
-		this.trigger.openPanel();
-	}
+	// openMenu(event: any) {
+	// 	event.stopPropagation();
+	// 	this.trigger.openPanel();
+	// }
 
-	onOpenedMenu() {
-		this.accountManagerFilter.setValue('');
-		this.accountManagerFilter.markAsTouched();
-	}
+	// onOpenedMenu() {
+	// 	this.accountManagerFilter.setValue('');
+	// 	this.accountManagerFilter.markAsTouched();
+	// }
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;

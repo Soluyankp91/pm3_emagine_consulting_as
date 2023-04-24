@@ -19,6 +19,8 @@ export class ManagerMultiselectComponent extends AppComponentBase implements OnI
 	@Output() selectionChanged = new EventEmitter<SelectableEmployeeDto[]>();
     @Input() set initialOptions(options: SelectableEmployeeDto[]) {
         this.selectedAccountManagers = options;
+        // to filter out already selected employees
+        this.accountManagerFilter.updateValueAndValidity();
     }
 	selectedAccountManagers: SelectableEmployeeDto[] = [];
 	accountManagerFilter = new UntypedFormControl();
