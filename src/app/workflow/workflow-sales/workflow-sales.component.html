@@ -25,12 +25,12 @@
                             </button>
                             <mat-menu #returnToSalesMenu>
                                 <div class="u-w--100 u-h--100"
-                                    [matTooltip]="permissionsForCurrentUser!['Reopen'] ? '' : 'Not available after the Contracts step has been completed'"
+                                    [matTooltip]="permissionsForCurrentUser![eStepPermission.Reopen] ? '' : 'Not available after the Contracts step has been completed'"
                                     matTooltipClass="white-tooltip">
                                     <button
                                         class="menu-item menu-item--edit contract-manager-action"
                                         mat-menu-item
-                                        [disabled]="!permissionsForCurrentUser!['Reopen']"
+                                        [disabled]="!permissionsForCurrentUser![eStepPermission.Reopen]"
                                         appPreventDoubleClick (throttledClick)="returnToSales()">
                                         <mat-icon svgIcon="return-icon"></mat-icon>
                                         Return to Sales
@@ -64,7 +64,7 @@
                         <mat-button-toggle-group [disabled]="readOnlyMode"
                             [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}"
                             class="workflow-toggle-buttons u-mb--10" formControlName="terminationTime" required>
-                            <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
+                            <ng-container *ngFor="let item of terminationTimes | keyvalue">
                                 <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationTime?.value) || !readOnlyMode">
                                     <mat-button-toggle [value]="+item.key">
                                         {{ item.value }}

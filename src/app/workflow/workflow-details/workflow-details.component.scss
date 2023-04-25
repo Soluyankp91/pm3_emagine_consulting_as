@@ -31,7 +31,7 @@
         &--title {
             display: flex;
             align-items: center;
-            @include fontOpenSans(12px, 'inherit');
+            @include fontOpenSans(12px, 700);
             color: $dark-grey-color;
             line-height: 140%;
             &__clientId {
@@ -44,7 +44,7 @@
             }
         }
         &--status {
-            @include fontOpenSans(14px, 'inherit');
+            @include fontOpenSans(14px, 700);
             color: $dark-grey-color;
             line-height: 14px;
             &__icon {

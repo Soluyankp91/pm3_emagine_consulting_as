@@ -6,14 +6,13 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { forkJoin, merge, of, Subject } from 'rxjs';
+import { merge, of, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { MapClientAddressList } from '../workflow-sales.helpers';
 import {
-	AgreementServiceProxy,
 	ClientAddressDto,
 	AgreementSimpleListItemDto,
 	AgreementSimpleListItemDtoPaginatedList,
@@ -44,6 +43,7 @@ import {
 } from '../workflow-sales.model';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
+import { ERateType } from '../../workflow.model';
 
 @Component({
 	selector: 'app-client-data',
@@ -72,9 +72,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	filteredContractSigners: ContactResultDto[];
 
 	currencies: EnumEntityTypeDto[];
+    eCurrencies: { [key: number]: string };
 	signerRoles: EnumEntityTypeDto[];
-	clientExtensionDurations: EnumEntityTypeDto[];
-	clientExtensionDeadlines: EnumEntityTypeDto[];
+	extensionDurations: EnumEntityTypeDto[];
+	extensionDeadlines: EnumEntityTypeDto[];
 	legalEntities: LegalEntityDto[];
 	rateUnitTypes: EnumEntityTypeDto[];
 	invoiceFrequencies: EnumEntityTypeDto[];
@@ -99,8 +100,8 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	eTimeReportingCaps = ETimeReportingCaps;
 	ePurchaseOrderMode = EPurchaseOrderMode;
 	filteredFrameAgreements: AgreementSimpleListItemDto[];
-
 	selectedFrameAgreementId: number | null;
+    eRateType = ERateType;
 
 	private _unsubscribe = new Subject();
 	constructor(
@@ -112,7 +113,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		private _httpClient: HttpClient,
 		private _localHttpService: LocalHttpService,
 		private _router: Router,
-		private _agreementService: AgreementServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
 	) {
@@ -130,35 +130,391 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this._unsubscribe.complete();
 	}
 
-	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			legalEntities: this._internalLookupService.getLegalEntities(),
-			signerRoles: this._internalLookupService.getSignerRoles(),
-			clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
-			clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-			rateUnitTypes: this._internalLookupService.getUnitTypes(),
-			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-			valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-			periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.legalEntities = result.legalEntities;
-			this.signerRoles = result.signerRoles;
-			this.clientExtensionDurations = result.clientExtensionDurations;
-			this.clientExtensionDeadlines = result.clientExtensionDeadlines;
-			this.rateUnitTypes = result.rateUnitTypes;
-			this.invoiceFrequencies = result.invoiceFrequencies;
-			this.invoicingTimes = result.invoicingTimes;
-			this.clientTimeReportingCap = result.clientTimeReportingCap;
-			this.valueUnitTypes = result.valueUnitTypes;
-			this.periodUnitTypes = result.periodUnitTypes;
+	getPrimaryFrameAgreements() {
+		this.getFrameAgreements(true).subscribe((result) => {
+			this.filteredFrameAgreements = result.items;
+			if (this.selectedFrameAgreementId !== null) {
+				this.salesClientDataForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
+			} else if (result?.totalCount === 1) {
+				this._checkAndPreselectFrameAgreement();
+			} else if (result?.totalCount === 0) {
+				this.salesClientDataForm.frameAgreementId.setValue('');
+			}
 		});
 	}
 
-	private _subscriptions$() {
+	getFrameAgreements(isInitial = false, search: string = '') {
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.salesClientDataForm.directClientIdValue.value.clientId,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: isInitial ? this.salesClientDataForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
+			startDate: isInitial ? this.salesClientDataForm.startDate.value : undefined,
+			endDate: isInitial
+				? this.salesClientDataForm.endDate.value
+					? this.salesClientDataForm.endDate.value
+					: undefined
+				: undefined,
+			recipientClientIds: [
+				this.salesClientDataForm.directClientIdValue.value?.clientId,
+				this.salesClientDataForm.endClientIdValue.value?.clientId,
+			].filter(Boolean),
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		return this._frameAgreementServiceProxy.clientFrameAgreementList(
+			dataToSend.agreementId,
+			dataToSend.search,
+			undefined, // dataToSend.clientId,
+			dataToSend.legalEntityId ?? undefined,
+			dataToSend.salesTypeId ?? undefined,
+			dataToSend.contractTypeId ?? undefined,
+			dataToSend.deliveryTypeId ?? undefined,
+			dataToSend.startDate ?? undefined,
+			dataToSend.endDate ?? undefined,
+			dataToSend.recipientClientIds ?? undefined,
+			dataToSend.pageNumber,
+			dataToSend.pageSize,
+			dataToSend.sort
+		);
+	}
+
+	private _checkAndPreselectFrameAgreement() {
+		if (
+			this.salesClientDataForm.startDate.value &&
+			(this.salesClientDataForm.endDate.value || this.salesClientDataForm.noEndDate.value) &&
+			this.salesClientDataForm.directClientIdValue.value?.clientId &&
+			this.mainDataForm.salesTypeId.value &&
+			this.mainDataForm.deliveryTypeId.value
+		) {
+			if (this.filteredFrameAgreements.length === 1) {
+				this.salesClientDataForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
+			}
+		}
+	}
+
+	clientRateTypeChange(value: EnumEntityTypeDto) {
+		if (value.id) {
+			this.salesClientDataForm.rateUnitTypeId?.setValue(null, { emitEvent: false });
+			this.salesClientDataForm.normalRate?.setValue(null, { emitEvent: false });
+			this.salesClientDataForm.clientCurrencyId?.setValue(null, { emitEvent: false });
+		}
+	}
+
+	directClientSelected(event: MatAutocompleteSelectedEvent) {
+		this.initContactSubs();
+		this.salesClientDataForm.frameAgreementId.setValue('');
+        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
+        this.clearClientAddress(EClientSelectionType.DirectClient);
+        this.onDirectClientSelected.emit(event);
+	}
+
+    clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
+        this.clearClientAddress(clientType);
+        this.getClientAddresses(event.option.value?.clientAddresses, clientType);
+        this.focusToggleMethod('auto');
+    }
+
+    getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
+        switch (clientType) {
+            case EClientSelectionType.DirectClient:
+                this.directClientAddresses = MapClientAddressList(clientAddresses);
+                break;
+            case EClientSelectionType.EndClient:
+                this.endClientAddresses = MapClientAddressList(clientAddresses);
+                break;
+            case EClientSelectionType.InvoicingRecipient:
+                this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
+                break;
+        }
+    }
+
+    clearClientAddress(clientType: EClientSelectionType) {
+        switch (clientType) {
+            case EClientSelectionType.DirectClient:
+                this.salesClientDataForm.directClientAddress.reset(null);
+                break;
+            case EClientSelectionType.EndClient:
+                this.salesClientDataForm.endClientAddress.reset(null);
+                break;
+            case EClientSelectionType.InvoicingRecipient:
+                this.salesClientDataForm.clientInvoicingRecipientAddress.reset(null);
+                break;
+        }
+    }
+
+	initContactSubs() {
+		this.salesClientDataForm.clientContactProjectManager.setValue('');
+		this.salesClientDataForm.invoicePaperworkContactIdValue.setValue('');
+		this.salesClientDataForm.evaluationsReferencePersonIdValue.setValue('');
+	}
+
+	getRatesAndFees(clientId: number) {
+		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
+		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
+	}
+
+	selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
+		event.stopPropagation();
+		const formattedRate = new PeriodClientSpecialRateDto();
+		formattedRate.id = undefined;
+		formattedRate.clientSpecialRateId = rate.id;
+		formattedRate.rateName = rate.internalName;
+		formattedRate.reportingUnit = rate.specialRateReportingUnit;
+		formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+		if (formattedRate.rateSpecifiedAs?.id === 1) {
+			formattedRate.clientRate = +((this.salesClientDataForm?.normalRate?.value * rate.clientRate!) / 100).toFixed(2);
+			formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrencyId?.value;
+		} else {
+			formattedRate.clientRate = rate.clientRate;
+			formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+		}
+		this.clientSpecialRateFilter.setValue('');
+		clientRateMenuTrigger.closeMenu();
+		this.addSpecialRate(formattedRate);
+	}
+
+	addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
+		const form = this._fb.group({
+			id: new UntypedFormControl(clientRate?.id ?? null),
+			clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
+			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
+			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
+			rateSpecifiedAs: new UntypedFormControl(clientRate?.rateSpecifiedAs ?? null),
+			clientRate: new UntypedFormControl(clientRate?.clientRate ?? null),
+			clientRateCurrencyId: new UntypedFormControl(clientRate?.clientRateCurrencyId ?? null),
+			editable: new UntypedFormControl(clientRate ? false : true),
+		});
+		this.salesClientDataForm.clientRates.push(form);
+	}
+
+	removeClientRate(index: number) {
+		this.clientRates.removeAt(index);
+	}
+
+	editOrSaveSpecialRate(isEditable: boolean, rateIndex: number) {
+		if (isEditable) {
+			this.clientRateToEdit = new PeriodClientSpecialRateDto();
+			this.isClientRateEditing = false;
+		} else {
+			const clientRateValue = this.clientRates.at(rateIndex).value;
+			this.clientRateToEdit = new PeriodClientSpecialRateDto({
+				id: clientRateValue.id,
+				clientSpecialRateId: clientRateValue.clientSpecialRateId,
+				rateName: clientRateValue.rateName,
+				reportingUnit: clientRateValue.reportingUnit,
+				clientRate: clientRateValue.clientRate,
+				clientRateCurrencyId: clientRateValue.clientRateCurrency?.id,
+			});
+			this.isClientRateEditing = true;
+		}
+		this.clientRates.at(rateIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
+	}
+
+	cancelEditClientRate(rateIndex: number) {
+		const rateRow = this.clientRates.at(rateIndex);
+		rateRow.get('clientRate')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
+		rateRow
+			.get('clientRateCurrencyId')
+			?.setValue(this.clientRateToEdit.clientRateCurrencyId, { emitEvent: false });
+		this.clientRateToEdit = new PeriodClientSpecialFeeDto();
+		this.isClientRateEditing = false;
+		this.clientRates.at(rateIndex).get('editable')?.setValue(false, { emitEvent: false });
+	}
+
+	selectClientSpecialFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
+		event.stopPropagation();
+		const formattedFee = new PeriodClientSpecialFeeDto();
+		formattedFee.id = undefined;
+		formattedFee.clientSpecialFeeId = fee.id;
+		formattedFee.feeName = fee.internalName;
+		formattedFee.frequency = fee.clientSpecialFeeFrequency;
+		formattedFee.clientRate = fee.clientRate;
+		formattedFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
+		this.clientSpecialFeeFilter.setValue('');
+		clientFeeMenuTrigger.closeMenu();
+		this.addClientFee(formattedFee);
+	}
+
+	addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
+		const form = this._fb.group({
+			id: new UntypedFormControl(clientFee?.id ?? null),
+			clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
+			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
+			frequency: new UntypedFormControl(clientFee?.frequency ?? null),
+			clientRate: new UntypedFormControl(clientFee?.clientRate ?? null),
+			clientRateCurrencyId: new UntypedFormControl(clientFee?.clientRateCurrencyId ?? null),
+			editable: new UntypedFormControl(clientFee ? false : true),
+		});
+		this.salesClientDataForm.clientFees.push(form);
+	}
+
+	removeClientFee(index: number) {
+		this.clientFees.removeAt(index);
+	}
+
+	editOrSaveClientFee(isEditable: boolean, feeIndex: number) {
+		if (isEditable) {
+			this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
+			this.isClientFeeEditing = false;
+		} else {
+			const consultantFeeValue = this.clientFees.at(feeIndex).value;
+			this.clientFeeToEdit = new PeriodClientSpecialFeeDto({
+				id: consultantFeeValue.id,
+				clientSpecialFeeId: consultantFeeValue.clientSpecialRateId,
+				feeName: consultantFeeValue.rateName,
+				frequency: consultantFeeValue.reportingUnit,
+				clientRate: consultantFeeValue.proDataRateValue,
+				clientRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
+			});
+			this.isClientFeeEditing = true;
+		}
+		this.clientFees.at(feeIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
+	}
+
+	cancelEditClientFee(feeIndex: number) {
+		const feeRow = this.clientFees.at(feeIndex);
+		feeRow.get('clientRate')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
+		feeRow
+			.get('clientRateCurrencyId')
+			?.setValue(this.clientFeeToEdit.clientRateCurrencyId, { emitEvent: false });
+		this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
+		this.isClientFeeEditing = false;
+		this.clientFees.at(feeIndex).get('editable')?.setValue(false, { emitEvent: false });
+	}
+
+	addSignerToForm(signer?: ContractSignerDto) {
+		const form = this._fb.group(
+			{
+				clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
+				signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
+				clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
+			}
+		);
+		this.salesClientDataForm.contractSigners.push(form);
+		this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
+	}
+
+	manageSignersContactAutocomplete(signerIndex: number) {
+		let arrayControl = this.salesClientDataForm.contractSigners.at(signerIndex);
+		arrayControl!
+			.get('clientContact')!
+			.valueChanges.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						clientIds: [
+							this.salesClientDataForm.directClientIdValue?.value?.clientId,
+							this.salesClientDataForm.endClientIdValue?.value?.clientId,
+						].filter(Boolean),
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.firstName : value;
+					}
+					if (toSend.clientIds?.length) {
+						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+					} else {
+						return of([]);
+					}
+				})
+			)
+			.subscribe((list: ContactResultDto[]) => {
+				if (list.length) {
+					this.filteredContractSigners = list;
+				} else {
+					this.filteredContractSigners = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
+				}
+			});
+	}
+
+	removeSigner(index: number) {
+		this.contractSigners.removeAt(index);
+	}
+
+	openClientInNewTab(clientId: string) {
+		const url = this._router.serializeUrl(this._router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
+		window.open(url, '_blank');
+	}
+
+	openInHubspot(client: ClientResultDto) {
+		if (this._internalLookupService.hubspotClientUrl?.length) {
+			if (client.crmClientId !== null && client.crmClientId !== undefined) {
+				window.open(
+					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
+					'_blank'
+				);
+			}
+		} else {
+			this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+				this._httpClient
+					.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
+						headers: new HttpHeaders({
+							Authorization: `Bearer ${response.accessToken}`,
+						}),
+						responseType: 'text',
+					})
+					.subscribe((result: string) => {
+						this._internalLookupService.hubspotClientUrl = result;
+						if (client.crmClientId !== null && client.crmClientId !== undefined) {
+							window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+						}
+					});
+			});
+		}
+	}
+
+	addTimeReportingCap(cap?: TimeReportingCapDto) {
+		const form = this._fb.group({
+			id: new UntypedFormControl(cap?.id?.value ?? null),
+			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
+			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
+			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+		});
+		this.salesClientDataForm.timeReportingCaps.push(form);
+	}
+
+	removeTimeReportingCap(index: number) {
+		this.timeReportingCaps.removeAt(index);
+	}
+
+	capSelectionChange(event: MatSelectChange) {
+		if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
+			this.timeReportingCaps.controls = [];
+		}
+	}
+
+	submitForm() {
+		this.submitFormBtn.nativeElement.click();
+	}
+
+    private _getEnums() {
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.signerRoles = this.getStaticEnumValue('signerRoles');
+        this.extensionDurations = this.getStaticEnumValue('extensionDurations');
+        this.extensionDeadlines = this.getStaticEnumValue('extensionDeadlines');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+	}
+
+    private _subscriptions$() {
 		this.salesClientDataForm.directClientIdValue?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
@@ -404,380 +760,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				}
 			});
 	}
-
-	getPrimaryFrameAgreements() {
-		this.getFrameAgreements(true).subscribe((result) => {
-			this.filteredFrameAgreements = result.items;
-			if (this.selectedFrameAgreementId !== null) {
-				this.salesClientDataForm.frameAgreementId.setValue(this.selectedFrameAgreementId);
-			} else if (result?.totalCount === 1) {
-				this._checkAndPreselectFrameAgreement();
-			} else if (result?.totalCount === 0) {
-				this.salesClientDataForm.frameAgreementId.setValue('');
-			}
-		});
-	}
-
-	getFrameAgreements(isInitial = false, search: string = '') {
-		let dataToSend = {
-			agreementId: undefined,
-			search: search,
-			clientId: this.salesClientDataForm.directClientIdValue.value.clientId,
-			agreementType: AgreementType.Frame,
-			validity: undefined,
-			legalEntityId: isInitial ? this.salesClientDataForm.pdcInvoicingEntityId.value : undefined,
-			salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
-			contractTypeId: undefined,
-			deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
-			startDate: isInitial ? this.salesClientDataForm.startDate.value : undefined,
-			endDate: isInitial
-				? this.salesClientDataForm.endDate.value
-					? this.salesClientDataForm.endDate.value
-					: undefined
-				: undefined,
-			recipientClientIds: [
-				this.salesClientDataForm.directClientIdValue.value?.clientId,
-				this.salesClientDataForm.endClientIdValue.value?.clientId,
-			].filter(Boolean),
-			pageNumber: 1,
-			pageSize: 1000,
-			sort: '',
-		};
-		return this._frameAgreementServiceProxy.clientFrameAgreementList(
-			dataToSend.agreementId,
-			dataToSend.search,
-			undefined, // dataToSend.clientId,
-			dataToSend.legalEntityId ?? undefined,
-			dataToSend.salesTypeId ?? undefined,
-			dataToSend.contractTypeId ?? undefined,
-			dataToSend.deliveryTypeId ?? undefined,
-			dataToSend.startDate ?? undefined,
-			dataToSend.endDate ?? undefined,
-			dataToSend.recipientClientIds ?? undefined,
-			dataToSend.pageNumber,
-			dataToSend.pageSize,
-			dataToSend.sort
-		);
-	}
-
-	private _checkAndPreselectFrameAgreement() {
-		if (
-			this.salesClientDataForm.startDate.value &&
-			(this.salesClientDataForm.endDate.value || this.salesClientDataForm.noEndDate.value) &&
-			this.salesClientDataForm.directClientIdValue.value?.clientId &&
-			this.mainDataForm.salesTypeId.value &&
-			this.mainDataForm.deliveryTypeId.value
-		) {
-			if (this.filteredFrameAgreements.length === 1) {
-				this.salesClientDataForm.frameAgreementId.setValue(this.filteredFrameAgreements[0], { emitEvent: false });
-			}
-		}
-	}
-
-	clientRateTypeChange(value: EnumEntityTypeDto) {
-		if (value.id) {
-			this.salesClientDataForm.rateUnitTypeId?.setValue(null, { emitEvent: false });
-			this.salesClientDataForm.normalRate?.setValue(null, { emitEvent: false });
-			this.salesClientDataForm.clientCurrency?.setValue(null, { emitEvent: false });
-		}
-	}
-
-	directClientSelected(event: MatAutocompleteSelectedEvent) {
-		this.initContactSubs();
-		this.salesClientDataForm.frameAgreementId.setValue('');
-        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
-        this.clearClientAddress(EClientSelectionType.DirectClient);
-        this.onDirectClientSelected.emit(event);
-	}
-
-    clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
-        this.clearClientAddress(clientType);
-        this.getClientAddresses(event.option.value?.clientAddresses, clientType);
-        this.focusToggleMethod('auto');
-    }
-
-    getClientAddresses(clientAddresses: ClientAddressDto[], clientType: EClientSelectionType) {
-        switch (clientType) {
-            case EClientSelectionType.DirectClient:
-                this.directClientAddresses = MapClientAddressList(clientAddresses);
-                break;
-            case EClientSelectionType.EndClient:
-                this.endClientAddresses = MapClientAddressList(clientAddresses);
-                break;
-            case EClientSelectionType.InvoicingRecipient:
-                this.invoicingRecipientsAddresses = MapClientAddressList(clientAddresses);
-                break;
-        }
-    }
-
-    clearClientAddress(clientType: EClientSelectionType) {
-        switch (clientType) {
-            case EClientSelectionType.DirectClient:
-                this.salesClientDataForm.directClientAddress.reset(null);
-                break;
-            case EClientSelectionType.EndClient:
-                this.salesClientDataForm.endClientAddress.reset(null);
-                break;
-            case EClientSelectionType.InvoicingRecipient:
-                this.salesClientDataForm.clientInvoicingRecipientAddress.reset(null);
-                break;
-        }
-    }
-
-	initContactSubs() {
-		this.salesClientDataForm.clientContactProjectManager.setValue('');
-		this.salesClientDataForm.invoicePaperworkContactIdValue.setValue('');
-		this.salesClientDataForm.evaluationsReferencePersonIdValue.setValue('');
-	}
-
-	getRatesAndFees(clientId: number) {
-		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
-		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
-	}
-
-	selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
-		event.stopPropagation();
-		const formattedRate = new PeriodClientSpecialRateDto();
-		formattedRate.id = undefined;
-		formattedRate.clientSpecialRateId = rate.id;
-		formattedRate.rateName = rate.internalName;
-		formattedRate.reportingUnit = rate.specialRateReportingUnit;
-		formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
-		if (formattedRate.rateSpecifiedAs?.id === 1) {
-			formattedRate.clientRate = +((this.salesClientDataForm?.normalRate?.value * rate.clientRate!) / 100).toFixed(2);
-			formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrency?.value?.id;
-		} else {
-			formattedRate.clientRate = rate.clientRate;
-			formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
-		}
-		this.clientSpecialRateFilter.setValue('');
-		clientRateMenuTrigger.closeMenu();
-		this.addSpecialRate(formattedRate);
-	}
-
-	addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientRate?.id ?? null),
-			clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
-			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
-			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
-			rateSpecifiedAs: new UntypedFormControl(clientRate?.rateSpecifiedAs ?? null),
-			clientRate: new UntypedFormControl(clientRate?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(clientRate ? false : true),
-		});
-		this.salesClientDataForm.clientRates.push(form);
-	}
-
-	removeClientRate(index: number) {
-		this.clientRates.removeAt(index);
-	}
-
-	editOrSaveSpecialRate(isEditable: boolean, rateIndex: number) {
-		if (isEditable) {
-			this.clientRateToEdit = new PeriodClientSpecialRateDto();
-			this.isClientRateEditing = false;
-		} else {
-			const clientRateValue = this.clientRates.at(rateIndex).value;
-			this.clientRateToEdit = new PeriodClientSpecialRateDto({
-				id: clientRateValue.id,
-				clientSpecialRateId: clientRateValue.clientSpecialRateId,
-				rateName: clientRateValue.rateName,
-				reportingUnit: clientRateValue.reportingUnit,
-				clientRate: clientRateValue.clientRate,
-				clientRateCurrencyId: clientRateValue.clientRateCurrency?.id,
-			});
-			this.isClientRateEditing = true;
-		}
-		this.clientRates.at(rateIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
-	}
-
-	cancelEditClientRate(rateIndex: number) {
-		const rateRow = this.clientRates.at(rateIndex);
-		rateRow.get('clientRate')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
-		rateRow
-			.get('clientRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), { emitEvent: false });
-		this.clientRateToEdit = new PeriodClientSpecialFeeDto();
-		this.isClientRateEditing = false;
-		this.clientRates.at(rateIndex).get('editable')?.setValue(false, { emitEvent: false });
-	}
-
-	selectClientSpecialFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
-		event.stopPropagation();
-		const formattedFee = new PeriodClientSpecialFeeDto();
-		formattedFee.id = undefined;
-		formattedFee.clientSpecialFeeId = fee.id;
-		formattedFee.feeName = fee.internalName;
-		formattedFee.frequency = fee.clientSpecialFeeFrequency;
-		formattedFee.clientRate = fee.clientRate;
-		formattedFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
-		this.clientSpecialFeeFilter.setValue('');
-		clientFeeMenuTrigger.closeMenu();
-		this.addClientFee(formattedFee);
-	}
-
-	addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientFee?.id ?? null),
-			clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
-			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
-			frequency: new UntypedFormControl(clientFee?.frequency ?? null),
-			clientRate: new UntypedFormControl(clientFee?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(clientFee ? false : true),
-		});
-		this.salesClientDataForm.clientFees.push(form);
-	}
-
-	removeClientFee(index: number) {
-		this.clientFees.removeAt(index);
-	}
-
-	editOrSaveClientFee(isEditable: boolean, feeIndex: number) {
-		if (isEditable) {
-			this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
-			this.isClientFeeEditing = false;
-		} else {
-			const consultantFeeValue = this.clientFees.at(feeIndex).value;
-			this.clientFeeToEdit = new PeriodClientSpecialFeeDto({
-				id: consultantFeeValue.id,
-				clientSpecialFeeId: consultantFeeValue.clientSpecialRateId,
-				feeName: consultantFeeValue.rateName,
-				frequency: consultantFeeValue.reportingUnit,
-				clientRate: consultantFeeValue.proDataRateValue,
-				clientRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
-			});
-			this.isClientFeeEditing = true;
-		}
-		this.clientFees.at(feeIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
-	}
-
-	cancelEditClientFee(feeIndex: number) {
-		const feeRow = this.clientFees.at(feeIndex);
-		feeRow.get('clientRate')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
-		feeRow
-			.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), { emitEvent: false });
-		this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
-		this.isClientFeeEditing = false;
-		this.clientFees.at(feeIndex).get('editable')?.setValue(false, { emitEvent: false });
-	}
-
-	addSignerToForm(signer?: ContractSignerDto) {
-		const form = this._fb.group(
-			{
-				clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
-				signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
-				clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
-			}
-		);
-		this.salesClientDataForm.contractSigners.push(form);
-		this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
-	}
-
-	manageSignersContactAutocomplete(signerIndex: number) {
-		let arrayControl = this.salesClientDataForm.contractSigners.at(signerIndex);
-		arrayControl!
-			.get('clientContact')!
-			.valueChanges.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						clientIds: [
-							this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							this.salesClientDataForm.endClientIdValue?.value?.clientId,
-						].filter(Boolean),
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
-					}
-					if (toSend.clientIds?.length) {
-						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredContractSigners = list;
-				} else {
-					this.filteredContractSigners = [
-						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
-					];
-				}
-			});
-	}
-
-	removeSigner(index: number) {
-		this.contractSigners.removeAt(index);
-	}
-
-	openClientInNewTab(clientId: string) {
-		const url = this._router.serializeUrl(this._router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
-		window.open(url, '_blank');
-	}
-
-	openInHubspot(client: ClientResultDto) {
-		if (this._internalLookupService.hubspotClientUrl?.length) {
-			if (client.crmClientId !== null && client.crmClientId !== undefined) {
-				window.open(
-					this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()),
-					'_blank'
-				);
-			}
-		} else {
-			this._localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-				this._httpClient
-					.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
-						headers: new HttpHeaders({
-							Authorization: `Bearer ${response.accessToken}`,
-						}),
-						responseType: 'text',
-					})
-					.subscribe((result: string) => {
-						this._internalLookupService.hubspotClientUrl = result;
-						if (client.crmClientId !== null && client.crmClientId !== undefined) {
-							window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-						}
-					});
-			});
-		}
-	}
-
-	addTimeReportingCap(cap?: TimeReportingCapDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(cap?.id?.value ?? null),
-			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
-			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
-			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
-		});
-		this.salesClientDataForm.timeReportingCaps.push(form);
-	}
-
-	removeTimeReportingCap(index: number) {
-		this.timeReportingCaps.removeAt(index);
-	}
-
-	capSelectionChange(event: MatSelectChange) {
-		if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
-			this.timeReportingCaps.controls = [];
-		}
-	}
-
-	submitForm() {
-		this.submitFormBtn.nativeElement.click();
-	}
-
     setClientInvoicingRecipient(sameAsDirectClient: boolean, directClient: ClientResultDto) {
         if (sameAsDirectClient) {
 			this.salesClientDataForm.clientInvoicingRecipientIdValue!.disable();

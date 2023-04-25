@@ -42,10 +42,10 @@
                             </button>
                             <mat-menu #returnToSalesMenu>
                                 <div class="u-w--100 u-h--100"
-                                    [matTooltip]="permissionsForCurrentUser!['Reopen'] ? '' : 'Not available after the Contracts step has been completed'"
+                                    [matTooltip]="permissionsForCurrentUser![eStepPermission.Reopen] ? '' : 'Not available after the Contracts step has been completed'"
                                     matTooltipClass="white-tooltip">
                                     <button class="menu-item menu-item--edit contract-manager-action" mat-menu-item
-                                        [disabled]="!permissionsForCurrentUser!['Reopen']" appPreventDoubleClick
+                                        [disabled]="!permissionsForCurrentUser![eStepPermission.Reopen]" appPreventDoubleClick
                                         (throttledClick)="returnToSales()">
                                         <mat-icon svgIcon="return-icon"></mat-icon>
                                         Return to Sales
@@ -302,7 +302,7 @@
                                                 (selectionChange)="commissionRecipientTypeChanged(i)"
                                                 [compareWith]="compareWithFn">
                                                 <ng-container
-                                                    *ngFor="let item of commissionRecipientTypeList; trackBy: trackById">
+                                                    *ngFor="let item of commissionRecipientTypes; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -631,7 +631,7 @@
                                 <mat-option [value]="999">
                                     Manual date
                                 </mat-option>
-                                <ng-container *ngFor="let item of contractExpirationNotificationDuration | keyvalue">
+                                <ng-container *ngFor="let item of contractExpirationNotificationInterval | keyvalue">
                                     <mat-option [value]="+item.key">
                                         {{ item.value }}
                                     </mat-option>

@@ -102,7 +102,7 @@
                     (change)="sharedCapTypeChange($event.value)"
                     [ngClass]="{'mat-form-field-invalid': !purchaseOrderForm.capForInvoicing.type?.valid}"
                     class="workflow-toggle-buttons" formControlName="type" required>
-                    <ng-container *ngFor="let item of capTypes | keyvalue; trackBy: trackByKey">
+                    <ng-container *ngFor="let item of purchaseOrderCapTypes | keyvalue; trackBy: trackByKey">
                         <mat-button-toggle [value]="+item.key">
                             {{ item.value }}
                         </mat-button-toggle>
@@ -123,7 +123,7 @@
                         <mat-label>Unit</mat-label>
                         <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits"
                             formControlName="valueUnitTypeId" [disableOptionCentering]="true">
-                            <ng-container *ngFor="let item of unitTypes; trackBy: trackById">
+                            <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
                                 <mat-option [value]="item.id">
                                     {{ item.name }}
                                 </mat-option>
@@ -179,7 +179,7 @@
             {{order?.receiveDate !== null && order?.receiveDate !== undefined ? (order?.receiveDate | momentFormat) : '-'
             }}
             {{order?.receiveDate !== null && order?.receiveDate !== undefined ? '• ' : ''}}
-            {{capTypes[order?.capForInvoicing?.type]}}
+            {{purchaseOrderCapTypes[order?.capForInvoicing?.type]}}
             <ng-container [ngSwitch]="order?.capForInvoicing?.type">
                 <ng-container *ngSwitchCase="ePOCaps.CapOnUnits">
                     • {{eValueUnitType[order?.capForInvoicing?.valueUnitTypeId]}}

@@ -37,6 +37,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CustomDateAdapter } from './custom-date-adapter';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const globalRippleConfig: RippleGlobalOptions = {
     disabled: true,
@@ -99,7 +100,8 @@ const MaterialModules = [
     FlexLayoutModule,
     MatProgressSpinnerModule,
     TextFieldModule,
-    ClipboardModule
+    ClipboardModule,
+    ScrollingModule
 ]
 
 @NgModule({

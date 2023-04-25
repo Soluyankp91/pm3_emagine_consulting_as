@@ -44,7 +44,7 @@
                         <div class="workflow-overview--team__user column" appPreventDoubleClick (throttledClick)="openPeriod(item)">
                             <div fxLayout="row" fxLayoutAlign="start center">
                                 <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
-                                    <app-manager-search
+                                    <responsible-person
                                         appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
                                         [periodId]="item.consultantPeriodId!"
@@ -57,7 +57,7 @@
                                         [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined"
                                         [width]="30"
                                         [height]="30">
-                                    </app-manager-search>
+                                    </responsible-person>
                                 </div>
                                 <div class="column">
                                     <h2 class="workflow-overview--team__user-position">{{step.name}}</h2>
@@ -93,7 +93,7 @@
                         <div class="workflow-overview--team__user column">
                             <div fxLayout="row" fxLayoutAlign="start center">
                                 <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
-                                    <app-manager-search
+                                    <responsible-person
                                         appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
                                         [periodId]="periodId!"
@@ -107,7 +107,7 @@
                                         [isFakeActiveStep]="step.isFakeActiveStep!"
                                         [width]="30"
                                         [height]="30">
-                                    </app-manager-search>
+                                    </responsible-person>
                                 </div>
                                 <div class="column">
                                     <h2 class="workflow-overview--team__user-position">Account manager</h2>

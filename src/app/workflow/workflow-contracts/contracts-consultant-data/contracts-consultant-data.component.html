@@ -28,16 +28,16 @@
                                 <mat-form-field appearance="outline"
                                     class="formFieldNoMarginPadding filter-select form-width-235">
                                     <mat-label>Employment type</mat-label>
-                                    <mat-select [disabled]="true" required formControlName="consultantType"
-                                        [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [disabled]="true" required formControlName="employmentTypeId"
+                                        [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
-                                            <mat-option [value]="item">
+                                            <mat-option [value]="item.id">
                                                 {{ item?.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
                                     <mat-error>
-                                        <app-validator [control]="consultant.get('consultantType')"></app-validator>
+                                        <app-validator [control]="consultant.get('employmentTypeId')"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
                             </div>
@@ -45,7 +45,7 @@
                                 <mat-form-field appearance="outline"
                                     class="formFieldNoMarginPadding disabled-input autocompleteWithShevron form-width-450"
                                     [ngClass]="{'isPanelOpen': consultantAutocomplete.isOpen}"
-                                    [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
+                                    [fxHide]="consultant.value?.employmentTypeId === eEmploymentType.FeeOnly || consultant.value?.employmentTypeId === eEmploymentType.Recruitment">
                                     <mat-label>Consultant Name</mat-label>
                                     <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete"
                                         formControlName="consultant" [matAutocomplete]="consultantAutocomplete"
@@ -85,7 +85,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="outline"
                                     class="form-width-450 formFieldNoMarginPadding filter-select disabled-input"
-                                    [fxHide]="consultant.value?.consultantType?.id !== 10 && consultant.value?.consultantType?.id !== 11">
+                                    [fxHide]="consultant.value?.employmentTypeId !== eEmploymentType.FeeOnly && consultant.value?.employmentTypeId !== eEmploymentType.Recruitment">
                                     <mat-label>Consultant Name only</mat-label>
                                     <input [disabled]="true" type="text" matInput formControlName="nameOnly"
                                         placeholder="Consultant name only">
@@ -98,9 +98,7 @@
                                 [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                         </div>
                     </div>
-
-                    <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                    <ng-container *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
+                    <ng-container *ngIf="consultant.value.employmentTypeId !== eEmploymentType.FeeOnly && consultant.value.employmentTypeId !== eEmploymentType.Recruitment">
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantInvoicing' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">2</span>
@@ -114,7 +112,7 @@
                                             <mat-label>Shared cap on time reporting</mat-label>
                                             <mat-select [disabled]="true" required formControlName="consultantTimeReportingCapId"
                                                 [disableOptionCentering]="true">
-                                                <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
+                                                <ng-container *ngFor="let item of consultantTimeReportingCap; trackBy: trackById">
                                                     <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -244,9 +242,9 @@
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="disabled-input formFieldNoMarginPadding filter-select form-width-150">
                                             <mat-label>Price</mat-label>
-                                            <mat-select [disabled]="true" required formControlName="consultantPaymentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [disabled]="true" required formControlName="consultantPaymentType" [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of clientRateTypes; trackBy: trackById">
-                                                    <mat-option [value]="item">
+                                                    <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
@@ -257,8 +255,8 @@
                                         </mat-form-field>
                                     </div>
 
-                                    <ng-container class="u-w--100" [ngSwitch]="consultant.value.consultantPaymentType?.id">
-                                        <ng-container *ngSwitchCase="1"> <!-- 'Time based' -->
+                                    <ng-container class="u-w--100" [ngSwitch]="consultant.value.consultantPaymentType">
+                                        <ng-container *ngSwitchCase="eRateType.TimeBased"> <!-- 'Time based' -->
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding disabled-input u-mr--12 form-width-150">
                                                     <mat-label>Rate</mat-label>
@@ -269,28 +267,28 @@
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                     <mat-label>Unit type</mat-label>
-                                                    <mat-select [disabled]="true" required formControlName="consultantRateUnitType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select [disabled]="true" required formControlName="consultantRateUnitTypeId" [disableOptionCentering]="true">
                                                         <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
-                                                            <mat-option [value]="item">
+                                                            <mat-option [value]="item.id">
                                                                 {{ item.name }}
                                                             </mat-option>
                                                         </ng-container>
                                                     </mat-select>
                                                     <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantRateUnitType')"></app-validator>
+                                                        <app-validator [control]="consultant.get('consultantRateUnitTypeId')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                     <mat-label>Currency</mat-label>
-                                                    <mat-select [disabled]="true" required formControlName="consultantRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select [disabled]="true" required formControlName="consultantRateCurrencyId" [disableOptionCentering]="true">
                                                         <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                            <mat-option [value]="item">
+                                                            <mat-option [value]="item.id">
                                                                 {{ item.name }}
                                                             </mat-option>
                                                         </ng-container>
                                                     </mat-select>
                                                     <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantRateCurrency')"></app-validator>
+                                                        <app-validator [control]="consultant.get('consultantRateCurrencyId')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -310,28 +308,28 @@
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Unit type</mat-label>
-                                                        <mat-select [disabled]="true" required formControlName="consultantPDCRateUnitType" [disableOptionCentering]="true" [disabled]="true" [compareWith]="compareWithFn">
+                                                        <mat-select [disabled]="true" required formControlName="consultantPDCRateUnitTypeId" [disableOptionCentering]="true" [disabled]="true">
                                                             <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
-                                                                <mat-option [value]="item">
+                                                                <mat-option [value]="item.id">
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
                                                         <mat-error>
-                                                            <app-validator [control]="consultant.get('consultantPDCRateUnitType')"></app-validator>
+                                                            <app-validator [control]="consultant.get('consultantPDCRateUnitTypeId')"></app-validator>
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Currency</mat-label>
-                                                        <mat-select [disabled]="true" required formControlName="consultantPDCRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-select [disabled]="true" required formControlName="consultantPDCRateCurrencyId" [disableOptionCentering]="true">
                                                             <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                <mat-option [value]="item">
+                                                                <mat-option [value]="item.id">
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
                                                         <mat-error>
-                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrency')"></app-validator>
+                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrencyId')"></app-validator>
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -347,7 +345,7 @@
                                                 </div>
                                             </ng-container>
                                         </ng-container>
-                                        <ng-container *ngSwitchCase="2"> <!-- 'Fixed' -->
+                                        <ng-container *ngSwitchCase="eRateType.Fixed"> <!-- 'Fixed' -->
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--12 form-width-150" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Rate</mat-label>
@@ -358,15 +356,15 @@
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                     <mat-label>Currency</mat-label>
-                                                    <mat-select [disabled]="true" required formControlName="consultantRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select [disabled]="true" required formControlName="consultantRateCurrencyId" [disableOptionCentering]="true">
                                                         <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                            <mat-option [value]="item">
+                                                            <mat-option [value]="item.id">
                                                                 {{ item.name }}
                                                             </mat-option>
                                                         </ng-container>
                                                     </mat-select>
                                                     <mat-error>
-                                                        <app-validator [control]="consultant.get('consultantRateCurrency')"></app-validator>
+                                                        <app-validator [control]="consultant.get('consultantRateCurrencyId')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
                                                 <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -386,15 +384,15 @@
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Currency</mat-label>
-                                                        <mat-select [disabled]="true" required formControlName="consultantPDCRateCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-select [disabled]="true" required formControlName="consultantPDCRateCurrencyId" [disableOptionCentering]="true">
                                                             <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                                <mat-option [value]="item">
+                                                                <mat-option [value]="item.id">
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
                                                         <mat-error>
-                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrency')"></app-validator>
+                                                            <app-validator [control]="consultant.get('consultantPDCRateCurrencyId')"></app-validator>
                                                         </mat-error>
                                                     </mat-form-field>
                                                     <div fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
@@ -552,22 +550,22 @@
                                                             *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                                [matTooltip]="rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'"
+                                                                [matTooltip]="rate.value.proDataRateValue !== null && eCurrencies[rate.value.proDataRateCurrencyId]?.length ? rate.value.proDataRateValue + ' ' + eCurrencies[rate.value.proDataRateCurrencyId] : '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{rate.value.proDataRateValue !== null &&
-                                                                rate.value.proDataRateCurrency?.name ?
+                                                                eCurrencies[rate.value.proDataRateCurrencyId]?.length ?
                                                                 rate.value.proDataRateValue + ' ' +
-                                                                rate.value.proDataRateCurrency?.name : '-'}}
+                                                                eCurrencies[rate.value.proDataRateCurrencyId] : '-'}}
                                                             </span>
                                                         </ng-container>
                                                         <span fxFlex="25%"
                                                             class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                            [matTooltip]="rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'"
+                                                            [matTooltip]="rate.value.consultantRateValue !== null && eCurrencies[rate.value.consultantRateCurrencyId]?.length ? rate.value.consultantRateValue + ' ' + eCurrencies[rate.value.consultantRateCurrencyId] : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.consultantRateValue !== null &&
-                                                            rate.value.consultantRateCurrency?.name ?
+                                                            eCurrencies[rate.value.consultantRateCurrencyId]?.length ?
                                                             rate.value.consultantRateValue + ' ' +
-                                                            rate.value.consultantRateCurrency?.name : '-'}}
+                                                            eCurrencies[rate.value.consultantRateCurrencyId] : '-'}}
                                                         </span>
                                                     </ng-container>
                                                 </div>
@@ -653,13 +651,12 @@
                                                                     fxFlex="50%">
                                                                     <mat-select
                                                                         [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId"
-                                                                        formControlName="proDataRateCurrency"
+                                                                        formControlName="proDataRateCurrencyId"
                                                                         placeholder="Currency"
-                                                                        [disableOptionCentering]="true"
-                                                                        [compareWith]="compareWithFn">
+                                                                        [disableOptionCentering]="true">
                                                                         <ng-container
                                                                             *ngFor="let item of currencies; trackBy: trackById">
-                                                                            <mat-option [value]="item">
+                                                                            <mat-option [value]="item.id">
                                                                                 {{ item?.name }}
                                                                             </mat-option>
                                                                         </ng-container>
@@ -670,12 +667,12 @@
                                                         <ng-template #consutlantProDataRateCurrencyDisplay>
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                                [matTooltip]="rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'"
+                                                                [matTooltip]="rate.value.proDataRateValue !== null && eCurrencies[rate.value.proDataRateCurrencyId]?.length ? rate.value.proDataRateValue + ' ' + eCurrencies[rate.value.proDataRateCurrencyId] : '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{rate.value.proDataRateValue !== null &&
-                                                                rate.value.proDataRateCurrency?.name ?
+                                                                eCurrencies[rate.value.proDataRateCurrencyId]?.length ?
                                                                 rate.value.proDataRateValue + ' ' +
-                                                                rate.value.proDataRateCurrency?.name : '-'}}
+                                                                eCurrencies[rate.value.proDataRateCurrencyId] : '-'}}
                                                             </span>
                                                         </ng-template>
                                                     </ng-container>
@@ -694,13 +691,12 @@
                                                                 class="u-w--100 formFieldNoMarginPadding filter-select"
                                                                 fxFlex="50%">
                                                                 <mat-select required
-                                                                    formControlName="consultantRateCurrency"
+                                                                    formControlName="consultantRateCurrencyId"
                                                                     placeholder="Currency"
-                                                                    [disableOptionCentering]="true"
-                                                                    [compareWith]="compareWithFn">
+                                                                    [disableOptionCentering]="true">
                                                                     <ng-container
                                                                         *ngFor="let item of currencies; trackBy: trackById">
-                                                                        <mat-option [value]="item">
+                                                                        <mat-option [value]="item.id">
                                                                             {{ item?.name }}
                                                                         </mat-option>
                                                                     </ng-container>
@@ -712,12 +708,12 @@
                                                     <ng-template #consutlantRateCurrencyDisplay>
                                                         <span fxFlex="25%"
                                                             class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                            [matTooltip]="rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'"
+                                                            [matTooltip]="rate.value.consultantRateValue !== null && eCurrencies[rate.value.consultantRateCurrencyId]?.length ? rate.value.consultantRateValue + ' ' + eCurrencies[rate.value.consultantRateCurrencyId] : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.consultantRateValue !== null &&
-                                                            rate.value.consultantRateCurrency?.name ?
+                                                            eCurrencies[rate.value.consultantRateCurrencyId]?.length ?
                                                             rate.value.consultantRateValue + ' ' +
-                                                            rate.value.consultantRateCurrency?.name : '-'}}
+                                                            eCurrencies[rate.value.consultantRateCurrencyId] : '-'}}
                                                         </span>
                                                     </ng-template>
                                                     <ng-container
@@ -845,23 +841,23 @@
                                                         *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
                                                         <span fxFlex="25%"
                                                             class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                            [matTooltip]="fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'"
+                                                            [matTooltip]="fee.value.proDataRateValue !== null && eCurrencies[fee.value.proDataRateCurrencyId]?.length ? fee.value.proDataRateValue + ' ' + eCurrencies[fee.value.proDataRateCurrencyId] : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{fee.value.proDataRateValue !== null &&
-                                                            fee.value.proDataRateCurrency?.name ?
+                                                            eCurrencies[fee.value.proDataRateCurrencyId]?.length ?
                                                             fee.value.proDataRateValue +
                                                             ' ' +
-                                                            fee.value.proDataRateCurrency?.name : '-'}}
+                                                            eCurrencies[fee.value.proDataRateCurrencyId] : '-'}}
                                                         </span>
                                                     </ng-container>
                                                     <span fxFlex="25%"
                                                         class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                        [matTooltip]="fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'"
+                                                        [matTooltip]="fee.value.consultantRateValue !== null && eCurrencies[fee.value.consultantRateCurrencyId]?.length ? fee.value.consultantRateValue + ' ' + eCurrencies[fee.value.consultantRateCurrencyId] : '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.consultantRateValue !== null &&
-                                                        fee.value.consultantRateCurrency?.name ?
+                                                        eCurrencies[fee.value.consultantRateCurrencyId]?.length ?
                                                         fee.value.consultantRateValue + ' ' +
-                                                        fee.value.consultantRateCurrency?.name : '-'}}
+                                                        eCurrencies[fee.value.consultantRateCurrencyId] : '-'}}
                                                     </span>
                                                 </div>
                                             </ng-container>
@@ -945,13 +941,12 @@
                                                                     fxFlex="50%">
                                                                     <mat-select
                                                                         [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId"
-                                                                        formControlName="proDataRateCurrency"
+                                                                        formControlName="proDataRateCurrencyId"
                                                                         placeholder="Currency"
-                                                                        [disableOptionCentering]="true"
-                                                                        [compareWith]="compareWithFn">
+                                                                        [disableOptionCentering]="true">
                                                                         <ng-container
                                                                             *ngFor="let item of currencies; trackBy: trackById">
-                                                                            <mat-option [value]="item">
+                                                                            <mat-option [value]="item.id">
                                                                                 {{ item?.name }}
                                                                             </mat-option>
                                                                         </ng-container>
@@ -962,12 +957,12 @@
                                                         <ng-template #consultantFeeProDataRateDisplay>
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                                [matTooltip]="fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'"
+                                                                [matTooltip]="fee.value.proDataRateValue !== null && eCurrencies[fee.value.proDataRateCurrencyId]?.length ? fee.value.proDataRateValue + ' ' + eCurrencies[fee.value.proDataRateCurrencyId] : '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{fee.value.proDataRateValue !== null &&
-                                                                fee.value.proDataRateCurrency?.name ?
+                                                                eCurrencies[fee.value.proDataRateCurrencyId]?.length ?
                                                                 fee.value.proDataRateValue + ' ' +
-                                                                fee.value.proDataRateCurrency?.name : '-'}}
+                                                                eCurrencies[fee.value.proDataRateCurrencyId] : '-'}}
                                                             </span>
                                                         </ng-template>
                                                     </ng-container>
@@ -985,13 +980,12 @@
                                                                 class="u-w--100 formFieldNoMarginPadding filter-select"
                                                                 fxFlex="50%">
                                                                 <mat-select required
-                                                                    formControlName="consultantRateCurrency"
+                                                                    formControlName="consultantRateCurrencyId"
                                                                     placeholder="Currency"
-                                                                    [disableOptionCentering]="true"
-                                                                    [compareWith]="compareWithFn">
+                                                                    [disableOptionCentering]="true">
                                                                     <ng-container
                                                                         *ngFor="let item of currencies; trackBy: trackById">
-                                                                        <mat-option [value]="item">
+                                                                        <mat-option [value]="item.id">
                                                                             {{ item?.name }}
                                                                         </mat-option>
                                                                     </ng-container>
@@ -1002,12 +996,12 @@
                                                     <ng-template #consultantFeeRateDisplay>
                                                         <span fxFlex="25%"
                                                             class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
-                                                            [matTooltip]="fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'"
+                                                            [matTooltip]="fee.value.consultantRateValue !== null && eCurrencies[fee.value.consultantRateCurrencyId]?.length ? fee.value.consultantRateValue + ' ' + eCurrencies[fee.value.consultantRateCurrencyId] : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{fee.value.consultantRateValue !== null &&
-                                                            fee.value.consultantRateCurrency?.name ?
+                                                            eCurrencies[fee.value.consultantRateCurrencyId]?.length ?
                                                             fee.value.consultantRateValue + ' ' +
-                                                            fee.value.consultantRateCurrency?.name : '-'}}
+                                                            eCurrencies[fee.value.consultantRateCurrencyId] : '-'}}
                                                         </span>
                                                     </ng-template>
 
@@ -1278,7 +1272,7 @@
                                                                         <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'">
                                                                             {{order?.numberMissingButRequired ? 'Missing, but required'  : order?.number}}
                                                                         </span>
-                                                                        • {{capTypes[order?.capForInvoicing?.type]}}:
+                                                                        • {{purchaseOrderCapTypes[order?.capForInvoicing?.type]}}:
                                                                         <span class="color-black text-bold">
                                                                             {{order?.capForInvoicing?.amountUsed ?? '0'}} / {{order?.capForInvoicing?.maxAmount}}
                                                                             <ng-container [ngSwitch]="order?.capForInvoicing?.type">
@@ -1449,17 +1443,17 @@
 <ng-template #marginComponent let-consultant="consultant" let-type="type">
     <calculated-margin [marginType]="type"
         [data]="{clientRate: contractClientForm.normalRate?.value,
-            clientCurrencyId: contractClientForm.currency?.value?.id,
-            clientUnitTypeId: contractClientForm.rateUnitType?.value?.id,
-            clientPaymentType: contractClientForm.clientRateType?.value?.id,
+            clientCurrencyId: contractClientForm.currencyId?.value,
+            clientUnitTypeId: contractClientForm.rateUnitTypeId?.value,
+            clientPaymentType: contractClientForm.clientRateTypeId?.value,
             clientPdcEntity: contractClientForm.value?.pdcInvoicingEntityId,
             consultantRate: consultant.value?.consultantRate,
-            consultantCurrencyId: consultant.value?.consultantRateCurrency?.id,
-            consultantUnitTypeId: consultant.value?.consultantRateUnitType?.id,
+            consultantCurrencyId: consultant.value?.consultantRateCurrencyId,
+            consultantUnitTypeId: consultant.value?.consultantRateUnitTypeId,
             consultantPDCRate: consultant?.value?.consultantPDCRate,
-            consultantPDCCurrencyId: consultant.value?.consultantPDCRateCurrency?.id,
-            consultantPDCUnitTypeId: consultant.value?.consultantPDCRateUnitType?.id,
-            consultantPaymentType: consultant.value?.consultantPaymentType?.id,
+            consultantPDCCurrencyId: consultant.value?.consultantPDCRateCurrencyId,
+            consultantPDCUnitTypeId: consultant.value?.consultantPDCRateUnitTypeId,
+            consultantPaymentType: consultant.value?.consultantPaymentType,
             consultantPdcEntity: consultant.value?.pdcPaymentEntityId}">
     </calculated-margin>
 </ng-template>

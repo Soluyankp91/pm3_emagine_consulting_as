@@ -5,7 +5,6 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	ConsultantContractsDataQueryDto,
 	ConsultantResultDto,
-	EnumEntityTypeDto,
 	WorkflowProcessType,
 } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
@@ -26,7 +25,6 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 	workflowSideSections = WorkflowProcessType;
 	contractsSyncDataForm: WorkflowContractsSyncForm;
 	legalContractStatuses: { [key: string]: string };
-	employmentTypes: EnumEntityTypeDto[];
 
 	syncNotPossible = false;
 	statusAfterSync = false;
@@ -38,21 +36,14 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 	}
 
 	ngOnInit(): void {
-		this._getLegalContractStatuses();
-        this._getEmploymentTypes();
+        this._getEnums();
 	}
-	private _getLegalContractStatuses() {
-		this._internalLookupService.getLegalContractStatuses().subscribe((result) => (this.legalContractStatuses = result));
-	}
-	private _getEmploymentTypes() {
-		this._internalLookupService.getEmploymentTypes().subscribe((result) => (this.employmentTypes = result));
-	}
+
 	addConsultantLegalContract(consultant: ConsultantContractsDataQueryDto) {
 		const form = this._fb.group({
 			consultantId: new UntypedFormControl(consultant.consultantId),
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
 			consultant: new UntypedFormControl(consultant.consultant),
-			consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
 			nameOnly: new UntypedFormControl(consultant.nameOnly),
 			internalLegalContractDoneStatusId: new UntypedFormControl(consultant.internalLegalContractDoneStatusId),
 			consultantLegalContractDoneStatusId: new UntypedFormControl(consultant.consultantLegalContractDoneStatusId),
@@ -95,4 +86,8 @@ export class ContractsSyncDataComponent extends AppComponentBase implements OnIn
 				return '';
 		}
 	}
+
+    private _getEnums() {
+        this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
+    }
 }

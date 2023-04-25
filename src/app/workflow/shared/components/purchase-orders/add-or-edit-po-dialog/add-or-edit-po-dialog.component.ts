@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
-import { forkJoin } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -26,10 +24,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	@Output() onConfirmed: EventEmitter<PurchaseOrderDto> = new EventEmitter<PurchaseOrderDto>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 	purchaseOrderForm: PurchaseOrderForm;
-	capTypes: { [key: string]: string };
+	purchaseOrderCapTypes: { [key: string]: string };
 	currencies: EnumEntityTypeDto[];
 	eCurrencies: { [key: number]: string };
-	unitTypes: EnumEntityTypeDto[];
+	valueUnitTypes: EnumEntityTypeDto[];
 	poSources = POSources;
 	ePOSource = EPOSource;
 	ePOCaps = PurchaseOrderCapType;
@@ -48,7 +46,6 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			addedPoIds: number[];
 		},
 		private _dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
-		private readonly _internalLookupService: InternalLookupService,
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy,
 		private readonly _workflowDataService: WorkflowDataService
 	) {
@@ -166,16 +163,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	private _getEnums() {
-		forkJoin({
-			capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-			currencies: this._internalLookupService.getCurrencies(),
-			unitTypes: this._internalLookupService.getValueUnitTypes(),
-		}).subscribe((result) => {
-			this.capTypes = result.capTypes;
-			this.currencies = result.currencies;
-			this.eCurrencies = this.arrayToEnum(this.currencies);
-			this.unitTypes = result.unitTypes;
-		});
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
 	}
 
 	private _filterOutPOs(poSource: EPOSource) {

@@ -1,0 +1,38 @@
+<div class="manager-search">
+    <div class="manager-search--image-wrapper" (click)="readonly ? '' : $event.preventDefault()" [matMenuTriggerFor]="readonly ? null : managerSearch" (onMenuOpen)="onOpenedMenu()">
+        <img class="border-rounded-50" [width]="width" [height]="height"
+            [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" src
+            (error)="setDefaultImage($event.target)" [matTooltip]="responsiblePerson.name!"
+            matTooltipClass="white-tooltip" alt="" />
+        <mat-icon class="manager-search--status" [svgIcon]="managerStatusIcon[managerStatus]"
+            [matTooltip]="eManagerStatusTooltip[managerStatus]" matTooltipClass="white-tooltip"></mat-icon>
+    </div>
+    <mat-menu #managerSearch="matMenu" backdropClass="responsiblePersonMenu">
+        <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron" appearance="fill"
+            [ngClass]="{'isPanelOpen': auto.isOpen}">
+            <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="managerFilter" appPreventDoubleClick
+                (click)="$event.stopPropagation()" [placeholder]="formFieldLabel">
+            <span matSuffix class="shevron"></span>
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
+                <ng-container *ngFor="let option of filteredAccountManagers$ | async; trackBy: trackById">
+                    <mat-option [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
+                        <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name"
+                            matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10"
+                                [ngSrc]="employeePhotoUrl + option.externalId! + '.jpg'" width="24" height="24" src
+                                (error)="setDefaultImage($event.target)">
+                            <span>{{ option.name }}</span>
+                        </div>
+                    </mat-option>
+                </ng-container>
+                <ng-container *ngIf="(filteredAccountManagers$ | async)?.length === 0">
+                    <mat-option (click)="$event.stopPropagation()" class="no-data">
+                        <span>
+                            No managers found
+                        </span>
+                    </mat-option>
+                </ng-container>
+            </mat-autocomplete>
+        </mat-form-field>
+    </mat-menu>
+</div>

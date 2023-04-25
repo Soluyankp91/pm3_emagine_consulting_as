@@ -132,7 +132,7 @@
             color: $dark-grey-color;
         }
         &--header {
-            @include fontOpenSans(16px, 'inherit');
+            @include fontOpenSans(16px, 700);
             color: $light-grey-color;
             letter-spacing: 1px;
             text-transform: uppercase;
