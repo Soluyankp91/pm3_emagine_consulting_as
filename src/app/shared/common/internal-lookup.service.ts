@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { Observable, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { loadCurrencies } from 'src/app/store';
 import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()

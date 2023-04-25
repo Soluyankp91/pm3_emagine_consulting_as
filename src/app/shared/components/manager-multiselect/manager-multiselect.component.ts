@@ -4,7 +4,7 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
-import { getEmployees } from 'src/app/store';
+import { getEmployees } from 'src/app/store/selectors';
 import { SelectableEmployeeDto } from 'src/app/workflow/workflow.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { EmployeeDto } from 'src/shared/service-proxies/service-proxies';

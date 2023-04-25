@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,24 +7,20 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { getEmployees } from 'src/app/store/selectors/core.selectors';
-import { Store } from '@ngrx/store';
-import { merge, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, map, startWith, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { merge, Subject, Subscription } from 'rxjs';
+import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
-	EmployeeDto,
 	EmployeeServiceProxy,
 	EnumEntityTypeDto,
 	LegalEntityDto,
 	StartNewWorkflowInputDto,
 	SyncStateStatus,
-	WorkflowAlreadyExistsDto,
 	WorkflowListItemDto,
 	WorkflowProcessType,
 	WorkflowServiceProxy,
@@ -145,9 +141,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	syncStateStatuses: ISelectableIdNameDto[] = [];
 	selectedSyncStateStatuses: ISelectableIdNameDto[] = [];
 
-	employees$: Observable<EmployeeDto[]>;
-	filteredAccountManagers$: Observable<SelectableEmployeeDto[]>;
-
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -159,7 +152,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _activatedRoute: ActivatedRoute,
 		private _workflowDataService: WorkflowDataService,
 		private _titleService: TitleService,
-		private _store: Store
 	) {
 		super(injector);
 
@@ -191,7 +183,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this._titleService.setTitle(ERouteTitleType.WfList);
 		this._getEnums();
 		this.getCurrentUser();
-		this.employees$ = this._store.select(getEmployees);
 	}
 
 	managersChanged(event: SelectableEmployeeDto[]) {
@@ -613,16 +604,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		localStorage.removeItem(WorkflowGridOptionsKey);
 		this.getCurrentUser();
 	}
-
-	// onOpenedMenu() {
-	//     setTimeout(() => {
-	//         this.trigger.openPanel();
-	//     }, 100);
-	// }
-
-	// displayNameFn(option: any) {
-	// 	return option?.name;
-	// }
 
 	syncStatusFilterControl(item: ISelectableIdNameDto) {
 		const index = this.selectedSyncStateStatuses.findIndex((x) => x.id === item.id);

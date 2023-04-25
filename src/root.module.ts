@@ -15,8 +15,9 @@ import { LoginGuard } from './app/login/login.guard';
 import { AppModule } from './app/app.module';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { metaReducers, ROOT_REDUCERS } from 'src/app/store/reducers';
-import { effects } from 'src/app/store/effects';
+import { ROOT_REDUCERS, metaReducers } from './app/store/reducers';
+import { effects } from './app/store/effects';
+
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 

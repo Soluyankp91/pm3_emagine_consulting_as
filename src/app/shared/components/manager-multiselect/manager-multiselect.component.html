@@ -80,13 +80,13 @@
                                     </div>
                                 </mat-option>
                             </ng-container>
-                            <ng-container *ngIf="(filteredAccountManagers$ | async)?.length === 0">
-                                <mat-option (click)="$event.stopPropagation()" class="no-data">
-                                    <span>
-                                        No managers found
-                                    </span>
-                                </mat-option>
-                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="(filteredAccountManagers$ | async)?.length === 0">
+                            <mat-option (click)="$event.stopPropagation()" class="no-data">
+                                <span>
+                                    No managers found
+                                </span>
+                            </mat-option>
                         </ng-container>
                     </ng-container>
                 </mat-autocomplete>

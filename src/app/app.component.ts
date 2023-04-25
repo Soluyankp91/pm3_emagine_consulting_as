@@ -4,9 +4,9 @@ import { MsalService } from '@azure/msal-angular';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { Store } from '@ngrx/store';
-import { loadEmployees } from 'src/app/store/actions/core.actions';
 
 import { EmployeeServiceProxy, CurrentEmployeeDto, ConfigurationServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { loadEmployees, loadResponsiblePersons } from './store/actions/core.actions';
 @Component({
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
@@ -32,6 +32,7 @@ export class AppComponent extends AppComponentBase implements OnInit {
         this.getCurrentEmployee();
         this.getConfigurations();
         this._store.dispatch(loadEmployees());
+        this._store.dispatch(loadResponsiblePersons());
     }
 
 	openSourcingApp() {
