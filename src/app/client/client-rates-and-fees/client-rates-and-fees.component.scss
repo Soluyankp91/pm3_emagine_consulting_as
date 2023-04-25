@@ -11,7 +11,7 @@
     &--hint {
         font-weight: 400;
         font-size: 14px;
-        line-height: 150%;
+        line-height: 150% !important;
         letter-spacing: 0;
         color: rgba($color: #384853, $alpha: 0.87);
     }
