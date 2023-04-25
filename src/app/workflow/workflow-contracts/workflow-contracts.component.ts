@@ -170,66 +170,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 					}
 				}
 			});
-		// Client start, extend and change periods
-		// this._workflowDataService.startClientPeriodContractsSaved
-		// 	.pipe(takeUntil(this._unsubscribe))
-		// 	.subscribe((value: { isDraft: boolean; bypassLegalValidation?: boolean | undefined }) => {
-		// 		this.bypassLegalValidation = value.bypassLegalValidation!;
-		// 		if (value.isDraft && !this.editEnabledForcefuly) {
-		// 			this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
-		// 		} else {
-		// 			if (this.validateContractForm()) {
-		// 				this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
-		// 			} else {
-		// 				this.scrollToFirstError(value.isDraft);
-		// 			}
-		// 		}
-		// 	});
-
-		// // Consultant start, extend and change periods
-		// this._workflowDataService.consultantStartChangeOrExtendContractsSaved
-		// 	.pipe(takeUntil(this._unsubscribe))
-		// 	.subscribe((value: { isDraft: boolean; bypassLegalValidation?: boolean | undefined }) => {
-		// 		this.bypassLegalValidation = value.bypassLegalValidation!;
-		// 		if (value.isDraft && !this.editEnabledForcefuly) {
-		// 			this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
-		// 		} else {
-		// 			if (this.validateContractForm()) {
-		// 				this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
-		// 			} else {
-		// 				this.scrollToFirstError(value.isDraft);
-		// 			}
-		// 		}
-		// 	});
-
-		// // Terminations
-		// this._workflowDataService.workflowConsultantTerminationContractsSaved
-		// 	.pipe(takeUntil(this._unsubscribe))
-		// 	.subscribe((isDraft: boolean) => {
-		// 		if (isDraft && !this.editEnabledForcefuly) {
-		// 			this.saveTerminationConsultantContractStep(isDraft);
-		// 		} else {
-		// 			if (this.validateContractForm()) {
-		// 				this.saveTerminationConsultantContractStep(isDraft);
-		// 			} else {
-		// 				this.scrollToFirstError(isDraft);
-		// 			}
-		// 		}
-		// 	});
-
-		// this._workflowDataService.workflowTerminationContractsSaved
-		// 	.pipe(takeUntil(this._unsubscribe))
-		// 	.subscribe((isDraft: boolean) => {
-		// 		if (isDraft && !this.editEnabledForcefuly) {
-		// 			this.saveWorkflowTerminationContractStep(isDraft);
-		// 		} else {
-		// 			if (this.validateContractForm()) {
-		// 				this.saveWorkflowTerminationContractStep(isDraft);
-		// 			} else {
-		// 				this.scrollToFirstError(isDraft);
-		// 			}
-		// 		}
-		// 	});
 
 		this._workflowDataService.cancelForceEdit.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
 			this.isCompleted = true;

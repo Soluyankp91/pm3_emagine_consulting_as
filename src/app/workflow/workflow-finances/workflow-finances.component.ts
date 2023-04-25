@@ -88,34 +88,8 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                 });
                 this.getFinanceStepData();
             });
-        }
-        // this._workflowDataService.startClientPeriodFinanceSaved
-        //     .pipe(takeUntil(this._unsubscribe))
-        //     .subscribe((isDraft: boolean) => {
-        //         if (isDraft && !this.editEnabledForcefuly) {
-        //             this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
-        //         } else {
-        //             if (this.validateFinanceForm()) {
-        //                 this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
-        //             } else {
-        //                 this.scrollToFirstError(isDraft);
-        //             }
-        //         }
-        //     });
 
-        // this._workflowDataService.consultantStartChangeOrExtendFinanceSaved
-        //     .pipe(takeUntil(this._unsubscribe))
-        //     .subscribe((isDraft: boolean) => {
-        //         if (isDraft && !this.editEnabledForcefuly) {
-        //             this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
-        //         } else {
-        //             if (this.validateFinanceForm()) {
-        //                 this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
-        //             } else {
-        //                 this.scrollToFirstError(isDraft);
-        //             }
-        //         }
-        //     });
+    }
 
 	validateFinanceForm() {
 		this.submitForms();

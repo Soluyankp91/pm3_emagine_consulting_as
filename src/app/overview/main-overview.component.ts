@@ -3,20 +3,17 @@ import { UntypedFormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import {
-	EmployeeDto,
 	EmployeeServiceProxy,
 	EnumEntityTypeDto,
 	LegalEntityDto,
-	LookupServiceProxy,
 	MainOverviewItemPeriodDto,
 	MainOverviewServiceProxy,
 	MainOverviewStatus,
 	MainOverviewStatusDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { SelectableIdNameDto } from '../client/client.model';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { OverviewFilterColors, OverviewFlag, OverviewProcessColors, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
@@ -129,48 +126,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	constructor(
 		injector: Injector,
-		private _lookupService: LookupServiceProxy,
 		private _mainOverviewService: MainOverviewServiceProxy,
 		private router: Router,
 		private _employeeService: EmployeeServiceProxy,
         private _titleService: TitleService,
 	) {
 		super(injector);
-		// this.accountManagerFilter.valueChanges
-		// 	.pipe(
-		// 		takeUntil(this._unsubscribe),
-		// 		debounceTime(300),
-		// 		switchMap((value: any) => {
-		// 			let toSend = {
-		// 				name: value ? value : '',
-		// 				maxRecordsCount: 1000,
-		// 				showAll: true,
-		// 				excludeIds: this.selectedAccountManagers.map((x) => +x.id),
-		// 			};
-		// 			if (value?.id) {
-		// 				toSend.name = value.id ? value.name : value;
-		// 			}
-		// 			this.isLoading = true;
-		// 			return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-		// 		})
-		// 	)
-		// 	.subscribe((list: EmployeeDto[]) => {
-		// 		if (list.length) {
-		// 			this.filteredAccountManagers = list.map((x) => {
-		// 				return new SelectableEmployeeDto({
-		// 					id: x.id!,
-		// 					name: x.name!,
-		// 					externalId: x.externalId!,
-		// 					selected: false,
-		// 				});
-		// 			});
-		// 		} else {
-		// 			this.filteredAccountManagers = [
-		// 				{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
-		// 			];
-		// 		}
-		// 		this.isLoading = false;
-		// 	});
 
 		merge(
 			this.invoicingEntityControl.valueChanges,
@@ -513,28 +474,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 				break;
 		}
 	}
-
-	// optionClicked(
-	// 	event: Event,
-	// 	item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto,
-	// 	list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]
-	// ) {
-	// 	event.stopPropagation();
-	// 	this.toggleSelection(item, list);
-	// }
-
-	// toggleSelection(item: any, list: any) {
-	// 	item.selected = !item.selected;
-	// 	if (item.selected) {
-	// 		if (!list.includes(item)) {
-	// 			list.push(item);
-	// 		}
-	// 	} else {
-	// 		const i = list.findIndex((value: any) => value.name === item.name);
-	// 		list.splice(i, 1);
-	// 	}
-	// 	this.changeViewType(true);
-	// }
 
     private _getEnums() {
         this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');

@@ -7,24 +7,9 @@ import { InternalLookupService } from './shared/common/internal-lookup.service';
 	providedIn: 'root',
 })
 export class InitialDataResolver implements Resolve<any> {
-	/**
-	 * Constructor
-	 */
-	constructor(
-		private readonly _internalLookupService: InternalLookupService
-	) {}
+	constructor(private readonly _internalLookupService: InternalLookupService) {}
 
-	// -----------------------------------------------------------------------------------------------------
-	// @ Public methods
-	// -----------------------------------------------------------------------------------------------------
-
-	/**
-	 * Use this resolver to resolve initial data in the application
-	 *
-	 * @param route
-	 * @param state
-	 */
 	resolve(): Observable<any> {
-        return this._internalLookupService.getData()
+		return this._internalLookupService.getData();
 	}
 }

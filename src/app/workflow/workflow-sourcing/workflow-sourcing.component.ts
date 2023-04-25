@@ -63,34 +63,6 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 }
             });
 
-        // this._workflowDataService.workflowConsultantTerminationSourcingSaved
-        //     .pipe(takeUntil(this._unsubscribe))
-        //     .subscribe((isDraft: boolean) => {
-        //         if (isDraft && !this.editEnabledForcefuly) {
-        //             this.saveTerminationConsultantSourcingStep(isDraft);
-        //         } else {
-        //             if (this.validateFinanceForm()) {
-        //                 this.saveTerminationConsultantSourcingStep(isDraft);
-        //             } else {
-        //                 this.scrollToFirstError(isDraft);
-        //             }
-        //         }
-        //     });
-
-        // this._workflowDataService.workflowTerminationSourcingSaved
-        //     .pipe(takeUntil(this._unsubscribe))
-        //     .subscribe((isDraft: boolean) => {
-        //         if (isDraft && !this.editEnabledForcefuly) {
-        //             this.saveWorkflowTerminationSourcingStep(isDraft);
-        //         } else {
-        //             if (this.validateFinanceForm()) {
-        //                 this.saveWorkflowTerminationSourcingStep(isDraft);
-        //             } else {
-        //                 this.scrollToFirstError(isDraft);
-        //             }
-        //         }
-        //     });
-
         this._workflowDataService.cancelForceEdit
             .pipe(takeUntil(this._unsubscribe))
             .subscribe(() => {
