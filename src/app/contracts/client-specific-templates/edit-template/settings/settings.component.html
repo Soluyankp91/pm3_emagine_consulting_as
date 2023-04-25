@@ -229,6 +229,7 @@
 				<h3 class="template-settings-header">Attachments</h3>
 				<ng-container *ngIf="clientTemplateFormGroup.parentSelectedAttachmentIds">
 					<emg-file-selector
+						[preselectAll]="!editMode"
 						[inheritedFiles]="attachmentsFromParent"
 						label="Inherited from parent"
 						formControlName="parentSelectedAttachmentIds"></emg-file-selector>
