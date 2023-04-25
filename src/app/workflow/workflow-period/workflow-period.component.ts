@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
+import { ManagerStatus } from 'src/app/shared/components/responsible-person/responsible-person.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {

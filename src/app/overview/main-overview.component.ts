@@ -14,7 +14,7 @@ import {
 	MainOverviewStatus,
 	MainOverviewStatusDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
+import { ManagerStatus } from '../shared/components/responsible-person/responsible-person.model';
 import { OverviewFilterColors, OverviewFlag, OverviewProcessColors, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
 import { Router } from '@angular/router';

@@ -30,7 +30,7 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
+import { ManagerStatus } from '../shared/components/responsible-person/responsible-person.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { WorkflowDataService } from './workflow-data.service';
 import {

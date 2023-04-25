@@ -9,7 +9,7 @@ import { FileUploaderComponent } from '../components/file-uploader/file-uploader
 import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-and-drop.directive';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
-import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
+import { ResponsiblePersonComponent } from '../components/responsible-person/responsible-person.component';
 import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
 import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show-if-truncated.directive';
 import { PreventDoubleClickDirective } from 'src/shared/common/directives/prevent-doubleClick.directive';
@@ -31,7 +31,7 @@ import { ManagerMultiselectComponent } from '../components/manager-multiselect/m
 		FileDragAndDropDirective,
 		FileUploaderComponent,
 		ConfirmationDialogComponent,
-		ManagerSearchComponent,
+		ResponsiblePersonComponent,
 		MomentFormatPipe,
 		ShowIfTruncatedDirective,
 		PreventDoubleClickDirective,
@@ -62,7 +62,7 @@ import { ManagerMultiselectComponent } from '../components/manager-multiselect/m
 		FileUploaderComponent,
 		ConfirmationDialogComponent,
 		NgScrollbarModule,
-		ManagerSearchComponent,
+		ResponsiblePersonComponent,
 		MomentFormatPipe,
 		ShowIfTruncatedDirective,
 		PreventDoubleClickDirective,

@@ -12,17 +12,17 @@ import {
 	WorkflowProcessType,
 	WorkflowServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
-import { EManagerStatusIcon, EManagerStatusTooltip, ManagerStatus } from './manager-search.model';
+import { EManagerStatusIcon, EManagerStatusTooltip, ManagerStatus } from './responsible-person.model';
 import { Store } from '@ngrx/store';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { getResponsiblePersons } from 'src/app/store/selectors';
 
 @Component({
-	selector: 'app-manager-search',
-	templateUrl: './manager-search.component.html',
-	styleUrls: ['./manager-search.component.scss'],
+	selector: 'responsible-person',
+	templateUrl: './responsible-person.component.html',
+	styleUrls: ['./responsible-person.component.scss'],
 })
-export class ManagerSearchComponent extends AppComponentBase implements OnInit, OnDestroy {
+export class ResponsiblePersonComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild(MatMenuTrigger) managerSearchMenu: MatMenuTrigger;
 	@ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
 	@Input() formFieldLabel: string;

@@ -358,7 +358,7 @@
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
                                 <ng-container *ngFor="let step of item.steps; let i = index;">
                                     <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatus.Finished}">
-                                        <app-manager-search
+                                        <responsible-person
                                             appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                             [formFieldLabel]="step.name + ' Manager'"
                                             [periodId]="item.processId!"
@@ -371,7 +371,7 @@
                                             [readonly]="item.processId === null || item.processId === undefined"
                                             [width]="24"
                                             [height]="24">
-                                        </app-manager-search>
+                                        </responsible-person>
                                     </div>
                                 </ng-container>
                             </div>
