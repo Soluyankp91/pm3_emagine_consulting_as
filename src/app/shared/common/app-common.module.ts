@@ -23,6 +23,7 @@ import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
 import { environment } from 'src/environments/environment';
 import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 import { TooltipModule } from './ui/tooltip/tooltip.module';
+import { EmgWidgetComponent } from '../components/emg-widget/emg-widget.component';
 
 @NgModule({
 	declarations: [
@@ -40,7 +41,8 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		ExcludeIdsPipe,
 		ImageFallbackDirective,
 		ImgUrlPipe,
-		DisplayListPipe
+		DisplayListPipe,
+		EmgWidgetComponent,
 	],
 	imports: [
 		CommonModule,
@@ -50,7 +52,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgScrollbarModule,
 		ScrollToModule.forRoot(),
 		NgOptimizedImage,
-        TooltipModule
+		TooltipModule,
 	],
 	exports: [
 		MaterialModule,
@@ -73,7 +75,8 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgOptimizedImage,
 		ImgUrlPipe,
 		DisplayListPipe,
-        TooltipModule,
+		TooltipModule,
+		EmgWidgetComponent,
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })
