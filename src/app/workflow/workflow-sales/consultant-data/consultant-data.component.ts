@@ -199,7 +199,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
 			consultantWorkplace: new UntypedFormControl(null),
 			consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
-            consultantOnsiteWorkplaceSameAsDirectClient: new UntypedFormControl(false), //FIXME: consultant?.consultantOnsiteWorkplaceSameAsDirectClient add this once BE will have this in a response
+            onsiteClientSameAsDirectClient: new UntypedFormControl(consultant?.onsiteClientSameAsDirectClient ?? false),
             onsiteClientAddress: new UntypedFormControl(PackAddressIntoNewDto(consultant?.onsiteClientAddress) ?? null),
 			consultantWorkplaceEmagineOffice: new UntypedFormControl(
 				this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
@@ -826,7 +826,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     private _preselectDirectClientAddress() {
         this.consultants.controls.forEach(consultant => {
-            if (consultant.get('consultantOnsiteWorkplaceSameAsDirectClient').value) {
+            if (consultant.get('onsiteClientSameAsDirectClient').value) {
                 consultant.get('consultantWorkplaceClientAddress')?.setValue(this.clientDataForm.directClientIdValue?.value, { emitEvent: false });
                 consultant.get('onsiteClientAddress')?.setValue(this.clientDataForm.directClientAddress?.value, { emitEvent: false });
             }

@@ -632,7 +632,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				);
 				if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
-                    this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(result.salesClientData?.directClient);
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(
+						result.salesClientData?.directClient
+					);
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientAddress?.disable({ emitEvent: false });
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientAddress.setValue(
+						PackAddressIntoNewDto(result?.salesClientData?.directClientAddress),
+						{ emitEvent: false }
+					);
 				}
 				this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(
 					result?.salesClientData?.invoicingReferencePerson,
@@ -1227,7 +1234,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					consultantInput.timeReportingCaps.push(capInput);
 				}
 			}
-
+            consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
 			consultantInput.onsiteClientAddress = FindClientAddress(
