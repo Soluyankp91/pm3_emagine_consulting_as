@@ -160,14 +160,10 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
     changeConsultantWorkplace(event: MatCheckboxChange, consultantIndex: number) {
-        const consultant = this.consultants.at(consultantIndex);
 		if (event.checked) {
 			this.consultants.at(consultantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.clientDataForm.directClientIdValue?.value);
             this.consultants.at(consultantIndex).get('onsiteClientAddress')?.setValue(this.clientDataForm.directClientAddress?.value);
             this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses);
-		// } else {
-        //     this.consultants.at(consultantIndex).get('consultantWorkplaceClientAddress')?.enable({ emitEvent: false });
-		// 	this.consultants.at(consultantIndex).get('onsiteClientAddress')?.enable({ emitEvent: false });
         }
 	}
 

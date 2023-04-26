@@ -176,7 +176,6 @@
             <ng-container *ngIf="order.purchaseOrderCurrentContextData?.existsInAnotherWorkflow && isList">
                 <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
-                    <!-- {{order?.numberMissingButRequired ? 'Missing, but required' : order?.number}} -->
                     {{order?.number}}
             </ng-container>
         </span>
