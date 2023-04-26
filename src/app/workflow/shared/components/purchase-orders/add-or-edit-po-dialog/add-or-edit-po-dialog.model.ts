@@ -1,5 +1,6 @@
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { PurchaseOrderCapDto, PurchaseOrderDto } from 'src/shared/service-proxies/service-proxies';
+import { CustomValidators } from 'src/shared/utils/custom-validators';
 
 export class PurchaseOrderForm extends UntypedFormGroup {
 	constructor(purchaseOrder?: PurchaseOrderDto) {
@@ -7,7 +8,7 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 			id: new UntypedFormControl(purchaseOrder?.id ?? null),
 			poSource: new UntypedFormControl(null),
 			number: new UntypedFormControl(purchaseOrder?.number ?? ''),
-			existingPo: new UntypedFormControl(''),
+			existingPo: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id'])),
 			receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate ?? null),
 			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired ?? false),
 			capForInvoicing: new CapForInvoicingForm(purchaseOrder?.capForInvoicing),

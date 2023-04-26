@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { Observable, Subject, forkJoin } from 'rxjs';
-import { finalize, map, takeUntil } from 'rxjs/operators';
+import { finalize, map, startWith, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
@@ -57,21 +57,21 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	) {
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
-        this.existingPo = new PurchaseOrderDto(this.data?.purchaseOrder);
+		this.existingPo = new PurchaseOrderDto(this.data?.purchaseOrder);
 	}
 
 	ngOnInit(): void {
 		this._getPurchaseOrders();
 		this._getEnums();
-        this.filteredPurchaseOrders = this.purchaseOrderForm.existingPo.valueChanges
-            .pipe(
-                takeUntil(this._unsubsribe),
-                map(value => {
-                    if (typeof value === 'string') {
-                        return this._filterPOsAutocomplete(value);
-                    }
-                })
-            );
+		this.filteredPurchaseOrders = this.purchaseOrderForm.existingPo.valueChanges.pipe(
+			takeUntil(this._unsubsribe),
+			startWith(''),
+			map((value) => {
+				if (typeof value === 'string') {
+					return this._filterPOsAutocomplete(value);
+				}
+			})
+		);
 	}
 
 	ngOnDestroy(): void {
@@ -139,8 +139,8 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	poSourceChange(event: MatSelectChange) {
 		this._clearData();
 		if (event.value === EPOSource.DifferentWF || event.value === EPOSource.ExistingPO) {
-			this.purchaseOrderForm.existingPo.reset(null, { emitEvent: false });
 			this.availablePurchaseOrders = this._filterOutPOs(event.value as EPOSource);
+			this.purchaseOrderForm.existingPo.reset('');
 		} else {
 			this.purchaseOrderForm.enable();
 		}
@@ -180,14 +180,18 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	private _getPurchaseOrders() {
 		this._purchaseOrderService
 			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
-			.pipe(map((pos: PurchaseOrderDto[]) => {
-                return pos.map(po => {
-                    if (po.numberMissingButRequired) {
-                        po.number = 'Missing but required';
-                    }
-                }),
-                pos.filter((po) => !this.data?.addedPoIds.includes(po.id));
-            }))
+			.pipe(
+				map((pos: PurchaseOrderDto[]) => {
+					return (
+						pos.map((po) => {
+							if (po.numberMissingButRequired) {
+								po.number = 'Missing but required';
+							}
+						}),
+						pos.filter((po) => !this.data?.addedPoIds.includes(po.id))
+					);
+				})
+			)
 			.subscribe((filteredPos) => {
 				this.purchaseOrders = filteredPos;
 			});
@@ -223,13 +227,13 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.purchaseOrderForm.capForInvoicing.currencyId.setValue(null);
 	}
 
-    private _filterPOsAutocomplete(filter: string): PurchaseOrderDto[] {
-        const filterValue = filter.toLowerCase().trim();
-        const result = this.availablePurchaseOrders.filter(x => x.number.toLowerCase().includes(filterValue));
-        if (filter === '') {
-            return this.availablePurchaseOrders;
-        } else {
-            return result;
-        }
-    }
+	private _filterPOsAutocomplete(filter: string): PurchaseOrderDto[] {
+		const filterValue = filter.toLowerCase().trim();
+		const result = this.availablePurchaseOrders.filter((x) => x.number.toLowerCase().includes(filterValue));
+		if (filter === '') {
+			return this.availablePurchaseOrders;
+		} else {
+			return result;
+		}
+	}
 }

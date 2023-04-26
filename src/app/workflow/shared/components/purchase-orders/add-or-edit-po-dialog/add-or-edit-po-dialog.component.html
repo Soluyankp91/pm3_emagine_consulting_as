@@ -48,7 +48,8 @@
                     class="formFieldNoMarginPadding form-width-350 autocompleteWithShevron client-address-autocomplete"
                     [ngClass]="{'isPanelOpen': poAutocomplete.isOpen, 'is-empty': !purchaseOrderForm.existingPo.value?.id}">
                     <mat-label>PO number</mat-label>
-                    <input required type="text" matInput
+                    <input [required]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
+                         type="text" matInput
                         [matAutocomplete]="poAutocomplete" formControlName="existingPo"
                         appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                         placeholder="Type something..">
@@ -68,7 +69,7 @@
                                 </mat-option>
                             </ng-container>
                             <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
-                                <mat-option class="no-data multilineDropdown-option">
+                                <mat-option class="no-data multilineDropdown-option multilineDropdown-option--column-client-name">
                                     No purchase orders
                                 </mat-option>
                             </ng-container>
@@ -78,38 +79,6 @@
                         <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>
                     </mat-error>
                 </mat-form-field>
-                <!-- <mat-form-field
-                    [fxHide]="!(purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF)"
-                    appearance="outline"
-                    class="formFieldNoMarginPadding filter-select form-width-350 client-address-autocomplete"
-                    [ngClass]="{'is-empty': !purchaseOrderForm.existingPo?.value}">
-                    <mat-label>PO number</mat-label>
-                    <mat-select
-                        [required]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
-                        formControlName="existingPo" [compareWith]="compareWithFn" [disableOptionCentering]="true"
-                        (selectionChange)="poSelected($event)">
-                        <mat-select-trigger>
-                            <ng-container *ngIf="purchaseOrderForm.existingPo?.value">
-                                <ng-container [ngTemplateOutlet]="poNumberInfo"
-                                    [ngTemplateOutletContext]="{order: purchaseOrderForm.existingPo?.value}"></ng-container>
-                            </ng-container>
-                        </mat-select-trigger>
-                        <ng-container *ngFor="let item of filteredPurchaseOrders; trackBy: trackById">
-                            <mat-option [value]="item" class="multilineDropdown-option">
-                                <ng-container [ngTemplateOutlet]="poNumberInfo"
-                                    [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
-                            </mat-option>
-                        </ng-container>
-                        <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
-                            <mat-option class="no-data multilineDropdown-option">
-                                No purchase orders
-                            </mat-option>
-                        </ng-container>
-                    </mat-select>
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>
-                    </mat-error>
-                </mat-form-field> -->
                 <mat-form-field
                     [fxHide]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
                     appearance="outline" class="formFieldNoMarginPadding form-width-270 u-mr--12"
