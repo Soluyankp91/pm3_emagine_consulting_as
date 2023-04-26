@@ -675,9 +675,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					projectTypeId === EProjectTypes.VMSlowMargin ||
 					result?.salesMainData?.salesTypeId === SalesTypes.ThirdPartyMgmt
 				) {
-					this.mainDataComponent?.makeAreaTypeRoleNotRequired();
+					this.mainDataComponent?.makeAreaTypeRoleNotRequired(false);
 				} else {
-					this.mainDataComponent?.makeAreaTypeRoleRequired();
+					this.mainDataComponent?.makeAreaTypeRoleRequired(false);
 				}
 				this.mainDataComponent?.getPrimaryCategoryTree();
 				if (this.isContractModuleEnabled) {
@@ -747,6 +747,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
 				if (result.noEvaluation) {
 					this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable();
+				}
+				if (
+					result.finalEvaluationReferencePerson?.id === null ||
+					result.finalEvaluationReferencePerson?.id === undefined
+				) {
+					this.salesTerminateConsultantForm.finalEvaluationReferencePerson.setValue('');
 				}
 				if (result?.workflowDocuments?.length) {
 					this.terminationDocuments?.addExistingFile(result.workflowDocuments);

@@ -28,3 +28,9 @@
     font-size: $font-size;
     font-weight: $font-weight;
 }
+
+@mixin fontAtypDisplayBold($font-size, $font-weight) {
+    font-family: 'AtypDisplayBold' !important;
+    font-size: $font-size;
+    font-weight: $font-weight;
+}

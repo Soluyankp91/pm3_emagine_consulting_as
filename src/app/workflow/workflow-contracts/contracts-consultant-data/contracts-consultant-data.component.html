@@ -769,6 +769,7 @@
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                         <button class="rates-and-fees--btn button-add" mat-flat-button
+                                            [ngClass]="{'u-mt--16': consultant.value.specialRates?.length}"
                                             [matMenuTriggerFor]="consultantSpecialRateMenu"
                                             [disabled]="isConsultantRateEditing"
                                             (menuOpened)="contractsConsultantsDataForm.consultants.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue(''); consultantSpecialRateSelect.open();"
@@ -1059,6 +1060,7 @@
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                         <button class="rates-and-fees--btn button-add" mat-flat-button
+                                            [ngClass]="{'u-mt--16': consultant.value.clientFees?.length}"
                                             [matMenuTriggerFor]="consultantSpecialFeeMenu"
                                             [disabled]="isConsultantFeeEditing"
                                             #consultantFeeMenuTrigger="matMenuTrigger"
@@ -1158,12 +1160,9 @@
                                                             <span fxFlex="25%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
                                                                 [matTooltip]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number"
-                                                                matTooltipClass="white-tooltip" >
-                                                                <!-- <ng-container *ngIf="projectLine.value.purchaseOrder as order; else noTemplate"> -->
-                                                                    <!-- <span class="text-bold" [ngClass]="order?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"> -->
-                                                                        {{projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number}}
-                                                                    <!-- </span> -->
-                                                                <!-- </ng-container> -->
+                                                                [ngClass]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
+                                                                matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                                    {{projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : (projectLine.value.purchaseOrder?.number ?? '-')}}
                                                             </span>
                                                             <span fxFlex="10%"
                                                                 class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
@@ -1419,6 +1418,7 @@
                                 <ng-container *ngIf="!readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start start">
                                         <button class="rates-and-fees--btn button-add" mat-flat-button
+                                            [ngClass]="{'u-mt--16': consultant.value.projectLines?.length}"
                                             appPreventDoubleClick
                                             (throttledClick)="createOrEditProjectLine(consultantIndex)">
                                             <mat-icon>add</mat-icon>
