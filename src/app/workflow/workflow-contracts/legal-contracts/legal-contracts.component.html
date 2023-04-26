@@ -35,7 +35,7 @@
             <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i"
                 [formArrayName]="i">
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px"
-                    class="legal-contract--list u-w--100 u-pl--16 u-pr--16 u-mb--8">
+                    class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
                     <span fxFlex="20px" class="legal-contract--list-item u-w--100">
                         <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement"
                             class="black-checkbox">
@@ -72,28 +72,32 @@
                         </span>
                         <ng-template #statusTooltip>
                             <ng-container *ngIf="contract.value.statusHistory?.length; else noStatusHistoryTemplate">
-                                <ng-container *ngFor="let item of contract.value.statusHistory; trackBy: trackByItem">
-                                    <div fxLayout="row" fxLayoutAlign="start center">
-                                        <mat-icon class="legal-contract--status u-mr--5"
-                                            [ngClass]="eLegalContractStatusIcon[item.status]">fiber_manual_record</mat-icon>
-                                        <span fxFlex="90px" class="dark-grey-color text-bold u-mr--5">
-                                            {{eLegalContractStatusText[item.status]}}
-                                        </span>
-                                        <span class="dark-grey-color text-bold u-mr--5">
-                                            {{item.timestampUtc | momentFormat: 'MM.DD.YYYY'}}
-                                        </span>
-                                        <span class="dark-grey-color text-600 u-mr--10"  fxFlex="40px">
-                                            {{item.timestampUtc | momentFormat: 'HH:mm:ss'}}
-                                        </span>
+                                <div class="status-log-grid">
+                                    <ng-container *ngFor="let item of contract.value.statusHistory; trackBy: trackByItem">
+                                        <div class="flex-row">
+                                            <mat-icon class="legal-contract--status u-mr--5"
+                                                [ngClass]="eLegalContractStatusIcon[item.status]">fiber_manual_record</mat-icon>
+                                            <span class="dark-grey-color text-bold">
+                                                {{eLegalContractStatusText[item.status]}}
+                                            </span>
+                                        </div>
+                                        <div class="flex-row">
+                                            <span class="dark-grey-color text-bold u-mr--5">
+                                                {{item.timestampUtc | momentFormat: 'MM.DD.YYYY'}}
+                                            </span>
+                                            <span class="dark-grey-color text-600">
+                                                {{item.timestampUtc | momentFormat: 'HH:mm:ss'}}
+                                            </span>
+                                        </div>
                                         <span class="medium-grey-color text-nowrap text-600">
                                             {{item.triggeredBy ?? '-'}}
                                         </span>
-                                    </div>
-                                </ng-container>
+                                    </ng-container>
+                                </div>
                             </ng-container>
                             <ng-template #noStatusHistoryTemplate>
                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                    <mat-icon class="legal-contract--status u-mr--8"
+                                    <mat-icon class="legal-contract--status u-mr--5"
                                         [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]">fiber_manual_record</mat-icon>
                                     <span class="dark-grey-color text-bold">
                                         {{eLegalContractStatusText[contract.value.agreementStatus]}}
@@ -198,7 +202,7 @@
             </span>
         </div>
     </ng-container>
-    <div fxLayout="row" fxLayoutAlign="space-between start">
+    <div fxLayout="row" [fxLayoutAlign]="readOnlyMode ? 'end start' : 'space-between start'" [ngClass]="{'u-mt--16': clientLegalContractsForm.legalContracts?.controls?.length}">
         <ng-container *ngIf="!readOnlyMode">
             <button class="rates-and-fees--btn button-add" mat-flat-button (click)="redirectToCreateAgreement()">
                 <mat-icon>add</mat-icon>
@@ -215,13 +219,15 @@
                         Download envelope
                     </button>
                 </div>
-                <div [matTooltip]="sendAgreementAvailable ? '' : 'Selected agreement has no signed document'"
-                    matTooltipClass="white-tooltip">
-                    <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button
-                        [disabled]="!sendAgreementAvailable" appPreventDoubleClick (throttledClick)="sendAgreement()">
-                        Send agreement
-                    </button>
-                </div>
+                <ng-container *ngIf="!readOnlyMode">
+                    <div [matTooltip]="sendAgreementAvailable ? '' : 'Selected agreement has no signed document'"
+                        matTooltipClass="white-tooltip">
+                        <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button
+                            [disabled]="!sendAgreementAvailable" appPreventDoubleClick (throttledClick)="sendAgreement()">
+                            Send agreement
+                        </button>
+                    </div>
+                </ng-container>
             </div>
         </ng-container>
     </div>

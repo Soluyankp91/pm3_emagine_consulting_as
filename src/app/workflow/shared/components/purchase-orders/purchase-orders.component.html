@@ -21,11 +21,14 @@
         </ng-container>
     </div>
     <ng-container *ngIf="!readOnlyMode && mode !== ePurchaseOrderMode.ProjectLine && mode !== ePurchaseOrderMode.WFOverview">
-        <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
-            (throttledClick)="createOrEditPurchaseOrder()">
-            <mat-icon>add</mat-icon>
-            Add PO
-        </button>
+        <div class="width-fit-content" [matTooltip]="directClientId ? '' : 'Add Direct Client first'" matTooltipClass="white-tooltip">
+            <button class="button-add u-mt--8 u-mb--10" mat-flat-button type="button" appPreventDoubleClick
+                [disabled]="!directClientId"
+                (throttledClick)="createOrEditPurchaseOrder()">
+                <mat-icon>add</mat-icon>
+                Add PO
+            </button>
+        </div>
     </ng-container>
     <ng-container *ngIf="purchaseOrders?.controls?.length === 0 && mode === ePurchaseOrderMode.ProjectLine">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="inline-form--row add-po u-w--100">

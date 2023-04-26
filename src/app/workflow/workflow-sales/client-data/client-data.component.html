@@ -916,6 +916,7 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10" [fxHide]="readOnlyMode">
                     <button class="rates-and-fees--btn button-add" mat-flat-button type="button"
+                        [ngClass]="{'u-mt--16': salesClientDataForm.clientRates.controls?.length}"
                         (menuOpened)="clientSpecialRateSelect.open();" [matMenuTriggerFor]="clientSpecialRateMenu"
                         #clientRateMenuTrigger="matMenuTrigger" [disabled]="isClientRateEditing">
                         <mat-icon>add</mat-icon>
@@ -1058,6 +1059,7 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" [fxHide]="readOnlyMode">
                     <button class="rates-and-fees--btn button-add" mat-flat-button type="button"
+                        [ngClass]="{'u-mt--16': salesClientDataForm.clientFees.controls?.length}"
                         [disabled]="isClientFeeEditing" [matMenuTriggerFor]="clientSpecialFeeMenu"
                         (menuOpened)="clientSpecialFeeFilter.setValue(''); clientSpecialFeeSelect.open()"
                         #clientFeeMenuTrigger="matMenuTrigger">

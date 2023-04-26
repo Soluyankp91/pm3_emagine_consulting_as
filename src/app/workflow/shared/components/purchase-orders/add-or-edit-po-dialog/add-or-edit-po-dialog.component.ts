@@ -57,6 +57,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	) {
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
+        this.existingPo = new PurchaseOrderDto(this.data?.purchaseOrder);
 	}
 
 	ngOnInit(): void {
@@ -103,7 +104,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				});
 		} else {
 			this._purchaseOrderService
-				.purchaseOrderPOST(input)
+				.purchaseOrderPOST(this.data?.clientPeriodId, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
 				.subscribe((result) => {
 					result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto({

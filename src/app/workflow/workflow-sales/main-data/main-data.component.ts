@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, merge, of, Subject } from 'rxjs';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -71,7 +71,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		recipientType: any;
 		recipient: any;
 	};
-    areaTypeRoleRequired = true;
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -227,6 +226,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.salesMainDataForm?.primaryCategoryArea?.valueChanges
             .pipe(
                 takeUntil(this._unsubscribe),
+                distinctUntilChanged(),
                 map(
                     (value) =>
                         this.primaryCategoryAreas?.find((x) => x.id === value?.id)
@@ -235,17 +235,19 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             )
             .subscribe((list) => {
                 this.primaryCategoryTypes = list!;
-                    this.salesMainDataForm?.primaryCategoryType?.setValue(
-                        null
-                    );
-                    this.salesMainDataForm?.primaryCategoryRole?.setValue(
-                        null
-                    );
+                console.log('s');
+                this.salesMainDataForm?.primaryCategoryType?.setValue(
+                    null
+                );
+                this.salesMainDataForm?.primaryCategoryRole?.setValue(
+                    null
+                );
             });
 
         this.salesMainDataForm?.primaryCategoryType?.valueChanges
             .pipe(
                 takeUntil(this._unsubscribe),
+                distinctUntilChanged(),
                 map(
                     (value) =>
                         this.primaryCategoryTypes?.find((x) => x.id === value?.id)
@@ -351,24 +353,27 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		}
 	}
 
-    makeAreaTypeRoleRequired() {
+    makeAreaTypeRoleRequired(emitEvent = true) {
         this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
-        this.updateStateAreaTypeRole();
+        this.updateStateAreaTypeRole(emitEvent);
     }
 
-    makeAreaTypeRoleNotRequired() {
+    makeAreaTypeRoleNotRequired(emitEvent = true) {
         this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
         this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
-        this.updateStateAreaTypeRole();
+        this.salesMainDataForm.primaryCategoryArea?.setErrors(null);
+        this.salesMainDataForm.primaryCategoryType?.setErrors(null);
+        this.salesMainDataForm.primaryCategoryRole?.setErrors(null);
+        this.updateStateAreaTypeRole(emitEvent);
     }
 
-    updateStateAreaTypeRole() {
-        this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({emitEvent: false});
-        this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({emitEvent: false});
-        this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: false});
+    updateStateAreaTypeRole(emitEvent = true) {
+        this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({emitEvent: emitEvent});
+        this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({emitEvent: emitEvent});
+        this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: emitEvent});
     }
 
     commissionRecipientTypeChanged(index: number) {

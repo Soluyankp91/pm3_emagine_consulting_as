@@ -7,9 +7,7 @@
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                         <h1 class="workflow-section--header-main">Termination data</h1>
                         <ng-container *ngIf="readOnlyMode">
-                            <div fxLayout="row" fxLayoutAlign="start start">
-                                <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
-                            </div>
+                            <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
                         </ng-container>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">

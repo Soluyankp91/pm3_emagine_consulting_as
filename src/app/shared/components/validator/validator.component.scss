@@ -7,7 +7,7 @@
     p {
         @include fontOpenSans(100%, 600);
         color: $red-message-color;
-        line-height: 1;
+        line-height: 1 !important;
     }
     &.withoutFormField {
         padding-top: 0 !important;

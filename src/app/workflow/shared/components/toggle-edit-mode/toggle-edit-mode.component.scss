@@ -2,9 +2,29 @@
 
 .absolute-edit-toggle {
     border-radius: 50%;
-    background-color: rgba($color: #72a0f8, $alpha: 0.2);
+    background-color: #E1E7F9;
     color: #72a0f8;
     mat-icon {
         @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+    }
+}
+
+.sticky-buttons {
+    position: sticky;
+    top: 150px;
+    &-overlay {
+        position: absolute;
+        top: 30px;
+        right: 24px;
+        z-index: 999;
+        height: calc(100% - 150px);
+    }
+}
+
+.hovering {
+    .returnToSalesBtn {
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     }
 }
