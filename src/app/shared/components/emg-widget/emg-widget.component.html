@@ -5,7 +5,7 @@
 
 <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isWidgetOpened$ | async"
-    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop" [cdkConnectedOverlayHasBackdrop]="true"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop" cdkConnectedOverlayPanelClass="cdk-main-widget-overlay" [cdkConnectedOverlayHasBackdrop]="true"
     [cdkConnectedOverlayOffsetX]="66" [cdkConnectedOverlayOffsetY]="-30" (detach)="isWidgetOpened$.next(false)"
     (backdropClick)="isWidgetOpened$.next(false)">
     <div @fadeIn @fadeOut class="w-[232px] rounded-[13px] bg-white pt-6 pb-7 px-6 flex flex-col shadow-left-md">

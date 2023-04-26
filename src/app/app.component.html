@@ -2,17 +2,9 @@
     <mat-drawer-container class="main-drawer-container" fxLayout="row">
         <mat-drawer mode="side" opened class="main-drawer-sidebar" fxLayout="column" fxLayoutAlign="end center"
             [disableClose]="true">
-            <emg-widget [tenantId]="currentEmployee.tenantId"></emg-widget>
+            <emg-widget [tenantId]="currentEmployee?.tenantId"></emg-widget>
             <ul class="main-navigation--list">
                 <div class="main-navigation--list-top">
-                    <!-- <li class="main-navigation--list-item home-logo">
-                        <a class="main-navigation--list-item__link">
-                            <mat-icon svgIcon="home-logo"></mat-icon>
-                            <span class="main-navigation--list-item__name">
-                                Home
-                            </span>
-                        </a>
-                    </li> -->
                     <li class="main-navigation--list-item" routerLinkActive="active" matTooltip="Overview"
                         matTooltipClass="white-tooltip" matTooltipPosition="right">
                         <a class="main-navigation--list-item__link" href="" routerLink="/app/overview">
