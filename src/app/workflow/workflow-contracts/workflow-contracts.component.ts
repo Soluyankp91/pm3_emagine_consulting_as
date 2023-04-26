@@ -1008,7 +1008,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
 		let input = new ClientPeriodContractsDataCommandDto();
-		input.bypassLegalValidation = this.bypassLegalValidation;
+        // FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
+		// input.bypassLegalValidation = this.bypassLegalValidation;
+        input.bypassLegalValidation = true;
+        // FIXME: temporary fix
 		input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
 		if (this.mainDataComponent.mainDocuments.documents.value?.length) {
 			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
@@ -1133,7 +1136,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
 		let input = new ConsultantPeriodContractsDataCommandDto();
-		input.bypassLegalValidation = this.bypassLegalValidation;
+		// FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
+		// input.bypassLegalValidation = this.bypassLegalValidation;
+        input.bypassLegalValidation = true;
+        // FIXME: temporary fix
 		input = this.mainDataComponent?.contractsMainForm.value;
 		input.mainData = new ContractsMainDataDto();
 		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectType?.value?.id;
