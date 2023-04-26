@@ -71,7 +71,7 @@
                         <mat-form-field appearance="outline" [ngClass]="{'is-empty': !salesClientDataForm.directClientAddress.value}"
                             class="formFieldNoMarginPadding filter-select form-width-330 client-address-autocomplete">
                             <mat-label>Client address</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="directClientAddress"
+                            <mat-select [disabled]="readOnlyMode" formControlName="directClientAddress" (selectionChange)="directClientAddressSelected()"
                                 [disableOptionCentering]="true" placeholder="Direct client address" [compareWith]="compareWithFn" required>
                                 <mat-select-trigger>
                                     <div class="multilineDropdown-option--column text-truncate-ellipsis">

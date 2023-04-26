@@ -43,34 +43,38 @@
                 </ng-container>
             </div>
             <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field
+                <mat-form-field appearance="outline"
                     [fxHide]="!(purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF)"
-                    appearance="outline"
-                    class="formFieldNoMarginPadding filter-select form-width-350 client-address-autocomplete"
-                    [ngClass]="{'is-empty': !purchaseOrderForm.existingPo?.value}">
+                    class="formFieldNoMarginPadding form-width-350 autocompleteWithShevron client-address-autocomplete"
+                    [ngClass]="{'isPanelOpen': poAutocomplete.isOpen, 'is-empty': !purchaseOrderForm.existingPo.value?.id}">
                     <mat-label>PO number</mat-label>
-                    <mat-select
-                        [required]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
-                        formControlName="existingPo" [compareWith]="compareWithFn" [disableOptionCentering]="true"
-                        (selectionChange)="poSelected($event)">
-                        <mat-select-trigger>
-                            <ng-container *ngIf="purchaseOrderForm.existingPo?.value">
-                                <ng-container [ngTemplateOutlet]="poNumberInfo"
-                                    [ngTemplateOutletContext]="{order: purchaseOrderForm.existingPo?.value}"></ng-container>
+                    <input [required]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
+                         type="text" matInput
+                        [matAutocomplete]="poAutocomplete" formControlName="existingPo"
+                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                        placeholder="Type something..">
+                    <ng-container *ngIf="purchaseOrderForm.existingPo?.value?.id" matPrefix>
+                        <ng-container [ngTemplateOutlet]="poNumberInfo"
+                            [ngTemplateOutletContext]="{order: purchaseOrderForm.existingPo?.value, isList: false}">
+                        </ng-container>
+                    </ng-container>
+                    <span matSuffix class="shevron"></span>
+                    <mat-autocomplete #poAutocomplete="matAutocomplete"
+                        [displayWith]="displayPOFn" (optionSelected)="poSelected($event)">
+                        <ng-container *ngIf="filteredPurchaseOrders | async as filteredPurchaseOrders">
+                            <ng-container *ngFor="let item of filteredPurchaseOrders; trackBy: trackById">
+                                <mat-option [value]="item" class="multilineDropdown-option">
+                                    <ng-container [ngTemplateOutlet]="poNumberInfo"
+                                        [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
+                                </mat-option>
                             </ng-container>
-                        </mat-select-trigger>
-                        <ng-container *ngFor="let item of filteredPurchaseOrders; trackBy: trackById">
-                            <mat-option [value]="item" class="multilineDropdown-option">
-                                <ng-container [ngTemplateOutlet]="poNumberInfo"
-                                    [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
-                            </mat-option>
+                            <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
+                                <mat-option class="no-data multilineDropdown-option multilineDropdown-option--column-client-name">
+                                    No purchase orders
+                                </mat-option>
+                            </ng-container>
                         </ng-container>
-                        <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
-                            <mat-option class="no-data multilineDropdown-option">
-                                No purchase orders
-                            </mat-option>
-                        </ng-container>
-                    </mat-select>
+                    </mat-autocomplete>
                     <mat-error>
                         <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>
                     </mat-error>
@@ -172,8 +176,8 @@
             <ng-container *ngIf="order.purchaseOrderCurrentContextData?.existsInAnotherWorkflow && isList">
                 <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
+                    {{order?.number}}
             </ng-container>
-            {{order?.numberMissingButRequired ? 'Missing, but required' : order?.number}}
         </span>
         <span class="multilineDropdown-option--column-client-info">
             {{order?.receiveDate !== null && order?.receiveDate !== undefined ? (order?.receiveDate | momentFormat) : '-'

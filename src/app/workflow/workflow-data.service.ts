@@ -7,6 +7,7 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { MatSelectChange } from '@angular/material/select';
 
 @Injectable({
     providedIn: 'root'
@@ -48,6 +49,7 @@ export class WorkflowDataService {
     cancelForceEdit =  new EventEmitter<any>();
     resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
     updatePurchaseOrders = new EventEmitter();
+    onDirectClientAddressSelected = new EventEmitter();
     isContractModuleEnabled: boolean;
 
     constructor(

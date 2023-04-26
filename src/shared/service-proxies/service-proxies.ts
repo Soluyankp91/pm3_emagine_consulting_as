@@ -2807,6 +2807,58 @@ export class AgreementServiceProxy {
     }
 
     /**
+     * @param agreementIds (optional) 
+     * @return Success
+     */
+    resendDocusignEnvelope(agreementIds?: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/resend-docusign-envelope?";
+        if (agreementIds === null)
+            throw new Error("The parameter 'agreementIds' cannot be null.");
+        else if (agreementIds !== undefined)
+            agreementIds && agreementIds.forEach(item => { url_ += "agreementIds=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processResendDocusignEnvelope(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processResendDocusignEnvelope(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processResendDocusignEnvelope(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     signedDocument(agreementId: number): Observable<void> {
@@ -26435,6 +26487,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     noEndDate?: boolean | undefined;
     endDate?: moment.Moment | undefined;
     isOnsiteWorkplace?: boolean | undefined;
+    onsiteClientSameAsDirectClient?: boolean;
     onsiteClientId?: number | undefined;
     onsiteClient?: ClientResultDto;
     onsiteClientAddressId?: number | undefined;
@@ -26486,6 +26539,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.noEndDate = _data["noEndDate"];
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.isOnsiteWorkplace = _data["isOnsiteWorkplace"];
+            this.onsiteClientSameAsDirectClient = _data["onsiteClientSameAsDirectClient"];
             this.onsiteClientId = _data["onsiteClientId"];
             this.onsiteClient = _data["onsiteClient"] ? ClientResultDto.fromJS(_data["onsiteClient"]) : <any>undefined;
             this.onsiteClientAddressId = _data["onsiteClientAddressId"];
@@ -26549,6 +26603,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["noEndDate"] = this.noEndDate;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["isOnsiteWorkplace"] = this.isOnsiteWorkplace;
+        data["onsiteClientSameAsDirectClient"] = this.onsiteClientSameAsDirectClient;
         data["onsiteClientId"] = this.onsiteClientId;
         data["onsiteClient"] = this.onsiteClient ? this.onsiteClient.toJSON() : <any>undefined;
         data["onsiteClientAddressId"] = this.onsiteClientAddressId;
@@ -26605,6 +26660,7 @@ export interface IConsultantSalesDataDto {
     noEndDate?: boolean | undefined;
     endDate?: moment.Moment | undefined;
     isOnsiteWorkplace?: boolean | undefined;
+    onsiteClientSameAsDirectClient?: boolean;
     onsiteClientId?: number | undefined;
     onsiteClient?: ClientResultDto;
     onsiteClientAddressId?: number | undefined;

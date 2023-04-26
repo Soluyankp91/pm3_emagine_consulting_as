@@ -181,9 +181,9 @@
                                         <ng-container *ngIf="consultantsForm.consultants.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
                                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete u-mr--12 form-width-330" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': consultantClientAddressAuto.isOpen, 'is-empty': !consultant.get('consultantWorkplaceClientAddress')?.value}">
+                                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete u-mr--12 form-width-330" [ngClass]="{'disabled-input': readOnlyMode || consultant.value?.onsiteClientSameAsDirectClient, 'isPanelOpen': consultantClientAddressAuto.isOpen, 'is-empty': !consultant.get('consultantWorkplaceClientAddress')?.value}">
                                                         <mat-label>Client</mat-label>
-                                                        <input [disabled]="readOnlyMode" required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
+                                                        <input [disabled]="readOnlyMode || consultant.value?.onsiteClientSameAsDirectClient" required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
                                                         <ng-container *ngIf="consultant.get('consultantWorkplaceClientAddress')?.value?.clientId" matPrefix>
                                                             <ng-container [ngTemplateOutlet]="clientPrefix"
                                                                 [ngTemplateOutletContext]="{client: consultant.get('consultantWorkplaceClientAddress')?.value}">
@@ -212,13 +212,10 @@
                                                     <ng-container [ngTemplateOutlet]="clientAdditionalInfo" [ngTemplateOutletContext]="{client: consultant.value.consultantWorkplaceClientAddress}">
                                                     </ng-container>
                                                 </div>
-                                                <mat-checkbox [disabled]="readOnlyMode" color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" [checked]="clientDataForm.directClientIdValue?.value?.clientId === consultant.value.consultantWorkplaceClientAddress?.clientId" name="consultantIsOnsiteWorkplaceSameAsDirectClient" class="black-checkbox u-mt--5">
-                                                    Same as direct client
-                                                </mat-checkbox>
                                                 <mat-form-field appearance="outline" [ngClass]="{'is-empty': !consultant.get('onsiteClientAddress')?.value}"
                                                     class="formFieldNoMarginPadding filter-select form-width-330 client-address-autocomplete">
                                                     <mat-label>Client address</mat-label>
-                                                    <mat-select [disabled]="readOnlyMode" formControlName="onsiteClientAddress"
+                                                    <mat-select [disabled]="readOnlyMode || consultant.value?.onsiteClientSameAsDirectClient" formControlName="onsiteClientAddress"
                                                         [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                                                         <mat-select-trigger>
                                                             <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -245,6 +242,9 @@
                                                         <app-validator [control]="consultant.get('onsiteClientAddress')"></app-validator>
                                                     </mat-error>
                                                 </mat-form-field>
+                                                <mat-checkbox [disabled]="readOnlyMode" color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" name="onsiteClientSameAsDirectClient" class="black-checkbox u-mt--5" formControlName="onsiteClientSameAsDirectClient">
+                                                    Same as direct client
+                                                </mat-checkbox>
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [ngClass]="{'disabled-input': readOnlyMode}" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
                                                     <mat-label>Percentage onsite</mat-label>
                                                     <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
