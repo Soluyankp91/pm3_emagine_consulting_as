@@ -28,7 +28,7 @@ import { CompareService } from './compare.service';
 import { CommentService } from './comment.service';
 import { RICH_EDITOR_OPTIONS } from '../providers';
 import { TransformMergeFiels } from '../helpers/transform-merge-fields.helper';
-import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField } from '../entities';
+import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField, IMergeFieldState } from '../entities';
 import { AgreementCommentDto, AgreementTemplateCommentDto } from '../../../../../shared/service-proxies/service-proxies';
 import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/items/menu';
@@ -38,6 +38,7 @@ export class EditorCoreService {
 	private _initialised = false;
 	afterViewInit$: ReplaySubject<void> = new ReplaySubject();
 	templateAsBase64$ = new BehaviorSubject<string>('');
+	mergeFieldState$ = new BehaviorSubject<IMergeFieldState>(IMergeFieldState.Code);
 	hasUnsavedChanges$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	commentSidebarEnabled$ = this._commentService.selectEnabled$;
 
@@ -69,6 +70,10 @@ export class EditorCoreService {
 		return this.editor ? this.editor.loadingPanel.enabled : false;
 	}
 
+	get mergeFieldState() {
+		return this.mergeFieldState$.getValue();
+	}
+
 	registerRichEditor(editor: RichEdit) {
 		this.editor = editor;
 		this.editorNative = editor['_native'];
@@ -85,7 +90,7 @@ export class EditorCoreService {
 		if (!readonly) {
 			if (this._initialised) return;
 			this._customizeRibbonPanel();
-			this._registerDocumentEvents();
+			this._registerDocumentEvents(!exportWithMergedData);
 			this._registerCustomEvents();
 			this._initCompareTab();
 			this._initComments();
@@ -151,22 +156,29 @@ export class EditorCoreService {
 	}
 
 	toggleFields(showResult: boolean = true) {
-		let hasUnsavedChanges = this.editor.hasUnsavedChanges;
 		this.editor.history.beginTransaction();
 		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
 		if (showResult) {
-			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
+			this.showAllFieldResults();
 		} else {
-			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldCodes);
+			this.showAllFieldCodes();
 		}
 		this.editor.history.endTransaction();
-		if (!hasUnsavedChanges) {
-			this.editor.history.clear();
-		}
 	}
 
 	toggleMergedData() {
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+		this._handleMergeFieldStateChange(MailMergeTabCommandId.ToggleViewMergedData);
+	}
+
+	showAllFieldCodes() {
+		this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldCodes);
+		this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldCodes);
+	}
+
+	showAllFieldResults() {
+		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+		this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldResults);
 	}
 
 	toggleHighlightView(state: boolean) {
@@ -191,6 +203,10 @@ export class EditorCoreService {
 		this.hasUnsavedChanges$.next(false);
 	}
 
+	undoLastChange() {
+		this.editor.history.undo();
+	}
+
 	getUnsavedChanges() {
 		return this.editor.hasUnsavedChanges;
 	}
@@ -205,6 +221,7 @@ export class EditorCoreService {
 		const homeTab = this.options.ribbon.getTab(RibbonTabType.Home);
 
 		const insertFieldBtnOpts: RibbonButtonItemOptions = { icon: 'dxre-icon-InsertDataField', showText: true };
+		const showAllFieldCodesBtnOpts: RibbonButtonItemOptions = { icon: 'dxre-icon-ShowAllFieldCodes', showText: true };
 		const showAllFieldResultsBtnOpts: RibbonButtonItemOptions = { icon: 'dxre-icon-ShowAllFieldResults', showText: true };
 		const painterFormatBtnOpts: RibbonButtonItemOptions = { icon: 'palette', showText: false };
 
@@ -224,10 +241,13 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.GoToPreviousDataRecord);
 		mergeTab.removeItem(MailMergeTabItemId.UpdateAllFields);
 		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldResults);
+		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldCodes);
 
 		mergeTab.insertItem(
-			new RibbonButtonItem(MailMergeTabItemId.UpdateAllFields, 'Show All Field Results', showAllFieldResultsBtnOpts),
-			3
+			new RibbonButtonItem(ICustomCommand.ShowAllFieldCodes, 'Show All Field Codes', showAllFieldCodesBtnOpts)
+		);
+		mergeTab.insertItem(
+			new RibbonButtonItem(ICustomCommand.ShowAllFieldResults, 'Show All Field Results', showAllFieldResultsBtnOpts)
 		);
 
 		fileTab.removeItem(FileTabItemId.ExportDocument);
@@ -242,11 +262,11 @@ export class EditorCoreService {
 		});
 	}
 
-	private _registerDocumentEvents() {
+	private _registerDocumentEvents(showFieldCodes: boolean = false) {
 		this.editor.events.documentLoaded.addHandler(() => {
 			this.afterViewInit$.next();
 			this.afterViewInit$.complete();
-			this.toggleFields();
+			this.toggleFields(showFieldCodes);
 			this.removeUnsavedChanges();
 			this.toggleHighlightView(!this.editor.readOnly);
 			this.editor.events.contentInserted.addHandler((s, e) => {
@@ -287,6 +307,12 @@ export class EditorCoreService {
 	private _registerCustomEvents() {
 		this.editor.events.customCommandExecuted.addHandler((s, e) => {
 			switch (e.commandName as ICustomCommand) {
+				case ICustomCommand.ShowAllFieldCodes:
+					this.showAllFieldCodes();
+					break;
+				case ICustomCommand.ShowAllFieldResults:
+					this.showAllFieldResults();
+					break;
 				case ICustomCommand.SelectDocument:
 					this.onCompareTemplate$.emit();
 					break;
@@ -488,5 +514,28 @@ export class EditorCoreService {
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
 		this.editor.executeCommand(command);
 		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+	}
+
+	private _handleMergeFieldStateChange(
+		command:
+			| MailMergeTabCommandId.ToggleViewMergedData
+			| MailMergeTabCommandId.ShowAllFieldCodes
+			| MailMergeTabCommandId.ShowAllFieldResults
+	) {
+		const currentMergeFieldState = this.mergeFieldState$.getValue();
+
+		switch (command) {
+			case MailMergeTabCommandId.ShowAllFieldCodes:
+				this.mergeFieldState$.next(IMergeFieldState.Code);
+				break;
+			case MailMergeTabCommandId.ShowAllFieldResults:
+				this.mergeFieldState$.next(IMergeFieldState.Result);
+				break;
+			case MailMergeTabCommandId.ToggleViewMergedData:
+				this.mergeFieldState$.next(
+					currentMergeFieldState === IMergeFieldState.Result ? IMergeFieldState.Field : IMergeFieldState.Result
+				);
+				break;
+		}
 	}
 }
