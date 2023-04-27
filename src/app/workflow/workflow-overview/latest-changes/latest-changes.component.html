@@ -2,91 +2,104 @@
     <h2>Latest changes</h2>
     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
         <mat-label>Filter by</mat-label>
-        <mat-select [formControl]="filter" [disableOptionCentering]="true" (selectionChange)="getLatestChanges()">
-            <ng-container *ngFor="let item of [{id: 1, name: 'a'}]; trackBy: trackById">
-                <mat-option [value]="item.id">
-                    {{ item.name }}
+        <mat-select [formControl]="filter" [disableOptionCentering]="true" (selectionChange)="filterLatestChanges($event.value)">
+            <ng-container *ngIf="filter.value !== null">
+                <mat-option class="mat-select-clear-option" [value]="null">
+                    Clear
+                </mat-option>
+            </ng-container>
+            <ng-container *ngFor="let item of filters$ | async; trackBy: trackById">
+                <mat-option [value]="item">
+                    {{ item.displayName }}
                 </mat-option>
             </ng-container>
         </mat-select>
     </mat-form-field>
-    <ng-container *ngIf="(workflowHistory$ | async)?.items as workflowHistory; else noLatestChanges">
-        <mat-table
-            class="white-table"
-            matSort
-            [dataSource]="workflowHistory">
-            <ng-container matColumnDef="changedDate">
-                <mat-header-cell *matHeaderCellDef>
-                    Changed Date
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    <span class="dark-grey-color u-mr--5">{{row.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
-                    <span class="medium-grey-color text-600">{{row.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
-                </mat-cell>
+    <!-- <ng-container *ngIf="(workflowHistory$ | async)?.items as workflowHistory;"> -->
+        <div class="pos-relative">
+            <mat-table
+                class="white-table"
+                matSort
+                [dataSource]="(workflowHistory$ | async)?.items">
+                <ng-container matColumnDef="changedDate">
+                    <mat-header-cell *matHeaderCellDef>
+                        Changed Date
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <span class="dark-grey-color u-mr--5">{{row.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
+                        <span class="medium-grey-color text-600">{{row.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actionName">
+                    <mat-header-cell *matHeaderCellDef>
+                        Event
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="text-bold">
+                        {{row.actionName ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="propertyName">
+                    <mat-header-cell *matHeaderCellDef>
+                        Changed field
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.propertyName ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="oldValue">
+                    <mat-header-cell *matHeaderCellDef>
+                        Old Value
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.oldValue ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="newValue">
+                    <mat-header-cell *matHeaderCellDef>
+                        New Value
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.newValue ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="period">
+                    <mat-header-cell *matHeaderCellDef>
+                        Period
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.clientPeriodDisplayId ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="periodID">
+                    <mat-header-cell *matHeaderCellDef>
+                        Period ID
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.periodId ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="by">
+                    <mat-header-cell *matHeaderCellDef>
+                        By
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <img class="border-rounded-50" [matTooltip]="row.userName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.userId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+            </mat-table>
+            <ng-container *ngIf="isLoading">
+                <div class="spinner-container">
+                    <mat-spinner [diameter]="50"></mat-spinner>
+                </div>
             </ng-container>
-            <ng-container matColumnDef="actionName">
-                <mat-header-cell *matHeaderCellDef>
-                    Event
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row" class="text-bold">
-                    {{row.actionName ?? '-'}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="propertyName">
-                <mat-header-cell *matHeaderCellDef>
-                    Changed field
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    {{row.propertyName ?? '-'}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="oldValue">
-                <mat-header-cell *matHeaderCellDef>
-                    Old Value
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    {{row.oldValue ?? '-'}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="newValue">
-                <mat-header-cell *matHeaderCellDef>
-                    New Value
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    {{row.newValue ?? '-'}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="period">
-                <mat-header-cell *matHeaderCellDef>
-                    Period
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    {{row.clientPeriodDisplayId ?? '-'}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="periodID">
-                <mat-header-cell *matHeaderCellDef>
-                    Period ID
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    {{row.periodId ?? '-'}}
-                </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="by">
-                <mat-header-cell *matHeaderCellDef>
-                    By
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    <img class="border-rounded-50" [matTooltip]="row.userName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.userId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
-                </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
-        </mat-table>
-    </ng-container>
-    <ng-template #noLatestChanges>
-        <div fxLayout="row" fxLayoutAlign="start center" class="latest-changes--row">
-            No latest changes yet
+
         </div>
-    </ng-template>
+        <ng-container *ngIf="(workflowHistory$ | async)?.totalCount === 0 && !isLoading">
+            <div class="results-not-found">
+                RESULTS NOT FOUND
+            </div>
+        </ng-container>
+    <!-- </ng-container> -->
 </div>

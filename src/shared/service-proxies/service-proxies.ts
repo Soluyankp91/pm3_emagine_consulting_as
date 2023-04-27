@@ -7562,60 +7562,6 @@ export class ClientsServiceProxy {
     /**
      * @return Success
      */
-    history(clientId: number): Observable<HistoryPropertiesDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/Clients/{clientId}/history";
-        if (clientId === undefined || clientId === null)
-            throw new Error("The parameter 'clientId' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processHistory(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processHistory(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<HistoryPropertiesDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<HistoryPropertiesDtoPaginatedList>;
-        }));
-    }
-
-    protected processHistory(response: HttpResponseBase): Observable<HistoryPropertiesDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = HistoryPropertiesDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<HistoryPropertiesDtoPaginatedList>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
     clients(clientId: number): Observable<ClientDetailsDto> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}";
         if (clientId === undefined || clientId === null)
@@ -13678,6 +13624,262 @@ export class FrameAgreementServiceProxy {
 }
 
 @Injectable()
+export class HistoryServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    filterNames(): Observable<HistoryFilterNamesDto[]> {
+        let url_ = this.baseUrl + "/api/History/workflow/filter-names";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFilterNames(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFilterNames(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<HistoryFilterNamesDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<HistoryFilterNamesDto[]>;
+        }));
+    }
+
+    protected processFilterNames(response: HttpResponseBase): Observable<HistoryFilterNamesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(HistoryFilterNamesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<HistoryFilterNamesDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    filterNames2(): Observable<HistoryFilterNamesDto[]> {
+        let url_ = this.baseUrl + "/api/History/client/filter-names";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFilterNames2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFilterNames2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<HistoryFilterNamesDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<HistoryFilterNamesDto[]>;
+        }));
+    }
+
+    protected processFilterNames2(response: HttpResponseBase): Observable<HistoryFilterNamesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(HistoryFilterNamesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<HistoryFilterNamesDto[]>(null as any);
+    }
+
+    /**
+     * @param entityName (optional) 
+     * @param propertyName (optional) 
+     * @return Success
+     */
+    workflow(workflowId: string, entityName?: string | undefined, propertyName?: string | undefined): Observable<HistoryPropertiesDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/History/workflow/{workflowId}?";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        if (entityName === null)
+            throw new Error("The parameter 'entityName' cannot be null.");
+        else if (entityName !== undefined)
+            url_ += "entityName=" + encodeURIComponent("" + entityName) + "&";
+        if (propertyName === null)
+            throw new Error("The parameter 'propertyName' cannot be null.");
+        else if (propertyName !== undefined)
+            url_ += "propertyName=" + encodeURIComponent("" + propertyName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflow(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflow(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+        }));
+    }
+
+    protected processWorkflow(response: HttpResponseBase): Observable<HistoryPropertiesDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = HistoryPropertiesDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<HistoryPropertiesDtoPaginatedList>(null as any);
+    }
+
+    /**
+     * @param entityName (optional) 
+     * @param propertyName (optional) 
+     * @return Success
+     */
+    client(clientId: number, entityName?: string | undefined, propertyName?: string | undefined): Observable<HistoryPropertiesDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/History/client/{clientId}?";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        if (entityName === null)
+            throw new Error("The parameter 'entityName' cannot be null.");
+        else if (entityName !== undefined)
+            url_ += "entityName=" + encodeURIComponent("" + entityName) + "&";
+        if (propertyName === null)
+            throw new Error("The parameter 'propertyName' cannot be null.");
+        else if (propertyName !== undefined)
+            url_ += "propertyName=" + encodeURIComponent("" + propertyName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClient(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClient(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<HistoryPropertiesDtoPaginatedList>;
+        }));
+    }
+
+    protected processClient(response: HttpResponseBase): Observable<HistoryPropertiesDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = HistoryPropertiesDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<HistoryPropertiesDtoPaginatedList>(null as any);
+    }
+}
+
+@Injectable()
 export class HubSpotCardDataFetchServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -16825,60 +17027,6 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @return Success
-     */
-    historyNew(workflowId: string): Observable<HistoryPropertiesDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/history-new";
-        if (workflowId === undefined || workflowId === null)
-            throw new Error("The parameter 'workflowId' must be defined.");
-        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processHistoryNew(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processHistoryNew(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<HistoryPropertiesDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<HistoryPropertiesDtoPaginatedList>;
-        }));
-    }
-
-    protected processHistoryNew(response: HttpResponseBase): Observable<HistoryPropertiesDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = HistoryPropertiesDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<HistoryPropertiesDtoPaginatedList>(null as any);
-    }
-
-    /**
      * @param workflowId (optional) 
      * @param workflowStatus (optional) 
      * @return Success
@@ -17168,7 +17316,7 @@ export class WorkflowServiceProxy {
      * @param pageSize (optional) 
      * @return Success
      */
-    history2(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
+    history(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/history?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -17192,11 +17340,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processHistory2(response_);
+            return this.processHistory(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processHistory2(response_ as any);
+                    return this.processHistory(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<WorkflowHistoryDtoPaginatedList>;
                 }
@@ -17205,7 +17353,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processHistory2(response: HttpResponseBase): Observable<WorkflowHistoryDtoPaginatedList> {
+    protected processHistory(response: HttpResponseBase): Observable<WorkflowHistoryDtoPaginatedList> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -28942,18 +29090,61 @@ export interface IGanttRowItem {
     endDate?: moment.Moment | undefined;
 }
 
+export class HistoryFilterNamesDto implements IHistoryFilterNamesDto {
+    entityName?: string | undefined;
+    propertyName?: string | undefined;
+    displayName?: string | undefined;
+
+    constructor(data?: IHistoryFilterNamesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.entityName = _data["entityName"];
+            this.propertyName = _data["propertyName"];
+            this.displayName = _data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): HistoryFilterNamesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new HistoryFilterNamesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["entityName"] = this.entityName;
+        data["propertyName"] = this.propertyName;
+        data["displayName"] = this.displayName;
+        return data;
+    }
+}
+
+export interface IHistoryFilterNamesDto {
+    entityName?: string | undefined;
+    propertyName?: string | undefined;
+    displayName?: string | undefined;
+}
+
 export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     actionName?: string | undefined;
-    entityName?: string | undefined;
+    entityNameWithKeyValue?: string | undefined;
     entityKeyFull?: string | undefined;
-    entityKeyValue?: string | undefined;
-    readonly entityNameWithKeyValue?: string | undefined;
     propertyName?: string | undefined;
     oldValue?: string | undefined;
     newValue?: string | undefined;
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
+    clientPeriodTooltip?: string | undefined;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
     clientId?: number | undefined;
@@ -28973,16 +29164,15 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     init(_data?: any) {
         if (_data) {
             this.actionName = _data["actionName"];
-            this.entityName = _data["entityName"];
+            this.entityNameWithKeyValue = _data["entityNameWithKeyValue"];
             this.entityKeyFull = _data["entityKeyFull"];
-            this.entityKeyValue = _data["entityKeyValue"];
-            (<any>this).entityNameWithKeyValue = _data["entityNameWithKeyValue"];
             this.propertyName = _data["propertyName"];
             this.oldValue = _data["oldValue"];
             this.newValue = _data["newValue"];
             this.workflowId = _data["workflowId"];
             this.clientPeriodId = _data["clientPeriodId"];
             this.clientPeriodDisplayId = _data["clientPeriodDisplayId"];
+            this.clientPeriodTooltip = _data["clientPeriodTooltip"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.consultantId = _data["consultantId"];
             this.clientId = _data["clientId"];
@@ -29002,16 +29192,15 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["actionName"] = this.actionName;
-        data["entityName"] = this.entityName;
-        data["entityKeyFull"] = this.entityKeyFull;
-        data["entityKeyValue"] = this.entityKeyValue;
         data["entityNameWithKeyValue"] = this.entityNameWithKeyValue;
+        data["entityKeyFull"] = this.entityKeyFull;
         data["propertyName"] = this.propertyName;
         data["oldValue"] = this.oldValue;
         data["newValue"] = this.newValue;
         data["workflowId"] = this.workflowId;
         data["clientPeriodId"] = this.clientPeriodId;
         data["clientPeriodDisplayId"] = this.clientPeriodDisplayId;
+        data["clientPeriodTooltip"] = this.clientPeriodTooltip;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["consultantId"] = this.consultantId;
         data["clientId"] = this.clientId;
@@ -29024,16 +29213,15 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
 export interface IHistoryPropertiesDto {
     actionName?: string | undefined;
-    entityName?: string | undefined;
-    entityKeyFull?: string | undefined;
-    entityKeyValue?: string | undefined;
     entityNameWithKeyValue?: string | undefined;
+    entityKeyFull?: string | undefined;
     propertyName?: string | undefined;
     oldValue?: string | undefined;
     newValue?: string | undefined;
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
+    clientPeriodTooltip?: string | undefined;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
     clientId?: number | undefined;
