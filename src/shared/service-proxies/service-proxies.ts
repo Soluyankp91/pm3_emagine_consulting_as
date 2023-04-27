@@ -4410,6 +4410,56 @@ export class AgreementTemplateServiceProxy {
     /**
      * @return Success
      */
+    agreementTemplateDELETE(agreementTemplateId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplateDELETE(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplateDELETE(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementTemplateDELETE(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     preview2(agreementTemplateId: number): Observable<AgreementTemplateDetailsPreviewDto> {
         let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/preview";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
@@ -13805,9 +13855,12 @@ export class HistoryServiceProxy {
     /**
      * @param entityName (optional) 
      * @param propertyName (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
-    workflow(workflowId: string, entityName?: string | undefined, propertyName?: string | undefined): Observable<HistoryPropertiesDtoPaginatedList> {
+    workflow(workflowId: string, entityName?: string | undefined, propertyName?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<HistoryPropertiesDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/History/workflow/{workflowId}?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13820,6 +13873,18 @@ export class HistoryServiceProxy {
             throw new Error("The parameter 'propertyName' cannot be null.");
         else if (propertyName !== undefined)
             url_ += "propertyName=" + encodeURIComponent("" + propertyName) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -13869,9 +13934,12 @@ export class HistoryServiceProxy {
     /**
      * @param entityName (optional) 
      * @param propertyName (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
-    client(clientId: number, entityName?: string | undefined, propertyName?: string | undefined): Observable<HistoryPropertiesDtoPaginatedList> {
+    client(clientId: number, entityName?: string | undefined, propertyName?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<HistoryPropertiesDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/History/client/{clientId}?";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -13884,6 +13952,18 @@ export class HistoryServiceProxy {
             throw new Error("The parameter 'propertyName' cannot be null.");
         else if (propertyName !== undefined)
             url_ += "propertyName=" + encodeURIComponent("" + propertyName) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -16015,18 +16095,16 @@ export class PurchaseOrderServiceProxy {
     }
 
     /**
-     * @param directClientId (optional) 
      * @return Success
      */
-    getPurchaseOrdersAvailableForClientPeriod(clientPeriodId: string, directClientId?: number | undefined): Observable<PurchaseOrderDto[]> {
-        let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersAvailableForClientPeriod/{clientPeriodId}?";
+    getPurchaseOrdersAvailableForClientPeriod(clientPeriodId: string, directClientId: number): Observable<PurchaseOrderDto[]> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersAvailableForClientPeriod/{clientPeriodId}/{directClientId}";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
         url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        if (directClientId === null)
-            throw new Error("The parameter 'directClientId' cannot be null.");
-        else if (directClientId !== undefined)
-            url_ += "directClientId=" + encodeURIComponent("" + directClientId) + "&";
+        if (directClientId === undefined || directClientId === null)
+            throw new Error("The parameter 'directClientId' must be defined.");
+        url_ = url_.replace("{directClientId}", encodeURIComponent("" + directClientId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -16081,16 +16159,14 @@ export class PurchaseOrderServiceProxy {
     }
 
     /**
-     * @param currentClientPeriodId (optional) 
      * @param body (optional) 
      * @return Success
      */
-    purchaseOrderPOST(currentClientPeriodId?: string | undefined, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
-        let url_ = this.baseUrl + "/api/PurchaseOrder?";
-        if (currentClientPeriodId === null)
-            throw new Error("The parameter 'currentClientPeriodId' cannot be null.");
-        else if (currentClientPeriodId !== undefined)
-            url_ += "currentClientPeriodId=" + encodeURIComponent("" + currentClientPeriodId) + "&";
+    purchaseOrderPOST(currentClientPeriodId: string, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/{currentClientPeriodId}";
+        if (currentClientPeriodId === undefined || currentClientPeriodId === null)
+            throw new Error("The parameter 'currentClientPeriodId' must be defined.");
+        url_ = url_.replace("{currentClientPeriodId}", encodeURIComponent("" + currentClientPeriodId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -16142,16 +16218,14 @@ export class PurchaseOrderServiceProxy {
     }
 
     /**
-     * @param currentClientPeriodId (optional) 
      * @param body (optional) 
      * @return Success
      */
-    purchaseOrderPUT(currentClientPeriodId?: string | undefined, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
-        let url_ = this.baseUrl + "/api/PurchaseOrder?";
-        if (currentClientPeriodId === null)
-            throw new Error("The parameter 'currentClientPeriodId' cannot be null.");
-        else if (currentClientPeriodId !== undefined)
-            url_ += "currentClientPeriodId=" + encodeURIComponent("" + currentClientPeriodId) + "&";
+    purchaseOrderPUT(currentClientPeriodId: string, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/{currentClientPeriodId}";
+        if (currentClientPeriodId === undefined || currentClientPeriodId === null)
+            throw new Error("The parameter 'currentClientPeriodId' must be defined.");
+        url_ = url_.replace("{currentClientPeriodId}", encodeURIComponent("" + currentClientPeriodId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
