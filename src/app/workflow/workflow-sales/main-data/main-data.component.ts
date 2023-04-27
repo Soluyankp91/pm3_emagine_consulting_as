@@ -1,8 +1,7 @@
 import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { merge, of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AreaRoleNodeDto,
