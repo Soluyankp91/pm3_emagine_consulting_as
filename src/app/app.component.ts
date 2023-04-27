@@ -1,4 +1,4 @@
-import { Component, ElementRef, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { environment } from 'src/environments/environment';
@@ -24,7 +24,6 @@ export class AppComponent extends AppComponentBase implements OnInit {
 		private _employeeService: EmployeeServiceProxy,
 		private _configurationService: ConfigurationServiceProxy,
         private _store: Store,
-        private _elRef: ElementRef
 	) {
 		super(injector);
 	}
