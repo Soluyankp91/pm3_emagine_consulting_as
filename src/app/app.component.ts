@@ -22,12 +22,14 @@ export class AppComponent extends AppComponentBase implements OnInit {
 		private authService: MsalService,
 		private _employeeService: EmployeeServiceProxy,
 		private _configurationService: ConfigurationServiceProxy,
-        private _store: Store
+        private _store: Store,
 	) {
 		super(injector);
 	}
 
     ngOnInit(): void {
+        const loader = document.getElementById('appLoader') as HTMLElement;
+        loader?.remove();
         this.accountInfo = this.authService.instance.getActiveAccount();
         this.getCurrentEmployee();
         this.getConfigurations();
