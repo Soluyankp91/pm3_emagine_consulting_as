@@ -10,7 +10,7 @@
 
         &-text {
             @include fontOpenSans(30px, 800);
-            line-height: 36px;
+            line-height: 36px !important;
             color: #4A4E60;
         }
 
@@ -21,12 +21,12 @@
     &--content {
         &-text {
             @include fontOpenSans(12px, 400);
-            line-height: 24px;
+            line-height: 24px !important;
             color: #4A4E60;
         }
         &-header {
             @include fontOpenSans(12px, 800);
-            line-height: 24px;
+            line-height: 24px !important;
         }
     }
     &--actions{

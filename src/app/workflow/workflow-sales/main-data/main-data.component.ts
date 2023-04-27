@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { debounceTime, finalize, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { merge, of, Subject } from 'rxjs';
+import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AreaRoleNodeDto,
@@ -184,25 +184,28 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		}
 	}
 
-	makeAreaTypeRoleRequired() {
-		this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
-		this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
-		this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
-		this.updateStateAreaTypeRole();
-	}
+    makeAreaTypeRoleRequired(emitEvent = true) {
+        this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
+        this.updateStateAreaTypeRole(emitEvent);
+    }
 
-	makeAreaTypeRoleNotRequired() {
-		this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
-		this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
-		this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
-		this.updateStateAreaTypeRole();
-	}
+    makeAreaTypeRoleNotRequired(emitEvent = true) {
+        this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
+        this.salesMainDataForm.primaryCategoryArea?.setErrors(null);
+        this.salesMainDataForm.primaryCategoryType?.setErrors(null);
+        this.salesMainDataForm.primaryCategoryRole?.setErrors(null);
+        this.updateStateAreaTypeRole(emitEvent);
+    }
 
-	updateStateAreaTypeRole() {
-		this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({ emitEvent: false });
-		this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({ emitEvent: false });
-		this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({ emitEvent: false });
-	}
+    updateStateAreaTypeRole(emitEvent = true) {
+        this.salesMainDataForm.primaryCategoryArea?.updateValueAndValidity({emitEvent: emitEvent});
+        this.salesMainDataForm.primaryCategoryType?.updateValueAndValidity({emitEvent: emitEvent});
+        this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: emitEvent});
+    }
 
 	commissionRecipientTypeChanged(index: number) {
 		this.filteredRecipients = [];

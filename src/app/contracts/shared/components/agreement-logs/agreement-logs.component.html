@@ -1,0 +1,25 @@
+<ng-container *ngIf="agreementStatus">
+	<emg-agreement-status
+		[agreementStatus]="agreementStatus"
+		[customTooltip]="tooltipTemplate"
+		[showAlways]="true"></emg-agreement-status>
+	<ng-template #tooltipTemplate>
+		<ng-container *ngIf="statuses | async as statuses; else loading">
+			<div class="rows-container">
+				<ng-container *ngFor="let statusItem of statuses">
+					<emg-agreement-status
+						[agreementStatus]="statusItem.status"
+						[displayText]="true"
+						class="status-text"></emg-agreement-status>
+					<span class="change-status-date">{{ statusItem.timestampUtc | momentFormat: 'DD.MM.YYYY HH:mm:ss' }}</span>
+					<span class="change-status-by">{{ statusItem.triggeredBy }}</span>
+				</ng-container>
+			</div>
+		</ng-container>
+        <ng-template #loading>
+			<div class="logs-spinner">
+				<mat-spinner diameter="16"></mat-spinner>
+			</div>
+        </ng-template>
+	</ng-template>
+</ng-container>

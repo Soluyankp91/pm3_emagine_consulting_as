@@ -24,6 +24,7 @@ import { environment } from 'src/environments/environment';
 import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 import { TooltipModule } from './ui/tooltip/tooltip.module';
 import { ManagerMultiselectComponent } from '../components/manager-multiselect/manager-multiselect.component';
+import { EmgWidgetComponent } from '../components/emg-widget/emg-widget.component';
 
 @NgModule({
 	declarations: [
@@ -43,6 +44,7 @@ import { ManagerMultiselectComponent } from '../components/manager-multiselect/m
 		ImgUrlPipe,
 		DisplayListPipe,
 		ManagerMultiselectComponent,
+		EmgWidgetComponent,
 	],
 	imports: [
 		CommonModule,
@@ -77,6 +79,7 @@ import { ManagerMultiselectComponent } from '../components/manager-multiselect/m
 		DisplayListPipe,
 		TooltipModule,
 		ManagerMultiselectComponent,
+		EmgWidgetComponent,
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })

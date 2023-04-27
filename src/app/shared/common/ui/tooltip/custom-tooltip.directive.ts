@@ -8,7 +8,8 @@ import { CustomTooltipComponent } from './custom-tooltip.component';
 })
 export class CustomTooltipDirective implements OnInit, OnDestroy {
 	@Input() showToolTip: boolean = true;
-	@Input(`emgCustomTooltip`) text: string;
+    @Input() showAlways: boolean = false;
+	@Input('emgCustomTooltip') text: string;
 	@Input() contentTemplate: TemplateRef<any>;
 
 	private _overlayRef: OverlayRef;
@@ -20,7 +21,7 @@ export class CustomTooltipDirective implements OnInit, OnDestroy {
 	) {}
 
 	ngOnInit() {
-		if (!this.showToolTip || !this.contentTemplate) {
+		if (!this.showToolTip || (!this.contentTemplate && !this.text)) {
 			return;
 		}
 

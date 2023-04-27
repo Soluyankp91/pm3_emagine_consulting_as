@@ -20,10 +20,12 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	@Input() inheritedFiles: FileUpload[] = [];
 	@Input() label = 'From master template';
 	@Input() idProp = 'agreementTemplateAttachmentId';
+	@Input() preselectAll: boolean = false;
 
 	inheritedFilesModified: FileUploadItem[] = [];
 	selectedInheritedFiles: FileUpload[] = [];
 
+	private _hasPendingChanges = false;
 	private _onChange = (val: any) => {};
 	private onTouched = () => {};
 
@@ -35,6 +37,19 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 			this.inheritedFilesModified = inheritedFiles.map((file) => {
 				return this._modifyFileUpload(file);
 			});
+
+			if (this.preselectAll) {
+				this.inheritedFilesModified.forEach((file) => {
+					file.selected = true;
+					const originalFile = this._getOriginalFileById(file[this.idProp] as number);
+					this.selectedInheritedFiles.push(originalFile);
+				});
+
+				// dirty update control value.
+				setTimeout(() => {
+					this._onChange([...this.selectedInheritedFiles]);
+				});
+			}
 		}
 	}
 
@@ -59,6 +74,8 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	}
 
 	writeValue(preSelectedFiles: FileUpload[]): void {
+		if (this.preselectAll) return;
+
 		this.selectedInheritedFiles = [];
 		if (preSelectedFiles === null || !preSelectedFiles.length) {
 			return;
@@ -101,7 +118,7 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	}
 
 	private _getIconName(fileName: string): string {
-        let splittetFileName = fileName.split('.');
+		let splittetFileName = fileName.split('.');
 		if (EXISTED_ICONS.find((icon) => icon === splittetFileName[splittetFileName.length - 1].toLowerCase())) {
 			return splittetFileName[splittetFileName.length - 1].toLowerCase();
 		} else {

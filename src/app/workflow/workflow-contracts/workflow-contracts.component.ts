@@ -138,8 +138,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
 		this._workflowDataService.updatePurchaseOrders
 			.pipe(takeUntil(this._unsubscribe))
-			.subscribe(() =>
-				this.clientDataComponent.poComponent.getPurchaseOrders(this.purchaseOrderIds, this.directClientId, this.periodId)
+			.subscribe((result: PurchaseOrderDto) =>
+				this.clientDataComponent.poComponent.updatePOs(result)
 			);
 	}
 
@@ -805,9 +805,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			this.mainDataComponent?.contractsMainForm.discountId?.setValue(data.mainData.discountId, {emitEvent: false});
 			this.mainDataComponent?.contractsMainForm.projectTypeId?.setValue(data.mainData.projectTypeId, {emitEvent: false});
 			this.mainDataComponent?.contractsMainForm.marginId?.setValue(data.mainData.marginId, {emitEvent: false});
-			if (data.mainData.noRemarks) {
-				this.mainDataComponent?.contractsMainForm.remarks?.disable();
-			}
+			data.mainData.noRemarks
+				? this.mainDataComponent?.contractsMainForm.remarks?.disable()
+				: this.mainDataComponent?.contractsMainForm.remarks?.enable();
 			if (data?.workflowDocuments?.length) {
 				this.mainDataComponent.mainDocuments?.addExistingFile(data.workflowDocuments);
 			}
@@ -902,7 +902,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
 				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
-				this.consultantDataComponent.selectedFrameAgreementList.push(consultant.frameAgreementId ?? null);
+				this.consultantDataComponent.selectedFrameAgreementList[index] = consultant.frameAgreementId ?? null;
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();
@@ -915,7 +915,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
 		let input = new ClientPeriodContractsDataCommandDto();
-		input.bypassLegalValidation = this.bypassLegalValidation;
+        // FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
+		// input.bypassLegalValidation = this.bypassLegalValidation;
+        input.bypassLegalValidation = true;
+        // FIXME: temporary fix
 		input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
 		if (this.mainDataComponent.mainDocuments.documents.value?.length) {
 			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
@@ -1015,7 +1018,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
 		let input = new ConsultantPeriodContractsDataCommandDto();
-		input.bypassLegalValidation = this.bypassLegalValidation;
+		// FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
+		// input.bypassLegalValidation = this.bypassLegalValidation;
+        input.bypassLegalValidation = true;
+        // FIXME: temporary fix
 		input = this.mainDataComponent?.contractsMainForm.value;
 		input.mainData = new ContractsMainDataDto();
 		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectTypeId?.value;
@@ -1182,6 +1188,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				if (projectLineInput.differentInvoiceRecipient) {
 					projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
 					projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+					projectLineInput.invoiceRecipientAddressId = projectLine.invoiceRecipientAddressId;
+					projectLineInput.invoiceRecipientAddress = projectLine.invoiceRecipientAddress;
 				}
 				projectLineInput.modifiedById = projectLine.modifiedById;
 				projectLineInput.modifiedBy = projectLine.modifiedBy;
@@ -1191,7 +1199,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				projectLineInput.wasSynced = projectLine.wasSynced;
 				projectLineInput.isLineForFees = projectLine.isLineForFees;
 				projectLineInput.purchaseOrderId = projectLine.purchaseOrderId;
-
 				consultantData.projectLines.push(projectLineInput);
 			}
 		}
