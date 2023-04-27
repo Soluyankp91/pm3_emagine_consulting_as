@@ -90,7 +90,7 @@ export class EditorCoreService {
 		if (!readonly) {
 			if (this._initialised) return;
 			this._customizeRibbonPanel();
-			this._registerDocumentEvents();
+			this._registerDocumentEvents(!exportWithMergedData);
 			this._registerCustomEvents();
 			this._initCompareTab();
 			this._initComments();
@@ -156,7 +156,6 @@ export class EditorCoreService {
 	}
 
 	toggleFields(showResult: boolean = true) {
-		// let hasUnsavedChanges = this.editor.hasUnsavedChanges;
 		this.editor.history.beginTransaction();
 		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
 		if (showResult) {
@@ -263,11 +262,11 @@ export class EditorCoreService {
 		});
 	}
 
-	private _registerDocumentEvents() {
+	private _registerDocumentEvents(showFieldCodes: boolean = false) {
 		this.editor.events.documentLoaded.addHandler(() => {
 			this.afterViewInit$.next();
 			this.afterViewInit$.complete();
-			this.toggleFields();
+			this.toggleFields(showFieldCodes);
 			this.removeUnsavedChanges();
 			this.toggleHighlightView(!this.editor.readOnly);
 			this.editor.events.contentInserted.addHandler((s, e) => {
