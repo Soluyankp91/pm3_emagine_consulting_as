@@ -13,7 +13,7 @@ import { LoginGuard } from './app/login/login.guard';
             path: 'app',
             loadChildren: () => import('./app/app.module').then(m => m.AppModule),
             data: { preload: true },
-            canLoad: [MsalGuard]
+            canLoad: [MsalGuard],
         },
         {
             path: 'shared/clients',

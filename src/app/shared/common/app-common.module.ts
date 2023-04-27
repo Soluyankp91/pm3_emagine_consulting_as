@@ -9,7 +9,7 @@ import { FileUploaderComponent } from '../components/file-uploader/file-uploader
 import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-and-drop.directive';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
-import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
+import { ResponsiblePersonComponent } from '../components/responsible-person/responsible-person.component';
 import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
 import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show-if-truncated.directive';
 import { PreventDoubleClickDirective } from 'src/shared/common/directives/prevent-doubleClick.directive';
@@ -23,6 +23,8 @@ import { DisplayListPipe } from 'src/shared/common/pipes/display-array.pipe';
 import { environment } from 'src/environments/environment';
 import { ImgUrlPipe } from 'src/shared/common/pipes/image-fallback.pipe';
 import { TooltipModule } from './ui/tooltip/tooltip.module';
+import { ManagerMultiselectComponent } from '../components/manager-multiselect/manager-multiselect.component';
+import { EmgWidgetComponent } from '../components/emg-widget/emg-widget.component';
 
 @NgModule({
 	declarations: [
@@ -30,7 +32,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		FileDragAndDropDirective,
 		FileUploaderComponent,
 		ConfirmationDialogComponent,
-		ManagerSearchComponent,
+		ResponsiblePersonComponent,
 		MomentFormatPipe,
 		ShowIfTruncatedDirective,
 		PreventDoubleClickDirective,
@@ -40,7 +42,9 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		ExcludeIdsPipe,
 		ImageFallbackDirective,
 		ImgUrlPipe,
-		DisplayListPipe
+		DisplayListPipe,
+		ManagerMultiselectComponent,
+		EmgWidgetComponent,
 	],
 	imports: [
 		CommonModule,
@@ -50,7 +54,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgScrollbarModule,
 		ScrollToModule.forRoot(),
 		NgOptimizedImage,
-        TooltipModule
+		TooltipModule,
 	],
 	exports: [
 		MaterialModule,
@@ -60,7 +64,7 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		FileUploaderComponent,
 		ConfirmationDialogComponent,
 		NgScrollbarModule,
-		ManagerSearchComponent,
+		ResponsiblePersonComponent,
 		MomentFormatPipe,
 		ShowIfTruncatedDirective,
 		PreventDoubleClickDirective,
@@ -73,7 +77,9 @@ import { TooltipModule } from './ui/tooltip/tooltip.module';
 		NgOptimizedImage,
 		ImgUrlPipe,
 		DisplayListPipe,
-        TooltipModule,
+		TooltipModule,
+		ManagerMultiselectComponent,
+		EmgWidgetComponent,
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })

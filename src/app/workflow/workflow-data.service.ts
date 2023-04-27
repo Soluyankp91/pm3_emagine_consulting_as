@@ -7,6 +7,7 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { MatSelectChange } from '@angular/material/select';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +18,10 @@ export class WorkflowDataService {
     workflowSideSectionAdded = new EventEmitter<boolean>();
     // Start Clinet period
     startClientPeriodSalesSaved = new EventEmitter<boolean>();
+    contractStepSaved = new EventEmitter<{isDraft: boolean, bypassLegalValidation?: boolean}>();
+    salesStepSaved = new EventEmitter<boolean>();
+    financeStepSaved = new EventEmitter<boolean>();
+    sourcingStepSaved = new EventEmitter<boolean>();
     startClientPeriodContractsSaved = new EventEmitter<{isDraft: boolean, bypassLegalValidation?: boolean}>();
     startClientPeriodFinanceSaved = new EventEmitter<boolean>();
 
@@ -48,6 +53,7 @@ export class WorkflowDataService {
     cancelForceEdit =  new EventEmitter<any>();
     resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
     updatePurchaseOrders = new EventEmitter();
+    onDirectClientAddressSelected = new EventEmitter();
     isContractModuleEnabled: boolean;
 
     constructor(

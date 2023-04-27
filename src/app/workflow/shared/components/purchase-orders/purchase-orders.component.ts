@@ -2,8 +2,6 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
@@ -31,7 +29,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	poForm: PoForm;
 	eValueUnitType = EValueUnitTypes;
 	ePoCapType = PurchaseOrderCapType;
-	capTypes: { [key: string]: string };
+	purchaseOrderCapTypes: { [key: string]: string };
 	purchaseOrdersList: PurchaseOrderDto[];
 	ePurchaseOrderMode = EPurchaseOrderMode;
 	eCurrencies: { [key: number]: string };
@@ -41,7 +39,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
 		private _fb: UntypedFormBuilder,
-		private readonly _internalLookupService: InternalLookupService,
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy
 	) {
 		super(injector);
@@ -78,7 +75,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			.getPurchaseOrdersAvailableForClientPeriod(this.periodId ?? periodId, directClientId)
 			.subscribe((result) => {
 				this.purchaseOrdersList = result;
-                this.purchaseOrders.controls = [];
+				this.purchaseOrders.controls = [];
 				this._filterResponse(result, purchaseOrderIds);
 			});
 	}
@@ -87,10 +84,17 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		this.purchaseOrders.removeAt(orderIndex);
 	}
 
+	updatePOs(purchaseOrder: PurchaseOrderDto) {
+		const POtoUpdate = this.purchaseOrders.controls.find((x) => x.value.id === purchaseOrder.id);
+		if (POtoUpdate) {
+			POtoUpdate.patchValue(purchaseOrder);
+		}
+	}
+
 	private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
 		switch (this.mode) {
 			case EPurchaseOrderMode.WFOverview:
-				list.filter((item) => item.workflowsIdsReferencingThisPo.includes(this.workflowId)).forEach((order) => {
+				list.filter((item) => item.purchaseOrderCurrentContextData?.existsInThisWorkflow).forEach((order) => {
 					this._addPurchaseOrder(order);
 				});
 				break;
@@ -115,7 +119,15 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		formRow.get('modifiedBy').setValue(purchaseOrder?.modifiedBy, { emitEvent: false });
 		formRow.get('modifiedOnUtc').setValue(purchaseOrder?.modifiedOnUtc, { emitEvent: false });
 		formRow.get('workflowsIdsReferencingThisPo').setValue(purchaseOrder?.workflowsIdsReferencingThisPo, { emitEvent: false });
-		formRow.get('existsInAnotherWorkflow').setValue(purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow, { emitEvent: false });
+		formRow
+			.get('existsInAnotherWorkflow')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow, { emitEvent: false });
+		formRow
+			.get('isUserAllowedToEdit')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit, { emitEvent: false });
+        formRow
+			.get('purchaseOrderCurrentContextData')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData, { emitEvent: false });
 		const capForInvoicingForm = formRow.get('capForInvoicing') as UntypedFormGroup;
 		capForInvoicingForm.get('type').setValue(purchaseOrder?.capForInvoicing?.type, { emitEvent: false });
 		capForInvoicingForm
@@ -124,7 +136,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		capForInvoicingForm.get('maxAmount').setValue(purchaseOrder?.capForInvoicing?.maxAmount, { emitEvent: false });
 		capForInvoicingForm.get('currencyId').setValue(purchaseOrder?.capForInvoicing?.currencyId, { emitEvent: false });
 		capForInvoicingForm.get('amountUsed').setValue(purchaseOrder?.capForInvoicing?.amountUsed, { emitEvent: false });
-		capForInvoicingForm.get('isUserAllowedToEdit').setValue(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit, { emitEvent: false });
 	}
 
 	private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
@@ -149,19 +160,15 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			existsInAnotherWorkflow: new UntypedFormControl(
 				purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow
 			),
+			purchaseOrderCurrentContextData: new UntypedFormControl(purchaseOrder?.purchaseOrderCurrentContextData),
 		});
 		this.purchaseOrders.push(form);
 	}
 
 	private _getEnums() {
-		forkJoin({
-			capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-			currencies: this._internalLookupService.getCurrencies(),
-		}).subscribe((result) => {
-			this.capTypes = result.capTypes;
-			this.currencies = result.currencies;
-			this.eCurrencies = this.arrayToEnum(this.currencies);
-		});
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
 	}
 
 	get purchaseOrders(): UntypedFormArray {

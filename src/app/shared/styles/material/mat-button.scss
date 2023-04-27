@@ -47,6 +47,7 @@
     font-weight: 700;
     padding-left: 0px !important;
     font-size: 14px;
+    line-height: 40px !important;
     .mat-button-wrapper {
         display: flex;
         align-items: center;
@@ -511,5 +512,22 @@
     &--text {
         color: $green-color;
         @include fontOpenSans(12px, 700);
+    }
+}
+
+.login-btn {
+    height: 39px !important;
+    padding: 0 24px !important;
+    border-radius: 100px !important;
+    .mat-button-wrapper {
+        font-family: 'Avenir' !important;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 19px;
+        color: $white-color;
+        mat-icon svg {
+            width: 20px;
+            height: 20px;
+        }
     }
 }

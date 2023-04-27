@@ -1,0 +1,53 @@
+@font-face {
+    font-family: "Avenir";
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Medium";
+    src: url("avenir-next-medium.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Avenir";
+    font-weight: normal;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Regular";
+    src: url("avenir-next-regular.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Avenir";
+    font-weight: 300;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Light";
+    src: url("avenir-next-light.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Avenir";
+    font-weight: bold;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Bold";
+    src: url("avenir-next-bold.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Avenir";
+    font-weight: 900;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Demi";
+    src: url("avenir-next-demi.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Avenir";
+    font-weight: 600;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Demi";
+    src: url("avenir-next-demi.woff2") format("woff2");
+}

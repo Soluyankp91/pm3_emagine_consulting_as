@@ -108,16 +108,11 @@
                             </ng-container>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-checkbox color="accent" name="differentInvoiceRecipient"
-                        formControlName="differentInvoiceRecipient" class="black-checkbox"
-                        (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
-                        Different invoice recipient
-                    </mat-checkbox>
                     <mat-form-field appearance="outline" [ngClass]="{'is-empty': !projectLineForm.invoiceRecipientAddress.value}"
                         class="formFieldNoMarginPadding filter-select form-width-350 client-address-autocomplete">
                         <mat-label>Client address</mat-label>
                         <mat-select formControlName="invoiceRecipientAddress"
-                            [disableOptionCentering]="true" placeholder="Direct client address" [compareWith]="compareWithFn" required>
+                            [disableOptionCentering]="true" placeholder="Direct client address" [compareWith]="compareWithFn">
                             <mat-select-trigger>
                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                     <span class="multilineDropdown-option--column-client-name">
@@ -140,6 +135,11 @@
                             </ng-container>
                         </mat-select>
                     </mat-form-field>
+                    <mat-checkbox color="accent" name="differentInvoiceRecipient"
+                        formControlName="differentInvoiceRecipient" class="black-checkbox"
+                        (change)="toggleDIsabledStateForInvoicing(!projectLineForm.differentInvoiceRecipient!.value)">
+                        Different invoice recipient
+                    </mat-checkbox>
                     <mat-form-field appearance="outline" class="form-width-340 u-mt--10 formFieldNoMarginPadding">
                         <mat-label>Debitor number</mat-label>
                         <input matInput type="text" formControlName="debtorNumber">

@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,23 +7,20 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { merge, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { merge, Subject, Subscription } from 'rxjs';
+import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
-	EmployeeDto,
 	EmployeeServiceProxy,
 	EnumEntityTypeDto,
 	LegalEntityDto,
-	LookupServiceProxy,
 	StartNewWorkflowInputDto,
 	SyncStateStatus,
-	WorkflowAlreadyExistsDto,
 	WorkflowListItemDto,
 	WorkflowProcessType,
 	WorkflowServiceProxy,
@@ -32,9 +29,8 @@ import {
 	WorkflowStepStatus,
 } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
-import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
+import { ManagerStatus } from '../shared/components/responsible-person/responsible-person.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { WorkflowDataService } from './workflow-data.service';
 import {
@@ -46,6 +42,7 @@ import {
 	SelectableEmployeeDto,
 	StepTypes,
 	SyncStatusIcon,
+	WorkflowSourcingCreate,
 	WorkflowStatusMenuList,
 } from './workflow.model';
 
@@ -114,7 +111,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	isAdvancedFilters = false;
 	showOnlyWorkflowsWithNewSales = false;
 	showOnlyWorkflowsWithExtensions = false;
-    showPONumberMissing = false;
+	showPONumberMissing = false;
 	showPendingSteps = false;
 	showUpcomingSteps = false;
 	includeTerminated = false;
@@ -151,17 +148,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _workflowService: WorkflowServiceProxy,
 		private overlay: Overlay,
 		private dialog: MatDialog,
-		private _internalLookupService: InternalLookupService,
-		private _lookupService: LookupServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
 		private _activatedRoute: ActivatedRoute,
-        private _workflowDataService: WorkflowDataService,
-        private _titleService: TitleService
+		private _workflowDataService: WorkflowDataService,
+		private _titleService: TitleService,
 	) {
 		super(injector);
 
 		this._activatedRoute.data.pipe(takeUntil(this._unsubscribe)).subscribe((source) => {
-			let data = source['data'];
+			let data: WorkflowSourcingCreate = source['data'];
 			if (data?.existingWorkflowId) {
 				this.navigateToWorkflowDetails(data?.existingWorkflowId);
 			} else if (data?.requestId && data?.requestConsultantId) {
@@ -182,52 +177,17 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				this.updateAdvancedFiltersCounter();
 				this.getWorkflowList(true);
 			});
-
-		this.accountManagerFilter.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(500),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
-						showAll: true,
-						excludeIds: this.selectedAccountManagers.map((x) => +x.id),
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.name : value;
-					}
-					this.isLoading = true;
-					return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredAccountManagers = list.map((x) => {
-						return new SelectableEmployeeDto({
-							id: x.id!,
-							name: x.name!,
-							externalId: x.externalId!,
-							selected: false,
-						});
-					});
-				} else {
-					this.filteredAccountManagers = [
-						{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
-					];
-				}
-				this.isLoading = false;
-			});
 	}
 
 	ngOnInit(): void {
-        this._titleService.setTitle(ERouteTitleType.WfList);
-		this.getSyncStateStatuses();
+		this._titleService.setTitle(ERouteTitleType.WfList);
+		this._getEnums();
 		this.getCurrentUser();
-		this.getLegalEntities();
-		this.getSalesType();
-		this.getDeliveryTypes();
-		this.getWorkflowStatuses();
+	}
+
+	managersChanged(event: SelectableEmployeeDto[]) {
+		this.selectedAccountManagers = event;
+		this.getWorkflowList(true);
 	}
 
 	ngOnDestroy(): void {
@@ -242,7 +202,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.salesTypeControl.value,
 			this.deliveryTypesControl.value,
 			this.workflowStatusControl.value,
-            this.showPONumberMissing
+			this.showPONumberMissing
 		).filter((item) => item !== null && item !== undefined && item).length;
 	}
 
@@ -260,7 +220,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			syncStateStatus: this.selectedSyncStateStatuses,
 			showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
 			showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
-            showPONumberMissing: this.showPONumberMissing,
+			showPONumberMissing: this.showPONumberMissing,
 			showPendingSteps: this.showPendingSteps,
 			pendingStepType: this.pendingStepType,
 			showUpcomingSteps: this.showUpcomingSteps,
@@ -287,7 +247,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.invoicingEntityControl.setValue(filters.invoicingEntity, { emitEvent: false });
 			this.showOnlyWorkflowsWithNewSales = filters.showOnlyWorkflowsWithNewSales;
 			this.showOnlyWorkflowsWithExtensions = filters.showOnlyWorkflowsWithExtensions;
-            this.showPONumberMissing = filters.showPONumberMissing;
+			this.showPONumberMissing = filters.showPONumberMissing;
 			this.showPendingSteps = filters.showPendingSteps;
 			this.pendingStepType = filters.pendingStepType;
 			this.showUpcomingSteps = filters.showUpcomingSteps;
@@ -423,61 +383,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe(() => this.getWorkflowList());
 	}
 
-	getFlagColor(flag: number): string {
-		switch (flag) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-				return 'workflow-flag--sales';
-			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				return 'workflow-flag--extension';
-			default:
-				return '';
-		}
-	}
-
-	mapFlagTooltip(flag: number): string {
-		switch (flag) {
-			case WorkflowProcessType.StartClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-				return 'New Sales';
-			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
-				return 'Has Extension';
-			default:
-				return '';
-		}
-	}
-
-	getLegalEntities() {
-		this._internalLookupService.getLegalEntities().subscribe((result) => {
-			this.legalEntities = result;
-		});
-	}
-
-	getSalesType() {
-		this._internalLookupService.getSaleTypes().subscribe((result) => {
-			this.saleTypes = result;
-		});
-	}
-
-	getDeliveryTypes() {
-		this._internalLookupService.getDeliveryTypes().subscribe((result) => {
-			this.deliveryTypes = result;
-		});
-	}
-
-	getWorkflowStatuses() {
-		this._internalLookupService.getWorkflowStatuses().subscribe((result) => {
-			this.workflowStatuses = result;
-		});
-	}
-	getSyncStateStatuses() {
-		this._internalLookupService.getSyncStateStatuses().subscribe((result) => {
-			this.syncStateStatuses = this.toArray(result);
-		});
-	}
-
 	getWorkflowList(filterChanged?: boolean) {
 		let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
 		let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
@@ -556,10 +461,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-    openPeriod(workflowId: string, processId: string) {
-        this.router.navigateByUrl(`/app/workflow/${workflowId}/${processId}`)
-    }
-
 	pageChanged(event?: any): void {
 		this.pageNumber = event.pageIndex + 1;
 		this.deafultPageSize = event.pageSize;
@@ -583,7 +484,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			}
 			dedicatedColumn.order = event.direction !== '' ? order : null;
 		}
-        this.sortingValuesArray = this._workflowDataService.sortMultiColumnSorting(this.sortingValuesArray);
+		this.sortingValuesArray = this._workflowDataService.sortMultiColumnSorting(this.sortingValuesArray);
 		let sorting = this.sortingValuesArray
 			.map((item) => {
 				if (item.order !== null) {
@@ -596,25 +497,25 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.getWorkflowList();
 	}
 
-    resetSorting() {
-        this.sortingValues = {
-            WorkflowId: '',
-            clientName: '',
-            SalesTypeId: '',
-            DeliveryTypeId: '',
-            StartDate: '',
-            ActualEndDate: '',
-            ConsultantName: '',
-            WorkflowStatus: '',
-            startDateOfOpenedPeriodOrLastClientPeriod: '',
-            syncStateStatus: '',
-        };
-        this.sortingValuesArray = Object.keys(this.sortingValues).map((k) => {
-            return { column: k, order: null, direction: '' };
-        });
-        this.sorting = '';
-        this.getWorkflowList();
-    }
+	resetSorting() {
+		this.sortingValues = {
+			WorkflowId: '',
+			clientName: '',
+			SalesTypeId: '',
+			DeliveryTypeId: '',
+			StartDate: '',
+			ActualEndDate: '',
+			ConsultantName: '',
+			WorkflowStatus: '',
+			startDateOfOpenedPeriodOrLastClientPeriod: '',
+			syncStateStatus: '',
+		};
+		this.sortingValuesArray = Object.keys(this.sortingValues).map((k) => {
+			return { column: k, order: null, direction: '' };
+		});
+		this.sorting = '';
+		this.getWorkflowList();
+	}
 
 	optionClicked(
 		event: Event,
@@ -687,7 +588,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.workflowStatusControl.setValue(null, { emitEvent: false });
 		this.showOnlyWorkflowsWithNewSales = false;
 		this.showOnlyWorkflowsWithExtensions = false;
-        this.showPONumberMissing = false;
+		this.showPONumberMissing = false;
 		this.pendingStepType = null;
 		this.showPendingSteps = false;
 		this.upcomingStepType = null;
@@ -698,20 +599,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.syncStateStatuses.forEach((x) => (x.selected = false));
 		localStorage.removeItem(WorkflowGridOptionsKey);
 		this.getCurrentUser();
-	}
-
-	openMenu(event: any) {
-		event.stopPropagation();
-		this.trigger.openPanel();
-	}
-
-	onOpenedMenu() {
-		this.accountManagerFilter.setValue('');
-		this.accountManagerFilter.markAsTouched();
-	}
-
-	displayNameFn(option: any) {
-		return option?.name;
 	}
 
 	syncStatusFilterControl(item: ISelectableIdNameDto) {
@@ -729,35 +616,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		event.stopPropagation();
 		this.syncStatusFilterControl(item);
 	}
-}
 
-export class WorkflowSourcingCreate {
-	public requestId: number;
-	public requestConsultantId: number;
-	public existingWorkflowId: string | undefined;
-
-	constructor(requestId: number, requestConsultantId: number, existingWorkflowId: string | undefined) {
-		this.requestId = requestId;
-		this.requestConsultantId = requestConsultantId;
-		this.existingWorkflowId = existingWorkflowId;
-	}
-}
-
-@Injectable()
-export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
-	constructor(private _workflowService: WorkflowServiceProxy) {}
-
-	resolve(route: ActivatedRouteSnapshot): Observable<WorkflowSourcingCreate> {
-		let requestId = route.queryParams['requestId'];
-		let requestConsultantId = route.queryParams['requestConsultantId'];
-		return this._workflowService.workflowExists(requestConsultantId).pipe(
-			map((value: WorkflowAlreadyExistsDto) => {
-				return {
-					requestId: requestId,
-					requestConsultantId: requestConsultantId,
-					existingWorkflowId: value?.existingWorkflowId,
-				};
-			})
-		);
+	private _getEnums() {
+		this.legalEntities = this.getStaticEnumValue('legalEntities');
+		this.saleTypes = this.getStaticEnumValue('saleTypes');
+		this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+		this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
+		this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
 	}
 }

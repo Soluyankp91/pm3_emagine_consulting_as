@@ -17,7 +17,7 @@
         h1 {
             @include fontOpenSans(26px, 800);
             color: #4A4E60;
-            line-height: 120%;
+            line-height: 120% !important;
         }
     }
 

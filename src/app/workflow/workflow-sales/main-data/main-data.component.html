@@ -33,26 +33,7 @@
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                     <h1 class="workflow-section--header-main">Main data</h1>
                     <ng-container *ngIf="readOnlyMode">
-                        <div fxLayout="row" fxLayoutAlign="start start">
-                            <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" (editModeToggled)="toggleEditMode()"></toggle-edit-mode>
-                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();"
-                                type="button" [matMenuTriggerFor]="returnToSalesMenu"
-                                class="three-dots-actions-btn contract-manager-action">
-                                <mat-icon svgIcon="3-dots"></mat-icon>
-                            </button>
-                            <mat-menu #returnToSalesMenu>
-                                <div class="u-w--100 u-h--100"
-                                    [matTooltip]="permissionsForCurrentUser!['Reopen'] ? '' : 'Not available after the Contracts step has been completed'"
-                                    matTooltipClass="white-tooltip">
-                                    <button class="menu-item menu-item--edit contract-manager-action" mat-menu-item
-                                        [disabled]="!permissionsForCurrentUser!['Reopen']" appPreventDoubleClick
-                                        (throttledClick)="returnToSales()">
-                                        <mat-icon svgIcon="return-icon"></mat-icon>
-                                        Return to Sales
-                                    </button>
-                                </div>
-                            </mat-menu>
-                        </div>
+                        <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" [canReopen]="permissionsForCurrentUser!['Reopen']" [showReturnToSales]="true" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></toggle-edit-mode>
                     </ng-container>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16" id="salesMainProject">
@@ -302,7 +283,7 @@
                                                 (selectionChange)="commissionRecipientTypeChanged(i)"
                                                 [compareWith]="compareWithFn">
                                                 <ng-container
-                                                    *ngFor="let item of commissionRecipientTypeList; trackBy: trackById">
+                                                    *ngFor="let item of commissionRecipientTypes; trackBy: trackById">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -631,7 +612,7 @@
                                 <mat-option [value]="999">
                                     Manual date
                                 </mat-option>
-                                <ng-container *ngFor="let item of contractExpirationNotificationDuration | keyvalue">
+                                <ng-container *ngFor="let item of contractExpirationNotificationInterval | keyvalue">
                                     <mat-option [value]="+item.key">
                                         {{ item.value }}
                                     </mat-option>
@@ -661,7 +642,7 @@
                         <input [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
                             matInput [matAutocomplete]="primarySourcerAutocomplete"
                             formControlName="primarySourcer" appPreventDoubleClick
-                            (throttledClick)="$event.stopPropagation()" placeholder="Select priamry sourcer">
+                            (throttledClick)="$event.stopPropagation()" placeholder="Select primary sourcer">
                             <span matSuffix class="shevron"></span>
                         <mat-autocomplete #primarySourcerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                             (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"

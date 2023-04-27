@@ -1,9 +1,8 @@
 import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	ClientPeriodContractsDataCommandDto,
@@ -45,8 +44,9 @@ import {
 import {} from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { EmploymentTypes } from '../workflow.model';
+import { ERateType, EmploymentTypes } from '../workflow.model';
 import { ContractsClientDataComponent } from './contracts-client-data/contracts-client-data.component';
 import { ContractsConsultantDataComponent } from './contracts-consultant-data/contracts-consultant-data.component';
 import { ContractsMainDataComponent } from './contracts-main-data/contracts-main-data.component';
@@ -91,10 +91,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	projectTypes: EnumEntityTypeDto[] = [];
 	margins: EnumEntityTypeDto[] = [];
 	clientTimeReportingCap: EnumEntityTypeDto[] = [];
-	clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
-	clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
+	specialRateReportUnits: EnumEntityTypeDto[] = [];
+	specialFeeFrequencies: EnumEntityTypeDto[] = [];
 	employmentTypes: EnumEntityTypeDto[] = [];
-	consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+	consultantTimeReportingCap: EnumEntityTypeDto[] = [];
 	rateUnitTypes: EnumEntityTypeDto[] = [];
 	legalContractStatuses: { [key: string]: string };
 	consultantInsuranceOptions: { [key: string]: string };
@@ -125,7 +125,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _fb: UntypedFormBuilder,
 		private _clientPeriodService: ClientPeriodServiceProxy,
 		private _workflowDataService: WorkflowDataService,
-		private _internalLookupService: InternalLookupService,
 		private _workflowServiceProxy: WorkflowServiceProxy,
 		private _consultantPeriodService: ConsultantPeriodServiceProxy,
 		private _clientService: ClientsServiceProxy,
@@ -139,8 +138,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
 		this._workflowDataService.updatePurchaseOrders
 			.pipe(takeUntil(this._unsubscribe))
-			.subscribe(() =>
-				this.clientDataComponent.poComponent.getPurchaseOrders(this.purchaseOrderIds, this.directClientId, this.periodId)
+			.subscribe((result: PurchaseOrderDto) =>
+				this.clientDataComponent.poComponent.updatePOs(result)
 			);
 	}
 
@@ -151,69 +150,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			currentStepIsCompleted: this.isCompleted,
 			currentStepIsForcefullyEditing: false,
 		});
-		if (this.permissionsForCurrentUser!['StartEdit']) {
+		if (this.permissionsForCurrentUser![EPermissions.StartEdit]) {
 			this.startEditContractStep();
 		} else {
 			this.getContractStepData();
 		}
 
-		// Client start, extend and change periods
-		this._workflowDataService.startClientPeriodContractsSaved
+		this._workflowDataService.contractStepSaved
 			.pipe(takeUntil(this._unsubscribe))
 			.subscribe((value: { isDraft: boolean; bypassLegalValidation?: boolean | undefined }) => {
 				this.bypassLegalValidation = value.bypassLegalValidation!;
 				if (value.isDraft && !this.editEnabledForcefuly) {
-					this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
+					this.saveContractStepData(value.isDraft);
 				} else {
 					if (this.validateContractForm()) {
-						this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
+						this.saveContractStepData(value.isDraft);
 					} else {
 						this.scrollToFirstError(value.isDraft);
-					}
-				}
-			});
-
-		// Consultant start, extend and change periods
-		this._workflowDataService.consultantStartChangeOrExtendContractsSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((value: { isDraft: boolean; bypassLegalValidation?: boolean | undefined }) => {
-				this.bypassLegalValidation = value.bypassLegalValidation!;
-				if (value.isDraft && !this.editEnabledForcefuly) {
-					this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
-				} else {
-					if (this.validateContractForm()) {
-						this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
-					} else {
-						this.scrollToFirstError(value.isDraft);
-					}
-				}
-			});
-
-		// Terminations
-		this._workflowDataService.workflowConsultantTerminationContractsSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveTerminationConsultantContractStep(isDraft);
-				} else {
-					if (this.validateContractForm()) {
-						this.saveTerminationConsultantContractStep(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
-
-		this._workflowDataService.workflowTerminationContractsSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveWorkflowTerminationContractStep(isDraft);
-				} else {
-					if (this.validateContractForm()) {
-						this.saveWorkflowTerminationContractStep(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
 					}
 				}
 			});
@@ -407,39 +360,21 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
-			clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
-			discounts: this._internalLookupService.getDiscounts(),
-			deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-			saleTypes: this._internalLookupService.getSaleTypes(),
-			projectTypes: this._internalLookupService.getProjectTypes(),
-			margins: this._internalLookupService.getMargins(),
-			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-			employmentTypes: this._internalLookupService.getEmploymentTypes(),
-			consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-			rateUnitTypes: this._internalLookupService.getUnitTypes(),
-			legalContractStatuses: this._internalLookupService.getLegalContractStatuses(),
-			consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-			projectCategories: this._internalLookupService.getProjectCategory(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
-			this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
-			this.discounts = result.discounts;
-			this.deliveryTypes = result.deliveryTypes;
-			this.saleTypes = result.saleTypes;
-			this.projectTypes = result.projectTypes;
-			this.margins = result.margins;
-			this.clientTimeReportingCap = result.clientTimeReportingCap;
-			this.employmentTypes = result.employmentTypes;
-			this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-			this.rateUnitTypes = result.rateUnitTypes;
-			this.legalContractStatuses = result.legalContractStatuses;
-			this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-			this.projectCategories = result.projectCategories;
-		});
+		this.currencies = this.getStaticEnumValue('currencies');
+		this.specialRateReportUnits = this.getStaticEnumValue('specialRateReportUnits');
+		this.specialFeeFrequencies = this.getStaticEnumValue('specialFeeFrequencies');
+		this.discounts = this.getStaticEnumValue('discounts');
+		this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+		this.saleTypes = this.getStaticEnumValue('saleTypes');
+		this.projectTypes = this.getStaticEnumValue('projectTypes');
+		this.margins = this.getStaticEnumValue('margins');
+		this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
+		this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+		this.consultantTimeReportingCap = this.getStaticEnumValue('consultantTimeReportingCap');
+		this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+		this.legalContractStatuses = this.getStaticEnumValue('legalContractStatuses');
+		this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
+		this.projectCategories = this.getStaticEnumValue('projectCategories');
 	}
 
 	toggleEditMode(isToggledFromUi?: boolean) {
@@ -456,10 +391,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	updateConsultantStepAnchors() {
 		let consultantNames = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.value.map((item: any) => {
-			if (item.consultantType?.id === EmploymentTypes.FeeOnly || item.consultantType?.id === EmploymentTypes.Recruitment) {
-				return { employmentType: item.consultantType?.id, name: item.nameOnly };
+			if (item.employmentTypeId === EmploymentTypes.FeeOnly || item.employmentTypeId === EmploymentTypes.Recruitment) {
+				return { employmentType: item.employmentTypeId, name: item.nameOnly };
 			} else {
-				return { employmentType: item.consultantType?.id, name: item.consultant?.name };
+				return { employmentType: item.employmentTypeId, name: item.consultant?.name };
 			}
 		});
 		this._workflowDataService.consultantsAddedToStep.emit({
@@ -865,36 +800,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.resetForms();
 		if (data?.mainData !== undefined) {
 			this.mainDataComponent?.contractsMainForm.patchValue(data?.mainData, { emitEvent: false });
-			this.mainDataComponent?.contractsMainForm.salesType?.setValue(
-				this.findItemById(this.saleTypes, data.mainData.salesTypeId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(
-				this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.discounts?.setValue(
-				this.findItemById(this.discounts, data.mainData.discountId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.projectType?.setValue(
-				this.findItemById(this.projectTypes, data.mainData.projectTypeId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data.mainData.marginId), {
-				emitEvent: false,
-			});
-			if (data.mainData.noRemarks) {
-				this.mainDataComponent?.contractsMainForm.remarks?.disable();
-			}
+			this.mainDataComponent?.contractsMainForm.salesTypeId?.setValue(data.mainData.salesTypeId,{emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.deliveryTypeId?.setValue(data.mainData.deliveryTypeId,{emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.discountId?.setValue(data.mainData.discountId, {emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.projectTypeId?.setValue(data.mainData.projectTypeId, {emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.marginId?.setValue(data.mainData.marginId, {emitEvent: false});
+			data.mainData.noRemarks
+				? this.mainDataComponent?.contractsMainForm.remarks?.disable()
+				: this.mainDataComponent?.contractsMainForm.remarks?.enable();
 			if (data?.workflowDocuments?.length) {
 				this.mainDataComponent.mainDocuments?.addExistingFile(data.workflowDocuments);
 			}
@@ -906,24 +819,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 					this.clientDataComponent.addTimeReportingCap(cap);
 				}
 			}
-			this.clientDataComponent?.contractClientForm.rateUnitType?.setValue(
-				this.findItemById(this.rateUnitTypes, data.clientData.clientRate?.rateUnitTypeId),
-				{ emitEvent: false }
-			);
-			this.clientDataComponent?.contractClientForm.currency?.setValue(
-				this.findItemById(this.currencies, data.clientData.clientRate?.currencyId),
-				{ emitEvent: false }
-			);
+			this.clientDataComponent?.contractClientForm.rateUnitTypeId?.setValue(data.clientData.clientRate?.rateUnitTypeId, {emitEvent: false });
+			this.clientDataComponent?.contractClientForm.currencyId?.setValue( data.clientData.clientRate?.currencyId, { emitEvent: false });
 			this.clientDataComponent?.contractClientForm.normalRate?.setValue(data.clientData.clientRate?.normalRate, {
 				emitEvent: false,
 			});
-			let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+			let clientRateType = ERateType.TimeBased; // default value is 'Time based'
 			if (data.clientData?.clientRate?.isFixedRate) {
-				clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+				clientRateType = ERateType.Fixed;
 			} else if (data.clientData?.clientRate?.isTimeBasedRate) {
-				clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+				clientRateType = ERateType.TimeBased;
 			}
-			this.clientDataComponent?.contractClientForm.clientRateType?.setValue(clientRateType, {
+			this.clientDataComponent?.contractClientForm.clientRateTypeId?.setValue(clientRateType, {
 				emitEVent: false,
 			});
 			this.clientDataComponent?.contractClientForm.invoiceCurrencyId?.setValue(
@@ -995,7 +902,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
 				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
-				this.consultantDataComponent.selectedFrameAgreementList.push(consultant.frameAgreementId ?? null);
+				this.consultantDataComponent.selectedFrameAgreementList[index] = consultant.frameAgreementId ?? null;
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();
@@ -1008,7 +915,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
 		let input = new ClientPeriodContractsDataCommandDto();
-		input.bypassLegalValidation = this.bypassLegalValidation;
+        // FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
+		// input.bypassLegalValidation = this.bypassLegalValidation;
+        input.bypassLegalValidation = true;
+        // FIXME: temporary fix
 		input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
 		if (this.mainDataComponent.mainDocuments.documents.value?.length) {
 			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
@@ -1041,7 +951,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				clientSpecialRate.rateName = specialRate.rateName;
 				clientSpecialRate.reportingUnit = specialRate.reportingUnit;
 				clientSpecialRate.clientRate = specialRate.clientRateValue;
-				clientSpecialRate.clientRateCurrencyId = specialRate.clientRateCurrency?.id;
+				clientSpecialRate.clientRateCurrencyId = specialRate.clientRateCurrencyId;
 				input.clientData.periodClientSpecialRates.push(clientSpecialRate);
 			}
 		}
@@ -1055,7 +965,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				clientSpecialFee.feeName = specialFee.feeName;
 				clientSpecialFee.frequency = specialFee.feeFrequency;
 				clientSpecialFee.clientRate = specialFee.clientRateValue;
-				clientSpecialFee.clientRateCurrencyId = specialFee.clientRateCurrency?.id;
+				clientSpecialFee.clientRateCurrencyId = specialFee.clientRateCurrencyId;
 				input.clientData.periodClientSpecialFees.push(clientSpecialFee);
 			}
 		}
@@ -1067,11 +977,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		input.mainData = new ContractsMainDataDto();
 		input.mainData.projectDescription = this.mainDataComponent?.contractsMainForm.projectDescription?.value;
 		input.mainData.projectName = this.mainDataComponent?.contractsMainForm.projectName?.value;
-		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectType?.value?.id;
-		input.mainData.salesTypeId = this.mainDataComponent?.contractsMainForm.salesType?.value?.id;
-		input.mainData.deliveryTypeId = this.mainDataComponent?.contractsMainForm.deliveryType?.value?.id;
-		input.mainData.marginId = this.mainDataComponent?.contractsMainForm.margin?.value?.id;
-		input.mainData.discountId = this.mainDataComponent?.contractsMainForm.discounts?.value?.id;
+		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectTypeId?.value;
+		input.mainData.salesTypeId = this.mainDataComponent?.contractsMainForm.salesTypeId?.value;
+		input.mainData.deliveryTypeId = this.mainDataComponent?.contractsMainForm.deliveryTypeId?.value;
+		input.mainData.marginId = this.mainDataComponent?.contractsMainForm.marginId?.value;
+		input.mainData.discountId = this.mainDataComponent?.contractsMainForm.discountId?.value;
 		input.mainData.remarks = this.mainDataComponent?.contractsMainForm.remarks?.value;
 		input.mainData.noRemarks = this.mainDataComponent?.contractsMainForm.noRemarks?.value;
 
@@ -1088,36 +998,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.resetForms();
 		if (data?.mainData !== undefined) {
 			this.mainDataComponent?.contractsMainForm.patchValue(data, { emitEvent: false });
-			this.mainDataComponent?.contractsMainForm.salesType?.setValue(
-				this.findItemById(this.saleTypes, data?.mainData?.salesTypeId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.deliveryType?.setValue(
-				this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.projectType?.setValue(
-				this.findItemById(this.projectTypes, data?.mainData?.projectTypeId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.margin?.setValue(
-				this.findItemById(this.margins, data?.mainData?.marginId),
-				{
-					emitEvent: false,
-				}
-			);
-			this.mainDataComponent?.contractsMainForm.discounts?.setValue(
-				this.findItemById(this.discounts, data?.mainData?.discountId),
-				{
-					emitEvent: false,
-				}
-			);
+			this.mainDataComponent?.contractsMainForm.salesTypeId?.setValue(data?.mainData?.salesTypeId,{emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.deliveryTypeId?.setValue(data?.mainData?.deliveryTypeId,{emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.projectTypeId?.setValue( data?.mainData?.projectTypeId, {emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.marginId?.setValue(data?.mainData?.marginId, {emitEvent: false});
+			this.mainDataComponent?.contractsMainForm.discountId?.setValue(data?.mainData?.discountId, {emitEvent: false});
 			if (data?.noRemarks) {
 				this.mainDataComponent?.contractsMainForm.remarks?.disable();
 			}
@@ -1133,14 +1018,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
 		let input = new ConsultantPeriodContractsDataCommandDto();
-		input.bypassLegalValidation = this.bypassLegalValidation;
+		// FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
+		// input.bypassLegalValidation = this.bypassLegalValidation;
+        input.bypassLegalValidation = true;
+        // FIXME: temporary fix
 		input = this.mainDataComponent?.contractsMainForm.value;
 		input.mainData = new ContractsMainDataDto();
-		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectType?.value?.id;
-		input.mainData.salesTypeId = this.mainDataComponent?.contractsMainForm.salesType?.value?.id;
-		input.mainData.deliveryTypeId = this.mainDataComponent?.contractsMainForm.deliveryType?.value?.id;
-		input.mainData.marginId = this.mainDataComponent?.contractsMainForm.margin?.value?.id;
-		input.mainData.discountId = this.mainDataComponent?.contractsMainForm.discounts?.value?.id;
+		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectTypeId?.value;
+		input.mainData.salesTypeId = this.mainDataComponent?.contractsMainForm.salesTypeId?.value;
+		input.mainData.deliveryTypeId = this.mainDataComponent?.contractsMainForm.deliveryTypeId?.value;
+		input.mainData.marginId = this.mainDataComponent?.contractsMainForm.marginId?.value;
+		input.mainData.discountId = this.mainDataComponent?.contractsMainForm.discountId?.value;
 
 		input.consultantData = new ConsultantContractsDataCommandDto();
 		const consultantInput = this.consultantDataComponent?.contractsConsultantsDataForm.consultants.at(0).value;
@@ -1220,7 +1108,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	private _packConsultantFormData(consultantInput: any): ConsultantContractsDataCommandDto {
 		let consultantData = new ConsultantContractsDataCommandDto();
 		consultantData.consultantPeriodId = consultantInput.consultantPeriodId;
-		consultantData.employmentTypeId = consultantInput.consultantType?.id;
+		consultantData.employmentTypeId = consultantInput.employmentTypeId;
 		consultantData.consultantId = consultantInput.consultantId;
 		consultantData.nameOnly = consultantInput.nameOnly;
 		consultantData.consultantTimeReportingCapId = consultantInput.consultantTimeReportingCapId;
@@ -1247,8 +1135,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				consultantFee.frequency = specialFee.feeFrequency;
 				consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
 				consultantFee.consultantRate = specialFee.consultantRateValue;
-				consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
-				consultantFee.consultantRateCurrencyId = specialFee.consultantRateCurrency?.id;
+				consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrencyId;
+				consultantFee.consultantRateCurrencyId = specialFee.consultantRateCurrencyId;
 				consultantData.periodConsultantSpecialFees.push(consultantFee);
 			}
 		}
@@ -1263,8 +1151,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				consultantRate.reportingUnit = specialRate.reportingUnit;
 				consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
 				consultantRate.consultantRate = specialRate.consultantRateValue;
-				consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
-				consultantRate.consultantRateCurrencyId = specialRate.consultantRateCurrency?.id;
+				consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrencyId;
+				consultantRate.consultantRateCurrencyId = specialRate.consultantRateCurrencyId;
 				consultantData.periodConsultantSpecialRates.push(consultantRate);
 			}
 		}
@@ -1300,6 +1188,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				if (projectLineInput.differentInvoiceRecipient) {
 					projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
 					projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+					projectLineInput.invoiceRecipientAddressId = projectLine.invoiceRecipientAddressId;
+					projectLineInput.invoiceRecipientAddress = projectLine.invoiceRecipientAddress;
 				}
 				projectLineInput.modifiedById = projectLine.modifiedById;
 				projectLineInput.modifiedBy = projectLine.modifiedBy;
@@ -1309,7 +1199,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				projectLineInput.wasSynced = projectLine.wasSynced;
 				projectLineInput.isLineForFees = projectLine.isLineForFees;
 				projectLineInput.purchaseOrderId = projectLine.purchaseOrderId;
-
 				consultantData.projectLines.push(projectLineInput);
 			}
 		}
@@ -1331,7 +1220,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	}
 
 	get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
+		return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
 	}
 
 	get readOnlyMode() {

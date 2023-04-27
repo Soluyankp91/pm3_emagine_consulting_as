@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppCommonModule } from './shared/common/app-common.module';
@@ -34,6 +33,7 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1; // Remove this line to use Angular Universal
 
@@ -97,6 +97,7 @@ export function getRemoteServiceBaseUrl(): string {
 		ServiceProxyModule,
 		MsalModule,
 		NgxSpinnerModule,
+		!environment.production ? StoreDevtoolsModule.instrument() : [],
 	],
 	providers: [
 		LoginGuard,
@@ -552,14 +553,6 @@ export class AppModule {
 			'chevron-green-big',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-green-big.svg')
 		);
-		iconRegistry.addSvgIcon(
-			'login-top-vector',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/logn-top-vector.svg')
-		);
-		iconRegistry.addSvgIcon(
-			'login-bottom-vector',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/logn-bottom-vector.svg')
-		);
 		iconRegistry.addSvgIcon('login-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-logo.svg'));
 		iconRegistry.addSvgIcon(
 			'dedicated-icon',
@@ -602,5 +595,10 @@ export class AppModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/chevron-green-big.svg')
 		);
 		iconRegistry.addSvgIcon('home-logo', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/menu/home-logo.svg'));
+		iconRegistry.addSvgIcon(
+			'login-PM-logo',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-PM-logo.svg')
+		);
+		iconRegistry.addSvgIcon('approved', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approve.svg'));
 	}
 }

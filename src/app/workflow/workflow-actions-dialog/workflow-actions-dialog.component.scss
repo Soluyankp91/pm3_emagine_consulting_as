@@ -17,12 +17,12 @@
         h1 {
             @include fontOpenSans(30px, 800);
             color: #4A4E60;
-            line-height: 120%;
+            line-height: 120% !important;
         }
     }
     &--label {
         @include fontOpenSans(12px, 600);
-        line-height: 160%;
+        line-height: 160% !important;
         color: $medium-grey-color;
         margin-bottom: 8px;
     }
@@ -46,15 +46,15 @@
             &--header {
                 font-size: 26px;
                 font-weight: 700;
-                line-height: 32px
+                line-height: 32px !important;
             }
             &--label {
                 font-weight: 600;
             }
             &--consultant {
                 &-name {
-                    font-weight: 800;
-                    font-size: 14px;
+                    font-weight: 800 !important;
+                    font-size: 14px !important;
                     color: $dark-grey-color;
                 }
                 &-img {

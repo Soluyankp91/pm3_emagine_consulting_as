@@ -126,9 +126,9 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
             noSpecialContractTerms: new UntypedFormControl(false),
 
             // Client Rate & Invoicing
-            clientRateAndInvoicing: new UntypedFormControl(null),
+            clientRateTypeId: new UntypedFormControl(null),
             normalRate: new UntypedFormControl(null, Validators.required),
-            clientCurrency: new UntypedFormControl(null, Validators.required),
+            clientCurrencyId: new UntypedFormControl(null, Validators.required),
             rateUnitTypeId: new UntypedFormControl(null),
             invoiceCurrencyId: new UntypedFormControl(null, Validators.required),
             clientInvoiceFrequency: new UntypedFormControl(null),
@@ -219,14 +219,14 @@ export class WorkflowSalesClientDataForm extends UntypedFormGroup {
     }
 
     // CLient rate and invoicing
-    get clientRateAndInvoicing() {
-        return this.get('clientRateAndInvoicing');
+    get clientRateTypeId() {
+        return this.get('clientRateTypeId');
     }
     get normalRate() {
         return this.get('normalRate');
     }
-    get clientCurrency() {
-        return this.get('clientCurrency');
+    get clientCurrencyId() {
+        return this.get('clientCurrencyId');
     }
     get rateUnitTypeId() {
         return this.get('rateUnitTypeId');

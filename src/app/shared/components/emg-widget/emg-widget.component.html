@@ -1,0 +1,99 @@
+<div cdkOverlayOrigin #trigger="cdkOverlayOrigin" appPreventDoubleClick (throttledClick)="isWidgetOpened$.next(true)"
+    class="flex items-center justify-center h-12 mb-4 border-solid border-1 border-b border-gray-300  cursor-pointer">
+    <img class="w-6" src="assets/common/images/menu/home-logo.svg" alt="Logo image" />
+</div>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isWidgetOpened$ | async"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop" cdkConnectedOverlayPanelClass="cdk-main-widget-overlay" [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOffsetX]="66" [cdkConnectedOverlayOffsetY]="-30" (detach)="isWidgetOpened$.next(false)"
+    (backdropClick)="isWidgetOpened$.next(false)">
+    <div @fadeIn @fadeOut class="w-[232px] rounded-[13px] bg-white pt-6 pb-7 px-6 flex flex-col shadow-left-md">
+        <h1 class="font-semibold text-m text-emagine-gray-600">emagine Universe</h1>
+        <section class="flex mt-3.5 flex-row flex-wrap justify-between gap-y-4">
+            <ng-container *ngFor="let widget of widgets">
+                <div class="cursor-pointer break-after-10 w-1/3 flex flex-col items-center" (click)="navigate(widget)">
+                    <div class="w-[44px] h-[44px] rounded-[7px] shadow-light flex justify-center items-center overflow-hidden"
+                        [style.backgroundColor]="widget.backgroundColor">
+                        <img [style.width]="widget.logoWidthHeight" [style.height]="widget.logoWidthHeight"
+                            [src]="'assets/images/logo/widget/' + widget.logoUrl" alt="Logo" />
+                    </div>
+                    <p class="font-mono font-medium text-xs text-center text-emagine-gray-600 pt-[7px]">
+                        {{ widget.name }}
+                    </p>
+                </div>
+            </ng-container>
+        </section>
+    </div>
+</ng-template>
+
+<ng-template cdkConnectedOverlay [cdkConnectedOverlayOpen]="isMarginCalculatorOpened$ | async"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+    cdkConnectedOverlayPanelClass="cdk-widget-overlay" [cdkConnectedOverlayHasBackdrop]="true"
+    (detach)="isMarginCalculatorOpened$.next(false)" (backdropClick)="isMarginCalculatorOpened$.next(false)">
+    <div @fadeIn @fadeOut class="w-[405px] rounded-[14px] bg-white flex flex-col shadow-left-md">
+        <div class="py-5 px-6">
+            <div class="flex flex-row justify-between items-center">
+                <h1 class="font-bold text-xl text-emagine-gray-600">Margin Calculator</h1>
+
+                <div class="flex gap-x-3.5">
+                    <mat-icon class="cursor-pointer"
+                        [ngClass]="[!form.dirty ? 'text-emagine-gray-300' : 'text-emagine-red-primary']"
+                        (click)="resetForm()">refresh</mat-icon>
+                    <mat-icon class="cursor-pointer" (click)="isMarginCalculatorOpened$.next(false)">close</mat-icon>
+                </div>
+            </div>
+            <p class="pt-2 pb-7">
+                Margin calculator allows you to calculate a Margin and Markup. To get the result, you need to fill in
+                two fields.
+            </p>
+            <form class="flex flex-col gap-y-3.5" [formGroup]="form">
+                <mat-form-field appearance="outline" floatLabel="never"
+                    [ngClass]="[form.value.consultantPrice && form.value.margin ? 'pointer-events-none opacity-50' : '']">
+                    <mat-label>Client price</mat-label>
+                    <input type="number" autocomplete="off" matInput formControlName="clientPrice">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="never"
+                    [ngClass]="[form.value.clientPrice && form.value.margin ? 'pointer-events-none opacity-50' : '']">
+                    <mat-label>Consultant price</mat-label>
+                    <input type="number" autocomplete="off" matInput formControlName="consultantPrice">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="never"
+                    [ngClass]="[form.value.clientPrice && form.value.consultantPrice ? 'pointer-events-none opacity-50' : '']">
+                    <mat-label>Margin, %</mat-label>
+                    <input type="number" autocomplete="off" matInput formControlName="margin">
+                </mat-form-field>
+            </form>
+            <mat-divider class="my-[18px]"></mat-divider>
+            <div class="flex flex-col gap-y-4">
+                <div class="flex justify-between">
+                    <span class="text-black text-base">Client price</span>
+                    <span class="text-emagine-primary text-base">{{ calculatedModel.clientPrice || '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-black text-base">Consultant price</span>
+                    <span class="text-emagine-primary text-base">{{ calculatedModel.consultantPrice || '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-black text-base">Margin / Markup </span>
+                    <span class="text-emagine-primary text-base">{{ calculatedModel.margin || '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-black text-base">Margin % </span>
+                    <span class="text-emagine-primary text-base">{{ calculatedModel.marginInPercentage || '-' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-black text-base">Markup, %</span>
+                    <span class="text-emagine-primary text-base">{{ calculatedModel.markup || '-' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <button mat-raised-button class="w-full rounded-none rounded-b-[14px]" color="primary"
+            [disabled]="!isButtonEnabled()" (click)="calculate()">
+            Calculate
+        </button>
+    </div>
+</ng-template>

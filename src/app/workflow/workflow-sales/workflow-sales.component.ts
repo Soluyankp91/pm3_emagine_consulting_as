@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { forkJoin, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { debounceTime, finalize, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -51,8 +51,9 @@ import {
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { EmploymentTypes } from '../workflow.model';
+import { ERateType, EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
@@ -85,7 +86,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	currencies: EnumEntityTypeDto[] = [];
 	invoicingTimes: EnumEntityTypeDto[] = [];
 	invoiceFrequencies: EnumEntityTypeDto[] = [];
-	nonStandartTerminationTimes: { [key: string]: string };
+	terminationTimes: { [key: string]: string };
 	terminationReasons: { [key: string]: string };
 
 	clientRateTypes = ClientRateTypes;
@@ -95,7 +96,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
-	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+    isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+    eStepPermission = EPermissions;
 
 	private _unsubscribe = new Subject();
 
@@ -166,59 +168,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._getEnums();
 		this.getSalesStepData();
 
-		this._workflowDataService.startClientPeriodSalesSaved.pipe(takeUntil(this._unsubscribe)).subscribe((isDraft: boolean) => {
-			if (isDraft && !this.editEnabledForcefuly) {
-				this.saveStartChangeOrExtendClientPeriodSales(isDraft);
-			} else {
-				if (this.validateSalesForm()) {
-					this.saveStartChangeOrExtendClientPeriodSales(isDraft);
-				} else {
-					this.scrollToFirstError(isDraft);
-				}
-			}
-		});
-		this._workflowDataService.consultantStartChangeOrExtendSalesSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
-				} else {
-					if (this.validateSalesForm()) {
-						this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
-
-		// Termination
-		this._workflowDataService.consultantTerminationSalesSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveTerminationConsultantSalesStep(isDraft);
-				} else {
-					if (this.validateSalesForm()) {
-						this.saveTerminationConsultantSalesStep(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
-
-		this._workflowDataService.workflowTerminationSalesSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveWorkflowTerminationSalesStep(isDraft);
-				} else {
-					if (this.validateSalesForm()) {
-						this.saveWorkflowTerminationSalesStep(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
+        this._workflowDataService.salesStepSaved
+            .pipe(takeUntil(this._unsubscribe)).subscribe((isDraft: boolean) => {
+                if (isDraft && !this.editEnabledForcefuly) {
+                    this.saveSalesStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveSalesStep(isDraft);
+                    } else {
+                        this.scrollToFirstError(isDraft);
+                    }
+                }
+            });
 
 		this._workflowDataService.workflowSideSectionChanged
 			.pipe(takeUntil(this._unsubscribe))
@@ -327,19 +288,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.getSalesStepData();
 	}
 
-	get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
-	}
-
-	get readOnlyMode() {
-		return (
-			this.isCompleted ||
-			(!this.permissionsForCurrentUser!['StartEdit'] &&
-				!this.permissionsForCurrentUser!['Edit'] &&
-				!this.permissionsForCurrentUser!['Completion'])
-		);
-	}
-
 	clientPeriodDatesChanged() {
 		for (let consultant of this.consutlantDataComponent?.consultants.controls) {
 			if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
@@ -392,22 +340,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
-	}
-
-	private _getEnums() {
-		forkJoin({
-			currencies: this._internalLookupService.getCurrencies(),
-			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-			nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
-			terminationReasons: this._internalLookupService.getTerminationReasons(),
-		}).subscribe((result) => {
-			this.currencies = result.currencies;
-			this.invoicingTimes = result.invoicingTimes;
-			this.invoiceFrequencies = result.invoiceFrequencies;
-			this.nonStandartTerminationTimes = result.nonStandartTerminationTimes;
-			this.terminationReasons = result.terminationReasons;
-		});
 	}
 
 	saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {
@@ -475,10 +407,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesMainData?.commissionAccountManagerData,
 					{ emitEvent: false }
 				);
-				this.mainDataComponent?.salesMainDataForm.primarySourcer?.setValue(result?.salesMainData?.primarySourcer, {
-					emitEvent: false,
-				});
-				let expirationNotificationIntervals = result.salesMainData?.contractExpirationNotificationIntervalIds;
+                this.mainDataComponent?.salesMainDataForm.primarySourcer?.setValue(
+					result?.salesMainData?.primarySourcer,
+					{ emitEvent: false }
+				);
+				let expirationNotificationIntervals = new Array<number>(...result.salesMainData?.contractExpirationNotificationIntervalIds);
 				if (
 					result?.salesMainData?.customContractExpirationNotificationDate !== null &&
 					result?.salesMainData?.customContractExpirationNotificationDate !== undefined
@@ -575,13 +508,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesClientData?.clientTimeReportingCapId ?? 1,
 					{ emitEvent: false }
 				); // default idValue = 1
-				let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+				let clientRateType = ERateType.TimeBased; // default value
 				if (result.salesClientData?.clientRate?.isFixedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+					clientRateType = ERateType.Fixed;
 				} else if (result.salesClientData?.clientRate?.isTimeBasedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+					clientRateType = ERateType.TimeBased;
 				}
-				this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {
+				this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.setValue(clientRateType, {
 					emitEVent: false,
 				});
 				this.clientDataComponent?.salesClientDataForm.normalRate?.setValue(
@@ -596,10 +529,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEVent: false,
 					}
 				);
-				this.clientDataComponent?.salesClientDataForm.clientCurrency?.setValue(
-					this.findItemById(this.currencies, result.salesClientData?.clientRate?.currencyId),
-					{ emitEVent: false }
-				);
+				this.clientDataComponent?.salesClientDataForm.clientCurrencyId?.setValue(result.salesClientData?.clientRate?.currencyId, { emitEVent: false });
 				this.clientDataComponent?.salesClientDataForm.manualDate?.setValue(
 					result.salesClientData?.clientRate?.manualDate,
 					{
@@ -612,15 +542,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEVent: false,
 					}
 				);
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
-					// Time based
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.TimeBased) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoiceFrequencies, result.salesClientData?.clientRate?.invoiceFrequencyId),
 						{ emitEVent: false }
 					);
 				}
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
-					// Fixed
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.Fixed) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceTime?.setValue(
 						this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId),
 						{ emitEVent: false }
@@ -632,7 +560,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				);
 				if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
-                    this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(result.salesClientData?.directClient);
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(
+						result.salesClientData?.directClient
+					);
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientAddress?.disable({ emitEvent: false });
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientAddress.setValue(
+						PackAddressIntoNewDto(result?.salesClientData?.directClientAddress),
+						{ emitEvent: false }
+					);
 				}
 				this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(
 					result?.salesClientData?.invoicingReferencePerson,
@@ -675,9 +610,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					projectTypeId === EProjectTypes.VMSlowMargin ||
 					result?.salesMainData?.salesTypeId === SalesTypes.ThirdPartyMgmt
 				) {
-					this.mainDataComponent?.makeAreaTypeRoleNotRequired();
+					this.mainDataComponent?.makeAreaTypeRoleNotRequired(false);
 				} else {
-					this.mainDataComponent?.makeAreaTypeRoleRequired();
+					this.mainDataComponent?.makeAreaTypeRoleRequired(false);
 				}
 				this.mainDataComponent?.getPrimaryCategoryTree();
 				if (this.isContractModuleEnabled) {
@@ -747,6 +682,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
 				if (result.noEvaluation) {
 					this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable();
+				}
+				if (
+					result.finalEvaluationReferencePerson?.id === null ||
+					result.finalEvaluationReferencePerson?.id === undefined
+				) {
+					this.salesTerminateConsultantForm.finalEvaluationReferencePerson.setValue('');
 				}
 				if (result?.workflowDocuments?.length) {
 					this.terminationDocuments?.addExistingFile(result.workflowDocuments);
@@ -868,13 +809,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				let clientDto = new ClientResultDto();
 				clientDto.clientId = result.directClientIdValue;
 				this.clientDataComponent?.salesClientDataForm.directClientIdValue?.setValue(clientDto, { emitEvent: false });
-				let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+				let clientRateType = ERateType.TimeBased; // default value is 'Time based'
 				if (result.clientRate?.isFixedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+					clientRateType = ERateType.Fixed;
 				} else if (result.clientRate?.isTimeBasedRate) {
-					clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+					clientRateType = ERateType.TimeBased; // 1: 'Time based'
 				}
-				this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {
+				this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.setValue(clientRateType, {
 					emitEVent: false,
 				});
 				this.clientDataComponent?.salesClientDataForm.pdcInvoicingEntityId?.setValue(
@@ -889,22 +830,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.clientDataComponent?.salesClientDataForm.rateUnitTypeId?.setValue(result.clientRate?.rateUnitTypeId, {
 					emitEVent: false,
 				});
-				this.clientDataComponent?.salesClientDataForm.clientCurrency?.setValue(
-					this.findItemById(this.currencies, result.clientRate?.currencyId),
-					{ emitEVent: false }
-				);
+				this.clientDataComponent?.salesClientDataForm.clientCurrencyId?.setValue(result.clientRate?.currencyId, { emitEVent: false });
 				this.clientDataComponent?.salesClientDataForm.invoiceCurrencyId?.setValue(result.clientRate?.invoiceCurrencyId, {
 					emitEVent: false,
 				});
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
-					// Time based
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.TimeBased) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoiceFrequencies, result.clientRate?.invoiceFrequencyId),
 						{ emitEVent: false }
 					);
 				}
-				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
-					// Fixed
+				if (this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.Fixed) {
 					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoicingTimes, result.clientRate?.invoicingTimeId),
 						{ emitEVent: false }
@@ -1111,10 +1047,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		);
 		input.salesClientData.clientRate = new ClientRateDto(this.clientDataComponent?.salesClientDataForm.value);
 		input.salesClientData.clientRate!.isTimeBasedRate =
-			this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
+			this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.TimeBased;
 		input.salesClientData.clientRate!.isFixedRate =
-			this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
-		input.salesClientData.clientRate!.currencyId = this.clientDataComponent?.salesClientDataForm.clientCurrency?.value?.id;
+			this.clientDataComponent?.salesClientDataForm.clientRateTypeId?.value === ERateType.Fixed;
+		input.salesClientData.clientRate!.currencyId = this.clientDataComponent?.salesClientDataForm.clientCurrencyId?.value;
 		input.salesClientData.clientRate!.invoiceFrequencyId =
 			this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.value?.id;
 		input.salesClientData.clientRate!.invoicingTimeId =
@@ -1142,7 +1078,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			input.salesClientData!.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
 			this.clientDataComponent?.salesClientDataForm.clientRates.value.forEach((rate: any) => {
 				let clientRate = new PeriodClientSpecialRateDto(rate);
-				clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+				clientRate.clientRateCurrencyId = rate.clientRateCurrencyId;
 				input.salesClientData!.periodClientSpecialRates?.push(clientRate);
 			});
 		} else {
@@ -1152,7 +1088,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			input.salesClientData!.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
 			this.clientDataComponent?.salesClientDataForm.clientFees.value.forEach((fee: any) => {
 				let clientFee = new PeriodClientSpecialFeeDto(fee);
-				clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
+				clientFee.clientRateCurrencyId = fee.clientRateCurrencyId;
 				input.salesClientData!.periodClientSpecialFees?.push(clientFee);
 			});
 		} else {
@@ -1221,28 +1157,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					consultantInput.timeReportingCaps.push(capInput);
 				}
 			}
-
+            consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
 			consultantInput.onsiteClientAddress = FindClientAddress(
 				consultant.consultantWorkplaceClientAddress?.clientAddresses,
 				consultant.onsiteClientAddress?.id
 			);
-			consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
+			consultantInput.emagineOfficeId = consultant.emagineOfficeId;
 			consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
-			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
-			consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
-			consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
+			consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
+			consultantInput.consultantTimeReportingCapId = consultant.consultantTimeReportingCapId;
+			consultantInput.pdcPaymentEntityId = consultant.pdcPaymentEntityId;
 
 			consultantInput.consultantRate = new ConsultantRateDto();
-			consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
-			consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2; // 2: 'Fixed';
+			consultantInput.consultantRate.isTimeBasedRate = consultant.consultantRateTypeId === ERateType.TimeBased;
+			consultantInput.consultantRate.isFixedRate = consultant.consultantRateTypeId === ERateType.Fixed;
 			consultantInput.consultantRate.normalRate = consultant.consultantRate;
-			consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
-			consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
+			consultantInput.consultantRate.currencyId = consultant.consultantRateCurrencyId;
+			consultantInput.consultantRate.rateUnitTypeId = consultant.rateUnitTypeId;
 			consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
-			consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
-			consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrency?.id;
+			consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrencyId;
+			consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
 			if (consultantInput.consultantRate.isTimeBasedRate) {
 				consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
 			}
@@ -1257,7 +1193,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				for (let rate of consultant.specialRates) {
 					let consultantSpecialRate = new PeriodConsultantSpecialRateDto(rate);
 					consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
-					consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
 				}
 			} else {
@@ -1268,7 +1203,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				for (let fee of consultant.specialFees) {
 					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto(fee);
 					consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
-					consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
 					consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
 				}
 			} else {
@@ -1367,9 +1301,30 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 	}
 
-	submitSalesTerminationForm() {
-		if (this.submitFormBtn) {
-			this.submitFormBtn.nativeElement.click();
-		}
+    submitSalesTerminationForm() {
+        if (this.submitFormBtn) {
+            this.submitFormBtn.nativeElement.click();
+        }
+    }
+
+    private _getEnums() {
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.terminationTimes = this.getStaticEnumValue('terminationTimes');
+        this.terminationReasons = this.getStaticEnumValue('terminationReasons');
+	}
+
+    get canToggleEditMode() {
+		return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
+	}
+
+	get readOnlyMode() {
+		return (
+			this.isCompleted ||
+			(!this.permissionsForCurrentUser![EPermissions.StartEdit] &&
+				!this.permissionsForCurrentUser![EPermissions.Edit] &&
+				!this.permissionsForCurrentUser![EPermissions.Completion])
+		);
 	}
 }

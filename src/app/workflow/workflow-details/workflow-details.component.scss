@@ -31,9 +31,9 @@
         &--title {
             display: flex;
             align-items: center;
-            @include fontOpenSans(12px, 'inherit');
+            @include fontOpenSans(12px, 700);
             color: $dark-grey-color;
-            line-height: 140%;
+            line-height: 140% !important;
             &__clientId {
                 &:hover {
                     color: $green-color;
@@ -44,7 +44,7 @@
             }
         }
         &--status {
-            @include fontOpenSans(14px, 'inherit');
+            @include fontOpenSans(14px, 700);
             color: $dark-grey-color;
             line-height: 14px;
             &__icon {
@@ -182,7 +182,7 @@
     font-size: 16px;
     width: 16px;
     height: 16px;
-    line-height: 16px;
+    line-height: 16px !important;
 
     &.active-status {
         color: #6BC87A;
@@ -212,7 +212,7 @@
         display: flex;
         font-family: 'Open Sans', sans-serif;
         font-weight: 800;
-        line-height: 120%;
+        line-height: 120% !important;
         font-size: 14px;
         color: $dark-grey-color;
         mat-icon {
@@ -246,7 +246,7 @@
         color: $medium-grey-color;
         font-family: 'Open Sans';
         font-weight: 600;
-        line-height: 150%;
+        line-height: 150% !important;
     }
 }
 

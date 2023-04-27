@@ -27,7 +27,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_RIPPLE_GLOBAL_OPTIONS, RippleGlobalOptions } from '@angular/material/core';
+import {
+	DateAdapter,
+	MatNativeDateModule,
+	MAT_DATE_FORMATS,
+	MAT_DATE_LOCALE,
+	MAT_RIPPLE_GLOBAL_OPTIONS,
+	RippleGlobalOptions,
+} from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
@@ -37,110 +44,106 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CustomDateAdapter } from './custom-date-adapter';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 const globalRippleConfig: RippleGlobalOptions = {
-    disabled: true,
-    animation: {
-      enterDuration: 0,
-      exitDuration: 0
-    }
+	disabled: true,
+	animation: {
+		enterDuration: 0,
+		exitDuration: 0,
+	},
 };
 
 const MY_DATE_FORMAT = {
-    parse: {
-      dateInput: 'DD.MM.YYYY', // this is how your date will be parsed from Input
-    },
-    display: {
-      dateInput: 'DD.MM.YYYY', // this is how your date will get displayed on the Input
-      monthYearLabel: 'MMMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY'
-    }
+	parse: {
+		dateInput: 'DD.MM.YYYY', // this is how your date will be parsed from Input
+	},
+	display: {
+		dateInput: 'DD.MM.YYYY', // this is how your date will get displayed on the Input
+		monthYearLabel: 'MMMM YYYY',
+		dateA11yLabel: 'LL',
+		monthYearA11yLabel: 'MMMM YYYY',
+	},
 };
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AppGlobalRippleOptions implements RippleGlobalOptions {
-    disabled: boolean = true;
+	disabled: boolean = true;
 }
 
 const MaterialModules = [
-    MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatToolbarModule,
-    MatSelectModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatRadioModule,
-    MatCardModule,
-    MatDividerModule,
-    DragDropModule,
-    MatExpansionModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSnackBarModule,
-    MatTreeModule,
-    MatDialogModule,
-    MatProgressBarModule,
-    MatAutocompleteModule,
-    MatSlideToggleModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatChipsModule,
-    MatSliderModule,
-    MatBottomSheetModule,
-    MatStepperModule,
-    FlexLayoutModule,
-    MatProgressSpinnerModule,
-    TextFieldModule,
-    ClipboardModule
-]
+	MatIconModule,
+	MatSidenavModule,
+	MatListModule,
+	MatToolbarModule,
+	MatSelectModule,
+	MatMenuModule,
+	MatButtonModule,
+	MatButtonToggleModule,
+	MatInputModule,
+	MatCheckboxModule,
+	MatTableModule,
+	MatPaginatorModule,
+	MatSortModule,
+	MatRadioModule,
+	MatCardModule,
+	MatDividerModule,
+	DragDropModule,
+	MatExpansionModule,
+	MatDatepickerModule,
+	MatNativeDateModule,
+	MatSnackBarModule,
+	MatTreeModule,
+	MatDialogModule,
+	MatProgressBarModule,
+	MatAutocompleteModule,
+	MatSlideToggleModule,
+	MatTabsModule,
+	MatTooltipModule,
+	MatChipsModule,
+	MatSliderModule,
+	MatBottomSheetModule,
+	MatStepperModule,
+	FlexLayoutModule,
+	MatProgressSpinnerModule,
+	TextFieldModule,
+	ClipboardModule,
+	ScrollingModule,
+	OverlayModule,
+];
 
 @NgModule({
-    imports: [
-        ...MaterialModules
-    ],
-    exports: [
-        ...MaterialModules
-    ],
-    providers: [
-        {
-            provide: MAT_RIPPLE_GLOBAL_OPTIONS,
-            useExisting: AppGlobalRippleOptions
-        },
-        {
-            provide: MAT_SELECT_CONFIG,
-            useValue: { disableOptionCentering: true, overlayPanelClass: 'pm-mat-select-pane'}
-        },
-        {
-            provide: MAT_DATE_LOCALE,
-            useValue: 'en-GB'
-        },
-        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-        {
-            provide: DateAdapter,
-            useClass: CustomDateAdapter,
-            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
-        },
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [MAT_DATE_LOCALE]
-        },
-        { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT },
-        { provide: MatDialogRef, useValue: {} }
-    ]
+	imports: [...MaterialModules],
+	exports: [...MaterialModules],
+	providers: [
+		{
+			provide: MAT_RIPPLE_GLOBAL_OPTIONS,
+			useExisting: AppGlobalRippleOptions,
+		},
+		{
+			provide: MAT_SELECT_CONFIG,
+			useValue: { disableOptionCentering: true, overlayPanelClass: 'pm-mat-select-pane' },
+		},
+		{
+			provide: MAT_DATE_LOCALE,
+			useValue: 'en-GB',
+		},
+		{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+		{
+			provide: DateAdapter,
+			useClass: CustomDateAdapter,
+			deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+		},
+		{
+			provide: DateAdapter,
+			useClass: MomentDateAdapter,
+			deps: [MAT_DATE_LOCALE],
+		},
+		{ provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT },
+		{ provide: MatDialogRef, useValue: {} },
+	],
 })
-
-
-
 export class MaterialModule {
-    constructor() {
-    }
+	constructor() {}
 }

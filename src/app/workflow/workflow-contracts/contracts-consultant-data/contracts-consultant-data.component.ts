@@ -3,10 +3,9 @@ import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } 
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Subject } from 'rxjs';
 import { ClientRateTypes, EValueUnitTypes } from '../../workflow-sales/workflow-sales.model';
-import { forkJoin, Subject } from 'rxjs';
 import { debounceTime, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	AgreementSimpleListItemDto,
@@ -28,10 +27,11 @@ import {
     TimeReportingCapDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../../workflow-data.service';
-import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
+import { ERateType, EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
 import { MarginType } from '../../shared/components/calculated-margin/calculated-margin.model';
+import { FindClientAddress } from '../../workflow-sales/workflow-sales.helpers';
 
 @Component({
 	selector: 'app-contracts-consultant-data',
@@ -50,7 +50,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	employmentTypes: EnumEntityTypeDto[];
-	consultantTimeReportingCapList: EnumEntityTypeDto[];
+	consultantTimeReportingCap: EnumEntityTypeDto[];
 	currencies: EnumEntityTypeDto[];
     legalEntities: LegalEntityDto[];
     rateUnitTypes: EnumEntityTypeDto[];
@@ -65,13 +65,15 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	isConsultantFeeEditing = false;
 	eValueUnitType = EValueUnitTypes;
 	ePOCaps = PurchaseOrderCapType;
-	capTypes: { [key: string]: string };
+	purchaseOrderCapTypes: { [key: string]: string };
 	eCurrencies: { [key: number]: string };
 	directClientId: number;
 	filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 	selectedFrameAgreementList = new Array<null | number>();
     clientRateTypes = ClientRateTypes;
+    eRateType = ERateType;
+    eEmploymentType = EmploymentTypes;
     eMarginType = MarginType;
 	private _unsubscribe = new Subject();
 	constructor(
@@ -79,7 +81,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		private overlay: Overlay,
 		private dialog: MatDialog,
 		private _fb: UntypedFormBuilder,
-		private _internalLookupService: InternalLookupService,
 		private _purchaseOrderService: PurchaseOrderServiceProxy,
 		private _workflowDataService: WorkflowDataService,
 		private _frameAgreementServiceProxy: FrameAgreementServiceProxy
@@ -133,9 +134,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			agreementType: AgreementType.Frame,
 			validity: undefined,
 			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
-			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesTypeId.value : undefined,
 			contractTypeId: undefined,
-			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryTypeId.value : undefined,
 			startDate: undefined,
 			endDate: undefined,
 			recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(
@@ -168,10 +169,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		if (
 			this.contractClientForm.directClientId.value !== null &&
 			this.contractClientForm.directClientId.value !== undefined &&
-			this.contractsMainForm.salesType.value?.id !== null &&
-			this.contractsMainForm.salesType.value?.id !== undefined &&
-			this.contractsMainForm.deliveryType.value?.id !== null &&
-			this.contractsMainForm.deliveryType.value?.id !== undefined
+			this.contractsMainForm.salesTypeId.value !== null &&
+			this.contractsMainForm.salesTypeId.value !== undefined &&
+			this.contractsMainForm.deliveryTypeId.value !== null &&
+			this.contractsMainForm.deliveryTypeId.value !== undefined
 		) {
 			if (this.filteredFrameAgreements[consultantIndex].length === 1) {
 				this.contractsConsultantsDataForm.consultants.controls.forEach((form) => {
@@ -183,9 +184,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 
 	addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number, directClientId?: number) {
 		this.directClientId = directClientId;
-        let consultantRate = this.findItemById(this.clientRateTypes, 1); // 1: time based
+        let consultantRate = ERateType.TimeBased;
 		if (consultant?.consultantRate?.isFixedRate) {
-			consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
+			consultantRate = ERateType.Fixed;
 		}
 		const form = this._fb.group({
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
@@ -195,26 +196,15 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			startDate: new UntypedFormControl(consultant?.startDate),
 			endDate: new UntypedFormControl(consultant?.endDate),
 			noEndDate: new UntypedFormControl(consultant?.noEndDate),
-			consultantType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
+			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId),
 			consultantTimeReportingCapId: new UntypedFormControl(consultant?.consultantTimeReportingCapId),
-            consultantProdataEntity: new UntypedFormControl(
-				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
-			),
 			consultantPaymentType: new UntypedFormControl(consultantRate),
 			consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
-			consultantRateUnitType: new UntypedFormControl(
-				this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
-			),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null
-			),
+			consultantRateUnitTypeId: new UntypedFormControl(consultant?.consultantRate?.rateUnitTypeId ?? null),
+			consultantRateCurrencyId: new UntypedFormControl(consultant?.consultantRate?.currencyId ?? null),
 			consultantPDCRate: new UntypedFormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
-			consultantPDCRateUnitType: new UntypedFormControl(
-				this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
-			),
-			consultantPDCRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null
-			),
+			consultantPDCRateUnitTypeId: new UntypedFormControl(consultant?.consultantRate?.rateUnitTypeId ?? null),
+			consultantPDCRateCurrencyId: new UntypedFormControl(consultant?.consultantRate?.prodataToProdataCurrencyId ?? null),
 			noSpecialContractTerms: new UntypedFormControl(consultant?.noSpecialContractTerms),
 			specialContractTerms: new UntypedFormControl(
 				{
@@ -335,7 +325,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			).toFixed(2);
 			consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants
 				.at(consultantIndex)!
-				.get('consultantRateCurrency')!.value?.id;
+				.get('consultantRateCurrencyId')!.value;
 			consultantRate.consultantRate = +(
 				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
 					rate.consultantRate!) /
@@ -343,7 +333,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			).toFixed(2);
 			consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants
 				.at(consultantIndex)!
-				.get('consultantRateCurrency')!.value?.id;
+				.get('consultantRateCurrencyId')!.value;
 		} else {
 			consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
 			consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
@@ -361,13 +351,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
 			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
 			proDataRateValue: new UntypedFormControl(clientRate?.prodataToProdataRate ?? null),
-			proDataRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.prodataToProdataRateCurrencyId) ?? null
-			),
+			proDataRateCurrencyId: new UntypedFormControl(clientRate?.prodataToProdataRateCurrencyId ?? null),
 			consultantRateValue: new UntypedFormControl(clientRate?.consultantRate ?? null),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.consultantRateCurrencyId) ?? null
-			),
+			consultantRateCurrencyId: new UntypedFormControl(clientRate?.consultantRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
 
@@ -394,9 +380,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				rateName: consultantRateValue.rateName,
 				reportingUnit: consultantRateValue.reportingUnit,
 				prodataToProdataRate: consultantRateValue.proDataRateValue,
-				prodataToProdataRateCurrencyId: consultantRateValue.proDataRateCurrency?.id,
+				prodataToProdataRateCurrencyId: consultantRateValue.proDataRateCurrencyId,
 				consultantRate: consultantRateValue.consultantRateValue,
-				consultantRateCurrencyId: consultantRateValue.consultantRateCurrency?.id,
+				consultantRateCurrencyId: consultantRateValue.consultantRateCurrencyId,
 			});
 			this.isConsultantRateEditing = true;
 		}
@@ -410,14 +396,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
 		rateRow?.get('proDataRateValue')?.setValue(this.consultantRateToEdit.prodataToProdataRate, { emitEvent: false });
 		rateRow
-			?.get('proDataRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {
+			?.get('proDataRateCurrencyId')
+			?.setValue(this.consultantRateToEdit.prodataToProdataRateCurrencyId, {
 				emitEvent: false,
 			});
 		rateRow?.get('consultantRateValue')?.setValue(this.consultantRateToEdit.consultantRate, { emitEvent: false });
 		rateRow
-			?.get('consultantRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {
+			?.get('consultantRateCurrencyId')
+			?.setValue(this.consultantRateToEdit.consultantRateCurrencyId, {
 				emitEvent: false,
 			});
 		this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
@@ -453,13 +439,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
 			feeFrequency: new UntypedFormControl(clientFee?.frequency ?? null),
 			proDataRateValue: new UntypedFormControl(clientFee?.prodataToProdataRate ?? null),
-			proDataRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.prodataToProdataRateCurrencyId) ?? null
-			),
+			proDataRateCurrencyId: new UntypedFormControl(clientFee?.prodataToProdataRateCurrencyId ?? null),
 			consultantRateValue: new UntypedFormControl(clientFee?.consultantRate ?? null),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.consultantRateCurrencyId) ?? null
-			),
+			consultantRateCurrencyId: new UntypedFormControl(clientFee?.consultantRateCurrencyId ?? null),
 			editable: new UntypedFormControl(false),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as UntypedFormArray).push(form);
@@ -485,9 +467,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				feeName: consultantFeeValue.feeName,
 				frequency: consultantFeeValue.feeFrequency,
 				prodataToProdataRate: consultantFeeValue.proDataRateValue,
-				prodataToProdataRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
+				prodataToProdataRateCurrencyId: consultantFeeValue.proDataRateCurrencyId,
 				consultantRate: consultantFeeValue.consultantRateValue,
-				consultantRateCurrencyId: consultantFeeValue.consultantRateCurrency?.id,
+				consultantRateCurrencyId: consultantFeeValue.consultantRateCurrencyId,
 			});
 			this.isConsultantFeeEditing = true;
 		}
@@ -501,14 +483,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		const feeRow = (this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).at(specialFeeIndex);
 		feeRow?.get('proDataRateValue')?.setValue(this.consultantFeeToEdit?.prodataToProdataRate, { emitEvent: false });
 		feeRow
-			?.get('proDataRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.prodataToProdataRateCurrencyId), {
+			?.get('proDataRateCurrencyId')
+			?.setValue(this.consultantFeeToEdit?.prodataToProdataRateCurrencyId, {
 				emitEvent: false,
 			});
 		feeRow?.get('consultantRateValue')?.setValue(this.consultantFeeToEdit?.consultantRate, { emitEvent: false });
 		feeRow
-			?.get('consultantRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.consultantRateCurrencyId), {
+			?.get('consultantRateCurrencyId')
+			?.setValue(this.consultantFeeToEdit?.consultantRateCurrencyId, {
 				emitEvent: false,
 			});
 		this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
@@ -536,7 +518,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
 			invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
 			invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
-			invoiceRecipientAddress: this.contractClientForm.clientInvoicingRecipientAddress?.value,
+			invoiceRecipientAddress: FindClientAddress(
+                this.contractClientForm.clientInvoicingRecipient?.value?.clientAddresses,
+                this.contractClientForm.clientInvoicingRecipientAddress?.value?.id
+            ),
 			invoicingReferencePerson: this.contractClientForm.invoicingReferencePersonDontShowOnInvoice?.value
 				? null
 				: this.contractClientForm.invoicingReferencePerson?.value,
@@ -574,16 +559,16 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			},
 		});
 
-		dialogRef.componentInstance.onConfirmed.subscribe((projectLine, purchaseOrders) => {
+		dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
 			if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
-				this.editProjectLineValue(index, projectLinesIndex, projectLine, purchaseOrders);
+				this.editProjectLineValue(index, projectLinesIndex, projectLine);
 			} else {
-				this.addProjectLinesToConsultantData(index, projectLine, purchaseOrders);
+				this.addProjectLinesToConsultantData(index, projectLine);
 			}
 		});
 	}
 
-	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto, purchaseOrders?: PurchaseOrderDto[]) {
+	addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
 		if (projectLine) {
 			if (!projectLine?.differentDebtorNumber) {
 				projectLine!.debtorNumber = this.contractsMainForm.customDebtorNumber?.value;
@@ -630,6 +615,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			isLineForFees: new UntypedFormControl(projectLine?.isLineForFees),
 			purchaseOrderId: new UntypedFormControl(projectLine?.purchaseOrderId),
 			purchaseOrder: new UntypedFormControl(null),
+            invoiceRecipientAddressId: new UntypedFormControl(projectLine?.invoiceRecipientAddressId),
+            invoiceRecipientAddress: new UntypedFormControl(projectLine?.invoiceRecipientAddress),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
 		if (this.directClientId) {
@@ -640,8 +627,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	editProjectLineValue(
 		consultantIndex: number,
 		projectLinesIndex: number,
-		projectLineData: any,
-		purchaseOrders?: PurchaseOrderDto[]
+		projectLineData: any
 	) {
 		const projectLineRow = (
 			this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as UntypedFormArray
@@ -700,6 +686,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, { emitEvent: false });
 		projectLineRow.get('purchaseOrderId')?.setValue(projectLineData.purchaseOrderId, { emitEvent: false });
 		projectLineRow.get('purchaseOrder')?.setValue(null, { emitEvent: false });
+		projectLineRow.get('invoiceRecipientAddressId')?.setValue(projectLineData.invoiceRecipientAddressId, { emitEvent: false });
+		projectLineRow.get('invoiceRecipientAddress')?.setValue(projectLineData.invoiceRecipientAddress, { emitEvent: false });
 		this.getPOsToUpdateValues(this.directClientId);
 	}
 
@@ -775,32 +763,18 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		});
 	}
 
-	private _getEnums() {
-		forkJoin({
-			employmentTypes: this._internalLookupService.getEmploymentTypes(),
-			consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
-			currencies: this._internalLookupService.getCurrencies(),
-			consultantInsuranceOptions: this._internalLookupService.getConsultantInsuranceOptions(),
-			valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
-			periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
-			capTypes: this._internalLookupService.getPurchaseOrderCapTypes(),
-			legalEntities: this._internalLookupService.getLegalEntities(),
-			rateUnitTypes: this._internalLookupService.getUnitTypes(),
-		}).subscribe((result) => {
-			this.employmentTypes = result.employmentTypes;
-			this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
-			this.currencies = result.currencies;
-			this.eCurrencies = this.arrayToEnum(result.currencies);
-			this.consultantInsuranceOptions = result.consultantInsuranceOptions;
-			this.valueUnitTypes = result.valueUnitTypes;
-			this.periodUnitTypes = result.periodUnitTypes;
-			this.capTypes = result.capTypes;
-			this.legalEntities = result.legalEntities;
-			this.rateUnitTypes = result.rateUnitTypes;
-		});
-	}
+    private _getEnums() {
+        this.employmentTypes = this.getStaticEnumValue('employmentTypes');
+        this.consultantTimeReportingCap = this.getStaticEnumValue('consultantTimeReportingCap');
+        this.currencies = this.getStaticEnumValue('currencies');
+        this.eCurrencies = this.arrayToEnum(this.currencies);
+        this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
+        this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
+        this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+    }
 
-	get timeReportingCaps(): UntypedFormArray {
+    get timeReportingCaps(): UntypedFormArray {
 		return this.contractsConsultantsDataForm.get('timeReportingCaps') as UntypedFormArray;
 	}
 

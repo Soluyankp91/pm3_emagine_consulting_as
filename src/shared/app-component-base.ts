@@ -6,8 +6,9 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
-import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
+import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, PurchaseOrderDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
 import { EProfileImageLinkTypes } from "./AppEnums";
+import { InternalLookupService } from "src/app/shared/common/internal-lookup.service";
 import { MomentFormatPipe } from "./common/pipes/moment-format.pipe";
 
 export enum NotifySeverity {
@@ -25,10 +26,12 @@ export abstract class AppComponentBase {
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
     imageType = EProfileImageLinkTypes;
+    internalLookupService: InternalLookupService;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
         this.matSnackbar = injector.get(MatSnackBar);
+        this.internalLookupService = injector.get(InternalLookupService);
     }
 
 	showNotify(severity: number, text: string, buttonText: string = 'OK') {
@@ -211,6 +214,10 @@ export abstract class AppComponentBase {
         }
     }
 
+    displayPOFn(option: PurchaseOrderDto) {
+		return option?.number;
+	}
+
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
 	}
@@ -226,6 +233,10 @@ export abstract class AppComponentBase {
             result[x.id] = x.name
         });
         return result;
+    }
+
+    getStaticEnumValue(key: string): any {
+        return this.internalLookupService.getEnumValue(key);
     }
 
 }

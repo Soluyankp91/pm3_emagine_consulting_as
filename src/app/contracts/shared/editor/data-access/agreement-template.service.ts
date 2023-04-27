@@ -78,8 +78,6 @@ export class AgreementTemplateService implements AgreementAbstractService {
 				if (error.error.code === 'contracts.documents.draft.locked') {
 					const ref = this._dialog.open(ConfirmPopupComponent, {
 						width: '500px',
-						height: '240px',
-						backdropClass: 'backdrop-modal--wrapper',
 						data: {
 							title: 'Override',
 							body: 'Are you sure you want to override the draft?',

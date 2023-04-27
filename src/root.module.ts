@@ -9,11 +9,15 @@ import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalIntercepto
 import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-// import { NgxGanttModule } from '@worktile/gantt';
 import { RootComponent } from './root.component';
 import { RootRoutingModule } from './root-routing.module';
 import { LoginGuard } from './app/login/login.guard';
 import { AppModule } from './app/app.module';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { ROOT_REDUCERS, metaReducers } from './app/store/reducers';
+import { effects } from './app/store/effects';
+
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -24,9 +28,7 @@ export function loggerCallback(logLevel: LogLevel, message: string) {
 export function MSALInstanceFactory(): IPublicClientApplication {
     return new PublicClientApplication({
         auth: {
-            // clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca',
             clientId: environment.msalClientId,
-            // authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
             authority: environment.msalAuthorityUrl,
             redirectUri: '/',
             postLogoutRedirectUri: '/'
@@ -78,11 +80,11 @@ export function getRemoteServiceBaseUrl(): string {
         BrowserAnimationsModule,
         HttpClientModule,
         AppModule,
-        // AppCommonModule,
         ServiceProxyModule,
         MsalModule,
         NgxSpinnerModule,
-        // NgxGanttModule
+        StoreModule.forRoot(ROOT_REDUCERS, { metaReducers }),
+        EffectsModule.forRoot(effects),
     ],
     providers: [
         LoginGuard,
@@ -116,6 +118,6 @@ export function getRemoteServiceBaseUrl(): string {
 })
 export class RootModule {
     constructor() {
-       
+
     }
 }

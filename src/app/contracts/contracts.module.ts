@@ -89,6 +89,7 @@ import { EnvelopePathFilterComponent } from './shared/components/grid-table/agre
 import { EnvelopePathComponent } from './shared/components/envelope-path/envelope-path.component';
 import { ActionDialogComponent } from './shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from './shared/components/default-file-uploader/default-file-uploader.component';
+import { AgreementLogsComponent } from './shared/components/agreement-logs/agreement-logs.component';
 
 @NgModule({
 	declarations: [
@@ -157,6 +158,7 @@ import { DefaultFileUploaderComponent } from './shared/components/default-file-u
 		EnvelopePathComponent,
 		ActionDialogComponent,
   DefaultFileUploaderComponent,
+  AgreementLogsComponent,
 	],
 	imports: [
 		CommonModule,

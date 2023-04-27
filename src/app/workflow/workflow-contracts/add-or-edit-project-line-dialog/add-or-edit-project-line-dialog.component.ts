@@ -2,15 +2,14 @@ import { AfterViewInit, Component, EventEmitter, Inject, Injector, OnDestroy, On
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientAddressDto, ClientResultDto, ContactResultDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { PurchaseOrdersComponent } from '../../shared/components/purchase-orders/purchase-orders.component';
 import { EPurchaseOrderMode } from '../../shared/components/purchase-orders/purchase-orders.model';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
-import { FindClientAddress, MapClientAddressList } from '../../workflow-sales/workflow-sales.helpers';
+import { FindClientAddress, MapClientAddressList, PackAddressIntoNewDto } from '../../workflow-sales/workflow-sales.helpers';
 import { IClientAddress } from '../../workflow-sales/workflow-sales.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
@@ -45,7 +44,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>,
         private _lookupService: LookupServiceProxy,
-        private _internalLookupService: InternalLookupService,
         private router: Router
     ) {
         super(injector);
@@ -123,13 +121,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     }
 
     getConsultantInsuranceOptions() {
-        this._internalLookupService.getConsultantInsuranceOptions()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.consultantInsuranceOptions = result;
-            });
+        this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
     }
 
     fillForm(data: any) {
@@ -164,10 +156,11 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         if (data?.invoiceRecipient) {
             this._getAddresses(data?.invoiceRecipient.clientAddresses)
         }
-        this.projectLineForm.invoiceRecipientAddress?.setValue(data.invoiceRecipientAddress, {emitEvent: false});
+        this.projectLineForm.invoiceRecipientAddress?.setValue(PackAddressIntoNewDto(data.invoiceRecipientAddress), {emitEvent: false});
         this.projectLineForm.differentInvoiceRecipient?.setValue(data.differentInvoiceRecipient ?? false, {emitEvent: false});
         if (!data.differentInvoiceRecipient) {
             this.projectLineForm.invoiceRecipientId?.disable();
+            this.projectLineForm.invoiceRecipientAddress?.disable();
         }
         this.projectLineForm.consultantInsuranceOptionId?.setValue(data.consultantInsuranceOptionId ?? 0, {emitEvent: false});
         this.projectLineForm.modificationDate?.setValue(data.modificationDate, {emitEvent: false});
@@ -260,6 +253,16 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     recipientSelected(event: MatAutocompleteSelectedEvent) {
         this._getAddresses(event.option.value?.clientAddresses);
+    }
+
+    toggleDIsabledStateForInvoicing(disableInputs: boolean) {
+        if (disableInputs) {
+            this.projectLineForm.invoiceRecipientAddress.disable({emitEvent: false});
+            this.projectLineForm.invoiceRecipientId.disable({emitEvent: false});
+        } else {
+            this.projectLineForm.invoiceRecipientAddress.enable({emitEvent: false});
+            this.projectLineForm.invoiceRecipientId.enable({emitEvent: false});
+        }
     }
 
     private _getAddresses(clientAddresses: ClientAddressDto[]) {
