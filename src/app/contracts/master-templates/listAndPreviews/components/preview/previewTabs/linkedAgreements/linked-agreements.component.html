@@ -19,7 +19,7 @@
 								<mat-icon svgIcon="three-lines" class="isEnabled-icon"></mat-icon>
 							</mat-header-cell>
 							<mat-cell *matCellDef="let template" class="enabled-column">
-								<emg-agreement-status [agreementStatus]="template.agreementStatus"></emg-agreement-status>
+								<app-agreement-logs [agreementId]="template.agreementId" [agreementStatus]="template.agreementStatus"></app-agreement-logs>
 							</mat-cell>
 						</ng-container>
 						<ng-container matColumnDef="validity">

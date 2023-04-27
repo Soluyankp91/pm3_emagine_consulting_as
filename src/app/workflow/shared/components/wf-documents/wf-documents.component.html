@@ -22,7 +22,7 @@
                 <ng-container
                     *ngFor="let document of documentForm?.documents?.controls; trackBy: trackByItem; index as i">
                     <div fxLayout="row" fxLayoutAlign="space-between center"
-                        class="workflow-documents--form__row u-w--100 u-mb--8" [formArrayName]="i">
+                        class="workflow-documents--form__row u-w--100" [formArrayName]="i">
                         <div fxFlex="20px" fxLayoutAlign="start center" class="u-mr--16">
                             <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon"
                                 [svgIcon]="document.value.icon"></mat-icon>
@@ -77,7 +77,7 @@
             </ng-template>
         </form>
         <ng-container *ngIf="!readOnlyMode">
-            <div fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="row" fxLayoutAlign="center center" class="u-mt--16">
                 <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true"
                     [buttonText]="'Add document'"
                     [acceptOnlyOneFile]="true" [isFileUploading]="isFileUploading" class="u-w--100"

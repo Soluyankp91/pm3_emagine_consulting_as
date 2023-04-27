@@ -75,7 +75,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			.getPurchaseOrdersAvailableForClientPeriod(this.periodId ?? periodId, directClientId)
 			.subscribe((result) => {
 				this.purchaseOrdersList = result;
-                this.purchaseOrders.controls = [];
+				this.purchaseOrders.controls = [];
 				this._filterResponse(result, purchaseOrderIds);
 			});
 	}
@@ -84,10 +84,17 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		this.purchaseOrders.removeAt(orderIndex);
 	}
 
+	updatePOs(purchaseOrder: PurchaseOrderDto) {
+		const POtoUpdate = this.purchaseOrders.controls.find((x) => x.value.id === purchaseOrder.id);
+		if (POtoUpdate) {
+			POtoUpdate.patchValue(purchaseOrder);
+		}
+	}
+
 	private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
 		switch (this.mode) {
 			case EPurchaseOrderMode.WFOverview:
-				list.filter((item) => item.workflowsIdsReferencingThisPo.includes(this.workflowId)).forEach((order) => {
+				list.filter((item) => item.purchaseOrderCurrentContextData?.existsInThisWorkflow).forEach((order) => {
 					this._addPurchaseOrder(order);
 				});
 				break;
@@ -112,7 +119,15 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		formRow.get('modifiedBy').setValue(purchaseOrder?.modifiedBy, { emitEvent: false });
 		formRow.get('modifiedOnUtc').setValue(purchaseOrder?.modifiedOnUtc, { emitEvent: false });
 		formRow.get('workflowsIdsReferencingThisPo').setValue(purchaseOrder?.workflowsIdsReferencingThisPo, { emitEvent: false });
-		formRow.get('existsInAnotherWorkflow').setValue(purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow, { emitEvent: false });
+		formRow
+			.get('existsInAnotherWorkflow')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow, { emitEvent: false });
+		formRow
+			.get('isUserAllowedToEdit')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit, { emitEvent: false });
+        formRow
+			.get('purchaseOrderCurrentContextData')
+			.setValue(purchaseOrder?.purchaseOrderCurrentContextData, { emitEvent: false });
 		const capForInvoicingForm = formRow.get('capForInvoicing') as UntypedFormGroup;
 		capForInvoicingForm.get('type').setValue(purchaseOrder?.capForInvoicing?.type, { emitEvent: false });
 		capForInvoicingForm
@@ -121,7 +136,6 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		capForInvoicingForm.get('maxAmount').setValue(purchaseOrder?.capForInvoicing?.maxAmount, { emitEvent: false });
 		capForInvoicingForm.get('currencyId').setValue(purchaseOrder?.capForInvoicing?.currencyId, { emitEvent: false });
 		capForInvoicingForm.get('amountUsed').setValue(purchaseOrder?.capForInvoicing?.amountUsed, { emitEvent: false });
-		capForInvoicingForm.get('isUserAllowedToEdit').setValue(purchaseOrder?.purchaseOrderCurrentContextData?.isUserAllowedToEdit, { emitEvent: false });
 	}
 
 	private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
@@ -146,6 +160,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			existsInAnotherWorkflow: new UntypedFormControl(
 				purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow
 			),
+			purchaseOrderCurrentContextData: new UntypedFormControl(purchaseOrder?.purchaseOrderCurrentContextData),
 		});
 		this.purchaseOrders.push(form);
 	}

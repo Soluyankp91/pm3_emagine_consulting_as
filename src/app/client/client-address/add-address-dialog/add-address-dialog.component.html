@@ -17,7 +17,7 @@
             </ng-container>
             <mat-form-field appearance="outline" class="form-width-300 formFieldNoMarginPadding filter-select u-mt--10">
                 <mat-label>Country</mat-label>
-                <mat-select formControlName="country" placeholder="Country" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                <mat-select formControlName="country" placeholder="Country" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                     <mat-select-trigger>
                         <span class="country-flag fi fi-{{clientAddressForm.value.country?.code | lowercase }} fib"></span>&nbsp;{{ clientAddressForm.value.country?.name }}
                     </mat-select-trigger>
@@ -30,7 +30,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">
                 <mat-label>Street + number</mat-label>
-                <input autocomplete="off" placeholder="Street + number" matInput name="address" formControlName="address">
+                <input autocomplete="off" required placeholder="Street + number" matInput name="address" formControlName="address">
             </mat-form-field>
             <mat-form-field appearance="outline" class="form-width-420 formFieldNoMarginPadding">
                 <mat-label>Address line #2</mat-label>
@@ -39,11 +39,11 @@
             <div fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--10">
                     <mat-label>Zip code</mat-label>
-                    <input autocomplete="off" placeholder="Zip code" matInput name="postCode" formControlName="postCode">
+                    <input autocomplete="off" placeholder="Zip code" required matInput name="postCode" formControlName="postCode">
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-290">
                     <mat-label>City</mat-label>
-                    <input autocomplete="off" placeholder="City" matInput name="city" formControlName="city">
+                    <input autocomplete="off" placeholder="City" matInput required name="city" formControlName="city">
                 </mat-form-field>
             </div>
             <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-420">

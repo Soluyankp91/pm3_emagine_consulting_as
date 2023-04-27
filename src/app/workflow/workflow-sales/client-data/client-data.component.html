@@ -71,7 +71,7 @@
                         <mat-form-field appearance="outline" [ngClass]="{'is-empty': !salesClientDataForm.directClientAddress.value}"
                             class="formFieldNoMarginPadding filter-select form-width-330 client-address-autocomplete">
                             <mat-label>Client address</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="directClientAddress"
+                            <mat-select [disabled]="readOnlyMode" formControlName="directClientAddress" (selectionChange)="directClientAddressSelected()"
                                 [disableOptionCentering]="true" placeholder="Direct client address" [compareWith]="compareWithFn" required>
                                 <mat-select-trigger>
                                     <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -915,6 +915,7 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10" [fxHide]="readOnlyMode">
                     <button class="rates-and-fees--btn button-add" mat-flat-button type="button"
+                        [ngClass]="{'u-mt--16': salesClientDataForm.clientRates.controls?.length}"
                         (menuOpened)="clientSpecialRateSelect.open();" [matMenuTriggerFor]="clientSpecialRateMenu"
                         #clientRateMenuTrigger="matMenuTrigger" [disabled]="isClientRateEditing">
                         <mat-icon>add</mat-icon>
@@ -1056,6 +1057,7 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" [fxHide]="readOnlyMode">
                     <button class="rates-and-fees--btn button-add" mat-flat-button type="button"
+                        [ngClass]="{'u-mt--16': salesClientDataForm.clientFees.controls?.length}"
                         [disabled]="isClientFeeEditing" [matMenuTriggerFor]="clientSpecialFeeMenu"
                         (menuOpened)="clientSpecialFeeFilter.setValue(''); clientSpecialFeeSelect.open()"
                         #clientFeeMenuTrigger="matMenuTrigger">

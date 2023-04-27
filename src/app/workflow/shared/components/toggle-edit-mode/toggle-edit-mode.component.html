@@ -1,6 +1,29 @@
-<ng-container *ngIf="canToggleEditMode">
-    <button class="absolute-edit-toggle contract-manager-action u-mr--8" mat-icon-button
-        appPreventDoubleClick (throttledClick)="toggleEditMode()">
-        <mat-icon svgIcon="edit-icon"></mat-icon>
-    </button>
-</ng-container>
+<div fxLayout="row" fxLayoutAlign="start start" class="sticky-buttons-overlay">
+    <div fxLayout="row" fxLayoutAlign="start start" class="sticky-buttons" [ngClass]="{'hovering': buttonsAreHovering}">
+        <ng-container *ngIf="canToggleEditMode">
+            <button class="absolute-edit-toggle contract-manager-action u-mr--8" mat-icon-button
+                appPreventDoubleClick (throttledClick)="toggleEditMode()">
+                <mat-icon svgIcon="edit-icon"></mat-icon>
+            </button>
+        </ng-container>
+        <ng-container *ngIf="showReturnToSales">
+            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action returnToSalesBtn">
+                <mat-icon svgIcon="3-dots"></mat-icon>
+            </button>
+            <mat-menu #returnToSalesMenu>
+                <div class="u-w--100 u-h--100"
+                    [matTooltip]="canReopen ? '' : 'Not available after the Contracts step has been completed'"
+                    matTooltipClass="white-tooltip">
+                    <button
+                        class="menu-item menu-item--edit contract-manager-action"
+                        mat-menu-item
+                        [disabled]="canReopen"
+                        appPreventDoubleClick (throttledClick)="returnToSales()">
+                        <mat-icon svgIcon="return-icon"></mat-icon>
+                        Return to Sales
+                    </button>
+                </div>
+            </mat-menu>
+        </ng-container>
+    </div>
+</div>

@@ -75,54 +75,82 @@
 	<ng-container *ngIf="isLatestVersionSelected$ | async; else prevVersions">
 		<ng-container *ngIf="selectedVersion?.isCurrent">
 			<div class="save-actions">
-				<button class="close-btn" mat-button color="accent" (click)="cancel()">Close</button>
+				<ng-container [ngTemplateOutlet]="panelLeftSideTmp"></ng-container>
 
-				<ng-container *ngIf="!(isAgreement$ | async)">
-					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
-						Save as a new version
-					</button>
-				</ng-container>
-
-				<ng-container *ngIf="isAgreement$ | async">
-					<button
-						[disabled]="isLoading"
-						mat-stroked-button
-						color="primary"
-						(click)="saveCurrentAsCompleteAgreementOnly()">
-						{{ currentVersionIsSent ? 'Promote to draft' : 'Save as a new version' }}
-					</button>
-
-					<ng-container *ngIf="!currentVersionIsSent">
-						<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">Send</button>
+				<div class="right-side">
+					<ng-container *ngIf="!(isAgreement$ | async)">
+						<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveCurrentAsDraft()">
+							Save as a new version
+						</button>
 					</ng-container>
-				</ng-container>
 
-				<ng-container *ngIf="!(isAgreement$ | async)">
-					<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">Save</button>
-				</ng-container>
+					<ng-container *ngIf="isAgreement$ | async">
+						<button
+							[disabled]="isLoading"
+							mat-stroked-button
+							color="primary"
+							(click)="saveCurrentAsCompleteAgreementOnly()">
+							{{ currentVersionIsSent ? 'Promote to draft' : 'Save as a new version' }}
+						</button>
+
+						<ng-container *ngIf="!currentVersionIsSent">
+							<button [disabled]="isLoading" mat-flat-button color="primary" (click)="sendEmail()">Send</button>
+						</ng-container>
+					</ng-container>
+
+					<ng-container *ngIf="!(isAgreement$ | async)">
+						<button mat-flat-button color="primary" (click)="saveCurrentAsComplete(false)">Save</button>
+					</ng-container>
+				</div>
 			</div>
 		</ng-container>
 
 		<ng-container *ngIf="selectedVersion?.isDraft">
 			<div class="save-actions">
-				<button class="close-btn" [disabled]="isLoading" mat-button color="accent" (click)="cancel()">Close</button>
+				<ng-container [ngTemplateOutlet]="panelLeftSideTmp"></ng-container>
 
-				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
-					<span>Save as a draft</span>
-				</button>
+				<div class="right-side">
+					<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="saveDraftAsDraft()">
+						<span>Save as a draft</span>
+					</button>
 
-				<button [disabled]="isLoading" mat-flat-button color="primary" (click)="saveDraftAsComplete()">
-					<span>Complete</span>
-				</button>
+					<button [disabled]="isLoading" mat-flat-button color="primary" (click)="saveDraftAsComplete()">
+						<span>Complete</span>
+					</button>
+				</div>
 			</div>
 		</ng-container>
 	</ng-container>
 
 	<ng-template #prevVersions>
 		<div class="save-actions promote">
-			<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="promoteToDraft()">
-				<span>Promote to draft</span>
-			</button>
+			<ng-container [ngTemplateOutlet]="panelLeftSideTmp"></ng-container>
+			<div class="right-side">
+				<button [disabled]="isLoading" mat-stroked-button color="primary" (click)="promoteToDraft()">
+					<span>Promote to draft</span>
+				</button>
+			</div>
+		</div>
+	</ng-template>
+
+	<ng-template #panelLeftSideTmp>
+		<div class="left-side">
+			<button class="close-btn" [disabled]="isLoading" mat-button color="accent" (click)="cancel()">Close</button>
+			<ng-container
+				*ngIf="notification$ | async as notification"
+				[ngTemplateOutlet]="notificationTmp"
+				[ngTemplateOutletContext]="{ $implicit: notification }">
+				<div class="divider"></div>
+			</ng-container>
+		</div>
+	</ng-template>
+
+	<ng-template #notificationTmp let-notification>
+		<div class="editor-notification" [class]="notification.type">
+			<div class="notification-content">
+				<mat-icon [style]="{ color: 'green' }" [svgIcon]="notification.icon"></mat-icon>
+				<div class="notification-message" [innerHTML]="notification.text"></div>
+			</div>
 		</div>
 	</ng-template>
 </section>

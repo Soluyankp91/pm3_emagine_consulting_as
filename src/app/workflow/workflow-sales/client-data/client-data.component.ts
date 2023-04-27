@@ -207,14 +207,6 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		}
 	}
 
-	directClientSelected(event: MatAutocompleteSelectedEvent) {
-		this.initContactSubs();
-		this.salesClientDataForm.frameAgreementId.setValue('');
-        this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
-        this.clearClientAddress(EClientSelectionType.DirectClient);
-        this.onDirectClientSelected.emit(event);
-	}
-
     clientSelected(event: MatAutocompleteSelectedEvent, clientType: EClientSelectionType) {
         this.clearClientAddress(clientType);
         this.getClientAddresses(event.option.value?.clientAddresses, clientType);
@@ -760,15 +752,55 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				}
 			});
 	}
+
+
+	directClientSelected(event: MatAutocompleteSelectedEvent) {
+		this.initContactSubs();
+		this.salesClientDataForm.frameAgreementId.setValue('');
+		this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.DirectClient);
+		this.clearClientAddress(EClientSelectionType.DirectClient);
+		this.preselectInvoicingRecipient(event);
+		this.onDirectClientSelected.emit(event);
+	}
+
+	directClientAddressSelected() {
+		this.preselectInvoicingRecipientAddress();
+		this._workflowDataService.onDirectClientAddressSelected.emit();
+	}
+
+	preselectInvoicingRecipient(event: MatAutocompleteSelectedEvent) {
+		if (this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient.value) {
+			this.salesClientDataForm.clientInvoicingRecipientIdValue.setValue(
+				this.salesClientDataForm.directClientIdValue.value,
+				{ emitEvent: false }
+			);
+			this.getClientAddresses(event.option.value?.clientAddresses, EClientSelectionType.InvoicingRecipient);
+		}
+	}
+
+	preselectInvoicingRecipientAddress() {
+		if (this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient.value) {
+			this.salesClientDataForm.clientInvoicingRecipientAddress.setValue(
+				this.salesClientDataForm.directClientAddress.value,
+				{ emitEvent: false }
+			);
+		}
+	}
+
     setClientInvoicingRecipient(sameAsDirectClient: boolean, directClient: ClientResultDto) {
         if (sameAsDirectClient) {
-			this.salesClientDataForm.clientInvoicingRecipientIdValue!.disable();
-			this.salesClientDataForm.clientInvoicingRecipientIdValue!.setValue(directClient);
-            this.getClientAddresses(directClient?.clientAddresses, EClientSelectionType.InvoicingRecipient);
+            this.salesClientDataForm.clientInvoicingRecipientIdValue!.disable({ emitEvent: false });
+            this.salesClientDataForm.clientInvoicingRecipientAddress!.disable({ emitEvent: false });
+            this.salesClientDataForm.clientInvoicingRecipientIdValue!.setValue(directClient);
+			this.salesClientDataForm.clientInvoicingRecipientAddress!.setValue(
+				this.salesClientDataForm.directClientAddress.value
+			);
+			this.getClientAddresses(directClient?.clientAddresses, EClientSelectionType.InvoicingRecipient);
 		} else {
-			this.salesClientDataForm.clientInvoicingRecipientIdValue!.enable();
+			this.salesClientDataForm.clientInvoicingRecipientIdValue!.enable({ emitEvent: false });
+			this.salesClientDataForm.clientInvoicingRecipientAddress!.enable({ emitEvent: false });
 		}
-    }
+	}
 
 	get clientRates(): UntypedFormArray {
 		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;

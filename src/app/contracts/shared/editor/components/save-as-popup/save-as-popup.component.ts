@@ -91,7 +91,6 @@ export class SaveAsPopupComponent implements OnInit {
 	}
 
 	submit() {
-		console.log(this.form.value);
 		this._dialogRef.close({ ...this.form.value });
 	}
 

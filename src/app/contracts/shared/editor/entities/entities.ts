@@ -17,6 +17,8 @@ export enum ICustomCommand {
 	DownloadMDWordDoc = 'DOWNLOAD_WITH_MERGED_DATA_WORD_DOC',
 	DownloadMDRichText = 'DOWNLOAD_WITH_MERGED_DATA_RICH_TEXT',
 	DownloadMDPlainText = 'DOWNLOAD_WITH_MERGED_DATA_PLAIN_TEXT',
+	ShowAllFieldCodes = 'SHOW_ALL_FIELD_CODES',
+	ShowAllFieldResults = 'SHOW_ALL_FIELD_RESULTS',
 
 	// Compare
 	SelectDocument = 'COMPARE_TAB_SELECT_DOCUMENT',
@@ -139,4 +141,10 @@ export interface IHighlightState {
 	selected: number[];
 	interval: IntervalApi | null;
 	highlights: Array<{ id: number; interval: IntervalApi }>;
+}
+
+export enum IMergeFieldState {
+	Code,
+	Field,
+	Result,
 }
