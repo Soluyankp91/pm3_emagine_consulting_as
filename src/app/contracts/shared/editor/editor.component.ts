@@ -8,7 +8,7 @@ import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 import { CommentService, CompareService, EditorCoreService } from './services';
 import { RichEditorDirective } from './directives';
 import { RichEditorOptionsProvider } from './providers';
-import { IDocumentItem, IDocumentVersion, IMergeField } from './entities';
+import { IDocumentItem, IDocumentVersion, IMergeField, IMergeFieldState } from './entities';
 
 import { InsertMergeFieldPopupComponent } from './components/insert-merge-field-popup';
 import { CompareSelectVersionPopupComponent } from './components/compare-select-version-popup';
@@ -97,6 +97,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	isLoading: boolean = false;
 	isPageLoading: boolean = true;
+	mergeFieldStateBeforeProcessing: IMergeFieldState = null;
 
 	selectedVersionControl = new FormControl();
 
@@ -347,12 +348,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveCurrentAsDraft() {
+		this.prepareToProcessDocument();
 		let version = this.selectedVersion.version + 1;
-		this.isLoading = true;
-		this._editorCoreService.toggleFields();
-		if (!this.isAgreement) {
-			this._editorCoreService.toggleMergedData();
-		}
 		this._notifierService.notify(NotificationType.VersionBeingCreated, { version });
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
@@ -368,9 +365,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveCurrentAsCompleteAgreementOnly() {
+		this.prepareToProcessDocument();
 		let version = this.selectedVersion.version + 1;
-		this.isLoading = true;
-		this._editorCoreService.toggleFields();
 		this._notifierService.notify(NotificationType.VersionBeingCreated, { version });
 		this._agreementService
 			.unlockAgreementByConfirmation(this.templateId, this.selectedVersion.version)
@@ -388,18 +384,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 							});
 					});
 				} else {
-					this.isLoading = false;
+					this.cleanUp(true);
 					this._notifierService.notify(NotificationType.ChangesNotSavedYet);
 				}
 			});
 	}
 
 	saveCurrentAsComplete(isAgreement: boolean) {
-		this.isLoading = true;
-		this._editorCoreService.toggleFields();
-		if (!this.isAgreement) {
-			this._editorCoreService.toggleMergedData();
-		}
+		this.prepareToProcessDocument();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._dialog
@@ -424,8 +416,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 							this._notifierService.notify(NotificationType.SavingChanges);
 							return res;
 						} else {
-							this.isLoading = false;
-							this._chd.detectChanges();
+							this.cleanUp(true);
 							return null;
 						}
 					}),
@@ -449,12 +440,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveDraftAsDraft() {
+		this.prepareToProcessDocument();
 		let version = this.currentTemplateVersion;
-		this.isLoading = true;
-		this._editorCoreService.toggleFields();
-		if (!this.isAgreement) {
-			this._editorCoreService.toggleMergedData();
-		}
 
 		this._notifierService.notify(NotificationType.SavingAsADraft, { version });
 		this._editorCoreService.setTemplateAsBase64((base64) => {
@@ -469,11 +456,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	promoteToDraft() {
-		this.isLoading = true;
-		this._editorCoreService.toggleFields();
-		if (!this.isAgreement) {
-			this._editorCoreService.toggleMergedData();
-		}
+		this.prepareToProcessDocument();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
 			this._agreementService
@@ -487,13 +470,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	saveDraftAsComplete() {
-		this.isLoading = true;
+		this.prepareToProcessDocument();
 		let sentVersion = this.versions.find((version) => version.envelopeStatus && version.envelopeStatus === 3);
-		this._editorCoreService.toggleFields();
-		if (!this.isAgreement) {
-			this._editorCoreService.toggleMergedData();
-		}
-
 		if (sentVersion) {
 			this._notifierService.notify(NotificationType.EnvelopeBeingVoided, { version: sentVersion.version });
 		} else {
@@ -510,13 +488,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 				)
 				.subscribe((res) => {
 					if (!res) {
-						this.isLoading = false;
+						this.cleanUp(true);
 						return this._notifierService.notifyPrevState();
 					}
 
-					this._editorCoreService.removeUnsavedChanges();
 					this.cleanUp();
-					this._chd.detectChanges();
 					this._updateCommentByNeeds();
 					this.getTemplateVersions(this.templateId, () => {
 						this.isLoading = false;
@@ -597,15 +573,46 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this._location.back();
 	}
 
-	cleanUp() {
+	cleanUp(skipUnsavedChangesCheck: boolean = false): void {
 		this.isLoading = false;
 		if (!this.isAgreement) {
 			this._editorCoreService.toggleFields();
 			this._editorCoreService.toggleMergedData();
 		}
+		this.rollbackMergeFieldViewState();
 
-		this._editorCoreService.removeUnsavedChanges();
+		if (!skipUnsavedChangesCheck) {
+			this._editorCoreService.removeUnsavedChanges();
+		}
 		this._chd.detectChanges();
+	}
+
+	prepareToProcessDocument(): void {
+		this.isLoading = true;
+		this._takeMergeFieldStateSnapshot();
+		this._editorCoreService.toggleFields();
+		if (!this.isAgreement) {
+			this._editorCoreService.toggleMergedData();
+		}
+	}
+
+	rollbackMergeFieldViewState(): void {
+		let fieldState = this.mergeFieldStateBeforeProcessing;
+
+		if (fieldState !== undefined || fieldState !== null) {
+			switch (fieldState) {
+				case IMergeFieldState.Field:
+					this._editorCoreService.toggleFields();
+					break;
+				case IMergeFieldState.Code:
+					this._editorCoreService.showAllFieldCodes();
+					break;
+				case IMergeFieldState.Result:
+					this._editorCoreService.showAllFieldResults();
+			}
+
+			this.mergeFieldStateBeforeProcessing = null;
+		}
 	}
 
 	private _showCompleteConfirmDialog(callback: (value: boolean) => void) {
@@ -642,5 +649,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.subscribe(() => {
 				this.loadComments(this.templateId);
 			});
+	}
+
+	private _takeMergeFieldStateSnapshot(): void {
+		this.mergeFieldStateBeforeProcessing = this._editorCoreService.mergeFieldState;
 	}
 }
