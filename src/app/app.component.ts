@@ -16,7 +16,6 @@ export class AppComponent extends AppComponentBase implements OnInit {
     accountInfo: any;
     currentEmployee: CurrentEmployeeDto | undefined;
 	contractsEnabled: boolean = false;
-    loaded = false;
 	constructor(
 		injector: Injector,
 		private router: Router,
