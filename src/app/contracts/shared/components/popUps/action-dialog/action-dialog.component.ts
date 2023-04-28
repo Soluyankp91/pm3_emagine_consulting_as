@@ -16,6 +16,7 @@ export class ActionDialogComponent {
 
 	template: TemplateRef<any>;
 
+	acceptButtonClass: 'discard-button' | 'confirm-button' = 'discard-button';
 	acceptButtonDisabled$: BehaviorSubject<boolean>;
 
 	constructor(@Inject(MAT_DIALOG_DATA) data: any) {
@@ -27,5 +28,9 @@ export class ActionDialogComponent {
 
 		this.acceptButtonDisabled$ = data.acceptButtonDisabled$;
 		this.template = data.template;
+
+		if (data.acceptButtonClass) {
+			this.acceptButtonClass = data.acceptButtonClass;
+		}
 	}
 }

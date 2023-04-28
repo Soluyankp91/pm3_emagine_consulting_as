@@ -19,7 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { Observable, combineLatest, ReplaySubject, Subject, fromEvent, Subscription, BehaviorSubject, EMPTY, of } from 'rxjs';
-import { takeUntil, startWith, pairwise, switchMap, catchError } from 'rxjs/operators';
+import { takeUntil, startWith, pairwise, switchMap, catchError, filter } from 'rxjs/operators';
 import { map, tap } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
@@ -41,6 +41,9 @@ import {
 	INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE,
 	INVALID_MANUAL_AGREEMENT_UPLOAD_MESSAGE,
 	MANUAL_AGREEMENT_UPLOAD_MESSAGE,
+	INVALID_REMINDER_MESSAGE,
+	SEND_REMINDER_CONFIRMATION_MESSAGE,
+	SEND_REMINDER_SUCCESS_MESSAGE,
 } from '../../shared/components/grid-table/agreements/entities/agreements.constants';
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
@@ -99,7 +102,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		private readonly _extraHttp: ExtraHttpsService,
 		private readonly _cdr: ChangeDetectorRef,
 		private readonly _injector: Injector,
-        private readonly _titleService: TitleService,
+		private readonly _titleService: TitleService
 	) {
 		super(_injector);
 	}
@@ -263,14 +266,15 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 
 	catchManualUploadError() {}
 
-	onSelectionAction($event: { selectedRows: AgreementDetailsPreviewDto[]; action: string }) {
+	onSelectionAction($event: { selectedRows: AgreementListItemDto[]; action: string }) {
 		switch ($event.action) {
 			case 'REMINDER':
+				this._handleReminderEvent($event.selectedRows);
 				break;
 
 			case 'DOWNLOAD':
 				const invalid = $event.selectedRows.find(
-					(row) => row.receiveAgreementsFromOtherParty || row.agreementStatus === EnvelopeStatus.WaitingForOthers
+					(row) => row.receiveAgreementsFromOtherParty || row.status === EnvelopeStatus.WaitingForOthers
 				);
 				if (invalid) {
 					this._dialog.open(NotificationDialogComponent, {
@@ -308,6 +312,49 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 	resetAllTopFilters() {
 		this._agreementService.updateSearchFilter('');
 		this._agreementService.updateTenantFilter([]);
+	}
+
+	private _handleReminderEvent(selectedRows: AgreementListItemDto[]) {
+		const allowedStatuses = [EnvelopeStatus.Sent, EnvelopeStatus.AboutToExpire, EnvelopeStatus.WaitingForOthers];
+		const eachRowIsValid = selectedRows.every((row) => allowedStatuses.includes(row.status) && row.envelopeProcessingPath === 2);
+
+		if (eachRowIsValid) {
+			let selectedRowsIds = selectedRows.map((row) => row.agreementId);
+			this._dialog
+				.open(ActionDialogComponent, {
+					width: '500px',
+					backdropClass: 'backdrop-modal--wrapper',
+					data: {
+						label: 'Send a reminder',
+						message: SEND_REMINDER_CONFIRMATION_MESSAGE,
+						acceptButtonLabel: 'SEND',
+						cancelButtonLabel: 'Cancel',
+						acceptButtonClass: 'confirm-button',
+					},
+				})
+				.afterClosed()
+				.pipe(
+					filter((proceed) => proceed),
+					tap(() => this.showMainSpinner()),
+					switchMap(() => this._agreementServiceProxy.resendDocusignEnvelope(selectedRowsIds))
+				)
+				.subscribe((res) => {
+					this.hideMainSpinner();
+					this._snackBar.open(SEND_REMINDER_SUCCESS_MESSAGE, 'X', {
+						panelClass: ['general-snackbar-success'],
+                		duration: 5000
+					});
+				});
+		} else {
+			return this._dialog.open(NotificationDialogComponent, {
+				width: '500px',
+				backdropClass: 'backdrop-modal--wrapper',
+				data: {
+					label: 'Send a reminder',
+					message: INVALID_REMINDER_MESSAGE,
+				},
+			});
+		}
 	}
 
 	private _initTable$() {
