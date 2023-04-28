@@ -1,45 +1,29 @@
 <div class="latest-changes">
-    <!-- <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-300">
-        <mat-label>Filter by</mat-label>
-        <mat-select [formControl]="filter" [disableOptionCentering]="true" (selectionChange)="getLatestChanges()">
-            <ng-container *ngIf="filter.value !== null">
-                <mat-option class="mat-select-clear-option" [value]="null">
-                    Clear
-                </mat-option>
-            </ng-container>
-            <ng-container *ngFor="let item of filters$ | async; trackBy: trackById">
-                <mat-option [value]="item">
-                    {{ item.displayName }}
-                </mat-option>
-            </ng-container>
-        </mat-select>
-    </mat-form-field> -->
     <mat-form-field class="form-width-300 autocompleteWithShevron" appearance="outline"
-            [ngClass]="{'isPanelOpen': auto.isOpen}">
-            <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="filter" appPreventDoubleClick
-                (click)="$event.stopPropagation()" placeholder="Type something..">
-            <span matSuffix class="shevron"></span>
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEventFn" (optionSelected)="getLatestChanges()">
-                <ng-container *ngFor="let option of filteredEvents$ | async; trackBy: trackByItem">
-                    <mat-option [value]="option">
-                        <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.displayName"
-                            matTooltipClass="white-tooltip" appShowIfTruncated>
-                            <span [matTooltip]="option.displayName"
-                            matTooltipClass="white-tooltip" appShowIfTruncated>
+        [ngClass]="{'isPanelOpen': auto.isOpen}">
+        <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="filter" appPreventDoubleClick
+            (click)="$event.stopPropagation()" placeholder="Type something..">
+        <span matSuffix class="shevron"></span>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEventFn" (optionSelected)="getLatestChanges()">
+            <ng-container *ngFor="let option of filteredEvents$ | async; trackBy: trackByItem">
+                <mat-option [value]="option">
+                    <div class="autocopmlete-option-name flex-items-center" [matTooltip]="option.displayName"
+                        matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <span class="dark-grey-color text-bold">
                             {{ option.displayName }}
                         </span>
-                        </div>
-                    </mat-option>
-                </ng-container>
-                <ng-container *ngIf="(filteredEvents$ | async)?.length === 0">
-                    <mat-option (click)="$event.stopPropagation()" class="no-data">
-                        <span>
-                            No events found
-                        </span>
-                    </mat-option>
-                </ng-container>
-            </mat-autocomplete>
-        </mat-form-field>
+                    </div>
+                </mat-option>
+            </ng-container>
+            <ng-container *ngIf="(filteredEvents$ | async)?.length === 0">
+                <mat-option (click)="$event.stopPropagation()" class="no-data dark-grey-color text-bold">
+                    <span>
+                        No events found
+                    </span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+    </mat-form-field>
     <div class="pos-relative">
         <mat-table
             class="white-table"
@@ -114,7 +98,35 @@
                     </span>
                     <ng-template #periodTooltip>
                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
-                            <mat-icon svgIcon="workflowAdd"></mat-icon>
+                            <ng-container [ngSwitch]="row.workflowProcessType">
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.StartClientPeriod">
+                                    <mat-icon svgIcon="workflowAdd"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ExtendClientPeriod">
+                                    <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.TerminateWorkflow">
+                                    <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ChangeClientPeriod">
+                                    <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.StartConsultantPeriod">
+                                    <mat-icon svgIcon="workflowAdd"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ChangeConsultantPeriod">
+                                    <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ExtendConsultantPeriod">
+                                    <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.TerminateConsultant">
+                                    <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <mat-icon svgIcon="what-next-icon" class="u-mr--10"></mat-icon>
+                                </ng-container>
+                            </ng-container>
                             {{row.clientPeriodTooltip}}
                         </div>
                     </ng-template>
@@ -125,7 +137,7 @@
                     By
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="40px">
-                    <img class="border-rounded-50" [matTooltip]="row.userName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.userId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                    <img class="border-rounded-50" [matTooltip]="row.employeeName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.employeeExternalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>

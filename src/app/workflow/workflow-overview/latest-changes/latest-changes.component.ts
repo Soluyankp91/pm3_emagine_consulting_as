@@ -9,6 +9,7 @@ import {
 	HistoryFilterNamesDto,
 	HistoryPropertiesDtoPaginatedList,
 	HistoryServiceProxy,
+    WorkflowProcessType,
 } from 'src/shared/service-proxies/service-proxies';
 import { ILatesChangesPayload, ITableData } from './latest-changes.model';
 import { PageEvent } from '@angular/material/paginator';
@@ -19,7 +20,7 @@ import { PageEvent } from '@angular/material/paginator';
 	styleUrls: ['./latest-changes.component.scss'],
 })
 export class LatestChangesComponent extends AppComponentBase implements OnInit {
-	filter = new UntypedFormControl(null);
+	filter = new UntypedFormControl('');
 	workflowId: string;
 	filters$: Observable<HistoryFilterNamesDto[]>;
 	filteredEvents$: Observable<HistoryFilterNamesDto[]>;
@@ -31,6 +32,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 	totalCount: number | undefined = 0;
 	sorting = '';
 	tableData: ITableData;
+    eWorkflowProcessType = WorkflowProcessType;
 	private _unsubscribe = new Subject();
 	constructor(injector: Injector, private _activeRoute: ActivatedRoute, private readonly _historyService: HistoryServiceProxy) {
 		super(injector);
@@ -59,6 +61,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 			.subscribe((result) => {
 				this.filteredEvents$ = result;
 			});
+        this.filter.setValue('');
 	}
 
 	getLatestChanges() {

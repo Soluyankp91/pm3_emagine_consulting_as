@@ -29280,12 +29280,14 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
     clientPeriodTooltip?: string | undefined;
+    workflowProcessType?: WorkflowProcessType;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
     clientId?: number | undefined;
     occurredAtUtc?: moment.Moment;
-    userId?: number | undefined;
-    userName?: string | undefined;
+    employeeId?: number | undefined;
+    employeeName?: string | undefined;
+    employeeExternalId?: string | undefined;
 
     constructor(data?: IHistoryPropertiesDto) {
         if (data) {
@@ -29308,12 +29310,14 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
             this.clientPeriodId = _data["clientPeriodId"];
             this.clientPeriodDisplayId = _data["clientPeriodDisplayId"];
             this.clientPeriodTooltip = _data["clientPeriodTooltip"];
+            this.workflowProcessType = _data["workflowProcessType"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.consultantId = _data["consultantId"];
             this.clientId = _data["clientId"];
             this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
-            this.userId = _data["userId"];
-            this.userName = _data["userName"];
+            this.employeeId = _data["employeeId"];
+            this.employeeName = _data["employeeName"];
+            this.employeeExternalId = _data["employeeExternalId"];
         }
     }
 
@@ -29336,12 +29340,14 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
         data["clientPeriodId"] = this.clientPeriodId;
         data["clientPeriodDisplayId"] = this.clientPeriodDisplayId;
         data["clientPeriodTooltip"] = this.clientPeriodTooltip;
+        data["workflowProcessType"] = this.workflowProcessType;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["consultantId"] = this.consultantId;
         data["clientId"] = this.clientId;
         data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
-        data["userId"] = this.userId;
-        data["userName"] = this.userName;
+        data["employeeId"] = this.employeeId;
+        data["employeeName"] = this.employeeName;
+        data["employeeExternalId"] = this.employeeExternalId;
         return data;
     }
 }
@@ -29357,12 +29363,14 @@ export interface IHistoryPropertiesDto {
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
     clientPeriodTooltip?: string | undefined;
+    workflowProcessType?: WorkflowProcessType;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
     clientId?: number | undefined;
     occurredAtUtc?: moment.Moment;
-    userId?: number | undefined;
-    userName?: string | undefined;
+    employeeId?: number | undefined;
+    employeeName?: string | undefined;
+    employeeExternalId?: string | undefined;
 }
 
 export class HistoryPropertiesDtoPaginatedList implements IHistoryPropertiesDtoPaginatedList {
