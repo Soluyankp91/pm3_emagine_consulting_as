@@ -38,6 +38,7 @@ import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contract
 import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
 import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
 import { CalculatedMarginComponent } from './shared/components/calculated-margin/calculated-margin.component';
+import { LatestChangesComponent } from './workflow-overview/latest-changes/latest-changes.component';
 import { WorkflowCreateResolver } from './workflow.resolver';
 
 @NgModule({
@@ -72,7 +73,8 @@ import { WorkflowCreateResolver } from './workflow.resolver';
 		SendEnvelopeDialogComponent,
 		SignersPreviewDialogComponent,
 		RemoveOrUploadAgrementDialogComponent,
-  CalculatedMarginComponent,
+		CalculatedMarginComponent,
+		LatestChangesComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],

@@ -1,0 +1,162 @@
+<div class="latest-changes">
+    <mat-form-field class="form-width-300 autocompleteWithShevron" appearance="outline"
+        [ngClass]="{'isPanelOpen': auto.isOpen}">
+        <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="filter" appPreventDoubleClick
+            (click)="$event.stopPropagation()" placeholder="Type something..">
+        <span matSuffix class="shevron"></span>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEventFn" (optionSelected)="getLatestChanges()">
+            <ng-container *ngFor="let option of filteredEvents$ | async; trackBy: trackByItem">
+                <mat-option [value]="option">
+                    <div class="autocopmlete-option-name flex-items-center" [matTooltip]="option.displayName"
+                        matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <span class="dark-grey-color text-bold">
+                            {{ option.displayName }}
+                        </span>
+                    </div>
+                </mat-option>
+            </ng-container>
+            <ng-container *ngIf="(filteredEvents$ | async)?.length === 0">
+                <mat-option (click)="$event.stopPropagation()" class="no-data dark-grey-color text-bold">
+                    <span>
+                        No events found
+                    </span>
+                </mat-option>
+            </ng-container>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div class="pos-relative">
+        <mat-table
+            class="white-table"
+            matSort
+            [dataSource]="tableData?.items">
+            <ng-container matColumnDef="changedDate">
+                <mat-header-cell *matHeaderCellDef fxFlex="140px">
+                    Changed Date
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="140px">
+                    <span class="dark-grey-color u-mr--5">{{row.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
+                    <span class="medium-grey-color text-600">{{row.occurredAtUtc | momentFormat: 'HH:mm'}}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actionName">
+                <mat-header-cell *matHeaderCellDef fxFlex="130px">
+                    Event
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="text-bold" fxFlex="130px">
+                    <span class="text-truncate-ellipsis">
+                        {{row.actionName ?? '-'}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="changedObject">
+                <mat-header-cell *matHeaderCellDef>
+                    Changed object
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span class="text-truncate-ellipsis" [matTooltip]="row.entityNameWithKeyValue ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        {{row.entityNameWithKeyValue ?? '-'}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="changedField">
+                <mat-header-cell *matHeaderCellDef>
+                    Changed field
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span class="text-truncate-ellipsis" [matTooltip]="row.propertyName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        {{row.propertyName ?? '-'}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="oldValue">
+                <mat-header-cell *matHeaderCellDef>
+                    Old Value
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span class="text-truncate-ellipsis" [matTooltip]="row.oldValue ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        {{row.oldValue ?? '-'}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="newValue">
+                <mat-header-cell *matHeaderCellDef>
+                    New Value
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span class="text-truncate-ellipsis" [matTooltip]="row.newValue ?? '-'" matTooltipClass="white-tooltip"  appShowIfTruncated>
+                        {{row.newValue ?? '-'}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="periodID">
+                <mat-header-cell *matHeaderCellDef fxFlex="70px">
+                    Period ID
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="70px">
+                    <span emgCustomTooltip [contentTemplate]="periodTooltip">
+                        {{row.clientPeriodDisplayId ?? '-'}}
+                    </span>
+                    <ng-template #periodTooltip>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                            <ng-container [ngSwitch]="row.workflowProcessType">
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.StartClientPeriod">
+                                    <mat-icon svgIcon="workflowAdd"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ExtendClientPeriod">
+                                    <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.TerminateWorkflow">
+                                    <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ChangeClientPeriod">
+                                    <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.StartConsultantPeriod">
+                                    <mat-icon svgIcon="workflowAdd"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ChangeConsultantPeriod">
+                                    <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.ExtendConsultantPeriod">
+                                    <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="eWorkflowProcessType.TerminateConsultant">
+                                    <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                                </ng-container>
+                                <ng-container *ngSwitchDefault>
+                                    <mat-icon svgIcon="what-next-icon" class="u-mr--10"></mat-icon>
+                                </ng-container>
+                            </ng-container>
+                            {{row.clientPeriodTooltip}}
+                        </div>
+                    </ng-template>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="by">
+                <mat-header-cell *matHeaderCellDef fxFlex="40px">
+                    By
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="40px">
+                    <img class="border-rounded-50" [matTooltip]="row.employeeName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.employeeExternalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayColumns;"></mat-row>
+        </mat-table>
+        <ng-container *ngIf="isLoading">
+            <div class="spinner-container">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="tableData?.totalCount === 0 && !isLoading">
+            <div class="results-not-found">
+                RESULTS NOT FOUND
+            </div>
+        </ng-container>
+        <div class="pagination-container u-w--100">
+            <mat-paginator #clientsPaginator [length]="tableData?.totalCount" [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)" [pageIndex]="pageIndex - 1">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
