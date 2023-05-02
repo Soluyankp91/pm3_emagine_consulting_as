@@ -1,32 +1,82 @@
 <mat-dialog-content class="confirmation-dialog">
     <div mat-dialog-title class="confirmation-dialog--header">
         <h1>
-            {{data?.isEdit ? 'Edit Client Purchase Order' : 'New Client Purchase Order'}}
+            {{data?.isEdit ? 'Edit Purchase Order' : 'Add Purchase Order'}}
         </h1>
         <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
                 svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
     <form [formGroup]="purchaseOrderForm">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-            <div fxLayout="row" fxLayoutAlign="start start">
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                 <ng-container *ngIf="!data?.isEdit">
+                    <mat-button-toggle-group (change)="poSourceChange($event.value)"
+                        [ngClass]="{'mat-form-field-invalid': !purchaseOrderForm.poSource?.valid}"
+                        class="workflow-toggle-buttons" formControlName="poSource" required>
+                        <ng-container *ngFor="let item of poSources; trackBy: trackById">
+                            <mat-button-toggle [value]="item.id">
+                                {{ item.name }}
+                            </mat-button-toggle>
+                        </ng-container>
+                    </mat-button-toggle-group>
+                    <mat-error>
+                        <app-validator [withoutFormField]="true" *ngIf="purchaseOrderForm.poSource?.touched"
+                            [control]="purchaseOrderForm.poSource"></app-validator>
+                    </mat-error>
+                </ng-container>
+            </div>
+            <ng-container *ngIf="purchaseOrderForm.poSource.value || data.isEdit">
+                <div fxLayout="row" fxLayoutAlign="start start">
                     <mat-form-field appearance="outline"
-                        class="formFieldNoMarginPadding filter-select form-width-140 u-mr--12">
-                        <mat-label>PO Source</mat-label>
-                        <mat-select required formControlName="poSource" [disableOptionCentering]="true"
-                            (selectionChange)="poSourceChange($event)">
-                            <ng-container *ngFor="let item of poSources; trackBy: trackById">
-                                <mat-option [value]="item.id">
-                                    {{ item.name }}
-                                </mat-option>
+                        [fxHide]="!(purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF)"
+                        class="formFieldNoMarginPadding form-width-350 autocompleteWithShevron client-address-autocomplete"
+                        [ngClass]="{'isPanelOpen': poAutocomplete.isOpen, 'is-empty': !purchaseOrderForm.existingPo.value?.id}">
+                        <mat-label>PO number</mat-label>
+                        <input
+                            [required]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
+                            type="text" matInput [matAutocomplete]="poAutocomplete" formControlName="existingPo"
+                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                            placeholder="Type something..">
+                        <ng-container *ngIf="purchaseOrderForm.existingPo?.value?.id" matPrefix>
+                            <ng-container [ngTemplateOutlet]="poNumberInfo"
+                                [ngTemplateOutletContext]="{order: purchaseOrderForm.existingPo?.value, isList: false}">
                             </ng-container>
-                        </mat-select>
+                        </ng-container>
+                        <span matSuffix class="shevron"></span>
+                        <mat-autocomplete #poAutocomplete="matAutocomplete" [displayWith]="displayPOFn"
+                            (optionSelected)="poSelected($event)">
+                            <ng-container *ngIf="filteredPurchaseOrders | async as filteredPurchaseOrders">
+                                <ng-container *ngFor="let item of filteredPurchaseOrders; trackBy: trackById">
+                                    <mat-option [value]="item" class="multilineDropdown-option">
+                                        <ng-container [ngTemplateOutlet]="poNumberInfo"
+                                            [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
+                                    </mat-option>
+                                </ng-container>
+                                <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
+                                    <mat-option
+                                        class="no-data multilineDropdown-option multilineDropdown-option--column-client-name">
+                                        No purchase orders
+                                    </mat-option>
+                                </ng-container>
+                            </ng-container>
+                        </mat-autocomplete>
                         <mat-error>
-                            <app-validator [control]="purchaseOrderForm.poSource"></app-validator>
+                            <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>
                         </mat-error>
                     </mat-form-field>
-                </ng-container>
-                <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO || data.isEdit">
+                </div>
+                <mat-divider [fxHide]="purchaseOrderForm.poSource.value === ePOSource.NewPO" class="fullDialogDivider dark-grey-color u-mt--15 u-mb--15"></mat-divider>
+                <div fxLayout="row" fxLayoutAlign="start start">
+                    <mat-form-field
+                        appearance="outline" class="formFieldNoMarginPadding form-width-235 u-mr--12"
+                        [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
+                        <mat-label>PO number</mat-label>
+                        <input autocomplete="off" matInput name="poNumber" formControlName="number"
+                            [required]="purchaseOrderForm.poSource.value === ePOSource.NewPO && !purchaseOrderForm.numberMissingButRequired.value">
+                        <mat-error>
+                            <app-validator [control]="purchaseOrderForm.number"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-165"
                         [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
                         <mat-label>PO receive date</mat-label>
@@ -40,120 +90,72 @@
                             <app-validator [control]="purchaseOrderForm.receiveDate"></app-validator>
                         </mat-error>
                     </mat-form-field>
-                </ng-container>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline"
-                    [fxHide]="!(purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF)"
-                    class="formFieldNoMarginPadding form-width-350 autocompleteWithShevron client-address-autocomplete"
-                    [ngClass]="{'isPanelOpen': poAutocomplete.isOpen, 'is-empty': !purchaseOrderForm.existingPo.value?.id}">
-                    <mat-label>PO number</mat-label>
-                    <input [required]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
-                         type="text" matInput
-                        [matAutocomplete]="poAutocomplete" formControlName="existingPo"
-                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                        placeholder="Type something..">
-                    <ng-container *ngIf="purchaseOrderForm.existingPo?.value?.id" matPrefix>
-                        <ng-container [ngTemplateOutlet]="poNumberInfo"
-                            [ngTemplateOutletContext]="{order: purchaseOrderForm.existingPo?.value, isList: false}">
-                        </ng-container>
-                    </ng-container>
-                    <span matSuffix class="shevron"></span>
-                    <mat-autocomplete #poAutocomplete="matAutocomplete"
-                        [displayWith]="displayPOFn" (optionSelected)="poSelected($event)">
-                        <ng-container *ngIf="filteredPurchaseOrders | async as filteredPurchaseOrders">
-                            <ng-container *ngFor="let item of filteredPurchaseOrders; trackBy: trackById">
-                                <mat-option [value]="item" class="multilineDropdown-option">
-                                    <ng-container [ngTemplateOutlet]="poNumberInfo"
-                                        [ngTemplateOutletContext]="{order: item, isList: true}"></ng-container>
-                                </mat-option>
-                            </ng-container>
-                            <ng-container *ngIf="filteredPurchaseOrders?.length === 0">
-                                <mat-option class="no-data multilineDropdown-option multilineDropdown-option--column-client-name">
-                                    No purchase orders
-                                </mat-option>
-                            </ng-container>
-                        </ng-container>
-                    </mat-autocomplete>
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.existingPo"></app-validator>
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field
-                    [fxHide]="purchaseOrderForm.poSource.value === ePOSource.ExistingPO || purchaseOrderForm.poSource.value === ePOSource.DifferentWF"
-                    appearance="outline" class="formFieldNoMarginPadding form-width-270 u-mr--12"
-                    [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
-                    <mat-label>PO number</mat-label>
-                    <input autocomplete="off" matInput name="poNumber" formControlName="number"
-                        [required]="purchaseOrderForm.poSource.value === ePOSource.NewPO && !purchaseOrderForm.numberMissingButRequired.value">
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.number"></app-validator>
-                    </mat-error>
-                </mat-form-field>
-
-            </div>
-            <ng-container *ngIf="purchaseOrderForm.poSource.value === ePOSource.NewPO || data.isEdit">
+                </div>
                 <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate"
                     class="black-checkbox u-mt--10"
                     (change)="disableInputs(purchaseOrderForm.numberMissingButRequired.value)">
                     PO number missing, but required
                 </mat-checkbox>
-            </ng-container>
-            <mat-divider class="u-w--100 dark-grey-color u-mt--15 u-mb--15"></mat-divider>
-            <ng-container formGroupName="capForInvoicing">
-                <h3 class="workflow-gray--header u-mb--10">Shared Cap for Invoicing</h3>
-                <mat-button-toggle-group
-                    (change)="sharedCapTypeChange($event.value)"
-                    [ngClass]="{'mat-form-field-invalid': !purchaseOrderForm.capForInvoicing.type?.valid}"
-                    class="workflow-toggle-buttons" formControlName="type" required>
-                    <ng-container *ngFor="let item of purchaseOrderCapTypes | keyvalue; trackBy: trackByKey">
-                        <mat-button-toggle [value]="+item.key">
-                            {{ item.value }}
-                        </mat-button-toggle>
-                    </ng-container>
-                </mat-button-toggle-group>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-mt--10"
-                    [fxHide]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.NoCap">
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--12">
-                        <mat-label>Max value</mat-label>
-                        <input type="number" autocomplete="off" matInput name="maxAmount" formControlName="maxAmount"
-                            [required]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap">
-                        <mat-error>
-                            <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field [fxHide]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.CapOnUnits"
-                        appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
-                        <mat-label>Unit</mat-label>
-                        <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits"
-                            formControlName="valueUnitTypeId" [disableOptionCentering]="true">
-                            <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
-                                <mat-option [value]="item.id">
-                                    {{ item.name }}
-                                </mat-option>
-                            </ng-container>
-                        </mat-select>
-                        <mat-error>
-                            <app-validator
-                                [control]="purchaseOrderForm.capForInvoicing.valueUnitTypeId"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field [fxHide]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.CapOnValue"
-                        appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
-                        <mat-label>Currency</mat-label>
-                        <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue"
-                            formControlName="currencyId" [disableOptionCentering]="true">
-                            <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                <mat-option [value]="item.id">
-                                    {{ item.name }}
-                                </mat-option>
-                            </ng-container>
-                        </mat-select>
-                        <mat-error>
-                            <app-validator [control]="purchaseOrderForm.capForInvoicing.currencyId"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+                <ng-container formGroupName="capForInvoicing">
+                    <h3 class="workflow-gray--header u-mb--5 u-mt--10">Shared Cap for Invoicing</h3>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select form-width-140 u-mr--12">
+                            <mat-label>Cap type</mat-label>
+                            <mat-select required formControlName="type" [disableOptionCentering]="true"
+                                (selectionChange)="sharedCapTypeChange($event.value)">
+                                <ng-container *ngFor="let item of purchaseOrderCapTypes | keyvalue; trackBy: trackByKey">
+                                    <mat-option [value]="+item.key">
+                                        {{ item.value }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="purchaseOrderForm.capForInvoicing.type"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-120 u-mr--12"
+                            [fxHide]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.NoCap">
+                            <mat-label>Max value</mat-label>
+                            <input type="number" autocomplete="off" matInput name="maxAmount" formControlName="maxAmount"
+                                [required]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.NoCap">
+                            <mat-error>
+                                <app-validator [control]="purchaseOrderForm.capForInvoicing.maxAmount"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field [fxHide]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.CapOnUnits"
+                            appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
+                            <mat-label>Unit</mat-label>
+                            <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnUnits"
+                                formControlName="valueUnitTypeId" [disableOptionCentering]="true">
+                                <ng-container *ngFor="let item of valueUnitTypes; trackBy: trackById">
+                                    <mat-option [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator
+                                    [control]="purchaseOrderForm.capForInvoicing.valueUnitTypeId"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field [fxHide]="purchaseOrderForm.capForInvoicing.type.value !== ePOCaps.CapOnValue"
+                            appearance="outline" class="formFieldNoMarginPadding filter-select form-width-120">
+                            <mat-label>Currency</mat-label>
+                            <mat-select [required]="purchaseOrderForm.capForInvoicing.type.value === ePOCaps.CapOnValue"
+                                formControlName="currencyId" [disableOptionCentering]="true">
+                                <ng-container *ngFor="let item of currencies; trackBy: trackById">
+                                    <mat-option [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </ng-container>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="purchaseOrderForm.capForInvoicing.currencyId"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </ng-container>
             </ng-container>
         </div>
     </form>
@@ -176,11 +178,12 @@
             <ng-container *ngIf="order.purchaseOrderCurrentContextData?.existsInAnotherWorkflow && isList">
                 <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
-                    {{order?.number}}
+                {{order?.number}}
             </ng-container>
         </span>
         <span class="multilineDropdown-option--column-client-info">
-            {{order?.receiveDate !== null && order?.receiveDate !== undefined ? (order?.receiveDate | momentFormat) : '-'
+            {{order?.receiveDate !== null && order?.receiveDate !== undefined ? (order?.receiveDate | momentFormat) :
+            '-'
             }}
             {{order?.receiveDate !== null && order?.receiveDate !== undefined ? '• ' : ''}}
             {{purchaseOrderCapTypes[order?.capForInvoicing?.type]}}

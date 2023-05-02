@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
 import { Observable, Subject } from 'rxjs';
 import { finalize, map, startWith, takeUntil } from 'rxjs/operators';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
@@ -134,10 +133,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		}
 	}
 
-	poSourceChange(event: MatSelectChange) {
+	poSourceChange(poSource: number) {
 		this._clearData();
-		if (event.value === EPOSource.DifferentWF || event.value === EPOSource.ExistingPO) {
-			this.availablePurchaseOrders = this._filterOutPOs(event.value as EPOSource);
+		if (poSource === EPOSource.DifferentWF || poSource === EPOSource.ExistingPO) {
+			this.availablePurchaseOrders = this._filterOutPOs(poSource as EPOSource);
 			this.purchaseOrderForm.existingPo.reset('');
 		} else {
 			this.purchaseOrderForm.enable();
