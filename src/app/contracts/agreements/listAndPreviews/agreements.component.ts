@@ -51,7 +51,7 @@ import { AgreementFiltersEnum, MappedAgreementTableItem, MappedTableCells } from
 import { ContractsService } from '../../shared/services/contracts.service';
 import { DownloadFilesService } from '../../shared/services/download-files.service';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { DownloadFile } from '../../shared/utils/download-file';
+import { DownloadFile, DownloadFileAsDataURL } from '../../shared/utils/download-file';
 import { AgreementPreviewComponent } from './components/agreement-preview/agreement-preview.component';
 import { AgreementService } from './services/agreement.service';
 import { ActionDialogComponent } from '../../shared/components/popUps/action-dialog/action-dialog.component';
@@ -233,13 +233,24 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 						}, 500);
 					});
 				break;
+			case 'DOWNLOAD_SIGNED_CONTRACT':
+				this.showMainSpinner();
+				this._downloadFilesService.signedDocument($event.row.agreementId).subscribe((d) => {
+					this.hideMainSpinner();
+					DownloadFileAsDataURL(d as any, `${$event.row.agreementId}`);
+				});
+				break;
 			case 'DOWNLOAD_PDF':
+				this.showMainSpinner();
 				this._downloadFilesService.pdf($event.row.agreementId).subscribe((d) => {
+					this.hideMainSpinner();
 					DownloadFile(d as any, `${$event.row.agreementId}.pdf`);
 				});
 				break;
 			case 'DOWNLOAD_DOC':
+				this.showMainSpinner();
 				this._downloadFilesService.latestAgreementVersion($event.row.agreementId, true).subscribe((d) => {
+					this.hideMainSpinner();
 					DownloadFile(d as any, `${$event.row.agreementId}.doc`);
 				});
 				break;
@@ -273,30 +284,8 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 				break;
 
 			case 'DOWNLOAD':
-				const invalid = $event.selectedRows.find(
-					(row) => row.receiveAgreementsFromOtherParty || row.status === EnvelopeStatus.WaitingForOthers
-				);
-				if (invalid) {
-					this._dialog.open(NotificationDialogComponent, {
-						width: '500px',
-						height: '290px',
-						backdropClass: 'backdrop-modal--wrapper',
-						data: {
-							label: 'Download envelope',
-							message: INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE,
-						},
-					});
-				} else {
-					this.showMainSpinner();
-					this._downloadFilesService
-						.agreementFiles($event.selectedRows.map((selectedRow) => selectedRow.agreementId))
-						.pipe(
-							tap(() => {
-								this.hideMainSpinner();
-							})
-						)
-						.subscribe((d) => DownloadFile(d as any, 'signed-documents.zip'));
-				}
+				this._handleDownloadEvent($event.selectedRows);
+				break;
 		}
 	}
 
@@ -314,9 +303,23 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 		this._agreementService.updateTenantFilter([]);
 	}
 
+	private _handleDownloadEvent(selectedRows: AgreementListItemDto[]) {
+		this.showMainSpinner();
+		this._downloadFilesService
+			.agreementFiles(selectedRows.map((selectedRow) => selectedRow.agreementId))
+			.pipe(
+				tap(() => {
+					this.hideMainSpinner();
+				})
+			)
+			.subscribe((d) => DownloadFile(d as any, 'signed-documents.zip'));
+	}
+
 	private _handleReminderEvent(selectedRows: AgreementListItemDto[]) {
 		const allowedStatuses = [EnvelopeStatus.Sent, EnvelopeStatus.AboutToExpire, EnvelopeStatus.WaitingForOthers];
-		const eachRowIsValid = selectedRows.every((row) => allowedStatuses.includes(row.status) && row.envelopeProcessingPath === 2);
+		const eachRowIsValid = selectedRows.every(
+			(row) => allowedStatuses.includes(row.status) && row.envelopeProcessingPath === 2
+		);
 
 		if (eachRowIsValid) {
 			let selectedRowsIds = selectedRows.map((row) => row.agreementId);
@@ -342,7 +345,7 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 					this.hideMainSpinner();
 					this._snackBar.open(SEND_REMINDER_SUCCESS_MESSAGE, 'X', {
 						panelClass: ['general-snackbar-success'],
-                		duration: 5000
+						duration: 5000,
 					});
 				});
 		} else {
@@ -389,6 +392,20 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 	private _mapTableItems(items: AgreementListItemDto[], maps: MappedTableCells): MappedAgreementTableItem[] {
 		return items.map((item: AgreementListItemDto) => {
 			let itemActions = [...this.baseActions];
+			if (item.hasSignedDocumentFile) {
+				itemActions.splice(1, 0, {
+					label: 'Download signed contract',
+					actionType: 'DOWNLOAD_SIGNED_CONTRACT',
+					actionIcon: 'download-icon',
+				});
+			}
+
+			if (!item['hasCurrentVersion']) {
+				itemActions = itemActions.filter(
+					(action) => action.actionType !== 'DOWNLOAD_PDF' && action.actionType !== 'DOWNLOAD_DOC'
+				);
+			}
+
 			if (item.isWorkflowRelated) {
 				itemActions.push({
 					label: 'Open workflow',
