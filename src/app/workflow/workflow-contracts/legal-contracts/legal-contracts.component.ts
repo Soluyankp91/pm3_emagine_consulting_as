@@ -145,7 +145,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			hideReason: true,
 			message: overrideDocument
 				? 'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?'
-				:  null,
+				: null,
 		};
 		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
@@ -466,7 +466,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		return this.clientLegalContractsForm.get('legalContracts') as UntypedFormArray;
 	}
 	get downloadEnvelopeAvailable() {
-		return this.legalContracts.value.some((x) => x.selected);
+		return (
+			this.legalContracts.value.some((x) => x.selected) &&
+			this.legalContracts.value.filter((x) => x.selected).every((item) => item.hasSignedDocumentFile)
+		);
 	}
 	get sendAgreementAvailable() {
 		return this.legalContracts.value
