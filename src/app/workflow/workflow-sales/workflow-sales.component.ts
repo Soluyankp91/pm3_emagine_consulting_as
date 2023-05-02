@@ -403,6 +403,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				);
+                // FIXME: uncomment and change property once BE is ready
+                // this.mainDataComponent.salesMainDataForm.salesAccountManagerTeam.setValue(result?.salesMainData?.salesAccountManagerTeam, {emitEvent: false});
 				this.mainDataComponent?.salesMainDataForm.commissionAccountManagerIdValue?.setValue(
 					result?.salesMainData?.commissionAccountManagerData,
 					{ emitEvent: false }
@@ -974,6 +976,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		input.salesMainData = new SalesMainDataDto(this.mainDataComponent?.salesMainDataForm.value);
 		input.salesMainData.salesAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
+        // FIXME: uncomment and change property once BE is ready
+        // input.salesMainData?.salesAccountManagerTeam = this.mainDataComponent.salesMainDataForm.salesAccountManagerTeam.value;
 		input.salesMainData.commissionAccountManagerIdValue =
 			this.mainDataComponent?.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
 		input.salesMainData.primarySourcerId = this.mainDataComponent?.salesMainDataForm.primarySourcer?.value?.id;
