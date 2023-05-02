@@ -2,9 +2,6 @@
 @import "/src/app/shared/styles/config/_mixins";
 
 .confirmation-dialog {
-    &--content {
-        padding: 30px;
-    }
     &--actions{
         justify-content: space-between;
         border-top: 1px solid $sand-color;
@@ -21,4 +18,9 @@
         }
     }
 
+}
+
+.fullDialogDivider {
+   width: calc(100% + 80px); // dialog padding 40px * 2
+   margin-left: -40px; // dialog padding 40px
 }
