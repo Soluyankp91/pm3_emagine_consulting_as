@@ -57,6 +57,7 @@ import { AgreementService } from './services/agreement.service';
 import { ActionDialogComponent } from '../../shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from '../../shared/components/default-file-uploader/default-file-uploader.component';
 import { ExtraHttpsService } from '../../shared/services/extra-https.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-agreements',
@@ -175,7 +176,23 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 									data: file.data,
 								})
 								.pipe(
-									catchError(() => {
+									catchError((err: HttpErrorResponse) => {
+										if (
+											err?.error?.error?.code &&
+											err.error.error.code === 'contracts.documents.cant.upload.completed.in.docusign'
+										) {
+											this.hideMainSpinner();
+											this._dialog.open(NotificationDialogComponent, {
+												width: '500px',
+												backdropClass: 'backdrop-modal--wrapper',
+												data: {
+													label: 'Upload contract',
+													message: 'Cannot upload completed contract in DocuSign.',
+												},
+											});
+											return EMPTY;
+										}
+
 										this.hideMainSpinner();
 										dialogRef = this._dialog.open(ActionDialogComponent, {
 											width: '500px',
