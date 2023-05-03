@@ -38,6 +38,8 @@ import { ERemoveOrOuploadDialogMode } from './remove-or-upload-agrement-dialog/r
 import { SendEnvelopeDialogComponent } from './send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-preview-dialog.component';
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
+import { NotificationDialogComponent } from '../../../contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
+import { EMPTY } from 'rxjs';
 
 @Component({
 	selector: 'legal-contracts-list',
@@ -409,6 +411,19 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 				error: (error) => {
 					const errorObj = JSON.parse(error.response);
 					let message = errorObj?.error?.message;
+					let code = errorObj?.error?.code;
+					if (code && code === 'contracts.documents.cant.upload.completed.in.docusign') {
+						this.hideMainSpinner();
+						this._dialog.open(NotificationDialogComponent, {
+							width: '500px',
+							backdropClass: 'backdrop-modal--wrapper',
+							data: {
+								label: 'Upload contract',
+								message: 'Cannot upload completed contract in DocuSign.',
+							},
+						});
+						return EMPTY;
+					}
 					message = message?.length ? message : 'Forcing contract upload may result in envelope changes.';
 					this._showForceUpdateDialog(message, agreementId, (forceUpdate = true), file);
 				},
