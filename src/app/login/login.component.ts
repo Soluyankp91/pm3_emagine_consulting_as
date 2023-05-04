@@ -5,7 +5,6 @@ import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult 
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { PmValues } from './entities/login.entities';
-import { AuthService } from './auth.service';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -20,7 +19,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     constructor(
         @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
         private _msalService: MsalService,
-        private _authService: AuthService,
         private msalBroadcastService: MsalBroadcastService,
         private router: Router
     ) { }
