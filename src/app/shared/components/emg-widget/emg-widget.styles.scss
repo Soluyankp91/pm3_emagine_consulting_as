@@ -858,3 +858,17 @@ emg-widget, .cdk-main-widget-overlay, .cdk-widget-overlay {
         line-height: 14px !important;
     }
 }
+
+.logoOnHoverState {
+    display: none;
+}
+
+.logo-wrapper:hover {
+    background-color: #46A690;
+    .logoOnHoverState {
+        display: block;
+    }
+    .logoOnPlainState {
+        display: none;
+    }
+}

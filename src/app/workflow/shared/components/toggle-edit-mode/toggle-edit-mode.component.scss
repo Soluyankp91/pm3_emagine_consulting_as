@@ -11,10 +11,10 @@
 
 .sticky-buttons {
     position: sticky;
-    top: 150px;
+    top: 132px;
     &-overlay {
         position: absolute;
-        top: 30px;
+        top: 17px;
         right: 24px;
         z-index: 999;
         height: calc(100% - 150px);
