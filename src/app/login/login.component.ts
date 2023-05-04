@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private readonly _destroying$ = new Subject<void>();
     constructor(
         @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
-        private authService: MsalService,
+        private _msalService: MsalService,
         private msalBroadcastService: MsalBroadcastService,
         private router: Router
     ) { }
@@ -38,7 +38,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     setLoginDisplay() {
-        this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+        const loader = document.getElementById('appLoader') as HTMLElement;
+        loader.classList.add('unvisible');
+        this.loginDisplay = this._msalService.instance.getAllAccounts().length > 0;
     }
 
     checkAndSetActiveAccount() {
@@ -47,33 +49,36 @@ export class LoginComponent implements OnInit, OnDestroy {
          * To use active account set here, subscribe to inProgress$ first in your component
          * Note: Basic usage demonstrated. Your app may require more complicated account selection logic
          */
-        let activeAccount = this.authService.instance.getActiveAccount();
+        let activeAccount = this._msalService.instance.getActiveAccount();
 
-        if (!activeAccount && this.authService.instance.getAllAccounts().length > 0) {
-            let accounts = this.authService.instance.getAllAccounts();
-            this.authService.instance.setActiveAccount(accounts[0]);
+        if (!activeAccount && this._msalService.instance.getAllAccounts().length > 0) {
+            let accounts = this._msalService.instance.getAllAccounts();
+            this._msalService.instance.setActiveAccount(accounts[0]);
         }
     }
 
     loginRedirect() {
         if (this.msalGuardConfig.authRequest) {
-            this.authService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
+            this._msalService.loginRedirect({ ...this.msalGuardConfig.authRequest } as RedirectRequest);
         } else {
-            this.authService.loginRedirect();
+            this._msalService.loginRedirect();
         }
     }
 
     loginPopup() {
+        const loader = document.getElementById('appLoader') as HTMLElement;
         if (this.msalGuardConfig.authRequest) {
-            this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
-                .subscribe((response: AuthenticationResult) => {
-                    this.authService.instance.setActiveAccount(response.account);
+            this._msalService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
+            .subscribe((response: AuthenticationResult) => {
+                loader.classList.remove('unvisible');
+                this._msalService.instance.setActiveAccount(response.account);
                     this.router.navigate(['/app']);
                 });
         } else {
-            this.authService.loginPopup()
+            this._msalService.loginPopup()
                 .subscribe((response: AuthenticationResult) => {
-                    this.authService.instance.setActiveAccount(response.account);
+                    loader.classList.remove('unvisible');
+                    this._msalService.instance.setActiveAccount(response.account);
                     this.router.navigate(['/app']);
                 });
         }
@@ -81,11 +86,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     logout(popup?: boolean) {
         if (popup) {
-            this.authService.logoutPopup({
+            this._msalService.logoutPopup({
                 mainWindowRedirectUri: "/"
             });
         } else {
-            this.authService.logoutRedirect();
+            this._msalService.logoutRedirect();
         }
     }
 
