@@ -60,6 +60,7 @@ import {
 	SignerType,
 	ConsultantPeriodServiceProxy,
 	MergeFieldsServiceProxy,
+	SimpleAgreementTemplatesListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { DuplicateOrParentOptions, ParentTemplateDto, WorkflowSummary } from './settings.interfaces';
 import { EditorObserverService } from '../../../shared/services/editor-observer.service';
@@ -1065,8 +1066,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					if (this.consultantPeriodId) {
 						return true;
 					}
-					
-					if ((this.clientPeriodId) && this.workflowTemplateType$.value !== undefined) {
+
+					if (this.clientPeriodId && this.workflowTemplateType$.value !== undefined) {
 						this.agreementFormGroup.patchValue({
 							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,
@@ -1247,30 +1248,25 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								this.duplicateOptionsLoading$.next(true);
 							}),
 							switchMap((search) => {
+								let workflowTemplateType = this.workflowTemplateType$.value;
+								let workflowDataNotUndefined = this.workFlowMetadata && workflowTemplateType !== undefined;
+								let workflowMetadata = workflowDataNotUndefined
+									? this.workFlowMetadata
+									: ({} as typeof this.workFlowMetadata);
+
+								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
+									items.filter((item) => item.hasCurrentVersion);
+
 								return this._apiServiceProxy2
 									.simpleList2(
-										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
-											? this.workflowTemplateType$.value
-											: undefined,
+										workflowDataNotUndefined ? workflowTemplateType : undefined,
 										undefined,
-										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
-											? this.workFlowMetadata.legalEntityId
-											: undefined,
-										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
-											? this.workFlowMetadata.salesTypeId
-											: undefined,
-										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
-											? this.workFlowMetadata.contractType
-											: undefined,
-										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
-											? this.workFlowMetadata.deliveryTypeId
-											: undefined,
-										this.workFlowMetadata && this.workflowTemplateType$.value === true
-											? this.workFlowMetadata.clientId
-											: undefined,
-										this.workFlowMetadata && this.workflowTemplateType$.value !== undefined
-											? this.workFlowMetadata.recipientTypeId
-											: undefined,
+										workflowMetadata.legalEntityId,
+										workflowMetadata.salesTypeId,
+										workflowMetadata.contractType,
+										workflowMetadata.deliveryTypeId,
+										this.workFlowMetadata && !!workflowTemplateType ? workflowMetadata.clientId : undefined,
+										workflowMetadata.recipientTypeId,
 										undefined,
 										search,
 										1,
@@ -1280,7 +1276,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										tap(() => {
 											this.duplicateOptionsLoading$.next(false);
 										}),
-										map((response) => response.items)
+										map((response) => onlyCompletedTemplates(response.items))
 									);
 							})
 						),
