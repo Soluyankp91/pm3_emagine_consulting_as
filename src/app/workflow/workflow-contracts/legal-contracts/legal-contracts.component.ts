@@ -264,7 +264,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		this.showMainSpinner();
 		let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
 		const agreementIds = selectedAgreements.map((x) => x.agreementId);
-		let url = `${this.apiUrl}/api/Agreement/signed-documents?`;
+		let url = `${this.apiUrl}/api/Agreement/files?`;
+		
 		if (agreementIds?.length > 0) {
 			for (let id of agreementIds) {
 				url += `agreementIds=${id}&`;

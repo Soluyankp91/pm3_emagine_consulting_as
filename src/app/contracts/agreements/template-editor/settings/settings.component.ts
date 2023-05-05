@@ -1250,34 +1250,29 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							switchMap((search) => {
 								let workflowTemplateType = this.workflowTemplateType$.value;
 								let workflowDataNotUndefined = this.workFlowMetadata && workflowTemplateType !== undefined;
-								let workflowMetadata = workflowDataNotUndefined
-									? this.workFlowMetadata
-									: ({} as typeof this.workFlowMetadata);
+								let { legalEntityId, salesTypeId, contractType, deliveryTypeId, recipientTypeId } =
+									workflowDataNotUndefined ? this.workFlowMetadata : ({} as typeof this.workFlowMetadata);
 
 								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
 									items.filter((item) => item.hasCurrentVersion);
 
-								return this._apiServiceProxy2
-									.simpleList2(
-										workflowDataNotUndefined ? workflowTemplateType : undefined,
-										undefined,
-										workflowMetadata.legalEntityId,
-										workflowMetadata.salesTypeId,
-										workflowMetadata.contractType,
-										workflowMetadata.deliveryTypeId,
-										this.workFlowMetadata && !!workflowTemplateType ? workflowMetadata.clientId : undefined,
-										workflowMetadata.recipientTypeId,
-										undefined,
-										search,
-										1,
-										20
-									)
-									.pipe(
-										tap(() => {
-											this.duplicateOptionsLoading$.next(false);
-										}),
-										map((response) => onlyCompletedTemplates(response.items))
-									);
+								let paramsForAllTemplates = [
+									undefined,
+									undefined,
+									legalEntityId,
+									salesTypeId,
+									contractType,
+									deliveryTypeId,
+									undefined,
+									recipientTypeId,
+									undefined,
+									search,
+								] as any[];
+
+								return this._apiServiceProxy2.simpleList2(...paramsForAllTemplates).pipe(
+									tap(() => this.duplicateOptionsLoading$.next(false)),
+									map((res) => onlyCompletedTemplates(res.items))
+								);
 							})
 						),
 						optionsChanged$: this.parentOptionsChanged$,

@@ -436,7 +436,10 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 										}),
 										withLatestFrom(this._contractsService.getEnumMap$()),
 										map(([response, maps]) => {
-											return response.items.map(
+											let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
+												items.filter((item) => item.hasCurrentVersion);
+
+											return onlyCompletedTemplates(response.items).map(
 												(item) =>
 													Object.assign(item, {
 														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
