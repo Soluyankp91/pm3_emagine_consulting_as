@@ -90,7 +90,7 @@ export class InternalLookupService {
             terminationTimes: this.getTerminationTimes(),
             terminationReasons: this.getTerminationReasons(),
             employmentTypes: this.getEmploymentTypes(),
-            expectedWorkloadUnit: this.getExpectedWorkloadUnit(),
+            expectedWorkloadUnits: this.getExpectedWorkloadUnit(),
             countries: this.getCountries(),
             consultantTimeReportingCap: this.getConsultantTimeReportingCap(),
             workflowStatuses: this.getWorkflowStatuses(),
