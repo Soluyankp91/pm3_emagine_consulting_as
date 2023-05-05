@@ -5,6 +5,7 @@ import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult 
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { PmValues } from './entities/login.entities';
+import { AuthService } from './auth.service';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     constructor(
         @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
         private _msalService: MsalService,
+        private _authService: AuthService,
         private msalBroadcastService: MsalBroadcastService,
         private router: Router
     ) { }
@@ -49,12 +51,13 @@ export class LoginComponent implements OnInit, OnDestroy {
          * To use active account set here, subscribe to inProgress$ first in your component
          * Note: Basic usage demonstrated. Your app may require more complicated account selection logic
          */
-        let activeAccount = this._msalService.instance.getActiveAccount();
+        this._authService.checkAndSetActiveAccount();
+        // let activeAccount = this._msalService.instance.getActiveAccount();
 
-        if (!activeAccount && this._msalService.instance.getAllAccounts().length > 0) {
-            let accounts = this._msalService.instance.getAllAccounts();
-            this._msalService.instance.setActiveAccount(accounts[0]);
-        }
+        // if (!activeAccount && this._msalService.instance.getAllAccounts().length > 0) {
+        //     let accounts = this._msalService.instance.getAllAccounts();
+        //     this._msalService.instance.setActiveAccount(accounts[0]);
+        // }
     }
 
     loginRedirect() {
@@ -66,28 +69,26 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     loginPopup() {
-        const loader = document.getElementById('appLoader') as HTMLElement;
-        if (this.msalGuardConfig.authRequest) {
-            this._msalService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
-            .subscribe((response: AuthenticationResult) => {
-                loader.classList.remove('unvisible');
-                this._msalService.instance.setActiveAccount(response.account);
-                    this.router.navigate(['/app']);
-                });
-        } else {
-            this._msalService.loginPopup()
-                .subscribe((response: AuthenticationResult) => {
-                    loader.classList.remove('unvisible');
-                    this._msalService.instance.setActiveAccount(response.account);
-                    this.router.navigate(['/app']);
-                });
-        }
+        this._authService.loginWithMicrosoft();
+        // if (this.msalGuardConfig.authRequest) {
+        //     this._msalService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
+        //         .subscribe((response: AuthenticationResult) => {
+        //             this._msalService.instance.setActiveAccount(response.account);
+        //             this.router.navigate(['/app']);
+        //         });
+        // } else {
+        //     this._msalService.loginPopup()
+        //         .subscribe((response: AuthenticationResult) => {
+        //             this._msalService.instance.setActiveAccount(response.account);
+        //             this.router.navigate(['/app']);
+        //         });
+        // }
     }
 
     logout(popup?: boolean) {
         if (popup) {
             this._msalService.logoutPopup({
-                mainWindowRedirectUri: "/"
+                mainWindowRedirectUri: "/login"
             });
         } else {
             this._msalService.logoutRedirect();
