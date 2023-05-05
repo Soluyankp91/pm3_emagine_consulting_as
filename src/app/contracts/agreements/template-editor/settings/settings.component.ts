@@ -1265,7 +1265,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									deliveryTypeId,
 									undefined,
 									recipientTypeId,
-									undefined,
+									true,
 									search,
 								] as any[];
 
