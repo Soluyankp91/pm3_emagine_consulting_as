@@ -484,7 +484,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	get downloadEnvelopeAvailable() {
 		return (
 			this.legalContracts.value.some((x) => x.selected) &&
-			this.legalContracts.value.filter((x) => x.selected).every((item) => item.hasSignedDocumentFile)
+			this.legalContracts.value.filter((x) => x.selected).every((item) => item.agreementStatus !== EnvelopeStatus.WaitingForOthers)
 		);
 	}
 	get sendAgreementAvailable() {
