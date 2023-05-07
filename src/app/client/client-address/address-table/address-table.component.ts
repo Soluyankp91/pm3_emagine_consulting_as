@@ -63,6 +63,7 @@ export class AddressTableComponent extends AppComponentBase {
 	}
 
 	toggleAddressHiddenState(row: ClientAddressDto) {
+        row.isHidden = !row.isHidden;
 		this._updateClientAddress(row);
 	}
 

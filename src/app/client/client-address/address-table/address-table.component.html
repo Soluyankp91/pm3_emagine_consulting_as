@@ -77,7 +77,7 @@
                         <mat-icon svgIcon="edit-icon-green"></mat-icon>
                         Edit
                     </button>
-                    <div matTooltip="Cannot hide main address" matTooltipClass="white-tooltip">
+                    <div [matTooltip]="row.isMainAddress ? 'Cannot hide main address' : ''" matTooltipClass="white-tooltip">
                         <button
                             class="menu-item green-color"
                             mat-menu-item
@@ -87,7 +87,7 @@
                             {{row.isHidden ? 'Show address' : 'Hide address'}}
                         </button>
                     </div>
-                    <div matTooltip="Cannot delete main address" matTooltipClass="white-tooltip">
+                    <div [matTooltip]="row.isMainAddress ? 'Cannot delete main address' : ''" matTooltipClass="white-tooltip">
                         <button
                             class="menu-item menu-item--cancel"
                             mat-menu-item
