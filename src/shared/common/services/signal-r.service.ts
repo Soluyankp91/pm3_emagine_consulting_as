@@ -61,7 +61,10 @@ export class SignalRService {
 	}
 
 	registerEventCallbacks(connection: HubConnection): void {
-        connection.on(EAgreementEvents.ClientPeriodNewAgreement, (data: EmployeeDto) => {
+        connection.on(EAgreementEvents.InEditState, (data: EmployeeDto) => {
+            console.log(data);
+        });
+        connection.on(EAgreementEvents.PeriodAgreementCreationPendingState, (data: EmployeeDto) => {
             console.log(data);
         });
     }
