@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService } from '@azure/msal-angular';
 import { AuthenticationResult, PopupRequest } from '@azure/msal-browser';
-import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +14,8 @@ export class AuthService {
 		return localStorage.getItem('enc_auth_token') ?? '';
 	}
 
-	constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration, private _msalService: MsalService, private _router: Router, private _spinnerService: NgxSpinnerService) {}
+	constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration, private _msalService: MsalService, private _router: Router) {
+    }
 
 	signOut(): Observable<void> {
 		return this._msalService.logoutPopup({ mainWindowRedirectUri: '/login' });
