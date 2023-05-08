@@ -17,7 +17,7 @@
                     <button
                         class="menu-item menu-item--edit contract-manager-action"
                         mat-menu-item
-                        [disabled]="canReopen"
+                        [disabled]="!canReopen"
                         appPreventDoubleClick (throttledClick)="returnToSales()">
                         <mat-icon svgIcon="return-icon"></mat-icon>
                         Return to Sales
