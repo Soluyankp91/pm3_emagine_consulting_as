@@ -338,7 +338,7 @@
                                                 (selectionChange)="capSelectionChange($event, consultantIndex)"
                                                 [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of consultantTimeReportingCap; trackBy: trackById">
-                                                    <mat-option [value]="item">
+                                                    <mat-option [value]="item.id">
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </ng-container>
