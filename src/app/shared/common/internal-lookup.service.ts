@@ -49,7 +49,6 @@ export class InternalLookupService {
     purchaseOrderCapTypes: { [key: string]: string };
     envelopeProcessingPaths: { [key: string]: string };
 
-    // getEnums$: Observable<{ [key: string]: string } | EnumEntityTypeDto[] | LegalEntityDto[] | CountryDto[]>[] = [];
     staticEnums: { [key: string]: any };
     constructor(private _enumService: EnumServiceProxy) {
     }
