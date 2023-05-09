@@ -26,19 +26,19 @@
 					<div class="tmp-version-row">
 						<span class="tmp-version-num">Version {{ templateVersion.version }}</span>
 						<span *ngIf="templateVersion.isDraft" class="label label-info">Draft</span>
-						<span *ngIf="templateVersion.envelopeStatus === 6" class="label label-voided">Voided</span>
+						<span *ngIf="templateVersion.envelopeStatus === envelopeStatuses.Voided" class="label label-voided">Voided</span>
 						<span
-							*ngIf="templateVersion.isCurrent && ![3, 10].includes(templateVersion.envelopeStatus)"
+							*ngIf="templateVersion.isCurrent && ![envelopeStatuses.Sent, envelopeStatuses.Completed].includes(templateVersion.envelopeStatus)"
 							class="label label-success"
 							>Current</span
 						>
 						<span
-							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus === 3"
+							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus === envelopeStatuses.Sent"
 							class="label label-warning"
 							>Sent</span
 						>
 						<span
-							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus === 10"
+							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus === envelopeStatuses.Completed"
 							class="label label-success"
 							>Completed</span
 						>
@@ -94,7 +94,7 @@
 							[disabled]="isLoading"
 							mat-stroked-button
 							color="primary"
-							*ngIf="selectedVersion.envelopeStatus !== 10"
+							*ngIf="selectedVersion.envelopeStatus !== envelopeStatuses.Completed"
 							(click)="saveCurrentAsCompleteAgreementOnly()">
 							{{ currentVersionIsSent ? 'Promote to draft' : 'Save as a new version' }}
 						</button>

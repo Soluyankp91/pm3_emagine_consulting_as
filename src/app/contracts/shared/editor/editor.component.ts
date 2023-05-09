@@ -29,6 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {
 	AgreementServiceProxy,
 	CompleteTemplateDocumentFileDraftDto,
+	EnvelopeStatus,
 	SendDocuSignEnvelopeCommand,
 	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
@@ -100,6 +101,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	mergeFieldStateBeforeProcessing: IMergeFieldState = null;
 
 	selectedVersionControl = new FormControl();
+
+	envelopeStatuses = EnvelopeStatus;
 
 	constructor(
 		private _route: ActivatedRoute,
