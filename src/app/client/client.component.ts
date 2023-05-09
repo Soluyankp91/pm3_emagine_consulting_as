@@ -3,7 +3,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil, debounceTime, finalize, map } from 'rxjs/operators';
+import { takeUntil, debounceTime, finalize, map, filter } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeServiceProxy, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
@@ -15,6 +15,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
+import { ActiveUpdateSignalRApiService } from 'src/shared/common/services/active-update-signalr.service';
+import { EAgreementEvents } from 'src/shared/common/services/agreement-events.model';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -87,6 +89,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         private localHttpService: LocalHttpService,
         private _employeeService: EmployeeServiceProxy,
         private _titleService: TitleService,
+        private _signalRService: ActiveUpdateSignalRApiService
     ) {
         super(injector);
         this.clientFilter.valueChanges.pipe(
@@ -109,6 +112,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             })
         );
         this.getCurrentUser();
+        this._sub();
     }
 
     getCurrentUser() {
@@ -377,5 +381,20 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    private _sub() {
+        this._signalRService.triggerActiveReload$
+        .pipe(
+            filter(( {eventName, args} ) => {
+                console.log(eventName);
+                console.log(args);
+                return eventName === EAgreementEvents.InEditState;
+            }),
+            takeUntil(this._unsubscribe),
+        )
+        .subscribe(() => {
+            console.log('243 edit');
+        });
     }
 }

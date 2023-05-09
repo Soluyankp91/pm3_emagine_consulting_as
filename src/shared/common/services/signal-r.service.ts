@@ -11,7 +11,7 @@ import { API_BASE_URL, EmployeeDto } from 'src/shared/service-proxies/service-pr
 import { EAgreementEvents, IAgreementEventData } from './agreement-events.model';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { MsalService } from '@azure/msal-angular';
-import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { InteractionRequiredAuthError, PublicClientApplication } from '@azure/msal-browser';
 
 @Injectable({
 	providedIn: 'root',
@@ -30,6 +30,7 @@ export class SignalRService {
 	constructor(
 		private _zone: NgZone,
 		public _authService: AuthService,
+        private __localHttpService: LocalHttpService,
 		@Optional() @Inject(API_BASE_URL) baseUrl?: string,
 	) {
 		this.hubUrl = baseUrl + '/hubs/contracts-notification';
@@ -38,7 +39,7 @@ export class SignalRService {
 	public async init() {
 		try {
 			this.connection = new signalR.HubConnectionBuilder()
-				.withUrl(this._activeUpdateURL())
+				.withUrl(await this._activeUpdateURL())
 				.withAutomaticReconnect(new Array(10).map((value, index) => index * 1000))
 				.configureLogging(environment.isSignalRLoggingEnabled ? signalR.LogLevel.Information : signalR.LogLevel.None)
 				.build();
@@ -63,59 +64,20 @@ export class SignalRService {
 		}
 	}
 
-	registerEventCallbacks(connection: HubConnection): void {
-        console.log('reg');
-        // connection.on(EAgreementEvents.InEditState, (data: any) => {
-        //     console.log(data);
-        //     this._triggerActiveReload$.next(data);
-        // });
-        // connection.on(EAgreementEvents.PeriodAgreementCreationPendingState, (data: EmployeeDto) => {
-        //     console.log(data);
-        // });
-    }
+	registerEventCallbacks(connection: HubConnection): void { }
 
     testInvoke() {
         const agreementId = 24;
         this.connection.invoke(EAgreementEvents.InEditState, agreementId)
     }
 
-	// joinGroups(groupIds: string[]) {
-	// 	this._zone.runOutsideAngular(() => {
-	// 		this._groupJoinedBeforeReconnect = groupIds;
-	// 		if (!this.connection) {
-	// 			return;
-	// 		}
-
-	// 		this.connection?.invoke('JoinGroups', groupIds);
-	// 		if (environment.isSignalRLoggingEnabled) {
-	// 			console.log(`Joining group '${groupIds}'`);
-	// 		}
-	// 	});
-	// }
-
-	// leaveGroups(groupIds: string[]) {
-	// 	this._zone.runOutsideAngular(() => {
-	// 		this._groupJoinedBeforeReconnect = [];
-	// 		if (!this.connection) {
-	// 			return;
-	// 		}
-
-	// 		this.connection?.invoke('LeaveGroups', groupIds);
-	// 		if (environment.isSignalRLoggingEnabled) {
-	// 			console.log(`Leaving groups '${groupIds}'`);
-	// 		}
-	// 	});
-	// }
-
-	private _activeUpdateURL(): string {
-		return this.hubUrl + '?enc_auth_token=' + encodeURIComponent(this._authService.encryptedAccessToken);
+	private async _activeUpdateURL() {
+        let accessToken = (await this.__localHttpService.getTokenSilent().toPromise()).accessToken;
+		return this.hubUrl + '?enc_auth_token=' + encodeURIComponent(accessToken);
 	}
 
 	private _onConnection(): void {
 		this.registerEventCallbacks(this.connection);
-		// if (this._groupJoinedBeforeReconnect && this._groupJoinedBeforeReconnect.length > 0) {
-		// 	this.joinGroups(this._groupJoinedBeforeReconnect);
-		// }
 	}
 
     private _triggerAgreementUpdateEvent() {
