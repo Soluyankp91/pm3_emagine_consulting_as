@@ -752,9 +752,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
-				if (result.noEvaluation) {
-					this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable();
-				}
+				result.noEvaluation
+					? this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable()
+					: this.salesTerminateConsultantForm.finalEvaluationReferencePerson.enable();
 				if (
 					result.finalEvaluationReferencePerson?.id === null ||
 					result.finalEvaluationReferencePerson?.id === undefined
@@ -837,8 +837,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _tempUpdateDocuments() {
 		this._workflowDocumentsService.overviewAll(this.workflowId, this.periodId).subscribe((result) => {
-			if (this.mainDataComponent.mainDocuments) {
-				this.mainDataComponent.mainDocuments.clearDocuments();
+			if (this.mainDataComponent?.mainDocuments) {
+				this.mainDataComponent?.mainDocuments.clearDocuments();
 			}
 			if (this.terminationDocuments) {
 				this.terminationDocuments.clearDocuments();
