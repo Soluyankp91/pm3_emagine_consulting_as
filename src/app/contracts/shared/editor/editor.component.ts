@@ -244,7 +244,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			versionMetaData &&
 			versionMetaData.isCurrent &&
 			versionMetaData.envelopeStatus &&
-			versionMetaData.envelopeStatus === 3;
+			[3, 10].includes(versionMetaData.envelopeStatus);
 	}
 
 	handleDocumentReady() {
