@@ -537,13 +537,13 @@
                                                     class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
                                                     <ng-container *ngIf="!rate.value.editable">
                                                         <span fxFlex="1 0 20%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="rate.value.rateName"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.rateName}}
                                                         </span>
                                                         <span fxFlex="20%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="rate.value.reportingUnit?.name"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.reportingUnit?.name}}
@@ -551,7 +551,7 @@
                                                         <ng-container
                                                             *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{rate.value.proDataRateValue !== null &&
@@ -561,7 +561,7 @@
                                                             </span>
                                                         </ng-container>
                                                         <span fxFlex="25%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.consultantRateValue !== null &&
@@ -623,13 +623,13 @@
                                                     fxLayoutGap="10px"
                                                     class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
                                                     <span fxFlex="1 0 20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="rate.value.rateName"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{rate.value.rateName}}
                                                     </span>
                                                     <span fxFlex="20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="rate.value.reportingUnit?.name"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{rate.value.reportingUnit?.name}}
@@ -669,7 +669,7 @@
                                                         </ng-container>
                                                         <ng-template #consutlantProDataRateCurrencyDisplay>
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{rate.value.proDataRateValue !== null &&
@@ -711,7 +711,7 @@
 
                                                     <ng-template #consutlantRateCurrencyDisplay>
                                                         <span fxFlex="25%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.consultantRateValue !== null &&
@@ -831,13 +831,13 @@
                                                     fxLayoutGap="10px"
                                                     class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
                                                     <span fxFlex="1 0 20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeName ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeName ?? '-'}}
                                                     </span>
                                                     <span fxFlex="20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeFrequency?.name ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeFrequency?.name ?? '-'}}
@@ -845,7 +845,7 @@
                                                     <ng-container
                                                         *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
                                                         <span fxFlex="25%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{fee.value.proDataRateValue !== null &&
@@ -856,7 +856,7 @@
                                                         </span>
                                                     </ng-container>
                                                     <span fxFlex="25%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.consultantRateValue !== null &&
@@ -916,13 +916,13 @@
                                                     fxLayoutGap="10px"
                                                     class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
                                                     <span fxFlex="1 0 20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeName ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeName ?? '-'}}
                                                     </span>
                                                     <span fxFlex="20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeFrequency?.name ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeFrequency?.name ?? '-'}}
@@ -962,7 +962,7 @@
                                                         </ng-container>
                                                         <ng-template #consultantFeeProDataRateDisplay>
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{fee.value.proDataRateValue !== null &&
@@ -1002,7 +1002,7 @@
                                                     </ng-container>
                                                     <ng-template #consultantFeeRateDisplay>
                                                         <span fxFlex="25%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{fee.value.consultantRateValue !== null &&
@@ -1150,7 +1150,7 @@
                                                                 {{projectLine.value.id ?? '-'}}
                                                             </span>
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="projectLine.value.projectName ?? '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{projectLine.value.projectName &&
@@ -1158,7 +1158,7 @@
                                                                 projectLine.value.projectName : '-'}}
                                                             </span>
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number"
                                                                 [ngClass]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
