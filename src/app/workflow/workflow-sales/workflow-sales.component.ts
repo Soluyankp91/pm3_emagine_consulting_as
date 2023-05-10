@@ -839,12 +839,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this._workflowDocumentsService.overviewAll(this.workflowId, this.periodId).subscribe((result) => {
 			if (this.mainDataComponent?.mainDocuments) {
 				this.mainDataComponent?.mainDocuments.clearDocuments();
+                if (result.length) {
+                    this.mainDataComponent.mainDocuments.addExistingFile(result);
+                }
 			}
 			if (this.terminationDocuments) {
 				this.terminationDocuments.clearDocuments();
-			}
-			if (result.length) {
-				this.mainDataComponent.mainDocuments.addExistingFile(result);
+                if (result.length) {
+                    this.terminationDocuments.addExistingFile(result);
+                }
 			}
 		});
 	}
