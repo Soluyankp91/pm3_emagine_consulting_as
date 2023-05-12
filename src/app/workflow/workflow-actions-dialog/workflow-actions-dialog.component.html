@@ -156,6 +156,22 @@
                                 </p>
                             </div>
                         </mat-checkbox>
+                        <mat-form-field appearance="outline" class="form-width-170 mb--5">
+                            <mat-label>New end date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="extensionDatePicker"
+                                    name="endDate"
+                                    [min]="minEndDate"
+                                    formControlName="endDate"
+                                    required
+                                    (focus)="extensionDatePicker.open()"
+                                    appPreventDoubleClick (throttledClick)="extensionDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #extensionDatePicker></mat-datepicker>
+                            <mat-error>
+                                <app-validator [control]="consultant.get('endDate')"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
                     </div>
                     <ng-container *ngIf="validationTriggered && !extendConsultantsValid">
                         <mat-error class="error-message">

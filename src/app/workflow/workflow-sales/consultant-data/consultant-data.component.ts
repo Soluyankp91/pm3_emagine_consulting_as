@@ -874,7 +874,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
                     return this._lookupService.signerSupplierMembers(toSend.name, toSend.supplierId, toSend.maxRecordsCount);
 				})
 			)
-			.subscribe((list: any[]) => {
+			.subscribe((list: SupplierMemberResultDto[]) => {
 				if (list.length) {
 					this.filteredSupplierMembers[consultantIndex][signerIndex] = list;
 				} else {

@@ -996,6 +996,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
 				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
 				this.consultantDataComponent.selectedFrameAgreementList[index] = consultant.frameAgreementId ?? null;
+				// this.consultantDataComponent.selectedEmagineFrameAgreementList[index] = consultant.emagineFrameAgreementId ?? null;
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();

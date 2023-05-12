@@ -7,7 +7,7 @@
             <ng-container *ngFor="let order of poForm.purchaseOrders.controls; trackBy: trackByItem; index as i"
                 [formArrayName]="i">
                 <ng-container [ngTemplateOutlet]="poRow"
-                    [ngTemplateOutletContext]="{order: order.value, i: i,  isPreviousPO: false}">
+                    [ngTemplateOutletContext]="{order: order.value, i: i}">
                 </ng-container>
             </ng-container>
             <ng-container *ngIf="poForm.purchaseOrders.controls?.length === 0 && (readOnlyMode || mode === ePurchaseOrderMode.WFOverview)">
@@ -56,13 +56,13 @@
         <span fxFlex="120px" class="inline-form--header u-w--100">
             Cap type
         </span>
-        <span fxFlex="100px" class="inline-form--header u-w--100">
+        <span fxFlex="60px" class="inline-form--header u-w--100">
             Used
         </span>
-        <span fxFlex="100px" class="inline-form--header u-w--100">
+        <span fxFlex="60px" class="inline-form--header u-w--100">
             Max value
         </span>
-        <span fxFlex="60px" class="inline-form--header u-w--100">
+        <span fxFlex="50px" class="inline-form--header u-w--100">
             Units
         </span>
         <span fxFlex="40px" class="inline-form--header u-w--100">
@@ -72,7 +72,7 @@
 
 <ng-template #poRow let-order="order" let-i="i">
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-form--row u-w--100">
-        <span fxFlex fxLayoutAlign="start center" class="u-w--100 text-truncate-ellipsis"
+        <span class="u-w--100 text-truncate-ellipsis"
             [ngClass]="order.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
             [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
             matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -92,31 +92,31 @@
             [matTooltip]="capTypes[order.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
             {{capTypes[order.capForInvoicing?.type]}}
         </span>
-        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+        <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
             [matTooltip]="order.capForInvoicing?.amountUsed ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.capForInvoicing?.amountUsed ?? '-'}}
         </span>
-        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+        <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
             [matTooltip]="order.capForInvoicing?.maxAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.capForInvoicing?.maxAmount ?? '-'}}
         </span>
         <ng-container [ngSwitch]="order.capForInvoicing?.type">
             <ng-container *ngSwitchCase="ePoCapType.CapOnUnits">
-                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
+                <span fxFlex="50px" class="u-w--100 text-truncate-ellipsis"
                     [matTooltip]="eValueUnitType[order.capForInvoicing?.valueUnitTypeId]"
                     matTooltipClass="white-tooltip" appShowIfTruncated>
                     {{eValueUnitType[order.capForInvoicing?.valueUnitTypeId]}}
                 </span>
             </ng-container>
             <ng-container *ngSwitchCase="ePoCapType.CapOnValue">
-                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
+                <span fxFlex="50px" class="u-w--100 text-truncate-ellipsis"
                     [matTooltip]="eCurrencies[order.capForInvoicing?.currencyId]" matTooltipClass="white-tooltip"
                     appShowIfTruncated>
                     {{eCurrencies[order.capForInvoicing?.currencyId]}}
                 </span>
             </ng-container>
             <ng-container *ngSwitchCase="ePoCapType.NoCap">
-                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis">-</span>
+                <span fxFlex="50px" class="u-w--100 text-truncate-ellipsis">-</span>
             </ng-container>
         </ng-container>
 
