@@ -135,7 +135,6 @@ export class EditorCoreService {
 	applyMergeFields(fields: IMergeField) {
 		this.documentLoaded$.subscribe(() => {
 			let oldFields = {};
-			console.log(this.editor.document.getText());
 			for (let i = 0; i < this.editor.document.fields.count; i++) {
 				let field = this.editor.document.fields.getByIndex(i);
 				if (this.editor.document.getText(field.codeInterval).indexOf('Deprecated') !== -1) {
@@ -147,7 +146,6 @@ export class EditorCoreService {
 
 				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
 				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
-				console.log(key, value);
 				if (fields[key] !== value) {
 					this.editor.document.insertText(
 						this.editor.document.getText(field.codeInterval).indexOf(' ') + 1 + field.codeInterval.start,
