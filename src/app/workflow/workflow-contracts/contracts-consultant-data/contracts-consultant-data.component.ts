@@ -132,7 +132,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	}
 
     getInitialEmagineFrameAgreements(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
-		this.getFrameAgreements(consultant, true).subscribe((result) => {
+		this.getEmagineFrameAgreements(consultant, true).subscribe((result) => {
 			this.filteredEmagineFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedEmagineFrameAgreementList[consultantIndex] !== null) {
 				this.consultants
@@ -180,6 +180,43 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			dataToSend.endDate,
 			dataToSend.recipientConsultantId || undefined, //recipientConsultantId
 			dataToSend.recipientSupplierId || undefined,
+			dataToSend.pageNumber,
+			dataToSend.pageSize,
+			dataToSend.sort
+		);
+	}
+
+    getEmagineFrameAgreements(consultant: ConsultantContractsDataQueryDto, isInitial = false, search: string = '') {
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.contractClientForm.directClientId.value,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
+			startDate: undefined,
+			endDate: undefined,
+			recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(
+				Boolean
+			),
+			recipientLegalEntityId: consultant.pdcPaymentEntityId,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		return this._frameAgreementServiceProxy.emagineToEmagineFrameAgreementList(
+			undefined, // dataToSend.agreementId,
+			dataToSend.search,
+			dataToSend.legalEntityId,
+			undefined, // dataToSend.salesTypeId,
+			undefined, // dataToSend.contractTypeId,
+			undefined, // dataToSend.deliveryTypeId,
+			undefined, // dataToSend.startDate,
+			undefined, // dataToSend.endDate,
+			dataToSend.recipientLegalEntityId || undefined, //recipientLegalEntityId
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort
@@ -262,14 +299,14 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				Validators.required
 			),
 			noSpecialPaymentTerms: new UntypedFormControl(consultant?.noSpecialPaymentTerms ?? false),
-			frameAgreementId: new UntypedFormControl(consultant?.frameAgreementId ?? null),
+			frameAgreementId: new UntypedFormControl(consultant?.consultantFrameAgreementId ?? null),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			clientFees: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
 			projectLines: new UntypedFormArray([], Validators.minLength(1)),
             timeReportingCaps: new UntypedFormArray([]),
-			emagineFrameAgreementId: new UntypedFormControl(consultant?.frameAgreementId ?? null),
+			emagineFrameAgreementId: new UntypedFormControl(consultant?.emagineToEmagineFrameAgreementId ?? null),
             deliveryAccountManager: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id'])),
             deliveryManagerSameAsAccountManager: new UntypedFormControl(false),
 		});

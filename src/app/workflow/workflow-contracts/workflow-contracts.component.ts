@@ -995,8 +995,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (data?.consultantData?.length) {
 			data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
 				this.consultantDataComponent?.addConsultantDataToForm(consultant, index, data?.clientData?.directClientId);
-				this.consultantDataComponent.selectedFrameAgreementList[index] = consultant.frameAgreementId ?? null;
-				// this.consultantDataComponent.selectedEmagineFrameAgreementList[index] = consultant.emagineFrameAgreementId ?? null;
+				this.consultantDataComponent.selectedFrameAgreementList[index] = consultant.consultantFrameAgreementId ?? null;
+				this.consultantDataComponent.selectedEmagineFrameAgreementList[index] = consultant.emagineToEmagineFrameAgreementId ?? null;
 				this.syncDataComponent?.addConsultantLegalContract(consultant);
 			});
 			this.updateConsultantStepAnchors();
@@ -1243,7 +1243,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 		consultantData.specialContractTerms = consultantInput.specialContractTerms;
 		consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
-		consultantData.frameAgreementId = consultantInput.frameAgreementId?.agreementId;
+		consultantData.consultantFrameAgreementId = consultantInput.frameAgreementId?.agreementId;
+		consultantData.emagineToEmagineFrameAgreementId = consultantInput.emagineFrameAgreementId?.agreementId;
 		consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
 		if (consultantInput.clientFees?.length) {
 			for (let specialFee of consultantInput.clientFees) {
