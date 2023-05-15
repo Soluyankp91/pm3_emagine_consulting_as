@@ -47,6 +47,7 @@ import {
     WorkflowDocumentServiceProxy,
     TimeReportingCapDto,
     TimeReportingCapId,
+    ContractSupplierSignerDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
@@ -1234,7 +1235,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					consultantInput.timeReportingCaps.push(capInput);
 				}
 			}
-            consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;
+			consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
 			consultantInput.onsiteClientAddress = FindClientAddress(
@@ -1291,8 +1292,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
+			consultantInput.contractSupplierSigners = new Array<ContractSupplierSignerDto>();
+			consultant.contractSigners.forEach((signer) => {
+				let signerInput = new ContractSupplierSignerDto(signer);
+				signerInput.supplierMemberId = signer.supplierMember?.id;
+				consultantInput.contractSupplierSigners.push(signerInput);
+			});
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
 			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
+            // FIXME: framgeAgreement here
+            // consultantInput.
 		}
 		return consultantInput;
 	}
