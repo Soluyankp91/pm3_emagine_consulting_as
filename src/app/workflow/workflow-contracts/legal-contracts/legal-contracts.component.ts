@@ -1,11 +1,11 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { HttpResponse } from '@angular/common/http';
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { filter, finalize, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
@@ -38,13 +38,16 @@ import { ERemoveOrOuploadDialogMode } from './remove-or-upload-agrement-dialog/r
 import { SendEnvelopeDialogComponent } from './send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-preview-dialog.component';
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
+import { ActiveUpdateSignalRApiService } from 'src/shared/common/services/active-update-signalr.service';
+import { EAgreementEvents } from 'src/shared/common/services/agreement-events.model';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'legal-contracts-list',
 	templateUrl: './legal-contracts.component.html',
 	styleUrls: ['./legal-contracts.component.scss'],
 })
-export class LegalContractsComponent extends AppComponentBase implements OnInit {
+export class LegalContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild('menuTrigger', { static: false }) menuTrigger: MatMenuTrigger;
 	@Input() clientPeriodId: string;
 	@Input() consultantPeriodId: string;
@@ -59,7 +62,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 	eLegalContractSourceText = ELegalContractSourceText;
 	eLegalContractSourceIcon = ELegalContractSourceIcon;
 	legalContractPath = EnvelopeProcessingPath;
-
+	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
 		private _fb: UntypedFormBuilder,
@@ -69,7 +72,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 		private _legalContractService: LegalContractService,
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
-		private _router: Router
+		private _router: Router,
+		private _signalRService: ActiveUpdateSignalRApiService
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
@@ -77,10 +81,16 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 
 	ngOnInit(): void {
 		this._getAgreementData();
+		this._sub();
 		// NB: needed for tests
 		// LegalContractsMockedData.forEach((item) => {
 		// 	this.addLegalContract(item);
 		// });
+	}
+
+	ngOnDestroy(): void {
+		this._unsubscribe.next();
+		this._unsubscribe.complete();
 	}
 
 	addLegalContract(legalContract?: WorkflowAgreementDto, statusHistory?: AgreementStatusHistoryDto[]) {
@@ -145,7 +155,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 			hideReason: true,
 			message: overrideDocument
 				? 'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?'
-				:  null,
+				: null,
 		};
 		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
@@ -460,6 +470,21 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit 
 
 	private _closeMenu() {
 		this.menuTrigger.closeMenu();
+	}
+
+	private _sub() {
+		this._signalRService.triggerActiveReload$
+			.pipe(
+				filter(({ eventName, args }) => {
+					console.log(eventName);
+					console.log(args);
+					return eventName === EAgreementEvents.InEditState;
+				}),
+				takeUntil(this._unsubscribe)
+			)
+			.subscribe(() => {
+				console.log('edit');
+			});
 	}
 
 	get legalContracts(): UntypedFormArray {

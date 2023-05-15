@@ -1,20 +1,11 @@
 import { Inject, Injectable, NgZone, Optional } from '@angular/core';
 import { HubConnection } from '@microsoft/signalr';
-import {
-	EActionTypes,
-	EActiveReloadCallbackMethodNames,
-	EActiveReloadEventNames,
-	EActiveReloadMethodNames,
-	SignalRArgs,
-} from './active-update-signalr.model';
 import { random } from 'lodash';
 import { environment } from '../../../environments/environment';
 import { SignalRService } from './signal-r.service';
 import { AuthService } from 'src/app/login/auth.service';
 import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { EAgreementEvents } from './agreement-events.model';
-import { MsalService } from '@azure/msal-angular';
-import { PublicClientApplication } from '@azure/msal-browser';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 
@@ -30,24 +21,14 @@ export class ActiveUpdateSignalRApiService extends SignalRService {
 		_zone: NgZone,
 		_authService: AuthService,
         __localHttpService: LocalHttpService,
-        // test: PublicClientApplication
 		@Optional() @Inject(API_BASE_URL) baseUrl?: string,
 	) {
 		super(_zone, _authService, __localHttpService, baseUrl);
 	}
 
-	// updateCallBulkItems(requestId: number, consultantsIds: number[]) {
-	// 	if (environment.isSignalRLoggingEnabled) {
-	// 		console.log(EActiveReloadMethodNames.NotifyAgreementEditing, requestId, this.userName, consultantsIds);
-	// 	}
-	// 	this.connection?.invoke(EActiveReloadMethodNames.NotifyAgreementEditing, requestId, this.userName, consultantsIds);
-	// }
-
 	registerEventCallbacks(connection: HubConnection): void {
-        console.log('reg');
         connection.on(EAgreementEvents.InEditState, (agreementId) => {
             console.log(agreementId);
-            // const [employeeDto, agreementId] = args || [];
             this.triggerActiveReload(
                 EAgreementEvents.InEditState,
                 EAgreementEvents.InEditState,
@@ -57,15 +38,6 @@ export class ActiveUpdateSignalRApiService extends SignalRService {
         connection.on(EAgreementEvents.PeriodAgreementCreationPendingState, (periodId: string) => {
             console.log(periodId);
         });
-		// connection.on(EActiveReloadCallbackMethodNames.NotifyAgreementEditing, (args) => {
-		// 	const [authorName] = args || [];
-
-		// 	this.triggerActiveReload(
-		// 		EActiveReloadCallbackMethodNames.NotifyAgreementEditing,
-		// 		EActiveReloadEventNames.AgreementEditing,
-		// 		{ authorName },
-		// 	);
-		// });
 	}
 
 	private triggerActiveReload(callbackMethodName: string, eventName: string, args?: any) {

@@ -25,7 +25,6 @@ export class SignalRService {
 	get triggerActiveReload$() {
 		return this._triggerActiveReload$.asObservable().pipe(filter(Boolean));
 	}
-	private _groupJoinedBeforeReconnect: string[] = [];
 
 	constructor(
 		private _zone: NgZone,
@@ -66,11 +65,6 @@ export class SignalRService {
 
 	registerEventCallbacks(connection: HubConnection): void { }
 
-    testInvoke() {
-        const agreementId = 24;
-        this.connection.invoke(EAgreementEvents.InEditState, agreementId)
-    }
-
 	private async _activeUpdateURL() {
         let accessToken = (await this.__localHttpService.getTokenSilent().toPromise()).accessToken;
 		return this.hubUrl + '?enc_auth_token=' + encodeURIComponent(accessToken);
@@ -79,8 +73,4 @@ export class SignalRService {
 	private _onConnection(): void {
 		this.registerEventCallbacks(this.connection);
 	}
-
-    private _triggerAgreementUpdateEvent() {
-
-    }
 }
