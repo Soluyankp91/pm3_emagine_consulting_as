@@ -318,6 +318,16 @@ export const STATUTES = [
 		color: '#F453B4',
 	},
 	{
+		id: 13,
+		name: 'Reminder sent',
+		color: '#F453B4',
+	},
+	{
+		id: 14,
+		name: 'Signed',
+		color: '#F453B4',
+	},
+	{
 		id: 6,
 		name: 'Voided',
 		color: '#FF7A78',

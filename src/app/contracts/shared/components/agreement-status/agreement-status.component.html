@@ -79,6 +79,22 @@
 				tooltip: statusEnum[envelopeStatuses.Expired].name
 			}"></ng-container>
 	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.ReminderSent">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{
+				color: statusEnum[envelopeStatuses.ReminderSent].color,
+				tooltip: statusEnum[envelopeStatuses.ReminderSent].name
+			}"></ng-container>
+	</ng-container>
+	<ng-container *ngSwitchCase="envelopeStatuses.PartiallySigned">
+		<ng-container
+			[ngTemplateOutlet]="dot"
+			[ngTemplateOutletContext]="{
+				color: statusEnum[envelopeStatuses.PartiallySigned].color,
+				tooltip: statusEnum[envelopeStatuses.PartiallySigned].name
+			}"></ng-container>
+	</ng-container>
 </ng-container>
 <ng-template #dot let-color="color" let-tooltip="tooltip">
     <div class="icon-and-text">
