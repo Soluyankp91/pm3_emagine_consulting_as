@@ -1250,7 +1250,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							switchMap((search) => {
 								let workflowTemplateType = this.workflowTemplateType$.value;
 								let workflowDataNotUndefined = this.workFlowMetadata && workflowTemplateType !== undefined;
-								let { legalEntityId, salesTypeId, contractType, deliveryTypeId, recipientTypeId } =
+								let { legalEntityId, salesTypeId, contractType, deliveryTypeId, recipientTypeId, clientId } =
 									workflowDataNotUndefined ? this.workFlowMetadata : ({} as typeof this.workFlowMetadata);
 
 								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
@@ -1259,12 +1259,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								let paramsForAllTemplates = [
 									undefined,
 									undefined,
-									legalEntityId,
-									salesTypeId,
-									contractType,
-									deliveryTypeId,
 									undefined,
-									recipientTypeId,
+									undefined,
+									undefined,
+									undefined,
+									clientId,
+									undefined,
 									true,
 									search,
 								] as any[];
