@@ -88,6 +88,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.showMainSpinner();
 		const form = this.purchaseOrderForm.value;
 		let input = new PurchaseOrderDto(form);
+		if (input.numberMissingButRequired) {
+			input.number = undefined;
+		}
 		input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
 		if (form.id !== null) {
