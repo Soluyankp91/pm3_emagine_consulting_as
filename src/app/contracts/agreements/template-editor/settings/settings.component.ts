@@ -1254,7 +1254,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									workflowDataNotUndefined ? this.workFlowMetadata : ({} as typeof this.workFlowMetadata);
 
 								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
-									items.filter((item) => !item.hasDraftVersion);
+									items.filter((item) => item.hasCurrentVersion);
 
 								let paramsForAllTemplates = [
 									undefined,
