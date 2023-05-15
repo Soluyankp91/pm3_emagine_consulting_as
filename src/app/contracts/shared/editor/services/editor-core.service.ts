@@ -48,6 +48,8 @@ export class EditorCoreService {
 	public onCompareVersion$: EventEmitter<void> = new EventEmitter();
 	public onSelectMergeField$: EventEmitter<void> = new EventEmitter();
 
+	private documentLoaded$: ReplaySubject<void> = new ReplaySubject(1);
+
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
 		private _zone: NgZone,
@@ -106,7 +108,9 @@ export class EditorCoreService {
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
 		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
-		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml);
+		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml, () =>
+			this.documentLoaded$.next()
+		);
 	}
 
 	newDocument() {
@@ -129,7 +133,31 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.editor.mailMergeOptions.setDataSource([fields]);
+		this.documentLoaded$.subscribe(() => {
+			let oldFields = {};
+			for (let i = 0; i < this.editor.document.fields.count; i++) {
+				let field = this.editor.document.fields.getByIndex(i);
+				if (this.editor.document.getText(field.codeInterval).indexOf('Deprecated') !== -1) {
+					this.editor.document.deleteText({
+						start: field.codeInterval.start + 11,
+						length: `Deprecated_${new Date().getTime()}.`.length,
+					});
+				}
+
+				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
+				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
+				if (fields[key] !== value) {
+					this.editor.document.insertText(
+						this.editor.document.getText(field.codeInterval).indexOf(' ') + 1 + field.codeInterval.start,
+						`Deprecated_${new Date().getTime()}.`
+					);
+
+					key = this.editor.document.getText(field.codeInterval).split(' ')[1];
+					oldFields[key] = value;
+				}
+			}
+			this.editor.mailMergeOptions.setDataSource([{ ...fields, ...oldFields }]);
+		});
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {
@@ -266,7 +294,7 @@ export class EditorCoreService {
 		this.editor.events.documentLoaded.addHandler(() => {
 			this.afterViewInit$.next();
 			this.afterViewInit$.complete();
-			this.toggleFields(showFieldCodes);
+			//this.toggleFields(showFieldCodes);
 			this.removeUnsavedChanges();
 			this.toggleHighlightView(!this.editor.readOnly);
 			this.editor.events.contentInserted.addHandler((s, e) => {
