@@ -27,25 +27,11 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowSteps, WorkflowTopSections } from '../workflow.model';
-import { EmploymentTypes } from '../workflow.model';
 import {
-	ContractClientDataSections,
-	ContractConsultantDataSections,
-	ContractMainDataSections,
-	ContractPlaceholderConsultantAnchors,
-	ContractSyncSections,
-	ContractTerminationSections,
 	EProcessIcon,
-	FinanceSections,
 	IConsultantAnchor,
-	SalesClientDataSections,
-	SalesConsultantDataSections,
-	SalesMainDataSections,
-	SalesPlaceholderConsultantAnchors,
-	SalesTerminationSections,
 	StepAnchorDto,
 	StepWithAnchorsDto,
-	SubItemDto,
 	WorkflowPeriodResolverDto,
 	WorkflowProcessWithAnchorsDto,
 } from './workflow-period.model';

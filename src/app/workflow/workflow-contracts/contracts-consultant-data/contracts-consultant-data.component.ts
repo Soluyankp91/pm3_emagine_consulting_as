@@ -407,7 +407,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 					if (value?.agreementId) {
 						toSend.search = value.agreementId ? value.agreementName : value;
 					}
-					return this.getFrameAgreements(consultant, false, toSend.search);
+					return this.getEmagineFrameAgreements(consultant, false, toSend.search);
 				})
 			)
 			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {

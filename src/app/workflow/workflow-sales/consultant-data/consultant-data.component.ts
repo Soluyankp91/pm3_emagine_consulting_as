@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy, ClientAddressDto, TimeReportingCapDto, SupplierMemberResultDto, ContractSupplierSignerDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy, ClientAddressDto, TimeReportingCapDto, SupplierMemberResultDto, ContractSupplierSignerDto, AgreementSimpleListItemDto, AgreementType, FrameAgreementServiceProxy, AgreementSimpleListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../../workflow-data.service';
@@ -78,6 +78,11 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     filteredSupplierMembers = new Array(new Array<SupplierMemberResultDto[]>());
     eMarginType = MarginType;
     eTimeReportingCaps = ETimeReportingCaps;
+    filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
+	filteredEmagineFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
+	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
+	selectedFrameAgreementList = new Array<null | number>();
+	selectedEmagineFrameAgreementList = new Array<null | number>();
     private _unsubscribe = new Subject();
     private _supplierMemberUnsubscribe$ = new Subject();
 	constructor(
@@ -92,6 +97,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         private _lookupService: LookupServiceProxy,
         private _internalLookupService: InternalLookupService,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
+        private _frameAgreementService: FrameAgreementServiceProxy
         ) {
 		super(injector);
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
@@ -170,6 +176,115 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             this.consultants.at(consultantIndex).get('onsiteClientAddress')?.setValue(this.clientDataForm.directClientAddress?.value);
             this.getClientAddresses(consultantIndex, this.clientDataForm.directClientIdValue.value.clientAddresses);
         }
+	}
+
+    getInitialFrameAgreements(consultant: ConsultantSalesDataDto, consultantIndex: number) {
+		this.getFrameAgreements(consultant, true).subscribe((result) => {
+			this.filteredFrameAgreements[consultantIndex] = result.items;
+			if (this.selectedFrameAgreementList[consultantIndex] !== null) {
+				this.consultants
+					?.at(consultantIndex)
+					?.get('frameAgreementId')
+					.setValue(this.selectedFrameAgreementList[consultantIndex]);
+			} else if (result.totalCount === 1) {
+				this._checkAndPreselectFrameAgreement(consultantIndex);
+			} else if (result?.totalCount === 0) {
+				this.consultants?.at(consultantIndex)?.get('frameAgreementId').setValue('');
+			}
+		});
+	}
+
+    getInitialEmagineFrameAgreements(consultantIndex: number) {
+		this.getEmagineFrameAgreements(consultantIndex, true).subscribe((result) => {
+			this.filteredEmagineFrameAgreements[consultantIndex] = result.items;
+			if (this.selectedEmagineFrameAgreementList[consultantIndex] !== null) {
+				this.consultants
+					?.at(consultantIndex)
+					?.get('emagineFrameAgreementId')
+					.setValue(this.selectedEmagineFrameAgreementList[consultantIndex]);
+			} else if (result.totalCount === 1) {
+				this._checkAndPreselectFrameAgreement(consultantIndex);
+			} else if (result?.totalCount === 0) {
+				this.consultants?.at(consultantIndex)?.get('emagineFrameAgreementId').setValue('');
+			}
+		});
+	}
+
+	getFrameAgreements(consultant: ConsultantResultDto, isInitial = false, search: string = '') {
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.clientDataForm.directClientIdValue.value?.clientId,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: isInitial ? this.clientDataForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
+			startDate: undefined,
+			endDate: undefined,
+			recipientClientIds: [this.clientDataForm.directClientIdValue.value?.clientId, this.clientDataForm.endClientIdValue.value?.clientId].filter(
+				Boolean
+			),
+			recipientConsultantId: consultant?.id,
+			recipientSupplierId: consultant?.supplierId,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		return this._frameAgreementService.consultantFrameAgreementList(
+			dataToSend.agreementId,
+			dataToSend.search,
+			dataToSend.legalEntityId ?? undefined,
+			dataToSend.salesTypeId ?? undefined,
+			dataToSend.contractTypeId ?? undefined,
+			dataToSend.deliveryTypeId ?? undefined,
+			dataToSend.startDate ?? undefined,
+			dataToSend.endDate ?? undefined,
+			dataToSend.recipientConsultantId || undefined, //recipientConsultantId
+			dataToSend.recipientSupplierId || undefined,
+			dataToSend.pageNumber,
+			dataToSend.pageSize,
+			dataToSend.sort
+		);
+	}
+
+    getEmagineFrameAgreements(consultantIndex: number, isInitial = false, search: string = '') {
+        const pdcInvoicingEntityId = this.consultants.at(consultantIndex).get('consultantProdataEntity')?.value?.id;
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.clientDataForm.directClientIdValue.value?.clientId,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: isInitial ? this.clientDataForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
+			startDate: undefined,
+			endDate: undefined,
+			recipientClientIds: [this.clientDataForm.directClientIdValue.value?.clientId, this.clientDataForm.endClientIdValue.value?.clientId].filter(
+				Boolean
+			),
+			recipientLegalEntityId: pdcInvoicingEntityId,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		return this._frameAgreementService.emagineToEmagineFrameAgreementList(
+			undefined, // dataToSend.agreementId,
+			dataToSend.search,
+			dataToSend.legalEntityId ?? undefined,
+			undefined, // dataToSend.salesTypeId,
+			undefined, // dataToSend.contractTypeId,
+			undefined, // dataToSend.deliveryTypeId,
+			undefined, // dataToSend.startDate,
+			undefined, // dataToSend.endDate,
+			dataToSend.recipientLegalEntityId ?? undefined, //recipientLegalEntityId
+			dataToSend.pageNumber,
+			dataToSend.pageSize,
+			dataToSend.sort
+		);
 	}
 
 	addConsultantForm(consultant?: ConsultantSalesDataDto) {
@@ -274,6 +389,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				},
 				CustomValidators.autocompleteValidator(['id'])
 			),
+            frameAgreementId: new UntypedFormControl(consultant?.consultantFrameAgreementId ?? null),
+			emagineFrameAgreementId: new UntypedFormControl(consultant?.emagineToEmagineFrameAgreementId ?? null),
 		});
 		this.consultants.push(form);
         const consultantIndex = this.consultants.controls.length - 1;
@@ -302,11 +419,22 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
                 this.addSignerToForm(consultantIndex, signer);
             }
         }
+        this.filteredFrameAgreements.push([]);
+        this.filteredEmagineFrameAgreements.push([]);
+        if (consultant) {
+            this._initFrameAgreements(consultant?.consultant, consultant.employmentTypeId, consultantIndex);
+        }
 		this.manageManagerAutocomplete(this.consultants.length - 1);
 		this.manageConsultantAutocomplete(this.consultants.length - 1);
 		this.manageConsultantClientAddressAutocomplete(this.consultants.length - 1);
 		this.manageConsultantCountryAutocomplete(this.consultants.length - 1);
 	}
+
+    consultantSelected(event: MatAutocompleteSelectedEvent, consultantIndex) {
+        const selectedConsultant = event.option.value as ConsultantWithSourcingRequestResultDto;
+        this._initFrameAgreements(selectedConsultant.consultant, this.consultants.at(consultantIndex).get('employmentTypeId')?.value, consultantIndex);
+        this.focusToggleMethod('auto');
+    }
 
 	updateConsultantStepAnchors() {
 		let consultantNames: IConsultantAnchor[] = this.consultants.value.map((item: any) => {
@@ -392,6 +520,98 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			.subscribe((value) => {
 				if (typeof value === 'string') {
 					this.filteredConsultantCountries = this._filterConsultantCountry(value);
+				}
+			});
+	}
+
+    manageFrameAgreementAutocomplete(consultant: ConsultantSalesDataDto, consultantIndex: number) {
+		let arrayControl = this.consultants.at(consultantIndex);
+		arrayControl!
+			.get('frameAgreementId')!
+			.valueChanges.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						search: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.agreementId) {
+						toSend.search = value.agreementId ? value.agreementName : value;
+					}
+					return this.getFrameAgreements(consultant, false, toSend.search);
+				})
+			)
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+				if (list?.items?.length) {
+					this.filteredFrameAgreements[consultantIndex] = list.items;
+					if (
+						this.selectedFrameAgreementList[consultantIndex] &&
+						this.selectedFrameAgreementList[consultantIndex] !== null
+					) {
+						this.consultants
+							.at(consultantIndex)
+							.get('frameAgreementId')
+							.setValue(
+								list.items.find((x) => x.agreementId === this.selectedFrameAgreementList[consultantIndex]),
+								{ emitEvent: false }
+							);
+						this.selectedFrameAgreementList[consultantIndex] = null;
+					}
+				} else {
+					this.filteredFrameAgreements[consultantIndex] = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
+				}
+			});
+	}
+
+    manageEmagineFrameAgreementAutocomplete(consultantIndex: number) {
+		let arrayControl = this.consultants.at(consultantIndex);
+		arrayControl!
+			.get('emagineFrameAgreementId')!
+			.valueChanges.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						search: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.agreementId) {
+						toSend.search = value.agreementId ? value.agreementName : value;
+					}
+					return this.getEmagineFrameAgreements(consultantIndex, false, toSend.search);
+				})
+			)
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+				if (list?.items?.length) {
+					this.filteredEmagineFrameAgreements[consultantIndex] = list.items;
+					if (
+						this.selectedEmagineFrameAgreementList[consultantIndex] &&
+						this.selectedEmagineFrameAgreementList[consultantIndex] !== null
+					) {
+						this.consultants
+							.at(consultantIndex)
+							.get('emagineFrameAgreementId')
+							.setValue(
+								list.items.find((x) => x.agreementId === this.selectedEmagineFrameAgreementList[consultantIndex]),
+								{ emitEvent: false }
+							);
+						this.selectedEmagineFrameAgreementList[consultantIndex] = null;
+					}
+				} else {
+					this.filteredEmagineFrameAgreements[consultantIndex] = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
 				}
 			});
 	}
@@ -900,6 +1120,43 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
     private _supplierMemberUnsubscribe() {
         this._supplierMemberUnsubscribe$.next();
         this._supplierMemberUnsubscribe$.complete();
+    }
+
+    private _checkAndPreselectFrameAgreement(consultantIndex: number, isEmagineFrameAgreement = false) {
+		if (
+			this.clientDataForm.directClientIdValue.value?.clientId !== null &&
+			this.clientDataForm.directClientIdValue.value?.clientId !== undefined &&
+			this.mainDataForm.salesTypeId.value !== null &&
+			this.mainDataForm.salesTypeId.value !== undefined &&
+			this.mainDataForm.deliveryTypeId.value !== null &&
+			this.mainDataForm.deliveryTypeId.value !== undefined
+		) {
+            if (isEmagineFrameAgreement) {
+                if (this.filteredEmagineFrameAgreements[consultantIndex].length === 1) {
+                    this.consultants.controls.forEach((form) => {
+                        form.get('emagineFrameAgreementId').setValue(this.filteredEmagineFrameAgreements[consultantIndex][0], { emitEvent: false });
+                    });
+                }
+            } else {
+                if (this.filteredFrameAgreements[consultantIndex].length === 1) {
+                    this.consultants.controls.forEach((form) => {
+                        form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0], { emitEvent: false });
+                    });
+                }
+            }
+		}
+	}
+
+    private _initFrameAgreements(consultant: ConsultantResultDto, employmentType: number, consultantIndex: number) {
+        if (
+            employmentType !== EmploymentTypes.FeeOnly &&
+            employmentType !== EmploymentTypes.Recruitment
+        ) {
+            this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
+            this.getInitialFrameAgreements(consultant, consultantIndex);
+            this.manageEmagineFrameAgreementAutocomplete(consultantIndex);
+            this.getInitialEmagineFrameAgreements(consultantIndex);
+        }
     }
 
     get timeReportingCaps(): UntypedFormArray {
