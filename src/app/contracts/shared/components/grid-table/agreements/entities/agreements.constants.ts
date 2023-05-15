@@ -284,7 +284,7 @@ export const ENVELOPEPATH_FILTER_OPTIONS = [
 export const STATUTES = [
 	{
 		id: 1,
-		name: 'Created123',
+		name: 'Created',
 		color: '#50BEE8',
 	},
 	{
