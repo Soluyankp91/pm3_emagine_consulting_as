@@ -38,8 +38,8 @@ import { ERemoveOrOuploadDialogMode } from './remove-or-upload-agrement-dialog/r
 import { SendEnvelopeDialogComponent } from './send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-preview-dialog.component';
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
-import { ActiveUpdateSignalRApiService } from 'src/shared/common/services/active-update-signalr.service';
-import { EAgreementEvents } from 'src/shared/common/services/agreement-events.model';
+import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
+import { EAgreementEvents } from 'src/shared/common/services/agreement-signalr.model';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -73,7 +73,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		private _overlay: Overlay,
 		private _dialog: MatDialog,
 		private _router: Router,
-		private _signalRService: ActiveUpdateSignalRApiService
+		private _agreementSignalRService: AgreementSignalRApiService
 	) {
 		super(injector);
 		this.clientLegalContractsForm = new ClientLegalContractsForm();
@@ -146,106 +146,106 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		}
 	}
 
-	public openUploadSignedContractDialog(agreementId: number, overrideDocument: boolean) {
-		this._closeMenu();
-		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
-			dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument,
-			hideReason: true,
-			message: overrideDocument
-				? 'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?'
-				: null,
-		};
-		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
+	// public openUploadSignedContractDialog(agreementId: number, overrideDocument: boolean) {
+	// 	this._closeMenu();
+	// 	const scrollStrategy = this._overlay.scrollStrategies.reposition();
+	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
+	// 	MediumDialogConfig.data = {
+	// 		dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument,
+	// 		hideReason: true,
+	// 		message: overrideDocument
+	// 			? 'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?'
+	// 			: null,
+	// 	};
+	// 	const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((file: File) => {
-			let fileInput: FileParameter;
-			fileInput = {
-				fileName: file.name,
-				data: file,
-			};
-			this._uploadSignedContract(agreementId, fileInput);
-		});
-	}
+	// 	dialogRef.componentInstance.onConfirmed.subscribe((file: File) => {
+	// 		let fileInput: FileParameter;
+	// 		fileInput = {
+	// 			fileName: file.name,
+	// 			data: file,
+	// 		};
+	// 		this._uploadSignedContract(agreementId, fileInput);
+	// 	});
+	// }
 
-	public downloadPdf(agreementId: number) {
-		this._closeMenu();
-		this.showMainSpinner();
-		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/pdf`;
-		this._processDownloadDocument(url);
-	}
+	// public downloadPdf(agreementId: number) {
+	// 	this._closeMenu();
+	// 	this.showMainSpinner();
+	// 	const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/pdf`;
+	// 	this._processDownloadDocument(url);
+	// }
 
-	public downloadDoc(agreementId: number) {
-		this._closeMenu();
-		this.showMainSpinner();
-		const getDraftIfAvailable = false; // NB: hardcoded false as for now, BE requirement
-		const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}`;
-		this._processDownloadDocument(url);
-	}
+	// public downloadDoc(agreementId: number) {
+	// 	this._closeMenu();
+	// 	this.showMainSpinner();
+	// 	const getDraftIfAvailable = false; // NB: hardcoded false as for now, BE requirement
+	// 	const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}`;
+	// 	this._processDownloadDocument(url);
+	// }
 
-	public downloadFile(agreementId: number) {
-		this._closeMenu();
-		this.showMainSpinner();
-		const url = `${this.apiUrl}/api/Agreement/${agreementId}/signed-document`;
-		this._processDownloadDocument(url);
-	}
+	// public downloadFile(agreementId: number) {
+	// 	this._closeMenu();
+	// 	this.showMainSpinner();
+	// 	const url = `${this.apiUrl}/api/Agreement/${agreementId}/signed-document`;
+	// 	this._processDownloadDocument(url);
+	// }
 
-	public openInDocuSign(docuSignUrl: string) {
-		this._closeMenu();
-		window.open(docuSignUrl, '_blank');
-	}
+	// public openInDocuSign(docuSignUrl: string) {
+	// 	this._closeMenu();
+	// 	window.open(docuSignUrl, '_blank');
+	// }
 
-	public editAgreement(agreementId: number) {
-		const routerUrl = this._router.serializeUrl(
-			this._router.createUrlTree(
-				[`/app/contracts/agreements/${agreementId}/settings`],
-				this.isClientContracts
-					? {
-							queryParams: {
-								clientPeriodId: this.clientPeriodId,
-							},
-					  }
-					: {
-							queryParams: {
-								consultantPeriodId: this.consultantPeriodId,
-								clientPeriodId: this.clientPeriodId,
-							},
-					  }
-			)
-		);
-		this._closeMenu();
-		window.open(routerUrl, '_blank');
-	}
+	// public editAgreement(agreementId: number) {
+	// 	const routerUrl = this._router.serializeUrl(
+	// 		this._router.createUrlTree(
+	// 			[`/app/contracts/agreements/${agreementId}/settings`],
+	// 			this.isClientContracts
+	// 				? {
+	// 						queryParams: {
+	// 							clientPeriodId: this.clientPeriodId,
+	// 						},
+	// 				  }
+	// 				: {
+	// 						queryParams: {
+	// 							consultantPeriodId: this.consultantPeriodId,
+	// 							clientPeriodId: this.clientPeriodId,
+	// 						},
+	// 				  }
+	// 		)
+	// 	);
+	// 	this._closeMenu();
+	// 	window.open(routerUrl, '_blank');
+	// }
 
-	public openDeleteAgreementDialog(agreementId: number) {
-		this._closeMenu();
-		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
-			dialogMode: ERemoveOrOuploadDialogMode.Delete,
-			hideReason: true,
-		};
-		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
+	// public openDeleteAgreementDialog(agreementId: number) {
+	// 	this._closeMenu();
+	// 	const scrollStrategy = this._overlay.scrollStrategies.reposition();
+	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
+	// 	MediumDialogConfig.data = {
+	// 		dialogMode: ERemoveOrOuploadDialogMode.Delete,
+	// 		hideReason: true,
+	// 	};
+	// 	const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe(() => {
-			this._deleteAgreement(agreementId);
-		});
-	}
+	// 	dialogRef.componentInstance.onConfirmed.subscribe(() => {
+	// 		this._deleteAgreement(agreementId);
+	// 	});
+	// }
 
-	public openVoidAgreementDialog(agreementId: number) {
-		this._closeMenu();
-		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
-			dialogMode: ERemoveOrOuploadDialogMode.Void,
-		};
-		const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
+	// public openVoidAgreementDialog(agreementId: number) {
+	// 	this._closeMenu();
+	// 	const scrollStrategy = this._overlay.scrollStrategies.reposition();
+	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
+	// 	MediumDialogConfig.data = {
+	// 		dialogMode: ERemoveOrOuploadDialogMode.Void,
+	// 	};
+	// 	const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((reason: string) => {
-			this._voidAgreement(agreementId, reason);
-		});
-	}
+	// 	dialogRef.componentInstance.onConfirmed.subscribe((reason: string) => {
+	// 		this._voidAgreement(agreementId, reason);
+	// 	});
+	// }
 
 	public redirectToCreateAgreement() {
 		const url = this._router.serializeUrl(
@@ -281,7 +281,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		} else {
 			return;
 		}
-		this._processDownloadDocument(url);
+		this._legalContractService.processDownloadDocument(url);
 	}
 
 	private _processDownloadDocument(url: string) {
@@ -442,27 +442,27 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		});
 	}
 
-	private _voidAgreement(agreementId: number, reason: string) {
-		this.showMainSpinner();
-		this._agreementService
-			.voidEnvelope(agreementId, reason)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this.showNotify(NotifySeverity.Success, 'Agreement voided');
-				this._getAgreementData();
-			});
-	}
+	// private _voidAgreement(agreementId: number, reason: string) {
+	// 	this.showMainSpinner();
+	// 	this._agreementService
+	// 		.voidEnvelope(agreementId, reason)
+	// 		.pipe(finalize(() => this.hideMainSpinner()))
+	// 		.subscribe(() => {
+	// 			this.showNotify(NotifySeverity.Success, 'Agreement voided');
+	// 			this._getAgreementData();
+	// 		});
+	// }
 
-	private _deleteAgreement(agreementId: number) {
-		this.showMainSpinner();
-		this._agreementService
-			.agreementDELETE(agreementId)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe(() => {
-				this.showNotify(NotifySeverity.Success, 'Agreement deleted');
-				this._getAgreementData();
-			});
-	}
+	// private _deleteAgreement(agreementId: number) {
+	// 	this.showMainSpinner();
+	// 	this._agreementService
+	// 		.agreementDELETE(agreementId)
+	// 		.pipe(finalize(() => this.hideMainSpinner()))
+	// 		.subscribe(() => {
+	// 			this.showNotify(NotifySeverity.Success, 'Agreement deleted');
+	// 			this._getAgreementData();
+	// 		});
+	// }
 
 	private _resetForm() {
 		this.clientLegalContractsForm.legalContracts.controls = [];
@@ -473,12 +473,25 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _sub() {
-		this._signalRService.triggerActiveReload$
+		this._agreementSignalRService.triggerActiveReload$
 			.pipe(
 				filter(({ eventName, args }) => {
 					console.log(eventName);
 					console.log(args);
 					return eventName === EAgreementEvents.InEditState;
+				}),
+				takeUntil(this._unsubscribe)
+			)
+			.subscribe(() => {
+				console.log('edit');
+			});
+
+        this._agreementSignalRService.triggerActiveReload$
+			.pipe(
+				filter(({ eventName, args }) => {
+					console.log(eventName);
+					console.log(args);
+					return eventName === EAgreementEvents.PeriodAgreementCreationPendingState;
 				}),
 				takeUntil(this._unsubscribe)
 			)

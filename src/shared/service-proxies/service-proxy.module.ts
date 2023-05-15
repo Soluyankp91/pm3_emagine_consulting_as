@@ -3,7 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { GlobalHttpInterceptorService } from './global-http-interceptor.service';
 import * as ApiServiceProxies from './service-proxies';
 import { SignalRService } from '../common/services/signal-r.service';
-import { ActiveUpdateSignalRApiService } from '../common/services/active-update-signalr.service';
+import { AgreementSignalRApiService } from '../common/services/agreement-signalr.service';
 
 @NgModule({
     providers: [
@@ -39,7 +39,7 @@ import { ActiveUpdateSignalRApiService } from '../common/services/active-update-
         {
             provide: APP_INITIALIZER,
             useFactory: (signalRService: SignalRService) => () => signalRService.init(),
-            deps: [ActiveUpdateSignalRApiService],
+            deps: [AgreementSignalRApiService],
             multi: true
         }
     ]

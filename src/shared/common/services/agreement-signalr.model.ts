@@ -1,5 +1,16 @@
 import { EmployeeDto, EnvelopeStatus } from "src/shared/service-proxies/service-proxies";
 
+export interface IUpdateData {
+    eventName: string;
+    args: AgreementSignalRArgs;
+}
+
+export interface AgreementSignalRArgs {
+    agreementId?: number;
+    clientPeriodId?: string,
+    consultantPeriodId?: string,
+}
+
 export interface IAgreementEventData {
     agreementId: number,
     agreementIds: number[],

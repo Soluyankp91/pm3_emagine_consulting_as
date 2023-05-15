@@ -2,16 +2,10 @@ import { Inject, Injectable, NgZone, Optional } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
 import { HubConnection } from '@microsoft/signalr';
-
-import { IUpdateData } from './active-update-signalr.model';
 import { environment } from '../../../environments/environment';
 import { filter } from 'rxjs/operators';
-import { AuthService } from 'src/app/login/auth.service';
-import { API_BASE_URL, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
-import { EAgreementEvents, IAgreementEventData } from './agreement-events.model';
+import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { MsalService } from '@azure/msal-angular';
-import { InteractionRequiredAuthError, PublicClientApplication } from '@azure/msal-browser';
 
 @Injectable({
 	providedIn: 'root',
@@ -28,7 +22,6 @@ export class SignalRService {
 
 	constructor(
 		private _zone: NgZone,
-		public _authService: AuthService,
         private __localHttpService: LocalHttpService,
 		@Optional() @Inject(API_BASE_URL) baseUrl?: string,
 	) {

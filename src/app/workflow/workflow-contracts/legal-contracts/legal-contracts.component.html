@@ -32,9 +32,9 @@
             </ng-container>
         </div>
         <ng-container formArrayName="legalContracts" class="u-w--100">
-            <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i"
-                [formArrayName]="i">
-                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px"
+            <ng-container *ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i" [formArrayName]="i">
+                <legal-contract [contract]="contract" [isClientContracts]="isClientContracts" [clientPeriodId]="clientPeriodId" [consultantPeriodId]="consultantPeriodId" [readOnlyMode]="readOnlyMode"></legal-contract>
+                <!-- <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px"
                     class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
                     <span fxFlex="20px" class="legal-contract--list-item u-w--100">
                         <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement"
@@ -190,7 +190,7 @@
                             </mat-menu>
                         </div>
                     </ng-container>
-                </div>
+                </div> -->
             </ng-container>
         </ng-container>
     </ng-container>

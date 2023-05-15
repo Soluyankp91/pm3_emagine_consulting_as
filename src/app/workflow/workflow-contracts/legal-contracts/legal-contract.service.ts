@@ -1,11 +1,12 @@
 import { HttpClient, HttpBackend, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
-import { mergeMap as _observableMergeMap, catchError as _observableCatch, switchMap } from 'rxjs/operators';
+import { mergeMap as _observableMergeMap, catchError as _observableCatch, switchMap, finalize } from 'rxjs/operators';
 import { Observable, throwError as _observableThrow, of as _observableOf, from } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ApiException, FileParameter } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AuthenticationResult } from '@azure/msal-browser';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
 	providedIn: 'root',
@@ -13,9 +14,17 @@ import { AuthenticationResult } from '@azure/msal-browser';
 export class LegalContractService {
 	private _httpClientBypass: HttpClient;
 	private _baseUrl = AppConsts.remoteServiceBaseUrl;
-	constructor(handler: HttpBackend, private _localHttpService: LocalHttpService, private _httpClient: HttpClient) {
+	constructor(handler: HttpBackend, private _localHttpService: LocalHttpService, private _httpClient: HttpClient, private _spinnerService: NgxSpinnerService) {
 		this._httpClientBypass = new HttpClient(handler);
 	}
+
+    processDownloadDocument(url: string) {
+        this.getTokenAndDownloadDocument(url)
+			.pipe(finalize(() => this._spinnerService.hide()))
+			.subscribe((data: HttpResponse<Blob>) => {
+				this.processResponseAfterDownload(data);
+			});
+    }
 
 	getTokenAndSignleEnvelopeCheck(agreementIds?: number[] | undefined): Observable<any> {
 		return this._localHttpService
