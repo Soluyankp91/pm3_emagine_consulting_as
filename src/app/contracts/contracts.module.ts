@@ -157,8 +157,8 @@ import { AgreementLogsComponent } from './shared/components/agreement-logs/agree
 		EnvelopePathFilterComponent,
 		EnvelopePathComponent,
 		ActionDialogComponent,
-  DefaultFileUploaderComponent,
-  AgreementLogsComponent,
+		DefaultFileUploaderComponent,
+		AgreementLogsComponent,
 	],
 	imports: [
 		CommonModule,
@@ -402,6 +402,14 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'legal-contract-upload',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contract-upload.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'reminder-send',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/reminder-send.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'partially-sign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/partially-sign.svg')
 		);
 	}
 }

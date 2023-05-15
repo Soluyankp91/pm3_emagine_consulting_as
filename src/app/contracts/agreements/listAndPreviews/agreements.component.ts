@@ -359,11 +359,13 @@ export class AgreementsComponent extends AppComponentBase implements OnInit, OnD
 					switchMap(() => this._agreementServiceProxy.resendDocusignEnvelope(selectedRowsIds))
 				)
 				.subscribe((res) => {
-					this.hideMainSpinner();
 					this._snackBar.open(SEND_REMINDER_SUCCESS_MESSAGE, 'X', {
 						panelClass: ['general-snackbar-success'],
 						duration: 5000,
 					});
+					setTimeout(() => {
+						this._agreementService.reloadTable();
+					}, 1000);
 				});
 		} else {
 			return this._dialog.open(NotificationDialogComponent, {
