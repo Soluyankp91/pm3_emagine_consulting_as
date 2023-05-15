@@ -179,7 +179,8 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             consulantName: new UntypedFormControl(consultant.consultantName),
             consultantId: new UntypedFormControl(consultant.consultantId),
             externalId: new UntypedFormControl(consultant.externalId),
-            extendConsultant: new UntypedFormControl(preselectConsultant)
+            extendConsultant: new UntypedFormControl(preselectConsultant),
+            endDate: new UntypedFormControl(null),
         });
         this.extendWorkflowForm.consultants.push(form);
     }

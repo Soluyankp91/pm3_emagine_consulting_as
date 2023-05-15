@@ -16,6 +16,7 @@ import {
 	ClientSpecialRateDto,
 	ConsultantContractsDataQueryDto,
 	ConsultantResultDto,
+	EmployeeDto,
 	EnumEntityTypeDto,
 	FrameAgreementServiceProxy,
 	LegalEntityDto,
@@ -30,9 +31,10 @@ import {
 import { WorkflowDataService } from '../../workflow-data.service';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from '../add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
-import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm } from '../workflow-contracts.model';
+import { ClientTimeReportingCaps, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm } from '../workflow-contracts.model';
 import { MarginType } from '../../shared/components/calculated-margin/calculated-margin.model';
 import { FindClientAddress } from '../../workflow-sales/workflow-sales.helpers';
+import { CustomValidators } from 'src/shared/utils/custom-validators';
 
 @Component({
 	selector: 'app-contracts-consultant-data',
@@ -43,7 +45,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
 	@Input() readOnlyMode: boolean;
 	@Input() periodId: string;
-	@Input() contractsMainForm: any;
+	@Input() contractsMainForm: WorkflowContractsMainForm;
 	@Input() contractClientForm: WorkflowContractsClientDataForm;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
@@ -70,10 +72,13 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	eCurrencies: { [key: number]: string };
 	directClientId: number;
 	filteredFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
+	filteredEmagineFrameAgreements = new Array<AgreementSimpleListItemDto[]>();
 	isContractModuleEnabled = this._workflowDataService.contractModuleEnabled;
 	selectedFrameAgreementList = new Array<null | number>();
+	selectedEmagineFrameAgreementList = new Array<null | number>();
     clientRateTypes = ClientRateTypes;
     eMarginType = MarginType;
+    filteredAccountManagers = new Array(new Array<EmployeeDto>());
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -126,6 +131,22 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		});
 	}
 
+    getInitialEmagineFrameAgreements(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+		this.getEmagineFrameAgreements(consultant, true).subscribe((result) => {
+			this.filteredEmagineFrameAgreements[consultantIndex] = result.items;
+			if (this.selectedEmagineFrameAgreementList[consultantIndex] !== null) {
+				this.consultants
+					?.at(consultantIndex)
+					?.get('emagineFrameAgreementId')
+					.setValue(this.selectedEmagineFrameAgreementList[consultantIndex]);
+			} else if (result.totalCount === 1) {
+				this._checkAndPreselectFrameAgreement(consultantIndex);
+			} else if (result?.totalCount === 0) {
+				this.consultants?.at(consultantIndex)?.get('emagineFrameAgreementId').setValue('');
+			}
+		});
+	}
+
 	getFrameAgreements(consultant: ConsultantContractsDataQueryDto, isInitial = false, search: string = '') {
 		let dataToSend = {
 			agreementId: undefined,
@@ -165,7 +186,44 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		);
 	}
 
-	private _checkAndPreselectFrameAgreement(consultantIndex: number) {
+    getEmagineFrameAgreements(consultant: ConsultantContractsDataQueryDto, isInitial = false, search: string = '') {
+		let dataToSend = {
+			agreementId: undefined,
+			search: search,
+			clientId: this.contractClientForm.directClientId.value,
+			agreementType: AgreementType.Frame,
+			validity: undefined,
+			legalEntityId: isInitial ? this.contractClientForm.pdcInvoicingEntityId.value : undefined,
+			salesTypeId: isInitial ? this.contractsMainForm.salesType.value?.id : undefined,
+			contractTypeId: undefined,
+			deliveryTypeId: isInitial ? this.contractsMainForm.deliveryType.value?.id : undefined,
+			startDate: undefined,
+			endDate: undefined,
+			recipientClientIds: [this.contractClientForm.directClientId.value, this.contractClientForm.endClientId.value].filter(
+				Boolean
+			),
+			recipientLegalEntityId: consultant.pdcPaymentEntityId,
+			pageNumber: 1,
+			pageSize: 1000,
+			sort: '',
+		};
+		return this._frameAgreementServiceProxy.emagineToEmagineFrameAgreementList(
+			undefined, // dataToSend.agreementId,
+			dataToSend.search,
+			dataToSend.legalEntityId,
+			undefined, // dataToSend.salesTypeId,
+			undefined, // dataToSend.contractTypeId,
+			undefined, // dataToSend.deliveryTypeId,
+			undefined, // dataToSend.startDate,
+			undefined, // dataToSend.endDate,
+			dataToSend.recipientLegalEntityId || undefined, //recipientLegalEntityId
+			dataToSend.pageNumber,
+			dataToSend.pageSize,
+			dataToSend.sort
+		);
+	}
+
+	private _checkAndPreselectFrameAgreement(consultantIndex: number, isEmagineFrameAgreement = false) {
 		if (
 			this.contractClientForm.directClientId.value !== null &&
 			this.contractClientForm.directClientId.value !== undefined &&
@@ -174,11 +232,19 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			this.contractsMainForm.deliveryType.value?.id !== null &&
 			this.contractsMainForm.deliveryType.value?.id !== undefined
 		) {
-			if (this.filteredFrameAgreements[consultantIndex].length === 1) {
-				this.contractsConsultantsDataForm.consultants.controls.forEach((form) => {
-					form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0], { emitEvent: false });
-				});
-			}
+            if (isEmagineFrameAgreement) {
+                if (this.filteredEmagineFrameAgreements[consultantIndex].length === 1) {
+                    this.contractsConsultantsDataForm.consultants.controls.forEach((form) => {
+                        form.get('emagineFrameAgreementId').setValue(this.filteredEmagineFrameAgreements[consultantIndex][0], { emitEvent: false });
+                    });
+                }
+            } else {
+                if (this.filteredFrameAgreements[consultantIndex].length === 1) {
+                    this.contractsConsultantsDataForm.consultants.controls.forEach((form) => {
+                        form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0], { emitEvent: false });
+                    });
+                }
+            }
 		}
 	}
 
@@ -233,13 +299,16 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				Validators.required
 			),
 			noSpecialPaymentTerms: new UntypedFormControl(consultant?.noSpecialPaymentTerms ?? false),
-			frameAgreementId: new UntypedFormControl(consultant?.frameAgreementId ?? null),
+			frameAgreementId: new UntypedFormControl(consultant?.consultantFrameAgreementId ?? null),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			clientFees: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
 			projectLines: new UntypedFormArray([], Validators.minLength(1)),
             timeReportingCaps: new UntypedFormArray([]),
+			emagineFrameAgreementId: new UntypedFormControl(consultant?.emagineToEmagineFrameAgreementId ?? null),
+            deliveryAccountManager: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id'])),
+            deliveryManagerSameAsAccountManager: new UntypedFormControl(false),
 		});
 		this.contractsConsultantsDataForm.consultants.push(form);
 		consultant.projectLines?.forEach((project: any) => {
@@ -256,12 +325,17 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		});
 		if (this.isContractModuleEnabled) {
 			this.filteredFrameAgreements.push([]);
+			this.filteredEmagineFrameAgreements.push([]);
 			if (
 				consultant.employmentTypeId !== EmploymentTypes.FeeOnly &&
 				consultant.employmentTypeId !== EmploymentTypes.Recruitment
 			) {
 				this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
 				this.getInitialFrameAgreements(consultant, consultantIndex);
+                if (consultant.pdcPaymentEntityId !== this.contractClientForm.pdcInvoicingEntityId.value) {
+                    this.manageEmagineFrameAgreementAutocomplete(consultant, consultantIndex);
+				    this.getInitialEmagineFrameAgreements(consultant, consultantIndex);
+                }
 			}
 		}
 
@@ -308,6 +382,52 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 					}
 				} else {
 					this.filteredFrameAgreements[consultantIndex] = [
+						new AgreementSimpleListItemDto({
+							agreementName: 'No records found',
+							agreementId: undefined,
+						}),
+					];
+				}
+			});
+	}
+
+    manageEmagineFrameAgreementAutocomplete(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+		let arrayControl = this.consultants.at(consultantIndex);
+		arrayControl!
+			.get('emagineFrameAgreementId')!
+			.valueChanges.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						search: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.agreementId) {
+						toSend.search = value.agreementId ? value.agreementName : value;
+					}
+					return this.getFrameAgreements(consultant, false, toSend.search);
+				})
+			)
+			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
+				if (list?.items?.length) {
+					this.filteredEmagineFrameAgreements[consultantIndex] = list.items;
+					if (
+						this.selectedEmagineFrameAgreementList[consultantIndex] &&
+						this.selectedEmagineFrameAgreementList[consultantIndex] !== null
+					) {
+						this.consultants
+							.at(consultantIndex)
+							.get('emagineFrameAgreementId')
+							.setValue(
+								list.items.find((x) => x.agreementId === this.selectedEmagineFrameAgreementList[consultantIndex]),
+								{ emitEvent: false }
+							);
+						this.selectedEmagineFrameAgreementList[consultantIndex] = null;
+					}
+				} else {
+					this.filteredEmagineFrameAgreements[consultantIndex] = [
 						new AgreementSimpleListItemDto({
 							agreementName: 'No records found',
 							agreementId: undefined,
