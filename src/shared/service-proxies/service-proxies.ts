@@ -23092,6 +23092,7 @@ export class AvailableConsultantDto implements IAvailableConsultantDto {
     consultantName?: string | undefined;
     consultantId?: number;
     externalId?: string;
+    lastConsultantPeriodEndDate?: moment.Moment | undefined;
 
     constructor(data?: IAvailableConsultantDto) {
         if (data) {
@@ -23107,6 +23108,7 @@ export class AvailableConsultantDto implements IAvailableConsultantDto {
             this.consultantName = _data["consultantName"];
             this.consultantId = _data["consultantId"];
             this.externalId = _data["externalId"];
+            this.lastConsultantPeriodEndDate = _data["lastConsultantPeriodEndDate"] ? moment(_data["lastConsultantPeriodEndDate"].toString()) : <any>undefined;
         }
     }
 
@@ -23122,6 +23124,7 @@ export class AvailableConsultantDto implements IAvailableConsultantDto {
         data["consultantName"] = this.consultantName;
         data["consultantId"] = this.consultantId;
         data["externalId"] = this.externalId;
+        data["lastConsultantPeriodEndDate"] = this.lastConsultantPeriodEndDate ? this.lastConsultantPeriodEndDate.format('YYYY-MM-DD') : <any>undefined;
         return data;
     }
 }
@@ -23130,6 +23133,7 @@ export interface IAvailableConsultantDto {
     consultantName?: string | undefined;
     consultantId?: number;
     externalId?: string;
+    lastConsultantPeriodEndDate?: moment.Moment | undefined;
 }
 
 export class BranchRoleNodeDto implements IBranchRoleNodeDto {
