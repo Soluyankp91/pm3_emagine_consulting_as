@@ -32823,6 +32823,7 @@ export class SendDocuSignEnvelopeCommand implements ISendDocuSignEnvelopeCommand
     createDraftOnly?: boolean;
     emailSubject?: string | undefined;
     emailBody?: string | undefined;
+    skipMergeFieldsValidation?: boolean;
 
     constructor(data?: ISendDocuSignEnvelopeCommand) {
         if (data) {
@@ -32844,6 +32845,7 @@ export class SendDocuSignEnvelopeCommand implements ISendDocuSignEnvelopeCommand
             this.createDraftOnly = _data["createDraftOnly"];
             this.emailSubject = _data["emailSubject"];
             this.emailBody = _data["emailBody"];
+            this.skipMergeFieldsValidation = _data["skipMergeFieldsValidation"];
         }
     }
 
@@ -32865,6 +32867,7 @@ export class SendDocuSignEnvelopeCommand implements ISendDocuSignEnvelopeCommand
         data["createDraftOnly"] = this.createDraftOnly;
         data["emailSubject"] = this.emailSubject;
         data["emailBody"] = this.emailBody;
+        data["skipMergeFieldsValidation"] = this.skipMergeFieldsValidation;
         return data;
     }
 }
@@ -32875,12 +32878,14 @@ export interface ISendDocuSignEnvelopeCommand {
     createDraftOnly?: boolean;
     emailSubject?: string | undefined;
     emailBody?: string | undefined;
+    skipMergeFieldsValidation?: boolean;
 }
 
 export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
     agreementIds?: number[] | undefined;
     singleEmail?: boolean;
     convertDocumentFileToPdf?: boolean;
+    skipMergeFieldsValidation?: boolean;
 
     constructor(data?: ISendEmailEnvelopeCommand) {
         if (data) {
@@ -32900,6 +32905,7 @@ export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
             }
             this.singleEmail = _data["singleEmail"];
             this.convertDocumentFileToPdf = _data["convertDocumentFileToPdf"];
+            this.skipMergeFieldsValidation = _data["skipMergeFieldsValidation"];
         }
     }
 
@@ -32919,6 +32925,7 @@ export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
         }
         data["singleEmail"] = this.singleEmail;
         data["convertDocumentFileToPdf"] = this.convertDocumentFileToPdf;
+        data["skipMergeFieldsValidation"] = this.skipMergeFieldsValidation;
         return data;
     }
 }
@@ -32927,6 +32934,7 @@ export interface ISendEmailEnvelopeCommand {
     agreementIds?: number[] | undefined;
     singleEmail?: boolean;
     convertDocumentFileToPdf?: boolean;
+    skipMergeFieldsValidation?: boolean;
 }
 
 export class SendToDocuSignTestCommand implements ISendToDocuSignTestCommand {
