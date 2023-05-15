@@ -284,7 +284,7 @@ export const ENVELOPEPATH_FILTER_OPTIONS = [
 export const STATUTES = [
 	{
 		id: 1,
-		name: 'Created',
+		name: 'Created123',
 		color: '#50BEE8',
 	},
 	{
@@ -318,16 +318,6 @@ export const STATUTES = [
 		color: '#F453B4',
 	},
 	{
-		id: 13,
-		name: 'Reminder sent',
-		color: '#F453B4',
-	},
-	{
-		id: 14,
-		name: 'Signed',
-		color: '#F453B4',
-	},
-	{
 		id: 6,
 		name: 'Voided',
 		color: '#FF7A78',
@@ -341,6 +331,16 @@ export const STATUTES = [
 		id: 8,
 		name: 'Declined',
 		color: '#FF7A78',
+	},
+	{
+		id: 13,
+		name: 'Reminder sent',
+		icon: 'reminder-send',
+	},
+	{
+		id: 14,
+		name: 'Signed',
+		icon: 'partially-sign',
 	},
 ];
 export const INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE =

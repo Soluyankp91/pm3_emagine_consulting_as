@@ -4,7 +4,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Created].color,
-				tooltip: statusEnum[envelopeStatuses.Created].name
+				name: statusEnum[envelopeStatuses.Created].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.CreatedInDocuSign">
@@ -12,7 +12,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.CreatedInDocuSign].color,
-				tooltip: statusEnum[envelopeStatuses.CreatedInDocuSign].name
+				name: statusEnum[envelopeStatuses.CreatedInDocuSign].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Sent">
@@ -20,7 +20,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Sent].color,
-				tooltip: statusEnum[envelopeStatuses.Sent].name
+				name: statusEnum[envelopeStatuses.Sent].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.DeliveryFailure">
@@ -28,7 +28,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.DeliveryFailure].color,
-				tooltip: statusEnum[envelopeStatuses.DeliveryFailure].name
+				name: statusEnum[envelopeStatuses.DeliveryFailure].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Voided">
@@ -36,7 +36,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Voided].color,
-				tooltip: statusEnum[envelopeStatuses.Voided].name
+				name: statusEnum[envelopeStatuses.Voided].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Declined">
@@ -44,7 +44,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Declined].color,
-				tooltip: statusEnum[envelopeStatuses.Declined].name
+				name: statusEnum[envelopeStatuses.Declined].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.WaitingForOthers">
@@ -52,7 +52,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.WaitingForOthers].color,
-				tooltip: statusEnum[envelopeStatuses.WaitingForOthers].name
+				name: statusEnum[envelopeStatuses.WaitingForOthers].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Completed">
@@ -60,7 +60,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Completed].color,
-				tooltip: statusEnum[envelopeStatuses.Completed].name
+				name: statusEnum[envelopeStatuses.Completed].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.AboutToExpire">
@@ -68,7 +68,7 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.AboutToExpire].color,
-				tooltip: statusEnum[envelopeStatuses.AboutToExpire].name
+				name: statusEnum[envelopeStatuses.AboutToExpire].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.Expired">
@@ -76,27 +76,27 @@
 			[ngTemplateOutlet]="dot"
 			[ngTemplateOutletContext]="{
 				color: statusEnum[envelopeStatuses.Expired].color,
-				tooltip: statusEnum[envelopeStatuses.Expired].name
+				name: statusEnum[envelopeStatuses.Expired].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.ReminderSent">
 		<ng-container
-			[ngTemplateOutlet]="dot"
+			[ngTemplateOutlet]="icon"
 			[ngTemplateOutletContext]="{
-				color: statusEnum[envelopeStatuses.ReminderSent].color,
-				tooltip: statusEnum[envelopeStatuses.ReminderSent].name
+				icon: statusEnum[envelopeStatuses.ReminderSent].icon,
+				name: statusEnum[envelopeStatuses.ReminderSent].name
 			}"></ng-container>
 	</ng-container>
 	<ng-container *ngSwitchCase="envelopeStatuses.PartiallySigned">
 		<ng-container
-			[ngTemplateOutlet]="dot"
+			[ngTemplateOutlet]="icon"
 			[ngTemplateOutletContext]="{
-				color: statusEnum[envelopeStatuses.PartiallySigned].color,
-				tooltip: statusEnum[envelopeStatuses.PartiallySigned].name
+				icon: statusEnum[envelopeStatuses.PartiallySigned].icon,
+				name: statusEnum[envelopeStatuses.PartiallySigned].name
 			}"></ng-container>
 	</ng-container>
 </ng-container>
-<ng-template #dot let-color="color" let-tooltip="tooltip">
+<ng-template #dot let-color="color" let-name="name">
     <div class="icon-and-text">
         <svg
 		width="8"
@@ -107,7 +107,16 @@
 		<rect width="8" height="8" rx="4" [attr.fill]="color" />
 	</svg>
     <ng-container *ngIf="displayText">
-        <span> {{ tooltip }}</span>
+        <span> {{ name }}</span>
     </ng-container>
     </div>
+</ng-template>
+<ng-template #icon let-icon="icon" let-name="name">
+	<div class="icon-and-text">
+		<mat-icon [svgIcon]="icon" class="icon"></mat-icon>
+		<ng-container *ngIf="displayText">
+			<span> {{ name }}</span>
+		</ng-container>
+    </div>
+
 </ng-template>

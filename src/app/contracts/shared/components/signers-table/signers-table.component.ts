@@ -69,7 +69,7 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, OnChan
 	ngDoCheck(): void {
 		if (this.ngControl.control?.touched) {
 			this.formArray.markAllAsTouched();
-			this.formArray.updateValueAndValidity();
+			this.formArray.updateValueAndValidity({ emitEvent: false });
 		}
 	}
 
