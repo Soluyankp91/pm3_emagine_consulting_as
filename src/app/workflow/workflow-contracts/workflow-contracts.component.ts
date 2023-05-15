@@ -354,7 +354,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			if (this.terminationDocuments) {
 				this.terminationDocuments.clearDocuments();
                 if (result.length) {
-                    this.terminationDocuments.addExistingFile(result);
+                    const terminationDocs = result.filter(doc => doc.workflowTerminationId !== null && doc.workflowTerminationId !== undefined);
+                    this.terminationDocuments.addExistingFile(terminationDocs);
                 }
 			}
 		});

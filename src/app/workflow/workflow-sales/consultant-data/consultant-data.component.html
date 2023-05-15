@@ -62,7 +62,7 @@
                                         <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
                                         <span matSuffix class="shevron"></span>
                                         <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn"
-                                            (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                            (optionSelected)="consultantSelected($event, consultantIndex)" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
                                             <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
                                                 <mat-option [value]="item" [ngClass]="{ 'no-data': item?.consultant?.id === undefined }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                     <div class="multilineDropdown-option--row">
@@ -1008,10 +1008,55 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContract' + consultantIndex">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantFrameAgreement' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">6</span>
+                                <h2 class="workflow-section--header">Frame agreement</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                    <mat-form-field appearance="outline"
+                                        class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
+                                        [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
+                                        <mat-label>Frame agreement</mat-label>
+                                        <input [disabled]="readOnlyMode" #frameAgreementInput type="text"
+                                            matInput [matAutocomplete]="frameAgreementAutocomplete"
+                                            formControlName="frameAgreementId" appPreventDoubleClick
+                                            (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
+                                            <span matSuffix class="shevron"></span>
+                                        <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
+                                            [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                            <ng-container *ngFor="let item of filteredFrameAgreements[consultantIndex]; trackBy: trackById">
+                                                <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
+                                                    <div class="multilineDropdown-option--row">
+                                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                            <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                            <ng-container *ngIf="item?.agreementId !== undefined">
+                                                                <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                                    #{{item?.agreementId}} •
+                                                                    {{item.countryName}}
+                                                                    {{item.countryName ? '•' : ''}}
+                                                                    {{item.startDate | momentFormat}}
+                                                                    {{item.startDate !== null && item.startDate !== undefined ? '-' : ''}}
+                                                                    {{item.endDate | momentFormat}}
+                                                                </span>
+                                                            </ng-container>
+                                                        </div>
+                                                    </div>
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('frameAgreementId')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantContract' + consultantIndex">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">7</span>
                                 <h2 class="workflow-section--header">Consultant contract</h2>
                             </div>
                             <div class="workflow-section--content">
@@ -1030,98 +1075,138 @@
                                         </mat-checkbox>
                                     </ng-container>
                                 </div>
-                                <h3 class="workflow-gray--header u-mb--10">Contract Signers</h3>
-                                <div formArrayName="contractSigners" class="u-w--100">
-                                    <ng-container *ngFor="let signer of getConsultantSignersControls(consultantIndex); trackBy: trackByItem; let signerIndex = index" [formGroupName]="signerIndex">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                            <mat-form-field appearance="outline"
-                                                class="u-w--100 formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--16" fxFlex="33%"
-                                                [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': contactSignerAutocomplete.isOpen}">
-                                                <mat-label>Name</mat-label>
-                                                <input [disabled]="readOnlyMode" required type="text" matInput
-                                                    [matAutocomplete]="contactSignerAutocomplete" formControlName="supplierMember"
-                                                    appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                                    placeholder="Name">
-                                                    <span matSuffix class="shevron"></span>
-                                                <mat-autocomplete #contactSignerAutocomplete="matAutocomplete"
-                                                    [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                                    (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
-                                                    <ng-container *ngFor="let contact of filteredSupplierMembers[consultantIndex][signerIndex]; trackBy: trackById">
-                                                        <mat-option [value]="contact"
-                                                            [ngClass]="{ 'no-data': contact?.id === undefined }">
-                                                            <span class="autocopmlete-option-name">{{ contact.name}}</span>
-                                                        </mat-option>
-                                                    </ng-container>
-                                                </mat-autocomplete>
-                                                <mat-error>
-                                                    <app-validator
-                                                        [control]="signer.get('supplierMember')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
+                                <ng-container *ngIf="consultant.value?.consultantName?.consultant?.supplierId !== null && consultant.value?.consultantName?.consultant?.supplierId !== undefined">
+                                    <h3 class="workflow-gray--header u-mb--10">Contract Signers</h3>
+                                    <div formArrayName="contractSigners" class="u-w--100">
+                                        <ng-container *ngFor="let signer of getConsultantSignersControls(consultantIndex); trackBy: trackByItem; let signerIndex = index" [formGroupName]="signerIndex">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                <mat-form-field appearance="outline"
+                                                    class="u-w--100 formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--16" fxFlex="33%"
+                                                    [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': contactSignerAutocomplete.isOpen}">
+                                                    <mat-label>Name</mat-label>
+                                                    <input [disabled]="readOnlyMode" required type="text" matInput
+                                                        [matAutocomplete]="contactSignerAutocomplete" formControlName="supplierMember"
+                                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                                        placeholder="Name">
+                                                        <span matSuffix class="shevron"></span>
+                                                    <mat-autocomplete #contactSignerAutocomplete="matAutocomplete"
+                                                        [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                                        (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                        <ng-container *ngFor="let contact of filteredSupplierMembers[consultantIndex][signerIndex]; trackBy: trackById">
+                                                            <mat-option [value]="contact"
+                                                                [ngClass]="{ 'no-data': contact?.id === undefined }">
+                                                                <span class="autocopmlete-option-name">{{ contact.name}}</span>
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-autocomplete>
+                                                    <mat-error>
+                                                        <app-validator
+                                                            [control]="signer.get('supplierMember')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
 
-                                            <mat-form-field appearance="outline"
-                                                class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                                                <mat-label>Client Role</mat-label>
-                                                <mat-select [disabled]="readOnlyMode" required formControlName="signerRoleId"
-                                                    [disableOptionCentering]="true">
-                                                    <ng-container *ngFor="let item of signerRoles; trackBy: trackById">
-                                                        <mat-option [value]="item.id">
-                                                            {{ item.name }}
-                                                        </mat-option>
-                                                    </ng-container>
-                                                </mat-select>
-                                                <mat-error>
-                                                    <app-validator [control]="signer.get('signerRoleId')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
+                                                <mat-form-field appearance="outline"
+                                                    class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                                    <mat-label>Client Role</mat-label>
+                                                    <mat-select [disabled]="readOnlyMode" required formControlName="signerRoleId"
+                                                        [disableOptionCentering]="true">
+                                                        <ng-container *ngFor="let item of signerRoles; trackBy: trackById">
+                                                            <mat-option [value]="item.id">
+                                                                {{ item.name }}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        <app-validator [control]="signer.get('signerRoleId')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
 
-                                            <mat-form-field appearance="outline"
-                                                class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
-                                                <mat-label>Sequence</mat-label>
-                                                <mat-select [disabled]="readOnlyMode" required formControlName="signOrder"
-                                                    [disableOptionCentering]="true">
-                                                    <ng-container *ngFor="let item of [1,2,3,4,5,6,7]">
-                                                        <mat-option [value]="item">
-                                                            {{ item }}
-                                                        </mat-option>
-                                                    </ng-container>
-                                                </mat-select>
-                                                <mat-error>
-                                                    <app-validator
-                                                        [control]="signer.get('signOrder')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
-                                            <ng-container *ngIf="!readOnlyMode">
-                                                <button class="form-icon--delete-row" type="button" mat-icon-button
-                                                    appPreventDoubleClick (throttledClick)="removeConsutlantSigner(consultantIndex, signerIndex)"><mat-icon
-                                                        svgIcon="remove-icon"></mat-icon></button>
-                                            </ng-container>
-                                        </div>
-                                    </ng-container>
-                                    <ng-container *ngIf="consultant.value.contractSigners?.length === 0 && readOnlyMode">
-                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow u-mt--15">
-                                            <span class="light-grey-color text-600">
-                                                No contract signers
-                                            </span>
-                                        </div>
-                                    </ng-container>
-                                    <ng-container *ngIf="!readOnlyMode">
-                                        <button class="button-add" mat-flat-button type="button" appPreventDoubleClick
-                                            (throttledClick)="addSignerToForm(consultantIndex)">
-                                            <mat-icon>add</mat-icon>
-                                            Add Signer
-                                        </button>
-                                    </ng-container>
-                                </div>
+                                                <mat-form-field appearance="outline"
+                                                    class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                                    <mat-label>Sequence</mat-label>
+                                                    <mat-select [disabled]="readOnlyMode" required formControlName="signOrder"
+                                                        [disableOptionCentering]="true">
+                                                        <ng-container *ngFor="let item of [1,2,3,4,5,6,7]">
+                                                            <mat-option [value]="item">
+                                                                {{ item }}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        <app-validator
+                                                            [control]="signer.get('signOrder')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <ng-container *ngIf="!readOnlyMode">
+                                                    <button class="form-icon--delete-row" type="button" mat-icon-button
+                                                        appPreventDoubleClick (throttledClick)="removeConsutlantSigner(consultantIndex, signerIndex)"><mat-icon
+                                                            svgIcon="remove-icon"></mat-icon></button>
+                                                </ng-container>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="consultant.value.contractSigners?.length === 0 && readOnlyMode">
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow u-mt--15">
+                                                <span class="light-grey-color text-600">
+                                                    No contract signers
+                                                </span>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="!readOnlyMode">
+                                            <button class="button-add" mat-flat-button type="button" appPreventDoubleClick
+                                                (throttledClick)="addSignerToForm(consultantIndex)">
+                                                <mat-icon>add</mat-icon>
+                                                Add Signer
+                                            </button>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
                             </div>
                         </div>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'salesConsultantEmagineToEmagine' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                                <span class="workflow-section--number">7</span>
+                                <span class="workflow-section--number">8</span>
                                 <h2 class="workflow-section--header">Emagine to emagine</h2>
                             </div>
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="(consultant.value?.consultantProdataEntity?.id && clientDataForm.value?.pdcInvoicingEntityId) && (consultant.value?.consultantProdataEntity?.id !== clientDataForm.value?.pdcInvoicingEntityId); else noDeliveryAccountManager">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <mat-form-field appearance="outline"
+                                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
+                                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
+                                            <mat-label>Frame agreement</mat-label>
+                                            <input [disabled]="readOnlyMode" #frameAgreementInput type="text"
+                                                matInput [matAutocomplete]="frameAgreementAutocomplete"
+                                                formControlName="emagineFrameAgreementId" appPreventDoubleClick
+                                                (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
+                                                <span matSuffix class="shevron"></span>
+                                            <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
+                                                [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                <ng-container *ngFor="let item of filteredEmagineFrameAgreements[consultantIndex]; trackBy: trackById">
+                                                    <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
+                                                        <div class="multilineDropdown-option--row">
+                                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                                <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                                <ng-container *ngIf="item?.agreementId !== undefined">
+                                                                    <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                                        #{{item?.agreementId}} •
+                                                                        {{item.countryName}}
+                                                                        {{item.countryName ? '•' : ''}}
+                                                                        {{item.startDate | momentFormat}}
+                                                                        {{item.startDate !== null && item.startDate !== undefined ? '-' : ''}}
+                                                                        {{item.endDate | momentFormat}}
+                                                                    </span>
+                                                                </ng-container>
+                                                            </div>
+                                                        </div>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                            <mat-error>
+                                                <app-validator [control]="consultant.get('emagineFrameAgreementId')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': deliveryManagerAutocomplete.isOpen}">
                                             <mat-label>Delivery Account manager</mat-label>
@@ -1151,7 +1236,7 @@
                                 <ng-template #noDeliveryAccountManager>
                                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow">
                                         <span class="light-grey-color text-600">
-                                            Account manager - required only for Nearshore projects
+                                            Required only for Nearshore projects
                                         </span>
                                     </div>
                                 </ng-template>

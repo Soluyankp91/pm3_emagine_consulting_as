@@ -27192,6 +27192,8 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     deliveryManagerSameAsAccountManager?: boolean;
     deliveryAccountManagerIdValue?: number | undefined;
     deliveryAccountManager?: EmployeeDto;
+    consultantFrameAgreementId?: number | undefined;
+    emagineToEmagineFrameAgreementId?: number | undefined;
 
     constructor(data?: IConsultantSalesDataDto) {
         if (data) {
@@ -27261,6 +27263,8 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.deliveryManagerSameAsAccountManager = _data["deliveryManagerSameAsAccountManager"];
             this.deliveryAccountManagerIdValue = _data["deliveryAccountManagerIdValue"];
             this.deliveryAccountManager = _data["deliveryAccountManager"] ? EmployeeDto.fromJS(_data["deliveryAccountManager"]) : <any>undefined;
+            this.consultantFrameAgreementId = _data["consultantFrameAgreementId"];
+            this.emagineToEmagineFrameAgreementId = _data["emagineToEmagineFrameAgreementId"];
         }
     }
 
@@ -27330,6 +27334,8 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["deliveryManagerSameAsAccountManager"] = this.deliveryManagerSameAsAccountManager;
         data["deliveryAccountManagerIdValue"] = this.deliveryAccountManagerIdValue;
         data["deliveryAccountManager"] = this.deliveryAccountManager ? this.deliveryAccountManager.toJSON() : <any>undefined;
+        data["consultantFrameAgreementId"] = this.consultantFrameAgreementId;
+        data["emagineToEmagineFrameAgreementId"] = this.emagineToEmagineFrameAgreementId;
         return data;
     }
 }
@@ -27376,6 +27382,8 @@ export interface IConsultantSalesDataDto {
     deliveryManagerSameAsAccountManager?: boolean;
     deliveryAccountManagerIdValue?: number | undefined;
     deliveryAccountManager?: EmployeeDto;
+    consultantFrameAgreementId?: number | undefined;
+    emagineToEmagineFrameAgreementId?: number | undefined;
 }
 
 export class ConsultantTerminationContractDataCommandDto implements IConsultantTerminationContractDataCommandDto {

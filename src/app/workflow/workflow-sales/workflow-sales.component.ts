@@ -847,7 +847,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			if (this.terminationDocuments) {
 				this.terminationDocuments.clearDocuments();
                 if (result.length) {
-                    this.terminationDocuments.addExistingFile(result);
+                    const terminationDocs = result.filter(doc => doc.workflowTerminationId !== null && doc.workflowTerminationId !== undefined);
+                    this.terminationDocuments.addExistingFile(terminationDocs);
                 }
 			}
 		});
@@ -1303,8 +1304,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			});
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
 			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
-            // FIXME: framgeAgreement here
-            // consultantInput.
+            consultantInput.consultantFrameAgreementId = consultant.frameAgreementId?.agreementId;
+            consultantInput.emagineToEmagineFrameAgreementId = consultant.emagineFrameAgreementId?.agreementId;
 		}
 		return consultantInput;
 	}
