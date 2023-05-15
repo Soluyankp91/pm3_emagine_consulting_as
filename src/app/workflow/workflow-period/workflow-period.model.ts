@@ -203,8 +203,8 @@ export const SalesConsultantDataSections: SubItemDto[] = [
         anchor: 'salesConsultantContract'
     },
     {
-        name: 'Account manager',
-        anchor: 'salesConsultantAccountManager'
+        name: 'emgaine to emagine',
+        anchor: 'salesConsultantEmagineToEmagine'
     }
 ];
 
@@ -294,6 +294,10 @@ export const ContractConsultantDataSections: SubItemDto[] = [
     {
         name: 'Legal contracts',
         anchor: 'contractConsultantLegalContracts'
+    },
+    {
+        name: 'Emagine to emagine',
+        anchor: 'contractConsultantEmgaineToEmagine'
     }
 ];
 

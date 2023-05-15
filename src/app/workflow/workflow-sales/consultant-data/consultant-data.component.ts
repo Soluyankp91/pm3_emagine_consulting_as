@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy, ClientAddressDto, TimeReportingCapDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, ConsultantSalesDataDto, ConsultantWithSourcingRequestResultDto, ConsultantResultDto, CountryDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, StepType, WorkflowProcessType, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantPeriodServiceProxy, ClientAddressDto, TimeReportingCapDto, SupplierMemberResultDto, ContractSupplierSignerDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../../workflow-data.service';
@@ -68,15 +68,18 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	filteredConsultantClientAddresses: ClientResultDto[] = [];
 	filteredConsultantCountries: EnumEntityTypeDto[];
     filteredConsultants: ConsultantWithSourcingRequestResultDto[] = []
+    signerRoles: EnumEntityTypeDto[];
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
     onsiteClientAddresses = new Array<IClientAddress[]>();
+    filteredSupplierMembers = new Array(new Array<SupplierMemberResultDto[]>());
     eMarginType = MarginType;
     eTimeReportingCaps = ETimeReportingCaps;
     private _unsubscribe = new Subject();
+    private _supplierMemberUnsubscribe$ = new Subject();
 	constructor(
         injector: Injector,
         private _fb: UntypedFormBuilder,
@@ -120,6 +123,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             currencies: this._internalLookupService.getCurrencies(),
             valueUnitTypes: this._internalLookupService.getValueUnitTypes(),
             periodUnitTypes: this._internalLookupService.getPeriodUnitTypes(),
+            signerRoles: this._internalLookupService.getSignerRoles(),
         })
         .subscribe(result => {
             this.employmentTypes = result.employmentTypes;
@@ -134,6 +138,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             this.currencies = result.currencies;
             this.valueUnitTypes = result.valueUnitTypes;
             this.periodUnitTypes = result.periodUnitTypes;
+            this.signerRoles = result.signerRoles;
         });
     }
 
@@ -249,6 +254,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null
 			),
             timeReportingCaps: new UntypedFormArray([]),
+            contractSigners: new UntypedFormArray([]),
 			consultantSpecialRateFilter: new UntypedFormControl(''),
 			specialRates: new UntypedFormArray([]),
 			consultantSpecialFeeFilter: new UntypedFormControl(''),
@@ -270,7 +276,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			),
 		});
 		this.consultants.push(form);
+        const consultantIndex = this.consultants.controls.length - 1;
         this.onsiteClientAddresses.push([]);
+        this.filteredSupplierMembers[consultantIndex].push([]);
         if (consultant?.onsiteClient?.clientId) {
             this.getClientAddresses(this.consultants.length - 1, consultant?.onsiteClient.clientAddresses);
         }
@@ -289,6 +297,11 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				this.addConsultantSpecialFee(this.consultants.length - 1, fee);
 			}
 		}
+        if (consultant?.contractSupplierSigners?.length) {
+            for (let signer of consultant?.contractSupplierSigners) {
+                this.addSignerToForm(consultantIndex, signer);
+            }
+        }
 		this.manageManagerAutocomplete(this.consultants.length - 1);
 		this.manageConsultantAutocomplete(this.consultants.length - 1);
 		this.manageConsultantClientAddressAutocomplete(this.consultants.length - 1);
@@ -820,6 +833,61 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         this.submitFormBtn.nativeElement.click();
     }
 
+    getConsultantSignersControls(consultantIndex: number): AbstractControl[] | null {
+		return (this.consultants.at(consultantIndex).get('contractSigners') as UntypedFormArray).controls;
+	}
+
+    removeConsutlantSigner(consultantIndex: number, signerIndex: number) {
+        const contractSigners = (this.consultants.at(consultantIndex).get('contractSigners') as UntypedFormArray);
+        contractSigners.removeAt(signerIndex);
+        this._supplierMemberUnsubscribe();
+        contractSigners.controls.forEach((signer, signerIndex) => {
+            this.manageSupplierMemberAutocomplete(consultantIndex, signerIndex);
+        })
+    }
+
+    addSignerToForm(consultantIndex: number, signer?: ContractSupplierSignerDto) {
+        const form = this._fb.group({
+			supplierMember: new UntypedFormControl(signer?.supplierMember ?? null, CustomValidators.autocompleteValidator(['id'])),
+			signerRoleId: new UntypedFormControl(signer?.signerRoleId ?? null),
+			signOrder: new UntypedFormControl(signer?.signOrder ?? null),
+		});
+		(this.consultants.at(consultantIndex).get('contractSigners') as UntypedFormArray).push(form);
+        const signerIndex = (this.consultants.at(consultantIndex).get('contractSigners') as UntypedFormArray).controls.length - 1;
+        this.manageSupplierMemberAutocomplete(consultantIndex, signerIndex);
+    }
+
+    manageSupplierMemberAutocomplete(consultantIndex: number, signerIndex: number) {
+		let arrayControl = (this.consultants.at(consultantIndex).get('contractSigners') as UntypedFormArray).at(signerIndex);
+		arrayControl!
+			.get('supplierMember')!
+			.valueChanges.pipe(
+				takeUntil(this._supplierMemberUnsubscribe$),
+				debounceTime(300),
+                startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value,
+                        supplierId: this.consultants.at(consultantIndex).get('consultantName').value?.consultant?.supplierId,
+						maxRecordsCount: 1000,
+					};
+                    return this._lookupService.signerSupplierMembers(toSend.name, toSend.supplierId, toSend.maxRecordsCount);
+				})
+			)
+			.subscribe((list: SupplierMemberResultDto[]) => {
+				if (list.length) {
+					this.filteredSupplierMembers[consultantIndex][signerIndex] = list;
+				} else {
+					this.filteredSupplierMembers[consultantIndex][signerIndex] = [
+						new SupplierMemberResultDto({
+							name: 'No supplier member found',
+							id: undefined,
+						})
+					];
+				}
+			});
+	}
+
     private _preselectDirectClientAddress() {
         this.consultants.controls.forEach(consultant => {
             if (consultant.get('onsiteClientSameAsDirectClient').value) {
@@ -827,6 +895,11 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
                 consultant.get('onsiteClientAddress')?.setValue(this.clientDataForm.directClientAddress?.value, { emitEvent: false });
             }
         });
+    }
+
+    private _supplierMemberUnsubscribe() {
+        this._supplierMemberUnsubscribe$.next();
+        this._supplierMemberUnsubscribe$.complete();
     }
 
     get timeReportingCaps(): UntypedFormArray {
