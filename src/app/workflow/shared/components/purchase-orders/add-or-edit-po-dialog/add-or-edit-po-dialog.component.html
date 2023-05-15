@@ -176,8 +176,10 @@
             <ng-container *ngIf="order.purchaseOrderCurrentContextData?.existsInAnotherWorkflow && isList">
                 <mat-icon class="shared-icon cursor-pointer u-mr--5" svgIcon="shared-icon"
                     [matTooltip]="'PO shared with another WF'" matTooltipClass="white-tooltip"></mat-icon>
-                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="isList">
                 {{order?.number}}
+            </ng-container>
         </span>
         <span class="multilineDropdown-option--column-client-info">
             {{order?.receiveDate !== null && order?.receiveDate !== undefined ? (order?.receiveDate | momentFormat) : '-'
