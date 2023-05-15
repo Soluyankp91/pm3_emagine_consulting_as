@@ -345,14 +345,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	private _tempUpdateDocuments() {
 		this._workflowDocumentsService.overviewAll(this.workflowId, this.periodId).subscribe((result) => {
-			if (this.mainDataComponent.mainDocuments) {
+			if (this.mainDataComponent?.mainDocuments) {
 				this.mainDataComponent.mainDocuments.clearDocuments();
+                if (result.length) {
+                    this.mainDataComponent.mainDocuments.addExistingFile(result);
+                }
 			}
 			if (this.terminationDocuments) {
 				this.terminationDocuments.clearDocuments();
-			}
-			if (result.length) {
-				this.mainDataComponent.mainDocuments.addExistingFile(result);
+                if (result.length) {
+                    this.terminationDocuments.addExistingFile(result);
+                }
 			}
 		});
 	}

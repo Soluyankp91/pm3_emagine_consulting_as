@@ -35,9 +35,13 @@
             border: 1px solid $sand-color;
             padding: 0 8px;
             background-color: $white-color;
+            border-top: 0;
+            &:first-of-type {
+                border: 1px solid $sand-color;
+            }
 
             &-item {
-                @include fontOpenSans(14px, 700);
+                @include fontOpenSans(14px, 600);
                 line-height: 140% !important;
                 color: #4a4e60;
             }

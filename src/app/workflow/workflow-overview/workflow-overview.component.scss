@@ -130,6 +130,10 @@
         color: $dark-grey-color;
         padding: 0 12px 0 16px;
         border: 1px solid $sand-color;
+        border-top: 0;
+        &:first-of-type {
+            border: 1px solid $sand-color;
+        }
         height: 48px;
     }
     &-noData {

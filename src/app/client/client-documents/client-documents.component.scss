@@ -23,6 +23,10 @@
             background: $white-color;
             color: $dark-grey-color !important;
             border: 1px solid $sand-color;
+            border-top: 0;
+            &:first-of-type {
+                border: 1px solid $sand-color;
+            }
         }
     }
 

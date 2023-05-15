@@ -439,10 +439,10 @@
                         <ng-container formArrayName="clientRates" class="u-w--100">
                             <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i" [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                    <span fxFlex="35%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span fxFlex="35%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{rate.value.rateName}}
                                     </span>
-                                    <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span fxFlex="30%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{rate.value.reportingUnit?.name}}
                                     </span>
                                     <ng-container *ngIf="rate.value.editable; else clientRatesDisplay">
@@ -462,7 +462,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientRatesDisplay>
-                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="25%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
@@ -564,10 +564,10 @@
                         <ng-container formArrayName="clientFees" class="u-w--100">
                             <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i" [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                    <span fxFlex="35%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span fxFlex="35%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{fee.value.feeName ?? '-'}}
                                     </span>
-                                    <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span fxFlex="30%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{fee.value.feeFrequency?.name ?? '-'}}
                                     </span>
                                     <ng-container *ngIf="fee.value.editable; else clientFeeRateDisplay">
@@ -587,7 +587,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientFeeRateDisplay>
-                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span fxFlex="25%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
