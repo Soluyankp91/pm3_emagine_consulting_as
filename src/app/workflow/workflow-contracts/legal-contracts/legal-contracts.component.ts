@@ -41,6 +41,7 @@ import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
 import { NotificationDialogComponent } from '../../../contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
 import { EMPTY } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
 	selector: 'legal-contracts-list',
