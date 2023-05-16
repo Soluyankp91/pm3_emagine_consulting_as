@@ -1449,7 +1449,7 @@
                             <div class="workflow-section--content">
                                 <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId; else noDeliveryAccountManager">
                                     <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline"
                                                 class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
                                                 [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
@@ -1490,7 +1490,7 @@
                                     </ng-container>
                                     <ng-template #noFrameAgreementsTemplate>
                                         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
-                                            class="emptyStateRow">
+                                            class="emptyStateRow u-mb--10">
                                             <span class="light-grey-color text-600">
                                                 Coming soon - with the contracts module..
                                             </span>
