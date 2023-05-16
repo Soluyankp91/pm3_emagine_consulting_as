@@ -442,8 +442,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-container formArrayName="specialRates" class="u-w--100">
-                                        <ng-container *ngFor="let rate of getConsultantRateControls(consultantIndex); let specialRateIndex = index;" [formArrayName]="specialRateIndex">
-                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                        <ng-container *ngFor="let rate of getConsultantRateControls(consultantIndex); let specialRateIndex = index; first as first" [formArrayName]="specialRateIndex">
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100" [ngClass]="{'u-bt--0': !first}">
                                                 <ng-container>
                                                     <span fxFlex="1 0 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{rate.value.rateName ?? '-'}}
@@ -592,8 +592,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-container formArrayName="specialFees" class="u-w--100">
-                                        <ng-container *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;" [formArrayName]="specialFeeIndex">
-                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                        <ng-container *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index; first as first" [formArrayName]="specialFeeIndex">
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100" [ngClass]="{'u-bt--0': !first}">
                                                 <ng-container>
                                                     <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeName ?? '-'}}

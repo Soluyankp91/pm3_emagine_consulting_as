@@ -233,8 +233,8 @@
                     <div fxFlex="40px" fxLayoutAlign="end center">
                     </div>
                 </div>
-                <ng-container *ngFor="let item of overviewDocuments | slice: 0: showAllDocument ? undefined : 5; trackBy: trackById;">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100">
+                <ng-container *ngFor="let item of overviewDocuments | slice: 0: showAllDocument ? undefined : 5; trackBy: trackById; first as first">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100" [ngClass]="{'u-bt--0': !first}">
                         <div fxFlex="20px" class="u-mr--16" fxLayoutAlign="start center">
                             <mat-icon [svgIcon]="item.icon"></mat-icon>
                         </div>

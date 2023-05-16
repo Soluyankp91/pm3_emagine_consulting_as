@@ -26,13 +26,14 @@
 		</div>
 		<ng-container formArrayName="legalContracts" class="u-w--100">
 			<ng-container
-				*ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i"
+				*ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i; first as first"
 				[formArrayName]="i">
 				<div
 					fxLayout="row"
 					fxLayoutAlign="space-between center"
 					fxLayoutGap="5px"
-					class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
+					class="legal-contract--list u-w--100 u-pl--16 u-pr--16"
+                    [ngClass]="{'u-bt--0': !first}">
 					<span fxFlex="20px" class="legal-contract--list-item u-w--100">
 						<mat-checkbox color="accent" formControlName="selected" name="selectedAgreement" class="black-checkbox">
 						</mat-checkbox>

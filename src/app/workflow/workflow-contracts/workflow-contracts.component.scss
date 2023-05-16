@@ -35,10 +35,6 @@
             border: 1px solid $sand-color;
             padding: 0 8px;
             background-color: $white-color;
-            border-top: 0;
-            &:first-of-type {
-                border: 1px solid $sand-color;
-            }
 
             &-item {
                 @include fontOpenSans(14px, 600);
