@@ -257,7 +257,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			clientId: this.clientDataForm.directClientIdValue.value?.clientId,
 			agreementType: AgreementType.Frame,
 			validity: undefined,
-			legalEntityId: isInitial ? this.clientDataForm.pdcInvoicingEntityId.value : undefined,
+			legalEntityId: this.clientDataForm.pdcInvoicingEntityId.value ?? undefined,
 			salesTypeId: isInitial ? this.mainDataForm.salesTypeId.value : undefined,
 			contractTypeId: undefined,
 			deliveryTypeId: isInitial ? this.mainDataForm.deliveryTypeId.value : undefined,
@@ -274,18 +274,22 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		return this._frameAgreementService.emagineToEmagineFrameAgreementList(
 			undefined, // dataToSend.agreementId,
 			dataToSend.search,
-			dataToSend.legalEntityId ?? undefined,
+			dataToSend.legalEntityId,
 			undefined, // dataToSend.salesTypeId,
 			undefined, // dataToSend.contractTypeId,
 			undefined, // dataToSend.deliveryTypeId,
 			undefined, // dataToSend.startDate,
 			undefined, // dataToSend.endDate,
-			dataToSend.recipientLegalEntityId ?? undefined, //recipientLegalEntityId
+			dataToSend.recipientLegalEntityId, //recipientLegalEntityId
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort
 		);
 	}
+
+    pdcEntityChanged(consultantIndex: number) {
+        this.consultants.at(consultantIndex).get('emagineFrameAgreementId').setValue('');
+    }
 
 	addConsultantForm(consultant?: ConsultantSalesDataDto) {
 		let consultantRate = this.findItemById(this.clientRateTypes, 1); // 1: time based

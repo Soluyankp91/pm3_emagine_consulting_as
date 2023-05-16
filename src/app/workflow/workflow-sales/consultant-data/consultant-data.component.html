@@ -732,7 +732,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
                                         <mat-label>emagine payment entity (consultant)</mat-label>
-                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-select [disabled]="readOnlyMode" required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="pdcEntityChanged(consultantIndex)">
                                             <ng-container *ngFor="let item of legalEntities; trackBy: trackById">
                                                 <mat-option [value]="item">
                                                     {{ item.tenantName + ' ' + '(' + item.name + ')' }}
