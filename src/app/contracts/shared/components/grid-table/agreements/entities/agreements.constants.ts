@@ -332,6 +332,16 @@ export const STATUTES = [
 		name: 'Declined',
 		color: '#FF7A78',
 	},
+	{
+		id: 13,
+		name: 'Reminder sent',
+		icon: 'reminder-send',
+	},
+	{
+		id: 14,
+		name: 'Signed',
+		icon: 'partially-sign',
+	},
 ];
 export const INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE =
 	'Invalid documents were selected. You can only download envelopes that contain a document. Please check if you are trying to download an Agreement that is set to always being received from other party.';
