@@ -364,6 +364,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				.pipe(
 					tap(() => {
 						this.hideMainSpinner();
+					}),
+					tap(({ agreementId }) => {
+						this._mergeFieldsServiceProxy
+							.format(agreementId, this.agreementFormGroup.nameTemplate.value)
+							.pipe(
+								map((v) => v.value),
+								tap((name) => this._creationTitleService.updateTemplateName(name))
+							)
+							.subscribe();
 					})
 				)
 				.subscribe(({ agreementId }) => {
@@ -744,13 +753,18 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.agreementFormGroup.nameTemplate.valueChanges
 			.pipe(
 				takeUntil(this._unSubscribe$),
+				debounceTime(300),
 				switchMap((name: string) => {
 					if (!name) {
 						return of('');
 					}
-					return this._mergeFieldsServiceProxy
-						.format(this.currentAgreement ? this.currentAgreement.agreementId : undefined, name)
-						.pipe(map((v) => v.value));
+					if (this.currentAgreement && this.currentAgreement.agreementId) {
+						return this._mergeFieldsServiceProxy
+							.format(this.currentAgreement.agreementId, name)
+							.pipe(map((v) => v.value));
+					} else {
+						return of(name);
+					}
 				})
 			)
 			.subscribe((name: string) => {
