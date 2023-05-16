@@ -148,7 +148,6 @@ export class EditorCoreService {
 					oldFields.push(key);
 				}
 			}
-			console.log(oldFields);
 			if (!oldFields.length) {
 				return;
 			}
