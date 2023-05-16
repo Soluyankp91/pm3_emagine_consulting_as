@@ -19,13 +19,16 @@ export type ParentTemplateDto = {
 	agreementTemplateId: string;
 	currentVersion: string;
 };
+
 export type DuplicateOrParentOptions = {
 	label: string;
 	labelKey: string;
 	formControlName: string;
 	isDuplicate: boolean;
 	outputProperty: string;
-	options$: Observable<AgreementSimpleListItemDto[] | SimpleAgreementTemplatesListItemDto[] | undefined>;
+	options$: Observable<
+		AgreementSimpleListItemDto[] | (SimpleAgreementTemplatesListItemDto & { disabled: boolean })[] | undefined
+	>;
 	optionsChanged$: BehaviorSubject<string>;
 	unwrapFunction?: (arg: ParentTemplateDto) => ParentTemplateDto;
 };
