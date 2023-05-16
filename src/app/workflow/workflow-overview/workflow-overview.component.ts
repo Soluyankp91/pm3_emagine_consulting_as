@@ -95,6 +95,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 	individualConsultantActionsAvailable: boolean;
     showAllDocument = false;
     ePurchaseOrderMode = EPurchaseOrderMode;
+    directClientId: number;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -306,6 +307,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 this.clientPeriods = result.clientPeriods;
                 this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
                 if (result.directClientId) {
+                    this.directClientId = result.directClientId;
                     this.purchaseOrder.getPurchaseOrders([], result.directClientId, this.periodId);
                 }
                 this._setWFProgress();
