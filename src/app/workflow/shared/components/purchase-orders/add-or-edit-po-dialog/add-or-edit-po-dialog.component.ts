@@ -100,6 +100,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
             );
             this.onConfirmed.emit(input);
             this._closeInternal();
+            return;
         }
 		if (form.id !== null) {
 			this._purchaseOrderService
