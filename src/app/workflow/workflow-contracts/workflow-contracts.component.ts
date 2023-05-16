@@ -964,9 +964,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 					{ emitEvent: false }
 				);
 			}
-			if (data.clientData.noSpecialContractTerms) {
-				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable();
-			}
+			data.clientData.noSpecialContractTerms ?
+				this.clientDataComponent?.contractClientForm.specialContractTerms?.disable() :
+                this.clientDataComponent?.contractClientForm.specialContractTerms?.enable();
 			if (data.clientData.directClientId) {
 				this.getRatesAndFees(data.clientData.directClientId);
 			}
@@ -1126,9 +1126,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 					emitEvent: false,
 				}
 			);
-			if (data?.noRemarks) {
-				this.mainDataComponent?.contractsMainForm.remarks?.disable();
-			}
+			data?.noRemarks ?
+				this.mainDataComponent?.contractsMainForm.remarks?.disable() :
+                this.mainDataComponent?.contractsMainForm.remarks?.enable();
 		}
 		if (data?.clientData !== undefined) {
 			this.clientDataComponent?.contractClientForm.patchValue(data.clientData, { emitEvent: false });

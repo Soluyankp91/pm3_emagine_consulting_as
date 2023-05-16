@@ -656,9 +656,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				); // enabled - defalut value
-				if (result?.salesClientData?.noSpecialContractTerms) {
-					this.clientDataComponent?.salesClientDataForm.specialContractTerms?.disable();
-				}
+				result?.salesClientData?.noSpecialContractTerms ?
+					this.clientDataComponent?.salesClientDataForm.specialContractTerms?.disable() :
+                    this.clientDataComponent?.salesClientDataForm.specialContractTerms?.enable();
 				result.salesClientData?.periodClientSpecialRates?.forEach((specialRate: PeriodClientSpecialRateDto) => {
 					this.clientDataComponent?.addSpecialRate(specialRate);
 				});
@@ -942,9 +942,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.mainDataComponent?.salesMainDataForm.noRemarks?.setValue(result?.noRemarks, {
 					emitEvent: false,
 				});
-				if (result?.noRemarks) {
-					this.mainDataComponent?.salesMainDataForm.remarks?.disable();
-				}
+				result?.noRemarks ? this.mainDataComponent?.salesMainDataForm.remarks?.disable() : this.mainDataComponent?.salesMainDataForm.remarks?.enable();
 				this.mainDataComponent?.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, {
 					emitEvent: false,
 				});

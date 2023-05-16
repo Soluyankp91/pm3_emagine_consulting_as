@@ -52,9 +52,15 @@
 						class="legal-contract--list-item text-truncate-ellipsis u-w--100"
 						[matTooltip]="eLegalContractModeText[contract.value.validity]"
 						matTooltipClass="white-tooltip">
-						<mat-icon
-							class="legal-contract--mode"
-							[svgIcon]="eLegalContractModeIcon[contract.value.validity]"></mat-icon>
+                        <ng-container
+							*ngIf="
+								contract.value.validity !== null && contract.value.validity !== undefined;
+								else noDataTemplate
+							">
+                            <mat-icon
+                                class="legal-contract--mode"
+                                [svgIcon]="eLegalContractModeIcon[contract.value.validity]"></mat-icon>
+                        </ng-container>
 					</span>
 					<span
 						fxFlex="35px"
@@ -80,11 +86,24 @@
 						class="legal-contract--list-item text-truncate-ellipsis u-w--100"
 						emgCustomTooltip
 						[contentTemplate]="statusTooltip">
-						<mat-icon
+						<!-- <mat-icon
 							class="legal-contract--status u-mr--5"
 							[ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]"
 							>fiber_manual_record</mat-icon
-						>
+						> -->
+                        <ng-container *ngIf="contract.value.agreementStatus === legalContractStatus.PartiallySigned || contract.value.agreementStatus === legalContractStatus.ReminderSent; else statusDot">
+                            <mat-icon
+                                class="legal-contract--status u-mr--5"
+                                [svgIcon]="eLegalContractStatusIcon[contract.value.agreementStatus]">
+                            </mat-icon>
+                        </ng-container>
+                        <ng-template #statusDot>
+                            <mat-icon
+                                class="legal-contract--status u-mr--5"
+                                [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]"
+                                >fiber_manual_record</mat-icon
+                            >
+                        </ng-template>
 						<span [fxHide]="false" fxHide.lt-xl>
 							{{ eLegalContractStatusText[contract.value.agreementStatus] }}
 						</span>
@@ -93,11 +112,19 @@
 								<div class="status-log-grid">
 									<ng-container *ngFor="let item of contract.value.statusHistory; trackBy: trackByItem">
 										<div class="flex-row">
-											<mat-icon
-												class="legal-contract--status u-mr--5"
-												[ngClass]="eLegalContractStatusIcon[item.status]"
-												>fiber_manual_record</mat-icon
-											>
+                                            <ng-container *ngIf="item.status === legalContractStatus.PartiallySigned || item.status === legalContractStatus.ReminderSent; else statusDot">
+                                                <mat-icon
+                                                    class="legal-contract--status u-mr--5"
+                                                    [svgIcon]="eLegalContractStatusIcon[item.status]">
+                                                </mat-icon>
+                                            </ng-container>
+                                            <ng-template #statusDot>
+                                                <mat-icon
+                                                    class="legal-contract--status u-mr--5"
+                                                    [ngClass]="eLegalContractStatusIcon[item.status]"
+                                                    >fiber_manual_record</mat-icon
+                                                >
+                                            </ng-template>
 											<span class="dark-grey-color text-bold">
 												{{ eLegalContractStatusText[item.status] }}
 											</span>
@@ -118,11 +145,19 @@
 							</ng-container>
 							<ng-template #noStatusHistoryTemplate>
 								<div fxLayout="row" fxLayoutAlign="start center">
-									<mat-icon
-										class="legal-contract--status u-mr--5"
-										[ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]"
-										>fiber_manual_record</mat-icon
-									>
+                                    <ng-container *ngIf="contract.value.agreementStatus === legalContractStatus.PartiallySigned || contract.value.agreementStatus === legalContractStatus.ReminderSent; else statusDot">
+                                        <mat-icon
+                                            class="legal-contract--status u-mr--5"
+                                            [svgIcon]="eLegalContractStatusIcon[contract.value.agreementStatus]">
+                                        </mat-icon>
+                                    </ng-container>
+                                    <ng-template #statusDot>
+                                        <mat-icon
+                                            class="legal-contract--status u-mr--5"
+                                            [ngClass]="eLegalContractStatusIcon[contract.value.agreementStatus]"
+                                            >fiber_manual_record</mat-icon
+                                        >
+                                    </ng-template>
 									<span class="dark-grey-color text-bold">
 										{{ eLegalContractStatusText[contract.value.agreementStatus] }}
 									</span>

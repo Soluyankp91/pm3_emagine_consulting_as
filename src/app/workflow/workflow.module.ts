@@ -135,5 +135,13 @@ export class WorkflowModule {
 			'send-via-docusign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'signed',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/signed.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'reminder-sent',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/reminder-set.svg')
+		);
 	}
 }
