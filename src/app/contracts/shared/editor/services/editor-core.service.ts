@@ -143,10 +143,12 @@ export class EditorCoreService {
 
 				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
 				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
+				console.log(key, value, fields[key]);
 				if (fields[key] !== value) {
 					oldFields.push(key);
 				}
 			}
+			console.log(oldFields);
 			if (!oldFields.length) {
 				return;
 			}
@@ -154,7 +156,7 @@ export class EditorCoreService {
 				if (curIndex + 1 !== arr.length) {
 					return acc + `<li>${cur}</li>`;
 				}
-				return acc + `</ul>`;
+				return acc + `<li>${cur}</li>` + `</ul>`;
 			}, `<ul class='ul-list'>`);
 			this._dialog.open(NotificationDialogComponent, {
 				width: '520px',
