@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import '/src/app/shared/styles/config/_colors';
 
 app-contract {
 	display: block;
@@ -304,6 +305,23 @@ app-contract {
 		font-size: 12px;
 		font-weight: 600;
 		color: #b6b4b2;
+	}
+	.draft-label {
+		position: absolute;
+		right: 10px;
+		top: 0;
+
+		padding: 4px 10px;
+		border-radius: 16px;
+
+		height: 20px;
+		display: flex;
+		align-items: center;
+
+		font-size: 12px;
+
+		color: #fff;
+		background-color: $yellow-color;
 	}
 }
 
