@@ -95,10 +95,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
 		if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
 			// NB: don't call BE if user is not allowed to edit, just add to a list
-			input.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
-				this.existingPo.purchaseOrderCurrentContextData
-			);
-			this.onConfirmed.emit(input);
+			this.onConfirmed.emit(this.existingPo);
 			this._closeInternal();
 			this.hideMainSpinner();
 			return;
