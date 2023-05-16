@@ -337,6 +337,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					tap((agreement) => {
 						this.agreementFormGroup.attachments.reset();
 						this.preselectedFiles = agreement.attachments as FileUpload[];
+						this.agreementFormGroup.patchValue({
+							signers: agreement.signers,
+						});
 					}),
 					tap((agreement) => {
 						this.isLocked = agreement.isLocked;
