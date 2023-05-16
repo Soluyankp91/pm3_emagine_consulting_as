@@ -61,6 +61,7 @@
 												{{ cell.countryName }} ·
 												{{ cell.startDate | momentFormat }}
 											</div>
+											<span *ngIf="cell.hasDraftVersion" class="draft-label">Draft</span>
 										</div>
 									</ng-container>
 									<ng-template #parentTemplate>
