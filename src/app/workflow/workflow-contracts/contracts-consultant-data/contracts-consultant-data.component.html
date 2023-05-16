@@ -531,10 +531,11 @@
                                         </ng-container>
                                         <ng-container class="u-w--100 u-pl--16 u-pr--16">
                                             <ng-container
-                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index">
+                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index; first as first">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <ng-container *ngIf="!rate.value.editable">
                                                         <span fxFlex="1 0 20%"
                                                             class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
@@ -617,11 +618,12 @@
                                         </ng-container>
                                         <ng-container formArrayName="specialRates" class="u-w--100 u-pl--16 u-pr--16">
                                             <ng-container
-                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index"
+                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index; first as first"
                                                 [formGroupName]="specialRateIndex">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <span fxFlex="1 0 20%"
                                                         class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="rate.value.rateName"
@@ -826,10 +828,11 @@
                                         </ng-container>
                                         <ng-container class="u-w--100">
                                             <ng-container
-                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index">
+                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index; first as first">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <span fxFlex="1 0 20%"
                                                         class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeName ?? '-'"
@@ -910,11 +913,12 @@
                                         </ng-container>
                                         <ng-container formArrayName="clientFees" class="u-w--100">
                                             <ng-container
-                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index"
+                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index; first as first"
                                                 [formGroupName]="clientFeeIndex">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <span fxFlex="1 0 20%"
                                                         class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeName ?? '-'"

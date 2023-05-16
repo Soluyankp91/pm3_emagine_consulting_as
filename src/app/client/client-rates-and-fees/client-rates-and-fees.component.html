@@ -45,8 +45,9 @@
                 <ng-container formArrayName="specialRates" class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                         class="client-rates--form__row u-w--100" [fxHide]="rate.value.hidden && !showHiddenSpecialRates"
-                        *ngFor="let rate of clientSpecailRateForm.specialRates.controls; index as i"
-                        [formArrayName]="i">
+                        *ngFor="let rate of clientSpecailRateForm.specialRates.controls; index as i; first as first"
+                        [formArrayName]="i"
+                        [ngClass]="{'u-bt--0': !first}">
                         <ng-container *ngIf="rate.value.editable">
                             <mat-form-field appearance="fill"
                                 class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
@@ -271,7 +272,7 @@
                 <ng-container formArrayName="clientFees" class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                         class="client-rates--form__row u-w--100" [fxHide]="fee.value.hidden && !showHiddenSpecialFees"
-                        *ngFor="let fee of clientFeesForm.clientFees.controls; index as i" [formArrayName]="i">
+                        *ngFor="let fee of clientFeesForm.clientFees.controls; index as i; first as first" [formArrayName]="i" [ngClass]="{'u-bt--0': !first}">
                         <ng-container *ngIf="fee.value.editable">
                             <mat-form-field appearance="fill"
                                 class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">

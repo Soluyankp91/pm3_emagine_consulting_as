@@ -670,8 +670,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				});
 				this.clientDataComponent.selectedFrameAgreementId = result.salesClientData.frameAgreementId ?? null;
 				if (result.consultantSalesData?.length) {
-					result.consultantSalesData?.forEach((consultant) => {
+					result.consultantSalesData?.forEach((consultant, index) => {
 						this.consutlantDataComponent?.addConsultantForm(consultant);
+						this.consutlantDataComponent.selectedFrameAgreementList[index] =
+							consultant.consultantFrameAgreementId ?? null;
+						this.consutlantDataComponent.selectedEmagineFrameAgreementList[index] =
+							consultant.emagineToEmagineFrameAgreementId ?? null;
 					});
 					this.consutlantDataComponent?.updateConsultantStepAnchors();
 				}

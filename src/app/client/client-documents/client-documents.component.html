@@ -41,8 +41,9 @@
                             </div>
                             <ng-container formArrayName="documents" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-documents--form__row u-w--100"
-                                    *ngFor="let document of generalDocumentForm?.documents?.controls; index as i"
-                                    [formArrayName]="i">
+                                    *ngFor="let document of generalDocumentForm?.documents?.controls; index as i; first as first"
+                                    [formArrayName]="i"
+                                    [ngClass]="{'u-bt--0': !first}">
                                     <div fxFlex="5%" fxLayoutAlign="center center">
                                         <mat-icon [matTooltip]="document.value.icon" matTooltipClass="white-tooltip" class="icon" [svgIcon]="document.value.icon"></mat-icon>
                                     </div>

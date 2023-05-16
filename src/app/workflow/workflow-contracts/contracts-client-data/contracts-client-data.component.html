@@ -437,8 +437,8 @@
                             </ng-container>
                         </div>
                         <ng-container formArrayName="clientRates" class="u-w--100">
-                            <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i" [formArrayName]="i">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                            <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i; first as first" [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" [ngClass]="{'u-bt--0': !first}">
                                     <span fxFlex="35%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{rate.value.rateName}}
                                     </span>
@@ -562,8 +562,8 @@
                             </ng-container>
                         </div>
                         <ng-container formArrayName="clientFees" class="u-w--100">
-                            <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i" [formArrayName]="i">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                            <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i; first as first" [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" [ngClass]="{'u-bt--0': !first}">
                                     <span fxFlex="35%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{fee.value.feeName ?? '-'}}
                                     </span>
