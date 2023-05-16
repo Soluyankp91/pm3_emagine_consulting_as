@@ -32,6 +32,8 @@ import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField, IMergeFieldStat
 import { AgreementCommentDto, AgreementTemplateCommentDto } from '../../../../../shared/service-proxies/service-proxies';
 import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/items/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
 
 @Injectable()
 export class EditorCoreService {
@@ -55,7 +57,8 @@ export class EditorCoreService {
 		private _zone: NgZone,
 		private _compareService: CompareService,
 		private _commentService: CommentService,
-		private clipboard: Clipboard
+		private clipboard: Clipboard,
+		private _dialog: MatDialog
 	) {}
 
 	set loading(state: boolean) {
@@ -134,29 +137,34 @@ export class EditorCoreService {
 
 	applyMergeFields(fields: IMergeField) {
 		this.documentLoaded$.subscribe(() => {
-			let oldFields = {};
+			let oldFields = [];
 			for (let i = 0; i < this.editor.document.fields.count; i++) {
 				let field = this.editor.document.fields.getByIndex(i);
-				if (this.editor.document.getText(field.codeInterval).indexOf('Deprecated') !== -1) {
-					this.editor.document.deleteText({
-						start: field.codeInterval.start + 11,
-						length: `Deprecated_${new Date().getTime()}.`.length,
-					});
-				}
 
 				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
 				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
 				if (fields[key] !== value) {
-					this.editor.document.insertText(
-						this.editor.document.getText(field.codeInterval).indexOf(' ') + 1 + field.codeInterval.start,
-						`Deprecated_${new Date().getTime()}.`
-					);
-
-					key = this.editor.document.getText(field.codeInterval).split(' ')[1];
-					oldFields[key] = value;
+					oldFields.push(key);
 				}
 			}
-			this.editor.mailMergeOptions.setDataSource([{ ...fields, ...oldFields }]);
+			if (!oldFields.length) {
+				return;
+			}
+			let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
+				if (curIndex + 1 !== arr.length) {
+					return acc + `<li>${cur}</li>`;
+				}
+				return acc + `</ul>`;
+			}, `<ul class='ul-list'>`);
+			this._dialog.open(NotificationDialogComponent, {
+				width: '520px',
+				backdropClass: 'backdrop-modal--wrapper',
+				data: {
+					label: 'Upload contract',
+					message: `Please Save the document again in order to store new merge field values.The values of the following merge fields have changed since last document save:${fieldsHtml}`,
+				},
+			});
+			this.editor.mailMergeOptions.setDataSource([fields]);
 		});
 	}
 

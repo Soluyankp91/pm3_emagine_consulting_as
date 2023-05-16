@@ -67,6 +67,7 @@ import { EditorObserverService } from '../../../shared/services/editor-observer.
 import { union } from 'lodash';
 import { NotificationDialogComponent } from 'src/app/contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
 import { Location } from '@angular/common';
+import { AgreementSimpleListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 
 export enum RecipientDropdowns {
 	SUPPLIER,
@@ -1203,6 +1204,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe();
 	}
 	private _setDuplicateObs() {
+		let onlyNoDraftTemplates = (items: SimpleAgreementTemplatesListItemDto[] | AgreementSimpleListItemDtoPaginatedList[]) =>
+			items.map((item) => (item.hasDraftVersion ? Object.assign({ disabled: true }, item) : item));
 		this.duplicateOrInherit$ = this.creationModeControlReplay$.pipe(
 			takeUntil(this._unSubscribe$),
 			switchMap((creationMode: AgreementCreationMode | null) => {
@@ -1219,7 +1222,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									tap(() => {
 										this.duplicateOptionsLoading$.next(false);
 									}),
-									map((response) => response.items)
+									map((response) => onlyNoDraftTemplates(response.items))
 								);
 							})
 						),
@@ -1253,9 +1256,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 								let { legalEntityId, salesTypeId, contractType, deliveryTypeId, recipientTypeId, clientId } =
 									workflowDataNotUndefined ? this.workFlowMetadata : ({} as typeof this.workFlowMetadata);
 
-								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
-									items.map((item) => (item.hasDraftVersion ? Object.assign({ disabled: true }, item) : item));
-
 								let paramsForAllTemplates = [
 									undefined,
 									undefined,
@@ -1271,7 +1271,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 								return this._apiServiceProxy2.simpleList2(...paramsForAllTemplates).pipe(
 									tap(() => this.duplicateOptionsLoading$.next(false)),
-									map((res) => onlyCompletedTemplates(res.items))
+									map((res) => onlyNoDraftTemplates(res.items))
 								);
 							})
 						),
