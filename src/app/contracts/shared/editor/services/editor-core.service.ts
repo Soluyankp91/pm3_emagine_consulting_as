@@ -154,7 +154,7 @@ export class EditorCoreService {
 				if (curIndex + 1 !== arr.length) {
 					return acc + `<li>${cur}</li>`;
 				}
-				return acc + `</ul>`;
+				return acc + `<li>${cur}</li>` + `</ul>`;
 			}, `<ul class='ul-list'>`);
 			this._dialog.open(NotificationDialogComponent, {
 				width: '520px',
