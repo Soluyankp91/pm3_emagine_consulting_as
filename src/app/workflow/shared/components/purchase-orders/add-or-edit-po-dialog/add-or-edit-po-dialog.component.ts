@@ -93,15 +93,16 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		}
 		input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
-        if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
-            // NB: don't call BE if user is not allowed to edit, just add to a list
-            input.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
-                this.existingPo.purchaseOrderCurrentContextData
-            );
-            this.onConfirmed.emit(input);
-            this._closeInternal();
-            return;
-        }
+		if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
+			// NB: don't call BE if user is not allowed to edit, just add to a list
+			input.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
+				this.existingPo.purchaseOrderCurrentContextData
+			);
+			this.onConfirmed.emit(input);
+			this._closeInternal();
+			this.hideMainSpinner();
+			return;
+		}
 		if (form.id !== null) {
 			this._purchaseOrderService
 				.purchaseOrderPUT(this.data?.clientPeriodId, input)
