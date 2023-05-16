@@ -144,7 +144,7 @@ export class EditorCoreService {
 
 				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
 				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
-				if (fields[key] !== value) {
+				if (fields[key] !== value && !oldFields.find((i) => i === key)) {
 					oldFields.push(key);
 				}
 			}
