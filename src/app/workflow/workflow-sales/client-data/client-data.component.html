@@ -857,7 +857,7 @@
                                             [matTooltip]="rate.value.clientRate + ' ' + eCurrencies[rate.value.clientRateCurrencyId]"
                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{rate.value.clientRate || eCurrencies[rate.value.clientRateCurrencyId]?.length ?
-                                            rate.value.clientRate + ' ' + eCurrencies[rate.value.clientRateCurrencyId]?.length :
+                                            rate.value.clientRate + ' ' + eCurrencies[rate.value.clientRateCurrencyId] :
                                             '-'}}
                                         </span>
                                     </ng-template>

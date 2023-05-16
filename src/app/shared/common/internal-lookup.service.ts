@@ -49,7 +49,6 @@ export class InternalLookupService {
     purchaseOrderCapTypes: { [key: string]: string };
     envelopeProcessingPaths: { [key: string]: string };
 
-    // getEnums$: Observable<{ [key: string]: string } | EnumEntityTypeDto[] | LegalEntityDto[] | CountryDto[]>[] = [];
     staticEnums: { [key: string]: any };
     constructor(private _enumService: EnumServiceProxy) {
     }
@@ -90,7 +89,7 @@ export class InternalLookupService {
             terminationTimes: this.getTerminationTimes(),
             terminationReasons: this.getTerminationReasons(),
             employmentTypes: this.getEmploymentTypes(),
-            expectedWorkloadUnit: this.getExpectedWorkloadUnit(),
+            expectedWorkloadUnits: this.getExpectedWorkloadUnit(),
             countries: this.getCountries(),
             consultantTimeReportingCap: this.getConsultantTimeReportingCap(),
             workflowStatuses: this.getWorkflowStatuses(),

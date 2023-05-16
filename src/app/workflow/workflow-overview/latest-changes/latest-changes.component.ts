@@ -51,7 +51,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 				startWith(''),
 				pairwise(),
 				map(([previous, current]) => {
-					if (previous?.displayName && !current) {
+					if (previous?.displayName) {
 						this.getLatestChanges();
 					}
 					let toSend = current?.displayName?.length ? current?.displayName : current;

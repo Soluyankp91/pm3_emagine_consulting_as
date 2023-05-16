@@ -7,7 +7,7 @@ export const environment = {
 	dev: true,
 	qa: false,
 	apiUrl: 'https://pm3-dev-api.prodataconsult.com',
-	sourcingUrl: 'https://web-sourcing-dev.azurewebsites.net',
+	sourcingUrl: 'https://web-sourcing-dev.prodataconsult.com',
 	sharedAssets: 'https://web-sourcing-qa.prodataconsult.com/api/shared-assets',
 	msalClientId: '6651cfbb-f282-4700-a1cf-f924304b0871',
 	msalAuthorityUrl: 'https://login.microsoftonline.com/f5df7d60-53fa-47bc-b519-6f2681e92dfd/',

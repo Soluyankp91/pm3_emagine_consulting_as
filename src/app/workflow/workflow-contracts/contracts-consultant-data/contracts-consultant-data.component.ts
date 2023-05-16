@@ -319,7 +319,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (consultantRate.rateSpecifiedAs?.id === 1) {
 			consultantRate.prodataToProdataRate = +(
-				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
+				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value *
 					rate.proDataToProDataRate!) /
 				100
 			).toFixed(2);
@@ -327,7 +327,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				.at(consultantIndex)!
 				.get('consultantRateCurrencyId')!.value;
 			consultantRate.consultantRate = +(
-				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate *
+				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value *
 					rate.consultantRate!) /
 				100
 			).toFixed(2);
@@ -356,6 +356,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			consultantRateCurrencyId: new UntypedFormControl(clientRate?.consultantRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
+        console.log(clientRate);
 
 		(this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).push(form);
 	}
