@@ -582,19 +582,24 @@
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select u-mr--12 form-width-276">
-                            <mat-label>Team</mat-label>
-                            <mat-select [disabled]="readOnlyMode" formControlName="salesAccountManagerTeam"
-                                [disableOptionCentering]="true">
-                                <ng-container *ngFor="let item of [{id: 1, name: 'Team 1'}]">
-                                    <mat-option [value]="item.id">
-                                        {{ item.name }}
+                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': commissionManagerAutocomplete.isOpen}">
+                            <mat-label>Commission Account Manager</mat-label>
+                            <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput
+                                [matAutocomplete]="commissionManagerAutocomplete"
+                                formControlName="commissionAccountManagerIdValue" appPreventDoubleClick
+                                (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                                <span matSuffix class="shevron"></span>
+                            <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete"
+                                [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                <ng-container
+                                    *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
+                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
+                                        <span class="autocopmlete-option-name">{{ manager.name }}</span>
                                     </mat-option>
                                 </ng-container>
-                            </mat-select>
-                            <mat-error>
-                                <app-validator [control]="salesMainDataForm.salesAccountManagerTeam"></app-validator>
-                            </mat-error>
+                            </mat-autocomplete>
                         </mat-form-field>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -630,26 +635,6 @@
                         </ng-container>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <mat-form-field appearance="outline"
-                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276 u-mr--12"
-                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': commissionManagerAutocomplete.isOpen}">
-                            <mat-label>Commission Account Manager</mat-label>
-                            <input #commissionManagerFilterInput type="text" [disabled]="readOnlyMode" matInput
-                                [matAutocomplete]="commissionManagerAutocomplete"
-                                formControlName="commissionAccountManagerIdValue" appPreventDoubleClick
-                                (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
-                                <span matSuffix class="shevron"></span>
-                            <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete"
-                                [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
-                                <ng-container
-                                    *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
-                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
-                                        <span class="autocopmlete-option-name">{{ manager.name }}</span>
-                                    </mat-option>
-                                </ng-container>
-                            </mat-autocomplete>
-                        </mat-form-field>
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
                             [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': primarySourcerAutocomplete.isOpen}">
