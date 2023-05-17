@@ -34,7 +34,7 @@ export abstract class AppComponentBase {
         this.internalLookupService = injector.get(InternalLookupService);
     }
 
-	showNotify(severity: number, text: string, buttonText: string = 'OK') {
+	showNotify(severity: number, text: string, buttonText: string = '') {
 		const className = this.mapSeverity(severity);
 		this.matSnackbar.open(text, buttonText, { duration: 3000, panelClass: [className, 'general-snackbar'] });
 	}

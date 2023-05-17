@@ -4,8 +4,8 @@
         <ng-container *ngFor="let radioButton of consultantShownOnClientInvoiceAs | keyvalue">
             <mat-radio-button
                 class="option width-fit-content"
-                [value]="radioButton.key"
-                (click)="onControlChange(+radioButton.key)">
+                [value]="+radioButton.key"
+                (change)="onControlChange(+radioButton.key)">
                 {{ radioButton.value }}
             </mat-radio-button>
         </ng-container>
