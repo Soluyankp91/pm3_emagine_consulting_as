@@ -1076,7 +1076,7 @@
                                     </ng-container>
                                 </div>
                                 <ng-container *ngIf="consultant.value?.consultantName?.consultant?.supplierId !== null && consultant.value?.consultantName?.consultant?.supplierId !== undefined">
-                                    <h3 class="workflow-gray--header u-mb--10">Contract Signers</h3>
+                                    <h3 class="workflow-gray--header u-mb--10">Supplier Contract Signers</h3>
                                     <div formArrayName="contractSigners" class="u-w--100">
                                         <ng-container *ngFor="let signer of getConsultantSignersControls(consultantIndex); trackBy: trackByItem; let signerIndex = index" [formGroupName]="signerIndex">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">

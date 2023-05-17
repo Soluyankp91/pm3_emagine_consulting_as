@@ -2,6 +2,7 @@ import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import {
 	CommandId,
 	ContextMenuCommandId,
@@ -136,19 +137,19 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.documentLoaded$.subscribe(() => {
+		this.documentLoaded$.pipe(take(1)).subscribe(() => {
 			let oldFields = [];
 			for (let i = 0; i < this.editor.document.fields.count; i++) {
 				let field = this.editor.document.fields.getByIndex(i);
 
 				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
 				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
-				if (String(fields[key]) !== value) {
+				if (fields[key] !== value && !oldFields.find((i) => i === key)) {
 					oldFields.push(key);
 				}
 			}
-
 			if (!oldFields.length) {
+				this.editor.mailMergeOptions.setDataSource([fields]);
 				return;
 			}
 			let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {

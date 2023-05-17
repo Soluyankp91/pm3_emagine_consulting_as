@@ -25,6 +25,8 @@ export enum ELegalContractStatusIcon {
     "legal-contract--status__completed" = EnvelopeStatus.Completed,
     "legal-contract--status__aboutToExpire" = EnvelopeStatus.AboutToExpire,
     "legal-contract--status__expired" = EnvelopeStatus.Expired,
+    "reminder-sent" = EnvelopeStatus.ReminderSent,
+    "signed" = EnvelopeStatus.PartiallySigned,
 }
 
 export enum ELegalContractStatusText {
@@ -38,6 +40,8 @@ export enum ELegalContractStatusText {
     "Completed" = EnvelopeStatus.Completed,
     "About to expire" = EnvelopeStatus.AboutToExpire,
     "Expired" = EnvelopeStatus.Expired,
+    "Signed" = EnvelopeStatus.PartiallySigned,
+    "Reminder sent" = EnvelopeStatus.ReminderSent,
 }
 
 export enum ELegalContractModeIcon {
