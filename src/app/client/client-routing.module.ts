@@ -9,6 +9,7 @@ import { ClientDocumentsComponent } from './client-documents/client-documents.co
 import { ClientContactsComponent } from './client-contacts/client-contacts.component';
 import { WfResponsibleComponent } from './wf-responsible/wf-responsible.component';
 import { ClientAddressComponent } from './client-address/client-address.component';
+import { ClientInvoicingComponent } from './client-invoicing/client-invoicing.component';
 
 const routes: Routes = [
     {
@@ -51,6 +52,10 @@ const routes: Routes = [
             {
                 path: 'address',
                 component: ClientAddressComponent
+            },
+            {
+                path: 'invoicing',
+                component: ClientInvoicingComponent
             }
         ]
     }

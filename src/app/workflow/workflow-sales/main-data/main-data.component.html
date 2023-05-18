@@ -581,7 +581,6 @@
                                 <app-validator [control]="salesMainDataForm.salesAccountManagerIdValue"></app-validator>
                             </mat-error>
                         </mat-form-field>
-
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
                             [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': commissionManagerAutocomplete.isOpen}">
@@ -635,28 +634,31 @@
                             </mat-form-field>
                         </ng-container>
                     </div>
-                    <mat-form-field appearance="outline"
-                        class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
-                        [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': primarySourcerAutocomplete.isOpen}">
-                        <mat-label>Primary Sourcer</mat-label>
-                        <input [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
-                            matInput [matAutocomplete]="primarySourcerAutocomplete"
-                            formControlName="primarySourcer" appPreventDoubleClick
-                            (throttledClick)="$event.stopPropagation()" placeholder="Select primary sourcer">
-                            <span matSuffix class="shevron"></span>
-                        <mat-autocomplete #primarySourcerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
-                            (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
-                            (closed)="focusToggleMethod('auto')">
-                            <ng-container *ngFor="let manager of filteredPrimarySourcers; trackBy: trackById">
-                                <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
-                                    <span class="autocopmlete-option-name">{{ manager.name }}</span>
-                                </mat-option>
-                            </ng-container>
-                        </mat-autocomplete>
-                        <mat-error>
-                            <app-validator [control]="salesMainDataForm.primarySourcer"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <mat-form-field appearance="outline"
+                            class="formFieldNoMarginPadding filter-select autocompleteWithShevron form-width-276"
+                            [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': primarySourcerAutocomplete.isOpen}">
+                            <mat-label>Primary Sourcer</mat-label>
+                            <input [disabled]="readOnlyMode" #salesAccountManagerFilterInput type="text"
+                                matInput [matAutocomplete]="primarySourcerAutocomplete"
+                                formControlName="primarySourcer" appPreventDoubleClick
+                                (throttledClick)="$event.stopPropagation()" placeholder="Select primary sourcer">
+                                <span matSuffix class="shevron"></span>
+                            <mat-autocomplete #primarySourcerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
+                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                                (closed)="focusToggleMethod('auto')">
+                                <ng-container *ngFor="let manager of filteredPrimarySourcers; trackBy: trackById">
+                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
+                                        <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                            <mat-error>
+                                <app-validator [control]="salesMainDataForm.primarySourcer"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                         <ng-container formArrayName="commissionedUsers" class="u-w--100">
                             <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByItem; index as i"

@@ -1,0 +1,13 @@
+<div class="client-invoicing width-fit-content">
+    <h2 class="dark-grey-color text-600 u-mb--20">Data shown on invoices</h2>
+    <mat-radio-group [formControl]="invoicingDataShown" class="radio-button-group column" color="primary">
+        <ng-container *ngFor="let radioButton of consultantShownOnClientInvoiceAs | keyvalue">
+            <mat-radio-button
+                class="option width-fit-content"
+                [value]="+radioButton.key"
+                (change)="onControlChange(+radioButton.key)">
+                {{ radioButton.value }}
+            </mat-radio-button>
+        </ng-container>
+    </mat-radio-group>
+</div>

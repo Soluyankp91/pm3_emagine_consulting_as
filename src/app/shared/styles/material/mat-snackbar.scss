@@ -4,7 +4,7 @@
     color: $dark-grey-color !important;
     background-color: $yellow-color !important;
     word-break: break-all;
-    border-radius: 15px !important;
+    border-radius: 5px !important;
     min-width: 22vw !important;
 
     .mat-simple-snackbar-action {
@@ -16,13 +16,15 @@
 }
 
 .general-snackbar {
+    font-weight: 600;
     color: $white-color !important;
     word-break: break-all;
-    border-radius: 15px !important;
+    border-radius: 5px !important;
     min-width: 22vw !important;
 
     .mat-simple-snackbar-action {
         color: $white-color !important;
+        font-weight: 600;
         span {
             text-transform: uppercase;
         }
@@ -32,6 +34,7 @@
     }
     &-warning {
         background-color: $yellow-color !important;
+        color: $dark-grey-color !important;
     }
     &-success {
         background-color: $green-color !important;
