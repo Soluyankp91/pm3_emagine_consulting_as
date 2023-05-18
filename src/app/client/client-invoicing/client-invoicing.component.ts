@@ -1,6 +1,5 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { DataShowOnInvoceOptions, EDataShownOnInvoce } from './client-invoicing.model';
 import { ClientsServiceProxy, ConsultantShownOnClientInvoiceAs } from 'src/shared/service-proxies/service-proxies';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ActivatedRoute } from '@angular/router';
@@ -12,8 +11,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 	templateUrl: './client-invoicing.component.html',
 })
 export class ClientInvoicingComponent extends AppComponentBase implements OnInit {
-	invoicingDataShown = new UntypedFormControl(EDataShownOnInvoce.ConsultantName);
-	dataShowOnInvoceOptions = DataShowOnInvoceOptions;
+	invoicingDataShown = new UntypedFormControl();
 	consultantShownOnClientInvoiceAs: { [key: string]: string };
 	clientId: number;
 	private _unsubscribe = new Subject();
