@@ -1,0 +1,70 @@
+<div class="container">
+	<div class="preinfo">
+		<div class="outdated-fields-header">Merge fields values changes</div>
+		<div class="description">
+			The values of the following merge fields have changed since last document save. Save the document again in order to
+			store new merge fields values
+		</div>
+		<div class="table-header">The list of affected merge fields:</div>
+	</div>
+</div>
+
+<mat-table [dataSource]="errorData" class="outdated-fields-table">
+	<ng-container matColumnDef="mergeField">
+		<mat-header-cell *matHeaderCellDef class="header-cell">Merge field</mat-header-cell>
+		<mat-cell *matCellDef="let row">
+			<div class="table-cell" [customTooltip]="key">
+				{{ row.key }}
+			</div>
+			<ng-template #key>
+				<div>
+					<div class="tooltip-menu">
+						<span>{{ row.key }}</span>
+					</div>
+				</div>
+			</ng-template>
+		</mat-cell>
+	</ng-container>
+	<ng-container matColumnDef="previousValue">
+		<mat-header-cell *matHeaderCellDef class="header-cell">Previous value</mat-header-cell>
+		<mat-cell *matCellDef="let row">
+			<div class="table-cell" [customTooltip]="previousValue">
+				{{ row.previousValue }}
+			</div>
+			<ng-template #previousValue>
+				<div>
+					<div class="tooltip-menu">
+						<span>{{ row.previousValue }}</span>
+					</div>
+				</div>
+			</ng-template>
+		</mat-cell>
+	</ng-container>
+	<ng-container matColumnDef="currentValue">
+		<mat-header-cell *matHeaderCellDef class="header-cell">Current value</mat-header-cell>
+		<mat-cell *matCellDef="let row">
+			<div class="table-cell" [customTooltip]="currentValue">
+				{{ row.currentValue }}
+			</div>
+			<ng-template #currentValue>
+				<div>
+					<div class="tooltip-menu">
+						<span>{{ row.currentValue }}</span>
+					</div>
+				</div>
+			</ng-template>
+		</mat-cell>
+	</ng-container>
+
+	<mat-header-row *matHeaderRowDef="displayedColumns" class="header-row"></mat-header-row>
+	<mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+</mat-table>
+
+<div class="bottom-section">
+	<mat-divider></mat-divider>
+
+	<div mat-dialog-actions class="actions">
+		<button mat-button [mat-dialog-close]="false" class="cancel-button">Close</button>
+		<button mat-raised-button [mat-dialog-close]="true" class="proceed-button">Proceed</button>
+	</div>
+</div>
