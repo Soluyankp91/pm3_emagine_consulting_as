@@ -1,13 +1,32 @@
 <ng-container [formGroup]="contract">
     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="5px"
-        class="legal-contract--list u-w--100 u-pl--16 u-pr--16" [ngClass]="{'in-edit': agreementInEdit$ | async}">
+        class="legal-contract--list u-w--100 u-pl--16 u-pr--16">
         <span fxFlex="20px" class="legal-contract--list-item u-w--100">
             <mat-checkbox color="accent" formControlName="selected" name="selectedAgreement" class="black-checkbox">
             </mat-checkbox>
         </span>
-        <span fxFlex="auto" class="legal-contract--list-item u-w--100 text-truncate-ellipsis text-bold" appShowIfTruncated
-            [matTooltip]="contract.value.name" matTooltipClass="white-tooltip">
-            {{contract.value.name}}
+        <span fxFlex="auto" fxLayout="column" class="u-w--100">
+            <span fxFlex="auto" class="legal-contract--list-item u-w--100 text-truncate-ellipsis text-bold" appShowIfTruncated
+                [matTooltip]="contract.value.name" matTooltipClass="white-tooltip">
+                {{contract.value.name}}
+            </span>
+            <ng-container *ngIf="agreementInEdit$ | async as agreementInEdit">
+                <ng-container *ngIf="agreementInEdit.isEditing">
+                    <span fxLayout="row" fxLayoutAlign="start center" class="agreementInEditStatus">
+                        <mat-icon svgIcon="loading-icon"></mat-icon>
+                        <ng-container *ngIf="agreementInEdit.employees?.length && agreementInEdit.employees?.length === 1">
+                            <span class="employeesList">
+                                Agreement is being edited by {{agreementInEdit.employees | displayList: 'name'}}  <div class="dot-flashing u-ml--10 u-mt--5"></div>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="agreementInEdit.employees?.length > 1">
+                            <span class="employeesList" [matTooltip]="agreementInEdit.employees | displayList: 'name'" matTooltipClass="white-tooltip">
+                                Agreement is being edited by {{agreementInEdit.employees.length}} users  <div class="dot-flashing u-ml--10 u-mt--5"></div>
+                            </span>
+                        </ng-container>
+                    </span>
+                </ng-container>
+            </ng-container>
         </span>
         <span fxFlex="35px" fxLayoutAlign="center center" class="legal-contract--list-item text-truncate-ellipsis u-w--100"
             [matTooltip]="eLegalContractModeText[contract.value.validity]" matTooltipClass="white-tooltip">

@@ -6,6 +6,8 @@ import {
 	ELegalContractSourceText,
 	ELegalContractStatusIcon,
 	ELegalContractStatusText,
+    IAgreementState,
+    InitialAgreementState,
 } from '../legal-contracts.model';
 import { EnvelopeStatus, EnvelopeProcessingPath, AgreementServiceProxy, FileParameter } from 'src/shared/service-proxies/service-proxies';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
@@ -17,11 +19,11 @@ import { Router } from '@angular/router';
 import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
 import { LegalContractService } from '../legal-contract.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { filter, finalize, takeUntil } from 'rxjs/operators';
+import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { EAgreementEvents } from 'src/shared/common/services/agreement-signalr.model';
-import { BehaviorSubject, Subject, interval } from 'rxjs';
+import { AgreementSignalRArgs, EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
+import { BehaviorSubject, Subject, defer, interval, timer } from 'rxjs';
 
 @Component({
 	selector: 'legal-contract',
@@ -43,7 +45,9 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
 	eLegalContractSourceText = ELegalContractSourceText;
 	eLegalContractSourceIcon = ELegalContractSourceIcon;
 	legalContractPath = EnvelopeProcessingPath;
-    agreementInEdit$ = new BehaviorSubject(false);
+    agreementInEdit$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
+    intervalInSeconds = 30 * 1000;
+    interval$ = new BehaviorSubject<number>(this.intervalInSeconds);
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -61,18 +65,36 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
         console.log('start');
         this._agreementSignalRService.triggerActiveReload$
 			.pipe(
-				filter(({ eventName, args }) => {
-					console.log(eventName);
-					console.log(args);
-					return eventName === EAgreementEvents.InEditState && args === this.contract.value.agreementId;
+				filter((value: IUpdateData) => {
+					console.log(value.eventName);
+					console.log(value.args);
+					return value.eventName === EAgreementEvents.InEditState && value.args.agreementId === this.contract.value.agreementId;
 				}),
 				takeUntil(this._unsubscribe)
 			)
-			.subscribe(() => {
+			.subscribe((value: IUpdateData) => {
 				console.log('edit');
-				this.agreementInEdit$.next(true);
-                // TODO: implement logic to set back to NOT IN EDIT state
+				console.log(value);
+				this.agreementInEdit$.next({
+                    isEditing: true,
+                    employees: value.args?.employees
+                });
+                this._setTimer();
 			});
+    }
+
+    private _setTimer() {
+        console.log('timer');
+        this.interval$.pipe(
+            takeUntil(this._unsubscribe),
+            switchMap((duration) => timer(duration)),
+            tap(() => {
+                console.log('set false');
+                this.agreementInEdit$.next(InitialAgreementState);
+            })
+        ).subscribe(() => {
+            console.log('sub');
+        });
     }
 
     ngOnDestroy(): void {

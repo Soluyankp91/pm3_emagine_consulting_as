@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { filter } from 'rxjs/operators';
 import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { IUpdateData } from './agreement-signalr.model';
 
 @Injectable({
 	providedIn: 'root',
@@ -13,7 +14,7 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 export class SignalRService {
 	readonly hubUrl: string;
 	connection: HubConnection;
-	_triggerActiveReload$ = new BehaviorSubject<any>(null);
+	_triggerActiveReload$ = new BehaviorSubject<IUpdateData>(null);
 	_triggerAgreementUpdate$ = new BehaviorSubject<any>(null);
 
 	get triggerActiveReload$() {

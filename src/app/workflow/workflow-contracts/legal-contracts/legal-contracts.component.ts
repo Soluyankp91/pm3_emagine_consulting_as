@@ -5,7 +5,7 @@ import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angul
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { filter, finalize, takeUntil } from 'rxjs/operators';
+import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
@@ -32,6 +32,8 @@ import {
 	ELegalContractSourceText,
 	ELegalContractStatusIcon,
 	ELegalContractStatusText,
+    IAgreementState,
+    InitialAgreementState,
 } from './legal-contracts.model';
 import { RemoveOrUploadAgrementDialogComponent } from './remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
 import { ERemoveOrOuploadDialogMode } from './remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.model';
@@ -39,8 +41,8 @@ import { SendEnvelopeDialogComponent } from './send-envelope-dialog/send-envelop
 import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-preview-dialog.component';
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
 import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
-import { EAgreementEvents } from 'src/shared/common/services/agreement-signalr.model';
-import { Subject } from 'rxjs';
+import { EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
+import { BehaviorSubject, Subject, timer } from 'rxjs';
 
 @Component({
 	selector: 'legal-contracts-list',
@@ -62,6 +64,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	eLegalContractSourceText = ELegalContractSourceText;
 	eLegalContractSourceIcon = ELegalContractSourceIcon;
 	legalContractPath = EnvelopeProcessingPath;
+    agreementPendingCreation$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
+    intervalInSeconds = 30 * 1000;
+    interval$ = new BehaviorSubject<number>(this.intervalInSeconds);
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -473,32 +478,38 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _sub() {
-		this._agreementSignalRService.triggerActiveReload$
-			.pipe(
-				filter(({ eventName, args }) => {
-					console.log(eventName);
-					console.log(args);
-					return eventName === EAgreementEvents.InEditState;
-				}),
-				takeUntil(this._unsubscribe)
-			)
-			.subscribe(() => {
-				console.log('edit');
-			});
-
         this._agreementSignalRService.triggerActiveReload$
 			.pipe(
-				filter(({ eventName, args }) => {
-					console.log(eventName);
-					console.log(args);
-					return eventName === EAgreementEvents.PeriodAgreementCreationPendingState;
+				filter((value: IUpdateData) => {
+					console.log(value.eventName);
+					console.log(value.args);
+					return value.eventName === EAgreementEvents.PeriodAgreementCreationPendingState && (value.args?.periodId === this.clientPeriodId || value.args?.periodId === this.consultantPeriodId);
 				}),
 				takeUntil(this._unsubscribe)
 			)
-			.subscribe(() => {
-				console.log('edit');
+			.subscribe((value: IUpdateData) => {
+				console.log('creation');
+                this.agreementPendingCreation$.next({
+                    isCreating: true,
+                    employees: value.args?.employees
+                });
+                this._startTimer();
 			});
 	}
+
+    private _startTimer() {
+        console.log('timer');
+        this.interval$.pipe(
+            takeUntil(this._unsubscribe),
+            switchMap((duration) => timer(duration)),
+            tap(() => {
+                console.log('set false');
+                this.agreementPendingCreation$.next(InitialAgreementState);
+            })
+        ).subscribe(() => {
+            console.log('sub');
+        });
+    }
 
 	get legalContracts(): UntypedFormArray {
 		return this.clientLegalContractsForm.get('legalContracts') as UntypedFormArray;

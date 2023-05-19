@@ -7,8 +7,8 @@ export interface IUpdateData {
 
 export interface AgreementSignalRArgs {
     agreementId?: number;
-    clientPeriodId?: string,
-    consultantPeriodId?: string,
+    periodId?: string,
+    employees: EmployeeDto[]
 }
 
 export interface IAgreementEventData {

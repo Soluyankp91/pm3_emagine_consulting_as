@@ -64,6 +64,18 @@ export enum ELegalContractSourceText {
     "Receive from other party" = 3
 }
 
+export interface IAgreementState {
+    isEditing?: boolean,
+    isCreating?: boolean,
+    employees?: EmployeeDto[]
+}
+
+export const InitialAgreementState: IAgreementState = {
+    isEditing: false,
+    isCreating: false,
+    employees: []
+}
+
 // NB: needed for tests
 
 export const LegalContractsMockedData: WorkflowAgreementDto[] = [

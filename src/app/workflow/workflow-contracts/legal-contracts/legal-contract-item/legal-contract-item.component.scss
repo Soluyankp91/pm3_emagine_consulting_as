@@ -1,0 +1,22 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+.agreementInEditStatus {
+    @include fontOpenSans(12px, 600);
+    color: $light-grey-color;
+    mat-icon {
+        color: $light-grey-color;
+        width: 12px;
+        height: 12px;
+        animation: rotation 2s infinite linear;
+    }
+}
+
+@keyframes rotation {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(359deg);
+	}
+}

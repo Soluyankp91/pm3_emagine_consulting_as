@@ -194,6 +194,25 @@
             </ng-container>
         </ng-container>
     </ng-container>
+    <ng-container *ngIf="(agreementPendingCreation$ | async) as agreementPendingCreation">
+        <ng-container *ngIf="agreementPendingCreation.isCreating">
+            <div fxLayout="row" fxLayoutAlign="start center"
+                class="agreementCreationState u-w--100 u-pl--16 u-pr--16">
+                <span matTooltipClass="white-tooltip" [matTooltip]="agreementPendingCreation.employees?.length > 2 ? (agreementPendingCreation.employees | displayList: 'name') : ''">
+                    <mat-icon svgIcon="warning"></mat-icon>
+                    Agreement is being created by
+                    <ng-container *ngIf="agreementPendingCreation.employees?.length && agreementPendingCreation.employees?.length <= 2">
+                        {{agreementPendingCreation.employees | displayList: 'name'}}
+                    </ng-container>
+                    <ng-container *ngIf="agreementPendingCreation.employees?.length > 2">
+                        {{agreementPendingCreation.employees?.length }} users
+                    </ng-container>
+                </span>
+                <div class="dot-flashing u-ml--10 u-mt--5"></div>
+            </div>
+        </ng-container>
+    </ng-container>
+
     <ng-container *ngIf="clientLegalContractsForm.legalContracts?.controls?.length === 0 && readOnlyMode">
         <div fxLayout="row" fxLayoutAlign="space-between center"
             class="legal-contract--list u-w--100 u-pl--16 u-pr--16 border-unset">

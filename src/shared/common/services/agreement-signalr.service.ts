@@ -3,7 +3,7 @@ import { HubConnection } from '@microsoft/signalr';
 import { random } from 'lodash';
 import { environment } from '../../../environments/environment';
 import { SignalRService } from './signal-r.service';
-import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
+import { API_BASE_URL, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 import { AgreementSignalRArgs, EAgreementEvents } from './agreement-signalr.model';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
@@ -21,18 +21,20 @@ export class AgreementSignalRApiService extends SignalRService {
 	}
 
 	registerEventCallbacks(connection: HubConnection): void {
-        connection.on(EAgreementEvents.InEditState, (args) => {
-            console.log(args);
+        connection.on(EAgreementEvents.InEditState, (agreementId: number, employees: EmployeeDto[]) => {
+            console.log(agreementId);
+            console.log(employees);
             this.triggerAgreementChange(
                 EAgreementEvents.InEditState,
-                args
+                {agreementId: agreementId, employees: employees}
             );
         });
-        connection.on(EAgreementEvents.PeriodAgreementCreationPendingState, (args) => {
-            console.log(args);
+        connection.on(EAgreementEvents.PeriodAgreementCreationPendingState, (periodId: string, employees: EmployeeDto[]) => {
+            console.log(periodId);
+            console.log(employees);
             this.triggerAgreementChange(
                 EAgreementEvents.PeriodAgreementCreationPendingState,
-                args
+                {periodId: periodId, employees: employees}
             );
         });
 	}
