@@ -90,6 +90,8 @@ import { EnvelopePathComponent } from './shared/components/envelope-path/envelop
 import { ActionDialogComponent } from './shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from './shared/components/default-file-uploader/default-file-uploader.component';
 import { AgreementLogsComponent } from './shared/components/agreement-logs/agreement-logs.component';
+import { OutdatedMergeFieldsComponent } from './shared/components/popUps/outdated-merge-fields/outdated-merge-fields.component';
+import { EmptyAndUnknownMfComponent } from './shared/components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
 
 @NgModule({
 	declarations: [
@@ -159,6 +161,8 @@ import { AgreementLogsComponent } from './shared/components/agreement-logs/agree
 		ActionDialogComponent,
 		DefaultFileUploaderComponent,
 		AgreementLogsComponent,
+  OutdatedMergeFieldsComponent,
+  EmptyAndUnknownMfComponent,
 	],
 	imports: [
 		CommonModule,

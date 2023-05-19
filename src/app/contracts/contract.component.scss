@@ -321,12 +321,13 @@ app-contract {
 		font-size: 12px;
 
 		color: #fff;
-		background-color: #50BEE8;
+		background-color: #50bee8;
 	}
 }
 
 //overlay  app-default-template
-.cdk-overlay-container .app-default-template {
+.cdk-overlay-container .app-default-template,
+.cdk-overlay-container .outdated-merge-fields {
 	mat-header-cell.mat-header-cell:first-of-type,
 	mat-header-cell.mat-header-cell:last-of-type,
 	mat-cell.mat-cell:first-of-type,
@@ -337,5 +338,8 @@ app-contract {
 	mat-row.mat-row:last-of-type {
 		border-bottom: unset !important;
 	}
+	@include scrollbar;
+}
+.cdk-overlay-container .app-empty-and-unknown-mf {
 	@include scrollbar;
 }
