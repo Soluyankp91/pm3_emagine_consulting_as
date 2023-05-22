@@ -469,7 +469,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.prepareToProcessDocument();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
-			console.log('save');
 			this._agreementService
 				.saveCurrentAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
