@@ -33,6 +33,7 @@ import { BehaviorSubject, Subject, defer, interval, timer } from 'rxjs';
 export class LegalContractItemComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild('menuTrigger', { static: false }) menuTrigger: MatMenuTrigger;
 	@Input() contract: any;
+    @Input() first: boolean;
     @Input() readOnlyMode: boolean;
     @Input() isClientContracts: boolean;
     @Input() clientPeriodId: string;
