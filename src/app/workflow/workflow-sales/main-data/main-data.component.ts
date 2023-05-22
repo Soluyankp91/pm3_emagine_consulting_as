@@ -1,10 +1,21 @@
 import { Component, ElementRef, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { debounceTime, distinctUntilChanged, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
-import { forkJoin, merge, of, Subject } from 'rxjs';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { merge, of, Subject } from 'rxjs';
+import { debounceTime, finalize, map, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AreaRoleNodeDto, BranchRoleNodeDto, ClientPeriodServiceProxy, CommissionDto, EmployeeDto, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, RoleNodeDto, WorkflowDocumentCommandDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import {
+	AreaRoleNodeDto,
+	BranchRoleNodeDto,
+	ClientPeriodServiceProxy,
+	CommissionDto,
+	EmployeeDto,
+	EnumEntityTypeDto,
+	LegalEntityDto,
+	LookupServiceProxy,
+	RoleNodeDto,
+	WorkflowDocumentCommandDto,
+	WorkflowProcessType,
+} from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProcessWithAnchorsDto } from '../../workflow-period/workflow-period.model';
 import { EProjectTypes, WorkflowSalesMainForm } from '../workflow-sales.model';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
@@ -12,57 +23,58 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { DeliveryTypes, SalesTypes } from '../../workflow-contracts/workflow-contracts.model';
 import { DocumentsComponent } from '../../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../../workflow-data.service';
+import { EPermissions } from '../../workflow-details/workflow-details.model';
 
 @Component({
 	selector: 'app-main-data',
 	templateUrl: './main-data.component.html',
-	styleUrls: ['../workflow-sales.component.scss']
+	styleUrls: ['../workflow-sales.component.scss'],
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
-    @ViewChild('mainDocuments', {static: false}) mainDocuments: DocumentsComponent;
+	@ViewChild('submitFormBtn', { read: ElementRef }) submitFormBtn: ElementRef;
+	@ViewChild('mainDocuments', { static: false }) mainDocuments: DocumentsComponent;
 	@Input() periodId: string | undefined;
-    @Input() readOnlyMode: boolean;
-    @Input() editEnabledForcefuly: boolean;
-    @Input() isCompleted: boolean;
-    @Input() canToggleEditMode: boolean;
-    @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
-    @Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
-    @Output() editModeToggled = new EventEmitter<any>();
-    @Output() onReturnToSales = new EventEmitter<any>();
+	@Input() readOnlyMode: boolean;
+	@Input() editEnabledForcefuly: boolean;
+	@Input() isCompleted: boolean;
+	@Input() canToggleEditMode: boolean;
+	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
+	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
+	@Output() editModeToggled = new EventEmitter<any>();
+	@Output() onReturnToSales = new EventEmitter<any>();
 
-    workflowSideSections = WorkflowProcessType;
+	workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
 
-    deliveryTypesEnum = DeliveryTypes;
+	deliveryTypesEnum = DeliveryTypes;
 	salesTypesEnum = SalesTypes;
-    eProjectTypes = EProjectTypes;
+	eProjectTypes = EProjectTypes;
 
-    currencies: EnumEntityTypeDto[];
-    deliveryTypes: EnumEntityTypeDto[];
-    saleTypes: EnumEntityTypeDto[];
-    projectTypes: EnumEntityTypeDto[];
-    margins: EnumEntityTypeDto[];
-    discounts: EnumEntityTypeDto[];
-    projectCategories: EnumEntityTypeDto[];
-    commissionTypes: EnumEntityTypeDto[];
-    commissionRecipientTypeList: EnumEntityTypeDto[];
-    commissionFrequencies: EnumEntityTypeDto[];
-    legalEntities: LegalEntityDto[];
-    contractExpirationNotificationDuration: { [key: string]: string };
-    primaryCategoryAreas: BranchRoleNodeDto[] = [];
-    primaryCategoryTypes: AreaRoleNodeDto[] = [];
-    primaryCategoryRoles: RoleNodeDto[] = [];
+	currencies: EnumEntityTypeDto[];
+	deliveryTypes: EnumEntityTypeDto[];
+	saleTypes: EnumEntityTypeDto[];
+	projectTypes: EnumEntityTypeDto[];
+	margins: EnumEntityTypeDto[];
+	discounts: EnumEntityTypeDto[];
+	projectCategories: EnumEntityTypeDto[];
+	commissionTypes: EnumEntityTypeDto[];
+	commissionRecipientTypes: EnumEntityTypeDto[];
+	commissionFrequencies: EnumEntityTypeDto[];
+	legalEntities: LegalEntityDto[];
+	contractExpirationNotificationInterval: { [key: string]: string };
+	primaryCategoryAreas: BranchRoleNodeDto[] = [];
+	primaryCategoryTypes: AreaRoleNodeDto[] = [];
+	primaryCategoryRoles: RoleNodeDto[] = [];
 
-    filteredSalesAccountManagers: EmployeeDto[] = [];
+	filteredSalesAccountManagers: EmployeeDto[] = [];
 	filteredCommisionAccountManagers: EmployeeDto[] = [];
-    filteredPrimarySourcers: EmployeeDto[] = [];
-    filteredEmployees: EmployeeDto[] = [];
+	filteredPrimarySourcers: EmployeeDto[] = [];
+	filteredEmployees: EmployeeDto[] = [];
 
-    filteredRecipients: any[] = [];
-    isCommissionInitialAdd = false;
-    isCommissionEditing = false;
-    commissionToEdit: {
+	filteredRecipients: any[] = [];
+	isCommissionInitialAdd = false;
+	isCommissionEditing = false;
+	commissionToEdit: {
 		id: number | undefined;
 		commissionType: any;
 		amount: any;
@@ -71,240 +83,59 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		recipientType: any;
 		recipient: any;
 	};
-    private _unsubscribe = new Subject();
+	areaTypeRoleRequired = true;
+    eStepPermission = EPermissions;
+	private _unsubscribe = new Subject();
 	constructor(
-        injector: Injector,
-        private _fb: UntypedFormBuilder,
-        private _internalLookupService: InternalLookupService,
-        private _clientPeriodService: ClientPeriodServiceProxy,
-        private _lookupService: LookupServiceProxy,
-        private _workflowDataService: WorkflowDataService
-    ) {
-        super(injector);
-        this.salesMainDataForm = new WorkflowSalesMainForm();
-    }
+		injector: Injector,
+		private _fb: UntypedFormBuilder,
+		private _clientPeriodService: ClientPeriodServiceProxy,
+		private _lookupService: LookupServiceProxy,
+		private _workflowDataService: WorkflowDataService
+	) {
+		super(injector);
+		this.salesMainDataForm = new WorkflowSalesMainForm();
+	}
 
 	ngOnInit(): void {
-        this._getEnums();
-        this._subscriptions$();
-    }
-
-    ngOnDestroy(): void {
-        this._unsubscribe.next();
-        this._unsubscribe.complete();
-    }
-
-    private _getEnums() {
-        forkJoin({
-            currencies: this._internalLookupService.getCurrencies(),
-            deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-            saleTypes: this._internalLookupService.getSaleTypes(),
-            projectTypes: this._internalLookupService.getProjectTypes(),
-            margins: this._internalLookupService.getMargins(),
-            contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
-            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-            commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
-            commissionTypes: this._internalLookupService.getCommissionTypes(),
-            commissionRecipientTypeList: this._internalLookupService.getCommissionRecipientTypes(),
-            legalEntities: this._internalLookupService.getLegalEntities(),
-            projectCategories: this._internalLookupService.getProjectCategory(),
-            discounts: this._internalLookupService.getDiscounts(),
-        })
-        .subscribe(result => {
-            this.currencies = result.currencies;
-            this.deliveryTypes = result.deliveryTypes;
-            this.saleTypes = result.saleTypes;
-            this.projectTypes = result.projectTypes;
-            this.margins = result.margins;
-            this.contractExpirationNotificationDuration = result.contractExpirationNotificationDuration;
-            this.commissionFrequencies = result.commissionFrequencies;
-            this.commissionTypes = result.commissionTypes;
-            this.commissionRecipientTypeList = result.commissionRecipientTypeList;
-            this.legalEntities = result.legalEntities;
-            this.projectCategories = result.projectCategories;
-            this.discounts = result.discounts;
-        });
-    }
-
-    private _subscriptions$() {
-        this.salesMainDataForm.salesAccountManagerIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-                startWith(''),
-				switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id ? value.name : value;
-                    }
-                    return this._lookupService.employees(value);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredSalesAccountManagers = list;
-				} else {
-					this.filteredSalesAccountManagers = [
-                        new EmployeeDto(
-                            {
-                                name: 'No managers found',
-                                externalId: '',
-                                id: undefined
-                            }
-                        )
-					];
-				}
-			});
-
-		this.salesMainDataForm.commissionAccountManagerIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-                startWith(''),
-				switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id ? value.name : value;
-                    }
-                    return this._lookupService.employees(value);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredCommisionAccountManagers = list;
-				} else {
-					this.filteredCommisionAccountManagers = [
-						new EmployeeDto(
-                            {
-                                name: 'No managers found',
-                                externalId: '',
-                                id: undefined
-                            }
-                        )
-					];
-				}
-			});
-
-        this.salesMainDataForm.primarySourcer?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-                startWith(''),
-				switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id ? value.name : value;
-                    }
-                    return this._lookupService.employees(value);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredPrimarySourcers = list;
-				} else {
-					this.filteredPrimarySourcers = [
-						new EmployeeDto(
-                            {
-                                name: 'No sourcers found',
-                                externalId: '',
-                                id: undefined
-                            }
-                        )
-					];
-				}
-			});
-
-        this.salesMainDataForm?.primaryCategoryArea?.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribe),
-                distinctUntilChanged(),
-                map(
-                    (value) =>
-                        this.primaryCategoryAreas?.find((x) => x.id === value?.id)
-                            ?.areas
-                )
-            )
-            .subscribe((list) => {
-                this.primaryCategoryTypes = list!;
-                console.log('s');
-                this.salesMainDataForm?.primaryCategoryType?.setValue(
-                    null
-                );
-                this.salesMainDataForm?.primaryCategoryRole?.setValue(
-                    null
-                );
-            });
-
-        this.salesMainDataForm?.primaryCategoryType?.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribe),
-                distinctUntilChanged(),
-                map(
-                    (value) =>
-                        this.primaryCategoryTypes?.find((x) => x.id === value?.id)
-                            ?.roles
-                )
-            )
-            .subscribe((list) => {
-                this.primaryCategoryRoles = list!;
-                this.salesMainDataForm?.primaryCategoryRole?.setValue(
-                    null
-                );
-            });
-
-        merge(this.salesMainDataForm.salesTypeId.valueChanges, this.salesMainDataForm.deliveryTypeId.valueChanges)
-			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
-			.subscribe(() => {
-				if (this.salesMainDataForm.salesTypeId.value && this.salesMainDataForm.deliveryTypeId.value) {
-					this._workflowDataService.preselectFrameAgreement.emit();
-				}
-			});
-    }
-
-    getPrimaryCategoryTree(): void {
-        this._lookupService
-            .tree()
-            .subscribe((result) => {
-                this.primaryCategoryAreas = result.branches!;
-                this.setPrimaryCategoryTypeAndRole();
-            });
-    }
-
-    setPrimaryCategoryTypeAndRole(): void {
-        if (this.salesMainDataForm?.primaryCategoryArea?.value?.id) {
-            this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
-                (x) =>
-                    x.id ===
-                    this.salesMainDataForm?.primaryCategoryArea?.value?.id
-            )?.areas!;
-        }
-        if (this.salesMainDataForm?.primaryCategoryType?.value?.id) {
-            this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
-                (x) =>
-                    x.id ===
-                    this.salesMainDataForm?.primaryCategoryType?.value.id
-            )?.roles!;
-        }
-    }
-
-    toggleEditMode() {
-        this.editModeToggled.emit();
+		this._getEnums();
+		this._subscriptions$();
 	}
 
-    returnToSales() {
-        this.onReturnToSales.emit();
+	ngOnDestroy(): void {
+		this._unsubscribe.next();
+		this._unsubscribe.complete();
 	}
 
-    getDataBasedOnProjectType(event: MatSelectChange) {
+	getPrimaryCategoryTree(): void {
+		this._lookupService.tree().subscribe((result) => {
+			this.primaryCategoryAreas = result.branches!;
+			this.setPrimaryCategoryTypeAndRole();
+		});
+	}
+
+	setPrimaryCategoryTypeAndRole(): void {
+		if (this.salesMainDataForm?.primaryCategoryArea?.value?.id) {
+			this.primaryCategoryTypes = this.primaryCategoryAreas?.find(
+				(x) => x.id === this.salesMainDataForm?.primaryCategoryArea?.value?.id
+			)?.areas!;
+		}
+		if (this.salesMainDataForm?.primaryCategoryType?.value?.id) {
+			this.primaryCategoryRoles = this.primaryCategoryTypes?.find(
+				(x) => x.id === this.salesMainDataForm?.primaryCategoryType?.value.id
+			)?.roles!;
+		}
+	}
+
+	toggleEditMode() {
+		this.editModeToggled.emit();
+	}
+
+	returnToSales() {
+		this.onReturnToSales.emit();
+	}
+
+	getDataBasedOnProjectType(event: MatSelectChange) {
 		const projectTypeId = event.value;
 		this.showMainSpinner();
 		this._clientPeriodService
@@ -318,12 +149,12 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 				this.salesMainDataForm.deliveryTypeId?.setValue(result.deliveryTypeId, { emitEvent: false });
 				this.salesMainDataForm.salesTypeId?.setValue(result.salesTypeId, { emitEvent: false });
 				this.salesMainDataForm.marginId?.setValue(result.marginId, { emitEvent: false });
-                if (
+				if (
 					projectTypeId === this.eProjectTypes.NearshoreVMShighMargin ||
 					projectTypeId === this.eProjectTypes.NearshoreVMSlowMargin ||
 					projectTypeId === this.eProjectTypes.VMShighMargin ||
 					projectTypeId === this.eProjectTypes.VMSlowMargin ||
-                    this.salesMainDataForm.salesTypeId?.value === SalesTypes.ThirdPartyMgmt
+					this.salesMainDataForm.salesTypeId?.value === SalesTypes.ThirdPartyMgmt
 				) {
 					this.makeAreaTypeRoleNotRequired();
 				} else {
@@ -332,14 +163,14 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			});
 	}
 
-    salesTypeChange(value: number) {
+	salesTypeChange(value: number) {
 		if (value === this.salesTypesEnum.ManagedService) {
 			const itemToPreselct = this.deliveryTypes.find((x) => x.id === this.deliveryTypesEnum.ManagedService);
 			this.salesMainDataForm.deliveryTypeId?.setValue(itemToPreselct?.id, {
 				emitEvent: false,
 			});
 		}
-        const projectTypeId = this.salesMainDataForm.projectTypeId?.value;
+		const projectTypeId = this.salesMainDataForm.projectTypeId?.value;
 		if (
 			projectTypeId === this.eProjectTypes.NearshoreVMShighMargin ||
 			projectTypeId === this.eProjectTypes.NearshoreVMSlowMargin ||
@@ -376,7 +207,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
         this.salesMainDataForm.primaryCategoryRole?.updateValueAndValidity({emitEvent: emitEvent});
     }
 
-    commissionRecipientTypeChanged(index: number) {
+	commissionRecipientTypeChanged(index: number) {
 		this.filteredRecipients = [];
 		this.commissions.at(index).get('recipient')?.setValue('');
 	}
@@ -409,7 +240,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 				Validators.required
 			),
 			recipientType: new UntypedFormControl(
-				this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null,
+				this.findItemById(this.commissionRecipientTypes, commission?.recipientTypeId) ?? null,
 				Validators.required
 			),
 			recipient: new UntypedFormControl(commissionRecipient ?? null, [
@@ -438,7 +269,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 			.valueChanges.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-                startWith(''),
+				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
 						name: value,
@@ -446,20 +277,20 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 					};
 					switch (arrayControl.value.recipientType?.id) {
 						case 3: // Client
-                            if (value?.id) {
-                                toSend.name = value.id ? value.clientName : value;
-                            }
-                            return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+							if (value?.id) {
+								toSend.name = value.id ? value.clientName : value;
+							}
+							return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
 						case 2: // Consultant
-                            if (value?.id) {
-                                toSend.name = value.id ? value.name : value;
-                            }
-                            return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
+							if (value?.id) {
+								toSend.name = value.id ? value.name : value;
+							}
+							return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
 						case 1: // Supplier
-                            if (value?.id) {
-                                toSend.name = value.id ? value.supplierName : value;
-                            }
-                            return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
+							if (value?.id) {
+								toSend.name = value.id ? value.supplierName : value;
+							}
+							return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
 						default:
 							return of([]);
 					}
@@ -480,8 +311,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 				}
 			});
 	}
-
-
 
 	removeCommission(index: number) {
 		this.isCommissionInitialAdd = false;
@@ -543,71 +372,212 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 		this.commissions.at(index).get('editable')?.setValue(false);
 	}
 
-    addCommissionedUser(employee?: EmployeeDto) {
-        const form = this._fb.group({
-           commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
-        });
-        this.salesMainDataForm.commissionedUsers.push(form);
-        this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
-    }
-
-    manageCommissionedUserAutocomplete(index: number) {
-        let arrayControl = this.commissionedUsers.at(index);
-        arrayControl!.get('commissionedUser')!.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribe),
-                debounceTime(300),
-                startWith(''),
-                switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        showAll: true,
-                        idsToExclude: this.commissionedUsers.value.map((x: any) => x?.commissionedUser?.id).filter((item: number) => item !== null && item !== undefined)
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.name
-                            : value;
-                    }
-                    return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
-                }),
-            ).subscribe((list: EmployeeDto[]) => {
-                if (list.length) {
-                    this.filteredEmployees = list;
-                } else {
-                    this.filteredEmployees = [new EmployeeDto({ name: 'No records found', externalId: '', id: undefined })];
-                }
-            });
-    }
-
-    removeCommissionedUser(index: number) {
-        this.commissionedUsers.removeAt(index);
-    }
-
-    packDocuments(): WorkflowDocumentCommandDto[] {
-        let workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
-        if (this.mainDocuments.documents.value?.length) {
-            for (let document of this.mainDocuments.documents.value) {
-                let documentInput = new WorkflowDocumentCommandDto();
-                documentInput.name = document.name;
-                documentInput.workflowDocumentId = document.workflowDocumentId;
-                documentInput.temporaryFileId = document.temporaryFileId;
-                workflowDocumentsCommandDto.push(documentInput);
-            }
-        }
-        return workflowDocumentsCommandDto;
-    }
-
-    submitForm() {
-        this.submitFormBtn.nativeElement.click();
-    }
-
-    get commissionedUsers() {
-        return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
-    }
-
-    get commissions() {
-		return this.salesMainDataForm.commissions as UntypedFormArray;
+	addCommissionedUser(employee?: EmployeeDto) {
+		const form = this._fb.group({
+			commissionedUser: new UntypedFormControl(
+				employee?.id ? employee : '',
+				CustomValidators.autocompleteValidator(['id'])
+			),
+		});
+		this.salesMainDataForm.commissionedUsers.push(form);
+		this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
 	}
 
+	manageCommissionedUserAutocomplete(index: number) {
+		let arrayControl = this.commissionedUsers.at(index);
+		arrayControl!
+			.get('commissionedUser')!
+			.valueChanges.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value,
+						showAll: true,
+						idsToExclude: this.commissionedUsers.value
+							.map((x: any) => x?.commissionedUser?.id)
+							.filter((item: number) => item !== null && item !== undefined),
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.name : value;
+					}
+					return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredEmployees = list;
+				} else {
+					this.filteredEmployees = [new EmployeeDto({ name: 'No records found', externalId: '', id: undefined })];
+				}
+			});
+	}
+
+	removeCommissionedUser(index: number) {
+		this.commissionedUsers.removeAt(index);
+	}
+
+	packDocuments(): WorkflowDocumentCommandDto[] {
+		let workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
+		if (this.mainDocuments.documents.value?.length) {
+			for (let document of this.mainDocuments.documents.value) {
+				let documentInput = new WorkflowDocumentCommandDto();
+				documentInput.name = document.name;
+				documentInput.workflowDocumentId = document.workflowDocumentId;
+				documentInput.temporaryFileId = document.temporaryFileId;
+				workflowDocumentsCommandDto.push(documentInput);
+			}
+		}
+		return workflowDocumentsCommandDto;
+	}
+
+	submitForm() {
+		this.submitFormBtn.nativeElement.click();
+	}
+
+    private _getEnums() {
+		this.currencies = this.getStaticEnumValue('currencies');
+		this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+		this.saleTypes = this.getStaticEnumValue('saleTypes');
+		this.projectTypes = this.getStaticEnumValue('projectTypes');
+		this.margins = this.getStaticEnumValue('margins');
+		this.contractExpirationNotificationInterval = this.getStaticEnumValue('contractExpirationNotificationInterval');
+		this.commissionFrequencies = this.getStaticEnumValue('commissionFrequencies');
+		this.commissionTypes = this.getStaticEnumValue('commissionTypes');
+		this.commissionRecipientTypes = this.getStaticEnumValue('commissionRecipientTypes');
+		this.legalEntities = this.getStaticEnumValue('legalEntities');
+		this.projectCategories = this.getStaticEnumValue('projectCategories');
+		this.discounts = this.getStaticEnumValue('discounts');
+	}
+
+	private _subscriptions$() {
+		this.salesMainDataForm.salesAccountManagerIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.name : value;
+					}
+					return this._lookupService.employees(value);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredSalesAccountManagers = list;
+				} else {
+					this.filteredSalesAccountManagers = [
+						new EmployeeDto({
+							name: 'No managers found',
+							externalId: '',
+							id: undefined,
+						}),
+					];
+				}
+			});
+
+		this.salesMainDataForm.commissionAccountManagerIdValue?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.name : value;
+					}
+					return this._lookupService.employees(value);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredCommisionAccountManagers = list;
+				} else {
+					this.filteredCommisionAccountManagers = [
+						new EmployeeDto({
+							name: 'No managers found',
+							externalId: '',
+							id: undefined,
+						}),
+					];
+				}
+			});
+
+		this.salesMainDataForm.primarySourcer?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(''),
+				switchMap((value: any) => {
+					let toSend = {
+						name: value,
+						maxRecordsCount: 1000,
+					};
+					if (value?.id) {
+						toSend.name = value.id ? value.name : value;
+					}
+					return this._lookupService.employees(value);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredPrimarySourcers = list;
+				} else {
+					this.filteredPrimarySourcers = [
+						new EmployeeDto({
+							name: 'No sourcers found',
+							externalId: '',
+							id: undefined,
+						}),
+					];
+				}
+			});
+
+		this.salesMainDataForm?.primaryCategoryArea?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				map((value) => this.primaryCategoryAreas?.find((x) => x.id === value?.id)?.areas)
+			)
+			.subscribe((list) => {
+				this.primaryCategoryTypes = list!;
+				this.salesMainDataForm?.primaryCategoryType?.setValue(null);
+				this.salesMainDataForm?.primaryCategoryRole?.setValue(null);
+			});
+
+		this.salesMainDataForm?.primaryCategoryType?.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				map((value) => this.primaryCategoryTypes?.find((x) => x.id === value?.id)?.roles)
+			)
+			.subscribe((list) => {
+				this.primaryCategoryRoles = list!;
+				this.salesMainDataForm?.primaryCategoryRole?.setValue(null);
+			});
+
+		merge(this.salesMainDataForm.salesTypeId.valueChanges, this.salesMainDataForm.deliveryTypeId.valueChanges)
+			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+			.subscribe(() => {
+				if (this.salesMainDataForm.salesTypeId.value && this.salesMainDataForm.deliveryTypeId.value) {
+					this._workflowDataService.preselectFrameAgreement.emit();
+				}
+			});
+	}
+
+
+	get commissionedUsers() {
+		return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
+	}
+
+	get commissions() {
+		return this.salesMainDataForm.commissions as UntypedFormArray;
+	}
 }

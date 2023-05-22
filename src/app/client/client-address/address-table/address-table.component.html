@@ -77,21 +77,26 @@
                         <mat-icon svgIcon="edit-icon-green"></mat-icon>
                         Edit
                     </button>
-                    <button
-                        class="menu-item green-color"
-                        mat-menu-item
-                        appPreventDoubleClick (throttledClick)="toggleAddressHiddenState(row)">
-                        <mat-icon [svgIcon]="row.isHidden ? 'icon-show' : 'icon-hide'"></mat-icon>
-                        {{row.isHidden ? 'Show address' : 'Hide address'}}
-                    </button>
-                    <button
-                        class="menu-item menu-item--cancel"
-                        mat-menu-item
-                        [disabled]="row.isMainAddress"
-                        appPreventDoubleClick (throttledClick)="deleteAddress(row)">
-                        <mat-icon svgIcon="close-icon"></mat-icon>
-                        Delete
-                    </button>
+                    <div [matTooltip]="row.isMainAddress ? 'Cannot hide main address' : ''" matTooltipClass="white-tooltip">
+                        <button
+                            class="menu-item green-color"
+                            mat-menu-item
+                            [disabled]="row.isMainAddress"
+                            appPreventDoubleClick (throttledClick)="toggleAddressHiddenState(row)">
+                            <mat-icon [svgIcon]="row.isHidden ? 'icon-show' : 'icon-hide'"></mat-icon>
+                            {{row.isHidden ? 'Show address' : 'Hide address'}}
+                        </button>
+                    </div>
+                    <div [matTooltip]="row.isMainAddress ? 'Cannot delete main address' : ''" matTooltipClass="white-tooltip">
+                        <button
+                            class="menu-item menu-item--cancel"
+                            mat-menu-item
+                            [disabled]="row.isMainAddress"
+                            appPreventDoubleClick (throttledClick)="deleteAddress(row)">
+                            <mat-icon svgIcon="close-icon"></mat-icon>
+                            Delete
+                        </button>
+                    </div>
                 </mat-menu>
             </mat-cell>
         </ng-container>

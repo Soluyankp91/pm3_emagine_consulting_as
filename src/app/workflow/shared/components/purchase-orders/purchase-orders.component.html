@@ -88,9 +88,9 @@
             {{ order.receiveDate !== null && order.receiveDate !== undefined ? (order.receiveDate | momentFormat) :
             '-'}}
         </span>
-        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
-            [matTooltip]="capTypes[order.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
-            {{capTypes[order.capForInvoicing?.type]}}
+        <span fxFlex="120px" class="u-w--100 text-truncate-ellipsis"
+            [matTooltip]="purchaseOrderCapTypes[order.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{purchaseOrderCapTypes[order.capForInvoicing?.type]}}
         </span>
         <span fxFlex="70px" class="u-w--100 text-truncate-ellipsis"
             [matTooltip]="order.capForInvoicing?.amountUsed ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>

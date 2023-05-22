@@ -6,6 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -42,34 +43,20 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     ngOnInit(): void {
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
 
-        if (this.permissionsForCurrentUser!["StartEdit"]) {
+        if (this.permissionsForCurrentUser![EPermissions.StartEdit]) {
             this.startEditSourcingStep();
         } else {
             this.getSourcingStepData();
         }
 
-        this._workflowDataService.workflowConsultantTerminationSourcingSaved
+        this._workflowDataService.sourcingStepSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
                 if (isDraft && !this.editEnabledForcefuly) {
-                    this.saveTerminationConsultantSourcingStep(isDraft);
+                    this.saveSourcingStepData(isDraft);
                 } else {
                     if (this.validateFinanceForm()) {
-                        this.saveTerminationConsultantSourcingStep(isDraft);
-                    } else {
-                        this.scrollToFirstError(isDraft);
-                    }
-                }
-            });
-
-        this._workflowDataService.workflowTerminationSourcingSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((isDraft: boolean) => {
-                if (isDraft && !this.editEnabledForcefuly) {
-                    this.saveWorkflowTerminationSourcingStep(isDraft);
-                } else {
-                    if (this.validateFinanceForm()) {
-                        this.saveWorkflowTerminationSourcingStep(isDraft);
+                        this.saveSourcingStepData(isDraft);
                     } else {
                         this.scrollToFirstError(isDraft);
                     }
@@ -281,6 +268,6 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     get canToggleEditMode() {
-        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
+        return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
     }
 }

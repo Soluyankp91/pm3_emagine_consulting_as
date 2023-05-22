@@ -62,6 +62,10 @@
                 #rlaAddress="routerLinkActive">
                 Client addresses
             </a>
+            <a mat-tab-link routerLink="invoicing" [active]="rlaInvoicing.isActive" routerLinkActive
+                #rlaInvoicing="routerLinkActive">
+                Invoicing
+            </a>
         </nav>
         <div class="u-w--100 nav-tab--content-wrapper">
             <ng-scrollbar>

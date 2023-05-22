@@ -1491,6 +1491,39 @@
   resolved "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
+"@ngrx/effects@14.3.3":
+  version "14.3.3"
+  resolved "https://registry.npmjs.org/@ngrx/effects/-/effects-14.3.3.tgz"
+  integrity sha512-bP7rIHlu1KAj5Wm0TWR7Q8VlOQOBu8uiN/fDP3Lqi8FwVW6HOq9eBGcFwJGyqwVAmulsvLFB68MhpMYg2W78+w==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/entity@14.3.3":
+  version "14.3.3"
+  resolved "https://registry.npmjs.org/@ngrx/entity/-/entity-14.3.3.tgz"
+  integrity sha512-UWSJg2WknLxstT/c9axVY8N3XGSgmY3fPcngPZvsyVjCo7pS/LMeh2/+F6pmQeWfTr/CdHsY1iLBJkjhAjHpYg==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/schematics@^14.3.3":
+  version "14.3.3"
+  resolved "https://registry.npmjs.org/@ngrx/schematics/-/schematics-14.3.3.tgz"
+  integrity sha512-8UWIhuwO98B4qAyUqzrstAtvFKl5BVx22In+GEhHlq51dEG978zQI+EYBZV4SYE0zyrJNYQwqJr4/SmIYXnMtA==
+
+"@ngrx/store-devtools@14.3.3":
+  version "14.3.3"
+  resolved "https://registry.npmjs.org/@ngrx/store-devtools/-/store-devtools-14.3.3.tgz"
+  integrity sha512-YQFFKYRnmREHCUb0aAaAgSXWKjZqV+5pmzsjW6HZ0GTKoy9R3JI7Miw0gplwkJpLO7Z3AFCuLQIpTs5ryAOwPQ==
+  dependencies:
+    tslib "^2.0.0"
+
+"@ngrx/store@14.3.3":
+  version "14.3.3"
+  resolved "https://registry.npmjs.org/@ngrx/store/-/store-14.3.3.tgz"
+  integrity sha512-VhPDR2a5OQJfrVRah3vdJgL/F6UC8NU/X7lxKFqBW3NC+pmlIeFO/y8jLrZOKBXwG45tY9wrg15S70nEGoZtHA==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngtools/webpack@14.2.6":
   version "14.2.6"
   resolved "https://registry.npmjs.org/@ngtools/webpack/-/webpack-14.2.6.tgz"
@@ -3168,7 +3201,7 @@ esbuild-darwin-64@0.15.5:
 
 esbuild-darwin-arm64@0.15.5:
   version "0.15.5"
-  resolved "https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.15.5.tgz"
+  resolved "https://registry.yarnpkg.com/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.15.5.tgz#ad89dafebb3613fd374f5a245bb0ce4132413997"
   integrity sha512-WIfQkocGtFrz7vCu44ypY5YmiFXpsxvz2xqwe688jFfSVCnUsCn2qkEVDo7gT8EpsLOz1J/OmqjExePL1dr1Kg==
 
 esbuild-freebsd-64@0.15.5:
@@ -3248,7 +3281,7 @@ esbuild-windows-32@0.15.5:
 
 esbuild-windows-64@0.15.5:
   version "0.15.5"
-  resolved "https://registry.yarnpkg.com/esbuild-windows-64/-/esbuild-windows-64-0.15.5.tgz#64f32acb7341f3f0a4d10e8ff1998c2d1ebfc0a9"
+  resolved "https://registry.npmjs.org/esbuild-windows-64/-/esbuild-windows-64-0.15.5.tgz"
   integrity sha512-v+PjvNtSASHOjPDMIai9Yi+aP+Vwox+3WVdg2JB8N9aivJ7lyhp4NVU+J0MV2OkWFPnVO8AE/7xH+72ibUUEnw==
 
 esbuild-windows-arm64@0.15.5:
@@ -3574,7 +3607,7 @@ fs.realpath@^1.0.0:
 
 fsevents@~2.3.2:
   version "2.3.2"
-  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:
@@ -4880,7 +4913,7 @@ ngx-spinner@^14.0.0:
 
 nice-napi@^1.0.2:
   version "1.0.2"
-  resolved "https://registry.npmjs.org/nice-napi/-/nice-napi-1.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/nice-napi/-/nice-napi-1.0.2.tgz#dc0ab5a1eac20ce548802fc5686eaa6bc654927b"
   integrity sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==
   dependencies:
     node-addon-api "^3.0.0"
@@ -4888,7 +4921,7 @@ nice-napi@^1.0.2:
 
 node-addon-api@^3.0.0:
   version "3.2.1"
-  resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-3.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.2.1.tgz#81325e0a2117789c0128dab65e7e38f07ceba161"
   integrity sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==
 
 node-forge@^1:
@@ -4897,9 +4930,9 @@ node-forge@^1:
   integrity sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==
 
 node-gyp-build@^4.2.2:
-  version "4.4.0"
-  resolved "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.4.0.tgz"
-  integrity sha512-amJnQCcgtRVw9SvoebO3BKGESClrfXGCUTX9hSn1OuGQTQBOZmVd0Z0OlecpuRksKvbsUqALE8jls/ErClAPuQ==
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.6.0.tgz#0c52e4cbf54bbd28b709820ef7b6a3c2d6209055"
+  integrity sha512-NTZVKn9IylLwUzaKjkas1e4u2DLNcV4rdYagA4PWdPwW87Bi7z+BznyKSRwS/761tV/lzCGXplWsiaMjLqP2zQ==
 
 node-gyp@^9.0.0:
   version "9.3.0"

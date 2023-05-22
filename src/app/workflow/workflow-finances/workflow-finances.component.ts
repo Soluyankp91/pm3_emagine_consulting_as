@@ -15,6 +15,7 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { EPermissions } from '../workflow-details/workflow-details.model';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
@@ -57,54 +58,38 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 	}
 
 	ngOnInit(): void {
-		this._workflowDataService.updateWorkflowProgressStatus({
-			currentStepIsCompleted: this.isCompleted,
-			currentStepIsForcefullyEditing: false,
-		});
-		if (this.permissionsForCurrentUser!['StartEdit']) {
-			this.startEditFinanceStep();
-		} else {
-			this.getFinanceStepData();
-		}
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
+        if (this.permissionsForCurrentUser![EPermissions.StartEdit]) {
+            this.startEditFinanceStep();
+        } else {
+            this.getFinanceStepData();
+        }
 
-		this._workflowDataService.startClientPeriodFinanceSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
-				} else {
-					if (this.validateFinanceForm()) {
-						this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
+        this._workflowDataService.financeStepSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((isDraft: boolean) => {
+                if (isDraft && !this.editEnabledForcefuly) {
+                    this.saveFinanceStepDate(isDraft);
+                } else {
+                    if (this.validateFinanceForm()) {
+                        this.saveFinanceStepDate(isDraft);
+                    } else {
+                        this.scrollToFirstError(isDraft);
+                    }
+                }
+            });
 
-		this._workflowDataService.consultantStartChangeOrExtendFinanceSaved
-			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((isDraft: boolean) => {
-				if (isDraft && !this.editEnabledForcefuly) {
-					this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
-				} else {
-					if (this.validateFinanceForm()) {
-						this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
-					} else {
-						this.scrollToFirstError(isDraft);
-					}
-				}
-			});
+        this._workflowDataService.cancelForceEdit.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({
+                    currentStepIsCompleted: this.isCompleted,
+                    currentStepIsForcefullyEditing: this.editEnabledForcefuly,
+                });
+                this.getFinanceStepData();
+            });
 
-		this._workflowDataService.cancelForceEdit.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
-			this.isCompleted = true;
-			this.editEnabledForcefuly = false;
-			this._workflowDataService.updateWorkflowProgressStatus({
-				currentStepIsCompleted: this.isCompleted,
-				currentStepIsForcefullyEditing: this.editEnabledForcefuly,
-			});
-			this.getFinanceStepData();
-		});
-	}
+    }
 
 	validateFinanceForm() {
 		this.submitForms();
@@ -141,9 +126,6 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 		this._unsubscribe.complete();
 	}
 
-	get readOnlyMode() {
-		return this.isCompleted;
-	}
 
 	toggleEditMode() {
 		this.isCompleted = !this.isCompleted;
@@ -153,10 +135,6 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 			currentStepIsForcefullyEditing: this.editEnabledForcefuly,
 		});
 		this.getFinanceStepData();
-	}
-
-	get canToggleEditMode() {
-		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
 	}
 
 	startEditFinanceStep() {
@@ -382,4 +360,14 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 	get consultants(): UntypedFormArray {
 		return this.financesConsultantsForm.get('consultants') as UntypedFormArray;
 	}
+
+    
+	get canToggleEditMode() {
+		return this.permissionsForCurrentUser!['Edit'] && this.isCompleted;
+	}
+
+    get readOnlyMode() {
+		return this.isCompleted;
+	}
+
 }

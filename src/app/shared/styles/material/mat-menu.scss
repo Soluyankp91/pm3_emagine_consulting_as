@@ -111,6 +111,7 @@
 .client-list--filter-country-menu + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * .cdk-overlay-pane,
 .main-overview--filter-country-menu + * .cdk-overlay-pane,
+.responsiblePersonMenu + * .cdk-overlay-pane,
 .filter-manager--menu + * .cdk-overlay-pane {
     .mat-menu-panel, .mat-select-panel {
         min-height: 40px !important;
@@ -162,6 +163,7 @@
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * + * .cdk-overlay-pane,
 .main-overview--filter-country-menu + * + * .cdk-overlay-pane,
+.responsiblePersonMenu + * + * .cdk-overlay-pane,
 .filter-manager--menu + * + * .cdk-overlay-pane {
     .mat-autocomplete-panel, .mat-select-panel {
         min-width: 300px !important;

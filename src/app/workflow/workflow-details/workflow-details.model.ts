@@ -7,7 +7,8 @@ export enum EPeriodClass {
 export enum EPermissions {
     StartEdit = 'StartEdit',
     Edit = 'Edit',
-    Completion = 'Completion'
+    Completion = 'Completion',
+    Reopen = 'Reopen'
 }
 
 export enum EPeriodAbbreviation {

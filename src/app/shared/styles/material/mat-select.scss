@@ -413,3 +413,9 @@
         }
     }
 }
+
+.responsiblePersonMenu + * + * .cdk-overlay-pane {
+    .mat-autocomplete-panel.mat-autocomplete-visible {
+        margin-top: 0 !important;
+    }
+}

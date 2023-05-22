@@ -51,7 +51,7 @@
                                     [ngClass]="{'active-step': step.name === selectedStep.name, 'completed-step': step.status === workflowStatuses.Completed}">
                                     <div fxLayout="column" fxLayoutAlign="start start">
                                         <div fxLayout="row" fxLayoutAlign="start center">
-                                            <app-manager-search appPreventDoubleClick
+                                            <responsible-person appPreventDoubleClick
                                                 (throttledClick)="$event.stopPropagation()"
                                                 [formFieldLabel]="step.name + ' Manager'" [periodId]="periodId!"
                                                 [consultantPeriodId]="item.consultantPeriodId!"
@@ -59,7 +59,7 @@
                                                 [workflowId]="workflowId" [managerStatus]="step.status!"
                                                 [responsiblePerson]="step.responsiblePerson!" [width]="24"
                                                 [height]="24">
-                                            </app-manager-search>
+                                            </responsible-person>
 
                                             <span class="workflow-navigation--step__name">
                                                 {{step.name}}
