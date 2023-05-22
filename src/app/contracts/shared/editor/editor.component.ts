@@ -453,9 +453,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe((res) => {
-					this._updateCommentByNeeds();
-					this.cleanUp();
-					this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
+					if (res) {
+						this._updateCommentByNeeds();
+						this.cleanUp();
+						this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
+					} else {
+						this._notifierService.notify(NotificationType.Noop);
+						this.cleanUp();
+					}
 				});
 		});
 	}
@@ -464,6 +469,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.prepareToProcessDocument();
 
 		this._editorCoreService.setTemplateAsBase64((base64) => {
+			console.log('save');
 			this._agreementService
 				.saveCurrentAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe(() => {
