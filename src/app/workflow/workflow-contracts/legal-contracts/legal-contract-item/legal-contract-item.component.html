@@ -12,22 +12,19 @@
         </span>
         <ng-container *ngIf="agreementInEdit$ | async as agreementInEdit">
             <ng-container *ngIf="agreementInEdit.isEditing">
-                <span fxLayout="row" fxLayoutAlign="start center" class="agreementInEditStatus">
-                    <mat-icon svgIcon="loading-icon"></mat-icon>
-                    <ng-container
-                        *ngIf="agreementInEdit.employees?.length && agreementInEdit.employees?.length === 1">
-                        <span class="employeesList">
-                            Agreement is being edited by {{agreementInEdit.employees | displayList: 'name'}} <div
-                                class="dot-flashing u-ml--10 u-mt--5"></div>
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="agreementInEdit.employees?.length > 1">
-                        <span class="employeesList" [matTooltip]="agreementInEdit.employees | displayList: 'name'"
-                            matTooltipClass="white-tooltip">
-                            Agreement is being edited by {{agreementInEdit.employees.length}} users <div
-                                class="dot-flashing u-ml--10 u-mt--5"></div>
-                        </span>
-                    </ng-container>
+                <span fxLayout="row" fxLayoutAlign="start center" class="agreementInEditStatus" [matTooltip]="agreementInEdit.employees?.length > 2 ? (agreementInEdit.employees | displayList: 'name') : ''"
+                matTooltipClass="white-tooltip">
+                    <mat-icon svgIcon="agreement-in-edit"></mat-icon>
+                    <span class="employeesList">
+                        Agreement is being edited by
+                        <ng-container
+                            *ngIf="agreementInEdit.employees?.length && agreementInEdit.employees?.length <= 2">
+                            {{agreementInEdit.employees | displayList: 'name'}}...
+                        </ng-container>
+                        <ng-container *ngIf="agreementInEdit.employees?.length > 2">
+                            multiple users...
+                        </ng-container>
+                    </span>
                 </span>
             </ng-container>
         </ng-container>
@@ -189,7 +186,7 @@
 										contract.value.agreementStatus === legalContractStatus.Sent
 									">
                     <button class="menu-item green-color" mat-menu-item
-                        (click)="editAgreement(contract.value.agreementId)">
+                        (click)="tryToEditAgreement(contract.value.agreementId)">
                         <mat-icon svgIcon="legal-contract-edit"></mat-icon>
                         Edit
                     </button>

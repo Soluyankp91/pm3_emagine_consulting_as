@@ -14,11 +14,10 @@ import { IUpdateData } from './agreement-signalr.model';
 export class SignalRService {
 	readonly hubUrl: string;
 	connection: HubConnection;
-	_triggerActiveReload$ = new BehaviorSubject<IUpdateData>(null);
-	_triggerAgreementUpdate$ = new BehaviorSubject<any>(null);
+	_triggerAgreementState$ = new BehaviorSubject<IUpdateData>(null);
 
-	get triggerActiveReload$() {
-		return this._triggerActiveReload$.asObservable().pipe(filter(Boolean));
+	get triggerAgreementState$() {
+		return this._triggerAgreementState$.asObservable().pipe(filter(Boolean));
 	}
 
 	constructor(

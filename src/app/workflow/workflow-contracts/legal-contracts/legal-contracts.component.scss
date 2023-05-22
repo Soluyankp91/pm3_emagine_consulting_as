@@ -73,19 +73,13 @@
     grid-column-gap: 12px;
 }
 
-
-.in-edit {
-    background-color: red !important;
-}
-
 .agreementInEditStatus {
-    @include fontOpenSans(12px, 600);
+    @include fontOpenSans(12px, 700);
     color: #FB9101;
     mat-icon {
         color: #FB9101;
-        width: 14px;
-        height: 14px;
-        animation: rotation 2s infinite linear;
+        width: 12px;
+        height: 12px;
         margin-right: 3px;
     }
     .employeesList {
@@ -94,76 +88,18 @@
     }
 }
 
-@keyframes rotation {
-	from {
-		transform: rotate(0deg);
-	}
-
-	to {
-		transform: rotate(359deg);
-	}
-}
-
-
-
-.dot-flashing {
-    position: relative;
-    width: 3px;
-    height: 3px;
-    border-radius: 5px;
-    background-color: #FB9101;
-    color: #FB9101;
-    animation: dot-flashing 1s infinite linear alternate;
-    animation-delay: 0.5s;
-  }
-  .dot-flashing::before, .dot-flashing::after {
-    content: "";
-    display: inline-block;
-    position: absolute;
-    top: 0;
-  }
-  .dot-flashing::before {
-    left: -7.5px;
-    width: 3px;
-    height: 3px;
-    border-radius: 5px;
-    background-color: #FB9101;
-    color: #FB9101;
-    animation: dot-flashing 1s infinite alternate;
-    animation-delay: 0s;
-  }
-  .dot-flashing::after {
-    left: 7.5px;
-    width: 3px;
-    height: 3px;
-    border-radius: 5px;
-    background-color: #FB9101;
-    color: #FB9101;
-    animation: dot-flashing 1s infinite alternate;
-    animation-delay: 1s;
-  }
-
-  @keyframes dot-flashing {
-    0% {
-      background-color: #fb9101;
-    }
-    50%, 100% {
-      background-color: rgba(251, 145, 1, 0.2);
-    }
-  }
 
 .agreementCreationState {
     height: 50px;
-    border: 1px solid $sand-color;
+    border: 1px dashed #8BD1CB;
     padding: 0 8px;
-    background-color: $white-color;
-    color: $light-grey-color;
-    @include fontOpenSans(14px, 600);
-    color: #FB9101;
+    background-color: rgba(197, 232, 229, 0.2);
+    @include fontOpenSans(14px, 700);
+    color: $green-color;
     mat-icon {
         color: #FB9101;
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         margin-right: 3px;
     }
 }

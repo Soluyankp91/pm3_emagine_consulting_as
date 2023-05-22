@@ -602,5 +602,6 @@ export class AppModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-PM-logo.svg')
 		);
 		iconRegistry.addSvgIcon('approved', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approve.svg'));
+		iconRegistry.addSvgIcon('agreement-in-edit', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-in-edit.svg'));
 	}
 }

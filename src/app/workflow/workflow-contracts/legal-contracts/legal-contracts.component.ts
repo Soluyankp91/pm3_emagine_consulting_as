@@ -1,9 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { HttpResponse } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -18,7 +16,6 @@ import {
 	SendEmailEnvelopeCommand,
 	SendDocuSignEnvelopeCommand,
 	FileParameter,
-	EnvelopeProcessingPath,
 	AgreementStatusHistoryDto,
     ClientPeriodAgreementsDto,
     ConsultantPeriodAgreementsDto,
@@ -27,17 +24,9 @@ import {
 import { LegalContractService } from './legal-contract.service';
 import {
 	ClientLegalContractsForm,
-	ELegalContractModeIcon,
-	ELegalContractModeText,
-	ELegalContractSourceIcon,
-	ELegalContractSourceText,
-	ELegalContractStatusIcon,
-	ELegalContractStatusText,
     IAgreementState,
     InitialAgreementState,
 } from './legal-contracts.model';
-import { RemoveOrUploadAgrementDialogComponent } from './remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
-import { ERemoveOrOuploadDialogMode } from './remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.model';
 import { SendEnvelopeDialogComponent } from './send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-preview-dialog.component';
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
@@ -53,21 +42,12 @@ import { EMPTY } from 'rxjs';
 	styleUrls: ['./legal-contracts.component.scss'],
 })
 export class LegalContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
-	@ViewChild('menuTrigger', { static: false }) menuTrigger: MatMenuTrigger;
 	@Input() clientPeriodId: string;
 	@Input() consultantPeriodId: string;
 	@Input() isClientContracts: boolean;
 	@Input() isEmagineToEmagine: boolean = false;
 	@Input() readOnlyMode: boolean;
 	clientLegalContractsForm: ClientLegalContractsForm;
-	eLegalContractStatusIcon = ELegalContractStatusIcon;
-	eLegalContractStatusText = ELegalContractStatusText;
-	eLegalContractModeIcon = ELegalContractModeIcon;
-	eLegalContractModeText = ELegalContractModeText;
-	legalContractStatus = EnvelopeStatus;
-	eLegalContractSourceText = ELegalContractSourceText;
-	eLegalContractSourceIcon = ELegalContractSourceIcon;
-	legalContractPath = EnvelopeProcessingPath;
     agreementPendingCreation$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
     intervalInSeconds = 30 * 1000;
     interval$ = new BehaviorSubject<number>(this.intervalInSeconds);
@@ -91,10 +71,6 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	ngOnInit(): void {
 		this._getAgreementData();
 		this._sub();
-		// NB: needed for tests
-		// LegalContractsMockedData.forEach((item) => {
-		// 	this.addLegalContract(item);
-		// });
 	}
 
 	ngOnDestroy(): void {
@@ -155,107 +131,6 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		}
 	}
 
-	// public openUploadSignedContractDialog(agreementId: number, overrideDocument: boolean) {
-	// 	this._closeMenu();
-	// 	const scrollStrategy = this._overlay.scrollStrategies.reposition();
-	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
-	// 	MediumDialogConfig.data = {
-	// 		dialogMode: ERemoveOrOuploadDialogMode.UploadNewDocument,
-	// 		hideReason: true,
-	// 		message: overrideDocument
-	// 			? 'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?'
-	// 			: null,
-	// 	};
-	// 	const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
-
-	// 	dialogRef.componentInstance.onConfirmed.subscribe((file: File) => {
-	// 		let fileInput: FileParameter;
-	// 		fileInput = {
-	// 			fileName: file.name,
-	// 			data: file,
-	// 		};
-	// 		this._uploadSignedContract(agreementId, fileInput);
-	// 	});
-	// }
-
-	// public downloadPdf(agreementId: number) {
-	// 	this._closeMenu();
-	// 	this.showMainSpinner();
-	// 	const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/pdf`;
-	// 	this._processDownloadDocument(url);
-	// }
-
-	// public downloadDoc(agreementId: number) {
-	// 	this._closeMenu();
-	// 	this.showMainSpinner();
-	// 	const getDraftIfAvailable = false; // NB: hardcoded false as for now, BE requirement
-	// 	const url = `${this.apiUrl}/api/Agreement/${agreementId}/document-file/latest-agreement-version/${getDraftIfAvailable}`;
-	// 	this._processDownloadDocument(url);
-	// }
-
-	// public downloadFile(agreementId: number) {
-	// 	this._closeMenu();
-	// 	this.showMainSpinner();
-	// 	const url = `${this.apiUrl}/api/Agreement/${agreementId}/signed-document`;
-	// 	this._processDownloadDocument(url);
-	// }
-
-	// public openInDocuSign(docuSignUrl: string) {
-	// 	this._closeMenu();
-	// 	window.open(docuSignUrl, '_blank');
-	// }
-
-	// public editAgreement(agreementId: number) {
-	// 	const routerUrl = this._router.serializeUrl(
-	// 		this._router.createUrlTree(
-	// 			[`/app/contracts/agreements/${agreementId}/settings`],
-	// 			this.isClientContracts
-	// 				? {
-	// 						queryParams: {
-	// 							clientPeriodId: this.clientPeriodId,
-	// 						},
-	// 				  }
-	// 				: {
-	// 						queryParams: {
-	// 							consultantPeriodId: this.consultantPeriodId,
-	// 							clientPeriodId: this.clientPeriodId,
-	// 						},
-	// 				  }
-	// 		)
-	// 	);
-	// 	this._closeMenu();
-	// 	window.open(routerUrl, '_blank');
-	// }
-
-	// public openDeleteAgreementDialog(agreementId: number) {
-	// 	this._closeMenu();
-	// 	const scrollStrategy = this._overlay.scrollStrategies.reposition();
-	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
-	// 	MediumDialogConfig.data = {
-	// 		dialogMode: ERemoveOrOuploadDialogMode.Delete,
-	// 		hideReason: true,
-	// 	};
-	// 	const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
-
-	// 	dialogRef.componentInstance.onConfirmed.subscribe(() => {
-	// 		this._deleteAgreement(agreementId);
-	// 	});
-	// }
-
-	// public openVoidAgreementDialog(agreementId: number) {
-	// 	this._closeMenu();
-	// 	const scrollStrategy = this._overlay.scrollStrategies.reposition();
-	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
-	// 	MediumDialogConfig.data = {
-	// 		dialogMode: ERemoveOrOuploadDialogMode.Void,
-	// 	};
-	// 	const dialogRef = this._dialog.open(RemoveOrUploadAgrementDialogComponent, MediumDialogConfig);
-
-	// 	dialogRef.componentInstance.onConfirmed.subscribe((reason: string) => {
-	// 		this._voidAgreement(agreementId, reason);
-	// 	});
-	// }
-
 	public redirectToCreateAgreement() {
 		const url = this._router.serializeUrl(
 			this._router.createUrlTree(
@@ -292,15 +167,6 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 			return;
 		}
 		this._legalContractService.processDownloadDocument(url);
-	}
-
-	private _processDownloadDocument(url: string) {
-		this._legalContractService
-			.getTokenAndDownloadDocument(url)
-			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe((data: HttpResponse<Blob>) => {
-				this._legalContractService.processResponseAfterDownload(data);
-			});
 	}
 
 	private _getClientAgreements() {
@@ -471,48 +337,19 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		});
 	}
 
-	// private _voidAgreement(agreementId: number, reason: string) {
-	// 	this.showMainSpinner();
-	// 	this._agreementService
-	// 		.voidEnvelope(agreementId, reason)
-	// 		.pipe(finalize(() => this.hideMainSpinner()))
-	// 		.subscribe(() => {
-	// 			this.showNotify(NotifySeverity.Success, 'Agreement voided');
-	// 			this._getAgreementData();
-	// 		});
-	// }
-
-	// private _deleteAgreement(agreementId: number) {
-	// 	this.showMainSpinner();
-	// 	this._agreementService
-	// 		.agreementDELETE(agreementId)
-	// 		.pipe(finalize(() => this.hideMainSpinner()))
-	// 		.subscribe(() => {
-	// 			this.showNotify(NotifySeverity.Success, 'Agreement deleted');
-	// 			this._getAgreementData();
-	// 		});
-	// }
-
 	private _resetForm() {
 		this.clientLegalContractsForm.legalContracts.controls = [];
 	}
 
-	private _closeMenu() {
-		this.menuTrigger.closeMenu();
-	}
-
 	private _sub() {
-        this._agreementSignalRService.triggerActiveReload$
+        this._agreementSignalRService.triggerAgreementState$
 			.pipe(
 				filter((value: IUpdateData) => {
-					console.log(value.eventName);
-					console.log(value.args);
 					return value.eventName === EAgreementEvents.PeriodAgreementCreationPendingState && (value.args?.periodId === this.clientPeriodId || value.args?.periodId === this.consultantPeriodId);
 				}),
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((value: IUpdateData) => {
-				console.log('creation');
                 this.agreementPendingCreation$.next({
                     isCreating: true,
                     employees: value.args?.employees
@@ -522,17 +359,13 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	}
 
     private _startTimer() {
-        console.log('timer');
         this.interval$.pipe(
             takeUntil(this._unsubscribe),
             switchMap((duration) => timer(duration)),
             tap(() => {
-                console.log('set false');
                 this.agreementPendingCreation$.next(InitialAgreementState);
             })
-        ).subscribe(() => {
-            console.log('sub');
-        });
+        ).subscribe();
     }
 
 	get legalContracts(): UntypedFormArray {

@@ -147,8 +147,11 @@
                 <mat-divider class="u-mb--24 u-mt--24">
                 </mat-divider>
 
-                <h3 class="confirmation-dialog--label">Select consultants to be extended</h3>
                 <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--16" formArrayName="consultants">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                        <h3 class="confirmation-dialog--label">Select consultants to be extended</h3>
+                        <h3 class="confirmation-dialog--label form-width-170">Previous end date</h3>
+                    </div>
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16" (change)="toggleExtendConsultants()">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
@@ -158,13 +161,12 @@
                                 </p>
                             </div>
                         </mat-checkbox>
-                        <mat-form-field appearance="outline" class="form-width-170 mb--5">
-                            <mat-label>Previous end date</mat-label>
-                            <input autocomplete="off" matInput type="text"
-                                    name="endDate"
-                                    formControlName="endDate">
-                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                        </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="form-width-170">
+                            <mat-icon class="calendar-icon u-mr--10" svgIcon="calendar"></mat-icon>
+                            <span class="text-bold">
+                                {{consultant.value.endDate !== null && consultant.value.endDate !== undefined ? (consultant.value.endDate | momentFormat) : 'No end date'}}
+                            </span>
+                        </div>
                     </div>
                     <ng-container *ngIf="validationTriggered && !extendConsultantsValid">
                         <mat-error class="error-message">

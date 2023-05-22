@@ -22,16 +22,12 @@ export class AgreementSignalRApiService extends SignalRService {
 
 	registerEventCallbacks(connection: HubConnection): void {
         connection.on(EAgreementEvents.InEditState, (agreementId: number, employees: EmployeeDto[]) => {
-            console.log(agreementId);
-            console.log(employees);
             this.triggerAgreementChange(
                 EAgreementEvents.InEditState,
                 {agreementId: agreementId, employees: employees}
             );
         });
         connection.on(EAgreementEvents.PeriodAgreementCreationPendingState, (periodId: string, employees: EmployeeDto[]) => {
-            console.log(periodId);
-            console.log(employees);
             this.triggerAgreementChange(
                 EAgreementEvents.PeriodAgreementCreationPendingState,
                 {periodId: periodId, employees: employees}
@@ -44,6 +40,6 @@ export class AgreementSignalRApiService extends SignalRService {
 		if (environment.isSignalRLoggingEnabled) {
 			console.log(`Received "${eventName}", update delayed ${delayinMs} [ms] args ${JSON.stringify(args)}`);
 		}
-		setTimeout(() => this._triggerActiveReload$.next({ eventName, args }), delayinMs);
+		setTimeout(() => this._triggerAgreementState$.next({ eventName, args }), delayinMs);
 	}
 }

@@ -29,7 +29,6 @@
 				*ngFor="let contract of clientLegalContractsForm.legalContracts?.controls; index as i; first as first"
 				[formArrayName]="i">
                 <legal-contract [contract]="contract" [first]="first" [isClientContracts]="isClientContracts" [clientPeriodId]="clientPeriodId" [consultantPeriodId]="consultantPeriodId" [readOnlyMode]="readOnlyMode"></legal-contract>
-
 			</ng-container>
 		</ng-container>
 	</ng-container>
@@ -41,6 +40,23 @@
 			<span class="light-grey-color text-600"> No client legal contracts </span>
 		</div>
 	</ng-container>
+    <ng-container *ngIf="(agreementPendingCreation$ | async) as agreementPendingCreation">
+        <ng-container *ngIf="agreementPendingCreation.isCreating">
+            <div fxLayout="row" fxLayoutAlign="start center"
+                class="agreementCreationState u-w--100 u-pl--16 u-pr--16" [ngClass]="{'u-mt--8': clientLegalContractsForm.legalContracts?.controls?.length !== 0}">
+                <span fxLayout="row" fxLayoutAlign="start center" matTooltipClass="white-tooltip" [matTooltip]="agreementPendingCreation.employees?.length > 2 ? (agreementPendingCreation.employees | displayList: 'name') : ''">
+                    <mat-icon svgIcon="legal-contract-edit"></mat-icon>
+                    Agreement is being created by
+                    <ng-container *ngIf="agreementPendingCreation.employees?.length && agreementPendingCreation.employees?.length <= 2">
+                        {{agreementPendingCreation.employees | displayList: 'name'}}...
+                    </ng-container>
+                    <ng-container *ngIf="agreementPendingCreation.employees?.length > 2">
+                        multiple users...
+                    </ng-container>
+                </span>
+            </div>
+        </ng-container>
+    </ng-container>
 	<div
 		fxLayout="row"
 		[fxLayoutAlign]="readOnlyMode ? 'end start' : 'space-between start'"

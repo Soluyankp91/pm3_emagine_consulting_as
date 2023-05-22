@@ -476,8 +476,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			consultantRateCurrencyId: new UntypedFormControl(clientRate?.consultantRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
-        console.log(clientRate);
-
 		(this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).push(form);
 	}
 

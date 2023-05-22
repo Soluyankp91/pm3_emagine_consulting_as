@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
 import { LegalContractService } from '../legal-contract.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AgreementSignalRArgs, EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
@@ -63,19 +63,14 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
     }
 
 	ngOnInit(): void {
-        console.log('start');
-        this._agreementSignalRService.triggerActiveReload$
+        this._agreementSignalRService.triggerAgreementState$
 			.pipe(
 				filter((value: IUpdateData) => {
-					console.log(value.eventName);
-					console.log(value.args);
 					return value.eventName === EAgreementEvents.InEditState && value.args.agreementId === this.contract.value.agreementId;
 				}),
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((value: IUpdateData) => {
-				console.log('edit');
-				console.log(value);
 				this.agreementInEdit$.next({
                     isEditing: true,
                     employees: value.args?.employees
@@ -85,17 +80,13 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
     }
 
     private _setTimer() {
-        console.log('timer');
         this.interval$.pipe(
             takeUntil(this._unsubscribe),
             switchMap((duration) => timer(duration)),
             tap(() => {
-                console.log('set false');
                 this.agreementInEdit$.next(InitialAgreementState);
             })
-        ).subscribe(() => {
-            console.log('sub');
-        });
+        ).subscribe();
     }
 
     ngOnDestroy(): void {
@@ -131,6 +122,32 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
 			this._deleteAgreement(agreementId);
 		});
 	}
+
+    public tryToEditAgreement(agreementId: number) {
+        this.agreementInEdit$.asObservable().pipe(take(1)).subscribe((state: IAgreementState) => {
+            if (state.isEditing) {
+                const scrollStrategy = this._overlay.scrollStrategies.reposition();
+                MediumDialogConfig.scrollStrategy = scrollStrategy;
+                MediumDialogConfig.data = {
+                    confirmationMessageTitle: `Editing in progress`,
+                    confirmationMessage: `Agreement is beeing edited by ${state.employees.map(x => x.name).join(', ') }. \n
+                    Are you sure you want to proceed?`,
+                    rejectButtonText: 'Cancel',
+                    confirmButtonText: 'Proceed',
+                    isNegative: true,
+                };
+                const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+                dialogRef.componentInstance.onRejected.subscribe(() => {
+                    this._closeMenu();
+                });
+                dialogRef.componentInstance.onConfirmed.subscribe(() => {
+                    this.editAgreement(agreementId);
+                });
+            } else {
+                this.editAgreement(agreementId);
+            }
+        });
+    }
 
     public editAgreement(agreementId: number) {
 		const routerUrl = this._router.serializeUrl(
