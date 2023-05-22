@@ -138,4 +138,28 @@ export class DownloadFilesService {
 			pluck('body')
 		);
 	}
+
+	signedDocument(agreementId: number): Observable<Blob> {
+		let url = this._baseUrl + `/api/Agreement/${agreementId}/signed-document`;
+		let options: any = {
+			observe: 'response',
+			responseType: 'blob',
+			headers: new HttpHeaders({}),
+		};
+		return this._http.request('get', url, options).pipe(
+			catchError((response) => {
+				if (response instanceof HttpResponseBase) {
+					try {
+						return of(response);
+					} catch (e) {
+						return throwError(e);
+					}
+				} else {
+					return throwError(response);
+				}
+			}),
+			filter((val) => !!val),
+			pluck('body')
+		);
+	}
 }

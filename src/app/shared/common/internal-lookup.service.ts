@@ -48,8 +48,8 @@ export class InternalLookupService {
     periodUnitTypes: EnumEntityTypeDto[] = [];
     purchaseOrderCapTypes: { [key: string]: string };
     envelopeProcessingPaths: { [key: string]: string };
+    consultantShownOnClientInvoiceAs: { [key: string]: string };
 
-    // getEnums$: Observable<{ [key: string]: string } | EnumEntityTypeDto[] | LegalEntityDto[] | CountryDto[]>[] = [];
     staticEnums: { [key: string]: any };
     constructor(private _enumService: EnumServiceProxy) {
     }
@@ -90,7 +90,7 @@ export class InternalLookupService {
             terminationTimes: this.getTerminationTimes(),
             terminationReasons: this.getTerminationReasons(),
             employmentTypes: this.getEmploymentTypes(),
-            expectedWorkloadUnit: this.getExpectedWorkloadUnit(),
+            expectedWorkloadUnits: this.getExpectedWorkloadUnit(),
             countries: this.getCountries(),
             consultantTimeReportingCap: this.getConsultantTimeReportingCap(),
             workflowStatuses: this.getWorkflowStatuses(),
@@ -98,6 +98,7 @@ export class InternalLookupService {
             valueUnitTypes: this.getValueUnitTypes(),
             periodUnitTypes: this.getPeriodUnitTypes(),
             purchaseOrderCapTypes: this.getPurchaseOrderCapTypes(),
+            consultantShownOnClientInvoiceAs: this.getConsultantShownOnClientInvoiceAs(),
         };
         return forkJoin(enumsApi).pipe(
             switchMap((result: any) => {
@@ -861,6 +862,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.envelopeProcessingPaths = response;
                         observer.next(this.envelopeProcessingPaths);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getConsultantShownOnClientInvoiceAs(): Observable<{ [key: string]: string }> {
+        return new Observable<{ [key: string]: string }>((observer) => {
+            if (this.consultantShownOnClientInvoiceAs !== undefined && this.consultantShownOnClientInvoiceAs !== null) {
+                observer.next(this.consultantShownOnClientInvoiceAs);
+                observer.complete();
+            } else {
+                this._enumService.consultantShownOnClientInvoiceAs()
+                    .subscribe(response => {
+                        this.consultantShownOnClientInvoiceAs = response;
+                        observer.next(this.consultantShownOnClientInvoiceAs);
                         observer.complete();
                     }, error => {
                         observer.error(error);

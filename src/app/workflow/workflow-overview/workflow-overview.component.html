@@ -179,7 +179,7 @@
             <mat-divider class="u-w--100 u-mb--24"></mat-divider>
             <h2 class="workflow-overview--history-header">Client Purchase Orders</h2>
             <p class="medium-grey-color text-bold u-mb--15">With Cap for invoicing</p>
-            <purchase-orders #purchaseOrder [periodId]="periodId" [readOnlyMode]="false" [workflowId]="workflowId" [mode]="ePurchaseOrderMode.WFOverview"></purchase-orders>
+            <purchase-orders #purchaseOrder [periodId]="periodId" [readOnlyMode]="false" [workflowId]="workflowId" [mode]="ePurchaseOrderMode.WFOverview" [directClientId]="directClientId"></purchase-orders>
         </ng-container>
         <ng-container>
             <mat-divider class="u-w--100 u-mt--24 u-mb--24"></mat-divider>
@@ -233,8 +233,8 @@
                     <div fxFlex="40px" fxLayoutAlign="end center">
                     </div>
                 </div>
-                <ng-container *ngFor="let item of overviewDocuments | slice: 0: showAllDocument ? undefined : 5; trackBy: trackById;">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100">
+                <ng-container *ngFor="let item of overviewDocuments | slice: 0: showAllDocument ? undefined : 5; trackBy: trackById; first as first">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="documents-row u-w--100" [ngClass]="{'u-bt--0': !first}">
                         <div fxFlex="20px" class="u-mr--16" fxLayoutAlign="start center">
                             <mat-icon [svgIcon]="item.icon"></mat-icon>
                         </div>

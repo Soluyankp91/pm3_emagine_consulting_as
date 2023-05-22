@@ -85,20 +85,31 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.showMainSpinner();
 		const form = this.purchaseOrderForm.value;
 		let input = new PurchaseOrderDto(form);
+		if (input.numberMissingButRequired) {
+			input.number = undefined;
+		}
 		input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
 		if (form.id !== null) {
-			this._purchaseOrderService
-				.purchaseOrderPUT(this.data?.clientPeriodId, input)
-				.pipe(finalize(() => this.hideMainSpinner()))
-				.subscribe((result) => {
-					this._workflowDataService.updatePurchaseOrders.emit(result);
-					result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
-						this.existingPo.purchaseOrderCurrentContextData
-					);
-					this.onConfirmed.emit(result);
-					this._closeInternal();
-				});
+			if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
+				// NB: don't call BE if user is not allowed to edit, just add to a list
+				this.onConfirmed.emit(this.existingPo);
+				this._closeInternal();
+				this.hideMainSpinner();
+				return;
+			} else {
+				this._purchaseOrderService
+					.purchaseOrderPUT(this.data?.clientPeriodId, input)
+					.pipe(finalize(() => this.hideMainSpinner()))
+					.subscribe((result) => {
+						this._workflowDataService.updatePurchaseOrders.emit(result);
+						result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
+							this.existingPo.purchaseOrderCurrentContextData
+						);
+						this.onConfirmed.emit(result);
+						this._closeInternal();
+					});
+			}
 		} else {
 			this._purchaseOrderService
 				.purchaseOrderPOST(this.data?.clientPeriodId, input)

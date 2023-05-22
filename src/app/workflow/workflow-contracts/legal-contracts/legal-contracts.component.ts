@@ -10,10 +10,8 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
-	WorkflowAgreementDto,
 	ClientPeriodServiceProxy,
 	ConsultantPeriodServiceProxy,
-	WorkflowAgreementsDto,
 	EnvelopeStatus,
 	AgreementServiceProxy,
 	EnvelopePreviewDto,
@@ -22,6 +20,9 @@ import {
 	FileParameter,
 	EnvelopeProcessingPath,
 	AgreementStatusHistoryDto,
+    ClientPeriodAgreementsDto,
+    ConsultantPeriodAgreementsDto,
+    WorkflowPeriodAgreementDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { LegalContractService } from './legal-contract.service';
 import {
@@ -43,6 +44,8 @@ import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/
 import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
 import { EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
 import { BehaviorSubject, Subject, timer } from 'rxjs';
+import { NotificationDialogComponent } from '../../../contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
+import { EMPTY } from 'rxjs';
 
 @Component({
 	selector: 'legal-contracts-list',
@@ -54,6 +57,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	@Input() clientPeriodId: string;
 	@Input() consultantPeriodId: string;
 	@Input() isClientContracts: boolean;
+	@Input() isEmagineToEmagine: boolean = false;
 	@Input() readOnlyMode: boolean;
 	clientLegalContractsForm: ClientLegalContractsForm;
 	eLegalContractStatusIcon = ELegalContractStatusIcon;
@@ -98,7 +102,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		this._unsubscribe.complete();
 	}
 
-	addLegalContract(legalContract?: WorkflowAgreementDto, statusHistory?: AgreementStatusHistoryDto[]) {
+	addLegalContract(legalContract?: WorkflowPeriodAgreementDto, statusHistory?: AgreementStatusHistoryDto[]) {
 		const form = this._fb.group({
 			selected: new UntypedFormControl(false),
 			agreementId: new UntypedFormControl(legalContract?.agreementId ?? null),
@@ -277,7 +281,8 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		this.showMainSpinner();
 		let selectedAgreements = this.legalContracts.value.filter((x) => x.selected);
 		const agreementIds = selectedAgreements.map((x) => x.agreementId);
-		let url = `${this.apiUrl}/api/Agreement/signed-documents?`;
+		let url = `${this.apiUrl}/api/Agreement/files?`;
+
 		if (agreementIds?.length > 0) {
 			for (let id of agreementIds) {
 				url += `agreementIds=${id}&`;
@@ -299,24 +304,30 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _getClientAgreements() {
-		this._clientPeriodService.clientAgreements(this.clientPeriodId).subscribe((result: WorkflowAgreementsDto) => {
+		this._clientPeriodService.clientAgreements(this.clientPeriodId).subscribe((result: ClientPeriodAgreementsDto) => {
 			this._resetForm();
-			result.agreements.forEach((item) => {
+			result.clientAgreements.forEach((item) => {
 				this._getAgreementStatusAndAddLegalContract(item);
 			});
 		});
 	}
 
 	private _getConsultantAgreements() {
-		this._consultantPeriodService.consultantAgreements(this.consultantPeriodId).subscribe((result: WorkflowAgreementsDto) => {
+		this._consultantPeriodService.consultantAgreements(this.consultantPeriodId).subscribe((result: ConsultantPeriodAgreementsDto) => {
 			this._resetForm();
-			result.agreements.forEach((item) => {
-				this._getAgreementStatusAndAddLegalContract(item);
-			});
+            if (this.isEmagineToEmagine) {
+                result.emagineToEmagineAgreements.forEach((item) => {
+                    this._getAgreementStatusAndAddLegalContract(item);
+                });
+            } else {
+                result.consultantAgreements.forEach((item) => {
+                    this._getAgreementStatusAndAddLegalContract(item);
+                });
+            }
 		});
 	}
 
-	private _getAgreementStatusAndAddLegalContract(item: WorkflowAgreementDto) {
+	private _getAgreementStatusAndAddLegalContract(item: WorkflowPeriodAgreementDto) {
 		this._agreementService.statusHistory(item.agreementId).subscribe((result) => {
 			this.addLegalContract(item, result);
 		});
@@ -424,6 +435,19 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 				error: (error) => {
 					const errorObj = JSON.parse(error.response);
 					let message = errorObj?.error?.message;
+					let code = errorObj?.error?.code;
+					if (code && code === 'contracts.documents.cant.upload.completed.in.docusign') {
+						this.hideMainSpinner();
+						this._dialog.open(NotificationDialogComponent, {
+							width: '500px',
+							backdropClass: 'backdrop-modal--wrapper',
+							data: {
+								label: 'Upload contract',
+								message: 'Cannot upload completed contract in DocuSign.',
+							},
+						});
+						return EMPTY;
+					}
 					message = message?.length ? message : 'Forcing contract upload may result in envelope changes.';
 					this._showForceUpdateDialog(message, agreementId, (forceUpdate = true), file);
 				},
@@ -515,7 +539,10 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 		return this.clientLegalContractsForm.get('legalContracts') as UntypedFormArray;
 	}
 	get downloadEnvelopeAvailable() {
-		return this.legalContracts.value.some((x) => x.selected);
+		return (
+			this.legalContracts.value.some((x) => x.selected) &&
+			this.legalContracts.value.filter((x) => x.selected).every((item) => item.agreementStatus !== EnvelopeStatus.WaitingForOthers)
+		);
 	}
 	get sendAgreementAvailable() {
 		return this.legalContracts.value
