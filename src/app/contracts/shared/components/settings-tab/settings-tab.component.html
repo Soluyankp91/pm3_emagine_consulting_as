@@ -10,7 +10,7 @@
 		</span>
 	</ng-template>
 	<ng-container *ngIf="templateName$ | async as templateName; else defaultNameTemplate">
-		<div class="template-name" [customTooltip]="templateName">{{ templateName }}</div>
+		<div class="template-name" [emgCustomTooltip]="templateName">{{ templateName }}</div>
 	</ng-container>
 	<ng-template #defaultNameTemplate>
 		<div class="template-name">{{ defaultName }}</div>

@@ -32,8 +32,10 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 	constructor(private readonly _downloadFilesService: DownloadFilesService) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes['inheritedFiles'].currentValue) {
+		if (changes['inheritedFiles'] && changes['inheritedFiles'].currentValue !== null) {
+			this.selectedInheritedFiles = [];
 			const inheritedFiles = changes['inheritedFiles'].currentValue as FileUpload[];
+
 			this.inheritedFilesModified = inheritedFiles.map((file) => {
 				return this._modifyFileUpload(file);
 			});

@@ -44,7 +44,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 	ngDoCheck(): void {
 		if (this.control?.touched) {
 			this.textControl.markAsTouched();
-			this.textControl.updateValueAndValidity();
+			this.textControl.updateValueAndValidity({ emitEvent: false });
 			return;
 		}
 	}

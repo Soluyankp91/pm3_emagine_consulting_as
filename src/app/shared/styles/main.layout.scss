@@ -117,7 +117,8 @@
 }
 
 mat-icon.shared-icon {
-    height: 16px;
+    height: 14px;
+    width: 17px;
     &:hover {
         svg>path[fill] {
             fill: $green-color !important;

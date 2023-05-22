@@ -37,6 +37,8 @@
         color: $dark-grey-color !important;
     }
     &-success {
+        color: white;
+        font-weight: 600;
         background-color: $green-color !important;
     }
     &-error {
