@@ -244,10 +244,10 @@
                             </div>
                         </ng-container>
                         <ng-container formArrayName="commissions" class="u-w--100">
-                            <ng-container *ngFor="let commission of salesMainDataForm.commissions.controls; trackBy: trackByItem; index as i"
+                            <ng-container *ngFor="let commission of salesMainDataForm.commissions.controls; trackBy: trackByItem; index as i; first as first"
                                 [formArrayName]="i">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
-                                    class="workflow-sales-inline--form__row u-w--100">
+                                    class="workflow-sales-inline--form__row u-w--100" [ngClass]="{'u-bt--0': !first}">
                                     <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('editable')?.value">
                                         <mat-form-field appearance="fill"
                                             class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">

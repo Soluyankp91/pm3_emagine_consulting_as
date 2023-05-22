@@ -332,6 +332,16 @@ export const STATUTES = [
 		name: 'Declined',
 		color: '#FF7A78',
 	},
+	{
+		id: 13,
+		name: 'Reminder sent',
+		icon: 'reminder-send',
+	},
+	{
+		id: 14,
+		name: 'Signed',
+		icon: 'partially-sign',
+	},
 ];
 export const INVALIDA_ENVELOPE_DOWNLOAD_MESSAGE =
 	'Invalid documents were selected. You can only download envelopes that contain a document. Please check if you are trying to download an Agreement that is set to always being received from other party.';
@@ -339,3 +349,6 @@ export const MANUAL_AGREEMENT_UPLOAD_MESSAGE =
 	'The agreement will be marked as completed manually. Are you sure you wish to proceed?';
 export const INVALID_MANUAL_AGREEMENT_UPLOAD_MESSAGE =
 	'The agreement you try to upload has already been added and marked as completed. The existing file will be replaced with the new one, and will no longer be accessible. Are you sure you want to proceed?';
+export const INVALID_REMINDER_MESSAGE = `Invalid agreements have been selected. You can only send reminders for Docusign agreements with the following statuses: <ul class='ul-list'><li>Sent</li><li>Waiting for others</li><li>About to expire</li></ul>`;
+export const SEND_REMINDER_CONFIRMATION_MESSAGE = `You are sending a reminder to all recipients that need to complete an action on the selected agreement. Click send to confirm.`;
+export const SEND_REMINDER_SUCCESS_MESSAGE = `Reminder for selected agreements has been sent successfully`;

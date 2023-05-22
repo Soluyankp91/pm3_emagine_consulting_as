@@ -47,6 +47,7 @@ import {
     WorkflowDocumentServiceProxy,
     TimeReportingCapDto,
     TimeReportingCapId,
+    ContractSupplierSignerDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
 import { SalesTypes } from '../workflow-contracts/workflow-contracts.model';
@@ -583,9 +584,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				); // enabled - defalut value
-				if (result?.salesClientData?.noSpecialContractTerms) {
-					this.clientDataComponent?.salesClientDataForm.specialContractTerms?.disable();
-				}
+				result?.salesClientData?.noSpecialContractTerms ?
+					this.clientDataComponent?.salesClientDataForm.specialContractTerms?.disable() :
+                    this.clientDataComponent?.salesClientDataForm.specialContractTerms?.enable();
 				result.salesClientData?.periodClientSpecialRates?.forEach((specialRate: PeriodClientSpecialRateDto) => {
 					this.clientDataComponent?.addSpecialRate(specialRate);
 				});
@@ -597,8 +598,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				});
 				this.clientDataComponent.selectedFrameAgreementId = result.salesClientData.frameAgreementId ?? null;
 				if (result.consultantSalesData?.length) {
-					result.consultantSalesData?.forEach((consultant) => {
+					result.consultantSalesData?.forEach((consultant, index) => {
 						this.consutlantDataComponent?.addConsultantForm(consultant);
+						this.consutlantDataComponent.selectedFrameAgreementList[index] =
+							consultant.consultantFrameAgreementId ?? null;
+						this.consutlantDataComponent.selectedEmagineFrameAgreementList[index] =
+							consultant.emagineToEmagineFrameAgreementId ?? null;
 					});
 					this.consutlantDataComponent?.updateConsultantStepAnchors();
 				}
@@ -680,9 +685,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			.subscribe((result) => {
 				this.resetForms();
 				this.salesTerminateConsultantForm.patchValue(result, { emitEvent: false });
-				if (result.noEvaluation) {
-					this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable();
-				}
+				result.noEvaluation
+					? this.salesTerminateConsultantForm.finalEvaluationReferencePerson.disable()
+					: this.salesTerminateConsultantForm.finalEvaluationReferencePerson.enable();
 				if (
 					result.finalEvaluationReferencePerson?.id === null ||
 					result.finalEvaluationReferencePerson?.id === undefined
@@ -765,14 +770,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	private _tempUpdateDocuments() {
 		this._workflowDocumentsService.overviewAll(this.workflowId, this.periodId).subscribe((result) => {
-			if (this.mainDataComponent.mainDocuments) {
-				this.mainDataComponent.mainDocuments.clearDocuments();
+			if (this.mainDataComponent?.mainDocuments) {
+				this.mainDataComponent?.mainDocuments.clearDocuments();
+                if (result.length) {
+                    this.mainDataComponent.mainDocuments.addExistingFile(result);
+                }
 			}
 			if (this.terminationDocuments) {
 				this.terminationDocuments.clearDocuments();
-			}
-			if (result.length) {
-				this.mainDataComponent.mainDocuments.addExistingFile(result);
+                if (result.length) {
+                    const terminationDocs = result.filter(doc => doc.workflowTerminationId !== null && doc.workflowTerminationId !== undefined);
+                    this.terminationDocuments.addExistingFile(terminationDocs);
+                }
 			}
 		});
 	}
@@ -856,9 +865,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.mainDataComponent?.salesMainDataForm.noRemarks?.setValue(result?.noRemarks, {
 					emitEvent: false,
 				});
-				if (result?.noRemarks) {
-					this.mainDataComponent?.salesMainDataForm.remarks?.disable();
-				}
+				result?.noRemarks ? this.mainDataComponent?.salesMainDataForm.remarks?.disable() : this.mainDataComponent?.salesMainDataForm.remarks?.enable();
 				this.mainDataComponent?.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, {
 					emitEvent: false,
 				});
@@ -1157,7 +1164,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					consultantInput.timeReportingCaps.push(capInput);
 				}
 			}
-            consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;
+			consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;
 			consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
 			consultantInput.onsiteClientAddressId = consultant.onsiteClientAddress?.id;
 			consultantInput.onsiteClientAddress = FindClientAddress(
@@ -1212,8 +1219,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
 			consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
 			consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
+			consultantInput.contractSupplierSigners = new Array<ContractSupplierSignerDto>();
+			consultant.contractSigners.forEach((signer) => {
+				let signerInput = new ContractSupplierSignerDto(signer);
+				signerInput.supplierMemberId = signer.supplierMember?.id;
+				consultantInput.contractSupplierSigners.push(signerInput);
+			});
 			consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
 			consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
+            consultantInput.consultantFrameAgreementId = consultant.frameAgreementId?.agreementId;
+            consultantInput.emagineToEmagineFrameAgreementId = consultant.emagineFrameAgreementId?.agreementId;
 		}
 		return consultantInput;
 	}

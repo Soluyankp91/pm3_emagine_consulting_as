@@ -400,6 +400,9 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	private _setDuplicateObs() {
+		let onlyNoDraftTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
+			items.map((item) => item.hasDraftVersion ? Object.assign({disabled: true}, item) : item);
+
 		this.duplicateOrInherit$ = this.creationModeControlReplay$.pipe(
 			takeUntil(this._unSubscribe$),
 			switchMap((creationMode: AgreementCreationMode | null) => {
@@ -431,7 +434,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 										}),
 										withLatestFrom(this._contractsService.getEnumMap$()),
 										map(([response, maps]) => {
-											return response.items.map(
+											return onlyNoDraftTemplates(response.items).map(
 												(item) =>
 													Object.assign(item, {
 														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
@@ -464,7 +467,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 										undefined,
 										undefined,
 										undefined,
-										undefined,
+										true,
 										search
 									)
 									.pipe(
@@ -473,7 +476,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 										}),
 										withLatestFrom(this._contractsService.getEnumMap$()),
 										map(([response, maps]) => {
-											return response.items.map(
+											return onlyNoDraftTemplates(response.items).map(
 												(item) =>
 													Object.assign(item, {
 														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),

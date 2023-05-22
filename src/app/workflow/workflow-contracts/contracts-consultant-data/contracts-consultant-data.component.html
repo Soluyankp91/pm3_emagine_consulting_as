@@ -439,7 +439,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantRatesFees' + consultantIndex">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [id]="'contractConsultantFrameAgreement' + consultantIndex">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                 <span class="workflow-section--number">5</span>
                                 <h2 class="workflow-section--header">Frame agreement</h2>
@@ -529,19 +529,20 @@
                                         </ng-container>
                                         <ng-container class="u-w--100 u-pl--16 u-pr--16">
                                             <ng-container
-                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index">
+                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index; first as first">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <ng-container *ngIf="!rate.value.editable">
                                                         <span fxFlex="1 0 20%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="rate.value.rateName"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.rateName}}
                                                         </span>
                                                         <span fxFlex="20%"
-                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                            class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                             [matTooltip]="rate.value.reportingUnit?.name"
                                                             matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{rate.value.reportingUnit?.name}}
@@ -615,19 +616,20 @@
                                         </ng-container>
                                         <ng-container formArrayName="specialRates" class="u-w--100 u-pl--16 u-pr--16">
                                             <ng-container
-                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index"
+                                                *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index; first as first"
                                                 [formGroupName]="specialRateIndex">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <span fxFlex="1 0 20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="rate.value.rateName"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{rate.value.rateName}}
                                                     </span>
                                                     <span fxFlex="20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="rate.value.reportingUnit?.name"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{rate.value.reportingUnit?.name}}
@@ -822,18 +824,19 @@
                                         </ng-container>
                                         <ng-container class="u-w--100">
                                             <ng-container
-                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index">
+                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index; first as first">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <span fxFlex="1 0 20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeName ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeName ?? '-'}}
                                                     </span>
                                                     <span fxFlex="20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeFrequency?.name ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeFrequency?.name ?? '-'}}
@@ -906,19 +909,20 @@
                                         </ng-container>
                                         <ng-container formArrayName="clientFees" class="u-w--100">
                                             <ng-container
-                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index"
+                                                *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index; first as first"
                                                 [formGroupName]="clientFeeIndex">
                                                 <div fxLayout="row" fxLayoutAlign="space-between center"
                                                     fxLayoutGap="10px"
-                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                    class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
+                                                    [ngClass]="{'u-bt--0': !first}">
                                                     <span fxFlex="1 0 20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeName ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeName ?? '-'}}
                                                     </span>
                                                     <span fxFlex="20%"
-                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                        class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                         [matTooltip]="fee.value.feeFrequency?.name ?? '-'"
                                                         matTooltipClass="white-tooltip" appShowIfTruncated>
                                                         {{fee.value.feeFrequency?.name ?? '-'}}
@@ -1144,7 +1148,7 @@
                                                                 {{projectLine.value.id ?? '-'}}
                                                             </span>
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="projectLine.value.projectName ?? '-'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                 {{projectLine.value.projectName &&
@@ -1152,7 +1156,7 @@
                                                                 projectLine.value.projectName : '-'}}
                                                             </span>
                                                             <span fxFlex="25%"
-                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item"
+                                                                class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item text-bold"
                                                                 [matTooltip]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'Missing, but required' : projectLine.value.purchaseOrder?.number"
                                                                 [ngClass]="projectLine.value.purchaseOrder?.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
                                                                 matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -1429,6 +1433,98 @@
                             </div>
                             <div class="workflow-section--content">
                                 <legal-contracts-list #legalContracts [clientPeriodId]="periodId" [consultantPeriodId]="consultant.value.consultantPeriodId" [isClientContracts]="false" [readOnlyMode]="readOnlyMode"></legal-contracts-list>
+                            </div>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="contractConsultantEmgaineToEmagine">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                <span class="workflow-section--number">9</span>
+                                <h2 class="workflow-section--header">Emagine to emagine</h2>
+                            </div>
+                            <div class="workflow-section--content">
+                                <ng-container *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId; else noDeliveryAccountManager">
+                                    <ng-container *ngIf="isContractModuleEnabled; else noFrameAgreementsTemplate">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-form-field appearance="outline"
+                                                class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-450"
+                                                [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': frameAgreementAutocomplete.isOpen}">
+                                                <mat-label>Frame agreement</mat-label>
+                                                <input [disabled]="readOnlyMode" #frameAgreementInput type="text"
+                                                    matInput [matAutocomplete]="frameAgreementAutocomplete"
+                                                    formControlName="emagineFrameAgreementId" appPreventDoubleClick
+                                                    (throttledClick)="$event.stopPropagation()" placeholder="Frame agreement">
+                                                    <span matSuffix class="shevron"></span>
+                                                <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
+                                                    [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
+                                                    (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                    <ng-container *ngFor="let item of filteredEmagineFrameAgreements[consultantIndex]; trackBy: trackById">
+                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
+                                                            <div class="multilineDropdown-option--row">
+                                                                <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                                    <span class="multilineDropdown-option--column-client-name">{{ item.agreementName }}</span>
+                                                                    <ng-container *ngIf="item?.agreementId !== undefined">
+                                                                        <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis light-grey-color">
+                                                                            #{{item?.agreementId}} •
+                                                                            {{item.countryName}}
+                                                                            {{item.countryName ? '•' : ''}}
+                                                                            {{item.startDate | momentFormat}}
+                                                                            {{item.startDate !== null && item.startDate !== undefined ? '-' : ''}}
+                                                                            {{item.endDate | momentFormat}}
+                                                                        </span>
+                                                                    </ng-container>
+                                                                </div>
+                                                            </div>
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                                                <mat-error>
+                                                    <app-validator [control]="consultant.get('emagineFrameAgreementId')"></app-validator>
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #noFrameAgreementsTemplate>
+                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                            class="emptyStateRow u-mb--10">
+                                            <span class="light-grey-color text-600">
+                                                Coming soon - with the contracts module..
+                                            </span>
+                                        </div>
+                                    </ng-template>
+                                    <!-- FIXME: uncomment once BE updated -->
+                                    <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select autocompleteWithShevron u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode, 'isPanelOpen': deliveryManagerAutocomplete.isOpen}">
+                                            <mat-label>Delivery Account manager</mat-label>
+                                            <input [disabled]="readOnlyMode" required #deliveryManagerFilterInput type="text" matInput [matAutocomplete]="deliveryManagerAutocomplete" formControlName="deliveryAccountManager" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                                            <span matSuffix class="shevron"></span>
+                                            <mat-autocomplete #deliveryManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
+                                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                <ng-container *ngFor="let manager of filteredAccountManagers[consultantIndex]; trackBy: trackById">
+                                                    <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
+                                                        <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                            <mat-error>
+                                                <app-validator [control]="consultant.get('deliveryAccountManager')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <ng-container *ngIf="!readOnlyMode || consultant.get('deliveryManagerSameAsAccountManager')?.value">
+                                            <mat-checkbox color="accent" formControlName="deliveryManagerSameAsAccountManager" name="deliveryManagerSameAsAccountManager" class="black-checkbox"
+                                            (change)="setValueAndToggleDisalbeState(consultant?.value?.deliveryManagerSameAsAccountManager, consultant?.get('deliveryAccountManager'), contractsMainForm.salesAccountManagerIdValue?.value)"
+                                                [disabled]="readOnlyMode">
+                                                Same as account manager
+                                            </mat-checkbox>
+                                        </ng-container>
+                                    </div> -->
+                                    <legal-contracts-list #legalContracts [clientPeriodId]="periodId" [consultantPeriodId]="consultant.value.consultantPeriodId" [isClientContracts]="false" [isEmagineToEmagine]="true" [readOnlyMode]="readOnlyMode"></legal-contracts-list>
+                                </ng-container>
+                                <ng-template #noDeliveryAccountManager>
+                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="emptyStateRow">
+                                        <span class="light-grey-color text-600">
+                                            Required only for Nearshore projects
+                                        </span>
+                                    </div>
+                                </ng-template>
                             </div>
                         </div>
                     </ng-container>

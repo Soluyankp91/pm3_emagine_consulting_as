@@ -19,7 +19,7 @@
 	font-size: 16px;
 	font-weight: 700;
 
-    color: #17A297;
+	color: #17a297;
 }
 .discard-button {
 	width: 130px;
@@ -32,6 +32,20 @@
 	font-size: 16px;
 	font-weight: 700;
 }
+
+.confirm-button {
+	width: 130px;
+	height: 40px;
+
+	color: #fff;
+	background-color: #17a297;
+	border-radius: 5px;
+
+	font-size: 16px;
+	font-weight: 700;
+	box-shadow: none;
+}
+
 .actions {
 	justify-content: space-between;
 }

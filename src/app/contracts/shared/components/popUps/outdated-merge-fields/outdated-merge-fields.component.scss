@@ -1,0 +1,95 @@
+:host {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.container {
+	height: calc(100% - 72px);
+	padding: 32px 40px 0px 40px;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+}
+.outdated-fields-table {
+	padding: 0px 40px;
+
+	min-height: 202px;
+	max-height: 202px;
+
+	overflow: scroll;
+}
+.preinfo {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+.outdated-fields-header {
+	font-size: 30px;
+	font-weight: 800;
+}
+.description,
+.table-header {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.header-cell {
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 14px;
+}
+
+.table-cell {
+	font-size: 14px;
+	font-weight: 600;
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	min-width: 232px;
+	max-width: 232px;
+}
+
+.bottom-section {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding-bottom: 15px;
+}
+
+.actions {
+	justify-content: flex-end;
+	margin: 0 40px;
+
+	padding: 0px;
+
+	min-height: 35px !important;
+}
+.header-row {
+	min-height: 47px !important;
+}
+.cancel-button {
+	font-size: 14px;
+	font-weight: 700;
+	padding: 8px 30px;
+	line-height: 14px;
+
+	color: #fff;
+	background-color: #17a297;
+}
+
+.proceed-button {
+	width: 130px;
+	height: 36px;
+
+	color: #fff;
+	background-color: #ff7a78;
+	border-radius: 5px;
+
+	font-size: 14px;
+	font-weight: 700;
+}
+.actions {
+	justify-content: space-between;
+}

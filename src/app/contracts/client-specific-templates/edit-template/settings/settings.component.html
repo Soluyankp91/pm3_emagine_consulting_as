@@ -52,6 +52,7 @@
 												· <span>{{ cell.createdDateUtc | momentFormat }}</span>
 											</ng-container>
 										</div>
+										<span *ngIf="cell.hasDraftVersion" class="draft-label">Draft</span>
 									</div>
 								</ng-template>
 							</emg-dropdown-autocomplete-single-select>

@@ -815,10 +815,10 @@
                         </div>
                     </ng-container>
                     <ng-container formArrayName="clientRates" class="u-w--100">
-                        <ng-container *ngFor="let rate of salesClientDataForm.clientRates.controls; trackBy: trackByItem; index as i"
+                        <ng-container *ngFor="let rate of salesClientDataForm.clientRates.controls; trackBy: trackByItem; index as i; first as first;"
                             [formArrayName]="i">
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
-                                class="workflow-sales-inline--form__row u-w--100">
+                                class="workflow-sales-inline--form__row u-w--100" [ngClass]="{'u-bt--0': !first}">
                                 <ng-container>
                                     <span fxFlex="1 0 35%" class="u-w--100 text-truncate-ellipsis"
                                         [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip"
@@ -957,10 +957,10 @@
                         </div>
                     </ng-container>
                     <ng-container formArrayName="clientFees" class="u-w--100">
-                        <ng-container *ngFor="let fee of salesClientDataForm.clientFees.controls; trackBy: trackByItem; index as i"
+                        <ng-container *ngFor="let fee of salesClientDataForm.clientFees.controls; trackBy: trackByItem; index as i; first as first"
                             [formArrayName]="i">
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
-                                class="workflow-sales-inline--form__row u-w--100">
+                                class="workflow-sales-inline--form__row u-w--100" [ngClass]="{'u-bt--0': !first}">
                                 <ng-container>
                                     <span fxFlex="1 0 35%" class="u-w--100 text-truncate-ellipsis"
                                         [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip"

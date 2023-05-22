@@ -7,11 +7,13 @@
         border: 1px solid $sand-color;
         padding: 0 8px;
         background-color: $white-color;
-
         &-item {
             @include fontOpenSans(14px, 600);
             line-height: 140%;
             color: #4a4e60;
+            &.contract-name {
+                font-weight: 700 !important;
+            }
         }
 
         &-header {
