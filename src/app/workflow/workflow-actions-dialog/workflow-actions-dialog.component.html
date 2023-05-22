@@ -164,7 +164,7 @@
                         <div fxLayout="row" fxLayoutAlign="start center" class="form-width-170">
                             <mat-icon class="calendar-icon u-mr--10" svgIcon="calendar"></mat-icon>
                             <span class="text-bold">
-                                {{consultant.value.endDate !== null && consultant.value.endDate !== undefined ? (consultant.value.endDate | momentFormat) : 'No end date'}}
+                                {{consultant?.value?.endDate}}
                             </span>
                         </div>
                     </div>
