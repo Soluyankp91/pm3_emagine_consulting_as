@@ -893,6 +893,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
         this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
         this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
     }
 
     get timeReportingCaps(): UntypedFormArray {

@@ -68,7 +68,7 @@
                         Fees billed with this Project line
                     </mat-checkbox>
 
-                    <mat-form-field appearance="outline" class="form-width-350 u-mt--10 textarea-input textarea-with-hint">
+                    <mat-form-field appearance="outline" class="form-width-340 u-mt--10 textarea-input textarea-with-hint">
                         <mat-label>Optional invoicing info</mat-label>
                         <textarea matInput autocomplete="new-password" maxlength="250" cdkAutosizeMinRows="2"
                             cdkTextareaAutosize name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo"
@@ -81,7 +81,7 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
                     <h2 class="section-header">Invoicing</h2>
-                    <mat-form-field appearance="outline" class="form-width-350 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
+                    <mat-form-field appearance="outline" class="form-width-340 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
                         <mat-label>Invoice recipient</mat-label>
                         <input #clientInvoicingRecipientInput type="text" matInput
                             [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId"
@@ -109,7 +109,7 @@
                         </mat-autocomplete>
                     </mat-form-field>
                     <mat-form-field appearance="outline" [ngClass]="{'is-empty': !projectLineForm.invoiceRecipientAddress.value}"
-                        class="formFieldNoMarginPadding filter-select form-width-350 client-address-autocomplete">
+                        class="formFieldNoMarginPadding filter-select form-width-340 client-address-autocomplete">
                         <mat-label>Client address</mat-label>
                         <mat-select formControlName="invoiceRecipientAddress"
                             [disableOptionCentering]="true" placeholder="Direct client address" [compareWith]="compareWithFn">
@@ -151,7 +151,7 @@
                     </mat-checkbox>
 
                     <ng-container *ngIf="!projectLineForm.value?.invoicingReferencePersonDontShowOnInvoice">
-                        <mat-form-field appearance="outline" class="form-width-350 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
+                        <mat-form-field appearance="outline" class="form-width-340 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
                             <mat-label>Invoice reference person</mat-label>
                             <input #invoicingReferencePersonAutocompleteInput type="text" matInput
                                 [matAutocomplete]="invoicingReferencePersonAutocomplete"
