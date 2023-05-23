@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, filter, map, pluck, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 
 // Project Specific
 import { CommentService, CompareService, EditorCoreService } from './services';
@@ -247,7 +247,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			versionMetaData &&
 			versionMetaData.isCurrent &&
 			versionMetaData.envelopeStatus &&
-			[3, 10].includes(versionMetaData.envelopeStatus);
+			[EnvelopeStatus.Sent, EnvelopeStatus.Completed, EnvelopeStatus.WaitingForOthers].includes(versionMetaData.envelopeStatus);
 	}
 
 	handleDocumentReady() {
@@ -474,7 +474,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveDraftAsComplete() {
 		this.prepareToProcessDocument();
-		let sentVersion = this.versions.find((version) => version.envelopeStatus && version.envelopeStatus === 3);
+		let sentVersion = this.versions.find((version) => version.envelopeStatus && [EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus));
 		if (sentVersion) {
 			this._notifierService.notify(NotificationType.EnvelopeBeingVoided, { version: sentVersion.version });
 		} else {
@@ -553,10 +553,19 @@ export class EditorComponent implements OnInit, OnDestroy {
 			singleEmail: singleEmail,
 			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
-		this._agreementServiceProxy.sendEmailEnvelope(input).subscribe(() => {
-			this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
-			this.getTemplateVersions(this.templateId);
-		});
+		this._agreementServiceProxy
+			.sendEmailEnvelope(input)
+			.pipe(
+				catchError((err) => {
+					this._notifierService.notify(NotificationType.Noop);
+					return throwError(err);
+				})
+			)
+			.subscribe((res) => {
+				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
+				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
+				this.getTemplateVersions(this.templateId);
+			});
 	}
 
 	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption, envelopeName: string) {
@@ -566,10 +575,19 @@ export class EditorComponent implements OnInit, OnDestroy {
 			singleEnvelope: singleEnvelope,
 			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
 		});
-		this._agreementServiceProxy.sendDocusignEnvelope(input).subscribe(() => {
-			this.getTemplateVersions(this.templateId);
-			this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
-		});
+		this._agreementServiceProxy
+			.sendDocusignEnvelope(input)
+			.pipe(
+				catchError((err) => {
+					this._notifierService.notify(NotificationType.Noop);
+					return throwError(err);
+				})
+			)
+			.subscribe(() => {
+				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
+				this.getTemplateVersions(this.templateId);
+				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
+			});
 	}
 
 	cancel() {
@@ -616,6 +634,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 			this.mergeFieldStateBeforeProcessing = null;
 		}
+	}
+
+	setEnvelopeStatusToLatestVersion(status: EnvelopeStatus) {
+		this.versions[this.versions.length - 1].envelopeStatus = status;
 	}
 
 	private _showCompleteConfirmDialog(callback: (value: boolean) => void) {
