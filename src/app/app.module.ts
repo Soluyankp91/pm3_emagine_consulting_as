@@ -603,5 +603,6 @@ export class AppModule {
 		);
 		iconRegistry.addSvgIcon('approved', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approve.svg'));
 		iconRegistry.addSvgIcon('agreement-in-edit', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-in-edit.svg'));
+		iconRegistry.addSvgIcon('login-title', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/login-title.svg'));
 	}
 }
