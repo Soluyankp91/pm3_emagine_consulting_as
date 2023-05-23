@@ -24,7 +24,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 	workflowId: string;
 	filters$: Observable<HistoryFilterNamesDto[]>;
 	filteredEvents$: Observable<HistoryFilterNamesDto[]>;
-	displayColumns = ['changedDate', 'actionName', 'changedObject', 'changedField', 'oldValue', 'newValue', 'periodID', 'by'];
+	displayColumns = ['changedDate', 'actionName', 'changedObject', 'changedField', 'oldValue', 'newValue', 'periodID', 'consultant', 'by'];
 	isLoading = false;
 	pageIndex = 1;
 	pageSize = AppConsts.grid.defaultPageSize;

@@ -30220,6 +30220,8 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     workflowProcessType?: WorkflowProcessType;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
+    consultantName?: string | undefined;
+    consultantExternalId?: string | undefined;
     clientId?: number | undefined;
     occurredAtUtc?: moment.Moment;
     employeeId?: number | undefined;
@@ -30250,6 +30252,8 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
             this.workflowProcessType = _data["workflowProcessType"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.consultantId = _data["consultantId"];
+            this.consultantName = _data["consultantName"];
+            this.consultantExternalId = _data["consultantExternalId"];
             this.clientId = _data["clientId"];
             this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
             this.employeeId = _data["employeeId"];
@@ -30280,6 +30284,8 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
         data["workflowProcessType"] = this.workflowProcessType;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["consultantId"] = this.consultantId;
+        data["consultantName"] = this.consultantName;
+        data["consultantExternalId"] = this.consultantExternalId;
         data["clientId"] = this.clientId;
         data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
         data["employeeId"] = this.employeeId;
@@ -30303,6 +30309,8 @@ export interface IHistoryPropertiesDto {
     workflowProcessType?: WorkflowProcessType;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
+    consultantName?: string | undefined;
+    consultantExternalId?: string | undefined;
     clientId?: number | undefined;
     occurredAtUtc?: moment.Moment;
     employeeId?: number | undefined;
