@@ -72,3 +72,34 @@
     grid-row-gap: 4px;
     grid-column-gap: 12px;
 }
+
+.agreementInEditStatus {
+    @include fontOpenSans(12px, 700);
+    color: #FB9101;
+    mat-icon {
+        color: #FB9101;
+        width: 12px;
+        height: 12px;
+        margin-right: 3px;
+    }
+    .employeesList {
+        display: flex;
+        align-items: center;
+    }
+}
+
+
+.agreementCreationState {
+    height: 50px;
+    border: 1px dashed #8BD1CB;
+    padding: 0 8px;
+    background-color: rgba(197, 232, 229, 0.2);
+    @include fontOpenSans(14px, 700);
+    color: $green-color;
+    mat-icon {
+        color: #FB9101;
+        width: 14px;
+        height: 14px;
+        margin-right: 3px;
+    }
+}

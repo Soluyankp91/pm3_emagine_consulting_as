@@ -175,18 +175,17 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     }
 
     addConsutlantToExtendForm(consultant: AvailableConsultantDto, preselectConsultant: boolean, index: number) {
+        console.log('ss');
         const form = this._fb.group({
 			consulantName: new UntypedFormControl(consultant.consultantName),
 			consultantId: new UntypedFormControl(consultant.consultantId),
 			externalId: new UntypedFormControl(consultant.externalId),
 			extendConsultant: new UntypedFormControl(preselectConsultant),
-			endDate: new UntypedFormControl({
-				value:
-					consultant.lastConsultantPeriodEndDate !== null && consultant.lastConsultantPeriodEndDate !== undefined
-						? consultant.lastConsultantPeriodEndDate.format('DD.MM.YYYY')
-						: 'No end date',
-				disabled: true,
-			}),
+			endDate: new UntypedFormControl(
+				consultant.lastConsultantPeriodEndDate !== null && consultant.lastConsultantPeriodEndDate !== undefined
+					? consultant.lastConsultantPeriodEndDate.format('DD.MM.YYYY')
+					: 'No end date'
+			),
 		});
         this.extendWorkflowForm.consultants.push(form);
     }

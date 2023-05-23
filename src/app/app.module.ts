@@ -34,6 +34,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AuthService } from './login/auth.service';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1; // Remove this line to use Angular Universal
 
@@ -101,6 +102,7 @@ export function getRemoteServiceBaseUrl(): string {
 	],
 	providers: [
 		LoginGuard,
+        AuthService,
 		{
 			provide: API_BASE_URL,
 			useFactory: getRemoteServiceBaseUrl,
@@ -600,5 +602,7 @@ export class AppModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-PM-logo.svg')
 		);
 		iconRegistry.addSvgIcon('approved', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approve.svg'));
+		iconRegistry.addSvgIcon('agreement-in-edit', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-in-edit.svg'));
+		iconRegistry.addSvgIcon('login-title', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/login-title.svg'));
 	}
 }

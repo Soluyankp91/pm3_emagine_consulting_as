@@ -1,6 +1,5 @@
 import { UntypedFormArray, UntypedFormGroup } from "@angular/forms";
-import * as moment from "moment";
-import { EnvelopeStatus, AgreementValidityState, EnvelopeProcessingPath } from "src/shared/service-proxies/service-proxies";
+import { EnvelopeStatus, AgreementValidityState, EnvelopeProcessingPath, EmployeeDto } from "src/shared/service-proxies/service-proxies";
 
 export class ClientLegalContractsForm extends UntypedFormGroup {
     constructor() {
@@ -66,4 +65,16 @@ export enum ELegalContractSourceText {
     "Sent via email" = EnvelopeProcessingPath.Email,
     "Sent via DocuSign" = EnvelopeProcessingPath.DocuSign,
     "Receive from other party" = 3
+}
+
+export interface IAgreementState {
+    isEditing?: boolean,
+    isCreating?: boolean,
+    employees?: EmployeeDto[]
+}
+
+export const InitialAgreementState: IAgreementState = {
+    isEditing: false,
+    isCreating: false,
+    employees: []
 }

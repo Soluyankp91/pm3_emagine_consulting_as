@@ -350,6 +350,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		this.consultants.push(form);
         const consultantIndex = this.consultants.controls.length - 1;
         this.onsiteClientAddresses.push([]);
+        this.filteredSupplierMembers.push([]);
         this.filteredSupplierMembers[consultantIndex].push([]);
         if (consultant?.onsiteClient?.clientId) {
             this.getClientAddresses(this.consultants.length - 1, consultant?.onsiteClient.clientAddresses);
@@ -1014,6 +1015,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         this.eCurrencies = this.arrayToEnum(this.currencies);
         this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
         this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        this.signerRoles = this.getStaticEnumValue('signerRoles');
     }
 
     getConsultantSignersControls(consultantIndex: number): AbstractControl[] | null {

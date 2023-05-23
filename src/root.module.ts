@@ -17,6 +17,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ROOT_REDUCERS, metaReducers } from './app/store/reducers';
 import { effects } from './app/store/effects';
+import { AuthRedirectGuard } from './app/login/auth-redirect.guard';
 
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
@@ -88,6 +89,7 @@ export function getRemoteServiceBaseUrl(): string {
     ],
     providers: [
         LoginGuard,
+        AuthRedirectGuard,
         {
             provide: API_BASE_URL,
             useFactory: getRemoteServiceBaseUrl
