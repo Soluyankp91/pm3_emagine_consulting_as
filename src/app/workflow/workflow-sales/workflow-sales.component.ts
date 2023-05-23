@@ -433,6 +433,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				if (result?.workflowDocuments?.length) {
 					this.mainDataComponent.mainDocuments?.addExistingFile(result.workflowDocuments);
 				}
+                if (result?.salesMainData?.commissionedEmployeesData?.length) {
+                    for (let user of result?.salesMainData?.commissionedEmployeesData) {
+                        this.mainDataComponent.addCommissionedUser(user);
+                    }
+                }
 				this.clientDataComponent?.salesClientDataForm.patchValue(result, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.patchValue(result.salesClientData!, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.differentEndClient?.setValue(
