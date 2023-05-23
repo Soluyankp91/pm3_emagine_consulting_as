@@ -1297,7 +1297,7 @@
     <calculated-margin [marginType]="type"
         [data]="{clientRate: clientDataForm.normalRate?.value,clientCurrencyId: clientDataForm.clientCurrencyId?.value,
             clientUnitTypeId: clientDataForm.rateUnitTypeId?.value,
-            clientPaymentType: clientDataForm.clientRateTypeId,
+            clientPaymentType: clientDataForm.value?.clientRateTypeId,
             clientPdcEntity: clientDataForm.value?.pdcInvoicingEntityId,
             consultantRate: consultant.value?.consultantRate,
             consultantCurrencyId: consultant.value?.consultantRateCurrencyId,

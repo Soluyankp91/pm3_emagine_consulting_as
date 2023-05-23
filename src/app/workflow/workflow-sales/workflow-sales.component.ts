@@ -923,6 +923,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 		if (this.consutlantDataComponent) {
 			this.consutlantDataComponent.consultantsForm.consultants.controls = [];
+            this.consutlantDataComponent.onsiteClientAddresses = [];
+            this.consutlantDataComponent.filteredSupplierMembers = [];
 		}
 		if (this.mainDataComponent?.mainDocuments) {
 			this.mainDataComponent.mainDocuments.clearDocuments();
