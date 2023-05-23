@@ -1,0 +1,63 @@
+:host {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.container {
+	height: calc(100% - 72px);
+	padding: 32px 40px 0px 40px;
+	display: flex;
+	flex-direction: column;
+}
+.header {
+	font-size: 30px;
+	font-weight: 800;
+}
+.description,
+.table-header {
+	font-size: 14px;
+	font-weight: 600;
+}
+.merge-fields {
+	margin: 10px 0 10px 0 !important;
+	padding-left: 24px !important;
+
+	overflow: scroll;
+
+	min-height: 195px;
+	max-height: 195px;
+}
+.merge-field {
+	font-size: 14px;
+	line-height: 22.4px;
+	font-weight: 700;
+}
+.preinfo {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+.cancel-button {
+	font-size: 16px;
+	font-weight: 700;
+	padding: 8px 30px;
+	line-height: 14px;
+
+	color: #fff;
+	background-color: #17a297;
+}
+
+.proceed-button {
+	width: 130px;
+	height: 40px;
+
+	color: #fff;
+	background-color: #ff7a78;
+	border-radius: 5px;
+
+	font-size: 16px;
+	font-weight: 700;
+}
+.actions {
+	justify-content: space-between;
+}

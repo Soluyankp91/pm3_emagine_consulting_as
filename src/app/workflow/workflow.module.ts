@@ -15,7 +15,7 @@ import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview
 import { WorkflowPeriodComponent } from './workflow-period/workflow-period.component';
 import { WorkflowSalesComponent } from './workflow-sales/workflow-sales.component';
 import { WorkflowSourcingComponent } from './workflow-sourcing/workflow-sourcing.component';
-import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
+import { WorkflowComponent } from './workflow.component';
 import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart.component';
 import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.component';
 import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
@@ -38,6 +38,8 @@ import { SendEnvelopeDialogComponent } from './workflow-contracts/legal-contract
 import { SignersPreviewDialogComponent } from './workflow-contracts/legal-contracts/signers-preview-dialog/signers-preview-dialog.component';
 import { RemoveOrUploadAgrementDialogComponent } from './workflow-contracts/legal-contracts/remove-or-upload-agrement-dialog/remove-or-upload-agrement-dialog.component';
 import { CalculatedMarginComponent } from './shared/components/calculated-margin/calculated-margin.component';
+import { LatestChangesComponent } from './workflow-overview/latest-changes/latest-changes.component';
+import { WorkflowCreateResolver } from './workflow.resolver';
 
 @NgModule({
 	declarations: [
@@ -71,7 +73,8 @@ import { CalculatedMarginComponent } from './shared/components/calculated-margin
 		SendEnvelopeDialogComponent,
 		SignersPreviewDialogComponent,
 		RemoveOrUploadAgrementDialogComponent,
-  CalculatedMarginComponent,
+		CalculatedMarginComponent,
+		LatestChangesComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
@@ -134,6 +137,14 @@ export class WorkflowModule {
 		iconRegistry.addSvgIcon(
 			'send-via-docusign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'signed',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/signed.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'reminder-sent',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/reminder-set.svg')
 		);
 	}
 }

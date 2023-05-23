@@ -69,7 +69,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	ngDoCheck(): void {
 		if (this.control?.touched) {
 			this.inputControl.markAsTouched();
-			this.inputControl.updateValueAndValidity();
+			this.inputControl.updateValueAndValidity({ emitEvent: false });
 		}
 	}
 

@@ -33,7 +33,7 @@
                         Client rate
                     </span>
                     <span fxFlex="12%" class="client-rates--form__header u-w--100">
-                        emagine rate
+                        e-to-e rate
                     </span>
                     <span fxFlex="12%" class="client-rates--form__header u-w--100">
                         Consultant rate
@@ -45,8 +45,9 @@
                 <ng-container formArrayName="specialRates" class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                         class="client-rates--form__row u-w--100" [fxHide]="rate.value.hidden && !showHiddenSpecialRates"
-                        *ngFor="let rate of clientSpecailRateForm.specialRates.controls; index as i"
-                        [formArrayName]="i">
+                        *ngFor="let rate of clientSpecailRateForm.specialRates.controls; index as i; first as first"
+                        [formArrayName]="i"
+                        [ngClass]="{'u-bt--0': !first}">
                         <ng-container *ngIf="rate.value.editable">
                             <mat-form-field appearance="fill"
                                 class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
@@ -61,14 +62,14 @@
                                 fxFlex="10%">
                                 <mat-select formControlName="reportingUnit" placeholder="Reporting Unit"
                                     [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                    <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item">
+                                    <mat-option *ngFor="let item of specialRateReportUnits; trackBy: trackById" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
                                 <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="disableOrEnableRateFields($event, i)">
-                                    <mat-option *ngFor="let item of clientSpecialRateSpecifications" [value]="item">
+                                    <mat-option *ngFor="let item of specialRateSpecifications; trackBy: trackById" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
@@ -80,7 +81,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                        <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -93,7 +94,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                        <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -106,7 +107,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                        <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -259,7 +260,7 @@
                         Client fee
                     </span>
                     <span fxFlex="12%" class="client-rates--form__header u-w--100">
-                        emagine fee
+                        e-to-e fee
                     </span>
                     <span fxFlex="12%" class="client-rates--form__header u-w--100">
                         Consultant fee
@@ -271,7 +272,7 @@
                 <ng-container formArrayName="clientFees" class="u-w--100">
                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                         class="client-rates--form__row u-w--100" [fxHide]="fee.value.hidden && !showHiddenSpecialFees"
-                        *ngFor="let fee of clientFeesForm.clientFees.controls; index as i" [formArrayName]="i">
+                        *ngFor="let fee of clientFeesForm.clientFees.controls; index as i; first as first" [formArrayName]="i" [ngClass]="{'u-bt--0': !first}">
                         <ng-container *ngIf="fee.value.editable">
                             <mat-form-field appearance="fill"
                                 class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
@@ -286,7 +287,7 @@
                                 fxFlex="12%">
                                 <mat-select formControlName="feeFrequency" placeholder="Frequency"
                                     [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                    <mat-option *ngFor="let item of clientSpecialFeeFrequencies" [value]="item">
+                                    <mat-option *ngFor="let item of specialFeeFrequencies; trackBy: trackById" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
@@ -295,7 +296,7 @@
                                 fxFlex="13%">
                                 <mat-select formControlName="feeSpecifiedAs" placeholder="Fee specified as"
                                     [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                    <mat-option *ngFor="let item of clientSpecialFeeSpecifications" [value]="item">
+                                    <mat-option *ngFor="let item of specialFeeSpecifications; trackBy: trackById" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
@@ -306,7 +307,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                     <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                        <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -318,7 +319,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                     <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                        <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -330,7 +331,7 @@
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                     <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                        <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>

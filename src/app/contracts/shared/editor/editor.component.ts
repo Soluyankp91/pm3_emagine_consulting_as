@@ -45,6 +45,7 @@ import { NotificationPopupComponent } from './components/notification-popup';
 import { CommentsAbstractService } from './data-access/comments-abstract.service';
 import { VoidEnvelopePopupComponent } from './components/void-envelope-popup/void-envelope-popup.component';
 import { NotificationType, NotifierService } from './services/notifier.service';
+import { ExtraHttpsService } from '../services/extra-https.service';
 
 @Component({
 	standalone: true,
@@ -116,7 +117,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _chd: ChangeDetectorRef,
 		private _notifierService: NotifierService,
 		private _editorObserverService: EditorObserverService,
-		private _agreementServiceProxy: AgreementServiceProxy
+		private _agreementServiceProxy: AgreementServiceProxy,
+		private _extraHttp: ExtraHttpsService
 	) {}
 
 	ngOnInit(): void {

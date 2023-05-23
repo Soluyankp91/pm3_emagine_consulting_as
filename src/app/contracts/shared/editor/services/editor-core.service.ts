@@ -2,6 +2,7 @@ import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import {
 	CommandId,
 	ContextMenuCommandId,
@@ -32,6 +33,8 @@ import { CUSTOM_CONTEXT_MENU_ITEMS, ICustomCommand, IMergeField, IMergeFieldStat
 import { AgreementCommentDto, AgreementTemplateCommentDto } from '../../../../../shared/service-proxies/service-proxies';
 import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/items/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
 
 @Injectable()
 export class EditorCoreService {
@@ -49,12 +52,15 @@ export class EditorCoreService {
 	public onCompareVersion$: EventEmitter<void> = new EventEmitter();
 	public onSelectMergeField$: EventEmitter<void> = new EventEmitter();
 
+	private documentLoaded$: ReplaySubject<void> = new ReplaySubject(1);
+
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
 		private _zone: NgZone,
 		private _compareService: CompareService,
 		private _commentService: CommentService,
-		private clipboard: Clipboard
+		private clipboard: Clipboard,
+		private _dialog: MatDialog
 	) {}
 
 	set loading(state: boolean) {
@@ -109,7 +115,9 @@ export class EditorCoreService {
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
 		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
-		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml);
+		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml, () =>
+			this.documentLoaded$.next()
+		);
 	}
 
 	newDocument() {
@@ -132,7 +140,37 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.editor.mailMergeOptions.setDataSource([fields]);
+		this.documentLoaded$.pipe(take(1)).subscribe(() => {
+			let oldFields = [];
+			for (let i = 0; i < this.editor.document.fields.count; i++) {
+				let field = this.editor.document.fields.getByIndex(i);
+
+				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
+				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
+				if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
+					oldFields.push(key);
+				}
+			}
+			if (!oldFields.length) {
+				this.editor.mailMergeOptions.setDataSource([fields]);
+				return;
+			}
+			let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
+				if (curIndex + 1 !== arr.length) {
+					return acc + `<li>${cur}</li>`;
+				}
+				return acc + `<li>${cur}</li>` + `</ul>`;
+			}, `<ul class='ul-list'>`);
+			this._dialog.open(NotificationDialogComponent, {
+				width: '520px',
+				backdropClass: 'backdrop-modal--wrapper',
+				data: {
+					label: 'Upload contract',
+					message: `Please Save the document again in order to store new merge field values.The values of the following merge fields have changed since last document save:${fieldsHtml}`,
+				},
+			});
+			this.editor.mailMergeOptions.setDataSource([fields]);
+		});
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {

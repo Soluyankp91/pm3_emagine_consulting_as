@@ -3,7 +3,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientsServiceProxy, EnumEntityTypeDto, WorkflowStatus } from 'src/shared/service-proxies/service-proxies';
@@ -44,7 +43,6 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
         injector: Injector,
         private _clientService: ClientsServiceProxy,
         private activatedRoute: ActivatedRoute,
-        private _internalLookupService: InternalLookupService,
         private router: Router
     ) {
         super(injector);
@@ -57,28 +55,12 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
             this.clientId = +params.get('id')!;
             this.getWorkflowTrack();
         });
-        this.getDeliveryTypes();
-        this.getSaleTypes();
+        this._getEnums();
     }
 
-    getDeliveryTypes() {
-        this._internalLookupService.getDeliveryTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.deliveryTypes = result;
-            });
-    }
-
-    getSaleTypes() {
-        this._internalLookupService.getSaleTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.saleTypes = result;
-            });
+    private _getEnums() {
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
     }
 
     ngOnDestroy(): void {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,13 +8,14 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, UpdateClientSpecialFeeDto, UpdateClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientFeesForm, ClientSpecailRateForm } from './client-rates-and-fees.model';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'app-client-rates-and-fees',
     templateUrl: './client-rates-and-fees.component.html',
     styleUrls: ['./client-rates-and-fees.component.scss']
 })
-export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
+export class ClientRatesAndFeesComponent extends AppComponentBase implements OnInit, OnDestroy {
     clientSpecailRateForm: ClientSpecailRateForm;
     clientFeesForm: ClientFeesForm;
 
@@ -22,10 +23,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     currencies: EnumEntityTypeDto[];
     rateUnitTypes: EnumEntityTypeDto[];
-    clientSpecialRateReportUnits: EnumEntityTypeDto[];
-    clientSpecialFeeSpecifications: EnumEntityTypeDto[];
-    clientSpecialRateSpecifications: EnumEntityTypeDto[];
-    clientSpecialFeeFrequencies: EnumEntityTypeDto[];
+    specialRateReportUnits: EnumEntityTypeDto[];
+    specialFeeSpecifications: EnumEntityTypeDto[];
+    specialRateSpecifications: EnumEntityTypeDto[];
+    specialFeeFrequencies: EnumEntityTypeDto[];
     rateCategories: EnumEntityTypeDto[] = [];
 
     showHiddenSpecialRates = false;
@@ -41,12 +42,14 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     private _unsubscribe = new Subject();
     constructor(
+        injector: Injector,
         private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
         private _clientService: ClientsServiceProxy,
         private _activatedSnapshot: ActivatedRoute,
         private _snackBar: MatSnackBar
     ) {
+        super(injector);
         this.clientSpecailRateForm = new ClientSpecailRateForm();
         this.clientFeesForm = new ClientFeesForm();
     }
@@ -57,13 +60,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
         });
-        this.getCurrencies();
-        this.getUnitTypes();
-        this.getSpecialRatesReportingUnits();
-        this.getSpecialFeeSpecifications();
-        this.getSpecialRateSpecifications();
-        this.getSpecialFeeFrequencies();
-
+        this._getEnums();
         this.getClientRates();
         this.getClientFees();
     }
@@ -73,46 +70,13 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         this._unsubscribe.complete();
     }
 
-    getCurrencies() {
-        this._internalLookupService.getCurrencies()
-            .subscribe(response => {
-                this.currencies = response;
-            });
-    }
-
-    getUnitTypes() {
-        this._internalLookupService.getUnitTypes()
-            .subscribe(response => {
-                this.rateUnitTypes = response;
-            });
-    }
-
-    getSpecialRatesReportingUnits() {
-        this._internalLookupService.getSpecialRateReportUnits()
-            .subscribe(response => {
-                this.clientSpecialRateReportUnits = response;
-            });
-    }
-
-    getSpecialFeeSpecifications() {
-        this._internalLookupService.getSpecialFeeSpecifications()
-            .subscribe(response => {
-                this.clientSpecialFeeSpecifications = response;
-            });
-    }
-
-    getSpecialRateSpecifications() {
-        this._internalLookupService.getSpecialRateSpecifications()
-            .subscribe(response => {
-                this.clientSpecialRateSpecifications = response;
-            });
-    }
-
-    getSpecialFeeFrequencies() {
-        this._internalLookupService.getSpecialFeeFrequencies()
-            .subscribe(response => {
-                this.clientSpecialFeeFrequencies = response;
-            });
+    private _getEnums() {
+        this.currencies = this._internalLookupService.getEnumValue('currencies');
+        this.rateUnitTypes = this._internalLookupService.getEnumValue('rateUnitTypes');
+        this.specialRateReportUnits = this._internalLookupService.getEnumValue('specialRateReportUnits');
+        this.specialRateSpecifications = this._internalLookupService.getEnumValue('specialRateSpecifications');
+        this.specialFeeSpecifications = this._internalLookupService.getEnumValue('specialFeeSpecifications');
+        this.specialFeeFrequencies = this._internalLookupService.getEnumValue('specialFeeFrequencies');
     }
 
     getClientRates() {

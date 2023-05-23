@@ -18,6 +18,7 @@ import { AddAddressDialogComponent } from './client-address/add-address-dialog/a
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AddressTableComponent } from './client-address/address-table/address-table.component';
+import { ClientInvoicingComponent } from './client-invoicing/client-invoicing.component';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import { AddressTableComponent } from './client-address/address-table/address-ta
         WfResponsibleComponent,
         ClientAddressComponent,
         AddAddressDialogComponent,
-        AddressTableComponent
+        AddressTableComponent,
+        ClientInvoicingComponent
     ],
     imports: [
         CommonModule,

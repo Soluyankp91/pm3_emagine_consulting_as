@@ -69,7 +69,7 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, OnChan
 	ngDoCheck(): void {
 		if (this.ngControl.control?.touched) {
 			this.formArray.markAllAsTouched();
-			this.formArray.updateValueAndValidity();
+			this.formArray.updateValueAndValidity({ emitEvent: false });
 		}
 	}
 
@@ -115,10 +115,29 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, OnChan
 		signers.forEach((signerDto, index) => {
 			this.formArray.push(
 				new FormGroup({
-					signerType: new FormControl(signerDto.signerType as SignerType, [Validators.required]),
-					signerId: new FormControl(signerDto.signerId as number, [Validators.required]),
-					roleId: new FormControl(signerDto.roleId as number, [Validators.required]),
+					signerType: new FormControl(
+						{
+							value: signerDto.signerType as SignerType,
+							disabled: !!signerDto.agreementSignerId,
+						},
+						[Validators.required]
+					),
+					signerId: new FormControl(
+						{
+							value: signerDto.signerId as number,
+							disabled: !!signerDto.agreementSignerId,
+						},
+						[Validators.required]
+					),
+					roleId: new FormControl(
+						{
+							value: signerDto.roleId as number,
+							disabled: !!signerDto.agreementSignerId,
+						},
+						[Validators.required]
+					),
 					signOrder: new FormControl(signerDto.signOrder as number, [Validators.required]),
+					agreementSignerId: new FormControl(signerDto.agreementSignerId as number),
 				}),
 				{ emitEvent: false }
 			);
@@ -248,7 +267,7 @@ export class SignersTableComponent implements OnInit, OnDestroy, DoCheck, OnChan
 
 	private _subscribeOnFormArray() {
 		this.formArray.valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((value) => {
-			this.onChange(value);
+			this.onChange(this.formArray.getRawValue());
 			if (this.formArray.controls.every((control) => control.valid)) {
 				this.ngControl.control.setErrors(null);
 			} else {

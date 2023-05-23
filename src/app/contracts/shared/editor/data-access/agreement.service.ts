@@ -170,8 +170,12 @@ export class AgreementService implements AgreementAbstractService {
 			);
 	}
 
+	//10.05.2023 delete unused fileContent
+	//TODO delete file content in other places and edit types (wrong types cause errors)
 	saveDraftAsCompleteTemplate(agreementId: number, fileContent: CompleteTemplateDocumentFileDraftDto) {
-		return this._agreementService.completeAgreement(agreementId, false, fileContent).pipe(catchError((error) => of(null)));
+		return this._agreementService
+			.completeAgreement(agreementId, false, {} as CompleteTemplateDocumentFileDraftDto)
+			.pipe(catchError((error) => of(null)));
 	}
 
 	// CUSTOM FLOW

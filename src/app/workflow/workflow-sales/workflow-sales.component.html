@@ -45,7 +45,7 @@
                         <mat-button-toggle-group [disabled]="readOnlyMode"
                             [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}"
                             class="workflow-toggle-buttons u-mb--10" formControlName="terminationTime" required>
-                            <ng-container *ngFor="let item of nonStandartTerminationTimes | keyvalue">
+                            <ng-container *ngFor="let item of terminationTimes | keyvalue">
                                 <ng-container *ngIf="(readOnlyMode && +item.key === salesTerminateConsultantForm.terminationTime?.value) || !readOnlyMode">
                                     <mat-button-toggle [value]="+item.key">
                                         {{ item.value }}

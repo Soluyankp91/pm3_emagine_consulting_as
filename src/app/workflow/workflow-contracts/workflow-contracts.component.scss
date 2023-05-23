@@ -37,7 +37,7 @@
             background-color: $white-color;
 
             &-item {
-                @include fontOpenSans(14px, 700);
+                @include fontOpenSans(14px, 600);
                 line-height: 140% !important;
                 color: #4a4e60;
             }

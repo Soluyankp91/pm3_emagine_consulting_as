@@ -18,6 +18,10 @@ export class WorkflowDataService {
     workflowSideSectionAdded = new EventEmitter<boolean>();
     // Start Clinet period
     startClientPeriodSalesSaved = new EventEmitter<boolean>();
+    contractStepSaved = new EventEmitter<{isDraft: boolean, bypassLegalValidation?: boolean}>();
+    salesStepSaved = new EventEmitter<boolean>();
+    financeStepSaved = new EventEmitter<boolean>();
+    sourcingStepSaved = new EventEmitter<boolean>();
     startClientPeriodContractsSaved = new EventEmitter<{isDraft: boolean, bypassLegalValidation?: boolean}>();
     startClientPeriodFinanceSaved = new EventEmitter<boolean>();
 

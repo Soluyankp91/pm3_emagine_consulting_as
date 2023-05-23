@@ -1,0 +1,16 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.latest-changes {
+    &--header {
+        color: $medium-grey-color;
+        @include fontOpenSans(12px, 600);
+        padding: 9px 16px;
+    }
+    &--row {
+        height: 35px;
+        background-color: $white-color;
+        border: 1px solid $sand-color;
+        padding: 0 16px;
+    }
+}

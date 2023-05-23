@@ -67,6 +67,7 @@ import { EditorObserverService } from '../../../shared/services/editor-observer.
 import { union } from 'lodash';
 import { NotificationDialogComponent } from 'src/app/contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
 import { Location } from '@angular/common';
+import { AgreementSimpleListItemDtoPaginatedList } from 'src/shared/service-proxies/service-proxies';
 
 export enum RecipientDropdowns {
 	SUPPLIER,
@@ -316,11 +317,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		}
 
 		toSend.attachments = this._createAttachments(this.agreementFormGroup.attachments.value);
-		toSend.signers = toSend.signers.map((signer: any) => {
-			const newObj = Object.assign({}, signer);
-			delete newObj.agreementSignerId;
-			return new AgreementDetailsSignerDto(newObj);
-		});
+		toSend.signers = toSend.signers.map((signer: any) => new AgreementDetailsSignerDto(signer));
 
 		if (!this.consultantPeriodId && !this.currentAgreementTemplate?.consultantPeriodId) {
 			toSend.clientPeriodId = this.clientPeriodId ?? this.currentAgreementTemplate?.clientPeriodId;
@@ -340,6 +337,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 					tap((agreement) => {
 						this.agreementFormGroup.attachments.reset();
 						this.preselectedFiles = agreement.attachments as FileUpload[];
+						this.agreementFormGroup.patchValue({
+							signers: agreement.signers,
+						});
 					}),
 					tap((agreement) => {
 						this.isLocked = agreement.isLocked;
@@ -363,6 +363,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				.pipe(
 					tap(() => {
 						this.hideMainSpinner();
+					}),
+					tap(({ agreementId }) => {
+						this._mergeFieldsServiceProxy
+							.format(agreementId, this.agreementFormGroup.nameTemplate.value)
+							.pipe(
+								map((v) => v.value),
+								tap((name) => this._creationTitleService.updateTemplateName(name))
+							)
+							.subscribe();
 					})
 				)
 				.subscribe(({ agreementId }) => {
@@ -442,7 +451,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						startDate: startDate,
 						isSignatureRequired: contractSigners.length ? true : false,
 						endDate: endDate,
-						signers: contractSigners,
+						signers: this.mapSigners(contractSigners),
 					});
 					this.showMainSpinner();
 					return this._apiServiceProxy2
@@ -495,7 +504,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 												isSignatureRequired: contractSigners.length
 													? true
 													: defaultTemplate.isSignatureRequired,
-												signers: contractSigners.length ? contractSigners : [],
+												signers: contractSigners.length ? this.mapSigners(contractSigners) : [],
 												attachments: defaultTemplate.attachments,
 												parentSelectedAttachmentIds: defaultTemplate.attachmentsFromParent
 													? defaultTemplate.attachmentsFromParent
@@ -524,7 +533,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 										startDate: startDate,
 										endDate: clientPeriodSales.noEndDate ? null : endDate,
 										isSignatureRequired: contractSigners.length ? true : false,
-										signers: contractSigners,
+										signers: this.mapSigners(contractSigners),
 									});
 									if (clientPeriodSales.noEndDate) {
 										this.noExpirationDateControl.setValue(true);
@@ -743,13 +752,18 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		this.agreementFormGroup.nameTemplate.valueChanges
 			.pipe(
 				takeUntil(this._unSubscribe$),
+				debounceTime(300),
 				switchMap((name: string) => {
 					if (!name) {
 						return of('');
 					}
-					return this._mergeFieldsServiceProxy
-						.format(this.currentAgreement ? this.currentAgreement.agreementId : undefined, name)
-						.pipe(map((v) => v.value));
+					if (this.currentAgreement && this.currentAgreement.agreementId) {
+						return this._mergeFieldsServiceProxy
+							.format(this.currentAgreement.agreementId, name)
+							.pipe(map((v) => v.value));
+					} else {
+						return of(name);
+					}
 				})
 			)
 			.subscribe((name: string) => {
@@ -1075,7 +1089,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							isSignatureRequired: this.agreementFormGroup.initialValue.signers.length
 								? true
 								: agreementTemplateDetailsDto.isSignatureRequired,
-							signers: this.agreementFormGroup.initialValue.signers,
+							signers: this.mapSigners(this.agreementFormGroup.initialValue.signers),
 							note: agreementTemplateDetailsDto.note,
 							parentSelectedAttachmentIds: agreementTemplateDetailsDto.attachmentsFromParent
 								? agreementTemplateDetailsDto.attachmentsFromParent
@@ -1170,7 +1184,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
 								? agreementDetailsDto.attachmentsFromParent
 								: [],
-							signers: [...this.agreementFormGroup.initialValue.signers, ...agreementDetailsDto.signers],
+							signers: this.mapSigners([
+								...this.agreementFormGroup.initialValue.signers,
+								...agreementDetailsDto.signers,
+							]),
 							selectedInheritedFiles: [],
 						});
 					} else {
@@ -1193,7 +1210,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							parentSelectedAttachmentIds: agreementDetailsDto.attachmentsFromParent
 								? agreementDetailsDto.attachmentsFromParent
 								: [],
-							signers: agreementDetailsDto.signers,
+							signers: this.mapSigners(agreementDetailsDto.signers),
 							selectedInheritedFiles: [],
 						});
 					}
@@ -1203,6 +1220,8 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe();
 	}
 	private _setDuplicateObs() {
+		let onlyNoDraftTemplates = (items: SimpleAgreementTemplatesListItemDto[] | AgreementSimpleListItemDtoPaginatedList[]) =>
+			items.map((item) => (item.hasDraftVersion ? Object.assign({ disabled: true }, item) : item));
 		this.duplicateOrInherit$ = this.creationModeControlReplay$.pipe(
 			takeUntil(this._unSubscribe$),
 			switchMap((creationMode: AgreementCreationMode | null) => {
@@ -1219,7 +1238,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									tap(() => {
 										this.duplicateOptionsLoading$.next(false);
 									}),
-									map((response) => response.items)
+									map((response) => onlyNoDraftTemplates(response.items))
 								);
 							})
 						),
@@ -1250,28 +1269,25 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 							switchMap((search) => {
 								let workflowTemplateType = this.workflowTemplateType$.value;
 								let workflowDataNotUndefined = this.workFlowMetadata && workflowTemplateType !== undefined;
-								let { legalEntityId, salesTypeId, contractType, deliveryTypeId, recipientTypeId } =
+								let { legalEntityId, salesTypeId, contractType, deliveryTypeId, recipientTypeId, clientId } =
 									workflowDataNotUndefined ? this.workFlowMetadata : ({} as typeof this.workFlowMetadata);
-
-								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
-									items.filter((item) => item.hasCurrentVersion);
 
 								let paramsForAllTemplates = [
 									undefined,
 									undefined,
-									legalEntityId,
-									salesTypeId,
-									contractType,
-									deliveryTypeId,
 									undefined,
-									recipientTypeId,
+									undefined,
+									undefined,
+									undefined,
+									clientId,
+									undefined,
 									true,
 									search,
 								] as any[];
 
 								return this._apiServiceProxy2.simpleList2(...paramsForAllTemplates).pipe(
 									tap(() => this.duplicateOptionsLoading$.next(false)),
-									map((res) => onlyCompletedTemplates(res.items))
+									map((res) => onlyNoDraftTemplates(res.items))
 								);
 							})
 						),
@@ -1429,6 +1445,14 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				message: `You\'ve selected “Receive from other party”. By doing so you are permanently discarding any previous document changes and disabling document editor.  Are you sure you want to proceed?`,
 				confirmButtonText: 'Discard',
 			},
+		});
+	}
+
+	private mapSigners(signers: AgreementDetailsSignerDto[]) {
+		return signers.map((signer: any) => {
+			const newObj = Object.assign({}, signer);
+			delete newObj.agreementSignerId;
+			return new AgreementDetailsSignerDto(newObj);
 		});
 	}
 }

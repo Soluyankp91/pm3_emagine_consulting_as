@@ -1,0 +1,24 @@
+<div class="container">
+	<div class="preinfo">
+		<div class="header">{{ header }}</div>
+		<div class="description">
+			{{ description }}
+		</div>
+		<div class="table-header">{{ listDescription }}</div>
+	</div>
+	<ul class="ul-list merge-fields">
+		<ng-container *ngFor="let mergeField of mergeFields">
+			<li class="merge-field">
+				{{ mergeField }}
+			</li>
+		</ng-container>
+	</ul>
+</div>
+<div class="bottom-section">
+	<mat-divider></mat-divider>
+
+	<div mat-dialog-actions class="actions">
+		<button mat-button [mat-dialog-close]="false" class="cancel-button">Close</button>
+		<button mat-raised-button [mat-dialog-close]="true" class="proceed-button">{{ confirmButtonText }}</button>
+	</div>
+</div>

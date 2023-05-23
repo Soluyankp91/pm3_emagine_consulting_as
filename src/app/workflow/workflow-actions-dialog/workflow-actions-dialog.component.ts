@@ -49,7 +49,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
         @Inject(MAT_DIALOG_DATA)
         public data: {
             dialogType: number,
-            consultantData: any,
+            consultantData: AvailableConsultantDto[],
             dialogTitle: string,
             rejectButtonText: string,
             confirmButtonText: string,
@@ -121,8 +121,8 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 });
                 break;
             case WorkflowDiallogAction.Extend:
-                this.consultants.forEach((consultant: AvailableConsultantDto) => {
-                    this.addConsutlantToExtendForm(consultant, this.consultants.length === 1);
+                this.consultants.forEach((consultant: AvailableConsultantDto, index: number) => {
+                    this.addConsutlantToExtendForm(consultant, this.consultants.length === 1, index);
                 });
                 break;
         }
@@ -174,13 +174,20 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
         this.changeWorkflowForm.consultants.push(form);
     }
 
-    addConsutlantToExtendForm(consultant: AvailableConsultantDto, preselectConsultant: boolean) {
+    addConsutlantToExtendForm(consultant: AvailableConsultantDto, preselectConsultant: boolean, index: number) {
         const form = this._fb.group({
-            consulantName: new UntypedFormControl(consultant.consultantName),
-            consultantId: new UntypedFormControl(consultant.consultantId),
-            externalId: new UntypedFormControl(consultant.externalId),
-            extendConsultant: new UntypedFormControl(preselectConsultant)
-        });
+			consulantName: new UntypedFormControl(consultant.consultantName),
+			consultantId: new UntypedFormControl(consultant.consultantId),
+			externalId: new UntypedFormControl(consultant.externalId),
+			extendConsultant: new UntypedFormControl(preselectConsultant),
+			endDate: new UntypedFormControl({
+				value:
+					consultant.lastConsultantPeriodEndDate !== null && consultant.lastConsultantPeriodEndDate !== undefined
+						? consultant.lastConsultantPeriodEndDate.format('DD.MM.YYYY')
+						: 'No end date',
+				disabled: true,
+			}),
+		});
         this.extendWorkflowForm.consultants.push(form);
     }
 
