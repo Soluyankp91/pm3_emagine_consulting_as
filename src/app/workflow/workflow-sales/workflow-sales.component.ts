@@ -425,11 +425,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				);
-				if (result?.salesMainData?.noRemarks) {
-					this.mainDataComponent?.salesMainDataForm.remarks?.disable({
-						emitEvent: false,
-					});
-				}
+				result?.salesMainData?.noRemarks ? this.mainDataComponent?.salesMainDataForm.remarks?.disable() : this.mainDataComponent?.salesMainDataForm.remarks?.enable();
 				if (result?.workflowDocuments?.length) {
 					this.mainDataComponent.mainDocuments?.addExistingFile(result.workflowDocuments);
 				}
