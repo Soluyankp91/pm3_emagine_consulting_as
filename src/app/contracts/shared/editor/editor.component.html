@@ -26,14 +26,19 @@
 					<div class="tmp-version-row">
 						<span class="tmp-version-num">Version {{ templateVersion.version }}</span>
 						<span *ngIf="templateVersion.isDraft" class="label label-info">Draft</span>
-						<span *ngIf="templateVersion.envelopeStatus === envelopeStatuses.Voided" class="label label-voided">Voided</span>
+						<span *ngIf="templateVersion.envelopeStatus === envelopeStatuses.Voided" class="label label-voided"
+							>Voided</span
+						>
 						<span
-							*ngIf="templateVersion.isCurrent && ![envelopeStatuses.Sent, envelopeStatuses.Completed].includes(templateVersion.envelopeStatus)"
-							class="label label-success"
+							*ngIf="
+								templateVersion.isCurrent &&
+								![envelopeStatuses.Sent, envelopeStatuses.Completed, envelopeStatuses.WaitingForOthers].includes(templateVersion.envelopeStatus)
+							"
+							class="label label-primary"
 							>Current</span
 						>
 						<span
-							*ngIf="templateVersion.isCurrent && templateVersion.envelopeStatus === envelopeStatuses.Sent"
+							*ngIf="templateVersion.isCurrent && [envelopeStatuses.Sent, envelopeStatuses.WaitingForOthers].includes(templateVersion.envelopeStatus)"
 							class="label label-warning"
 							>Sent</span
 						>

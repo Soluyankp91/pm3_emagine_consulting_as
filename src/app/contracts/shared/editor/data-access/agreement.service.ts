@@ -10,6 +10,7 @@ import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-prox
 import {
 	AgreementServiceProxy,
 	CompleteTemplateDocumentFileDraftDto,
+	EnvelopeStatus,
 	StringWrappedValueDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
@@ -188,7 +189,7 @@ export class AgreementService implements AgreementAbstractService {
 			.pipe(
 				switchMap(() => {
 					let agreementHasSentVersions = versions.some(
-						(version) => version.envelopeStatus && version.envelopeStatus === 3
+						(version) => version.envelopeStatus && [EnvelopeStatus.Completed, EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus)
 					);
 					return agreementHasSentVersions
 						? this._showTemplateVoidingPopup(templateId)

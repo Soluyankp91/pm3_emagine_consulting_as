@@ -39,6 +39,7 @@ import { NotificationDialogComponent } from '../../components/popUps/notificatio
 @Injectable()
 export class EditorCoreService {
 	private _initialised = false;
+	private _skipTrackChanges = false;
 	afterViewInit$: ReplaySubject<void> = new ReplaySubject();
 	templateAsBase64$ = new BehaviorSubject<string>('');
 	mergeFieldState$ = new BehaviorSubject<IMergeFieldState>(IMergeFieldState.Code);
@@ -94,14 +95,16 @@ export class EditorCoreService {
 		}
 
 		if (!readonly) {
-			if (this._initialised) return;
-			this._customizeRibbonPanel();
-			this._registerDocumentEvents(!exportWithMergedData);
-			this._registerCustomEvents();
-			this._initCompareTab();
-			this._initComments();
-			this._registerCustomContextMenuItems();
-			this._registerCopyMergeFieldCommand();
+			this._runTaskAsyncAndSkipTrackChanges(() => {
+				if (this._initialised) return;
+				this._customizeRibbonPanel();
+				this._registerDocumentEvents(!exportWithMergedData);
+				this._registerCustomEvents();
+				this._initCompareTab();
+				this._initComments();
+				this._registerCustomContextMenuItems();
+				this._registerCopyMergeFieldCommand();
+			});
 			this._initialised = true;
 		} else {
 			this.editor.updateRibbon((ribbon) => {
@@ -194,45 +197,61 @@ export class EditorCoreService {
 	}
 
 	toggleFields(showResult: boolean = true) {
-		this.editor.history.beginTransaction();
-		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
-		if (showResult) {
-			this.showAllFieldResults();
-		} else {
-			this.showAllFieldCodes();
-		}
-		this.editor.history.endTransaction();
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.history.beginTransaction();
+			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+			if (showResult) {
+				this.showAllFieldResults();
+			} else {
+				this.showAllFieldCodes();
+			}
+			this.editor.history.endTransaction();
+		});
 	}
 
 	toggleMergedData() {
-		this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
-		this._handleMergeFieldStateChange(MailMergeTabCommandId.ToggleViewMergedData);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.executeCommand(MailMergeTabCommandId.ToggleViewMergedData);
+			this._handleMergeFieldStateChange(MailMergeTabCommandId.ToggleViewMergedData);
+		});
 	}
 
 	showAllFieldCodes() {
-		this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldCodes);
-		this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldCodes);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldCodes);
+			this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldCodes);
+		});
 	}
 
 	showAllFieldResults() {
-		this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
-		this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldResults);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+			this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldResults);
+		});
 	}
 
 	toggleHighlightView(state: boolean) {
-		this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, state);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this._triggerCustomCommand(ICustomCommand.ToggleCommentMode, state);
+		});
 	}
 
 	deleteComment(commentID: number) {
-		this._commentService.deleteHighlight(commentID);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this._commentService.deleteHighlight(commentID);
+		});
 	}
 
 	applyCommentChanges(commentID: number, text: string) {
-		this._commentService.applyCommentChanges(commentID, text);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this._commentService.applyCommentChanges(commentID, text);
+		});
 	}
 
 	applyNewComment(comment: AgreementCommentDto | AgreementTemplateCommentDto) {
-		this._commentService.applyNewComment(comment);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this._commentService.applyNewComment(comment);
+		});
 	}
 
 	removeUnsavedChanges() {
@@ -302,26 +321,33 @@ export class EditorCoreService {
 
 	private _registerDocumentEvents(showFieldCodes: boolean = false) {
 		this.editor.events.documentLoaded.addHandler(() => {
-			this.afterViewInit$.next();
-			this.afterViewInit$.complete();
-			//this.toggleFields(showFieldCodes);
-			this.removeUnsavedChanges();
-			this.toggleHighlightView(!this.editor.readOnly);
+			this._runTaskAsyncAndSkipTrackChanges(() => {
+				this.afterViewInit$.next();
+				this.afterViewInit$.complete();
+				this.toggleFields(showFieldCodes);
+				this.removeUnsavedChanges();
+				this.toggleHighlightView(!this.editor.readOnly);
+			});
+
 			this.editor.events.contentInserted.addHandler((s, e) => {
-				const regex = /{[^}]*}/g;
-				const text = this.editor.document.getText(e.interval);
-				if (text.length > 1 && regex.test(text)) {
-					this._transformFieldsIntoMergeFields();
-				}
+				this._runTaskAsyncAndSkipTrackChanges(() => {
+					const regex = /{[^}]*}/g;
+					const text = this.editor.document.getText(e.interval);
+					if (text.length > 1 && regex.test(text)) {
+						this._transformFieldsIntoMergeFields();
+					}
+				});
 			});
 		});
 
 		this.editor.events.documentChanged.addHandler(() => {
-			if (!this._compareService.isCompareMode) {
-				this._zone.run(() => {
-					this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
-				});
+			if (this._skipTrackChanges && this._compareService.isCompareMode) {
+				return (this._skipTrackChanges = false);
 			}
+
+			this._zone.run(() => {
+				this.hasUnsavedChanges$.next(this.editor.hasUnsavedChanges);
+			});
 		});
 
 		this.editor.setCommandEnabled(ICustomCommand.FormatPainter, false);
@@ -449,19 +475,23 @@ export class EditorCoreService {
 	}
 
 	private _copyMergeFields() {
-		this.editor.history.beginTransaction();
-		let code = this.editor.document.getText(this.editor.selection.intervals[0]);
-		let cleanedUpText = this._replaceMergeFieldWithRegex(code);
-		this.clipboard.copy(cleanedUpText);
-		this.editor.history.endTransaction();
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.history.beginTransaction();
+			let code = this.editor.document.getText(this.editor.selection.intervals[0]);
+			let cleanedUpText = this._replaceMergeFieldWithRegex(code);
+			this.clipboard.copy(cleanedUpText);
+			this.editor.history.endTransaction();
+		});
 	}
 
 	private _transformMergeFieldToFreeText() {
-		this.editor.history.beginTransaction();
-		let selection = this.editor.selection.intervals[0];
-		let fields = this.editor.document.fields.find(selection);
-		fields.forEach((field) => this._removeMergeField(field));
-		this.editor.history.endTransaction();
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.history.beginTransaction();
+			let selection = this.editor.selection.intervals[0];
+			let fields = this.editor.document.fields.find(selection);
+			fields.forEach((field) => this._removeMergeField(field));
+			this.editor.history.endTransaction();
+		});
 	}
 
 	private _removeMergeField(field: FieldApi) {
@@ -575,5 +605,10 @@ export class EditorCoreService {
 				);
 				break;
 		}
+	}
+
+	private _runTaskAsyncAndSkipTrackChanges(task: () => void): void {
+		this._skipTrackChanges = true;
+		setTimeout(() => task, 0);
 	}
 }

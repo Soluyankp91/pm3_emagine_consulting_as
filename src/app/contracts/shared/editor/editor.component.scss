@@ -329,6 +329,13 @@
 	line-height: 12px;
 	color: white;
 	vertical-align: middle;
+	box-sizing: border-box;
+
+	&-primary {
+		background-color: white;
+		color: $green-color;
+		border: 1px solid $green-color;
+	}
 
 	&-success {
 		background-color: $green-color;
