@@ -249,7 +249,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 			versionMetaData &&
 			versionMetaData.isCurrent &&
 			versionMetaData.envelopeStatus &&
-			[EnvelopeStatus.Sent, EnvelopeStatus.Completed, EnvelopeStatus.WaitingForOthers].includes(versionMetaData.envelopeStatus);
+			[EnvelopeStatus.Sent, EnvelopeStatus.Completed, EnvelopeStatus.WaitingForOthers].includes(
+				versionMetaData.envelopeStatus
+			);
 	}
 
 	handleDocumentReady() {
@@ -481,7 +483,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	saveDraftAsComplete() {
 		this.prepareToProcessDocument();
-		let sentVersion = this.versions.find((version) => version.envelopeStatus && [EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus));
+		let sentVersion = this.versions.find(
+			(version) =>
+				version.envelopeStatus && [EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus)
+		);
 		if (sentVersion) {
 			this._notifierService.notify(NotificationType.EnvelopeBeingVoided, { version: sentVersion.version });
 		} else {
@@ -560,19 +565,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 			singleEmail: singleEmail,
 			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
-		this._agreementServiceProxy
-			.sendEmailEnvelope(input)
-			.pipe(
-				catchError((err) => {
-					this._notifierService.notify(NotificationType.Noop);
-					return throwError(err);
-				})
-			)
-			.subscribe((res) => {
-				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
-				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
-				this.getTemplateVersions(this.templateId);
-			});
+		this._extraHttp.sendEmailEnvelope(input).subscribe((res) => {
+			this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
+			this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
+			this.getTemplateVersions(this.templateId);
+		});
 	}
 
 	private _sendViaDocuSign(
@@ -591,19 +588,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 			emailBody: emailBody,
 			emailSubject: emailSubject,
 		});
-		this._agreementServiceProxy
-			.sendDocusignEnvelope(input)
-			.pipe(
-				catchError((err) => {
-					this._notifierService.notify(NotificationType.Noop);
-					return throwError(err);
-				})
-			)
-			.subscribe(() => {
-				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
-				this.getTemplateVersions(this.templateId);
-				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
-			});
+
+		this._extraHttp.sendDocusignEnvelope(input).subscribe(() => {
+			this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
+			this.getTemplateVersions(this.templateId);
+			this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
+		});
 	}
 
 	cancel() {
