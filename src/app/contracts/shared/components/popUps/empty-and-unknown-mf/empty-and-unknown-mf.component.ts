@@ -10,6 +10,8 @@ export class EmptyAndUnknownMfComponent {
 	header: string;
 	description: string;
 	listDescription: string;
+
+	confirmButton: boolean;
 	confirmButtonText: string;
 	mergeFields: string[];
 
@@ -17,6 +19,7 @@ export class EmptyAndUnknownMfComponent {
 		this.header = matDialogData.header;
 		this.description = matDialogData.description;
 		this.listDescription = matDialogData.listDescription;
+		this.confirmButton = matDialogData.confirmButton;
 		this.confirmButtonText = matDialogData.confirmButtonText;
 		this.mergeFields = matDialogData.mergeFields;
 	}

@@ -19,6 +19,8 @@
 
 	<div mat-dialog-actions class="actions">
 		<button mat-button [mat-dialog-close]="false" class="cancel-button">Close</button>
-		<button mat-raised-button [mat-dialog-close]="true" class="proceed-button">{{ confirmButtonText }}</button>
+		<ng-container *ngIf="confirmButton">
+			<button mat-raised-button [mat-dialog-close]="true" class="proceed-button">{{ confirmButtonText }}</button>
+		</ng-container>
 	</div>
 </div>

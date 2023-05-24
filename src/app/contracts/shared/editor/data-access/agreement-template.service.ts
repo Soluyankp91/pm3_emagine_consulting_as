@@ -16,6 +16,8 @@ import { ConfirmPopupComponent } from '../components/confirm-popup';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
 import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
+import { ExtraHttpsService, MergeFieldsErrors } from '../../services/extra-https.service';
+import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
 
 @Injectable()
 export class AgreementTemplateService implements AgreementAbstractService {
@@ -24,7 +26,8 @@ export class AgreementTemplateService implements AgreementAbstractService {
 	constructor(
 		private httpClient: HttpClient,
 		private _dialog: MatDialog,
-		private _agreementTemplateService: AgreementTemplateServiceProxy
+		private _agreementTemplateService: AgreementTemplateServiceProxy,
+		private _extraHttp: ExtraHttpsService
 	) {}
 
 	getTemplate(templateId: number, isComplete: boolean = true) {
@@ -86,13 +89,33 @@ export class AgreementTemplateService implements AgreementAbstractService {
 
 					return ref.afterClosed().pipe(
 						filter((res) => !!res),
-						switchMap(() =>
-							this.saveDraftAsDraftTemplate(templateId, true, fileContent).pipe(catchError((error) => EMPTY))
-						)
+						switchMap(() => this.saveDraftAsDraftTemplate(templateId, true, fileContent))
 					);
-				} else {
-					return of(error);
 				}
+				if (error.error.code === MergeFieldsErrors.UnknownMergeFields) {
+					return this._dialog
+						.open(EmptyAndUnknownMfComponent, {
+							data: {
+								header: 'Unknown merge fields were detected',
+								description: `The following merge fields are unknown. Delete them or proceed anyway.`,
+								listDescription: 'The list of affected merge fields:',
+								confirmButton: false,
+								mergeFields: error.error.data,
+							},
+							width: '800px',
+							height: '450px',
+							backdropClass: 'backdrop-modal--wrapper',
+							panelClass: 'app-empty-and-unknown-mf',
+						})
+						.afterClosed()
+						.pipe(
+							switchMap(() => {
+								return of(null);
+							})
+						);
+				}
+
+				return of(error);
 			})
 		);
 	}

@@ -18,6 +18,8 @@ import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
 import { VoidEnvelopePopupComponent } from '../components/void-envelope-popup/void-envelope-popup.component';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
+import { MergeFieldsErrors } from '../../services/extra-https.service';
+import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
 
 @Injectable()
 export class AgreementService implements AgreementAbstractService {
@@ -155,17 +157,36 @@ export class AgreementService implements AgreementAbstractService {
 						return ref.afterClosed().pipe(
 							switchMap((res) => {
 								if (res) {
-									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(
-										catchError((error) => EMPTY)
-									);
+									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent);
 								} else {
 									return of(null);
 								}
 							})
 						);
-					} else {
-						return of(error);
 					}
+					if (error.error.code === MergeFieldsErrors.UnknownMergeFields) {
+						return this._dialog
+							.open(EmptyAndUnknownMfComponent, {
+								data: {
+									header: 'Unknown merge fields were detected',
+									description: `The following merge fields are unknown. Delete them or proceed anyway.`,
+									listDescription: 'The list of affected merge fields:',
+									confirmButton: false,
+									mergeFields: error.error.data,
+								},
+								width: '800px',
+								height: '450px',
+								backdropClass: 'backdrop-modal--wrapper',
+								panelClass: 'app-empty-and-unknown-mf',
+							})
+							.afterClosed()
+							.pipe(
+								switchMap(() => {
+									return of(null);
+								})
+							);
+					}
+					return of(error);
 				})
 			);
 	}
