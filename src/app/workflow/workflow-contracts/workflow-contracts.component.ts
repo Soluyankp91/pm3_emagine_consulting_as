@@ -1,8 +1,8 @@
 import { Component, ElementRef, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { EMPTY, Subject } from 'rxjs';
+import { catchError, finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
 	ClientPeriodContractsDataCommandDto,
@@ -60,6 +60,12 @@ import {
 } from './workflow-contracts.model';
 import { ClientRateTypes } from '../workflow-sales/workflow-sales.model';
 import { MapClientAddressList, PackAddressIntoNewDto } from '../workflow-sales/workflow-sales.helpers';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { Overlay } from '@angular/cdk/overlay';
+import { MatDialog } from '@angular/material/dialog';
+import { WorkflowHttpService } from '../shared/services/workflow-http.service';
 
 @Component({
 	selector: 'app-workflow-contracts',
@@ -131,7 +137,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		private _contractSyncService: ContractSyncServiceProxy,
 		private _scrollToService: ScrollToService,
 		private _workflowDocumentsService: WorkflowDocumentServiceProxy,
-		private _purchaseOrderService: PurchaseOrderServiceProxy
+		private _purchaseOrderService: PurchaseOrderServiceProxy,
+        private _overlay: Overlay,
+        private _dialog: MatDialog,
+        private _workflowHttpService: WorkflowHttpService
 	) {
 		super(injector);
 		this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
@@ -475,8 +484,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 	}
 
-	saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean) {
-		let input = this._packClientPeriodData();
+	saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean, skipOptionalLegalContractsValidation: boolean = false) {
+		let input = this._packClientPeriodData(skipOptionalLegalContractsValidation);
 		this.showMainSpinner();
 		if (isDraft) {
 			this._clientPeriodService
@@ -496,17 +505,22 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 					this.getContractStepData();
 				});
 		} else {
-			this._clientPeriodService
-				.editFinish2(this.periodId!, input)
+            this._workflowHttpService.contractStepComplete(this.periodId!, input)
 				.pipe(
-					finalize(() => {
-						this.bypassLegalValidation = false;
+                    finalize(() => {
+                        this.bypassLegalValidation = false;
 						this._tempUpdateDocuments();
-						this.hideMainSpinner();
+                        this.hideMainSpinner();
+                    }),
+					catchError((error: HttpErrorResponse) => {
+						if (error.error.error?.ignoreFlag === 'skipOptionalLegalContractsValidation') {
+                            this._skipLegalContracValidation(error.error.error?.message ,isDraft);
+						}
+						return EMPTY;
 					})
 				)
 				.subscribe(() => {
-					this.validationTriggered = false;
+                    this.validationTriggered = false;
 					this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
 					this._workflowDataService.workflowOverviewUpdated.emit(true);
 					this.getContractStepData();
@@ -531,8 +545,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			});
 	}
 
-	saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean) {
-		let input = this._packConsultantPeriodData();
+	saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean, skipOptionalLegalContractsValidation: boolean = false) {
+		let input = this._packConsultantPeriodData(skipOptionalLegalContractsValidation);
 		this.showMainSpinner();
 		if (isDraft) {
 			this._consultantPeriodService
@@ -918,12 +932,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 	}
 
-	private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
+	private _packClientPeriodData(skipOptionalLegalContractsValidation: boolean = false): ClientPeriodContractsDataCommandDto {
 		let input = new ClientPeriodContractsDataCommandDto();
         // FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
 		// input.bypassLegalValidation = this.bypassLegalValidation;
         input.bypassLegalValidation = true;
         // FIXME: temporary fix
+        input.skipOptionalLegalContractsValidation = skipOptionalLegalContractsValidation;
 		input.workflowDocumentsCommandDto = new Array<WorkflowDocumentCommandDto>();
 		if (this.mainDataComponent.mainDocuments.documents.value?.length) {
 			for (let document of this.mainDataComponent.mainDocuments.documents.value) {
@@ -1025,12 +1040,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.updateConsultantStepAnchors();
 	}
 
-	private _packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
+	private _packConsultantPeriodData(skipOptionalLegalContractsValidation: boolean = false): ConsultantPeriodContractsDataCommandDto {
 		let input = new ConsultantPeriodContractsDataCommandDto();
 		// FIXME: temporary fix as requested in https://prodatadk.atlassian.net/browse/CN-458?focusedCommentId=17473
 		// input.bypassLegalValidation = this.bypassLegalValidation;
-        input.bypassLegalValidation = true;
+        // input.bypassLegalValidation = true;
         // FIXME: temporary fix
+        input.bypassLegalValidation = false;
+        input.skipOptionalLegalContractsValidation = skipOptionalLegalContractsValidation;
 		input = this.mainDataComponent?.contractsMainForm.value;
 		input.mainData = new ContractsMainDataDto();
 		input.mainData.projectTypeId = this.mainDataComponent?.contractsMainForm.projectTypeId?.value;
@@ -1228,6 +1245,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				this.purchaseOrders = result;
 			});
 	}
+
+    private _skipLegalContracValidation(message: string, isDraft: boolean) {
+        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Complete step`,
+			confirmationMessage: `${message} Are you sure you want to proceed?`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Proceed anyway',
+			isNegative: true,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this.saveStartChangeOrExtendClientPeriodContracts(isDraft, true);
+		});
+    }
 
 	get canToggleEditMode() {
 		return this.permissionsForCurrentUser![EPermissions.Edit] && this.isCompleted;
