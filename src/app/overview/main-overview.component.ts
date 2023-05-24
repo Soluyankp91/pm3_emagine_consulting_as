@@ -24,7 +24,7 @@ import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 
-const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.3';
+const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.4';
 
 @Component({
 	selector: 'app-main-overview',
@@ -77,6 +77,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	managerStatus = ManagerStatus;
 	mainOverviewStatuses: MainOverviewStatusDto;
 	filteredMainOverviewStatuses: SelectableStatusesDto[] = [];
+    selectedWFStatuses: SelectableStatusesDto[] = [];
 	overviewViewTypes: { [key: string]: string };
 	cutOffDate = moment();
 	userSelectedStatuses: MainOverviewStatusDto[] = [];
@@ -198,18 +199,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	detectIcon(process: number) {
 		switch (process) {
 			case OverviewFlag.ExtensionExpected:
-				return 'check-circle';
+				return 'extension-expected-icon';
 			case OverviewFlag.Extended:
 			case OverviewFlag.Started:
-				return 'check-circle-fill';
+				return 'extended-or-started-icon';
 			case OverviewFlag.ExpectedToTerminate:
-				return 'cancel';
+				return 'expected-to-terminate-icon';
 			case OverviewFlag.Terminated:
-				return 'cancel-fill';
+				return 'terminated-icon';
 			case OverviewFlag.ExtensionInNegotiation:
-				return 'schedule';
+				return 'negotiation-icon';
 			case OverviewFlag.RequiresAttention:
-				return 'warning';
+				return 'attention-required-icon';
 			default:
 				return '';
 		}
@@ -512,11 +513,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		});
 	}
 
-	changeOverviewStatus(status: SelectableStatusesDto) {
-		status.selected = !status.selected;
-		this.changeViewType(true);
-	}
-
 	statusesTrackBy(index: number, item: SelectableStatusesDto) {
 		return item.id;
 	}
@@ -609,6 +605,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.salesTypeControl.setValue(null, { emitEvent: false });
 		this.deliveryTypesControl.setValue(null, { emitEvent: false });
 		this.marginsControl.setValue(null, { emitEvent: false });
+		this.selectedWFStatuses = [];
 		this.filteredMainOverviewStatuses.forEach((x) => {
 			x.selected = false;
 		});
@@ -631,7 +628,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
 			searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
 			margins: this.marginsControl.value ?? undefined,
-			mainOverviewStatus: this.filteredMainOverviewStatuses.filter((x) => x.selected),
+			// mainOverviewStatus: this.filteredMainOverviewStatuses.filter((x) => x.selected),
+            wfStatuses: this.selectedWFStatuses,
 			cutOffDate: this.cutOffDate,
 			overviewViewTypeControl: this.overviewViewTypeControl.value,
 			viewType: this.viewType.value,
@@ -656,12 +654,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.invoicingEntityControl.setValue(filters?.invoicingEntity, { emitEvent: false });
 			this.workflowFilter.setValue(filters?.searchFilter, { emitEvent: false });
 			this.marginsControl.setValue(filters?.margins, { emitEvent: false });
-			if (filters?.mainOverviewStatus?.length) {
-				filters.mainOverviewStatus.forEach((status: SelectableStatusesDto) => {
-					const index = this.filteredMainOverviewStatuses.findIndex((x) => x.id === status?.id);
-					if (index > -1) {
-						this.filteredMainOverviewStatuses[index].selected = true;
-					}
+            this.selectedWFStatuses = filters.wfStatuses?.length ? filters.wfStatuses : [];
+			if (this.selectedWFStatuses.length) {
+				this.filteredMainOverviewStatuses.forEach((x) => {
+					x.selected = this.selectedWFStatuses.some((item) => item.id === x.id);
 				});
 			}
 			this.cutOffDate = filters?.cutOffDate;
@@ -671,16 +667,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.updateAdvancedFiltersCounter();
 		this.changeViewType();
 	}
-
-	// openMenu(event: any) {
-	// 	event.stopPropagation();
-	// 	this.trigger.openPanel();
-	// }
-
-	// onOpenedMenu() {
-	// 	this.accountManagerFilter.setValue('');
-	// 	this.accountManagerFilter.markAsTouched();
-	// }
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
@@ -692,5 +678,21 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	resetInvoicingEntity() {
 		this.invoicingEntityControl.setValue(null);
+	}
+
+    wfStatusClicked(event: Event, item: SelectableStatusesDto) {
+		event.stopPropagation();
+		this.wfStatusFilterControl(item);
+	}
+
+    wfStatusFilterControl(item: SelectableStatusesDto) {
+		const index = this.selectedWFStatuses.findIndex((x) => x.id === item.id);
+		if (index >= 0) {
+			this.selectedWFStatuses.splice(index, 1);
+		} else {
+			this.selectedWFStatuses.push(item);
+		}
+		item.selected = !item.selected;
+		this.changeViewType(true);
 	}
 }

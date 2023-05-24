@@ -430,9 +430,12 @@ export class AppModule {
 			'cancel-termination',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/cancel-termination.svg')
 		);
-		iconRegistry.addSvgIcon('schedule', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/schedule.svg'));
-		iconRegistry.addSvgIcon('warning', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/warning.svg'));
-
+		iconRegistry.addSvgIcon('negotiation-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/negotiation-icon.svg'));
+		iconRegistry.addSvgIcon('attention-required-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/attention-required-icon.svg'));
+		iconRegistry.addSvgIcon('terminated-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/terminated-icon.svg'));
+		iconRegistry.addSvgIcon('expected-to-terminate-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/expected-to-terminate-icon.svg'));
+		iconRegistry.addSvgIcon('extended-or-started-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/extended-or-started-icon.svg'));
+		iconRegistry.addSvgIcon('extension-expected-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/extension-expected-icon.svg'));
 		iconRegistry.addSvgIcon('notes-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/notes-icon.svg'));
 
 		iconRegistry.addSvgIcon(
