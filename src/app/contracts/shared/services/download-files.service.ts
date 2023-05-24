@@ -61,6 +61,30 @@ export class DownloadFilesService {
 		);
 	}
 
+	agreementAuxiliaryAttachment(agreementAuxiliaryAttachmentId: number): Observable<Blob> {
+		let url = this._baseUrl + `/api/AgreementAttachment/auxiliary/${agreementAuxiliaryAttachmentId}`;
+		let options: any = {
+			observe: 'response',
+			responseType: 'blob',
+			headers: new HttpHeaders({}),
+		};
+		return this._http.request('get', url, options).pipe(
+			catchError((response) => {
+				if (response instanceof HttpResponseBase) {
+					try {
+						return of(response);
+					} catch (e) {
+						return throwError(e);
+					}
+				} else {
+					return throwError(response);
+				}
+			}),
+			filter((val) => !!val),
+			pluck('body')
+		);
+	}
+
 	pdf(agreementId: number): Observable<Blob> {
 		let url = this._baseUrl + `/api/Agreement/${agreementId}/document-file/pdf`;
 		let options: any = {

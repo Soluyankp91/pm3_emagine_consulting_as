@@ -541,8 +541,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 				dialogRef.componentInstance.onSendViaEmail.subscribe((option: any) => {
 					this._sendViaEmail([this.templateId], true, option, result[0].envelopeName);
 				});
-				dialogRef.componentInstance.onSendViaDocuSign.subscribe((option: any) => {
-					this._sendViaDocuSign([this.templateId], true, option, result[0].envelopeName);
+				dialogRef.componentInstance.onSendViaDocuSign.subscribe(({ option, emailBody, emailSubject }) => {
+					this._sendViaDocuSign([this.templateId], true, option, result[0].envelopeName, emailBody, emailSubject);
 				});
 			});
 		}
@@ -561,12 +561,21 @@ export class EditorComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	private _sendViaDocuSign(agreementIds: number[], singleEnvelope: boolean, option: EDocuSignMenuOption, envelopeName: string) {
+	private _sendViaDocuSign(
+		agreementIds: number[],
+		singleEnvelope: boolean,
+		option: EDocuSignMenuOption,
+		envelopeName: string,
+		emailBody: string,
+		emailSubject: string
+	) {
 		this._notifierService.notify(NotificationType.SendingInProgress);
 		let input = new SendDocuSignEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEnvelope: singleEnvelope,
 			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
+			emailBody: emailBody,
+			emailSubject: emailSubject,
 		});
 		this._extraHttp.sendDocusignEnvelope(input).subscribe(() => {
 			this.getTemplateVersions(this.templateId);
