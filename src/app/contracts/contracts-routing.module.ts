@@ -20,6 +20,7 @@ import { CommentsAbstractService } from './shared/editor/data-access/comments-ab
 import { AgreementCommentsService } from './shared/editor/data-access/agreement-comments.service';
 import { AgreementCommentServiceProxy, AgreementTemplateCommentServiceProxy } from '../../shared/service-proxies/service-proxies';
 import { AgreementTemplateCommentsService } from './shared/editor/data-access/agreement-template-comments.service';
+import { ArchiveComponent } from './agreements/archive/archive.component';
 
 const routes: Routes = [
 	{
@@ -88,6 +89,10 @@ const routes: Routes = [
 										useClass: AgreementCommentsService,
 									},
 								],
+							},
+							{
+								path: ':id/archive',
+								component: ArchiveComponent,
 							},
 						],
 					},

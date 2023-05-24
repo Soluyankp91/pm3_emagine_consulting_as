@@ -4,7 +4,8 @@ export type FileUpload = object & {
 	temporaryFileId?: string;
 	agreementAttachmentId?: number;
 	agreementTemplateAttachmentId?: number;
-	name: string;
+	agreementAuxiliaryAttachmentId?: number;
+	name?: string;
 	type?: string;
 };
 export type FileUploadItem = FileUpload & {

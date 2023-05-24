@@ -92,6 +92,8 @@ import { DefaultFileUploaderComponent } from './shared/components/default-file-u
 import { AgreementLogsComponent } from './shared/components/agreement-logs/agreement-logs.component';
 import { OutdatedMergeFieldsComponent } from './shared/components/popUps/outdated-merge-fields/outdated-merge-fields.component';
 import { EmptyAndUnknownMfComponent } from './shared/components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
+import { ArchiveComponent } from './agreements/archive/archive.component';
+import { EmailBodyComponent } from './shared/components/popUps/email-body/email-body.component';
 
 @NgModule({
 	declarations: [
@@ -163,6 +165,8 @@ import { EmptyAndUnknownMfComponent } from './shared/components/popUps/empty-and
 		AgreementLogsComponent,
   OutdatedMergeFieldsComponent,
   EmptyAndUnknownMfComponent,
+  ArchiveComponent,
+  EmailBodyComponent,
 	],
 	imports: [
 		CommonModule,
@@ -414,6 +418,10 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'partially-sign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/partially-sign.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'archive-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/archive-icon.svg')
 		);
 	}
 }

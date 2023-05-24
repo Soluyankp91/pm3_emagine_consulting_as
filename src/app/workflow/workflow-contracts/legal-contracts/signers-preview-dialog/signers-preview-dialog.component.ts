@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { EnvelopePreviewDto, SignerType } from 'src/shared/service-proxies/service-proxies';
 import {
@@ -10,6 +10,8 @@ import {
 	ESignerRole,
 	ESignerTypeName,
 } from './signers-preview-dialog.model';
+import { NotificationDialogComponent } from 'src/app/contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
+import { EmailBodyComponent } from 'src/app/contracts/shared/components/popUps/email-body/email-body.component';
 
 @Component({
 	selector: 'app-signers-preview-dialog',
@@ -17,8 +19,8 @@ import {
 	styleUrls: ['./signers-preview-dialog.component.scss'],
 })
 export class SignersPreviewDialogComponent extends AppComponentBase implements OnInit {
-	@Output() onSendViaEmail = new EventEmitter<EEmailMenuOption>();
-	@Output() onSendViaDocuSign = new EventEmitter<EDocuSignMenuOption>();
+	@Output() onSendViaEmail = new EventEmitter<EEmailMenuOption>(); //EEmailMenuOption
+	@Output() onSendViaDocuSign = new EventEmitter<{ option: EDocuSignMenuOption; emailSubject: string; emailBody: string }>();
 	envelopePreviewList: EnvelopePreviewDto[];
 	signerType = SignerType;
 	signerTypeName = ESignerTypeName;
@@ -32,7 +34,8 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 			envelopePreviewList: EnvelopePreviewDto[];
 			singleEmail: boolean;
 		},
-		private _dialogRef: MatDialogRef<SignersPreviewDialogComponent>
+		private _dialogRef: MatDialogRef<SignersPreviewDialogComponent>,
+		private readonly _dialog: MatDialog
 	) {
 		super(injector);
 		this.envelopePreviewList = data.envelopePreviewList;
@@ -52,8 +55,23 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 	}
 
 	public sendViaDocuSign(option: EDocuSignMenuOption) {
-		this.onSendViaDocuSign.emit(option);
-		this._closeInternal();
+		const dialogRef = this._dialog.open(EmailBodyComponent, {
+			width: '800px',
+			height: '555px',
+			backdropClass: 'backdrop-modal--wrapper',
+			panelClass: 'app-email-body',
+		});
+		dialogRef.afterClosed().subscribe((proceed) => {
+			if (!proceed) {
+				return;
+			}
+			this.onSendViaDocuSign.emit({
+				option: option,
+				emailBody: dialogRef.componentInstance.emailBodyControl.value,
+				emailSubject: dialogRef.componentInstance.templateControl.value.emailSubject,
+			});
+			this._closeInternal();
+		});
 	}
 
 	private _closeInternal() {

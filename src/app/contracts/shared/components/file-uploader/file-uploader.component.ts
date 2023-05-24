@@ -87,6 +87,11 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 				.agreementAttachment(file.agreementAttachmentId)
 				.subscribe((d) => DownloadFile(d as any, file.name));
 		}
+		if (this.idProp === 'agreementAuxiliaryAttachmentId') {
+			this._downloadFilesService
+				.agreementAuxiliaryAttachment(file.agreementAuxiliaryAttachmentId)
+				.subscribe((d) => DownloadFile(d as any, file.name));
+		}
 	}
 
 	onFileAdded($event: EventTarget | null) {

@@ -41,6 +41,7 @@ export class SettingsTabComponent implements OnInit {
 
 	private _setTabs() {
 		let routeParamsArr = getAllRouteParams(this._router.routerState.snapshot.root);
+		const isAgreement = this._router.url.includes('agreements');
 		if (this.isEdit) {
 			let templateId = routeParamsArr[7].id;
 			this.tabs = [
@@ -55,6 +56,13 @@ export class SettingsTabComponent implements OnInit {
 					icon: 'editor-icon',
 				},
 			];
+			if (isAgreement) {
+				this.tabs.push({
+					link: `${templateId}/archive`,
+					label: 'Acrhive',
+					icon: 'archive-icon',
+				});
+			}
 			return;
 		}
 		this.tabs = [
@@ -70,6 +78,14 @@ export class SettingsTabComponent implements OnInit {
 				icon: 'editor-icon',
 			},
 		];
+		if (isAgreement) {
+			this.tabs.push({
+				link: undefined,
+				label: 'Acrhive',
+				disabled: true,
+				icon: 'archive-icon',
+			});
+		}
 	}
 
 	private _subscribeOnReceiveAgreementsFromOtherParty() {
