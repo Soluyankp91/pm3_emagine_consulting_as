@@ -515,7 +515,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 					catchError((error: HttpErrorResponse) => {
 						if (error.error.error?.ignoreFlag === 'skipOptionalLegalContractsValidation') {
                             this._skipLegalContracValidation(error.error.error?.message ,isDraft);
-						}
+						} else {
+                            this._workflowHttpService.handleError(error);
+                        }
 						return EMPTY;
 					})
 				)
