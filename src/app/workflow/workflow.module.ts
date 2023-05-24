@@ -41,6 +41,7 @@ import { CalculatedMarginComponent } from './shared/components/calculated-margin
 import { LatestChangesComponent } from './workflow-overview/latest-changes/latest-changes.component';
 import { WorkflowCreateResolver } from './workflow.resolver';
 import { LegalContractItemComponent } from './workflow-contracts/legal-contracts/legal-contract-item/legal-contract-item.component';
+import { WorkflowHttpService } from './shared/services/workflow-http.service';
 
 @NgModule({
 	declarations: [
@@ -80,7 +81,7 @@ import { LegalContractItemComponent } from './workflow-contracts/legal-contracts
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
-	providers: [WorkflowCreateResolver, WorkflowPeriodResolver],
+	providers: [WorkflowCreateResolver, WorkflowPeriodResolver, WorkflowHttpService],
 })
 export class WorkflowModule {
 	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
