@@ -10,7 +10,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { of, Subject } from 'rxjs';
+import { EMPTY, of, Subject } from 'rxjs';
 import { finalize, takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -164,6 +164,10 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
     getInitialEmagineFrameAgreements(consultantIndex: number) {
+        const pdcInvoicingEntityId = this.consultants.at(consultantIndex).get('pdcPaymentEntityId')?.value;
+        if (!pdcInvoicingEntityId) {
+            return;
+        }
 		this.getEmagineFrameAgreements(consultantIndex, true).subscribe((result) => {
 			this.filteredEmagineFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedEmagineFrameAgreementList[consultantIndex] !== null) {
@@ -220,6 +224,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     getEmagineFrameAgreements(consultantIndex: number, isInitial = false, search: string = '') {
         const pdcInvoicingEntityId = this.consultants.at(consultantIndex).get('pdcPaymentEntityId')?.value;
+        if (!pdcInvoicingEntityId) {
+            return EMPTY;
+        }
 		let dataToSend = {
 			agreementId: undefined,
 			search: search,

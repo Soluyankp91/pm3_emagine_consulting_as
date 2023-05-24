@@ -412,7 +412,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesMainData?.primarySourcer,
 					{ emitEvent: false }
 				);
-				let expirationNotificationIntervals = new Array<number>(...result.salesMainData?.contractExpirationNotificationIntervalIds);
+				let expirationNotificationIntervals = new Array<number>();
+                expirationNotificationIntervals = result.salesMainData?.contractExpirationNotificationIntervalIds;
 				if (
 					result?.salesMainData?.customContractExpirationNotificationDate !== null &&
 					result?.salesMainData?.customContractExpirationNotificationDate !== undefined
