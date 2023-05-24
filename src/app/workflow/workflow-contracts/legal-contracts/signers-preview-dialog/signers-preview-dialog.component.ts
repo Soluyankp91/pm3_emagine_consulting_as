@@ -19,8 +19,8 @@ import { EmailBodyComponent } from 'src/app/contracts/shared/components/popUps/e
 	styleUrls: ['./signers-preview-dialog.component.scss'],
 })
 export class SignersPreviewDialogComponent extends AppComponentBase implements OnInit {
-	@Output() onSendViaEmail = new EventEmitter<EEmailMenuOption>();  //EEmailMenuOption
-	@Output() onSendViaDocuSign = new EventEmitter<{ option: EDocuSignMenuOption, emailSubject: string, emailBody: string}>();
+	@Output() onSendViaEmail = new EventEmitter<EEmailMenuOption>(); //EEmailMenuOption
+	@Output() onSendViaDocuSign = new EventEmitter<{ option: EDocuSignMenuOption; emailSubject: string; emailBody: string }>();
 	envelopePreviewList: EnvelopePreviewDto[];
 	signerType = SignerType;
 	signerTypeName = ESignerTypeName;
@@ -67,7 +67,7 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 			}
 			this.onSendViaDocuSign.emit({
 				option: option,
-				emailBody: dialogRef.componentInstance.templateControl.value.emailBody,
+				emailBody: dialogRef.componentInstance.emailBodyControl.value,
 				emailSubject: dialogRef.componentInstance.templateControl.value.emailSubject,
 			});
 			this._closeInternal();
