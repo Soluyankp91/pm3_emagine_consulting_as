@@ -169,7 +169,7 @@
         <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container"
             [fxHide]="workflowGroups.length === 0 && workflowItems.length === 0" fxFlexFill>
             <div class="gant-chart--group-container">
-                <app-gantt-flat *ngIf="workflowGroups.length && workflowItems.length"
+                <app-gantt-flat *ngIf="workflowGroups.length || workflowItems.length"
                     #gantt
                     [items]="workflowItems"
                     [groups]="workflowGroups"
@@ -199,7 +199,7 @@
         <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container"
             [fxHide]="consultantsGroups.length === 0 && consultantsItems.length === 0" fxFlexFill>
             <div class="gant-chart--group-container">
-                <app-gantt-flat *ngIf="consultantsGroups.length && consultantsItems.length"
+                <app-gantt-flat *ngIf="consultantsGroups.length || consultantsItems.length"
                     #gantt
                     [items]="consultantsItems"
                     [groups]="consultantsGroups"
