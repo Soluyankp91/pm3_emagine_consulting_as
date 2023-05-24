@@ -694,6 +694,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			}
 			if (!projectLine?.differentInvoiceRecipient) {
 				projectLine!.invoiceRecipient = this.contractClientForm.clientInvoicingRecipient?.value;
+				projectLine!.invoiceRecipientAddress = FindClientAddress(
+                    this.contractClientForm.clientInvoicingRecipient?.value?.clientAddresses,
+                    this.contractClientForm.clientInvoicingRecipientAddress?.value?.id
+                );
 			}
 			if (!projectLine?.differentInvoicingReferenceNumber) {
 				projectLine!.invoicingReferenceNumber = this.contractClientForm.invoicingReferenceNumber?.value;
