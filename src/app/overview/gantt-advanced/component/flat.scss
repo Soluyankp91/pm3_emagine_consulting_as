@@ -37,12 +37,8 @@
 
 .main-overview {
     &-icon {
-        line-height: 42px;
-        @media screen and (max-width: 1366px) {
-            transform: scale(0.8);
-            line-height: 44px;
-
-        }
+        width: 18px;
+        height: 18px;
         &-type {
             line-height: 40px;
         }
