@@ -89,29 +89,29 @@ export class EditorCoreService {
 
 	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
 		this.editor.readOnly = readonly;
-
+	 
 		if (exportWithMergedData) {
-			this._customizeDownloadDocument();
+		   this._customizeDownloadDocument();
 		}
-
+	 
 		if (!readonly) {
-			this._runTaskAsyncAndSkipTrackChanges(() => {
-				if (this._initialised) return;
-				this._customizeRibbonPanel();
-				this._registerDocumentEvents(!exportWithMergedData);
-				this._registerCustomEvents();
-				this._initCompareTab();
-				this._initComments();
-				this._registerCustomContextMenuItems();
-				this._registerCopyMergeFieldCommand();
-			});
-			this._initialised = true;
+		   this._runTaskAsyncAndSkipTrackChanges(() => {
+			  if (this._initialised) return;
+			  this._customizeRibbonPanel();
+			  this._registerDocumentEvents(!exportWithMergedData);
+			  this._registerCustomEvents();
+			  this._initCompareTab();
+			  this._initComments();
+			  this._registerCustomContextMenuItems();
+			  this._registerCopyMergeFieldCommand();
+			  this._initialised = true;
+		   });
 		} else {
-			this.editor.updateRibbon((ribbon) => {
-				ribbon.activeTabIndex = 0;
-			});
+		   this.editor.updateRibbon((ribbon) => {
+			  ribbon.activeTabIndex = 0;
+		   });
 		}
-	}
+	 }
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
 		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
@@ -609,6 +609,8 @@ export class EditorCoreService {
 
 	private _runTaskAsyncAndSkipTrackChanges(task: () => void): void {
 		this._skipTrackChanges = true;
-		setTimeout(() => task, 0);
-	}
+		setTimeout(() => {
+		   task();
+		}, 0);
+	 }
 }
