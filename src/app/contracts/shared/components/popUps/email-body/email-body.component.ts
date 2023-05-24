@@ -13,6 +13,8 @@ export class EmailBodyComponent implements OnInit, OnDestroy {
 	emailTemplates$: Observable<TemplateListItem[]>;
 
 	templateControl = new FormControl(null);
+
+	emailSubjectControl = new FormControl(null);
 	emailBodyControl = new FormControl(null);
 
 	private _unsubscribe$ = new Subject();
@@ -27,6 +29,7 @@ export class EmailBodyComponent implements OnInit, OnDestroy {
 	private _subscribeOnFormControl() {
 		this.templateControl.valueChanges.pipe(takeUntil(this._unsubscribe$)).subscribe((template: TemplateListItem) => {
 			this.emailBodyControl.setValue(template.emailBody);
+			this.emailSubjectControl.setValue(template.emailSubject);
 		});
 	}
 

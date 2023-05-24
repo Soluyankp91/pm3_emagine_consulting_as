@@ -68,7 +68,7 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 			this.onSendViaDocuSign.emit({
 				option: option,
 				emailBody: dialogRef.componentInstance.emailBodyControl.value,
-				emailSubject: dialogRef.componentInstance.templateControl.value.emailSubject,
+				emailSubject: dialogRef.componentInstance.emailSubjectControl.value,
 			});
 			this._closeInternal();
 		});

@@ -1,7 +1,7 @@
 <div class="popup-container">
 	<div class="flex-container">
 		<div class="upper-part">
-			<h2 class="popup-header">Send via email</h2>
+			<h2 class="popup-header">Send via DocuSign</h2>
 			<p class="description">You are sending agreements via email. Please review the email message and it’s formatting:</p>
 			<ng-container *ngIf="emailTemplates$ | async as emailTemplates">
 				<mat-form-field appearance="outline" class="template-select">
@@ -12,6 +12,9 @@
 					</mat-select>
 				</mat-form-field>
 			</ng-container>
+			<mat-form-field appearance="outline" >
+				<input matInput [formControl]="emailSubjectControl" placeholder="Subject">
+			</mat-form-field>
 		</div>
 		<mat-form-field appearance="outline" class="textarea-form-field">
 			<mat-label>Email message</mat-label>
