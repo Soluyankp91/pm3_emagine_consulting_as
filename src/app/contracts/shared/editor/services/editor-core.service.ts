@@ -2,7 +2,7 @@ import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, filter } from 'rxjs/operators';
 import {
 	CommandId,
 	ContextMenuCommandId,
@@ -140,7 +140,7 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.documentLoaded$.pipe(take(1)).subscribe(() => {
+		this.documentLoaded$.pipe(filter(() => !!Object.keys(fields).length),take(1)).subscribe(() => {
 			let oldFields = [];
 			for (let i = 0; i < this.editor.document.fields.count; i++) {
 				let field = this.editor.document.fields.getByIndex(i);
