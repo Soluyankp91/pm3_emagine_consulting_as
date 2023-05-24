@@ -19,11 +19,11 @@ import { Router } from '@angular/router';
 import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
 import { LegalContractService } from '../legal-contract.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { filter, finalize, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, finalize, take, takeUntil } from 'rxjs/operators';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { AgreementSignalRArgs, EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
-import { BehaviorSubject, Subject, defer, interval, timer } from 'rxjs';
+import { EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
 	selector: 'legal-contract',
@@ -47,8 +47,6 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
 	eLegalContractSourceIcon = ELegalContractSourceIcon;
 	legalContractPath = EnvelopeProcessingPath;
     agreementInEdit$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
-    intervalInSeconds = 30 * 1000;
-    interval$ = new BehaviorSubject<number>(this.intervalInSeconds);
     private _unsubscribe = new Subject();
 	constructor(
         injector: Injector,
@@ -71,22 +69,15 @@ export class LegalContractItemComponent extends AppComponentBase implements OnIn
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((value: IUpdateData) => {
-				this.agreementInEdit$.next({
-                    isEditing: true,
-                    employees: value.args?.employees
-                });
-                this._setTimer();
+                if (value.args?.employees.length) {
+                    this.agreementInEdit$.next({
+                        isEditing: true,
+                        employees: value.args?.employees
+                    });
+                } else {
+                    this.agreementInEdit$.next(InitialAgreementState);
+                }
 			});
-    }
-
-    private _setTimer() {
-        this.interval$.pipe(
-            takeUntil(this._unsubscribe),
-            switchMap((duration) => timer(duration)),
-            tap(() => {
-                this.agreementInEdit$.next(InitialAgreementState);
-            })
-        ).subscribe();
     }
 
     ngOnDestroy(): void {

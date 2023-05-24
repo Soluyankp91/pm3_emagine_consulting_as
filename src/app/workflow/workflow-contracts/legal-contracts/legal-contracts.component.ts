@@ -32,7 +32,7 @@ import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
 import { AgreementSignalRApiService } from 'src/shared/common/services/agreement-signalr.service';
 import { EAgreementEvents, IUpdateData } from 'src/shared/common/services/agreement-signalr.model';
-import { BehaviorSubject, Subject, timer } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { NotificationDialogComponent } from '../../../contracts/shared/components/popUps/notification-dialog/notification-dialog.component';
 import { EMPTY } from 'rxjs';
 
@@ -49,8 +49,6 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	@Input() readOnlyMode: boolean;
 	clientLegalContractsForm: ClientLegalContractsForm;
     agreementPendingCreation$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
-    intervalInSeconds = 30 * 1000;
-    interval$ = new BehaviorSubject<number>(this.intervalInSeconds);
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -345,28 +343,21 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
         this._agreementSignalRService.triggerAgreementState$
 			.pipe(
 				filter((value: IUpdateData) => {
-					return value.eventName === EAgreementEvents.PeriodAgreementCreationPendingState && (value.args?.periodId === this.clientPeriodId || value.args?.periodId === this.consultantPeriodId);
+					return value.eventName === EAgreementEvents.PeriodAgreementCreationPendingState && (value.args?.periodId === (this.isClientContracts ? this.clientPeriodId : this.consultantPeriodId));
 				}),
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((value: IUpdateData) => {
-                this.agreementPendingCreation$.next({
-                    isCreating: true,
-                    employees: value.args?.employees
-                });
-                this._startTimer();
+                if (value.args?.employees?.length) {
+                    this.agreementPendingCreation$.next({
+                        isCreating: true,
+                        employees: value.args?.employees
+                    });
+                } else {
+                    this.agreementPendingCreation$.next(InitialAgreementState);
+                }
 			});
 	}
-
-    private _startTimer() {
-        this.interval$.pipe(
-            takeUntil(this._unsubscribe),
-            switchMap((duration) => timer(duration)),
-            tap(() => {
-                this.agreementPendingCreation$.next(InitialAgreementState);
-            })
-        ).subscribe();
-    }
 
 	get legalContracts(): UntypedFormArray {
 		return this.clientLegalContractsForm.get('legalContracts') as UntypedFormArray;
