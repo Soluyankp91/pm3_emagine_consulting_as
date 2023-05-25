@@ -9,7 +9,6 @@ import {
 	EnumEntityTypeDto,
 	PurchaseOrderCapDto,
 	PurchaseOrderCapType,
-	PurchaseOrderCurrentContextDto,
 	PurchaseOrderDto,
 	PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
@@ -103,9 +102,6 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 					.pipe(finalize(() => this.hideMainSpinner()))
 					.subscribe((result) => {
 						this._workflowDataService.updatePurchaseOrders.emit(result);
-						result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto(
-							this.existingPo.purchaseOrderCurrentContextData
-						);
 						this.onConfirmed.emit(result);
 						this._closeInternal();
 					});
@@ -115,9 +111,6 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				.purchaseOrderPOST(this.data?.clientPeriodId, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
 				.subscribe((result) => {
-					result.purchaseOrderCurrentContextData = new PurchaseOrderCurrentContextDto({
-						isUserAllowedToEdit: true,
-					});
 					this.onConfirmed.emit(result);
 					this._closeInternal();
 				});
