@@ -123,15 +123,17 @@
                                 </div>
                             </mat-select-trigger>
                             <ng-container *ngFor="let item of recipientAddresses; trackBy: trackById">
-                                <mat-option [value]="item">
-                                    <div class="multilineDropdown-option--column text-truncate-ellipsis">
-                                        <span class="multilineDropdown-option--column-client-name">
-                                            {{item.displayValue }}</span>
-                                        <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                            {{item.addressType}}
-                                        </span>
-                                    </div>
-                                </mat-option>
+                                <ng-container *ngIf="!item.isHidden">
+                                    <mat-option [value]="item">
+                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                            <span class="multilineDropdown-option--column-client-name">
+                                                {{item.displayValue }}</span>
+                                            <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                {{item.addressType}}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
                             </ng-container>
                         </mat-select>
                     </mat-form-field>

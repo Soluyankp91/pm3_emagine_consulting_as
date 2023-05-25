@@ -2,7 +2,7 @@ import { ClientAddressDto } from "src/shared/service-proxies/service-proxies";
 import { IClientAddress } from "./workflow-sales.model";
 
 export function MapClientAddressList(addresses: ClientAddressDto[]): IClientAddress[] {
-    let mappedData: IClientAddress[] = addresses?.filter(add => !add.isHidden)?.map(x => {
+    let mappedData: IClientAddress[] = addresses?.map(x => {
         return PackAddressIntoNewDto(x);
     });
     return mappedData;
@@ -31,7 +31,8 @@ export function PackAddressIntoNewDto(address: ClientAddressDto): IClientAddress
     return {
         id: address.id,
         displayValue: displayAddress,
-        addressType: MapAddressType(address.isInvoiceAddress, address.isWorkplaceAddress, address.isMainAddress)
+        addressType: MapAddressType(address.isInvoiceAddress, address.isWorkplaceAddress, address.isMainAddress),
+        isHidden: address.isHidden
     }
 }
 
