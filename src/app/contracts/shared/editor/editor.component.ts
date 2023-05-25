@@ -455,14 +455,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe((res) => {
-					if (res) {
-						this._updateCommentByNeeds();
-						this.cleanUp();
-						this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
-					} else {
-						this._notifierService.notify(NotificationType.Noop);
-						this.cleanUp();
-					}
+					this._updateCommentByNeeds();
+					this.cleanUp();
+					this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
 				});
 		});
 	}
@@ -559,17 +554,28 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption, envelopeName: string) {
+		this.isLoading = true;
 		this._notifierService.notify(NotificationType.SendingInProgress);
 		let input = new SendEmailEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEmail: singleEmail,
 			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
-		this._extraHttp.sendEmailEnvelope(input).subscribe((res) => {
-			this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
-			this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
-			this.getTemplateVersions(this.templateId);
-		});
+		this._agreementServiceProxy
+			.sendEmailEnvelope(input)
+			.pipe(
+				catchError((err) => {
+					this.isLoading = false;
+					this._notifierService.notify(NotificationType.Noop);
+					return throwError(err);
+				})
+			)
+			.subscribe((res) => {
+				this.isLoading = false;
+				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
+				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
+				this.getTemplateVersions(this.templateId);
+			});
 	}
 
 	private _sendViaDocuSign(
@@ -580,6 +586,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		emailBody: string,
 		emailSubject: string
 	) {
+		this.isLoading = true;
 		this._notifierService.notify(NotificationType.SendingInProgress);
 		let input = new SendDocuSignEnvelopeCommand({
 			agreementIds: agreementIds,
@@ -588,12 +595,21 @@ export class EditorComponent implements OnInit, OnDestroy {
 			emailBody: emailBody,
 			emailSubject: emailSubject,
 		});
-
-		this._extraHttp.sendDocusignEnvelope(input).subscribe(() => {
-			this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
-			this.getTemplateVersions(this.templateId);
-			this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
-		});
+		this._agreementServiceProxy
+			.sendDocusignEnvelope(input)
+			.pipe(
+				catchError((err) => {
+					this.isLoading = false;
+					this._notifierService.notify(NotificationType.Noop);
+					return throwError(err);
+				})
+			)
+			.subscribe(() => {
+				this.isLoading = false;
+				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
+				this.getTemplateVersions(this.templateId);
+				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
+			});
 	}
 
 	cancel() {
