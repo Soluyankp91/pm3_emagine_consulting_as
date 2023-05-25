@@ -298,7 +298,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 this.directClientId = result.directClientId;
                 this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
                 if (result.directClientId) {
-                    this.purchaseOrder.getPurchaseOrders([], result.directClientId, this.periodId);
+                    this.purchaseOrder.getPurchaseOrdersForOverview(this.workflowId);
                 }
                 this._setWFProgress();
             })
