@@ -28,7 +28,6 @@ import {
 	StepDto,
 	StepType,
 	WorkflowDocumentServiceProxy,
-	WorkflowHistoryDto,
 	WorkflowProcessDto,
 	WorkflowProcessType,
 	WorkflowServiceProxy,
@@ -67,7 +66,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
 	workflowProcesses: WorkflowProcessDto[] = [];
 	workflowProcessType = WorkflowProcessType;
-	workflowHistory: WorkflowHistoryDto[] = [];
 
 	overviewDocuments: IWFOverviewDocuments[] = [];
 	stepTypes = StepType;
