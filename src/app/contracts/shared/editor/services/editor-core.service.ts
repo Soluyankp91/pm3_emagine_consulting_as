@@ -18,6 +18,7 @@ import {
 	RibbonSubMenuItem,
 	RibbonTabType,
 	RichEdit,
+	SubDocumentType,
 } from 'devexpress-richedit';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
@@ -92,6 +93,12 @@ export class EditorCoreService {
 	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
 		this.editor.readOnly = readonly;
 
+		if (!this._initialised) {
+			this._registerCustomEvents();
+			this._registerCustomContextMenuItems();
+			this._registerCopyMergeFieldCommand();
+		}
+
 		if (exportWithMergedData) {
 			this._customizeDownloadDocument();
 		}
@@ -101,11 +108,8 @@ export class EditorCoreService {
 				if (this._initialised) return;
 				this._customizeRibbonPanel();
 				this._registerDocumentEvents(!exportWithMergedData);
-				this._registerCustomEvents();
 				this._initCompareTab();
 				this._initComments();
-				this._registerCustomContextMenuItems();
-				this._registerCopyMergeFieldCommand();
 				this._initialised = true;
 			});
 		} else {
@@ -196,16 +200,17 @@ export class EditorCoreService {
 
 	insertMergeField(field: string, insertBreak: boolean = false) {
 		const position = this.editor.selection.active;
+		let activeSubDocument = this.editor.selection.activeSubDocument;
 		if (insertBreak) {
-			this.editor.document.insertText(position, ' ');
+			activeSubDocument.insertText(position, ' ');
 		}
-		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
 
-		const text = this.editor.document.getText(_field.codeInterval);
+		const _field = activeSubDocument.fields.createMergeField(position, field);
+		const text = activeSubDocument.getText(_field.codeInterval);
 
 		const replaced = text.replace(/["]+/g, '');
-		this.editor.document.deleteText(_field.codeInterval);
-		this.editor.document.insertText(_field.codeInterval.start, replaced);
+		activeSubDocument.deleteText(_field.codeInterval);
+		activeSubDocument.insertText(_field.codeInterval.start, replaced);
 	}
 
 	getSyncedCommentState() {
@@ -341,17 +346,18 @@ export class EditorCoreService {
 
 			this.editor.events.contentInserted.addHandler((s, e) => {
 				const regex = /{[^}]*}/g;
-				const text = this.editor.document.getText(e.interval);
+				const activeDocument = this.editor.selection.activeSubDocument;
+
+				const text = activeDocument.getText(e.interval);
 				if (text.length > 1 && regex.test(text)) {
 					this._transformFieldsIntoMergeFields();
-					let fields = this.editor.document.fields.find(this.editor.document.interval);
-					if (fields.length) {
-						fields.forEach((field) => {
-							const text = this.editor.document.getText(field.codeInterval);
-							const replaced = text.replace(/["]+/g, '');
-							this.editor.document.deleteText(field.codeInterval);
-							this.editor.document.insertText(field.codeInterval.start, replaced);
-						});
+					let count = activeDocument.fields.count;
+					for (let i = 0; i < count; i++) {
+						let field = activeDocument.fields.getByIndex(i);
+						const text = activeDocument.getText(field.codeInterval);
+						const replaced = text.replace(/["]+/g, '');
+						activeDocument.deleteText(field.codeInterval);
+						activeDocument.insertText(field.codeInterval.start, replaced);
 					}
 				}
 			});
