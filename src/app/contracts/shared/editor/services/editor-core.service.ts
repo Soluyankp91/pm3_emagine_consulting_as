@@ -35,7 +35,7 @@ import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/items/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class EditorCoreService {
