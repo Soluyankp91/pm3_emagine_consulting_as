@@ -30148,11 +30148,13 @@ export interface IHistoryFilterNamesDto {
 
 export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     actionName?: string | undefined;
-    entityNameWithKeyValue?: string | undefined;
-    entityKeyFull?: string | undefined;
+    entityName?: string | undefined;
+    entityKey?: { [key: string]: string; } | undefined;
     propertyName?: string | undefined;
-    oldValue?: string | undefined;
-    newValue?: string | undefined;
+    oldValueId?: string | undefined;
+    oldValueDisplay?: string | undefined;
+    newValueId?: string | undefined;
+    newValueDisplay?: string | undefined;
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
@@ -30180,11 +30182,19 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     init(_data?: any) {
         if (_data) {
             this.actionName = _data["actionName"];
-            this.entityNameWithKeyValue = _data["entityNameWithKeyValue"];
-            this.entityKeyFull = _data["entityKeyFull"];
+            this.entityName = _data["entityName"];
+            if (_data["entityKey"]) {
+                this.entityKey = {} as any;
+                for (let key in _data["entityKey"]) {
+                    if (_data["entityKey"].hasOwnProperty(key))
+                        (<any>this.entityKey)![key] = _data["entityKey"][key];
+                }
+            }
             this.propertyName = _data["propertyName"];
-            this.oldValue = _data["oldValue"];
-            this.newValue = _data["newValue"];
+            this.oldValueId = _data["oldValueId"];
+            this.oldValueDisplay = _data["oldValueDisplay"];
+            this.newValueId = _data["newValueId"];
+            this.newValueDisplay = _data["newValueDisplay"];
             this.workflowId = _data["workflowId"];
             this.clientPeriodId = _data["clientPeriodId"];
             this.clientPeriodDisplayId = _data["clientPeriodDisplayId"];
@@ -30212,11 +30222,19 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["actionName"] = this.actionName;
-        data["entityNameWithKeyValue"] = this.entityNameWithKeyValue;
-        data["entityKeyFull"] = this.entityKeyFull;
+        data["entityName"] = this.entityName;
+        if (this.entityKey) {
+            data["entityKey"] = {};
+            for (let key in this.entityKey) {
+                if (this.entityKey.hasOwnProperty(key))
+                    (<any>data["entityKey"])[key] = this.entityKey[key];
+            }
+        }
         data["propertyName"] = this.propertyName;
-        data["oldValue"] = this.oldValue;
-        data["newValue"] = this.newValue;
+        data["oldValueId"] = this.oldValueId;
+        data["oldValueDisplay"] = this.oldValueDisplay;
+        data["newValueId"] = this.newValueId;
+        data["newValueDisplay"] = this.newValueDisplay;
         data["workflowId"] = this.workflowId;
         data["clientPeriodId"] = this.clientPeriodId;
         data["clientPeriodDisplayId"] = this.clientPeriodDisplayId;
@@ -30237,11 +30255,13 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
 export interface IHistoryPropertiesDto {
     actionName?: string | undefined;
-    entityNameWithKeyValue?: string | undefined;
-    entityKeyFull?: string | undefined;
+    entityName?: string | undefined;
+    entityKey?: { [key: string]: string; } | undefined;
     propertyName?: string | undefined;
-    oldValue?: string | undefined;
-    newValue?: string | undefined;
+    oldValueId?: string | undefined;
+    oldValueDisplay?: string | undefined;
+    newValueId?: string | undefined;
+    newValueDisplay?: string | undefined;
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
@@ -34147,6 +34167,7 @@ export interface IStartNewWorkflowInputDto {
 }
 
 export class StepDto implements IStepDto {
+    id?: number | undefined;
     typeId?: StepType;
     readonly name?: string | undefined;
     isFakeActiveStep?: boolean;
@@ -34165,6 +34186,7 @@ export class StepDto implements IStepDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.typeId = _data["typeId"];
             (<any>this).name = _data["name"];
             this.isFakeActiveStep = _data["isFakeActiveStep"];
@@ -34189,6 +34211,7 @@ export class StepDto implements IStepDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["typeId"] = this.typeId;
         data["name"] = this.name;
         data["isFakeActiveStep"] = this.isFakeActiveStep;
@@ -34206,6 +34229,7 @@ export class StepDto implements IStepDto {
 }
 
 export interface IStepDto {
+    id?: number | undefined;
     typeId?: StepType;
     name?: string | undefined;
     isFakeActiveStep?: boolean;
