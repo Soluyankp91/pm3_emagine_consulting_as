@@ -599,8 +599,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 			agreementIds: agreementIds,
 			singleEnvelope: singleEnvelope,
 			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
-			emailBody: emailBody,
-			emailSubject: emailSubject,
+			emailBody: emailBody || undefined,
+			emailSubject: emailSubject || undefined,
 		});
 		this._agreementServiceProxy
 			.sendDocusignEnvelope(input)
