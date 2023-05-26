@@ -46,6 +46,7 @@ import { CommentsAbstractService } from './data-access/comments-abstract.service
 import { VoidEnvelopePopupComponent } from './components/void-envelope-popup/void-envelope-popup.component';
 import { NotificationType, NotifierService } from './services/notifier.service';
 import { ExtraHttpsService } from '../services/extra-https.service';
+import { CreationTitleService } from '../services/creation-title.service';
 
 @Component({
 	standalone: true,
@@ -118,7 +119,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _notifierService: NotifierService,
 		private _editorObserverService: EditorObserverService,
 		private _agreementServiceProxy: AgreementServiceProxy,
-		private _extraHttp: ExtraHttpsService
+		private _extraHttp: ExtraHttpsService,
+		private _creationTitleService: CreationTitleService
 	) {}
 
 	ngOnInit(): void {
@@ -156,6 +158,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 				}
 			}
 		});
+
+		this._agreementService
+			.getAgreementName(this.templateId)
+			.pipe(tap((name) => this._creationTitleService.updateTemplateName(name)))
+			.subscribe();
 	}
 
 	ngOnDestroy(): void {

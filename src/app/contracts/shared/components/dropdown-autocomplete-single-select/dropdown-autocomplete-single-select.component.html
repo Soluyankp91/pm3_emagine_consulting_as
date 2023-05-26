@@ -7,6 +7,7 @@
 		[formControl]="inputControl"
 		[matAutocomplete]="auto"
 		[errorStateMatcher]="matcher"
+		[maxlength]="maxLength"
 		(blur)="onFocusOut()" />
 	<ng-container
 		*ngIf="selectedOptionTemplate && selectedItem && (control.valid || control.disabled)"

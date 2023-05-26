@@ -7,6 +7,7 @@ import {
 import { IDocumentItem, IDocumentVersion } from '../entities';
 
 export abstract class AgreementAbstractService {
+	abstract getAgreementName(id: number): Observable<string>;
 	abstract getTemplate(id: number, isComplete?: boolean): Observable<Blob>;
 	abstract getTemplateByVersion(id: number, version: number): Observable<Blob>;
 	abstract saveCurrentAsDraftTemplate(id: number, force: boolean, fileContent: StringWrappedValueDto): Observable<any>;

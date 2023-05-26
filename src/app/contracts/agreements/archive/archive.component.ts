@@ -11,6 +11,7 @@ import {
 	AgreementServiceProxy,
 	SaveAgreementAuxiliaryDto,
 } from 'src/shared/service-proxies/service-proxies';
+import { CreationTitleService } from '../../shared/services/creation-title.service';
 
 @Component({
 	selector: 'app-archive',
@@ -36,6 +37,8 @@ export class ArchiveComponent extends AppComponentBase implements OnInit {
 		private readonly _agreementServiceProxy: AgreementServiceProxy,
 		private readonly _route: ActivatedRoute,
 		private readonly _location: Location,
+		private readonly _agreementService: AgreementServiceProxy,
+		private readonly _creationTitleService: CreationTitleService,
 		private readonly _injector: Injector
 	) {
 		super(_injector);
@@ -53,6 +56,14 @@ export class ArchiveComponent extends AppComponentBase implements OnInit {
 			})
 		);
 		this.loadAttachments$.next();
+
+		this._agreementService
+			.preview(this.currentAgreement)
+			.pipe(
+				map((agreement) => agreement.name),
+				tap((name) => this._creationTitleService.updateTemplateName(name))
+			)
+			.subscribe();
 	}
 
 	saveAuxiliaryAttachment() {

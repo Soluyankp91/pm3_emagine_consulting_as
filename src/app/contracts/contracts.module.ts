@@ -43,7 +43,6 @@ import { CreationComponent } from './client-specific-templates/edit-template/set
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
-import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
 import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled.component';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
@@ -193,7 +192,6 @@ import { EmailBodyComponent } from './shared/components/popUps/email-body/email-
 		MergeFieldsServiceProxy,
 		AgreementTemplateAttachmentServiceProxy,
 		AgreementAttachmentServiceProxy,
-		CreationTitleService,
 		DownloadFilesService,
 		ExtraHttpsService,
 	],
