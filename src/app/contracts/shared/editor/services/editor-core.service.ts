@@ -1,8 +1,8 @@
 import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { take, filter, tap } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { take, filter } from 'rxjs/operators';
 import {
 	CommandId,
 	ContextMenuCommandId,
@@ -18,7 +18,6 @@ import {
 	RibbonSubMenuItem,
 	RibbonTabType,
 	RichEdit,
-	SubDocumentType,
 } from 'devexpress-richedit';
 import { IntervalApi } from 'devexpress-richedit/lib/model-api/interval';
 import { DocumentFormatApi } from 'devexpress-richedit/lib/model-api/formats/enum';
@@ -37,7 +36,6 @@ import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/ite
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
 import { Router } from '@angular/router';
-import { RichEditDocumentBaseApi } from 'devexpress-richedit/lib/base-api/document';
 
 @Injectable()
 export class EditorCoreService {
@@ -55,8 +53,7 @@ export class EditorCoreService {
 	public onCompareVersion$: EventEmitter<void> = new EventEmitter();
 	public onSelectMergeField$: EventEmitter<void> = new EventEmitter();
 
-	private documentLoaded$$: ReplaySubject<void> = new ReplaySubject(1);
-	private documentLoaded$: Observable<void>;
+	private documentLoaded$: ReplaySubject<void> = new ReplaySubject(1);
 
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
@@ -94,12 +91,6 @@ export class EditorCoreService {
 
 	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
 		this.editor.readOnly = readonly;
-		
-		if (!this._initialised) {
-			this._registerCustomEvents();
-			this._registerCustomContextMenuItems();
-			this._registerCopyMergeFieldCommand();
-		}
 
 		if (exportWithMergedData) {
 			this._customizeDownloadDocument();
@@ -110,8 +101,11 @@ export class EditorCoreService {
 				if (this._initialised) return;
 				this._customizeRibbonPanel();
 				this._registerDocumentEvents(!exportWithMergedData);
+				this._registerCustomEvents();
 				this._initCompareTab();
 				this._initComments();
+				this._registerCustomContextMenuItems();
+				this._registerCopyMergeFieldCommand();
 				this._initialised = true;
 			});
 		} else {
@@ -124,7 +118,7 @@ export class EditorCoreService {
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
 		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
 		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml, () =>
-			this.documentLoaded$$.next()
+			this.documentLoaded$.next()
 		);
 	}
 
@@ -148,11 +142,13 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.documentLoaded$ = this.documentLoaded$$.pipe(
-			filter(() => !!Object.keys(fields).length),
-			take(1),
-			tap(() => {
-				const isAgreement = this._router.url.includes('agreement');
+		const isAgreement = this._router.url.includes('agreement');
+		this.documentLoaded$
+			.pipe(
+				filter(() => !!Object.keys(fields).length),
+				take(1)
+			)
+			.subscribe(() => {
 				if (isAgreement) {
 					let oldFields = [];
 					for (let i = 0; i < this.editor.document.fields.count; i++) {
@@ -190,8 +186,7 @@ export class EditorCoreService {
 				this.editor.mailMergeOptions.setDataSource([fields], () => {
 					this._skipTrackChanges = false;
 				});
-			})
-		);
+			});
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {
@@ -201,17 +196,16 @@ export class EditorCoreService {
 
 	insertMergeField(field: string, insertBreak: boolean = false) {
 		const position = this.editor.selection.active;
-		let activeSubDocument = this.editor.selection.activeSubDocument;
 		if (insertBreak) {
-			activeSubDocument.insertText(position, ' ');
+			this.editor.document.insertText(position, ' ');
 		}
+		const _field = this.editor.selection.activeSubDocument.fields.createMergeField(position, field);
 
-		const _field = activeSubDocument.fields.createMergeField(position, field);
-		const text = activeSubDocument.getText(_field.codeInterval);
+		const text = this.editor.document.getText(_field.codeInterval);
 
 		const replaced = text.replace(/["]+/g, '');
-		activeSubDocument.deleteText(_field.codeInterval);
-		activeSubDocument.insertText(_field.codeInterval.start, replaced);
+		this.editor.document.deleteText(_field.codeInterval);
+		this.editor.document.insertText(_field.codeInterval.start, replaced);
 	}
 
 	getSyncedCommentState() {
@@ -335,9 +329,8 @@ export class EditorCoreService {
 		});
 	}
 
-	private  _registerDocumentEvents(showFieldCodes: boolean = false) {
-		this.editor.events.documentLoaded.addHandler(async () => {
-			await this.documentLoaded$.toPromise();
+	private _registerDocumentEvents(showFieldCodes: boolean = false) {
+		this.editor.events.documentLoaded.addHandler(() => {
 			this._runTaskAsyncAndSkipTrackChanges(() => {
 				this.afterViewInit$.next();
 				this.afterViewInit$.complete();
@@ -348,18 +341,17 @@ export class EditorCoreService {
 
 			this.editor.events.contentInserted.addHandler((s, e) => {
 				const regex = /{[^}]*}/g;
-				const activeDocument = this.editor.selection.activeSubDocument;
-
-				const text = activeDocument.getText(e.interval);
+				const text = this.editor.document.getText(e.interval);
 				if (text.length > 1 && regex.test(text)) {
 					this._transformFieldsIntoMergeFields();
-					let count = activeDocument.fields.count;
-					for (let i = 0; i < count; i++) {
-						let field = activeDocument.fields.getByIndex(i);
-						const text = activeDocument.getText(field.codeInterval);
-						const replaced = text.replace(/["]+/g, '');
-						activeDocument.deleteText(field.codeInterval);
-						activeDocument.insertText(field.codeInterval.start, replaced);
+					let fields = this.editor.document.fields.find(this.editor.document.interval);
+					if (fields.length) {
+						fields.forEach((field) => {
+							const text = this.editor.document.getText(field.codeInterval);
+							const replaced = text.replace(/["]+/g, '');
+							this.editor.document.deleteText(field.codeInterval);
+							this.editor.document.insertText(field.codeInterval.start, replaced);
+						});
 					}
 				}
 			});
