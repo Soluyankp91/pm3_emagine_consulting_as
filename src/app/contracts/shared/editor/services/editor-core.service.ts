@@ -1,8 +1,8 @@
 import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { take, filter, tap } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { take, filter } from 'rxjs/operators';
 import {
 	CommandId,
 	ContextMenuCommandId,
@@ -37,7 +37,6 @@ import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/ite
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
 import { Router } from '@angular/router';
-import { RichEditDocumentBaseApi } from 'devexpress-richedit/lib/base-api/document';
 
 @Injectable()
 export class EditorCoreService {
@@ -55,8 +54,7 @@ export class EditorCoreService {
 	public onCompareVersion$: EventEmitter<void> = new EventEmitter();
 	public onSelectMergeField$: EventEmitter<void> = new EventEmitter();
 
-	private documentLoaded$$: ReplaySubject<void> = new ReplaySubject(1);
-	private documentLoaded$: Observable<void>;
+	private documentLoaded$: ReplaySubject<void> = new ReplaySubject(1);
 
 	constructor(
 		@Inject(RICH_EDITOR_OPTIONS) private options: Options,
@@ -94,7 +92,7 @@ export class EditorCoreService {
 
 	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
 		this.editor.readOnly = readonly;
-		
+
 		if (!this._initialised) {
 			this._registerCustomEvents();
 			this._registerCustomContextMenuItems();
@@ -124,7 +122,7 @@ export class EditorCoreService {
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
 		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
 		this.editor.openDocument(template, doc_name ?? 'emagine_doc', DocumentFormatApi.OpenXml, () =>
-			this.documentLoaded$$.next()
+			this.documentLoaded$.next()
 		);
 	}
 
@@ -148,11 +146,13 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.documentLoaded$ = this.documentLoaded$$.pipe(
-			filter(() => !!Object.keys(fields).length),
-			take(1),
-			tap(() => {
-				const isAgreement = this._router.url.includes('agreement');
+		const isAgreement = this._router.url.includes('agreement');
+		this.documentLoaded$
+			.pipe(
+				filter(() => !!Object.keys(fields).length),
+				take(1)
+			)
+			.subscribe(() => {
 				if (isAgreement) {
 					let oldFields = [];
 					for (let i = 0; i < this.editor.document.fields.count; i++) {
@@ -190,8 +190,7 @@ export class EditorCoreService {
 				this.editor.mailMergeOptions.setDataSource([fields], () => {
 					this._skipTrackChanges = false;
 				});
-			})
-		);
+			});
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {
@@ -335,9 +334,8 @@ export class EditorCoreService {
 		});
 	}
 
-	private  _registerDocumentEvents(showFieldCodes: boolean = false) {
-		this.editor.events.documentLoaded.addHandler(async () => {
-			await this.documentLoaded$.toPromise();
+	private _registerDocumentEvents(showFieldCodes: boolean = false) {
+		this.editor.events.documentLoaded.addHandler(() => {
 			this._runTaskAsyncAndSkipTrackChanges(() => {
 				this.afterViewInit$.next();
 				this.afterViewInit$.complete();
