@@ -53,8 +53,10 @@
                     Changed object
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row">
-                    <span class="text-truncate-ellipsis" [matTooltip]="row.entityNameWithKeyValue ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                        {{row.entityNameWithKeyValue ?? '-'}}
+                    <span class="text-truncate-ellipsis" [matTooltip]="row.entityTooltip" matTooltipClass="white-tooltip">
+                        <ng-container *ngIf="row.entityName?.length && row.entityKey?.length; else noDataTemplate">
+                            {{row.entityName + ' ' + row.entityKey}}
+                        </ng-container>
                     </span>
                 </mat-cell>
             </ng-container>

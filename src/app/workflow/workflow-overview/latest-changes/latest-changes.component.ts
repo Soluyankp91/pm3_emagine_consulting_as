@@ -13,6 +13,7 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { ILatesChangesPayload, ITableData } from './latest-changes.model';
 import { PageEvent } from '@angular/material/paginator';
+import { MapLatestChanges } from './latest-changes.helper';
 
 @Component({
 	selector: 'latest-changes',
@@ -24,7 +25,17 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 	workflowId: string;
 	filters$: Observable<HistoryFilterNamesDto[]>;
 	filteredEvents$: Observable<HistoryFilterNamesDto[]>;
-	displayColumns = ['changedDate', 'actionName', 'changedObject', 'changedField', 'oldValue', 'newValue', 'periodID', 'consultant', 'by'];
+	displayColumns = [
+		'changedDate',
+		'actionName',
+		'changedObject',
+		'changedField',
+		'oldValue',
+		'newValue',
+		'periodID',
+		'consultant',
+		'by',
+	];
 	isLoading = false;
 	pageIndex = 1;
 	pageSize = AppConsts.grid.defaultPageSize;
@@ -32,7 +43,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 	totalCount: number | undefined = 0;
 	sorting = '';
 	tableData: ITableData;
-    eWorkflowProcessType = WorkflowProcessType;
+	eWorkflowProcessType = WorkflowProcessType;
 	private _unsubscribe = new Subject();
 	constructor(injector: Injector, private _activeRoute: ActivatedRoute, private readonly _historyService: HistoryServiceProxy) {
 		super(injector);
@@ -61,7 +72,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 			.subscribe((result) => {
 				this.filteredEvents$ = result;
 			});
-        this.filter.setValue('');
+		this.filter.setValue('');
 	}
 
 	getLatestChanges() {
@@ -80,7 +91,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 				finalize(() => (this.isLoading = false)),
 				map((value: HistoryPropertiesDtoPaginatedList) => {
 					const tableData: ITableData = {
-						items: value.items,
+						items: MapLatestChanges(value.items),
 						pageIndex: value.pageIndex,
 						totalCount: value.totalCount,
 						pageSize: value.pageSize,
