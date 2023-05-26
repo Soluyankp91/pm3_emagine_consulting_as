@@ -13865,13 +13865,12 @@ export class FrameAgreementServiceProxy {
      * @param startDate (optional) 
      * @param endDate (optional) 
      * @param recipientConsultantId (optional) 
-     * @param recipientSupplierId (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    consultantFrameAgreementList(agreementId?: number | undefined, search?: string | undefined, legalEntityId?: number | undefined, salesTypeId?: number | undefined, contractTypeId?: number | undefined, deliveryTypeId?: number | undefined, startDate?: moment.Moment | undefined, endDate?: moment.Moment | undefined, recipientConsultantId?: number | undefined, recipientSupplierId?: number | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementSimpleListItemDtoPaginatedList> {
+    consultantFrameAgreementList(agreementId?: number | undefined, search?: string | undefined, legalEntityId?: number | undefined, salesTypeId?: number | undefined, contractTypeId?: number | undefined, deliveryTypeId?: number | undefined, startDate?: moment.Moment | undefined, endDate?: moment.Moment | undefined, recipientConsultantId?: number | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementSimpleListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/FrameAgreement/consultant-frame-agreement-list?";
         if (agreementId === null)
             throw new Error("The parameter 'agreementId' cannot be null.");
@@ -13909,10 +13908,6 @@ export class FrameAgreementServiceProxy {
             throw new Error("The parameter 'recipientConsultantId' cannot be null.");
         else if (recipientConsultantId !== undefined)
             url_ += "RecipientConsultantId=" + encodeURIComponent("" + recipientConsultantId) + "&";
-        if (recipientSupplierId === null)
-            throw new Error("The parameter 'recipientSupplierId' cannot be null.");
-        else if (recipientSupplierId !== undefined)
-            url_ += "RecipientSupplierId=" + encodeURIComponent("" + recipientSupplierId) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -17975,70 +17970,6 @@ export class WorkflowServiceProxy {
             }));
         }
         return _observableOf<WorkflowOverviewDto>(null as any);
-    }
-
-    /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @return Success
-     */
-    history(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/history?";
-        if (workflowId === undefined || workflowId === null)
-            throw new Error("The parameter 'workflowId' must be defined.");
-        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processHistory(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processHistory(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<WorkflowHistoryDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<WorkflowHistoryDtoPaginatedList>;
-        }));
-    }
-
-    protected processHistory(response: HttpResponseBase): Observable<WorkflowHistoryDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = WorkflowHistoryDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<WorkflowHistoryDtoPaginatedList>(null as any);
     }
 
     /**
@@ -35450,141 +35381,6 @@ export interface IWorkflowDto {
     endClientCrmId?: number | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
     consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
-}
-
-export enum WorkflowElementType {
-    ClientPeriod = 0,
-    ConsultantPeriod = 1,
-    ConsultantTermination = 2,
-    WorkflowTermination = 3,
-}
-
-export class WorkflowHistoryDto implements IWorkflowHistoryDto {
-    workflowId?: string;
-    elementType?: WorkflowElementType;
-    elementId?: string | undefined;
-    eventName?: string | undefined;
-    initiatedBy?: EmployeeDto;
-    operationId?: string | undefined;
-    occurredAtUtc?: moment.Moment;
-
-    constructor(data?: IWorkflowHistoryDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.workflowId = _data["workflowId"];
-            this.elementType = _data["elementType"];
-            this.elementId = _data["elementId"];
-            this.eventName = _data["eventName"];
-            this.initiatedBy = _data["initiatedBy"] ? EmployeeDto.fromJS(_data["initiatedBy"]) : <any>undefined;
-            this.operationId = _data["operationId"];
-            this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): WorkflowHistoryDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowHistoryDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["workflowId"] = this.workflowId;
-        data["elementType"] = this.elementType;
-        data["elementId"] = this.elementId;
-        data["eventName"] = this.eventName;
-        data["initiatedBy"] = this.initiatedBy ? this.initiatedBy.toJSON() : <any>undefined;
-        data["operationId"] = this.operationId;
-        data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IWorkflowHistoryDto {
-    workflowId?: string;
-    elementType?: WorkflowElementType;
-    elementId?: string | undefined;
-    eventName?: string | undefined;
-    initiatedBy?: EmployeeDto;
-    operationId?: string | undefined;
-    occurredAtUtc?: moment.Moment;
-}
-
-export class WorkflowHistoryDtoPaginatedList implements IWorkflowHistoryDtoPaginatedList {
-    items?: WorkflowHistoryDto[] | undefined;
-    pageIndex?: number;
-    readonly totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    readonly hasPreviousPage?: boolean;
-    readonly hasNextPage?: boolean;
-
-    constructor(data?: IWorkflowHistoryDtoPaginatedList) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(WorkflowHistoryDto.fromJS(item));
-            }
-            this.pageIndex = _data["pageIndex"];
-            (<any>this).totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.pageSize = _data["pageSize"];
-            (<any>this).hasPreviousPage = _data["hasPreviousPage"];
-            (<any>this).hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): WorkflowHistoryDtoPaginatedList {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowHistoryDtoPaginatedList();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageIndex"] = this.pageIndex;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["pageSize"] = this.pageSize;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IWorkflowHistoryDtoPaginatedList {
-    items?: WorkflowHistoryDto[] | undefined;
-    pageIndex?: number;
-    totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
 }
 
 export class WorkflowListConsultantDto implements IWorkflowListConsultantDto {

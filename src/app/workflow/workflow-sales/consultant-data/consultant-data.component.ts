@@ -200,7 +200,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				Boolean
 			),
 			recipientConsultantId: consultant?.id,
-			recipientSupplierId: consultant?.supplierId,
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
@@ -215,7 +214,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			dataToSend.startDate ?? undefined,
 			dataToSend.endDate ?? undefined,
 			dataToSend.recipientConsultantId || undefined, //recipientConsultantId
-			dataToSend.recipientSupplierId || undefined,
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort

@@ -164,7 +164,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				Boolean
 			),
 			recipientConsultantId: consultant.consultantId,
-			recipientSupplierId: consultant.consultant.supplierId,
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
@@ -179,7 +178,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			dataToSend.startDate,
 			dataToSend.endDate,
 			dataToSend.recipientConsultantId || undefined, //recipientConsultantId
-			dataToSend.recipientSupplierId || undefined,
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort
