@@ -35,6 +35,7 @@ import { FieldApi } from 'devexpress-richedit/lib/model-api/field';
 import { RibbonMenuItem } from 'devexpress-richedit/lib/client/public/ribbon/items/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class EditorCoreService {
@@ -60,7 +61,8 @@ export class EditorCoreService {
 		private _compareService: CompareService,
 		private _commentService: CommentService,
 		private clipboard: Clipboard,
-		private _dialog: MatDialog
+		private _dialog: MatDialog,
+		private _router: Router
 	) {}
 
 	set loading(state: boolean) {
@@ -89,29 +91,29 @@ export class EditorCoreService {
 
 	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
 		this.editor.readOnly = readonly;
-	 
+
 		if (exportWithMergedData) {
-		   this._customizeDownloadDocument();
+			this._customizeDownloadDocument();
 		}
-	 
+
 		if (!readonly) {
-		   this._runTaskAsyncAndSkipTrackChanges(() => {
-			  if (this._initialised) return;
-			  this._customizeRibbonPanel();
-			  this._registerDocumentEvents(!exportWithMergedData);
-			  this._registerCustomEvents();
-			  this._initCompareTab();
-			  this._initComments();
-			  this._registerCustomContextMenuItems();
-			  this._registerCopyMergeFieldCommand();
-			  this._initialised = true;
-		   });
+			this._runTaskAsyncAndSkipTrackChanges(() => {
+				if (this._initialised) return;
+				this._customizeRibbonPanel();
+				this._registerDocumentEvents(!exportWithMergedData);
+				this._registerCustomEvents();
+				this._initCompareTab();
+				this._initComments();
+				this._registerCustomContextMenuItems();
+				this._registerCopyMergeFieldCommand();
+				this._initialised = true;
+			});
 		} else {
-		   this.editor.updateRibbon((ribbon) => {
-			  ribbon.activeTabIndex = 0;
-		   });
+			this.editor.updateRibbon((ribbon) => {
+				ribbon.activeTabIndex = 0;
+			});
 		}
-	 }
+	}
 
 	loadDocument(template: File | Blob | ArrayBuffer | string, doc_name?: string) {
 		if (!this.editor) throw ReferenceError('Editor not initialized yet!, please call initialize().');
@@ -140,37 +142,45 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		this.documentLoaded$.pipe(filter(() => !!Object.keys(fields).length),take(1)).subscribe(() => {
-			let oldFields = [];
-			for (let i = 0; i < this.editor.document.fields.count; i++) {
-				let field = this.editor.document.fields.getByIndex(i);
+		const isAgreement = this._router.url.includes('agreement');
+		this.documentLoaded$
+			.pipe(
+				filter(() => !!Object.keys(fields).length),
+				take(1)
+			)
+			.subscribe(() => {
+				if (isAgreement) {
+					let oldFields = [];
+					for (let i = 0; i < this.editor.document.fields.count; i++) {
+						let field = this.editor.document.fields.getByIndex(i);
 
-				let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
-				let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
-				if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
-					oldFields.push(key);
+						let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
+						let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
+						if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
+							oldFields.push(key);
+						}
+					}
+					if (!oldFields.length) {
+						this.editor.mailMergeOptions.setDataSource([fields]);
+						return;
+					}
+					let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
+						if (curIndex + 1 !== arr.length) {
+							return acc + `<li>${cur}</li>`;
+						}
+						return acc + `<li>${cur}</li>` + `</ul>`;
+					}, `<ul class='ul-list'>`);
+					this._dialog.open(NotificationDialogComponent, {
+						width: '520px',
+						backdropClass: 'backdrop-modal--wrapper',
+						data: {
+							label: 'Upload contract',
+							message: `Please Save the document again in order to store new merge field values.The values of the following merge fields have changed since last document save:${fieldsHtml}`,
+						},
+					});
 				}
-			}
-			if (!oldFields.length) {
 				this.editor.mailMergeOptions.setDataSource([fields]);
-				return;
-			}
-			let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
-				if (curIndex + 1 !== arr.length) {
-					return acc + `<li>${cur}</li>`;
-				}
-				return acc + `<li>${cur}</li>` + `</ul>`;
-			}, `<ul class='ul-list'>`);
-			this._dialog.open(NotificationDialogComponent, {
-				width: '520px',
-				backdropClass: 'backdrop-modal--wrapper',
-				data: {
-					label: 'Upload contract',
-					message: `Please Save the document again in order to store new merge field values.The values of the following merge fields have changed since last document save:${fieldsHtml}`,
-				},
 			});
-			this.editor.mailMergeOptions.setDataSource([fields]);
-		});
 	}
 
 	insertComments(comments: Array<AgreementCommentDto>) {
@@ -610,7 +620,7 @@ export class EditorCoreService {
 	private _runTaskAsyncAndSkipTrackChanges(task: () => void): void {
 		this._skipTrackChanges = true;
 		setTimeout(() => {
-		   task();
+			task();
 		}, 0);
-	 }
+	}
 }

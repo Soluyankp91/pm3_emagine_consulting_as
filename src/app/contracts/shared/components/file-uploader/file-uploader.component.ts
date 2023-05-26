@@ -97,9 +97,13 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 	onFileAdded($event: EventTarget | null) {
 		if ($event) {
 			let files = ($event as HTMLInputElement).files as FileList;
+			console.log(files);
 			const fileArray = [] as File[];
 			for (let i = 0; i < files.length; i++) {
-				if (!ALLOWED_MIME_TYPES.some((mimeType) => mimeType.toLowerCase() === files[i].type.toLowerCase())) {
+				if (!ALLOWED_MIME_TYPES.some((mimeType) => {
+					//console.log(files[i].type);
+					return mimeType.toLowerCase() === files[i].type.toLowerCase()
+				})) {
 					continue;
 				}
 				fileArray.push(files.item(i) as File);

@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EMPTY, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
@@ -187,5 +187,9 @@ export class AgreementTemplateService implements AgreementAbstractService {
 
 	unlockAgreementByConfirmation(id: number, version: number) {
 		return of(true);
+	}
+
+	getAgreementName(id: number): Observable<string> {
+		return this._agreementTemplateService.preview2(id).pipe(map((agreementTemplate) => agreementTemplate.name));
 	}
 }

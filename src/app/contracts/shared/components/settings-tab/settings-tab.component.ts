@@ -2,16 +2,18 @@ import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getAllRouteParams } from '../../utils/allRouteParams';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 import { CreationTitleService } from '../../services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
 	selector: 'app-master-template-creation',
 	styleUrls: ['./settings-tab.component.scss'],
 	templateUrl: './settings-tab.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [CreationTitleService],
 })
 export class SettingsTabComponent implements OnInit {
 	isEdit: boolean;
@@ -34,7 +36,7 @@ export class SettingsTabComponent implements OnInit {
 		this.isEdit = this._route.snapshot.data.isEdit;
 		this.defaultName = this._route.snapshot.data.defaultName;
 		this.templateName$ = this._creationTitleService.templateName$;
-		this.tenants$ = this._creationTitleService.tenants$;
+		this.tenants$ = merge(this._creationTitleService.tenants$);
 		this._setTabs();
 		this._subscribeOnReceiveAgreementsFromOtherParty();
 	}

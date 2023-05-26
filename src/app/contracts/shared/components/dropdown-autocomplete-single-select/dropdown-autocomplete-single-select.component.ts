@@ -45,6 +45,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 		return this.ngControl.control as AbstractControl;
 	}
 
+	maxLength = 500;
 	context = this;
 
 	matcher = new SingleAutoErrorStateMatcher();
