@@ -224,6 +224,13 @@ export abstract class AppComponentBase {
 		b.style.overflow = overflowStyle;
 	}
 
+    onAutocompleteClosed(control: AbstractControl | null | undefined, idValue: string) {
+        if (!control.value?.[idValue]) {
+            control.setValue('');
+        }
+        this.focusToggleMethod('auto');
+    }
+
     arrayToEnum(list: EnumEntityTypeDto[]) {
         let result: { [key: number]: string} = {};
         list.forEach(x => {
