@@ -31,7 +31,8 @@ export function PackAddressIntoNewDto(address: ClientAddressDto): IClientAddress
     return {
         id: address.id,
         displayValue: displayAddress,
-        addressType: MapAddressType(address.isInvoiceAddress, address.isWorkplaceAddress, address.isMainAddress)
+        addressType: MapAddressType(address.isInvoiceAddress, address.isWorkplaceAddress, address.isMainAddress),
+        isHidden: address.isHidden
     }
 }
 

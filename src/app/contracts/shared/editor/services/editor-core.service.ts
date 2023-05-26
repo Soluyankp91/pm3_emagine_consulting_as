@@ -208,14 +208,12 @@ export class EditorCoreService {
 
 	toggleFields(showResult: boolean = true) {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.history.beginTransaction();
 			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
 			if (showResult) {
 				this.showAllFieldResults();
 			} else {
 				this.showAllFieldCodes();
 			}
-			this.editor.history.endTransaction();
 		});
 	}
 
@@ -268,10 +266,6 @@ export class EditorCoreService {
 		if (!this.editor) return;
 		this.editor.hasUnsavedChanges = false;
 		this.hasUnsavedChanges$.next(false);
-	}
-
-	undoLastChange() {
-		this.editor.history.undo();
 	}
 
 	getUnsavedChanges() {
@@ -340,19 +334,27 @@ export class EditorCoreService {
 			});
 
 			this.editor.events.contentInserted.addHandler((s, e) => {
-				this._runTaskAsyncAndSkipTrackChanges(() => {
-					const regex = /{[^}]*}/g;
-					const text = this.editor.document.getText(e.interval);
-					if (text.length > 1 && regex.test(text)) {
-						this._transformFieldsIntoMergeFields();
+				const regex = /{[^}]*}/g;
+				const text = this.editor.document.getText(e.interval);
+				if (text.length > 1 && regex.test(text)) {
+					this._transformFieldsIntoMergeFields();
+					let fields = this.editor.document.fields.find(this.editor.document.interval);
+					if (fields.length) {
+						fields.forEach((field) => {
+							const text = this.editor.document.getText(field.codeInterval);
+							const replaced = text.replace(/["]+/g, '');
+							this.editor.document.deleteText(field.codeInterval);
+							this.editor.document.insertText(field.codeInterval.start, replaced);
+						});
 					}
-				});
+				}
 			});
 		});
 
 		this.editor.events.documentChanged.addHandler(() => {
-			if (this._skipTrackChanges && this._compareService.isCompareMode) {
-				return (this._skipTrackChanges = false);
+			if (this._skipTrackChanges || this._compareService.isCompareMode) {
+				this._skipTrackChanges = false;
+				return;
 			}
 
 			this._zone.run(() => {
@@ -433,7 +435,9 @@ export class EditorCoreService {
 	}
 
 	private _transformFieldsIntoMergeFields() {
-		TransformMergeFiels.updateMergeFields(this.editor);
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			TransformMergeFiels.updateMergeFields(this.editor);
+		});
 	}
 
 	private _updateFontsToDefault() {
@@ -619,8 +623,8 @@ export class EditorCoreService {
 
 	private _runTaskAsyncAndSkipTrackChanges(task: () => void): void {
 		this._skipTrackChanges = true;
-		setTimeout(() => {
-			task();
-		}, 0);
+		task();
+		this._skipTrackChanges = false;
+		this.hasUnsavedChanges$.next(false);
 	}
 }

@@ -61,7 +61,7 @@ export class SettingsTabComponent implements OnInit {
 			if (isAgreement) {
 				this.tabs.push({
 					link: `${templateId}/archive`,
-					label: 'Acrhive',
+					label: 'Archive',
 					icon: 'archive-icon',
 				});
 			}
@@ -83,7 +83,7 @@ export class SettingsTabComponent implements OnInit {
 		if (isAgreement) {
 			this.tabs.push({
 				link: undefined,
-				label: 'Acrhive',
+				label: 'Archive',
 				disabled: true,
 				icon: 'archive-icon',
 			});
