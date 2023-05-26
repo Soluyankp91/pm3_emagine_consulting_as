@@ -179,7 +179,10 @@ export class EditorCoreService {
 						},
 					});
 				}
-				this.editor.mailMergeOptions.setDataSource([fields]);
+				this._skipTrackChanges = true;
+				this.editor.mailMergeOptions.setDataSource([fields], () => {
+					this._skipTrackChanges = false;
+				});
 			});
 	}
 
