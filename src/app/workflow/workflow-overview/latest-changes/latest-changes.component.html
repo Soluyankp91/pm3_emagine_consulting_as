@@ -55,7 +55,7 @@
                 <mat-cell *matCellDef="let row">
                     <span class="text-truncate-ellipsis" [matTooltip]="row.entityTooltip" matTooltipClass="white-tooltip">
                         <ng-container *ngIf="row.entityName?.length && row.entityKey?.length; else noDataTemplate">
-                            {{row.entityName + ' ' + row.entityKey}}
+                            {{row.entityName}}
                         </ng-container>
                     </span>
                 </mat-cell>
