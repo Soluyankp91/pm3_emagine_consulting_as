@@ -1,4 +1,4 @@
-import { HistoryPropertiesDto, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
+import { WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 
 export interface ILatesChangesPayload {
     workflowId: string,
@@ -22,17 +22,12 @@ export interface IHistoryItemDto {
     entityKey?: string | undefined;
     entityTooltip?: string | undefined;
     propertyName?: string | undefined;
-    //
     oldValueId?: string | undefined;
     oldValueDisplay?: string | undefined;
-    //
     oldValue?: string | undefined;
-    //
     newValueId?: string | undefined;
     newValueDisplay?: string | undefined;
-    //
     newValue?: string | undefined;
-
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;

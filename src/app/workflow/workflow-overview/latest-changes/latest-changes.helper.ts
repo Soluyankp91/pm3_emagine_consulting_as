@@ -9,17 +9,12 @@ export function MapLatestChanges(list: HistoryPropertiesDto[]): IHistoryItemDto[
             entityKey: JSON.stringify(item.entityKey),
             entityTooltip: MapEntityName(item.entityName, item.entityKey, true),
             propertyName: item.propertyName,
-            //
             oldValueId: item.oldValueId,
             oldValueDisplay: item.oldValueDisplay,
-            //
             oldValue: MapChangedValue(item.oldValueDisplay, item.oldValueId),
-            //
             newValueId: item.newValueId,
             newValueDisplay: item.newValueDisplay,
-            //
             newValue: MapChangedValue(item.newValueDisplay, item.newValueId),
-
             workflowId: item.workflowId,
             clientPeriodId: item.clientPeriodId,
             clientPeriodDisplayId: item.clientPeriodDisplayId,
