@@ -369,7 +369,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
                                 [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(contractClientForm.frameAgreementId, 'agreementId')">
                                 <ng-container *ngFor="let item of filteredFrameAgreements; trackBy: trackById">
                                     <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                         <div class="multilineDropdown-option--row">

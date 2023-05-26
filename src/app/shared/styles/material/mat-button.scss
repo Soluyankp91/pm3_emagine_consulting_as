@@ -517,17 +517,21 @@
 
 .login-btn {
     height: 39px !important;
-    padding: 0 24px !important;
+    padding: 0 20px !important;
     border-radius: 100px !important;
+    background-color: #50AF9B !important;
     .mat-button-wrapper {
         font-family: 'Avenir' !important;
         font-weight: 600;
         font-size: 14px;
         line-height: 19px;
         color: $white-color;
-        mat-icon svg {
+        mat-icon {
             width: 20px;
-            height: 20px;
+            svg {
+                width: 20px;
+                height: 20px;
+            }
         }
     }
 }
