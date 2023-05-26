@@ -161,7 +161,10 @@ export class EditorCoreService {
 						}
 					}
 					if (!oldFields.length) {
-						this.editor.mailMergeOptions.setDataSource([fields]);
+						this._skipTrackChanges = true;
+						this.editor.mailMergeOptions.setDataSource([fields], () => {
+							this._skipTrackChanges = false;
+						});
 						return;
 					}
 					let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
