@@ -14883,6 +14883,58 @@ export class HubSpotInstallServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    generateInstallationUrl(): Observable<string> {
+        let url_ = this.baseUrl + "/api/HubSpotInstall/generate-installation-url";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateInstallationUrl(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateInstallationUrl(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processGenerateInstallationUrl(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(null as any);
+    }
+
+    /**
      * @param code (optional) 
      * @return Success
      */
@@ -29120,7 +29172,7 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
-    employeeRole?: EmployeeRole;
+    permissions?: Permission[] | undefined;
     tenantId?: number;
 
     constructor(data?: ICurrentEmployeeDto) {
@@ -29137,7 +29189,11 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
             this.id = _data["id"];
             this.externalId = _data["externalId"];
             this.name = _data["name"];
-            this.employeeRole = _data["employeeRole"];
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions!.push(item);
+            }
             this.tenantId = _data["tenantId"];
         }
     }
@@ -29154,7 +29210,11 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
         data["id"] = this.id;
         data["externalId"] = this.externalId;
         data["name"] = this.name;
-        data["employeeRole"] = this.employeeRole;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item);
+        }
         data["tenantId"] = this.tenantId;
         return data;
     }
@@ -29164,7 +29224,7 @@ export interface ICurrentEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
-    employeeRole?: EmployeeRole;
+    permissions?: Permission[] | undefined;
     tenantId?: number;
 }
 
@@ -29425,12 +29485,6 @@ export class EmployeeNotificationDto implements IEmployeeNotificationDto {
 export interface IEmployeeNotificationDto {
     tenantId?: number | undefined;
     notifications?: EmployeeTenantNotificationItem[] | undefined;
-}
-
-export enum EmployeeRole {
-    None = 0,
-    AccountManager = 1,
-    ContractManager = 2,
 }
 
 export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
@@ -31768,6 +31822,14 @@ export interface IPeriodConsultantSpecialRateDto {
     rateSpecifiedAs?: EnumEntityTypeDto;
     consultantRate?: number | undefined;
     consultantRateCurrencyId?: number | undefined;
+}
+
+export enum Permission {
+    Common = 0,
+    AccountManager = 1,
+    ContractManager = 2,
+    Admin = 3,
+    Finance = 4,
 }
 
 export class Pm3EmployeeDto implements IPm3EmployeeDto {
@@ -36596,7 +36658,6 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
     id?: number;
     externalId?: string;
     name?: string | undefined;
-    employeeRole?: EmployeeRole;
     emailAddress?: string | undefined;
 
     constructor(data?: IWorkflowStepEmployeeAssignmentEmployeeDto) {
@@ -36613,7 +36674,6 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
             this.id = _data["id"];
             this.externalId = _data["externalId"];
             this.name = _data["name"];
-            this.employeeRole = _data["employeeRole"];
             this.emailAddress = _data["emailAddress"];
         }
     }
@@ -36630,7 +36690,6 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
         data["id"] = this.id;
         data["externalId"] = this.externalId;
         data["name"] = this.name;
-        data["employeeRole"] = this.employeeRole;
         data["emailAddress"] = this.emailAddress;
         return data;
     }
@@ -36640,7 +36699,6 @@ export interface IWorkflowStepEmployeeAssignmentEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
-    employeeRole?: EmployeeRole;
     emailAddress?: string | undefined;
 }
 
