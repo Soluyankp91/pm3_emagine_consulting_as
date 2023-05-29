@@ -570,7 +570,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #salesManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                 (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
-                                (closed)="focusToggleMethod('auto')">
+                                (closed)="onAutocompleteClosed(salesMainDataForm.salesAccountManagerIdValue, 'id')">
                                 <ng-container *ngFor="let manager of filteredSalesAccountManagers; trackBy: trackById">
                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
@@ -592,7 +592,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete"
                                 [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesMainDataForm.commissionAccountManagerIdValue, 'id')">
                                 <ng-container
                                     *ngFor="let manager of filteredCommisionAccountManagers; trackBy: trackById">
                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
@@ -646,7 +646,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #primarySourcerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                 (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
-                                (closed)="focusToggleMethod('auto')">
+                                (closed)="onAutocompleteClosed(salesMainDataForm.primarySourcer, 'id')">
                                 <ng-container *ngFor="let manager of filteredPrimarySourcers; trackBy: trackById">
                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>
@@ -675,7 +675,7 @@
                                             <span matSuffix class="shevron"></span>
                                         <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete"
                                             [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                            (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(user.get('commissionedUser'), 'id')">
                                             <ng-container
                                                 *ngFor="let employee of filteredEmployees; trackBy: trackById">
                                                 <mat-option [value]="employee"

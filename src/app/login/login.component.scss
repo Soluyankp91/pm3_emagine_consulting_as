@@ -30,6 +30,9 @@
                         height: 1.75rem !important;
                     }
                 }
+                img {
+                    margin-left: -10px;
+                }
             }
             h1 {
                 @include fontAtyp(4.4rem, 600);
@@ -53,7 +56,7 @@
     &-icon {
         position: absolute;
         top: 47px;
-        left: 50px;
+        left: 52px;
         width: 210px;
         height: 35px;
     }

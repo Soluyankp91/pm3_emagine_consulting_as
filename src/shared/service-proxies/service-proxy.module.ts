@@ -1,7 +1,9 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { GlobalHttpInterceptorService } from './global-http-interceptor.service';
 import * as ApiServiceProxies from './service-proxies';
+import { SignalRService } from '../common/services/signal-r.service';
+import { AgreementSignalRApiService } from '../common/services/agreement-signalr.service';
 
 @NgModule({
     providers: [
@@ -31,6 +33,13 @@ import * as ApiServiceProxies from './service-proxies';
         {
             provide: HTTP_INTERCEPTORS,
             useClass: GlobalHttpInterceptorService,
+            multi: true
+        },
+        SignalRService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: (signalRService: SignalRService) => () => signalRService.init(),
+            deps: [AgreementSignalRApiService],
             multi: true
         }
     ]

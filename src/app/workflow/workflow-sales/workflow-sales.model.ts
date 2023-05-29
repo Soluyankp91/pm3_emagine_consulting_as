@@ -443,6 +443,7 @@ export interface IClientAddress {
     id: number;
     displayValue: string;
     addressType: string;
+    isHidden: boolean;
 }
 
 export enum EClientSelectionType {

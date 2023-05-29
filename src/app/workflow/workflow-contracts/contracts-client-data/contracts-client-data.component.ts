@@ -372,6 +372,10 @@ export class ContractsClientDataComponent extends AppComponentBase implements On
 		this.clientTimeReportingCap = this.getStaticEnumValue('clientTimeReportingCap');
 		this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
 		this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
+        this.invoiceFrequencies = this.getStaticEnumValue('invoiceFrequencies');
+        this.invoicingTimes = this.getStaticEnumValue('invoicingTimes');
 	}
 
 	get clientRates(): UntypedFormArray {

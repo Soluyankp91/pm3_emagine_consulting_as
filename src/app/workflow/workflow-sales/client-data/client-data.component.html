@@ -47,7 +47,7 @@
                             <span matSuffix class="shevron"></span>
                             <mat-autocomplete #directClientAutocomplete="matAutocomplete"
                                 [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.directClientIdValue, 'clientId')">
                                 <ng-container *ngFor="let client of filteredDirectClients; trackBy: trackById">
                                     <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
                                         <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -83,7 +83,7 @@
                                     </div>
                                 </mat-select-trigger>
                                 <ng-container *ngFor="let item of directClientAddresses; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item" [fxHide]="item.isHidden">
                                         <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                             <span class="multilineDropdown-option--column-client-name">
                                                 {{item.displayValue }}</span>
@@ -127,7 +127,7 @@
                             <span matSuffix class="shevron"></span>
                             <mat-autocomplete #endClientAutocomplete="matAutocomplete"
                                 [displayWith]="displayClientNameFn" (optionSelected)="clientSelected($event, eClientSelectionType.EndClient)"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.endClientIdValue, 'clientId')">
                                 <ng-container *ngFor="let client of filteredEndClients; trackBy: trackById">
                                     <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
                                         <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -163,7 +163,7 @@
                                     </div>
                                 </mat-select-trigger>
                                 <ng-container *ngFor="let item of endClientAddresses; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item" [fxHide]="item.isHidden">
                                         <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                             <span class="multilineDropdown-option--column-client-name">
                                                 {{item.displayValue }}</span>
@@ -201,7 +201,7 @@
                             <span matSuffix class="shevron"></span>
                         <mat-autocomplete #projectManagerAutocomplete="matAutocomplete"
                             [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
-                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                            (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.invoicePaperworkContactIdValue, 'id')">
                             <ng-container *ngFor="let contact of filteredProjectManagers; trackBy: trackById">
                                 <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
                                     <span class="autocopmlete-option-name">{{ contact.firstName + ' ' +
@@ -373,7 +373,7 @@
                                         <span matSuffix class="shevron"></span>
                                     <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete"
                                         [displayWith]="displayClientNameFn" (optionSelected)="clientSelected($event, eClientSelectionType.InvoicingRecipient)"
-                                        (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                        (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.clientInvoicingRecipientIdValue, 'clientId')">
                                         <ng-container
                                             *ngFor="let client of filteredClientInvoicingRecipients; trackBy: trackById">
                                             <mat-option [value]="client" [ngClass]="{ 'no-data': client?.clientId === undefined }">
@@ -411,7 +411,7 @@
                                             </div>
                                         </mat-select-trigger>
                                         <ng-container *ngFor="let item of invoicingRecipientsAddresses; trackBy: trackById">
-                                            <mat-option [value]="item">
+                                            <mat-option [value]="item" [fxHide]="item.isHidden">
                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                     <span class="multilineDropdown-option--column-client-name">
                                                         {{item.displayValue }}</span>
@@ -618,7 +618,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
                                 [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.frameAgreementId, 'agreementId')">
                                 <ng-container *ngFor="let item of filteredFrameAgreements; trackBy: trackByAgreementId">
                                     <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                         <div class="multilineDropdown-option--row">
@@ -675,7 +675,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete"
                                 [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.invoicePaperworkContactIdValue, 'id')">
                                 <ng-container *ngFor="let contact of filteredReferencePersons; trackBy: trackById">
                                     <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
                                         <span class="autocopmlete-option-name">{{ contact.firstName + ' ' +
@@ -1123,7 +1123,7 @@
                             <span matSuffix class="shevron"></span>
                         <mat-autocomplete #evaluationReferencePersonAutocomplete="matAutocomplete"
                             [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
-                            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                            (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesClientDataForm.evaluationsReferencePersonIdValue, 'id')">
                             <ng-container
                                 *ngFor="let contact of filteredEvaluationReferencePersons; trackBy: trackById">
                                 <mat-option [value]="contact" [ngClass]="{ 'no-data': contact?.id === undefined }">
@@ -1200,7 +1200,7 @@
                                     <span matSuffix class="shevron"></span>
                                 <mat-autocomplete #contactSignerAutocomplete="matAutocomplete"
                                     [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                    (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                    (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(contractSigners.at(i).get('clientContact'), 'id')">
                                     <ng-container *ngFor="let contact of filteredContractSigners; trackBy: trackById">
                                         <mat-option [value]="contact"
                                             [ngClass]="{ 'no-data': contact?.id === undefined }">

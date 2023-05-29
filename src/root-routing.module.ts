@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 import { LoginComponent } from './app/login/login.component';
 import { LoginGuard } from './app/login/login.guard';
+import { AuthRedirectGuard } from './app/login/auth-redirect.guard';
 
 @NgModule({
   imports: [RouterModule.forRoot(
@@ -13,13 +14,13 @@ import { LoginGuard } from './app/login/login.guard';
             path: 'app',
             loadChildren: () => import('./app/app.module').then(m => m.AppModule),
             data: { preload: true },
-            canLoad: [MsalGuard],
+            canActivate: [AuthRedirectGuard, MsalGuard],
         },
         {
             path: 'shared/clients',
             loadChildren:() => import('./app/client/client.module').then(m => m.ClientModule),
             data: {preload: true},
-            canLoad: [MsalGuard]
+            canActivate: [AuthRedirectGuard, MsalGuard]
         },
         { path: '**', redirectTo: '/app' }
     ]

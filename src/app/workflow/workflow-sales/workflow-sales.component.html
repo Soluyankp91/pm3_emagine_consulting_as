@@ -133,7 +133,7 @@
                                 <input [disabled]="readOnlyMode" [readonly]="readOnlyMode" [required]="!salesTerminateConsultantForm.noEvaluation?.value" #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
                                 <span matSuffix class="shevron"></span>
                                 <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn"
-                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                    (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(salesTerminateConsultantForm.finalEvaluationReferencePerson, 'id')">
                                     <ng-container *ngFor="let contact of filteredFinalEvaluationReferencePersons; trackBy: trackById">
                                         <mat-option [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
                                                 <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>

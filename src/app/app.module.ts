@@ -34,6 +34,7 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { AuthService } from './login/auth.service';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1; // Remove this line to use Angular Universal
 
@@ -101,6 +102,7 @@ export function getRemoteServiceBaseUrl(): string {
 	],
 	providers: [
 		LoginGuard,
+        AuthService,
 		{
 			provide: API_BASE_URL,
 			useFactory: getRemoteServiceBaseUrl,
@@ -428,9 +430,12 @@ export class AppModule {
 			'cancel-termination',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/cancel-termination.svg')
 		);
-		iconRegistry.addSvgIcon('schedule', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/schedule.svg'));
-		iconRegistry.addSvgIcon('warning', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/warning.svg'));
-
+		iconRegistry.addSvgIcon('negotiation-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/negotiation-icon.svg'));
+		iconRegistry.addSvgIcon('attention-required-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/attention-required-icon.svg'));
+		iconRegistry.addSvgIcon('terminated-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/terminated-icon.svg'));
+		iconRegistry.addSvgIcon('expected-to-terminate-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/expected-to-terminate-icon.svg'));
+		iconRegistry.addSvgIcon('extended-or-started-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/extended-or-started-icon.svg'));
+		iconRegistry.addSvgIcon('extension-expected-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/extension-expected-icon.svg'));
 		iconRegistry.addSvgIcon('notes-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/notes-icon.svg'));
 
 		iconRegistry.addSvgIcon(
@@ -600,5 +605,7 @@ export class AppModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/login-PM-logo.svg')
 		);
 		iconRegistry.addSvgIcon('approved', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/approve.svg'));
+		iconRegistry.addSvgIcon('agreement-in-edit', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/agreement-in-edit.svg'));
+		iconRegistry.addSvgIcon('login-title', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/login-title.svg'));
 	}
 }

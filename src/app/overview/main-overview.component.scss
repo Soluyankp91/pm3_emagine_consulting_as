@@ -106,8 +106,7 @@
     }
     &-icon {
         &-type {
-            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
-            transform: scale(0.8);
+            @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
         }
     }
     &-search-button {
@@ -209,4 +208,44 @@
 
 .no-width {
     width: 0px !important;
+}
+
+.wf-statuses {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    padding: 8px 12px 8px 12px;
+    border: 1px solid $light-grey-color;
+    border-radius: 40px;
+    line-height: 16px;
+    white-space: nowrap;
+    .mat-menu-trigger {
+        position: absolute;
+        right: 0;
+    }
+    &__name {
+        font-weight: 700;
+        color: #384853;
+        font-size: 12px;
+        margin-right: 5px;
+    }
+
+    &__item {
+        @include fontOpenSans(14px, 700);
+        color: rgba($color: #384853, $alpha: 0.88);
+    }
+    &__reset {
+        border-top: 1px solid $sand-color;
+        @include fontOpenSans(14px, 700);
+        color: $light-grey-color;
+    }
+    &.selected-status {
+        background-color: #384853;
+        border-color: #384853;
+        mat-icon,
+        .wf-statuses__name {
+            color: $white-color;
+        }
+    }
 }

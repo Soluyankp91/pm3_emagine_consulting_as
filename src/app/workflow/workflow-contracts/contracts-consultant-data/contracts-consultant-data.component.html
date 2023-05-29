@@ -458,7 +458,7 @@
                                                 <span matSuffix class="shevron"></span>
                                             <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
                                                 [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(consultant.get('frameAgreementId'), 'agreementId')">
                                                 <ng-container *ngFor="let item of filteredFrameAgreements[consultantIndex]; trackBy: trackById">
                                                     <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                                         <div class="multilineDropdown-option--row">
@@ -1455,7 +1455,7 @@
                                                     <span matSuffix class="shevron"></span>
                                                 <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
                                                     [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                                    (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                    (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(consultant.get('emagineFrameAgreementId'), 'agreementId')">
                                                     <ng-container *ngFor="let item of filteredEmagineFrameAgreements[consultantIndex]; trackBy: trackById">
                                                         <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                                             <div class="multilineDropdown-option--row">
@@ -1497,7 +1497,7 @@
                                             <input [disabled]="readOnlyMode" required #deliveryManagerFilterInput type="text" matInput [matAutocomplete]="deliveryManagerAutocomplete" formControlName="deliveryAccountManager" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                                             <span matSuffix class="shevron"></span>
                                             <mat-autocomplete #deliveryManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
-                                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                                (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(consultant.get('deliveryAccountManager'), 'id')">
                                                 <ng-container *ngFor="let manager of filteredAccountManagers[consultantIndex]; trackBy: trackById">
                                                     <mat-option [value]="manager" [ngClass]="{ 'no-data': manager?.id === undefined }">
                                                         <span class="autocopmlete-option-name">{{ manager.name }}</span>

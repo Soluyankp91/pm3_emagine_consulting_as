@@ -1,0 +1,16 @@
+<div class="page-container">
+	<div class="attachments">
+		<ng-container *ngIf="auxiliaryAttachments$ | async as auxiliaryAttachments">
+			<emg-file-uploader
+				[preselectedFiles]="auxiliaryAttachments"
+				[label]="attachmentsLabel"
+				[idProp]="'agreementAuxiliaryAttachmentId'"
+				[formControl]="auxiliaryAttachmentsControl">
+			</emg-file-uploader>
+		</ng-container>
+	</div>
+</div>
+<div class="bottom-panel">
+	<button mat-button class="cancel-button" (click)="navigateBack()">Close</button>
+	<button mat-raised-button type="button" (click)="saveAuxiliaryAttachment()">Save</button>
+</div>

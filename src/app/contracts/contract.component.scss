@@ -343,3 +343,64 @@ app-contract {
 .cdk-overlay-container .app-empty-and-unknown-mf {
 	@include scrollbar;
 }
+.cdk-overlay-container .app-email-body {
+	@include scrollbar;
+	.mat-form-field.mat-form-field-appearance-outline.textarea-form-field {
+		height: fit-content;
+		.mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix {
+			min-height: 190px;
+		}
+		.mat-form-field-wrapper .mat-form-field-flex .mat-form-field-outline {
+			height: 100%;
+		}
+		textarea {
+			min-height: 173px !important;
+			line-height: 20px;
+		}
+	}
+
+	.mat-form-field-appearance-outline .mat-select-arrow-wrapper {
+		transform: none !important;
+		height: 24px;
+	}
+	.mat-form-field {
+		&.mat-form-field-appearance-outline .mat-form-field-wrapper {
+			padding: 0 !important;
+			margin: 0 !important;
+		}
+		.mat-form-field-flex {
+			padding: 0 14px;
+		}
+		&.mat-focused.mat-primary .mat-select-arrow {
+			background-image: url('../../assets/common/images/mat-select-focused-icon.svg');
+		}
+		.mat-select {
+			&.mat-select-invalid .mat-select-arrow {
+				background-image: url('../../assets/common/images/mat-select-invalid-icon.svg');
+			}
+			.mat-select-arrow {
+				background-image: url('../../assets/common/images/mat-select-icon.svg');
+				height: 10px;
+				width: 18px;
+				background-size: cover;
+
+				border: none;
+				margin: 0;
+			}
+		}
+	}
+
+	.mat-form-field-appearance-outline .mat-form-field-flex:not(.textarea-input) .mat-form-field-outline,
+	.mat-form-field {
+		width: 100%;
+		height: 48px;
+		margin: 0 !important;
+	}
+	.mat-form-field-appearance-outline .mat-form-field-flex > .mat-form-field-infix {
+		padding: 0.25em 0px 1.05em !important;
+		border-top: 1em solid transparent;
+	}
+	.mat-form-field .mat-form-field-flex .mat-form-field-infix {
+		width: unset !important;
+	}
+}

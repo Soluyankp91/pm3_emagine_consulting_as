@@ -4,7 +4,8 @@ export type FileUpload = object & {
 	temporaryFileId?: string;
 	agreementAttachmentId?: number;
 	agreementTemplateAttachmentId?: number;
-	name: string;
+	agreementAuxiliaryAttachmentId?: number;
+	name?: string;
 	type?: string;
 };
 export type FileUploadItem = FileUpload & {
@@ -73,7 +74,7 @@ export const ALLOWED_MIME_TYPES = [
 	'image/gif', // .gif
 	'image/jpeg', // .jpg
 	'image/jpeg', // .jpeg
-	'image/x-png', // .png
+	'image/png', // .png
 	'image/tiff', // .tif
 	'image/tiff', // .tiff
 

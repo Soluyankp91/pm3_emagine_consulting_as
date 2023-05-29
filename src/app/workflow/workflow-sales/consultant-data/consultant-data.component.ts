@@ -10,7 +10,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { of, Subject } from 'rxjs';
+import { EMPTY, of, Subject } from 'rxjs';
 import { finalize, takeUntil, debounceTime, switchMap, startWith } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -164,6 +164,10 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
     getInitialEmagineFrameAgreements(consultantIndex: number) {
+        const pdcInvoicingEntityId = this.consultants.at(consultantIndex).get('pdcPaymentEntityId')?.value;
+        if (!pdcInvoicingEntityId) {
+            return;
+        }
 		this.getEmagineFrameAgreements(consultantIndex, true).subscribe((result) => {
 			this.filteredEmagineFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedEmagineFrameAgreementList[consultantIndex] !== null) {
@@ -196,7 +200,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				Boolean
 			),
 			recipientConsultantId: consultant?.id,
-			recipientSupplierId: consultant?.supplierId,
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
@@ -211,7 +214,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			dataToSend.startDate ?? undefined,
 			dataToSend.endDate ?? undefined,
 			dataToSend.recipientConsultantId || undefined, //recipientConsultantId
-			dataToSend.recipientSupplierId || undefined,
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort
@@ -220,6 +222,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     getEmagineFrameAgreements(consultantIndex: number, isInitial = false, search: string = '') {
         const pdcInvoicingEntityId = this.consultants.at(consultantIndex).get('pdcPaymentEntityId')?.value;
+        if (!pdcInvoicingEntityId) {
+            return EMPTY;
+        }
 		let dataToSend = {
 			agreementId: undefined,
 			search: search,
@@ -350,6 +355,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		this.consultants.push(form);
         const consultantIndex = this.consultants.controls.length - 1;
         this.onsiteClientAddresses.push([]);
+        this.filteredSupplierMembers.push([]);
         this.filteredSupplierMembers[consultantIndex].push([]);
         if (consultant?.onsiteClient?.clientId) {
             this.getClientAddresses(this.consultants.length - 1, consultant?.onsiteClient.clientAddresses);
@@ -1014,6 +1020,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         this.eCurrencies = this.arrayToEnum(this.currencies);
         this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
         this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        this.signerRoles = this.getStaticEnumValue('signerRoles');
     }
 
     getConsultantSignersControls(consultantIndex: number): AbstractControl[] | null {

@@ -53,8 +53,10 @@
                     Changed object
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row">
-                    <span class="text-truncate-ellipsis" [matTooltip]="row.entityNameWithKeyValue ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                        {{row.entityNameWithKeyValue ?? '-'}}
+                    <span class="text-truncate-ellipsis" [matTooltip]="row.entityTooltip" matTooltipClass="white-tooltip">
+                        <ng-container *ngIf="row.entityName?.length && row.entityKey?.length; else noDataTemplate">
+                            {{row.entityName}}
+                        </ng-container>
                     </span>
                 </mat-cell>
             </ng-container>
@@ -93,7 +95,7 @@
                     Period ID
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="70px">
-                    <span emgCustomTooltip [contentTemplate]="periodTooltip">
+                    <span emgCustomTooltip [contentTemplate]="row.workflowProcessType ? periodTooltip : null">
                         {{row.clientPeriodDisplayId ?? '-'}}
                     </span>
                     <ng-template #periodTooltip>
@@ -123,13 +125,20 @@
                                 <ng-container *ngSwitchCase="eWorkflowProcessType.TerminateConsultant">
                                     <mat-icon svgIcon="workflowTerminate"></mat-icon>
                                 </ng-container>
-                                <ng-container *ngSwitchDefault>
-                                    <mat-icon svgIcon="what-next-icon" class="u-mr--10"></mat-icon>
-                                </ng-container>
                             </ng-container>
                             {{row.clientPeriodTooltip}}
                         </div>
                     </ng-template>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="consultant">
+                <mat-header-cell *matHeaderCellDef fxFlex="70px" fxLayoutAlign="center center">
+                    Consultant
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" fxFlex="70px" fxLayoutAlign="center center" class="u-pl--15">
+                    <ng-container *ngIf="row.consultantName && row.consultantExternalId; else noDataTemplate">
+                        <img class="border-rounded-50" [matTooltip]="row.consultantName" matTooltipClass="white-tooltip" [ngSrc]="consultantPhotoUrl + row.consultantExternalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                    </ng-container>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="by">
@@ -160,3 +169,5 @@
         </div>
     </div>
 </div>
+
+<ng-template #noDataTemplate>-</ng-template>

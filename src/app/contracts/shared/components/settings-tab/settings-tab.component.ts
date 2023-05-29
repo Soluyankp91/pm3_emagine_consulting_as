@@ -2,16 +2,18 @@ import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getAllRouteParams } from '../../utils/allRouteParams';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 import { CreationTitleService } from '../../services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
 	selector: 'app-master-template-creation',
 	styleUrls: ['./settings-tab.component.scss'],
 	templateUrl: './settings-tab.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	providers: [CreationTitleService],
 })
 export class SettingsTabComponent implements OnInit {
 	isEdit: boolean;
@@ -34,13 +36,14 @@ export class SettingsTabComponent implements OnInit {
 		this.isEdit = this._route.snapshot.data.isEdit;
 		this.defaultName = this._route.snapshot.data.defaultName;
 		this.templateName$ = this._creationTitleService.templateName$;
-		this.tenants$ = this._creationTitleService.tenants$;
+		this.tenants$ = merge(this._creationTitleService.tenants$);
 		this._setTabs();
 		this._subscribeOnReceiveAgreementsFromOtherParty();
 	}
 
 	private _setTabs() {
 		let routeParamsArr = getAllRouteParams(this._router.routerState.snapshot.root);
+		const isAgreement = this._router.url.includes('agreements');
 		if (this.isEdit) {
 			let templateId = routeParamsArr[7].id;
 			this.tabs = [
@@ -55,6 +58,13 @@ export class SettingsTabComponent implements OnInit {
 					icon: 'editor-icon',
 				},
 			];
+			if (isAgreement) {
+				this.tabs.push({
+					link: `${templateId}/archive`,
+					label: 'Archive',
+					icon: 'archive-icon',
+				});
+			}
 			return;
 		}
 		this.tabs = [
@@ -70,6 +80,14 @@ export class SettingsTabComponent implements OnInit {
 				icon: 'editor-icon',
 			},
 		];
+		if (isAgreement) {
+			this.tabs.push({
+				link: undefined,
+				label: 'Archive',
+				disabled: true,
+				icon: 'archive-icon',
+			});
+		}
 	}
 
 	private _subscribeOnReceiveAgreementsFromOtherParty() {

@@ -70,6 +70,17 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		});
 	}
 
+    getPurchaseOrdersForOverview(workflowId: string) {
+        this._purchaseOrderService.getPurchaseOrdersForWorkflowOverview(this.workflowId ?? workflowId)
+            .subscribe(result => {
+                this.purchaseOrdersList = result;
+                this.purchaseOrders.controls = [];
+				result.forEach(po => {
+                    this._addPurchaseOrder(po);
+                })
+            })
+    }
+
 	getPurchaseOrders(purchaseOrderIds: number[], directClientId: number, periodId?: string) {
 		this._purchaseOrderService
 			.getPurchaseOrdersAvailableForClientPeriod(this.periodId ?? periodId, directClientId)

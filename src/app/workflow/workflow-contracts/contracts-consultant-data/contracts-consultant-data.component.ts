@@ -164,7 +164,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				Boolean
 			),
 			recipientConsultantId: consultant.consultantId,
-			recipientSupplierId: consultant.consultant.supplierId,
 			pageNumber: 1,
 			pageSize: 1000,
 			sort: '',
@@ -179,7 +178,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			dataToSend.startDate,
 			dataToSend.endDate,
 			dataToSend.recipientConsultantId || undefined, //recipientConsultantId
-			dataToSend.recipientSupplierId || undefined,
 			dataToSend.pageNumber,
 			dataToSend.pageSize,
 			dataToSend.sort
@@ -476,8 +474,6 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			consultantRateCurrencyId: new UntypedFormControl(clientRate?.consultantRateCurrencyId ?? null),
 			editable: new UntypedFormControl(clientRate ? false : true),
 		});
-        console.log(clientRate);
-
 		(this.contractsConsultantsDataForm.consultants.at(index).get('specialRates') as UntypedFormArray).push(form);
 	}
 
@@ -696,6 +692,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			}
 			if (!projectLine?.differentInvoiceRecipient) {
 				projectLine!.invoiceRecipient = this.contractClientForm.clientInvoicingRecipient?.value;
+				projectLine!.invoiceRecipientAddress = FindClientAddress(
+                    this.contractClientForm.clientInvoicingRecipient?.value?.clientAddresses,
+                    this.contractClientForm.clientInvoicingRecipientAddress?.value?.id
+                );
 			}
 			if (!projectLine?.differentInvoicingReferenceNumber) {
 				projectLine!.invoicingReferenceNumber = this.contractClientForm.invoicingReferenceNumber?.value;
@@ -892,6 +892,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
         this.consultantInsuranceOptions = this.getStaticEnumValue('consultantInsuranceOptions');
         this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
         this.periodUnitTypes = this.getStaticEnumValue('periodUnitTypes');
+        this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+        this.legalEntities = this.getStaticEnumValue('legalEntities');
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
         this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
     }
 

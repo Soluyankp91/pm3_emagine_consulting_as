@@ -38,16 +38,35 @@
                     </mat-select>
                 </button>
                 <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)"></manager-multiselect>
-                <ng-container *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy">
-                    <div class="main-overview--filter-type cursor-pointer" [ngClass]="status.selected ? overviewFilterColors[status.id] : ''"
-                        appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
-                        <mat-icon class="main-overview-icon-type" [svgIcon]="status.flag"
-                        [ngClass]="overviewProcessColors[status.id]"></mat-icon>
-                        <span class="main-overview--filter-type__name">
-                            {{status.name}}
-                        </span>
+                <span class="wf-statuses cursor-pointer u-mr--10" [matMenuTriggerFor]="syncStatuses" [ngClass]="{'selected-status': selectedWFStatuses !== undefined && selectedWFStatuses!.length > 0}">
+                    <span class="wf-statuses__name" [ngSwitch]="selectedWFStatuses.length">
+                        <ng-container *ngSwitchCase="0">
+                            All WF statuses
+                        </ng-container>
+                        <ng-container *ngSwitchCase="1">
+                            {{selectedWFStatuses[0].name}}
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{selectedWFStatuses.length + ' statuses'}}
+                        </ng-container>
+                    </span>
+                    <mat-icon>expand_more</mat-icon>
+                </span>
+                <mat-menu #syncStatuses backdropClass="step-filter--menu" xPosition="after">
+                    <div *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
+                        class="wf-statuses__item" mat-menu-item
+                        (click)="wfStatusClicked($event, status);">
+                        <mat-checkbox #chb class="black-checkbox"
+                            [checked]="status.selected"
+                            (click)="$event.stopPropagation();" (change)="wfStatusFilterControl(status)">
+                            <mat-icon class="main-overview-icon-type u-mr--5" [svgIcon]="status.flag"
+                            [ngClass]="overviewProcessColors[status.id]"></mat-icon>
+                            <span class="main-overview--filter-type__name">
+                                {{status.name}}
+                            </span>
+                        </mat-checkbox>
                     </div>
-                </ng-container>
+                </mat-menu>
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <mat-divider [vertical]="true" class="divider-height"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()" class="reset-button">
@@ -150,7 +169,7 @@
         <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container"
             [fxHide]="workflowGroups.length === 0 && workflowItems.length === 0" fxFlexFill>
             <div class="gant-chart--group-container">
-                <app-gantt-flat *ngIf="workflowGroups.length && workflowItems.length"
+                <app-gantt-flat *ngIf="workflowGroups.length || workflowItems.length"
                     #gantt
                     [items]="workflowItems"
                     [groups]="workflowGroups"
@@ -180,7 +199,7 @@
         <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container"
             [fxHide]="consultantsGroups.length === 0 && consultantsItems.length === 0" fxFlexFill>
             <div class="gant-chart--group-container">
-                <app-gantt-flat *ngIf="consultantsGroups.length && consultantsItems.length"
+                <app-gantt-flat *ngIf="consultantsGroups.length || consultantsItems.length"
                     #gantt
                     [items]="consultantsItems"
                     [groups]="consultantsGroups"

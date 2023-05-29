@@ -68,7 +68,7 @@ export class AppComponent extends AppComponentBase implements OnInit {
 
 	logout() {
 		this.authService.logoutPopup({
-			mainWindowRedirectUri: '/',
+			mainWindowRedirectUri: '/login',
 		});
 	}
 }

@@ -207,7 +207,7 @@ export const SalesConsultantDataSections: SubItemDto[] = [
         anchor: 'salesConsultantContract'
     },
     {
-        name: 'emgaine to emagine',
+        name: 'emagine to emagine',
         anchor: 'salesConsultantEmagineToEmagine'
     }
 ];

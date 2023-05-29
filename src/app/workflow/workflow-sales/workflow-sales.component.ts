@@ -412,7 +412,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					result?.salesMainData?.primarySourcer,
 					{ emitEvent: false }
 				);
-				let expirationNotificationIntervals = new Array<number>(...result.salesMainData?.contractExpirationNotificationIntervalIds);
+				let expirationNotificationIntervals = new Array<number>();
+                expirationNotificationIntervals = result.salesMainData?.contractExpirationNotificationIntervalIds;
 				if (
 					result?.salesMainData?.customContractExpirationNotificationDate !== null &&
 					result?.salesMainData?.customContractExpirationNotificationDate !== undefined
@@ -425,14 +426,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					}
 				);
-				if (result?.salesMainData?.noRemarks) {
-					this.mainDataComponent?.salesMainDataForm.remarks?.disable({
-						emitEvent: false,
-					});
-				}
+				result?.salesMainData?.noRemarks ? this.mainDataComponent?.salesMainDataForm.remarks?.disable() : this.mainDataComponent?.salesMainDataForm.remarks?.enable();
 				if (result?.workflowDocuments?.length) {
 					this.mainDataComponent.mainDocuments?.addExistingFile(result.workflowDocuments);
 				}
+                if (result?.salesMainData?.commissionedEmployeesData?.length) {
+                    for (let user of result?.salesMainData?.commissionedEmployeesData) {
+                        this.mainDataComponent.addCommissionedUser(user);
+                    }
+                }
 				this.clientDataComponent?.salesClientDataForm.patchValue(result, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.patchValue(result.salesClientData!, { emitEvent: false });
 				this.clientDataComponent?.salesClientDataForm.differentEndClient?.setValue(
@@ -923,6 +925,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 		if (this.consutlantDataComponent) {
 			this.consutlantDataComponent.consultantsForm.consultants.controls = [];
+            this.consutlantDataComponent.onsiteClientAddresses = [];
+            this.consutlantDataComponent.filteredSupplierMembers = [];
 		}
 		if (this.mainDataComponent?.mainDocuments) {
 			this.mainDataComponent.mainDocuments.clearDocuments();

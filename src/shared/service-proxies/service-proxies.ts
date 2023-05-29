@@ -1505,58 +1505,6 @@ export class AdminServiceProxy {
     }
 
     /**
-     * @param batchSize (optional) 
-     * @return Success
-     */
-    pullSupplierMembers(batchSize?: number | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Admin/temp/pull-supplier-members?";
-        if (batchSize === null)
-            throw new Error("The parameter 'batchSize' cannot be null.");
-        else if (batchSize !== undefined)
-            url_ += "batchSize=" + encodeURIComponent("" + batchSize) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPullSupplierMembers(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processPullSupplierMembers(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processPullSupplierMembers(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
      * @param dryRun (optional) 
      * @return Success
      */
@@ -13917,13 +13865,12 @@ export class FrameAgreementServiceProxy {
      * @param startDate (optional) 
      * @param endDate (optional) 
      * @param recipientConsultantId (optional) 
-     * @param recipientSupplierId (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    consultantFrameAgreementList(agreementId?: number | undefined, search?: string | undefined, legalEntityId?: number | undefined, salesTypeId?: number | undefined, contractTypeId?: number | undefined, deliveryTypeId?: number | undefined, startDate?: moment.Moment | undefined, endDate?: moment.Moment | undefined, recipientConsultantId?: number | undefined, recipientSupplierId?: number | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementSimpleListItemDtoPaginatedList> {
+    consultantFrameAgreementList(agreementId?: number | undefined, search?: string | undefined, legalEntityId?: number | undefined, salesTypeId?: number | undefined, contractTypeId?: number | undefined, deliveryTypeId?: number | undefined, startDate?: moment.Moment | undefined, endDate?: moment.Moment | undefined, recipientConsultantId?: number | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementSimpleListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/FrameAgreement/consultant-frame-agreement-list?";
         if (agreementId === null)
             throw new Error("The parameter 'agreementId' cannot be null.");
@@ -13961,10 +13908,6 @@ export class FrameAgreementServiceProxy {
             throw new Error("The parameter 'recipientConsultantId' cannot be null.");
         else if (recipientConsultantId !== undefined)
             url_ += "RecipientConsultantId=" + encodeURIComponent("" + recipientConsultantId) + "&";
-        if (recipientSupplierId === null)
-            throw new Error("The parameter 'recipientSupplierId' cannot be null.");
-        else if (recipientSupplierId !== undefined)
-            url_ += "RecipientSupplierId=" + encodeURIComponent("" + recipientSupplierId) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -16675,6 +16618,67 @@ export class PurchaseOrderServiceProxy {
     /**
      * @return Success
      */
+    getPurchaseOrdersForWorkflowOverview(workflowId: string): Observable<PurchaseOrderDto[]> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersForWorkflowOverview/{workflowId}";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPurchaseOrdersForWorkflowOverview(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPurchaseOrdersForWorkflowOverview(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PurchaseOrderDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PurchaseOrderDto[]>;
+        }));
+    }
+
+    protected processGetPurchaseOrdersForWorkflowOverview(response: HttpResponseBase): Observable<PurchaseOrderDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PurchaseOrderDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PurchaseOrderDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     getPurchaseOrdersAvailableForClientPeriod(clientPeriodId: string, directClientId: number): Observable<PurchaseOrderDto[]> {
         let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersAvailableForClientPeriod/{clientPeriodId}/{directClientId}";
         if (clientPeriodId === undefined || clientPeriodId === null)
@@ -18018,70 +18022,6 @@ export class WorkflowServiceProxy {
             }));
         }
         return _observableOf<WorkflowOverviewDto>(null as any);
-    }
-
-    /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @return Success
-     */
-    history(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/history?";
-        if (workflowId === undefined || workflowId === null)
-            throw new Error("The parameter 'workflowId' must be defined.");
-        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processHistory(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processHistory(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<WorkflowHistoryDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<WorkflowHistoryDtoPaginatedList>;
-        }));
-    }
-
-    protected processHistory(response: HttpResponseBase): Observable<WorkflowHistoryDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = WorkflowHistoryDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<WorkflowHistoryDtoPaginatedList>(null as any);
     }
 
     /**
@@ -30262,11 +30202,13 @@ export interface IHistoryFilterNamesDto {
 
 export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     actionName?: string | undefined;
-    entityNameWithKeyValue?: string | undefined;
-    entityKeyFull?: string | undefined;
+    entityName?: string | undefined;
+    entityKey?: { [key: string]: string; } | undefined;
     propertyName?: string | undefined;
-    oldValue?: string | undefined;
-    newValue?: string | undefined;
+    oldValueId?: string | undefined;
+    oldValueDisplay?: string | undefined;
+    newValueId?: string | undefined;
+    newValueDisplay?: string | undefined;
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
@@ -30274,6 +30216,8 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     workflowProcessType?: WorkflowProcessType;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
+    consultantName?: string | undefined;
+    consultantExternalId?: string | undefined;
     clientId?: number | undefined;
     occurredAtUtc?: moment.Moment;
     employeeId?: number | undefined;
@@ -30292,11 +30236,19 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     init(_data?: any) {
         if (_data) {
             this.actionName = _data["actionName"];
-            this.entityNameWithKeyValue = _data["entityNameWithKeyValue"];
-            this.entityKeyFull = _data["entityKeyFull"];
+            this.entityName = _data["entityName"];
+            if (_data["entityKey"]) {
+                this.entityKey = {} as any;
+                for (let key in _data["entityKey"]) {
+                    if (_data["entityKey"].hasOwnProperty(key))
+                        (<any>this.entityKey)![key] = _data["entityKey"][key];
+                }
+            }
             this.propertyName = _data["propertyName"];
-            this.oldValue = _data["oldValue"];
-            this.newValue = _data["newValue"];
+            this.oldValueId = _data["oldValueId"];
+            this.oldValueDisplay = _data["oldValueDisplay"];
+            this.newValueId = _data["newValueId"];
+            this.newValueDisplay = _data["newValueDisplay"];
             this.workflowId = _data["workflowId"];
             this.clientPeriodId = _data["clientPeriodId"];
             this.clientPeriodDisplayId = _data["clientPeriodDisplayId"];
@@ -30304,6 +30256,8 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
             this.workflowProcessType = _data["workflowProcessType"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.consultantId = _data["consultantId"];
+            this.consultantName = _data["consultantName"];
+            this.consultantExternalId = _data["consultantExternalId"];
             this.clientId = _data["clientId"];
             this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
             this.employeeId = _data["employeeId"];
@@ -30322,11 +30276,19 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["actionName"] = this.actionName;
-        data["entityNameWithKeyValue"] = this.entityNameWithKeyValue;
-        data["entityKeyFull"] = this.entityKeyFull;
+        data["entityName"] = this.entityName;
+        if (this.entityKey) {
+            data["entityKey"] = {};
+            for (let key in this.entityKey) {
+                if (this.entityKey.hasOwnProperty(key))
+                    (<any>data["entityKey"])[key] = this.entityKey[key];
+            }
+        }
         data["propertyName"] = this.propertyName;
-        data["oldValue"] = this.oldValue;
-        data["newValue"] = this.newValue;
+        data["oldValueId"] = this.oldValueId;
+        data["oldValueDisplay"] = this.oldValueDisplay;
+        data["newValueId"] = this.newValueId;
+        data["newValueDisplay"] = this.newValueDisplay;
         data["workflowId"] = this.workflowId;
         data["clientPeriodId"] = this.clientPeriodId;
         data["clientPeriodDisplayId"] = this.clientPeriodDisplayId;
@@ -30334,6 +30296,8 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
         data["workflowProcessType"] = this.workflowProcessType;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["consultantId"] = this.consultantId;
+        data["consultantName"] = this.consultantName;
+        data["consultantExternalId"] = this.consultantExternalId;
         data["clientId"] = this.clientId;
         data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
         data["employeeId"] = this.employeeId;
@@ -30345,11 +30309,13 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
 export interface IHistoryPropertiesDto {
     actionName?: string | undefined;
-    entityNameWithKeyValue?: string | undefined;
-    entityKeyFull?: string | undefined;
+    entityName?: string | undefined;
+    entityKey?: { [key: string]: string; } | undefined;
     propertyName?: string | undefined;
-    oldValue?: string | undefined;
-    newValue?: string | undefined;
+    oldValueId?: string | undefined;
+    oldValueDisplay?: string | undefined;
+    newValueId?: string | undefined;
+    newValueDisplay?: string | undefined;
     workflowId?: string | undefined;
     clientPeriodId?: string | undefined;
     clientPeriodDisplayId?: string | undefined;
@@ -30357,6 +30323,8 @@ export interface IHistoryPropertiesDto {
     workflowProcessType?: WorkflowProcessType;
     consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
+    consultantName?: string | undefined;
+    consultantExternalId?: string | undefined;
     clientId?: number | undefined;
     occurredAtUtc?: moment.Moment;
     employeeId?: number | undefined;
@@ -33581,6 +33549,7 @@ export class SendDocuSignEnvelopeCommand implements ISendDocuSignEnvelopeCommand
     emailSubject?: string | undefined;
     emailBody?: string | undefined;
     skipMergeFieldsValidation?: boolean;
+    skipAgreementStatusValidation?: boolean;
 
     constructor(data?: ISendDocuSignEnvelopeCommand) {
         if (data) {
@@ -33603,6 +33572,7 @@ export class SendDocuSignEnvelopeCommand implements ISendDocuSignEnvelopeCommand
             this.emailSubject = _data["emailSubject"];
             this.emailBody = _data["emailBody"];
             this.skipMergeFieldsValidation = _data["skipMergeFieldsValidation"];
+            this.skipAgreementStatusValidation = _data["skipAgreementStatusValidation"];
         }
     }
 
@@ -33625,6 +33595,7 @@ export class SendDocuSignEnvelopeCommand implements ISendDocuSignEnvelopeCommand
         data["emailSubject"] = this.emailSubject;
         data["emailBody"] = this.emailBody;
         data["skipMergeFieldsValidation"] = this.skipMergeFieldsValidation;
+        data["skipAgreementStatusValidation"] = this.skipAgreementStatusValidation;
         return data;
     }
 }
@@ -33636,6 +33607,7 @@ export interface ISendDocuSignEnvelopeCommand {
     emailSubject?: string | undefined;
     emailBody?: string | undefined;
     skipMergeFieldsValidation?: boolean;
+    skipAgreementStatusValidation?: boolean;
 }
 
 export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
@@ -33643,6 +33615,7 @@ export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
     singleEmail?: boolean;
     convertDocumentFileToPdf?: boolean;
     skipMergeFieldsValidation?: boolean;
+    skipAgreementStatusValidation?: boolean;
 
     constructor(data?: ISendEmailEnvelopeCommand) {
         if (data) {
@@ -33663,6 +33636,7 @@ export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
             this.singleEmail = _data["singleEmail"];
             this.convertDocumentFileToPdf = _data["convertDocumentFileToPdf"];
             this.skipMergeFieldsValidation = _data["skipMergeFieldsValidation"];
+            this.skipAgreementStatusValidation = _data["skipAgreementStatusValidation"];
         }
     }
 
@@ -33683,6 +33657,7 @@ export class SendEmailEnvelopeCommand implements ISendEmailEnvelopeCommand {
         data["singleEmail"] = this.singleEmail;
         data["convertDocumentFileToPdf"] = this.convertDocumentFileToPdf;
         data["skipMergeFieldsValidation"] = this.skipMergeFieldsValidation;
+        data["skipAgreementStatusValidation"] = this.skipAgreementStatusValidation;
         return data;
     }
 }
@@ -33692,6 +33667,7 @@ export interface ISendEmailEnvelopeCommand {
     singleEmail?: boolean;
     convertDocumentFileToPdf?: boolean;
     skipMergeFieldsValidation?: boolean;
+    skipAgreementStatusValidation?: boolean;
 }
 
 export class SendToDocuSignTestCommand implements ISendToDocuSignTestCommand {
@@ -34253,6 +34229,7 @@ export interface IStartNewWorkflowInputDto {
 }
 
 export class StepDto implements IStepDto {
+    id?: number | undefined;
     typeId?: StepType;
     readonly name?: string | undefined;
     isFakeActiveStep?: boolean;
@@ -34271,6 +34248,7 @@ export class StepDto implements IStepDto {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.typeId = _data["typeId"];
             (<any>this).name = _data["name"];
             this.isFakeActiveStep = _data["isFakeActiveStep"];
@@ -34295,6 +34273,7 @@ export class StepDto implements IStepDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["typeId"] = this.typeId;
         data["name"] = this.name;
         data["isFakeActiveStep"] = this.isFakeActiveStep;
@@ -34312,6 +34291,7 @@ export class StepDto implements IStepDto {
 }
 
 export interface IStepDto {
+    id?: number | undefined;
     typeId?: StepType;
     name?: string | undefined;
     isFakeActiveStep?: boolean;
@@ -35487,141 +35467,6 @@ export interface IWorkflowDto {
     endClientCrmId?: number | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
     consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
-}
-
-export enum WorkflowElementType {
-    ClientPeriod = 0,
-    ConsultantPeriod = 1,
-    ConsultantTermination = 2,
-    WorkflowTermination = 3,
-}
-
-export class WorkflowHistoryDto implements IWorkflowHistoryDto {
-    workflowId?: string;
-    elementType?: WorkflowElementType;
-    elementId?: string | undefined;
-    eventName?: string | undefined;
-    initiatedBy?: EmployeeDto;
-    operationId?: string | undefined;
-    occurredAtUtc?: moment.Moment;
-
-    constructor(data?: IWorkflowHistoryDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.workflowId = _data["workflowId"];
-            this.elementType = _data["elementType"];
-            this.elementId = _data["elementId"];
-            this.eventName = _data["eventName"];
-            this.initiatedBy = _data["initiatedBy"] ? EmployeeDto.fromJS(_data["initiatedBy"]) : <any>undefined;
-            this.operationId = _data["operationId"];
-            this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): WorkflowHistoryDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowHistoryDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["workflowId"] = this.workflowId;
-        data["elementType"] = this.elementType;
-        data["elementId"] = this.elementId;
-        data["eventName"] = this.eventName;
-        data["initiatedBy"] = this.initiatedBy ? this.initiatedBy.toJSON() : <any>undefined;
-        data["operationId"] = this.operationId;
-        data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IWorkflowHistoryDto {
-    workflowId?: string;
-    elementType?: WorkflowElementType;
-    elementId?: string | undefined;
-    eventName?: string | undefined;
-    initiatedBy?: EmployeeDto;
-    operationId?: string | undefined;
-    occurredAtUtc?: moment.Moment;
-}
-
-export class WorkflowHistoryDtoPaginatedList implements IWorkflowHistoryDtoPaginatedList {
-    items?: WorkflowHistoryDto[] | undefined;
-    pageIndex?: number;
-    readonly totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    readonly hasPreviousPage?: boolean;
-    readonly hasNextPage?: boolean;
-
-    constructor(data?: IWorkflowHistoryDtoPaginatedList) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(WorkflowHistoryDto.fromJS(item));
-            }
-            this.pageIndex = _data["pageIndex"];
-            (<any>this).totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.pageSize = _data["pageSize"];
-            (<any>this).hasPreviousPage = _data["hasPreviousPage"];
-            (<any>this).hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): WorkflowHistoryDtoPaginatedList {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowHistoryDtoPaginatedList();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageIndex"] = this.pageIndex;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["pageSize"] = this.pageSize;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IWorkflowHistoryDtoPaginatedList {
-    items?: WorkflowHistoryDto[] | undefined;
-    pageIndex?: number;
-    totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
 }
 
 export class WorkflowListConsultantDto implements IWorkflowListConsultantDto {
