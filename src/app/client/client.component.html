@@ -3,7 +3,7 @@
         <h2 class="page-main-header u-mb--20">Client list</h2>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)"></manager-multiselect>
+                <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)" class="u-mr--10"></manager-multiselect>
                 <div class="client-list--filter-country cursor-pointer u-mr--10"
                     [matMenuTriggerFor]="countryMenu"
                     (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.focus();"

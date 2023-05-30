@@ -40,6 +40,9 @@
                 @include fontOpenSans(14px, 600);
                 line-height: 140% !important;
                 color: #4a4e60;
+                &.text-bold {
+                    font-weight: 700 !important;
+                }
             }
 
             &-header {
