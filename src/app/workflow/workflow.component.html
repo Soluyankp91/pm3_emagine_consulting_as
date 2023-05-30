@@ -3,7 +3,7 @@
         <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
-                <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)"></manager-multiselect>
+                <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)" class="u-mr--10"></manager-multiselect>
                 <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--10" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">

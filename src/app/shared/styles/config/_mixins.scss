@@ -13,7 +13,7 @@
 @mixin fontOpenSans($font-size, $font-weight) {
     font-family: "Open Sans", sans-serif !important;
     font-size: $font-size !important;
-    font-weight: $font-weight;
+    font-weight: $font-weight !important;
 }
 
 @mixin fontLineHeightAndSize($font-size, $line-height, $width, $height) {
