@@ -17,7 +17,11 @@
             line-height: 120% !important;
         }
     }
+}
 
+.sub-header {
+    @include fontOpenSans(14px, 700);
+    color: rgba($color: #384853, $alpha: 0.87) !important;
 }
 
 .fullDialogDivider {
