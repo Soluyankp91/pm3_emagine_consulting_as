@@ -25,12 +25,8 @@
             flex-direction: column;
             @include fontOpenSans(12px, 700);
             font-style: normal;
-            line-height: 140%;
             color: $dark-grey-color;
             text-transform: uppercase;
-            &-name {
-                line-height: 140%;
-            }
             &:hover {
                 font-weight: 800;
             }

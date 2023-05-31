@@ -250,14 +250,14 @@
                         Cancel
                     </button>
                 </ng-container>
-                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']">
+                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions![eStepPermissions.Edit]">
                     <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16"
                         appPreventDoubleClick
                         (throttledClick)="saveOrCompleteStep(true)">
                         {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
                     </button>
                 </ng-container>
-                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']">
+                <ng-container *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions![eStepPermissions.Completion]">
                     <button color="primary"
                             class="button-accept mat-elevation-z0"
                             mat-flat-button

@@ -3,31 +3,39 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { Store } from '@ngrx/store';
+
 import { EmployeeServiceProxy, CurrentEmployeeDto, ConfigurationServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { loadEmployees, loadResponsiblePersons } from './store/actions/core.actions';
 @Component({
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 })
 export class AppComponent extends AppComponentBase implements OnInit {
-	accountInfo: any;
-	currentEmployee: CurrentEmployeeDto | undefined;
+    production = environment.production;
+    accountInfo: any;
+    currentEmployee: CurrentEmployeeDto | undefined;
 	contractsEnabled: boolean = false;
-
 	constructor(
 		injector: Injector,
 		private router: Router,
 		private authService: MsalService,
 		private _employeeService: EmployeeServiceProxy,
-		private _configurationService: ConfigurationServiceProxy
+		private _configurationService: ConfigurationServiceProxy,
+        private _store: Store,
 	) {
 		super(injector);
 	}
 
-	ngOnInit(): void {
-		this.accountInfo = this.authService.instance.getActiveAccount();
-		this.getCurrentEmployee();
-		this.getConfigurations();
-	}
+    ngOnInit(): void {
+        const loader = document.getElementById('appLoader') as HTMLElement;
+        loader?.remove();
+        this.accountInfo = this.authService.instance.getActiveAccount();
+        this.getCurrentEmployee();
+        this.getConfigurations();
+        this._store.dispatch(loadEmployees());
+        this._store.dispatch(loadResponsiblePersons());
+    }
 
 	openSourcingApp() {
 		window.open(environment.sourcingUrl, '_blank');
@@ -60,7 +68,7 @@ export class AppComponent extends AppComponentBase implements OnInit {
 
 	logout() {
 		this.authService.logoutPopup({
-			mainWindowRedirectUri: '/',
+			mainWindowRedirectUri: '/login',
 		});
 	}
 }

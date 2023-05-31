@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
@@ -47,31 +48,72 @@ export class InternalLookupService {
     periodUnitTypes: EnumEntityTypeDto[] = [];
     purchaseOrderCapTypes: { [key: string]: string };
     envelopeProcessingPaths: { [key: string]: string };
+    consultantShownOnClientInvoiceAs: { [key: string]: string };
 
+    staticEnums: { [key: string]: any };
     constructor(private _enumService: EnumServiceProxy) {
     }
 
-    getData() {
-        this.getCurrencies();
-        this.getDeliveryTypes();
-        this.getInvoicingTimes();
-        this.getSaleTypes();
-        this.getProjectTypes();
-        this.getUnitTypes();
-        this.getInvoiceFrequencies();
-        this.getSignerRoles();
-        this.getMargins();
-        this.getExtensionDeadlines();
-        this.getExtensionDurations();
-        this.getSpecialFeeFrequencies();
-        this.getSpecialFeeSpecifications();
-        this.getSpecialRateReportUnits();
-        this.getSpecialRateSpecifications();
-        this.getWorkflowClientPeriodTypes();
-        this.getWorkflowConsultantPeriodTypes();
-        this.getWorkflowPeriodStepTypes();
-        this.getLegalEntities();
-        this.getSyncStateStatuses();
+
+    getData(): Observable<any> {
+        const enumsApi = {
+            currencies: this.getCurrencies(),
+            deliveryTypes: this.getDeliveryTypes(),
+            invoicingTimes: this.getInvoicingTimes(),
+            saleTypes: this.getSaleTypes(),
+            projectTypes: this.getProjectTypes(),
+            rateUnitTypes: this.getRateUnitTypes(),
+            invoiceFrequencies: this.getInvoiceFrequencies(),
+            signerRoles: this.getSignerRoles(),
+            margins: this.getMargins(),
+            extensionDeadlines: this.getExtensionDeadlines(),
+            extensionDurations: this.getExtensionDurations(),
+            specialFeeFrequencies: this.getSpecialFeeFrequencies(),
+            specialFeeSpecifications: this.getSpecialFeeSpecifications(),
+            specialRateReportUnits: this.getSpecialRateReportUnits(),
+            specialRateSpecifications: this.getSpecialRateSpecifications(),
+            workflowClientPeriodTypes: this.getWorkflowClientPeriodTypes(),
+            workflowConsultantPeriodTypes: this.getWorkflowConsultantPeriodTypes(),
+            workflowPeriodStepTypes: this.getWorkflowPeriodStepTypes(),
+            legalEntities: this.getLegalEntities(),
+            syncStateStatuses: this.getSyncStateStatuses(),
+            contractExpirationNotificationInterval: this.getContractExpirationNotificationInterval(),
+            legalContractStatuses: this.getLegalContractStatuses(),
+            clientTimeReportingCap: this.getClientTimeReportingCap(),
+            emagineOffices: this.getEmagineOfficeList(),
+            commissionFrequencies: this.getCommissionFrequency(),
+            commissionTypes: this.getCommissionTypes(),
+            commissionRecipientTypes: this.getCommissionRecipientTypes(),
+            tenants: this.getTenants(),
+            projectCategories: this.getProjectCategory(),
+            discounts: this.getDiscounts(),
+            terminationTimes: this.getTerminationTimes(),
+            terminationReasons: this.getTerminationReasons(),
+            employmentTypes: this.getEmploymentTypes(),
+            expectedWorkloadUnits: this.getExpectedWorkloadUnit(),
+            countries: this.getCountries(),
+            consultantTimeReportingCap: this.getConsultantTimeReportingCap(),
+            workflowStatuses: this.getWorkflowStatuses(),
+            consultantInsuranceOptions: this.getConsultantInsuranceOptions(),
+            valueUnitTypes: this.getValueUnitTypes(),
+            periodUnitTypes: this.getPeriodUnitTypes(),
+            purchaseOrderCapTypes: this.getPurchaseOrderCapTypes(),
+            consultantShownOnClientInvoiceAs: this.getConsultantShownOnClientInvoiceAs(),
+        };
+        return forkJoin(enumsApi).pipe(
+            switchMap((result: any) => {
+                this.staticEnums = result;
+                localStorage.setItem('staticEnums', JSON.stringify(this.staticEnums));
+                return of(result);
+            })
+        );
+    }
+
+    getEnumValue(value: string) {
+        if (!this.staticEnums) {
+            this.staticEnums = JSON.parse(localStorage.getItem('staticEnums'));
+        }
+        return this.staticEnums[value];
     }
 
     getCurrencies(): Observable<EnumEntityTypeDto[]> {
@@ -92,7 +134,7 @@ export class InternalLookupService {
         });
     }
 
-    getUnitTypes(): Observable<EnumEntityTypeDto[]> {
+    getRateUnitTypes(): Observable<EnumEntityTypeDto[]> {
         return new Observable<EnumEntityTypeDto[]>((observer) => {
             if (this.rateUnitTypes.length) {
                 observer.next(this.rateUnitTypes);
@@ -721,6 +763,7 @@ export class InternalLookupService {
             }
         });
     }
+
     getLegalEntities(): Observable<LegalEntityDto[]> {
         return new Observable<LegalEntityDto[]>((observer) => {
             if (this.legalEntities.length) {
@@ -755,7 +798,7 @@ export class InternalLookupService {
             }
         });
     }
-
+//
     getValueUnitTypes(): Observable<EnumEntityTypeDto[]> {
         return new Observable<EnumEntityTypeDto[]>((observer) => {
             if (this.valueUnitTypes.length) {
@@ -819,6 +862,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.envelopeProcessingPaths = response;
                         observer.next(this.envelopeProcessingPaths);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getConsultantShownOnClientInvoiceAs(): Observable<{ [key: string]: string }> {
+        return new Observable<{ [key: string]: string }>((observer) => {
+            if (this.consultantShownOnClientInvoiceAs !== undefined && this.consultantShownOnClientInvoiceAs !== null) {
+                observer.next(this.consultantShownOnClientInvoiceAs);
+                observer.complete();
+            } else {
+                this._enumService.consultantShownOnClientInvoiceAs()
+                    .subscribe(response => {
+                        this.consultantShownOnClientInvoiceAs = response;
+                        observer.next(this.consultantShownOnClientInvoiceAs);
                         observer.complete();
                     }, error => {
                         observer.error(error);

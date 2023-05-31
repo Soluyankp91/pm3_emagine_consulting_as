@@ -3,21 +3,18 @@ import { UntypedFormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil, map } from 'rxjs/operators';
+import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import {
-	EmployeeDto,
 	EmployeeServiceProxy,
 	EnumEntityTypeDto,
-	LookupServiceProxy,
+	LegalEntityDto,
 	MainOverviewItemPeriodDto,
 	MainOverviewServiceProxy,
 	MainOverviewStatus,
 	MainOverviewStatusDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { SelectableIdNameDto } from '../client/client.model';
-import { InternalLookupService } from '../shared/common/internal-lookup.service';
-import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
+import { ManagerStatus } from '../shared/components/responsible-person/responsible-person.model';
 import { OverviewFilterColors, OverviewFlag, OverviewProcessColors, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
@@ -27,7 +24,7 @@ import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 
-const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.3';
+const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.4';
 
 @Component({
 	selector: 'app-main-overview',
@@ -80,6 +77,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	managerStatus = ManagerStatus;
 	mainOverviewStatuses: MainOverviewStatusDto;
 	filteredMainOverviewStatuses: SelectableStatusesDto[] = [];
+    selectedWFStatuses: SelectableStatusesDto[] = [];
 	overviewViewTypes: { [key: string]: string };
 	cutOffDate = moment();
 	userSelectedStatuses: MainOverviewStatusDto[] = [];
@@ -129,49 +127,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	constructor(
 		injector: Injector,
-		private _lookupService: LookupServiceProxy,
-		private _internalLookupService: InternalLookupService,
 		private _mainOverviewService: MainOverviewServiceProxy,
 		private router: Router,
 		private _employeeService: EmployeeServiceProxy,
         private _titleService: TitleService,
 	) {
 		super(injector);
-		this.accountManagerFilter.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ? value : '',
-						maxRecordsCount: 1000,
-						showAll: true,
-						excludeIds: this.selectedAccountManagers.map((x) => +x.id),
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.name : value;
-					}
-					this.isLoading = true;
-					return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredAccountManagers = list.map((x) => {
-						return new SelectableEmployeeDto({
-							id: x.id!,
-							name: x.name!,
-							externalId: x.externalId!,
-							selected: false,
-						});
-					});
-				} else {
-					this.filteredAccountManagers = [
-						{ name: 'No managers found', externalId: '', id: 'no-data', selected: false },
-					];
-				}
-				this.isLoading = false;
-			});
 
 		merge(
 			this.invoicingEntityControl.valueChanges,
@@ -191,10 +152,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.Overview);
-		this.getLegalEntities();
-		this.getSalesType();
-		this.getDeliveryTypes();
-		this.getMargins();
+        this._getEnums();
 		this.getMainOverviewStatuses();
 		this.getOverviewViewTypes();
 		this.getCurrentUser();
@@ -203,6 +161,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
+	}
+
+	managersChanged(event: SelectableEmployeeDto[]) {
+		this.selectedAccountManagers = event;
+		this.changeViewType(true);
 	}
 
 	updateAdvancedFiltersCounter() {
@@ -236,18 +199,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	detectIcon(process: number) {
 		switch (process) {
 			case OverviewFlag.ExtensionExpected:
-				return 'check-circle';
+				return 'extension-expected-icon';
 			case OverviewFlag.Extended:
 			case OverviewFlag.Started:
-				return 'check-circle-fill';
+				return 'extended-or-started-icon';
 			case OverviewFlag.ExpectedToTerminate:
-				return 'cancel';
+				return 'expected-to-terminate-icon';
 			case OverviewFlag.Terminated:
-				return 'cancel-fill';
+				return 'terminated-icon';
 			case OverviewFlag.ExtensionInNegotiation:
-				return 'schedule';
+				return 'negotiation-icon';
 			case OverviewFlag.RequiresAttention:
-				return 'warning';
+				return 'attention-required-icon';
 			default:
 				return '';
 		}
@@ -513,78 +476,25 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		}
 	}
 
-	optionClicked(
-		event: Event,
-		item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto,
-		list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]
-	) {
-		event.stopPropagation();
-		this.toggleSelection(item, list);
-	}
+    private _getEnums() {
+        this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
+        this.saleTypes = this.getStaticEnumValue('saleTypes');
+        this.margins = this.getStaticEnumValue('margins');
+        this.legalEntities = this._mapLegalEntitiesIntoSelectable(this.getStaticEnumValue('legalEntities'));
+    }
 
-	toggleSelection(item: any, list: any) {
-		item.selected = !item.selected;
-		if (item.selected) {
-			if (!list.includes(item)) {
-				list.push(item);
-			}
-		} else {
-			const i = list.findIndex((value: any) => value.name === item.name);
-			list.splice(i, 1);
-		}
-		this.changeViewType(true);
-	}
-
-	getLegalEntities() {
-		this.isCountriesLoading = true;
-		this._internalLookupService
-			.getLegalEntities()
-			.pipe(
-				finalize(() => (this.isCountriesLoading = false)),
-				map((entities) =>
-					entities.map((x) => {
-						return new SelectableCountry({
-							id: x.id!,
-							name: x.name!,
-							tenantName: x.tenantName!,
-							code: MapTenantCountryCode(x.tenantName!)!,
-							selected: false,
-							flag: x.tenantName!,
-						});
-					})
-				)
-			)
-			.subscribe((result) => {
-				this.legalEntities = result;
-			});
-	}
-
-	getSalesType() {
-		this._internalLookupService
-			.getSaleTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.saleTypes = result;
-			});
-	}
-
-	getDeliveryTypes() {
-		this._internalLookupService
-			.getDeliveryTypes()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.deliveryTypes = result;
-			});
-	}
-
-	getMargins() {
-		this._internalLookupService
-			.getMargins()
-			.pipe(finalize(() => {}))
-			.subscribe((result) => {
-				this.margins = result;
-			});
-	}
+    private _mapLegalEntitiesIntoSelectable(entities: LegalEntityDto[]) {
+        return entities.map((x) => {
+            return new SelectableCountry({
+                id: x.id!,
+                name: x.name!,
+                tenantName: x.tenantName!,
+                code: MapTenantCountryCode(x.tenantName!)!,
+                selected: false,
+                flag: x.tenantName!,
+            })
+        });
+    }
 
 	getMainOverviewStatuses() {
 		this._mainOverviewService.statuses().subscribe((result) => {
@@ -601,11 +511,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 				});
 			});
 		});
-	}
-
-	changeOverviewStatus(status: SelectableStatusesDto) {
-		status.selected = !status.selected;
-		this.changeViewType(true);
 	}
 
 	statusesTrackBy(index: number, item: SelectableStatusesDto) {
@@ -700,6 +605,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.salesTypeControl.setValue(null, { emitEvent: false });
 		this.deliveryTypesControl.setValue(null, { emitEvent: false });
 		this.marginsControl.setValue(null, { emitEvent: false });
+		this.selectedWFStatuses = [];
 		this.filteredMainOverviewStatuses.forEach((x) => {
 			x.selected = false;
 		});
@@ -722,7 +628,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
 			searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
 			margins: this.marginsControl.value ?? undefined,
-			mainOverviewStatus: this.filteredMainOverviewStatuses.filter((x) => x.selected),
+			// mainOverviewStatus: this.filteredMainOverviewStatuses.filter((x) => x.selected),
+            wfStatuses: this.selectedWFStatuses,
 			cutOffDate: this.cutOffDate,
 			overviewViewTypeControl: this.overviewViewTypeControl.value,
 			viewType: this.viewType.value,
@@ -747,12 +654,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.invoicingEntityControl.setValue(filters?.invoicingEntity, { emitEvent: false });
 			this.workflowFilter.setValue(filters?.searchFilter, { emitEvent: false });
 			this.marginsControl.setValue(filters?.margins, { emitEvent: false });
-			if (filters?.mainOverviewStatus?.length) {
-				filters.mainOverviewStatus.forEach((status: SelectableStatusesDto) => {
-					const index = this.filteredMainOverviewStatuses.findIndex((x) => x.id === status?.id);
-					if (index > -1) {
-						this.filteredMainOverviewStatuses[index].selected = true;
-					}
+            this.selectedWFStatuses = filters.wfStatuses?.length ? filters.wfStatuses : [];
+			if (this.selectedWFStatuses.length) {
+				this.filteredMainOverviewStatuses.forEach((x) => {
+					x.selected = this.selectedWFStatuses.some((item) => item.id === x.id);
 				});
 			}
 			this.cutOffDate = filters?.cutOffDate;
@@ -761,16 +666,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		}
 		this.updateAdvancedFiltersCounter();
 		this.changeViewType();
-	}
-
-	openMenu(event: any) {
-		event.stopPropagation();
-		this.trigger.openPanel();
-	}
-
-	onOpenedMenu() {
-		this.accountManagerFilter.setValue('');
-		this.accountManagerFilter.markAsTouched();
 	}
 
 	compareWithFn(listOfItems: any, selectedItem: any) {
@@ -783,5 +678,21 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	resetInvoicingEntity() {
 		this.invoicingEntityControl.setValue(null);
+	}
+
+    wfStatusClicked(event: Event, item: SelectableStatusesDto) {
+		event.stopPropagation();
+		this.wfStatusFilterControl(item);
+	}
+
+    wfStatusFilterControl(item: SelectableStatusesDto) {
+		const index = this.selectedWFStatuses.findIndex((x) => x.id === item.id);
+		if (index >= 0) {
+			this.selectedWFStatuses.splice(index, 1);
+		} else {
+			this.selectedWFStatuses.push(item);
+		}
+		item.selected = !item.selected;
+		this.changeViewType(true);
 	}
 }

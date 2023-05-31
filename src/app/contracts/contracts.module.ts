@@ -43,7 +43,6 @@ import { CreationComponent } from './client-specific-templates/edit-template/set
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
-import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
 import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled.component';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
@@ -90,6 +89,10 @@ import { EnvelopePathComponent } from './shared/components/envelope-path/envelop
 import { ActionDialogComponent } from './shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from './shared/components/default-file-uploader/default-file-uploader.component';
 import { AgreementLogsComponent } from './shared/components/agreement-logs/agreement-logs.component';
+import { OutdatedMergeFieldsComponent } from './shared/components/popUps/outdated-merge-fields/outdated-merge-fields.component';
+import { EmptyAndUnknownMfComponent } from './shared/components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
+import { ArchiveComponent } from './agreements/archive/archive.component';
+import { EmailBodyComponent } from './shared/components/popUps/email-body/email-body.component';
 
 @NgModule({
 	declarations: [
@@ -157,8 +160,12 @@ import { AgreementLogsComponent } from './shared/components/agreement-logs/agree
 		EnvelopePathFilterComponent,
 		EnvelopePathComponent,
 		ActionDialogComponent,
-  DefaultFileUploaderComponent,
-  AgreementLogsComponent,
+		DefaultFileUploaderComponent,
+		AgreementLogsComponent,
+  OutdatedMergeFieldsComponent,
+  EmptyAndUnknownMfComponent,
+  ArchiveComponent,
+  EmailBodyComponent,
 	],
 	imports: [
 		CommonModule,
@@ -185,7 +192,6 @@ import { AgreementLogsComponent } from './shared/components/agreement-logs/agree
 		MergeFieldsServiceProxy,
 		AgreementTemplateAttachmentServiceProxy,
 		AgreementAttachmentServiceProxy,
-		CreationTitleService,
 		DownloadFilesService,
 		ExtraHttpsService,
 	],
@@ -402,6 +408,18 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'legal-contract-upload',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contract-upload.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'reminder-send',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/reminder-send.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'partially-sign',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/partially-sign.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'archive-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/archive-icon.svg')
 		);
 	}
 }

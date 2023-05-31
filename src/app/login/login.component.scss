@@ -2,60 +2,61 @@
 @import "/src/app/shared/styles/config/_mixins";
 
 .login {
+    background-image: url('../../assets/common/images/login-bg.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
     width: 100vw;
     height: 100vh;
-    background: #fff;
     position: relative;
     overflow: hidden;
-    &-vector {
-        width: 1200px;
-        height: 1200px;
-        z-index: 0;
-        opacity: 0.22;
-        &.top {
-            position: absolute;
-            top: -385px;
-            right: 0;
-        }
-        &.bottom {
-            position: absolute;
-            bottom: -495px;
-            right: 0;
-        }
-    }
     &-main {
         border-right: 1px solid $sand-color;
-        z-index: 1;
+        padding: 4rem;
         &--content {
-            margin-left: 56px;
             &-header {
-                mat-icon {
-                    height: 71px !important;
-                    width: 71px !important;
+                .logo {
+                    &-bg {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 3.5rem !important;
+                        height: 3.5rem !important;
+                        border-radius: 0.5rem;
+                        background-color: $green-color;
+                    }
+                    &-icon {
+                        width: 1.75rem !important;
+                        height: 1.75rem !important;
+                    }
+                }
+                img {
+                    margin-left: -10px;
                 }
             }
             h1 {
-                @include fontAtyp(62px, 700);
+                @include fontAtyp(4.4rem, 600);
                 color: $dark-grey-color;
-                line-height: 1;
+                line-height: 54px !important;
             }
             p {
-                @include fontAtyp(18px, 500);
+                @include fontAtyp(1.3rem, 500);
                 color: $medium-grey-color;
+                line-height: 18px;
             }
         }
     }
     &-side {
-        z-index: 1;
+        padding: 0 6rem;
         h2 {
-            @include fontAtyp(14px, 400);
+            @include fontAtyp(1rem, 400);
             color: $medium-grey-color;
         }
     }
     &-icon {
         position: absolute;
         top: 47px;
-        left: 50px;
+        left: 52px;
         width: 210px;
         height: 35px;
     }
@@ -68,16 +69,17 @@
             @include fontLineHeightAndSize(50px, 50px, 50px, 50px);
         }
         &--name {
-            @include fontAtyp(20px, 400);
+            @include fontAtyp(1.4rem, 400);
             display: flex;
             align-items: center;
             color: $dark-grey-color;
             &::before {
                 content: '•';
                 color: $light-grey-color;
-                margin: 0 15px;
+                margin: 0 1rem;
             }
         }
     }
 
 }
+

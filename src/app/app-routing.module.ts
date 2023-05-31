@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { AppComponent } from './app.component';
 import { ContractsProductionGuard } from './guards/production.guard';
+import { InitialDataResolver } from './app.resolver';
 
 @NgModule({
 	imports: [
@@ -10,6 +11,9 @@ import { ContractsProductionGuard } from './guards/production.guard';
 			{
 				path: '',
 				component: AppComponent,
+				resolve: {
+					appData: InitialDataResolver,
+				},
 				children: [
 					{
 						path: '',

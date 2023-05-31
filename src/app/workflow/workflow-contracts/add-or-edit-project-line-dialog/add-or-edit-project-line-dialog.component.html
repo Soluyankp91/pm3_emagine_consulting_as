@@ -68,9 +68,9 @@
                         Fees billed with this Project line
                     </mat-checkbox>
 
-                    <mat-form-field appearance="outline" class="form-width-350 u-mt--10 textarea-input textarea-with-hint">
+                    <mat-form-field appearance="outline" class="form-width-340 u-mt--10 textarea-input textarea-with-hint">
                         <mat-label>Optional invoicing info</mat-label>
-                        <textarea matInput autocomplete="new-password" maxlength="250" cdkAutosizeMinRows="5"
+                        <textarea matInput autocomplete="new-password" maxlength="250" cdkAutosizeMinRows="2"
                             cdkTextareaAutosize name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo"
                             class="u-pb--10">
                         </textarea>
@@ -81,7 +81,7 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
                     <h2 class="section-header">Invoicing</h2>
-                    <mat-form-field appearance="outline" class="form-width-350 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
+                    <mat-form-field appearance="outline" class="form-width-340 u-mt--10 formFieldNoMarginPadding autocompleteWithShevron client-address-autocomplete" [ngClass]="{'isPanelOpen': clientInvoicingRecipientAutocomplete.isOpen}">
                         <mat-label>Invoice recipient</mat-label>
                         <input #clientInvoicingRecipientInput type="text" matInput
                             [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId"
@@ -108,13 +108,8 @@
                             </ng-container>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-checkbox color="accent" name="differentInvoiceRecipient"
-                        formControlName="differentInvoiceRecipient" class="black-checkbox"
-                        (change)="toggleDIsabledStateForInvoicing(!projectLineForm.differentInvoiceRecipient!.value)">
-                        Different invoice recipient
-                    </mat-checkbox>
                     <mat-form-field appearance="outline" [ngClass]="{'is-empty': !projectLineForm.invoiceRecipientAddress.value}"
-                        class="formFieldNoMarginPadding filter-select form-width-350 client-address-autocomplete">
+                        class="formFieldNoMarginPadding filter-select form-width-340 client-address-autocomplete">
                         <mat-label>Client address</mat-label>
                         <mat-select formControlName="invoiceRecipientAddress"
                             [disableOptionCentering]="true" placeholder="Direct client address" [compareWith]="compareWithFn">
@@ -128,7 +123,7 @@
                                 </div>
                             </mat-select-trigger>
                             <ng-container *ngFor="let item of recipientAddresses; trackBy: trackById">
-                                <mat-option [value]="item">
+                                <mat-option [value]="item" [fxHide]="item.isHidden">
                                     <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                         <span class="multilineDropdown-option--column-client-name">
                                             {{item.displayValue }}</span>
@@ -140,6 +135,11 @@
                             </ng-container>
                         </mat-select>
                     </mat-form-field>
+                    <mat-checkbox color="accent" name="differentInvoiceRecipient"
+                        formControlName="differentInvoiceRecipient" class="black-checkbox"
+                        (change)="toggleDIsabledStateForInvoicing(!projectLineForm.differentInvoiceRecipient!.value)">
+                        Different invoice recipient
+                    </mat-checkbox>
                     <mat-form-field appearance="outline" class="form-width-340 u-mt--10 formFieldNoMarginPadding">
                         <mat-label>Debitor number</mat-label>
                         <input matInput type="text" formControlName="debtorNumber">
@@ -151,7 +151,7 @@
                     </mat-checkbox>
 
                     <ng-container *ngIf="!projectLineForm.value?.invoicingReferencePersonDontShowOnInvoice">
-                        <mat-form-field appearance="outline" class="form-width-350 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
+                        <mat-form-field appearance="outline" class="form-width-340 u-mt--10 filter-select autocompleteWithShevron" [ngClass]="{'isPanelOpen': invoicingReferencePersonAutocomplete.isOpen}">
                             <mat-label>Invoice reference person</mat-label>
                             <input #invoicingReferencePersonAutocompleteInput type="text" matInput
                                 [matAutocomplete]="invoicingReferencePersonAutocomplete"

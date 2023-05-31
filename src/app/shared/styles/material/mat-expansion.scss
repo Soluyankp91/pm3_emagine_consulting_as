@@ -5,6 +5,9 @@
 }
 
 .client-documents--contract-folders {
+    h4 {
+        font-weight: 700 !important;
+    }
     .documents-chevron {
         transition: all 0.3s ease-in-out;
         &.expanded-chevron {

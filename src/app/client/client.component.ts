@@ -3,9 +3,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
+import { takeUntil, debounceTime, finalize, map, filter } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientListItemDto, ClientsServiceProxy, EmployeeServiceProxy, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -82,7 +82,6 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         injector: Injector,
         private router: Router,
         private _enumService: EnumServiceProxy,
-        private _lookupService: LookupServiceProxy,
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
@@ -95,41 +94,6 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             debounceTime(700)
         ).subscribe(() => {
             this.getClientsGrid(true);
-        });
-
-
-        this.accountManagerFilter.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(500),
-            switchMap((value: any) => {
-                let toSend = {
-                    name: value,
-                    maxRecordsCount: 1000,
-                    showAll: true,
-                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
-                };
-                if (value?.id) {
-                    toSend.name = value.id
-                        ? value.name
-                        : value;
-                }
-                this.isManagersLoading = true;
-                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
-            }),
-        ).subscribe((list: EmployeeDto[]) => {
-            if (list.length) {
-                this.filteredAccountManagers = list.map(x => {
-                    return new SelectableEmployeeDto({
-                        id: x.id!,
-                        name: x.name!,
-                        externalId: x.externalId!,
-                        selected: false
-                    })
-                });
-            } else {
-                this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
-            }
-            this.isManagersLoading = false;
         });
     }
 
@@ -166,6 +130,11 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                 );
             });
     }
+
+    managersChanged(event: SelectableEmployeeDto[]) {
+		this.selectedAccountManagers = event;
+		this.getClientsGrid(true);
+	}
 
     private _filterCountries(value: string): SelectableCountry[] {
         const filterValue = value.toLowerCase();

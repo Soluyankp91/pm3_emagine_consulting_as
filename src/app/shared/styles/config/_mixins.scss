@@ -13,7 +13,7 @@
 @mixin fontOpenSans($font-size, $font-weight) {
     font-family: "Open Sans", sans-serif !important;
     font-size: $font-size !important;
-    font-weight: $font-weight !important;
+    font-weight: $font-weight;
 }
 
 @mixin fontLineHeightAndSize($font-size, $line-height, $width, $height) {
@@ -25,6 +25,12 @@
 
 @mixin fontAtyp($font-size, $font-weight) {
     font-family: 'Atyp' !important;
+    font-size: $font-size;
+    font-weight: $font-weight;
+}
+
+@mixin fontAtypDisplayBold($font-size, $font-weight) {
+    font-family: 'AtypDisplayBold' !important;
     font-size: $font-size;
     font-weight: $font-weight;
 }

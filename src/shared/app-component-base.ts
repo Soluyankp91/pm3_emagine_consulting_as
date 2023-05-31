@@ -6,8 +6,9 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
-import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, WorkflowHistoryDto } from "./service-proxies/service-proxies";
+import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, PurchaseOrderDto } from "./service-proxies/service-proxies";
 import { EProfileImageLinkTypes } from "./AppEnums";
+import { InternalLookupService } from "src/app/shared/common/internal-lookup.service";
 import { MomentFormatPipe } from "./common/pipes/moment-format.pipe";
 
 export enum NotifySeverity {
@@ -25,13 +26,15 @@ export abstract class AppComponentBase {
     consultantPhotoUrl = AppConsts.consultantPhotoUrl;
     employeePhotoUrl = AppConsts.employeePhotoUrl;
     imageType = EProfileImageLinkTypes;
+    internalLookupService: InternalLookupService;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
         this.matSnackbar = injector.get(MatSnackBar);
+        this.internalLookupService = injector.get(InternalLookupService);
     }
 
-	showNotify(severity: number, text: string, buttonText: string = 'OK') {
+	showNotify(severity: number, text: string, buttonText: string = '') {
 		const className = this.mapSeverity(severity);
 		this.matSnackbar.open(text, buttonText, { duration: 3000, panelClass: [className, 'general-snackbar'] });
 	}
@@ -172,9 +175,6 @@ export abstract class AppComponentBase {
     trackByItem(index: number, item: any) {
         return item;
     }
-    trackByOperationId(index: number, item: WorkflowHistoryDto) {
-        return item?.operationId;
-    }
 
 	displayConsultantNameFn(option: any) {
 		return option?.consultant?.name;
@@ -211,6 +211,10 @@ export abstract class AppComponentBase {
         }
     }
 
+    displayPOFn(option: PurchaseOrderDto) {
+		return option?.number;
+	}
+
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
 	}
@@ -220,12 +224,23 @@ export abstract class AppComponentBase {
 		b.style.overflow = overflowStyle;
 	}
 
+    onAutocompleteClosed(control: AbstractControl | null | undefined, idValue: string) {
+        if (!control.value?.[idValue]) {
+            control.setValue('');
+        }
+        this.focusToggleMethod('auto');
+    }
+
     arrayToEnum(list: EnumEntityTypeDto[]) {
         let result: { [key: number]: string} = {};
         list.forEach(x => {
             result[x.id] = x.name
         });
         return result;
+    }
+
+    getStaticEnumValue(key: string): any {
+        return this.internalLookupService.getEnumValue(key);
     }
 
 }

@@ -100,54 +100,59 @@
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Extend">
             <form [formGroup]="extendWorkflowForm">
-                <h3 class="confirmation-dialog--label">Select extension end date</h3>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                    <div class="u-mr--12">
-                        <mat-form-field appearance="outline" class="form-width-170">
-                            <mat-label>Start date</mat-label>
-                            <input autocomplete="off" placeholder="New end date" matInput
-                                    [matDatepicker]="startDatePicker"
-                                    name="startDate"
-                                    formControlName="startDate"
-                                    (focus)="startDatePicker.open()"
-                                    required
-                                    appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
-                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                            <mat-datepicker #startDatePicker></mat-datepicker>
-                            <mat-error>
-                                <app-validator [control]="extendWorkflowForm.startDate"></app-validator>
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div fxLayout="column" fxLayoutAlign="center start">
-                        <mat-form-field appearance="outline" class="form-width-170 mb--5">
-                            <mat-label>New end date</mat-label>
-                            <input autocomplete="off" placeholder="New end date" matInput
-                                    [matDatepicker]="extensionDatePicker"
-                                    name="endDate"
-                                    [min]="minEndDate"
-                                    formControlName="endDate"
-                                    required
-                                    (focus)="extensionDatePicker.open()"
-                                    appPreventDoubleClick (throttledClick)="extensionDatePicker.open()" readonly>
-                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                            <mat-datepicker #extensionDatePicker></mat-datepicker>
-                            <mat-error>
-                                <app-validator [control]="extendWorkflowForm.endDate"></app-validator>
-                            </mat-error>
-                        </mat-form-field>
+                <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100 u-mt--10">
+                    <h3 class="confirmation-dialog--label u-mr--12 u-mt--15">Client extension end date</h3>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div class="u-mr--12">
+                            <mat-form-field appearance="outline" class="form-width-170">
+                                <mat-label>Start date</mat-label>
+                                <input autocomplete="off" placeholder="New end date" matInput
+                                        [matDatepicker]="startDatePicker"
+                                        name="startDate"
+                                        formControlName="startDate"
+                                        (focus)="startDatePicker.open()"
+                                        required
+                                        appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #startDatePicker></mat-datepicker>
+                                <mat-error>
+                                    <app-validator [control]="extendWorkflowForm.startDate"></app-validator>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="center start">
+                            <mat-form-field appearance="outline" class="form-width-170 mb--5">
+                                <mat-label>New end date</mat-label>
+                                <input autocomplete="off" placeholder="New end date" matInput
+                                        [matDatepicker]="extensionDatePicker"
+                                        name="endDate"
+                                        [min]="minEndDate"
+                                        formControlName="endDate"
+                                        required
+                                        (focus)="extensionDatePicker.open()"
+                                        appPreventDoubleClick (throttledClick)="extensionDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #extensionDatePicker></mat-datepicker>
+                                <mat-error>
+                                    <app-validator [control]="extendWorkflowForm.endDate"></app-validator>
+                                </mat-error>
+                            </mat-form-field>
 
-                        <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(extendWorkflowForm.noEndDate?.value, extendWorkflowForm.endDate)">
-                            No end date
-                        </mat-checkbox>
+                            <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(extendWorkflowForm.noEndDate?.value, extendWorkflowForm.endDate)">
+                                No end date
+                            </mat-checkbox>
+                        </div>
                     </div>
                 </div>
                 <mat-divider class="u-mb--24 u-mt--24">
                 </mat-divider>
 
-                <h3 class="confirmation-dialog--label">Select consultants to be extended</h3>
                 <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--16" formArrayName="consultants">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                        <h3 class="confirmation-dialog--label">Select consultants to be extended</h3>
+                        <h3 class="confirmation-dialog--label form-width-170">Previous end date</h3>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16" (change)="toggleExtendConsultants()">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
                                 <img class="workflow-change-dialog--consultant-img u-mr--12" [ngSrc]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" width="35" height="35" src (error)="setDefaultImage($event.target)" />
@@ -156,6 +161,12 @@
                                 </p>
                             </div>
                         </mat-checkbox>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="form-width-170">
+                            <mat-icon class="calendar-icon u-mr--10" svgIcon="calendar"></mat-icon>
+                            <span class="text-bold">
+                                {{consultant?.value?.endDate}}
+                            </span>
+                        </div>
                     </div>
                     <ng-container *ngIf="validationTriggered && !extendConsultantsValid">
                         <mat-error class="error-message">

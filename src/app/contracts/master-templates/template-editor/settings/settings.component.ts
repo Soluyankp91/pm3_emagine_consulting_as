@@ -415,6 +415,9 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 								this.isMasterTemplateOptionsLoading$.next(true);
 							}),
 							switchMap((freeText: string) => {
+								let onlyCompletedTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
+									items.filter((item) => item.hasCurrentVersion);
+
 								return this._apiServiceProxy
 									.simpleList2(
 										false,
@@ -425,10 +428,8 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 										undefined,
 										undefined,
 										undefined,
-										undefined,
-										freeText,
-										1,
-										AUTOCOMPLETE_SEARCH_ITEMS_COUNT
+										true,
+										freeText
 									)
 									.pipe(
 										tap(() => {
@@ -436,7 +437,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 										}),
 										withLatestFrom(this._contractsService.getEnumMap$()),
 										map(([response, maps]) => {
-											return response.items.map(
+											return onlyCompletedTemplates(response.items).map(
 												(item) =>
 													Object.assign(item, {
 														tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),

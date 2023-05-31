@@ -1,11 +1,12 @@
 <div cdkOverlayOrigin #trigger="cdkOverlayOrigin" appPreventDoubleClick (throttledClick)="isWidgetOpened$.next(true)"
-    class="flex items-center justify-center h-12 mb-4 border-solid border-1 border-b border-gray-300  cursor-pointer">
-    <img class="w-6" src="assets/common/images/menu/home-logo.svg" alt="Logo image" />
+    class="flex items-center justify-center h-12 mb-4 border-solid border-1 border-b border-gray-300  cursor-pointer logo-wrapper">
+    <img class="logoOnPlainState w-6" src="assets/common/images/menu/home-logo.svg" alt="Logo image" />
+    <img class="logoOnHoverState w-6" src="assets/common/images/menu/home-logo-hover.svg" alt="Logo image" />
 </div>
 
 <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isWidgetOpened$ | async"
-    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop" [cdkConnectedOverlayHasBackdrop]="true"
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop" cdkConnectedOverlayPanelClass="cdk-main-widget-overlay" [cdkConnectedOverlayHasBackdrop]="true"
     [cdkConnectedOverlayOffsetX]="66" [cdkConnectedOverlayOffsetY]="-30" (detach)="isWidgetOpened$.next(false)"
     (backdropClick)="isWidgetOpened$.next(false)">
     <div @fadeIn @fadeOut class="w-[232px] rounded-[13px] bg-white pt-6 pb-7 px-6 flex flex-col shadow-left-md">

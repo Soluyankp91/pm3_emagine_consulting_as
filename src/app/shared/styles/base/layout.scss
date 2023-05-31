@@ -288,14 +288,16 @@ html {
 
 .page-main-header {
     @include fontOpenSans(36px, 800);
+    font-weight: 800 !important;
     color: $dark-grey-color;
-    line-height: 30px;
+    line-height: 30px !important;
 }
 
 .page-main-subheader {
     @include fontOpenSans(18px, 800);
+    font-weight: 800 !important;
     color: $dark-grey-color;
-    line-height: 120%;
+    line-height: 120% !important;
     margin-bottom: 5px;
 }
 

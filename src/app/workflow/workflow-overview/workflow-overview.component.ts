@@ -28,7 +28,6 @@ import {
 	StepDto,
 	StepType,
 	WorkflowDocumentServiceProxy,
-	WorkflowHistoryDto,
 	WorkflowProcessDto,
 	WorkflowProcessType,
 	WorkflowServiceProxy,
@@ -56,6 +55,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
 	workflowId: string;
 	clientPeriods: ClientPeriodDto[] | undefined;
+    directClientId: number;
 
 	documentsPeriod = new UntypedFormControl(null);
     periodId: string | undefined;
@@ -66,7 +66,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
 	workflowProcesses: WorkflowProcessDto[] = [];
 	workflowProcessType = WorkflowProcessType;
-	workflowHistory: WorkflowHistoryDto[] = [];
 
 	overviewDocuments: IWFOverviewDocuments[] = [];
 	stepTypes = StepType;
@@ -153,7 +152,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     private _getOverviewData() {
         this._getChartData();
-        this._getWorkflowHistory();
         this.getDocuments();
     }
 
@@ -290,23 +288,15 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         }
     }
 
-    private _getWorkflowHistory() {
-        this._workflowService.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
-            if (result.items) {
-                this.workflowHistory = result.items;
-                this.historyTotalCount = result.totalCount;
-            }
-        })
-    }
-
     private _getClientPeriods() {
         this._workflowService.clientPeriods(this.workflowId)
             .subscribe(result => {
                 this.periodId = result.clientPeriods?.length ? result.clientPeriods[0].id : '';
                 this.clientPeriods = result.clientPeriods;
+                this.directClientId = result.directClientId;
                 this.documentsPeriod.setValue(this.clientPeriods![0]?.id, {emitEvent: false});
                 if (result.directClientId) {
-                    this.purchaseOrder.getPurchaseOrders([], result.directClientId, this.periodId);
+                    this.purchaseOrder.getPurchaseOrdersForOverview(this.workflowId);
                 }
                 this._setWFProgress();
             })
@@ -377,12 +367,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 				this._workflowDataService.workflowSideSectionAdded.emit(true);
 			});
 		});
-	}
-
-	public historyPageChanged(event?: any): void {
-		this.historyPageNumber = event.pageIndex + 1;
-		this.historyDeafultPageSize = event.pageSize;
-		this._getWorkflowHistory();
 	}
 
 	public getAvailableConsultantForChangeOrExtend() {

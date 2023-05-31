@@ -7,6 +7,10 @@
 </div>
 <mat-divider></mat-divider>
 <div mat-dialog-actions class="actions">
-	<button mat-button [mat-dialog-close]="false" class="cancel-button">{{ cancelButtonLabel ? cancelButtonLabel: 'Cancel'}}</button>
-	<button mat-raised-button [mat-dialog-close]="true" class="discard-button" [disabled]="acceptButtonDisabled$ | async">{{ acceptButtonLabel ? acceptButtonLabel : 'Ok'}}</button>
+	<button mat-button [mat-dialog-close]="false" class="cancel-button">
+		{{ cancelButtonLabel ? cancelButtonLabel : 'Cancel' }}
+	</button>
+	<button mat-raised-button [mat-dialog-close]="true" [class]="acceptButtonClass" [disabled]="acceptButtonDisabled$ | async">
+		{{ acceptButtonLabel ? acceptButtonLabel : 'Ok' }}
+	</button>
 </div>

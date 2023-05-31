@@ -7,6 +7,7 @@
 		[formControl]="inputControl"
 		[matAutocomplete]="auto"
 		[errorStateMatcher]="matcher"
+		[maxlength]="maxLength"
 		(blur)="onFocusOut()" />
 	<ng-container
 		*ngIf="selectedOptionTemplate && selectedItem && (control.valid || control.disabled)"
@@ -24,7 +25,7 @@
 			<ng-container *ngIf="!(isOptionsLoading | async); else loading">
 				<ng-container *ngIf="options.length; else noItems">
 					<ng-container *ngFor="let option of options; trackBy: trackById.bind(this)">
-						<mat-option [value]="option">
+						<mat-option [value]="option" [disabled]="option.disabled">
 							<ng-container
 								*ngIf="optionTemplate; else noTemplate"
 								[ngTemplateOutlet]="optionTemplate"

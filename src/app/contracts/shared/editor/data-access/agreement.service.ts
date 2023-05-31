@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EMPTY, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
@@ -10,6 +10,7 @@ import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-prox
 import {
 	AgreementServiceProxy,
 	CompleteTemplateDocumentFileDraftDto,
+	EnvelopeStatus,
 	StringWrappedValueDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
@@ -17,6 +18,8 @@ import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
 import { VoidEnvelopePopupComponent } from '../components/void-envelope-popup/void-envelope-popup.component';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
+import { MergeFieldsErrors } from '../../services/extra-https.service';
+import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
 
 @Injectable()
 export class AgreementService implements AgreementAbstractService {
@@ -154,23 +157,46 @@ export class AgreementService implements AgreementAbstractService {
 						return ref.afterClosed().pipe(
 							switchMap((res) => {
 								if (res) {
-									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent).pipe(
-										catchError((error) => EMPTY)
-									);
+									return this.saveDraftAsDraftTemplate(agreementId, true, fileContent);
 								} else {
 									return of(null);
 								}
 							})
 						);
-					} else {
-						return of(error);
 					}
+					if (error.error.code === MergeFieldsErrors.UnknownMergeFields) {
+						return this._dialog
+							.open(EmptyAndUnknownMfComponent, {
+								data: {
+									header: 'Unknown merge fields were detected',
+									description: `The following merge fields are unknown. Delete them or proceed anyway.`,
+									listDescription: 'The list of affected merge fields:',
+									confirmButton: false,
+									mergeFields: error.error.data,
+								},
+								width: '800px',
+								height: '450px',
+								backdropClass: 'backdrop-modal--wrapper',
+								panelClass: 'app-empty-and-unknown-mf',
+							})
+							.afterClosed()
+							.pipe(
+								switchMap(() => {
+									return of(null);
+								})
+							);
+					}
+					return of(error);
 				})
 			);
 	}
 
+	//10.05.2023 delete unused fileContent
+	//TODO delete file content in other places and edit types (wrong types cause errors)
 	saveDraftAsCompleteTemplate(agreementId: number, fileContent: CompleteTemplateDocumentFileDraftDto) {
-		return this._agreementService.completeAgreement(agreementId, false, fileContent).pipe(catchError((error) => of(null)));
+		return this._agreementService
+			.completeAgreement(agreementId, false, {} as CompleteTemplateDocumentFileDraftDto)
+			.pipe(catchError((error) => of(null)));
 	}
 
 	// CUSTOM FLOW
@@ -184,7 +210,7 @@ export class AgreementService implements AgreementAbstractService {
 			.pipe(
 				switchMap(() => {
 					let agreementHasSentVersions = versions.some(
-						(version) => version.envelopeStatus && version.envelopeStatus === 3
+						(version) => version.envelopeStatus && [EnvelopeStatus.Completed, EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus)
 					);
 					return agreementHasSentVersions
 						? this._showTemplateVoidingPopup(templateId)
@@ -238,5 +264,9 @@ export class AgreementService implements AgreementAbstractService {
 					: of(true);
 			})
 		);
+	}
+
+	getAgreementName(id: number): Observable<string> {
+		return this._agreementService.preview(id).pipe(map((agreement) => agreement.name))
 	}
 }

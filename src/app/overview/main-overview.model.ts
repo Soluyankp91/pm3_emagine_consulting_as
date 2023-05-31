@@ -29,13 +29,13 @@ export const OverviewProcessColors: {[key: number]: string} = {
 }
 
 export const OverviewProcessIcons: {[key: number]: string} = {
-  1: 'check-circle',
-  11: 'check-circle-fill',
-  10: 'check-circle-fill',
-  3: 'cancel',
-  12: 'cancel-fill',
-  2: 'schedule',
-  20: 'warning'
+  1: 'extension-expected-icon',
+  11: 'extended-or-started-icon',
+  10: 'extended-or-started-icon',
+  3: 'expected-to-terminate-icon',
+  12: 'terminated-icon',
+  2: 'negotiation-icon',
+  20: 'attention-required-icon'
 }
 
 export const OverviewFilterColors: {[key: number]: string} = {

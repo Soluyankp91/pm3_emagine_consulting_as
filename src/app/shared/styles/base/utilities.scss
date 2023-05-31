@@ -4,6 +4,7 @@ $sizes: (
     8: 8px,
     10: 10px,
     12: 12px,
+    14: 14px,
     15: 15px,
     16: 16px,
     18: 18px,
@@ -108,4 +109,8 @@ $sizes: (
 
 .u-pl--1 {
     padding-left: 1px !important;
+}
+
+.u-bt--0 {
+    border-top: 0 !important;
 }

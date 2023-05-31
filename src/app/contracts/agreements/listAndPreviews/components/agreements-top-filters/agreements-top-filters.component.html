@@ -57,7 +57,7 @@
 						</ng-container>
 						<ng-template #selectedManagers>
 							<ng-container *ngIf="options.size <= 3; else moreSelected">
-								<div [style.margin-right.px]="-16 * options.size + 12">
+								<div [style.margin-right.px]="-16 * options.size + 12" class="avatar-list">
 									<ng-container *ngFor="let option of options; let i = index">
 										<img
 											class="profile-picture-avatar"

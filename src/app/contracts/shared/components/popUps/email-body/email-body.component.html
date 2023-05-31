@@ -1,0 +1,33 @@
+<div class="popup-container">
+	<div class="flex-container">
+		<div class="upper-part">
+			<h2 class="popup-header">Send via DocuSign</h2>
+			<p class="description">You are sending agreements via email. Please review the email message and it’s formatting:</p>
+			<ng-container *ngIf="emailTemplates$ | async as emailTemplates">
+				<mat-form-field appearance="outline" class="template-select">
+					<mat-select [formControl]="templateControl" placeholder="Email template">
+						<ng-container *ngFor="let emailTemplate of emailTemplates">
+							<mat-option [value]="emailTemplate">{{ emailTemplate.name }}</mat-option>
+						</ng-container>
+					</mat-select>
+				</mat-form-field>
+			</ng-container>
+			<mat-form-field appearance="outline" >
+				<input matInput [formControl]="emailSubjectControl" placeholder="Subject">
+			</mat-form-field>
+		</div>
+		<mat-form-field appearance="outline" class="textarea-form-field">
+			<mat-label>Email message</mat-label>
+			<textarea matInput [formControl]="emailBodyControl" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
+		</mat-form-field>
+	</div>
+</div>
+<div class="bottom-part">
+	<mat-divider class="divider"></mat-divider>
+	<div mat-dialog-actions class="actions">
+		<button mat-button [mat-dialog-close]="false" class="close-button">Cancel</button>
+		<button mat-raised-button [mat-dialog-close]="true" class="confirm-button" >
+			Confirm
+		</button>
+	</div>
+</div>

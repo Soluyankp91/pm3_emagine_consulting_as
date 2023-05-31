@@ -155,7 +155,7 @@
                                             </div>
                                         </mat-select-trigger>
                                         <ng-container *ngFor="let item of invoicingRecipientsAddresses; trackBy: trackById">
-                                            <mat-option [value]="item">
+                                            <mat-option [value]="item" [fxHide]="item.isHidden">
                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                     <span class="multilineDropdown-option--column-client-name">
                                                         {{item.displayValue }}</span>
@@ -194,16 +194,16 @@
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                             <mat-label>Price type</mat-label>
-                            <mat-select [disabled]="true" formControlName="clientRateType"
-                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <mat-select [disabled]="true" formControlName="clientRateTypeId"
+                                [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of clientRateTypes; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
                                 </ng-container>
                             </mat-select>
                             <mat-error>
-                                <app-validator [control]="contractClientForm.clientRateType"></app-validator>
+                                <app-validator [control]="contractClientForm.clientRateTypeId"></app-validator>
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="disabled-input formFieldNoMarginPadding u-mr--12 form-width-150">
@@ -217,34 +217,34 @@
 
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150"
-                            [fxHide]="contractClientForm.clientRateType?.value?.id !== 1">
+                            [fxHide]="contractClientForm.clientRateTypeId?.value !== eRateType.TimeBased">
                             <mat-label>Unit type</mat-label>
                             <mat-select [disabled]="true"
-                                formControlName="rateUnitType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                formControlName="rateUnitTypeId" [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of rateUnitTypes; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
                                 </ng-container>
                             </mat-select>
                             <mat-error>
-                                <app-validator [control]="contractClientForm.rateUnitType"></app-validator>
+                                <app-validator [control]="contractClientForm.rateUnitTypeId"></app-validator>
                             </mat-error>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select form-width-150">
                             <mat-label>Currency</mat-label>
-                            <mat-select [disabled]="true" formControlName="currency"
-                                [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <mat-select [disabled]="true" formControlName="currencyId"
+                                [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
                                 </ng-container>
                             </mat-select>
                             <mat-error>
-                                <app-validator [control]="contractClientForm.currency"></app-validator>
+                                <app-validator [control]="contractClientForm.currencyId"></app-validator>
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -267,7 +267,7 @@
 
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select form-width-312"
-                            [fxHide]="contractClientForm.clientRateType?.value?.id !== 1">
+                            [fxHide]="contractClientForm.clientRateTypeId?.value !== eRateType.TimeBased">
                             <mat-label>Invoicing frequency</mat-label>
                             <mat-select [disabled]="true"
                                 formControlName="invoiceFrequencyId" [disableOptionCentering]="true">
@@ -283,8 +283,8 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline"
                             class="formFieldNoMarginPadding filter-select form-width-312"
-                            [ngClass]="{'u-mr--12': contractClientForm.invoicingTimeId?.value === 2 && contractClientForm.clientRateType?.value?.id === 2}"
-                            [fxHide]="contractClientForm.clientRateType?.value?.id !== 2">
+                            [ngClass]="{'u-mr--12': contractClientForm.invoicingTimeId?.value === 2 && contractClientForm.clientRateTypeId?.value === eRateType.Fixed}"
+                            [fxHide]="contractClientForm.clientRateTypeId?.value !== eRateType.Fixed">
                             <mat-label>Invoicing time</mat-label>
                             <mat-select [disabled]="true"
                                 formControlName="invoicingTimeId" [disableOptionCentering]="true"
@@ -301,7 +301,7 @@
                         </mat-form-field>
                         <!-- id: 2 - manual date -->
                         <mat-form-field class="disabled-input formFieldNoMarginPadding form-width-150"
-                            [fxHide]="contractClientForm.clientRateType?.value?.id !== 2 || contractClientForm.invoicingTimeId?.value !== 2"
+                            [fxHide]="contractClientForm.clientRateTypeId?.value !== eRateType.Fixed || contractClientForm.invoicingTimeId?.value !== 2"
                             appearance="outline" >
                             <mat-label>Date</mat-label>
                             <input [disabled]="true"
@@ -367,7 +367,7 @@
                                 <span matSuffix class="shevron"></span>
                             <mat-autocomplete #frameAgreementAutocomplete="matAutocomplete"
                                 [displayWith]="displayAgreementNameFn" (optionSelected)="focusToggleMethod('auto')"
-                                (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
+                                (opened)="focusToggleMethod('hidden')" (closed)="onAutocompleteClosed(contractClientForm.frameAgreementId, 'agreementId')">
                                 <ng-container *ngFor="let item of filteredFrameAgreements; trackBy: trackById">
                                     <mat-option [value]="item" [ngClass]="{ 'no-data': item?.agreementId === undefined }">
                                         <div class="multilineDropdown-option--row">
@@ -437,12 +437,12 @@
                             </ng-container>
                         </div>
                         <ng-container formArrayName="clientRates" class="u-w--100">
-                            <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i" [formArrayName]="i">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                    <span fxFlex="35%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <ng-container *ngFor="let rate of contractClientForm.clientRates.controls; index as i; first as first" [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" [ngClass]="{'u-bt--0': !first}">
+                                    <span fxFlex="35%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{rate.value.rateName}}
                                     </span>
-                                    <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span fxFlex="30%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{rate.value.reportingUnit?.name}}
                                     </span>
                                     <ng-container *ngIf="rate.value.editable; else clientRatesDisplay">
@@ -451,9 +451,9 @@
                                                 <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
-                                                <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-select required formControlName="clientRateCurrencyId" placeholder="Currency" [disableOptionCentering]="true">
                                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                        <mat-option [value]="item">
+                                                        <mat-option [value]="item.id">
                                                             {{ item?.name }}
                                                         </mat-option>
                                                     </ng-container>
@@ -462,8 +462,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientRatesDisplay>
-                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue !== null && eCurrencies[rate.value.clientRateCurrencyId]?.length ? rate.value.clientRateValue + ' ' + eCurrencies[rate.value.clientRateCurrencyId] : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{rate.value.clientRateValue !== null && eCurrencies[rate.value.clientRateCurrencyId]?.length ? rate.value.clientRateValue + ' ' + eCurrencies[rate.value.clientRateCurrencyId] : '-'}}
                                         </span>
                                     </ng-template>
                                     <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
@@ -517,7 +517,7 @@
                 <ng-container *ngIf="!readOnlyMode">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                         <button class="rates-and-fees--btn button-add" mat-flat-button
-                            [ngClass]="{'u-mt--10': contractClientForm.clientRates.controls.length}"
+                            [ngClass]="{'u-mt--16': contractClientForm.clientRates.controls.length}"
                             [matMenuTriggerFor]="clientSpecialRateMenu" [disabled]="isClientRateEditing"
                             #clientRateMenuTrigger="matMenuTrigger"
                             (menuOpened)="clientSpecialRateFilter!.setValue(''); clientSpecialRateSelect.open();">
@@ -562,12 +562,12 @@
                             </ng-container>
                         </div>
                         <ng-container formArrayName="clientFees" class="u-w--100">
-                            <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i" [formArrayName]="i">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
-                                    <span fxFlex="35%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <ng-container *ngFor="let fee of contractClientForm.clientFees.controls; index as i; first as first" [formArrayName]="i">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" [ngClass]="{'u-bt--0': !first}">
+                                    <span fxFlex="35%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{fee.value.feeName ?? '-'}}
                                     </span>
-                                    <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span fxFlex="30%" class="workflow-contracts--list-item text-bold u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{fee.value.feeFrequency?.name ?? '-'}}
                                     </span>
                                     <ng-container *ngIf="fee.value.editable; else clientFeeRateDisplay">
@@ -576,9 +576,9 @@
                                                 <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
-                                                <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-select required formControlName="clientRateCurrencyId" placeholder="Currency" [disableOptionCentering]="true">
                                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">
-                                                        <mat-option [value]="item">
+                                                        <mat-option [value]="item.id">
                                                             {{ item?.name }}
                                                         </mat-option>
                                                     </ng-container>
@@ -587,8 +587,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientFeeRateDisplay>
-                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
+                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue !== null && eCurrencies[fee.value.clientRateCurrencyId]?.length ? fee.value.clientRateValue + ' ' + eCurrencies[fee.value.clientRateCurrencyId] : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{fee.value.clientRateValue !== null && eCurrencies[fee.value.clientRateCurrencyId]?.length ? fee.value.clientRateValue + ' ' + eCurrencies[fee.value.clientRateCurrencyId] : '-'}}
                                         </span>
                                     </ng-template>
 
@@ -652,7 +652,7 @@
                 <ng-container *ngIf="!readOnlyMode">
                     <div fxLayout="row" fxLayoutAlign="start start">
                         <button class="rates-and-fees--btn button-add" mat-flat-button
-                            [ngClass]="{'u-mt--10': contractClientForm.clientFees.controls.length}"
+                            [ngClass]="{'u-mt--16': contractClientForm.clientFees.controls.length}"
                             [matMenuTriggerFor]="clientSpecialFeeMenu" [disabled]="isClientFeeEditing"
                             #clientFeeMenuTrigger="matMenuTrigger"
                             (menuOpened)="clientSpecialFeeFilter!.setValue(''); clientSpecialFeeSelect.open();">
@@ -668,7 +668,7 @@
                                     <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter"
                                         [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of clientSpecialFeeList | excludeIds: contractClientForm!.clientFees?.value : 'clientSpecialFeeId'; trackBy: trackById">
-                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientFee($event, item, clientFeeMenuTrigger) : ''">
+                                            <mat-option [disabled]="item.id === null" [value]="item.id" appPreventDoubleClick (throttledClick)="item.id !== null ? selectClientFee(item, clientFeeMenuTrigger) : ''">
                                                 {{ item.internalName }}
                                             </mat-option>
                                         </ng-container>

@@ -4,10 +4,10 @@
             <ng-container [ngTemplateOutlet]="poHeader"></ng-container>
         </ng-container>
         <ng-container formArrayName="purchaseOrders" class="u-w--100">
-            <ng-container *ngFor="let order of poForm.purchaseOrders.controls; trackBy: trackByItem; index as i"
+            <ng-container *ngFor="let order of poForm.purchaseOrders.controls; trackBy: trackByItem; index as i; first as first"
                 [formArrayName]="i">
                 <ng-container [ngTemplateOutlet]="poRow"
-                    [ngTemplateOutletContext]="{order: order.value, i: i,  isPreviousPO: false}">
+                    [ngTemplateOutletContext]="{order: order.value, i: i, first: first}">
                 </ng-container>
             </ng-container>
             <ng-container *ngIf="poForm.purchaseOrders.controls?.length === 0 && (readOnlyMode || mode === ePurchaseOrderMode.WFOverview)">
@@ -53,16 +53,16 @@
         <span fxFlex="80px" class="inline-form--header u-w--100">
             Receive date
         </span>
-        <span fxFlex="120px" class="inline-form--header u-w--100">
+        <span fxFlex="100px" class="inline-form--header u-w--100">
             Cap type
         </span>
-        <span fxFlex="100px" class="inline-form--header u-w--100">
+        <span fxFlex="70px" class="inline-form--header u-w--100">
             Used
         </span>
-        <span fxFlex="100px" class="inline-form--header u-w--100">
+        <span fxFlex="70px" class="inline-form--header u-w--100">
             Max value
         </span>
-        <span fxFlex="60px" class="inline-form--header u-w--100">
+        <span fxFlex="50px" class="inline-form--header u-w--100">
             Units
         </span>
         <span fxFlex="40px" class="inline-form--header u-w--100">
@@ -70,9 +70,9 @@
     </div>
 </ng-template>
 
-<ng-template #poRow let-order="order" let-i="i">
-    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-form--row u-w--100">
-        <span fxFlex fxLayoutAlign="start center" class="u-w--100 text-truncate-ellipsis"
+<ng-template #poRow let-order="order" let-i="i" let-first="first">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-form--row u-w--100" [ngClass]="{'u-bt--0': !first}">
+        <span class="u-w--100 text-truncate-ellipsis"
             [ngClass]="order.numberMissingButRequired ? 'medium-grey-color' : 'dark-grey-color'"
             [matTooltip]="order.numberMissingButRequired ? 'Missing, but required' : (order.number ?? '-')"
             matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -89,34 +89,34 @@
             '-'}}
         </span>
         <span fxFlex="120px" class="u-w--100 text-truncate-ellipsis"
-            [matTooltip]="capTypes[order.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
-            {{capTypes[order.capForInvoicing?.type]}}
+            [matTooltip]="purchaseOrderCapTypes[order.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+            {{purchaseOrderCapTypes[order.capForInvoicing?.type]}}
         </span>
-        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+        <span fxFlex="70px" class="u-w--100 text-truncate-ellipsis"
             [matTooltip]="order.capForInvoicing?.amountUsed ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.capForInvoicing?.amountUsed ?? '-'}}
         </span>
-        <span fxFlex="100px" class="u-w--100 text-truncate-ellipsis"
+        <span fxFlex="70px" class="u-w--100 text-truncate-ellipsis"
             [matTooltip]="order.capForInvoicing?.maxAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
             {{order.capForInvoicing?.maxAmount ?? '-'}}
         </span>
         <ng-container [ngSwitch]="order.capForInvoicing?.type">
             <ng-container *ngSwitchCase="ePoCapType.CapOnUnits">
-                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
+                <span fxFlex="50px" class="u-w--100 text-truncate-ellipsis"
                     [matTooltip]="eValueUnitType[order.capForInvoicing?.valueUnitTypeId]"
                     matTooltipClass="white-tooltip" appShowIfTruncated>
                     {{eValueUnitType[order.capForInvoicing?.valueUnitTypeId]}}
                 </span>
             </ng-container>
             <ng-container *ngSwitchCase="ePoCapType.CapOnValue">
-                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis"
+                <span fxFlex="50px" class="u-w--100 text-truncate-ellipsis"
                     [matTooltip]="eCurrencies[order.capForInvoicing?.currencyId]" matTooltipClass="white-tooltip"
                     appShowIfTruncated>
                     {{eCurrencies[order.capForInvoicing?.currencyId]}}
                 </span>
             </ng-container>
             <ng-container *ngSwitchCase="ePoCapType.NoCap">
-                <span fxFlex="60px" class="u-w--100 text-truncate-ellipsis">-</span>
+                <span fxFlex="50px" class="u-w--100 text-truncate-ellipsis">-</span>
             </ng-container>
         </ng-container>
 

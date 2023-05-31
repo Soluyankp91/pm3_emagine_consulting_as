@@ -61,6 +61,7 @@
 												{{ cell.countryName }} ·
 												{{ cell.startDate | momentFormat }}
 											</div>
+											<span *ngIf="cell.hasDraftVersion" class="draft-label">Draft</span>
 										</div>
 									</ng-container>
 									<ng-template #parentTemplate>
@@ -72,6 +73,7 @@
 												{{ options[1].agreementType[cell.agreementType] }} ·
 												{{ cell.createdDateUtc | momentFormat }}
 											</div>
+											<span *ngIf="cell.hasDraftVersion" class="draft-label">Draft</span>
 										</div>
 									</ng-template>
 								</ng-template>
@@ -435,6 +437,7 @@
 					<h3 class="template-settings-header">Attachments</h3>
 					<ng-container *ngIf="agreementFormGroup.parentSelectedAttachmentIds">
 						<emg-file-selector
+							[preselectAll]="!editMode"
 							[inheritedFiles]="attachmentsFromParent"
 							[label]="'Inherited from parent'"
 							formControlName="parentSelectedAttachmentIds"></emg-file-selector>

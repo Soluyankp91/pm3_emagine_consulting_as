@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
+import { ManagerStatus } from 'src/app/shared/components/responsible-person/responsible-person.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
@@ -27,25 +27,11 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowSteps, WorkflowTopSections } from '../workflow.model';
-import { EmploymentTypes } from '../workflow.model';
 import {
-	ContractClientDataSections,
-	ContractConsultantDataSections,
-	ContractMainDataSections,
-	ContractPlaceholderConsultantAnchors,
-	ContractSyncSections,
-	ContractTerminationSections,
 	EProcessIcon,
-	FinanceSections,
 	IConsultantAnchor,
-	SalesClientDataSections,
-	SalesConsultantDataSections,
-	SalesMainDataSections,
-	SalesPlaceholderConsultantAnchors,
-	SalesTerminationSections,
 	StepAnchorDto,
 	StepWithAnchorsDto,
-	SubItemDto,
 	WorkflowPeriodResolverDto,
 	WorkflowProcessWithAnchorsDto,
 } from './workflow-period.model';
@@ -309,11 +295,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _getPeriodStepTypes() {
-		this._internalLookupService
-			.getWorkflowPeriodStepTypes()
-			.subscribe((result) => {
-				this.workflowPeriodStepTypes = result;
-			});
+        this.workflowPeriodStepTypes = this.getStaticEnumValue('workflowPeriodStepTypes');
 	}
 
 	private _getSideMenu(autoUpdate?: boolean, initial?: boolean) {
