@@ -131,6 +131,9 @@ const routes: Routes = [
 								path: ':id/editor',
 								component: EditorComponent,
 								canDeactivate: [UnsavedChangesGuard],
+								data: {
+									isClientSpecific: true,
+								},
 								providers: [
 									AgreementTemplateCommentServiceProxy,
 									{

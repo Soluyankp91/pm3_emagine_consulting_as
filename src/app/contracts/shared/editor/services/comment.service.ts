@@ -44,19 +44,19 @@ export class CommentService {
 
 	applyComments(comments: Array<Comment>) {
 		this._cleanUpDocument();
-		if (comments && comments.length) {
-			comments.forEach((comment) => {
-				if (isCommentPositionMetadata(comment.metadata)) {
-					let { start, length } = JSON.parse(comment.metadata);
-					let interval = intervalFactory(start, length);
-					this._registerHighlightPosition(interval, comment.id);
-				}
-			});
-			this.setState(() => ({ comments, interval: null, selected: [], viewMode: SidebarViewMode.View }));
-			this._updatePositionStateData();
-			this.selectEnabled$.pipe(take(1)).subscribe((enabled) => this._toggleHighlightStyle(enabled));
+		if (comments && Array.isArray(comments)) {
+		   comments.forEach((comment) => {
+			  if (isCommentPositionMetadata(comment.metadata)) {
+				 let { start, length } = JSON.parse(comment.metadata);
+				 let interval = intervalFactory(start, length);
+				 this._registerHighlightPosition(interval, comment.id);
+			  }
+		   });
+		   this.setState(() => ({ comments, interval: null, selected: [], viewMode: SidebarViewMode.View }));
+		   this._updatePositionStateData();
+		   this.selectEnabled$.pipe(take(1)).subscribe((enabled) => this._toggleHighlightStyle(enabled));
 		}
-	}
+	 }
 
 	applyNewComment(comment: Comment) {
 		if (isCommentPositionMetadata(comment.metadata)) {

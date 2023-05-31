@@ -86,6 +86,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 	templateVersions$ = new BehaviorSubject<IDocumentVersion[]>([]);
 	mergeFields$ = new BehaviorSubject<IMergeField>({});
 	isAgreement$ = this._route.data.pipe(pluck('isAgreement'));
+	isClientSpecific$ = this._route.data.pipe(pluck('isClientSpecific'));
+	isClientSpecific: boolean = false;
 	isAgreement: boolean = false;
 
 	selectedVersion: IDocumentVersion = null;
@@ -147,6 +149,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.isAgreement$.pipe(take(1)).subscribe((res) => {
 			this.isAgreement = !!res;
 		});
+		this.isClientSpecific$.pipe(take(1)).subscribe(res => this.isClientSpecific = res);
 
 		this.hasUnsavedChanges$.pipe(takeUntil(this._destroy$)).subscribe((hasUnsavedChanges) => {
 			if (hasUnsavedChanges) {
@@ -413,6 +416,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 						base64,
 						isAgreement,
 						versions: this.versions,
+						isClientSpecific: this.isClientSpecific,
 					},
 					height: 'auto',
 					width: '540px',

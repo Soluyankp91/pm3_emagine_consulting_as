@@ -13,10 +13,12 @@
 		</ng-container>
 
 		<ng-container *ngIf="!data.isAgreement">
-			<mat-checkbox [formControlName]="'propagateChangesToDerivedTemplates'" color="primary" class="u-w--100 u-mr--16">
-				Propagate changes to all derived templates
-			</mat-checkbox>
-
+			<ng-container *ngIf="!data.isClientSpecific">
+				<mat-checkbox [formControlName]="'propagateChangesToDerivedTemplates'" color="primary" class="u-w--100 u-mr--16">
+					Propagate changes to all derived templates
+				</mat-checkbox>
+			</ng-container>
+			
 			<mat-checkbox [formControlName]="'markActiveAgreementsAsOutdated'" color="primary" class="u-w--100 u-mr--16">
 				Mark active agreements based on this templates as outdated
 			</mat-checkbox>
