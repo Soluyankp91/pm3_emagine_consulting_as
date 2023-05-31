@@ -46,7 +46,6 @@ import { CommentsAbstractService } from './data-access/comments-abstract.service
 import { VoidEnvelopePopupComponent } from './components/void-envelope-popup/void-envelope-popup.component';
 import { NotificationType, NotifierService } from './services/notifier.service';
 import { ExtraHttpsService } from '../services/extra-https.service';
-import { CreationTitleService } from '../services/creation-title.service';
 
 @Component({
 	standalone: true,
@@ -119,8 +118,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _notifierService: NotifierService,
 		private _editorObserverService: EditorObserverService,
 		private _agreementServiceProxy: AgreementServiceProxy,
-		private _extraHttp: ExtraHttpsService,
-		private _creationTitleService: CreationTitleService
+		private _extraHttp: ExtraHttpsService
 	) {}
 
 	ngOnInit(): void {
@@ -133,7 +131,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 		this.getTemplateVersions(this.templateId, () => {
 			if (!this.currentVersionIsSent) {
-				this.loadComments(this.templateId, true);
+				const version = this.selectedVersion.version;
+				this.loadComments(this.templateId, version, true);
 			}
 		});
 
@@ -158,11 +157,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 				}
 			}
 		});
-
-		this._agreementService
-			.getAgreementName(this.templateId)
-			.pipe(tap((name) => this._creationTitleService.updateTemplateName(name)))
-			.subscribe();
 	}
 
 	ngOnDestroy(): void {
@@ -173,6 +167,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 	getTemplateVersions(templateId: number, callback?: () => void) {
 		this._agreementService.getTemplateVersions(templateId).subscribe((res) => {
 			this.versions = res;
+			this.selectedVersion = res[res.length - 1];
 			this.currentTemplateVersion = res.length ? res[res.length - 1].version : 1;
 			this.templateVersions$.next(res || []);
 			this.selectedVersionControl.setValue(this.currentTemplateVersion);
@@ -191,7 +186,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.pipe(catchError(() => of(null)))
 			.subscribe((tmp) => {
 				this.template$.next(tmp);
-				this.loadComments(templateId, false);
+				this.loadComments(templateId, version, false);
 
 				if (tmp) {
 					if (version === this.versions[this.versions.length - 1].version) {
@@ -311,9 +306,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	loadComments(templateID: number, isInitial: boolean = false) {
+	loadComments(templateID: number, version: number, isInitial: boolean = false) {
 		this._editorCoreService.afterViewInit$
-			.pipe(switchMap(() => this._commentService.getByTemplateID(templateID)))
+			.pipe(switchMap(() => this._commentService.getByTemplateID(templateID, version)))
 			.subscribe((comments) => {
 				this._editorCoreService.insertComments(comments);
 				if (isInitial) {
@@ -325,11 +320,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
 	createComment({ text, metadata }: { text: string; metadata: string }) {
 		let tmpID = this.templateId;
+		let version = this.selectedVersion.version;
 		this._commentService
-			.createComment(tmpID, text, metadata)
+			.createComment(tmpID, version, text, metadata)
 			.pipe(
 				switchMap((id) =>
-					this._commentService.getByTemplateID(tmpID).pipe(map((res) => res.find((comment) => comment.id === id)))
+					this._commentService
+						.getByTemplateID(tmpID, version)
+						.pipe(map((res) => res.find((comment) => comment.id === id)))
 				)
 			)
 			.subscribe((comment) => {
@@ -462,9 +460,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 			this._agreementService
 				.saveDraftAsDraftTemplate(this.templateId, false, StringWrappedValueDto.fromJS({ value: base64 }))
 				.subscribe((res) => {
-					this._updateCommentByNeeds();
-					this.cleanUp();
-					this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
+					if (res) {
+						this._updateCommentByNeeds();
+						this.cleanUp();
+						this._notifierService.notify(NotificationType.DraftSavedSuccess, { version });
+					} else {
+						this._notifierService.notify(NotificationType.Noop);
+						this.cleanUp();
+					}
 				});
 		});
 	}
@@ -561,7 +564,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 	}
 
 	private _sendViaEmail(agreementIds: number[], singleEmail: boolean, option: EEmailMenuOption, envelopeName: string) {
-		this.isLoading = true;
 		this._notifierService.notify(NotificationType.SendingInProgress);
 		let input = new SendEmailEnvelopeCommand({
 			agreementIds: agreementIds,
@@ -572,13 +574,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.sendEmailEnvelope(input)
 			.pipe(
 				catchError((err) => {
-					this.isLoading = false;
 					this._notifierService.notify(NotificationType.Noop);
 					return throwError(err);
 				})
 			)
 			.subscribe((res) => {
-				this.isLoading = false;
 				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
 				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
 				this.getTemplateVersions(this.templateId);
@@ -593,26 +593,23 @@ export class EditorComponent implements OnInit, OnDestroy {
 		emailBody: string,
 		emailSubject: string
 	) {
-		this.isLoading = true;
 		this._notifierService.notify(NotificationType.SendingInProgress);
 		let input = new SendDocuSignEnvelopeCommand({
 			agreementIds: agreementIds,
 			singleEnvelope: singleEnvelope,
 			createDraftOnly: option === EDocuSignMenuOption.CreateDocuSignDraft,
-			emailBody: emailBody || undefined,
-			emailSubject: emailSubject || undefined,
+			emailBody: emailBody,
+			emailSubject: emailSubject,
 		});
 		this._agreementServiceProxy
 			.sendDocusignEnvelope(input)
 			.pipe(
 				catchError((err) => {
-					this.isLoading = false;
 					this._notifierService.notify(NotificationType.Noop);
 					return throwError(err);
 				})
 			)
 			.subscribe(() => {
-				this.isLoading = false;
 				this.setEnvelopeStatusToLatestVersion(EnvelopeStatus.Sent);
 				this.getTemplateVersions(this.templateId);
 				this._notifierService.notify(NotificationType.SentSuccessfully, { filename: envelopeName });
@@ -701,7 +698,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 				})
 			)
 			.subscribe(() => {
-				this.loadComments(this.templateId);
+				let version = this.selectedVersion.version;
+				this.loadComments(this.templateId, version);
 			});
 	}
 

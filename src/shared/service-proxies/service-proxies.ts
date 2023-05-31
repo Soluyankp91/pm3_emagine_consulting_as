@@ -3730,11 +3730,14 @@ export class AgreementCommentServiceProxy {
     /**
      * @return Success
      */
-    agreementCommentAll(agreementId: number): Observable<AgreementCommentDto[]> {
-        let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}";
+    agreementCommentAll(agreementId: number, documentFileVersion: number): Observable<AgreementCommentDto[]> {
+        let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}/{documentFileVersion}";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
         url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        if (documentFileVersion === undefined || documentFileVersion === null)
+            throw new Error("The parameter 'documentFileVersion' must be defined.");
+        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3793,11 +3796,14 @@ export class AgreementCommentServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    agreementCommentPUT(agreementId: number, parentAgreementCommentId?: number | undefined, body?: CommentInputDto | undefined): Observable<number> {
-        let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}?";
+    agreementCommentPUT(agreementId: number, documentFileVersion: number, parentAgreementCommentId?: number | undefined, body?: CommentInputDto | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/AgreementComment/{agreementId}/{documentFileVersion}?";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
         url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        if (documentFileVersion === undefined || documentFileVersion === null)
+            throw new Error("The parameter 'documentFileVersion' must be defined.");
+        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
         if (parentAgreementCommentId === null)
             throw new Error("The parameter 'parentAgreementCommentId' cannot be null.");
         else if (parentAgreementCommentId !== undefined)
@@ -5436,11 +5442,14 @@ export class AgreementTemplateCommentServiceProxy {
     /**
      * @return Success
      */
-    agreementTemplateCommentAll(agreementTemplateId: number): Observable<AgreementTemplateCommentDto[]> {
-        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}";
+    agreementTemplateCommentAll(agreementTemplateId: number, documentFileVersion: number): Observable<AgreementTemplateCommentDto[]> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}/{documentFileVersion}";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        if (documentFileVersion === undefined || documentFileVersion === null)
+            throw new Error("The parameter 'documentFileVersion' must be defined.");
+        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -5499,11 +5508,14 @@ export class AgreementTemplateCommentServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    agreementTemplateCommentPUT(agreementTemplateId: number, parentCommentId?: number | undefined, body?: CommentInputDto | undefined): Observable<number> {
-        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}?";
+    agreementTemplateCommentPUT(agreementTemplateId: number, documentFileVersion: number, parentCommentId?: number | undefined, body?: CommentInputDto | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateComment/{agreementTemplateId}/{documentFileVersion}?";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        if (documentFileVersion === undefined || documentFileVersion === null)
+            throw new Error("The parameter 'documentFileVersion' must be defined.");
+        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
         if (parentCommentId === null)
             throw new Error("The parameter 'parentCommentId' cannot be null.");
         else if (parentCommentId !== undefined)
