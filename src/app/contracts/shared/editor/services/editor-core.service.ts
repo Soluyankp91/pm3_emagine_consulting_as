@@ -195,7 +195,9 @@ export class EditorCoreService {
 
 	insertComments(comments: Array<AgreementCommentDto>) {
 		this._commentService.applyComments(comments as any);
-		this.removeUnsavedChanges();
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.document.fields.updateAllFields();
+		});
 	}
 
 	insertMergeField(field: string, insertBreak: boolean = false) {

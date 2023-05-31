@@ -40,6 +40,7 @@ export class SaveAsPopupComponent implements OnInit {
 		public data: {
 			document: IDocumentVersion;
 			isAgreement: boolean;
+			isClientSpecific?: boolean;
 			versions: IDocumentVersion[];
 			base64: string;
 		},
@@ -78,6 +79,10 @@ export class SaveAsPopupComponent implements OnInit {
 		if (this.data.isAgreement) {
 			this.form.removeControl('propagateChangesToDerivedTemplates');
 			this.form.removeControl('markActiveAgreementsAsOutdated');
+		}
+
+		if (this.data.isClientSpecific) {
+			this.form.removeControl('propagateChangesToDerivedTemplates');
 		}
 
 		if (this.data.versions.length === 1) {
