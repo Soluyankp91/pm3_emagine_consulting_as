@@ -4,7 +4,8 @@
         <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="filter" appPreventDoubleClick
             (click)="$event.stopPropagation()" placeholder="Type something..">
         <span matSuffix class="shevron"></span>
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEventFn" (optionSelected)="getLatestChanges()">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEventFn" (optionSelected)="focusToggleMethod('auto'); getLatestChanges(true)"
+            (opened)="focusToggleMethod('hidden')" (closed)="focusToggleMethod('auto')">
             <ng-container *ngFor="let option of filteredEvents$ | async; trackBy: trackByItem">
                 <mat-option [value]="option">
                     <div class="autocopmlete-option-name flex-items-center" [matTooltip]="option.displayName"
@@ -146,7 +147,7 @@
                     By
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="40px">
-                    <img class="border-rounded-50" [matTooltip]="row.employeeName" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.employeeExternalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
+                    <img class="border-rounded-50" [matTooltip]="row.employeeName ?? 'System'" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + row.employeeExternalId! + '.jpg'" width="24" height="24" src (error)="setDefaultImage($event.target)" />
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
