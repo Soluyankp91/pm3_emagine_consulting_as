@@ -13,7 +13,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             primaryCategoryArea: new UntypedFormControl(null),
             primaryCategoryType: new UntypedFormControl(null),
             primaryCategoryRole: new UntypedFormControl(null),
-            projectDescription: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
+            projectDescription: new UntypedFormControl(null, Validators.required),
             projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
             discountId: new UntypedFormControl(null),
 
