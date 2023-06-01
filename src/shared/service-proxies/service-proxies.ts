@@ -803,6 +803,58 @@ export class AdminServiceProxy {
     }
 
     /**
+     * @param customBatchSize (optional) 
+     * @return Success
+     */
+    isActiveGlobalUpdateJobRun(customBatchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/clients-service/isActive-global-update-job-run?";
+        if (customBatchSize === null)
+            throw new Error("The parameter 'customBatchSize' cannot be null.");
+        else if (customBatchSize !== undefined)
+            url_ += "customBatchSize=" + encodeURIComponent("" + customBatchSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processIsActiveGlobalUpdateJobRun(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processIsActiveGlobalUpdateJobRun(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processIsActiveGlobalUpdateJobRun(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     clientsFullHubspotToPm3Sync(): Observable<string[]> {
@@ -16868,6 +16920,74 @@ export class PurchaseOrderServiceProxy {
             }));
         }
         return _observableOf<PurchaseOrderDto>(null as any);
+    }
+}
+
+@Injectable()
+export class SourcingIntegrationServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param param (optional) 
+     * @return Success
+     */
+    test(param?: number | undefined): Observable<TestConnectionDto> {
+        let url_ = this.baseUrl + "/api/SourcingIntegration/test?";
+        if (param === null)
+            throw new Error("The parameter 'param' cannot be null.");
+        else if (param !== undefined)
+            url_ += "param=" + encodeURIComponent("" + param) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTest(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TestConnectionDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TestConnectionDto>;
+        }));
+    }
+
+    protected processTest(response: HttpResponseBase): Observable<TestConnectionDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TestConnectionDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TestConnectionDto>(null as any);
     }
 }
 
@@ -34715,6 +34835,46 @@ export enum TerminationTime {
     AccordingToContract = 1,
     BeforeEndOfContract = 2,
     ContractDidNotStart = 3,
+}
+
+export class TestConnectionDto implements ITestConnectionDto {
+    testParam?: number;
+    works?: boolean;
+
+    constructor(data?: ITestConnectionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.testParam = _data["testParam"];
+            this.works = _data["works"];
+        }
+    }
+
+    static fromJS(data: any): TestConnectionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TestConnectionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["testParam"] = this.testParam;
+        data["works"] = this.works;
+        return data;
+    }
+}
+
+export interface ITestConnectionDto {
+    testParam?: number;
+    works?: boolean;
 }
 
 export class TimeReportingCapDto implements ITimeReportingCapDto {
