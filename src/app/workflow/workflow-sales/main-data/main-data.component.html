@@ -181,7 +181,7 @@
                             <mat-label>Project Description</mat-label>
                             <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password"
                                 name="projectDescription" required formControlName="projectDescription"
-                                [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" [cdkAutosizeMaxRows]="15">
                             </textarea>
                             <mat-error>
                                 <app-validator [control]="salesMainDataForm.projectDescription"></app-validator>
