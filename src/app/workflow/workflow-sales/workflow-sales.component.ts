@@ -1203,7 +1203,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			if (consultant.specialRates.length) {
 				for (let rate of consultant.specialRates) {
 					let consultantSpecialRate = new PeriodConsultantSpecialRateDto(rate);
-					consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
 					consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
 				}
 			} else {
@@ -1213,7 +1212,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			if (consultant.specialFees.length) {
 				for (let fee of consultant.specialFees) {
 					let consultantSpecialFee = new PeriodConsultantSpecialFeeDto(fee);
-					consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
 					consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
 				}
 			} else {

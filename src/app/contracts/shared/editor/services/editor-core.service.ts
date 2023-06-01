@@ -195,7 +195,9 @@ export class EditorCoreService {
 
 	insertComments(comments: Array<AgreementCommentDto>) {
 		this._commentService.applyComments(comments as any);
-		this.removeUnsavedChanges();
+		this._runTaskAsyncAndSkipTrackChanges(() => {
+			this.editor.document.fields.updateAllFields();
+		});
 	}
 
 	insertMergeField(field: string, insertBreak: boolean = false) {
@@ -280,7 +282,7 @@ export class EditorCoreService {
 	}
 
 	getUnsavedChanges() {
-		return this.editor.hasUnsavedChanges;
+		return this.hasUnsavedChanges$.value;
 	}
 
 	destroy() {

@@ -185,20 +185,22 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
     makeAreaTypeRoleRequired(emitEvent = true) {
-        this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
-        this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
-        this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
-        this.updateStateAreaTypeRole(emitEvent);
+        // NB: validation commented out as requesteed by Jan -> https://prodatadk.atlassian.net/browse/P30-1138
+        // this.salesMainDataForm.primaryCategoryArea?.addValidators(Validators.required);
+        // this.salesMainDataForm.primaryCategoryType?.addValidators(Validators.required);
+        // this.salesMainDataForm.primaryCategoryRole?.addValidators(Validators.required);
+        // this.updateStateAreaTypeRole(emitEvent);
     }
 
     makeAreaTypeRoleNotRequired(emitEvent = true) {
-        this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
-        this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
-        this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
-        this.salesMainDataForm.primaryCategoryArea?.setErrors(null);
-        this.salesMainDataForm.primaryCategoryType?.setErrors(null);
-        this.salesMainDataForm.primaryCategoryRole?.setErrors(null);
-        this.updateStateAreaTypeRole(emitEvent);
+        // NB: validation commented out as requesteed by Jan -> https://prodatadk.atlassian.net/browse/P30-1138
+        // this.salesMainDataForm.primaryCategoryArea?.removeValidators(Validators.required);
+        // this.salesMainDataForm.primaryCategoryType?.removeValidators(Validators.required);
+        // this.salesMainDataForm.primaryCategoryRole?.removeValidators(Validators.required);
+        // this.salesMainDataForm.primaryCategoryArea?.setErrors(null);
+        // this.salesMainDataForm.primaryCategoryType?.setErrors(null);
+        // this.salesMainDataForm.primaryCategoryRole?.setErrors(null);
+        // this.updateStateAreaTypeRole(emitEvent);
     }
 
     updateStateAreaTypeRole(emitEvent = true) {
