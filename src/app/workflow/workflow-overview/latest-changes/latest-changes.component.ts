@@ -63,7 +63,7 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 				pairwise(),
 				map(([previous, current]) => {
 					if (previous?.displayName) {
-						this.getLatestChanges();
+						this.getLatestChanges(true);
 					}
 					let toSend = current?.displayName?.length ? current?.displayName : current;
 					return this._filterEvents(toSend ?? '');
@@ -75,7 +75,10 @@ export class LatestChangesComponent extends AppComponentBase implements OnInit {
 		this.filter.setValue('');
 	}
 
-	getLatestChanges() {
+	getLatestChanges(filterChanged: boolean = false) {
+        if (filterChanged) {
+            this.pageIndex = 1;
+        }
 		const payload = this._packPayload();
 		this.isLoading = true;
 		this._historyService

@@ -1,4 +1,4 @@
-<div class="list-filter--manager cursor-pointer u-mr--10"
+<div class="list-filter--manager cursor-pointer"
     [matTooltip]="selectedAccountManagers.length ? (selectedAccountManagers | displayList: 'name') : 'Select account manager(s)'"
     matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (onMenuOpen)="onOpenedMenu()">
     <ng-container *ngIf="selectedAccountManagers?.length === 1">

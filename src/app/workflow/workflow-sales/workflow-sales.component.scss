@@ -9,8 +9,8 @@
         &--consultants {
             border-bottom: 1px solid #E7E3E8;
             .workflow-gray--header {
-                font-weight: 700;
-                font-size: 14px;
+                font-weight: 700 !important;
+                font-size: 14px !important;
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.87);
             }
