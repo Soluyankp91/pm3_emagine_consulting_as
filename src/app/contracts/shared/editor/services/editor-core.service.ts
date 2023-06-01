@@ -282,7 +282,7 @@ export class EditorCoreService {
 	}
 
 	getUnsavedChanges() {
-		return this.editor.hasUnsavedChanges;
+		return this.hasUnsavedChanges$.value;
 	}
 
 	destroy() {
