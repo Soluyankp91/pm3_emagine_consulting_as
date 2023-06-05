@@ -1,7 +1,6 @@
 import { CdkScrollable, Overlay, ScrollDispatcher } from '@angular/cdk/overlay';
 import { AfterViewInit, Component, ElementRef, Injector, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
@@ -57,7 +56,6 @@ import { TitleService } from 'src/shared/common/services/title.service';
 export class WorkflowDetailsComponent extends AppComponentBase implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild('scroller', { static: true }) scroller: ElementRef<HTMLElement>;
 	@ViewChild('scrollable', { static: true }) scrollBar: NgScrollbar;
-	@ViewChild('topMenuTabs', { static: false }) topMenuTabs: MatTabGroup;
 	@ViewChild('workflowPeriod', { static: false })
 	workflowPeriod: WorkflowPeriodComponent;
 	@ViewChild('menuActionsTrigger', { static: false })
@@ -96,6 +94,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 	individualConsultantActionsAvailable: boolean;
 	projectCategories: EnumEntityTypeDto[];
     workflowSequenceIdCode: string;
+    wfIsDeleted: boolean;
 
     ePeriodClass = EPeriodClass;
     ePeriodIcon = EProcessIcon;
@@ -121,6 +120,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         private _clipboard: Clipboard,
         private _snackBar: MatSnackBar,
         private _titleService: TitleService,
+        private _workflowService: WorkflowServiceProxy
 	) {
 		super(injector);
 	}
@@ -405,6 +405,68 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         });
     }
 
+    confirmDeleteWorkflow(workflowId: string) {
+		this.menuActionsTrigger.closeMenu();
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Delete workflow`,
+			confirmationMessage: `Are you sure you want to delete this workflow?\n
+            This workflow will be hidden from lists and statistics.\n
+            Note that if it contained periods which were synced, it should be terminated first.\n
+            If not terminated -  the contract lines will still appear in Legacy PM,\n
+            on the consultant website and inside the client module.`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Delete',
+			isNegative: true,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this.deleteWorkflow(workflowId);
+		});
+	}
+
+	deleteWorkflow(workflowId: string) {
+		this.showMainSpinner();
+		this._workflowService
+			.delete3(workflowId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Workflow has been deleted');
+                this._getTopLevelMenu()
+            });
+	}
+
+	confirmRestoreWorkflow(workflowId: string) {
+		this.menuActionsTrigger.closeMenu();
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Restore workflow`,
+			confirmationMessage: `Are you sure you want to restore workflow?`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Yes',
+			isNegative: false,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this.restoreWorkflow(workflowId);
+		});
+	}
+
+	restoreWorkflow(workflowId: string) {
+		this.showMainSpinner();
+		this._workflowService
+			.restore(workflowId)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => {
+                this.showNotify(NotifySeverity.Success, 'Workflow has been restored');
+                this._getTopLevelMenu()
+            });
+	}
+
     private _processRatesAfterChangeOrExtend(specialRatesWarnings: string[] | undefined, specialFeesWarnings: string[] | undefined) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		BigDialogConfig.scrollStrategy = scrollStrategy;
@@ -454,10 +516,10 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 					this.workflowStatusId = result.workflowStatusId;
 					this.workflowStatusName = result.isDeleted ? 'Deleted workflow' : getWorkflowStatus(result.workflowStatusId);
 					this.workflowStatusIcon = result.isDeleted ? 'deleted-status' : getStatusIcon(result.workflowStatusId);
+                    this.wfIsDeleted = result.isDeleted;
 				}
 				if (value) {
 					this._router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
-					this.topMenuTabs.realignInkBar();
 				}
                 this._titleService.setTitle(ERouteTitleType.WfDetails, result.directClientName ?? '', result.workflowSequenceIdCode);
 			});
