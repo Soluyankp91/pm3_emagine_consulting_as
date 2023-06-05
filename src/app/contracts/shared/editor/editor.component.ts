@@ -27,7 +27,6 @@ import { AppCommonModule } from 'src/app/shared/common/app-common.module';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
-	AgreementServiceProxy,
 	CompleteTemplateDocumentFileDraftDto,
 	EnvelopeStatus,
 	SendDocuSignEnvelopeCommand,
@@ -119,7 +118,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 		private _chd: ChangeDetectorRef,
 		private _notifierService: NotifierService,
 		private _editorObserverService: EditorObserverService,
-		private _agreementServiceProxy: AgreementServiceProxy,
 		private _extraHttp: ExtraHttpsService
 	) {}
 
@@ -149,7 +147,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.isAgreement$.pipe(take(1)).subscribe((res) => {
 			this.isAgreement = !!res;
 		});
-		this.isClientSpecific$.pipe(take(1)).subscribe(res => this.isClientSpecific = res);
+		this.isClientSpecific$.pipe(take(1)).subscribe((res) => (this.isClientSpecific = res));
 
 		this.hasUnsavedChanges$.pipe(takeUntil(this._destroy$)).subscribe((hasUnsavedChanges) => {
 			if (hasUnsavedChanges) {
@@ -542,7 +540,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 				},
 			});
 		} else {
-			this._agreementServiceProxy.envelopeRecipientsPreview([this.templateId], true).subscribe((result) => {
+			this._agreementService.envelopeRecipientsPreview([this.templateId], true).subscribe((result) => {
 				const dialogRef = this._dialog.open(SignersPreviewDialogComponent, {
 					width: '100vw',
 					maxWidth: '100vw',
@@ -574,8 +572,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 			singleEmail: singleEmail,
 			convertDocumentFileToPdf: option === EEmailMenuOption.AsPdfFile,
 		});
-		this._agreementServiceProxy
-			.sendEmailEnvelope(input)
+		this._agreementService
+			.sendEmailEnvelope(this.templateId, input)
 			.pipe(
 				catchError((err) => {
 					this._notifierService.notify(NotificationType.Noop);
@@ -605,8 +603,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 			emailBody: emailBody,
 			emailSubject: emailSubject,
 		});
-		this._agreementServiceProxy
-			.sendDocusignEnvelope(input)
+		this._agreementService
+			.sendDocusignEnvelope(this.templateId, input)
 			.pipe(
 				catchError((err) => {
 					this._notifierService.notify(NotificationType.Noop);

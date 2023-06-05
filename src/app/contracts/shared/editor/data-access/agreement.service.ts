@@ -2,15 +2,18 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
 import {
 	AgreementServiceProxy,
 	CompleteTemplateDocumentFileDraftDto,
+	EnvelopePreviewDto,
 	EnvelopeStatus,
+	SendDocuSignEnvelopeCommand,
+	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
@@ -84,6 +87,52 @@ export class AgreementService implements AgreementAbstractService {
 
 	private _getAgreement(agreementId: number) {
 		return this._agreementService.agreementGET(agreementId);
+	}
+
+	private _showMissedMergeFieldsPopup(agreementId: number) {
+		return this._dialog
+			.open(ConfirmPopupComponent, {
+				width: '540px',
+				data: {
+					title: 'Oops!',
+					body: `Agreement #${agreementId} has empty merge fields in use.`,
+					cancelBtnText: 'Cancel',
+					confirmBtnText: 'Send anyway',
+				},
+			})
+			.afterClosed();
+	}
+
+	private _sendEnvelopeCommand(url: string, body: SendDocuSignEnvelopeCommand, templateID: number) {
+		return this._httpClient
+			.post<void>(url, body, {
+				context: manualErrorHandlerEnabledContextCreator(true),
+			})
+			.pipe(
+				catchError(({ error }: HttpErrorResponse) => {
+					const mergeFieldRelatedErrors = [
+						'contracts.agreement.outdated.merge.fields',
+						'contracts.agreement.empty.merge.fields',
+					];
+					if (error?.error?.code && mergeFieldRelatedErrors.includes(error.error.code)) {
+						return this._showMissedMergeFieldsPopup(templateID).pipe(
+							switchMap((confirmed) => {
+								if (confirmed) {
+									const data = new SendDocuSignEnvelopeCommand({
+										...body,
+										skipMergeFieldsValidation: true,
+									});
+									return this.sendEmailEnvelope(templateID, data);
+								} else {
+									return throwError(error);
+								}
+							})
+						);
+					} else {
+						return throwError(error);
+					}
+				})
+			);
 	}
 
 	getTemplate(agreementId: number, isComplete: boolean = true) {
@@ -210,7 +259,11 @@ export class AgreementService implements AgreementAbstractService {
 			.pipe(
 				switchMap(() => {
 					let agreementHasSentVersions = versions.some(
-						(version) => version.envelopeStatus && [EnvelopeStatus.Completed, EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus)
+						(version) =>
+							version.envelopeStatus &&
+							[EnvelopeStatus.Completed, EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(
+								version.envelopeStatus
+							)
 					);
 					return agreementHasSentVersions
 						? this._showTemplateVoidingPopup(templateId)
@@ -267,6 +320,23 @@ export class AgreementService implements AgreementAbstractService {
 	}
 
 	getAgreementName(id: number): Observable<string> {
-		return this._agreementService.preview(id).pipe(map((agreement) => agreement.name))
+		return this._agreementService.preview(id).pipe(map((agreement) => agreement.name));
+	}
+
+	envelopeRecipientsPreview(
+		agreementIds?: number[] | undefined,
+		singleEnvelope?: boolean | undefined
+	): Observable<EnvelopePreviewDto[]> {
+		return this._agreementService.envelopeRecipientsPreview(agreementIds, singleEnvelope);
+	}
+
+	sendDocusignEnvelope(templateID: number, body?: SendDocuSignEnvelopeCommand | undefined): Observable<void> {
+		let url = this._baseUrl + '/send-docusign-envelope';
+		return this._sendEnvelopeCommand(url, body, templateID);
+	}
+
+	sendEmailEnvelope(templateID: number, body?: SendEmailEnvelopeCommand | undefined): Observable<void> {
+		let url = this._baseUrl + '/send-email-envelope';
+		return this._sendEnvelopeCommand(url, body, templateID);
 	}
 }
