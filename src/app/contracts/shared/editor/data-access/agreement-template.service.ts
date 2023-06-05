@@ -9,6 +9,9 @@ import { environment } from 'src/environments/environment';
 import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
 import {
 	AgreementTemplateServiceProxy,
+	EnvelopePreviewDto,
+	SendDocuSignEnvelopeCommand,
+	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
 	UpdateCompletedTemplateDocumentFileDto,
 } from 'src/shared/service-proxies/service-proxies';
@@ -191,5 +194,19 @@ export class AgreementTemplateService implements AgreementAbstractService {
 
 	getAgreementName(id: number): Observable<string> {
 		return this._agreementTemplateService.preview2(id).pipe(map((agreementTemplate) => agreementTemplate.name));
+	}
+	envelopeRecipientsPreview(
+		agreementIds?: number[] | undefined,
+		singleEnvelope?: boolean | undefined
+	): Observable<EnvelopePreviewDto[]> {
+		return of([]);
+	}
+
+	sendDocusignEnvelope(...unknown): Observable<void> {
+		return of(undefined);
+	}
+
+	sendEmailEnvelope(...unknown): Observable<void> {
+		return of(undefined);
 	}
 }
