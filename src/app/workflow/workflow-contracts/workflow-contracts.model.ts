@@ -14,7 +14,7 @@ export class WorkflowContractsMainForm extends UntypedFormGroup {
             primaryCategoryRole: new UntypedFormControl(null),
             projectName: new UntypedFormControl(null, Validators.required),
             discountId: new UntypedFormControl(null),
-            remarks: new UntypedFormControl(null, Validators.required),
+            remarks: new UntypedFormControl(null, [Validators.required, Validators.maxLength(4000)]),
             noRemarks: new UntypedFormControl(false),
             customDebtorNumber: new UntypedFormControl(null)
         });

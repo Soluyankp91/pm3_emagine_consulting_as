@@ -134,6 +134,18 @@
                     <mat-icon svgIcon="close-icon"></mat-icon>
                     Terminate Workflow
                 </button>
+                <ng-container *ngIf="wfIsDeleted">
+                    <button class="menu-item green-color" mat-menu-item (click)="confirmRestoreWorkflow(workflowId)">
+                        <mat-icon svgIcon="restore-icon"></mat-icon>
+                        <span>Restore workflow</span>
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="!wfIsDeleted">
+                    <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(workflowId)">
+                        <mat-icon svgIcon="close-icon"></mat-icon>
+                        <span>Delete workflow</span>
+                    </button>
+                </ng-container>
             </mat-menu>
         </div>
     </div>

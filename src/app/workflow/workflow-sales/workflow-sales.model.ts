@@ -26,7 +26,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             contractExpirationNotification: new UntypedFormControl(null),
             customContractExpirationNotificationDate: new UntypedFormControl(null),
 
-            remarks: new UntypedFormControl(null),
+            remarks: new UntypedFormControl(null, Validators.maxLength(4000)),
             noRemarks: new UntypedFormControl(false)
         });
     }
