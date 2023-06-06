@@ -23,6 +23,7 @@ import { VoidEnvelopePopupComponent } from '../components/void-envelope-popup/vo
 import { SaveAsPopupComponent } from '../components/save-as-popup';
 import { MergeFieldsErrors } from '../../services/extra-https.service';
 import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
+import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
 
 @Injectable()
 export class AgreementService implements AgreementAbstractService {
@@ -103,6 +104,12 @@ export class AgreementService implements AgreementAbstractService {
 			.afterClosed();
 	}
 
+	private _showNotificationDialog(message: string) {
+		return this._dialog
+			.open(NotificationDialogComponent, { width: '540px', data: { message, label: 'Bad request' } })
+			.afterClosed();
+	}
+
 	private _sendEnvelopeCommand(url: string, body: SendDocuSignEnvelopeCommand, templateID: number) {
 		return this._httpClient
 			.post<void>(url, body, {
@@ -129,6 +136,9 @@ export class AgreementService implements AgreementAbstractService {
 							})
 						);
 					} else {
+						if (error?.error?.message) {
+							this._showNotificationDialog(error.error.message);
+						}
 						return throwError(error);
 					}
 				})
