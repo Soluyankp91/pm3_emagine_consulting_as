@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, ViewContainerRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
@@ -10,8 +10,6 @@ import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-prox
 import {
 	AgreementTemplateServiceProxy,
 	EnvelopePreviewDto,
-	SendDocuSignEnvelopeCommand,
-	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
 	UpdateCompletedTemplateDocumentFileDto,
 } from 'src/shared/service-proxies/service-proxies';
@@ -19,8 +17,8 @@ import { ConfirmPopupComponent } from '../components/confirm-popup';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
 import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
-import { ExtraHttpsService, MergeFieldsErrors } from '../../services/extra-https.service';
 import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
+import { OnSaveMergeFieldsErrors } from './agreement.service';
 
 @Injectable()
 export class AgreementTemplateService implements AgreementAbstractService {
@@ -29,8 +27,7 @@ export class AgreementTemplateService implements AgreementAbstractService {
 	constructor(
 		private httpClient: HttpClient,
 		private _dialog: MatDialog,
-		private _agreementTemplateService: AgreementTemplateServiceProxy,
-		private _extraHttp: ExtraHttpsService
+		private _agreementTemplateService: AgreementTemplateServiceProxy
 	) {}
 
 	getTemplate(templateId: number, isComplete: boolean = true) {
@@ -95,7 +92,7 @@ export class AgreementTemplateService implements AgreementAbstractService {
 						switchMap(() => this.saveDraftAsDraftTemplate(templateId, true, fileContent))
 					);
 				}
-				if (error.error.code === MergeFieldsErrors.UnknownMergeFields) {
+				if (error.error.code === OnSaveMergeFieldsErrors.UnknownMergeFields) {
 					return this._dialog
 						.open(EmptyAndUnknownMfComponent, {
 							data: {
