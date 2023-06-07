@@ -1,6 +1,7 @@
 <div class="latest-changes">
     <mat-form-field class="form-width-300 autocompleteWithShevron" appearance="outline"
         [ngClass]="{'isPanelOpen': auto.isOpen}">
+        <mat-label>Filter by</mat-label>
         <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="filter" appPreventDoubleClick
             (click)="$event.stopPropagation()" placeholder="Type something..">
         <span matSuffix class="shevron"></span>
