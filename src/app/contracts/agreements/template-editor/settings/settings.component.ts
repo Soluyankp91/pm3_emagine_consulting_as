@@ -1077,10 +1077,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				}),
 				tap((agreementTemplateDetailsDto) => {
 					if (this.consultantPeriodId) {
-						return true;
-					}
-
-					if (this.clientPeriodId && this.workflowTemplateType$.value !== undefined) {
+						this.agreementFormGroup.patchValue({
+							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
+						});
+					} else if (this.clientPeriodId && this.workflowTemplateType$.value !== undefined) {
 						this.agreementFormGroup.patchValue({
 							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,

@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { Observable, of, throwError } from 'rxjs';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
 import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
@@ -21,10 +21,23 @@ import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
 import { VoidEnvelopePopupComponent } from '../components/void-envelope-popup/void-envelope-popup.component';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
-import { MergeFieldsErrors } from '../../services/extra-https.service';
 import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
 import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
+import { OutdatedMergeFieldsComponent } from '../../components/popUps/outdated-merge-fields/outdated-merge-fields.component';
 
+export enum OnSendMergeFieldsErrors {
+	OutDatedMergeFields = 'contracts.agreement.outdated.merge.fields',
+	EmptyMergeFields = 'contracts.agreement.empty.merge.fields',
+}
+export enum OnSaveMergeFieldsErrors {
+	UnknownMergeFields = 'contracts.documents.unknown.merge.fields',
+}
+export interface OutDatedMergeFieldsErrorData {
+	currentValue: string;
+	key: string;
+	previousValue: string;
+}
+export type EmptyMergeFieldsErroData = string[];
 @Injectable()
 export class AgreementService implements AgreementAbstractService {
 	private readonly _baseUrl = `${environment.apiUrl}/api/Agreement`;
@@ -90,18 +103,48 @@ export class AgreementService implements AgreementAbstractService {
 		return this._agreementService.agreementGET(agreementId);
 	}
 
-	private _showMissedMergeFieldsPopup(agreementId: number) {
+	private _showOutdatedMergeFieldsPopup(errorData: OutDatedMergeFieldsErrorData) {
 		return this._dialog
-			.open(ConfirmPopupComponent, {
-				width: '540px',
-				data: {
-					title: 'Oops!',
-					body: `Agreement #${agreementId} has empty merge fields in use.`,
-					cancelBtnText: 'Cancel',
-					confirmBtnText: 'Send anyway',
-				},
+			.open(OutdatedMergeFieldsComponent, {
+				data: errorData,
+				width: '800px',
+				height: '450px',
+				backdropClass: 'backdrop-modal--wrapper',
+				panelClass: 'outdated-merge-fields',
 			})
 			.afterClosed();
+	}
+
+	private _showEmptyMergeFieldsPopup(errorData: EmptyMergeFieldsErroData) {
+		return this._dialog
+			.open(EmptyAndUnknownMfComponent, {
+				data: {
+					header: 'Empty merge fields were detected',
+					description: `The values of the following merge fields have changed since last document save. Delete them or proceed anyway.`,
+					listDescription: 'The list of affected merge fields:',
+					confirmButton: true,
+					confirmButtonText: 'Proceed',
+					mergeFields: errorData,
+				},
+				width: '800',
+				height: '450px',
+				backdropClass: 'backdrop-modal--wrapper',
+				panelClass: 'app-empty-and-unknown-mf',
+			})
+			.afterClosed();
+	}
+
+	private _handleMergeFieldErrors(
+		errorCode: OnSendMergeFieldsErrors,
+		errorData: OutDatedMergeFieldsErrorData | EmptyMergeFieldsErroData
+	) {
+		switch (errorCode) {
+			case OnSendMergeFieldsErrors.OutDatedMergeFields:
+				return this._showOutdatedMergeFieldsPopup(<OutDatedMergeFieldsErrorData>errorData);
+
+			case OnSendMergeFieldsErrors.EmptyMergeFields:
+				return this._showEmptyMergeFieldsPopup(<EmptyMergeFieldsErroData>errorData);
+		}
 	}
 
 	private _showNotificationDialog(message: string) {
@@ -117,12 +160,8 @@ export class AgreementService implements AgreementAbstractService {
 			})
 			.pipe(
 				catchError(({ error }: HttpErrorResponse) => {
-					const mergeFieldRelatedErrors = [
-						'contracts.agreement.outdated.merge.fields',
-						'contracts.agreement.empty.merge.fields',
-					];
-					if (error?.error?.code && mergeFieldRelatedErrors.includes(error.error.code)) {
-						return this._showMissedMergeFieldsPopup(templateID).pipe(
+					if (error?.error?.code && Object.values(OnSendMergeFieldsErrors).includes(error.error.code)) {
+						return this._handleMergeFieldErrors(error?.error.code, error.error.data).pipe(
 							switchMap((confirmed) => {
 								if (confirmed) {
 									const data = new SendDocuSignEnvelopeCommand({
@@ -223,7 +262,7 @@ export class AgreementService implements AgreementAbstractService {
 							})
 						);
 					}
-					if (error.error.code === MergeFieldsErrors.UnknownMergeFields) {
+					if (error.error.code === OnSaveMergeFieldsErrors.UnknownMergeFields) {
 						return this._dialog
 							.open(EmptyAndUnknownMfComponent, {
 								data: {
