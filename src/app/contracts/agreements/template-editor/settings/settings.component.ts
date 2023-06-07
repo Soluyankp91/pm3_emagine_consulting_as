@@ -331,7 +331,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					}),
 					switchMap(() => {
-						return this._apiServiceProxy.preview(this.currentAgreementId);
+						return this._apiServiceProxy.agreementGET(this.currentAgreementId);
 					}),
 					tap((agreement) => {
 						this.agreementFormGroup.attachments.reset();

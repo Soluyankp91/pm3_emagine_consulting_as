@@ -216,7 +216,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					}),
 					switchMap(() => {
-						return this._apiServiceProxy.preview2(this.currentAgreementId);
+						return this._apiServiceProxy.agreementTemplateGET(this.currentAgreementId);
 					}),
 					tap((template) => {
 						this.clientTemplateFormGroup.attachments.reset();

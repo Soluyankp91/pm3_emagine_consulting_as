@@ -148,7 +148,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				.agreementPatch(this.currentTemplate.agreementTemplateId, toSend)
 				.pipe(
 					switchMap(() => {
-						return this._apiServiceProxy.preview2(this.currentTemplate.agreementTemplateId);
+						return this._apiServiceProxy.agreementTemplateGET(this.currentTemplate.agreementTemplateId);
 					}),
 					tap(() => {
 						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
