@@ -7881,6 +7881,7 @@ export class ClientsServiceProxy {
      * @param search (optional) 
      * @param countryFilter (optional) 
      * @param ownerFilter (optional) 
+     * @param teamsAndDivisionsNodes (optional) 
      * @param isActive (optional) 
      * @param excludeDeleted (optional) 
      * @param onlyWrongfullyDeletedInHubspot (optional) 
@@ -7889,7 +7890,7 @@ export class ClientsServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
+    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients/list?";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
@@ -7903,6 +7904,10 @@ export class ClientsServiceProxy {
             throw new Error("The parameter 'ownerFilter' cannot be null.");
         else if (ownerFilter !== undefined)
             ownerFilter && ownerFilter.forEach(item => { url_ += "ownerFilter=" + encodeURIComponent("" + item) + "&"; });
+        if (teamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
+        else if (teamsAndDivisionsNodes !== undefined)
+            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "teamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
         if (isActive === null)
             throw new Error("The parameter 'isActive' cannot be null.");
         else if (isActive !== undefined)
@@ -13783,6 +13788,66 @@ export class EnumServiceProxy {
         }
         return _observableOf<{ [key: string]: string; }>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    teamsAndDivisionsLevels(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/teams-and-divisions-levels";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTeamsAndDivisionsLevels(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTeamsAndDivisionsLevels(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processTeamsAndDivisionsLevels(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
 }
 
 @Injectable()
@@ -15378,6 +15443,64 @@ export class LookupServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    teamsAndDivisionsNodes(): Observable<TeamsAndDivisionsNodeDto[]> {
+        let url_ = this.baseUrl + "/api/Lookup/Teams-And-Divisions-Nodes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTeamsAndDivisionsNodes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTeamsAndDivisionsNodes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TeamsAndDivisionsNodeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TeamsAndDivisionsNodeDto[]>;
+        }));
+    }
+
+    protected processTeamsAndDivisionsNodes(response: HttpResponseBase): Observable<TeamsAndDivisionsNodeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TeamsAndDivisionsNodeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TeamsAndDivisionsNodeDto[]>(null as any);
+    }
+
+    /**
      * @param filter (optional) 
      * @param maxRecords (optional) 
      * @param idsToExclude (optional) 
@@ -15943,6 +16066,7 @@ export class MainOverviewServiceProxy {
 
     /**
      * @param mainOverviewStatusesForSales (optional) 
+     * @param teamsAndDivisionsNodes (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -15957,12 +16081,16 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
+    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/workflows?";
         if (mainOverviewStatusesForSales === null)
             throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
         else if (mainOverviewStatusesForSales !== undefined)
             mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
+        if (teamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
+        else if (teamsAndDivisionsNodes !== undefined)
+            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -16059,6 +16187,7 @@ export class MainOverviewServiceProxy {
 
     /**
      * @param mainOverviewStatusesForSales (optional) 
+     * @param teamsAndDivisionsNodes (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -16073,12 +16202,16 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
+    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/consultants?";
         if (mainOverviewStatusesForSales === null)
             throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
         else if (mainOverviewStatusesForSales !== undefined)
             mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
+        if (teamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
+        else if (teamsAndDivisionsNodes !== undefined)
+            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -17727,6 +17860,7 @@ export class WorkflowServiceProxy {
      * @param deliveryType (optional) 
      * @param workflowStatus (optional) 
      * @param responsibleEmployees (optional) 
+     * @param teamsAndDivisionsNodes (optional) 
      * @param syncStateStatuses (optional) 
      * @param showNewSales (optional) 
      * @param showExtensions (optional) 
@@ -17743,7 +17877,7 @@ export class WorkflowServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
@@ -17769,6 +17903,10 @@ export class WorkflowServiceProxy {
             throw new Error("The parameter 'responsibleEmployees' cannot be null.");
         else if (responsibleEmployees !== undefined)
             responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
+        if (teamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
+        else if (teamsAndDivisionsNodes !== undefined)
+            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
         if (syncStateStatuses === null)
             throw new Error("The parameter 'syncStateStatuses' cannot be null.");
         else if (syncStateStatuses !== undefined)
@@ -29244,6 +29382,7 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
+    teamsAndDivisionsNodeId?: number | undefined;
     permissions?: Permission[] | undefined;
     tenantId?: number;
 
@@ -29261,6 +29400,7 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
             this.id = _data["id"];
             this.externalId = _data["externalId"];
             this.name = _data["name"];
+            this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
             if (Array.isArray(_data["permissions"])) {
                 this.permissions = [] as any;
                 for (let item of _data["permissions"])
@@ -29282,6 +29422,7 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
         data["id"] = this.id;
         data["externalId"] = this.externalId;
         data["name"] = this.name;
+        data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
         if (Array.isArray(this.permissions)) {
             data["permissions"] = [];
             for (let item of this.permissions)
@@ -29296,6 +29437,7 @@ export interface ICurrentEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
+    teamsAndDivisionsNodeId?: number | undefined;
     permissions?: Permission[] | undefined;
     tenantId?: number;
 }
@@ -29471,6 +29613,7 @@ export class EmployeeDto implements IEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
+    teamsAndDivisionsNodeId?: number | undefined;
 
     constructor(data?: IEmployeeDto) {
         if (data) {
@@ -29486,6 +29629,7 @@ export class EmployeeDto implements IEmployeeDto {
             this.id = _data["id"];
             this.externalId = _data["externalId"];
             this.name = _data["name"];
+            this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
         }
     }
 
@@ -29501,6 +29645,7 @@ export class EmployeeDto implements IEmployeeDto {
         data["id"] = this.id;
         data["externalId"] = this.externalId;
         data["name"] = this.name;
+        data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
         return data;
     }
 }
@@ -29509,6 +29654,7 @@ export interface IEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
+    teamsAndDivisionsNodeId?: number | undefined;
 }
 
 export class EmployeeNotificationDto implements IEmployeeNotificationDto {
@@ -29563,6 +29709,7 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
+    teamsAndDivisionsNodeId?: number | undefined;
     email?: string | undefined;
 
     constructor(data?: IEmployeeSearchEmployeeDto) {
@@ -29579,6 +29726,7 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
             this.id = _data["id"];
             this.externalId = _data["externalId"];
             this.name = _data["name"];
+            this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
             this.email = _data["email"];
         }
     }
@@ -29595,6 +29743,7 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
         data["id"] = this.id;
         data["externalId"] = this.externalId;
         data["name"] = this.name;
+        data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
         data["email"] = this.email;
         return data;
     }
@@ -29604,6 +29753,7 @@ export interface IEmployeeSearchEmployeeDto {
     id?: number;
     externalId?: string;
     name?: string | undefined;
+    teamsAndDivisionsNodeId?: number | undefined;
     email?: string | undefined;
 }
 
@@ -34651,6 +34801,54 @@ export enum SyncStateStatus {
     NotSynced = 1,
     NewSyncNeeded = 2,
     Synced = 3,
+}
+
+export class TeamsAndDivisionsNodeDto implements ITeamsAndDivisionsNodeDto {
+    id?: number;
+    parentId?: number | undefined;
+    name?: string | undefined;
+    tenantId?: number;
+
+    constructor(data?: ITeamsAndDivisionsNodeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.parentId = _data["parentId"];
+            this.name = _data["name"];
+            this.tenantId = _data["tenantId"];
+        }
+    }
+
+    static fromJS(data: any): TeamsAndDivisionsNodeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamsAndDivisionsNodeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["parentId"] = this.parentId;
+        data["name"] = this.name;
+        data["tenantId"] = this.tenantId;
+        return data;
+    }
+}
+
+export interface ITeamsAndDivisionsNodeDto {
+    id?: number;
+    parentId?: number | undefined;
+    name?: string | undefined;
+    tenantId?: number;
 }
 
 export class TemplateListItem implements ITemplateListItem {
