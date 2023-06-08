@@ -125,9 +125,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 		this.isLoading = true;
 		this.templateId = this._route.snapshot.params.id;
 		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
+		const consultantPeriodID = this._route.snapshot.queryParams.consultantPeriodId;
 
 		this.registerChangeVersionListener(this.selectedVersionControl);
-		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID);
+		this.registerAgreementChangeNotifier(this.templateId, clientPeriodID, consultantPeriodID);
 
 		this.getTemplateVersions(this.templateId, () => {
 			if (!this.currentVersionIsSent) {
@@ -233,15 +234,15 @@ export class EditorComponent implements OnInit, OnDestroy {
 			.subscribe();
 	}
 
-	registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string) {
-		(!templateId && !clientPeriodID
+	registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string, consultantPeriodID?: string) {
+		(!templateId && !clientPeriodID && !consultantPeriodID
 			? of(null)
 			: templateId
 			? this._editorObserverService.runAgreementEditModeNotifier(templateId)
-			: this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID)
-		)
-			.pipe(takeUntil(this._destroy$))
-			.subscribe();
+			: clientPeriodID
+			? this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID, 'ClientPeriod')
+			: this._editorObserverService.runAgreementCreateModeNotifier(consultantPeriodID, 'ConsultantPeriod')
+		).pipe(takeUntil(this._destroy$)).subscribe();
 	}
 
 	updateViewModeByVersion(version: number) {
