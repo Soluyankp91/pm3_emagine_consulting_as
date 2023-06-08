@@ -410,6 +410,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 				deliveryTypes,
 				workflowStatus,
 				ownerIds,
+                undefined, // teams and division
 				this.selectedSyncStateStatuses?.map((x) => x.id),
 				this.showOnlyWorkflowsWithNewSales,
 				this.showOnlyWorkflowsWithExtensions,

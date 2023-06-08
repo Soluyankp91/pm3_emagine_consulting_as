@@ -315,6 +315,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 				this.workflowChartSubscription = this._mainOverviewService
 					.workflows(
 						mainOverviewStatuses,
+                        undefined, // teams and division
 						ownerIds,
 						invoicingEntity,
 						paymentEntity,
@@ -401,6 +402,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 				this.consultantChartSubscription = this._mainOverviewService
 					.consultants(
 						mainOverviewStatuses,
+                        undefined, // teams and division
 						ownerIds,
 						invoicingEntity,
 						paymentEntity,

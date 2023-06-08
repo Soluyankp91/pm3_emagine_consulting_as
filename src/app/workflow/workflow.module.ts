@@ -42,6 +42,7 @@ import { LatestChangesComponent } from './workflow-overview/latest-changes/lates
 import { WorkflowCreateResolver } from './workflow.resolver';
 import { LegalContractItemComponent } from './workflow-contracts/legal-contracts/legal-contract-item/legal-contract-item.component';
 import { WorkflowHttpService } from './shared/services/workflow-http.service';
+import { ManagerTeamComponent } from './shared/components/manager-team/manager-team.component';
 
 @NgModule({
 	declarations: [
@@ -77,7 +78,8 @@ import { WorkflowHttpService } from './shared/services/workflow-http.service';
 		RemoveOrUploadAgrementDialogComponent,
 		CalculatedMarginComponent,
 		LatestChangesComponent,
-  LegalContractItemComponent,
+		LegalContractItemComponent,
+		ManagerTeamComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
@@ -141,11 +143,11 @@ export class WorkflowModule {
 			'send-via-docusign',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/send-via-docusign.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'signed',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/signed.svg')
 		);
-        iconRegistry.addSvgIcon(
+		iconRegistry.addSvgIcon(
 			'reminder-sent',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/reminder-set.svg')
 		);
