@@ -1,2 +1,5 @@
-<p>manager-team works!</p>
-{{managerTeam?.name}}
+<ng-container *ngIf="managerTeamId !== null && managerTeamId !== undefined">
+    <span class="header">Team: </span>
+    <span class="value">{{managerTeam?.tenant}} {{managerTeam?.division ? '/ ' + managerTeam?.division : ''}} {{managerTeam?.team ? '/ ' + managerTeam?.team : ''}}</span>
+</ng-container>
+
