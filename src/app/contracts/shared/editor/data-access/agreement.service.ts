@@ -168,7 +168,7 @@ export class AgreementService implements AgreementAbstractService {
 										...body,
 										skipMergeFieldsValidation: true,
 									});
-									return this.sendEmailEnvelope(templateID, data);
+									return this._sendEnvelopeCommand(url, body, templateID);
 								} else {
 									return throwError(error);
 								}
