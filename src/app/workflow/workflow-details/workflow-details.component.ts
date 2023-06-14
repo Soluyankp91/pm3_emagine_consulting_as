@@ -411,11 +411,14 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			confirmationMessageTitle: `Delete workflow`,
-			confirmationMessage: `Are you sure you want to delete this workflow?\n
-            This workflow will be hidden from lists and statistics.\n
-            Note that if it contained periods which were synced, it should be terminated first.\n
-            If not terminated -  the contract lines will still appear in Legacy PM,\n
-            on the consultant website and inside the client module.`,
+			confirmationMessage:
+            `Are you sure you want to delete this Workflow?
+
+            It will be hidden from lists and statistics.
+            If it contains periods which were synced to Legacy PM
+            - <span class="text-bold-800">it should be terminated first.</span> If not terminated
+            - the Contract Lines will still appear in Legacy PM,
+            on the Consultant website and inside the Client Module.`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Delete',
 			isNegative: true,

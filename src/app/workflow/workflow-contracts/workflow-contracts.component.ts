@@ -1253,7 +1253,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			confirmationMessageTitle: `Complete step`,
-			confirmationMessage: `${message} Are you sure you want to proceed?`,
+			confirmationMessage: `${message} \n Are you sure you want to proceed?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Proceed anyway',
 			isNegative: true,
