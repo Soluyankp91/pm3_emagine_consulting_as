@@ -102,38 +102,6 @@
         <div fxFlex="10%" fxLayoutAlign="end center">
             <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
             <mat-menu #workflowMenu>
-                <ng-container *ngIf="individualConsultantActionsAvailable">
-                    <button
-                        class="menu-item green-color"
-                        mat-menu-item
-                        [disabled]="false"
-                        appPreventDoubleClick (throttledClick)="addConsultant()">
-                        <mat-icon svgIcon="add-icon-green"></mat-icon>
-                        Add consultant
-                    </button>
-                </ng-container>
-                <button
-                    class="menu-item green-color"
-                    mat-menu-item
-                    [disabled]="false"
-                    appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
-                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
-                    Change Workflow Data
-                </button>
-                <button
-                    class="menu-item green-color"
-                    mat-menu-item
-                    appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
-                    <mat-icon svgIcon="add-icon-green"></mat-icon>
-                    Extend Workflow
-                </button>
-                <button
-                    class="menu-item menu-item--cancel"
-                    mat-menu-item
-                    appPreventDoubleClick (throttledClick)="addTermination()">
-                    <mat-icon svgIcon="close-icon"></mat-icon>
-                    Terminate Workflow
-                </button>
                 <ng-container *ngIf="wfIsDeleted">
                     <button class="menu-item green-color" mat-menu-item (click)="confirmRestoreWorkflow(workflowId)">
                         <mat-icon svgIcon="restore-icon"></mat-icon>
@@ -141,6 +109,38 @@
                     </button>
                 </ng-container>
                 <ng-container *ngIf="!wfIsDeleted">
+                    <ng-container *ngIf="individualConsultantActionsAvailable">
+                        <button
+                            class="menu-item green-color"
+                            mat-menu-item
+                            [disabled]="false"
+                            appPreventDoubleClick (throttledClick)="addConsultant()">
+                            <mat-icon svgIcon="add-icon-green"></mat-icon>
+                            Add consultant
+                        </button>
+                    </ng-container>
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        [disabled]="false"
+                        appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
+                        <mat-icon svgIcon="change-icon-green"></mat-icon>
+                        Change Workflow Data
+                    </button>
+                    <button
+                        class="menu-item green-color"
+                        mat-menu-item
+                        appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
+                        <mat-icon svgIcon="extend-icon-green"></mat-icon>
+                        Extend Workflow
+                    </button>
+                    <button
+                        class="menu-item menu-item--terminate"
+                        mat-menu-item
+                        appPreventDoubleClick (throttledClick)="addTermination()">
+                        <mat-icon svgIcon="terminate-icon"></mat-icon>
+                        Terminate Workflow
+                    </button>
                     <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(workflowId)">
                         <mat-icon svgIcon="close-icon"></mat-icon>
                         <span>Delete workflow</span>

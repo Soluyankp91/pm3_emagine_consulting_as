@@ -149,5 +149,17 @@ export class WorkflowModule {
 			'reminder-sent',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/legal-contracts/reminder-set.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'terminate-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/terminate-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'change-icon-green',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/change-icon-green.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'extend-icon-green',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/extend-icon-green.svg')
+		);
 	}
 }
