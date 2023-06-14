@@ -3,17 +3,26 @@
 		<div class="upper-part">
 			<h2 class="popup-header">Send via DocuSign</h2>
 			<p class="description">You are sending agreements via email. Please review the email message and it’s formatting:</p>
-			<ng-container *ngIf="emailTemplates$ | async as emailTemplates">
-				<mat-form-field appearance="outline" class="template-select">
-					<mat-select [formControl]="templateControl" placeholder="Email template">
-						<ng-container *ngFor="let emailTemplate of emailTemplates">
-							<mat-option [value]="emailTemplate">{{ emailTemplate.name }}</mat-option>
-						</ng-container>
-					</mat-select>
-				</mat-form-field>
-			</ng-container>
-			<mat-form-field appearance="outline" >
-				<input matInput [formControl]="emailSubjectControl" placeholder="Subject">
+			<emg-dropdown-autocomplete-single-select
+				label="Email template"
+				labelKey="name"
+				[required]="false"
+				[isOptionsLoading]="selectLoading$"
+				[options]="selectEntities$ | async"
+				[formControl]="templateControl"
+				[unwrapFunction]="unwrapFunction"
+				(inputEmitter)="searchTemplate($event)">
+				<ng-template let-cell="option" #optionTemplate>
+					<div>
+						<div class="autocomplete-first-row">
+							<span> {{ cell.name }} </span>
+						</div>
+					</div>
+				</ng-template>
+			</emg-dropdown-autocomplete-single-select>
+			<mat-form-field appearance="outline">
+				<mat-label>Subject</mat-label>
+				<input matInput [formControl]="emailSubjectControl" />
 			</mat-form-field>
 		</div>
 		<mat-form-field appearance="outline" class="textarea-form-field">
@@ -26,8 +35,6 @@
 	<mat-divider class="divider"></mat-divider>
 	<div mat-dialog-actions class="actions">
 		<button mat-button [mat-dialog-close]="false" class="close-button">Cancel</button>
-		<button mat-raised-button [mat-dialog-close]="true" class="confirm-button" >
-			Confirm
-		</button>
+		<button mat-raised-button [mat-dialog-close]="true" class="confirm-button">Confirm</button>
 	</div>
 </div>

@@ -35,6 +35,7 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 	@Input() panelWidth: string | number;
 	@Input() unwrapFunction?: (arg: any) => {};
 	@Input() isOptionsLoading: BehaviorSubject<boolean>;
+	@Input() required: boolean = true;
 
 	@Output() inputEmitter = new EventEmitter<string>();
 
@@ -64,7 +65,10 @@ export class DropdownAutocompleteSingleSelectComponent implements OnInit, OnDest
 
 	ngOnInit(): void {
 		this._subsribeOnInputControl();
-		this._initValidators();
+
+		if (this.required) {
+			this._initValidators();
+		}
 	}
 
 	ngDoCheck(): void {
