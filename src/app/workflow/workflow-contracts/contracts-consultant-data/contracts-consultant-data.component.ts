@@ -171,7 +171,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		return this._frameAgreementServiceProxy.consultantFrameAgreementList(
 			dataToSend.agreementId,
 			dataToSend.search,
-			dataToSend.legalEntityId,
+			dataToSend.legalEntityId ?? undefined,
 			dataToSend.salesTypeId,
 			dataToSend.contractTypeId,
 			dataToSend.deliveryTypeId,
