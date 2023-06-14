@@ -40,8 +40,24 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class EditorCoreService {
+	/**
+	 * Allows additional functionality.
+	 * currently it's true only when we are in the agreements.
+	 */
+	private _extendedMode = false;
+
+	/**
+	 * Indicates if the editor data initialized.
+	 */
 	private _initialised = false;
+
+	/**
+	 * Rich editor by default marks the document as modified
+	 * when we set the document content, merge fields, comments, etc.
+	 * This flag allows us to skip this behavior.
+	 */
 	private _skipTrackChanges = false;
+
 	afterViewInit$: ReplaySubject<void> = new ReplaySubject();
 	templateAsBase64$ = new BehaviorSubject<string>('');
 	mergeFieldState$ = new BehaviorSubject<IMergeFieldState>(IMergeFieldState.Code);
@@ -91,6 +107,7 @@ export class EditorCoreService {
 	}
 
 	initialize(readonly: boolean = false, exportWithMergedData: boolean = false) {
+		this._extendedMode = !exportWithMergedData;
 		this.editor.readOnly = readonly;
 
 		if (!this._initialised) {
@@ -146,48 +163,15 @@ export class EditorCoreService {
 	}
 
 	applyMergeFields(fields: IMergeField) {
-		const isAgreement = this._router.url.includes('agreement');
 		this.documentLoaded$
 			.pipe(
 				filter(() => !!Object.keys(fields).length),
 				take(1)
 			)
 			.subscribe(() => {
-				if (isAgreement) {
-					let oldFields = [];
-					for (let i = 0; i < this.editor.document.fields.count; i++) {
-						let field = this.editor.document.fields.getByIndex(i);
-
-						let key = this.editor.document.getText(field.codeInterval).split(' ')[1];
-						let value = this.editor.document.getText(field.interval).split('}')[1].replace(/>/g, '');
-						if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
-							oldFields.push(key);
-						}
-					}
-					if (!oldFields.length) {
-						this._skipTrackChanges = true;
-						this.editor.mailMergeOptions.setDataSource([fields], () => {
-							this._skipTrackChanges = false;
-						});
-						return;
-					}
-					let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
-						if (curIndex + 1 !== arr.length) {
-							return acc + `<li>${cur}</li>`;
-						}
-						return acc + `<li>${cur}</li>` + `</ul>`;
-					}, `<ul class='ul-list'>`);
-					this._dialog.open(NotificationDialogComponent, {
-						width: '520px',
-						backdropClass: 'backdrop-modal--wrapper',
-						data: {
-							label: 'Upload contract',
-							message: `Please Save the document again in order to store new merge field values.The values of the following merge fields have changed since last document save:${fieldsHtml}`,
-						},
-					});
-				}
 				this._skipTrackChanges = true;
 				this.editor.mailMergeOptions.setDataSource([fields], () => {
+					this.showMessageIfMergeFieldsOutDated(fields);
 					this._skipTrackChanges = false;
 				});
 			});
@@ -273,6 +257,31 @@ export class EditorCoreService {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
 			this._commentService.applyNewComment(comment);
 		});
+	}
+
+	showMessageIfMergeFieldsOutDated(fields?: IMergeField) {
+		if (this._extendedMode) {
+			let oldFields = this._getChangedMergeFields(fields);
+			if (oldFields.length) {
+				let fieldsHtml = oldFields.reduce((acc, cur, curIndex, arr) => {
+					if (curIndex + 1 !== arr.length) {
+						return acc + `<li>${cur}</li>`;
+					}
+					return acc + `<li>${cur}</li>` + `</ul>`;
+				}, `<ul class='ul-list'>`);
+
+				const body = `<span>The values of the following merge fields were updated. Please save the document again in order to store new merge field values.</span><br><br><span>The list of affected merge fields:</span>${fieldsHtml}`;
+
+				this._dialog.open(NotificationDialogComponent, {
+					width: '800px',
+					backdropClass: 'backdrop-modal--wrapper',
+					data: {
+						label: 'Merge field values have been updated',
+						message: body,
+					},
+				});
+			}
+		}
 	}
 
 	removeUnsavedChanges() {
@@ -506,7 +515,7 @@ export class EditorCoreService {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
 			this.editor.history.beginTransaction();
 			let code = this.editor.document.getText(this.editor.selection.intervals[0]);
-			let cleanedUpText = this._replaceMergeFieldWithRegex(code);
+			let cleanedUpText = EditorCoreService.cleanupMergeFieldCode(code);
 			this.clipboard.copy(cleanedUpText);
 			this.editor.history.endTransaction();
 		});
@@ -574,11 +583,6 @@ export class EditorCoreService {
 		});
 	}
 
-	private _replaceMergeFieldWithRegex(code: string) {
-		const regex = new RegExp(/\}.*?\>/g);
-		return code.replace(regex, '}').replace(/{MERGEFIELD /g, '{');
-	}
-
 	private _triggerCustomCommand(command: ICustomCommand, parameter?: any) {
 		this.editor.events.customCommandExecuted._fireEvent(this.editor, { commandName: command, parameter });
 	}
@@ -635,10 +639,45 @@ export class EditorCoreService {
 		}
 	}
 
+	private _getChangedMergeFields(fields: Record<string, any>): string[] {
+		const doc = this.editor.document;
+		const docFields = doc.fields;
+
+		const oldFields = [];
+
+		for (let i = 0; i < docFields.count; i++) {
+			const field = docFields.getByIndex(i);
+			const fieldCode = doc.getText(field.codeInterval);
+			const fieldResult = doc.getText(field.resultInterval);
+			const key = fieldCode.split(' ')[1];
+			const value = EditorCoreService.cleanupMergeFieldValue(fieldResult);
+
+			if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
+				oldFields.push(key);
+			}
+		}
+
+		return oldFields;
+	}
+
 	private _runTaskAsyncAndSkipTrackChanges(task: () => void): void {
 		this._skipTrackChanges = true;
 		task();
 		this._skipTrackChanges = false;
 		this.hasUnsavedChanges$.next(false);
+	}
+
+	static mergeFieldValueIsEmpty(value: string): boolean {
+		const pattern = /^<<.*>>$/;
+		return value ? pattern.test(value) : true;
+	}
+
+	static cleanupMergeFieldValue(value: string): string | number {
+		return EditorCoreService.mergeFieldValueIsEmpty(value) ? null : value;
+	}
+
+	static cleanupMergeFieldCode(code: string) {
+		const regex = new RegExp(/\}.*?\>/g);
+		return code.replace(regex, '}').replace(/{MERGEFIELD /g, '{');
 	}
 }

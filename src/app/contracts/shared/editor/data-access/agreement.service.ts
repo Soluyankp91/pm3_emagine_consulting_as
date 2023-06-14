@@ -3,14 +3,17 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { manualErrorHandlerEnabledContextCreator } from 'src/shared/service-proxies/http-context-tokens';
 import {
 	AgreementServiceProxy,
 	CompleteTemplateDocumentFileDraftDto,
+	EnvelopePreviewDto,
 	EnvelopeStatus,
+	SendDocuSignEnvelopeCommand,
+	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ConfirmPopupComponent } from '../components/confirm-popup';
@@ -18,9 +21,23 @@ import { IDocumentItem, IDocumentVersion } from '../entities';
 import { AgreementAbstractService } from './agreement-abstract.service';
 import { VoidEnvelopePopupComponent } from '../components/void-envelope-popup/void-envelope-popup.component';
 import { SaveAsPopupComponent } from '../components/save-as-popup';
-import { MergeFieldsErrors } from '../../services/extra-https.service';
 import { EmptyAndUnknownMfComponent } from '../../components/popUps/empty-and-unknown-mf/empty-and-unknown-mf.component';
+import { NotificationDialogComponent } from '../../components/popUps/notification-dialog/notification-dialog.component';
+import { OutdatedMergeFieldsComponent } from '../../components/popUps/outdated-merge-fields/outdated-merge-fields.component';
 
+export enum OnSendMergeFieldsErrors {
+	OutDatedMergeFields = 'contracts.agreement.outdated.merge.fields',
+	EmptyMergeFields = 'contracts.agreement.empty.merge.fields',
+}
+export enum OnSaveMergeFieldsErrors {
+	UnknownMergeFields = 'contracts.documents.unknown.merge.fields',
+}
+export interface OutDatedMergeFieldsErrorData {
+	currentValue: string;
+	key: string;
+	previousValue: string;
+}
+export type EmptyMergeFieldsErroData = string[];
 @Injectable()
 export class AgreementService implements AgreementAbstractService {
 	private readonly _baseUrl = `${environment.apiUrl}/api/Agreement`;
@@ -84,6 +101,87 @@ export class AgreementService implements AgreementAbstractService {
 
 	private _getAgreement(agreementId: number) {
 		return this._agreementService.agreementGET(agreementId);
+	}
+
+	private _showOutdatedMergeFieldsPopup(errorData: OutDatedMergeFieldsErrorData) {
+		return this._dialog
+			.open(OutdatedMergeFieldsComponent, {
+				data: errorData,
+				width: '800px',
+				height: '450px',
+				backdropClass: 'backdrop-modal--wrapper',
+				panelClass: 'outdated-merge-fields',
+			})
+			.afterClosed();
+	}
+
+	private _showEmptyMergeFieldsPopup(errorData: EmptyMergeFieldsErroData) {
+		return this._dialog
+			.open(EmptyAndUnknownMfComponent, {
+				data: {
+					header: 'Empty merge fields were detected',
+					description: `The values of the following merge fields have changed since last document save. Delete them or proceed anyway.`,
+					listDescription: 'The list of affected merge fields:',
+					confirmButton: true,
+					confirmButtonText: 'Proceed',
+					mergeFields: errorData,
+				},
+				width: '800',
+				height: '450px',
+				backdropClass: 'backdrop-modal--wrapper',
+				panelClass: 'app-empty-and-unknown-mf',
+			})
+			.afterClosed();
+	}
+
+	private _handleMergeFieldErrors(
+		errorCode: OnSendMergeFieldsErrors,
+		errorData: OutDatedMergeFieldsErrorData | EmptyMergeFieldsErroData
+	) {
+		switch (errorCode) {
+			case OnSendMergeFieldsErrors.OutDatedMergeFields:
+				return this._showOutdatedMergeFieldsPopup(<OutDatedMergeFieldsErrorData>errorData);
+
+			case OnSendMergeFieldsErrors.EmptyMergeFields:
+				return this._showEmptyMergeFieldsPopup(<EmptyMergeFieldsErroData>errorData);
+		}
+	}
+
+	private _showNotificationDialog(message: string) {
+		return this._dialog
+			.open(NotificationDialogComponent, { width: '540px', data: { message, label: 'Bad request' } })
+			.afterClosed();
+	}
+
+	private _sendEnvelopeCommand(url: string, body: SendDocuSignEnvelopeCommand, templateID: number) {
+		return this._httpClient
+			.post<void>(url, body, {
+				context: manualErrorHandlerEnabledContextCreator(true),
+			})
+			.pipe(
+				catchError(({ error }: HttpErrorResponse) => {
+					if (error?.error?.code && Object.values(OnSendMergeFieldsErrors).includes(error.error.code)) {
+						return this._handleMergeFieldErrors(error?.error.code, error.error.data).pipe(
+							switchMap((confirmed) => {
+								if (confirmed) {
+									const data = new SendDocuSignEnvelopeCommand({
+										...body,
+										skipMergeFieldsValidation: true,
+									});
+									return this._sendEnvelopeCommand(url, data, templateID);
+								} else {
+									return throwError(error);
+								}
+							})
+						);
+					} else {
+						if (error?.error?.message) {
+							this._showNotificationDialog(error.error.message);
+						}
+						return throwError(error);
+					}
+				})
+			);
 	}
 
 	getTemplate(agreementId: number, isComplete: boolean = true) {
@@ -164,7 +262,7 @@ export class AgreementService implements AgreementAbstractService {
 							})
 						);
 					}
-					if (error.error.code === MergeFieldsErrors.UnknownMergeFields) {
+					if (error.error.code === OnSaveMergeFieldsErrors.UnknownMergeFields) {
 						return this._dialog
 							.open(EmptyAndUnknownMfComponent, {
 								data: {
@@ -210,7 +308,11 @@ export class AgreementService implements AgreementAbstractService {
 			.pipe(
 				switchMap(() => {
 					let agreementHasSentVersions = versions.some(
-						(version) => version.envelopeStatus && [EnvelopeStatus.Completed, EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(version.envelopeStatus)
+						(version) =>
+							version.envelopeStatus &&
+							[EnvelopeStatus.Completed, EnvelopeStatus.Sent, EnvelopeStatus.WaitingForOthers].includes(
+								version.envelopeStatus
+							)
 					);
 					return agreementHasSentVersions
 						? this._showTemplateVoidingPopup(templateId)
@@ -267,6 +369,23 @@ export class AgreementService implements AgreementAbstractService {
 	}
 
 	getAgreementName(id: number): Observable<string> {
-		return this._agreementService.preview(id).pipe(map((agreement) => agreement.name))
+		return this._agreementService.preview(id).pipe(map((agreement) => agreement.name));
+	}
+
+	envelopeRecipientsPreview(
+		agreementIds?: number[] | undefined,
+		singleEnvelope?: boolean | undefined
+	): Observable<EnvelopePreviewDto[]> {
+		return this._agreementService.envelopeRecipientsPreview(agreementIds, singleEnvelope);
+	}
+
+	sendDocusignEnvelope(templateID: number, body?: SendDocuSignEnvelopeCommand | undefined): Observable<void> {
+		let url = this._baseUrl + '/send-docusign-envelope';
+		return this._sendEnvelopeCommand(url, body, templateID);
+	}
+
+	sendEmailEnvelope(templateID: number, body?: SendEmailEnvelopeCommand | undefined): Observable<void> {
+		let url = this._baseUrl + '/send-email-envelope';
+		return this._sendEnvelopeCommand(url, body, templateID);
 	}
 }

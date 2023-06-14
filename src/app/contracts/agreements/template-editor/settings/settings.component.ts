@@ -29,6 +29,7 @@ import {
 	takeUntil,
 	distinctUntilChanged,
 	finalize,
+	catchError,
 } from 'rxjs/operators';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
@@ -61,6 +62,7 @@ import {
 	ConsultantPeriodServiceProxy,
 	MergeFieldsServiceProxy,
 	SimpleAgreementTemplatesListItemDto,
+	AgreementContractNumberPreviewDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { DuplicateOrParentOptions, ParentTemplateDto, WorkflowSummary } from './settings.interfaces';
 import { EditorObserverService } from '../../../shared/services/editor-observer.service';
@@ -194,7 +196,9 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 		const paramId = this._route.snapshot.params.id;
 		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
-		this._registerAgreementChangeNotifier(paramId, clientPeriodID);
+		const consultantPeriodID = this._route.snapshot.queryParams.consultantPeriodId;
+		this._registerAgreementChangeNotifier(paramId, clientPeriodID, consultantPeriodID);
+;
 
 		const consultantPeriodId = this._route.snapshot.queryParams.consultantPeriodId;
 
@@ -260,18 +264,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 
 	async onSave() {
 		if (this.isLocked) {
-			let dialogRef = this._dialog.open(ConfirmDialogComponent, {
-				width: '500px',
-				height: '306px',
-				backdropClass: 'backdrop-modal--wrapper',
-				data: {
-					label: 'Agreement number change',
-					message:
-						'Editing sent agreement settings will result in the current agreement number {number} change to {new number}. Are you sure you want to proceed?',
-					confirmButtonText: 'Proceed',
-				},
-			});
-			let proceed = await dialogRef.afterClosed().toPromise();
+			let proceed = await this._apiServiceProxy
+				.contractNumberPreview(this.currentAgreement.agreementId)
+				.pipe(
+					switchMap(({ currentContractNumber, nextContractNumber }) => {
+						return this._showTemplateVersionChangeDialog(currentContractNumber, nextContractNumber);
+					})
+				)
+				.toPromise();
+
 			if (proceed) {
 				await this._apiServiceProxy.openEdit(this.currentAgreement.agreementId).toPromise();
 			} else {
@@ -722,15 +723,15 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			.subscribe();
 	}
 
-	private _registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string) {
-		(!templateId && !clientPeriodID
+	private _registerAgreementChangeNotifier(templateId?: number, clientPeriodID?: string, consultantPeriodID?: string) {
+		(!templateId && !clientPeriodID && !consultantPeriodID
 			? of(null)
 			: templateId
 			? this._editorObserverService.runAgreementEditModeNotifier(templateId)
-			: this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID)
-		)
-			.pipe(takeUntil(this._unSubscribe$))
-			.subscribe();
+			: clientPeriodID
+			? this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID, 'ClientPeriod')
+			: this._editorObserverService.runAgreementCreateModeNotifier(consultantPeriodID, 'ConsultantPeriod')
+		).pipe(takeUntil(this._unSubscribe$)).subscribe();
 	}
 
 	private _createAttachments(files: FileUpload[]) {
@@ -1078,10 +1079,10 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				}),
 				tap((agreementTemplateDetailsDto) => {
 					if (this.consultantPeriodId) {
-						return true;
-					}
-
-					if (this.clientPeriodId && this.workflowTemplateType$.value !== undefined) {
+						this.agreementFormGroup.patchValue({
+							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
+						});
+					} else if (this.clientPeriodId && this.workflowTemplateType$.value !== undefined) {
 						this.agreementFormGroup.patchValue({
 							nameTemplate: agreementTemplateDetailsDto.agreementNameTemplate,
 							definition: agreementTemplateDetailsDto.definition,
@@ -1446,6 +1447,22 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 				confirmButtonText: 'Discard',
 			},
 		});
+	}
+
+	private _showTemplateVersionChangeDialog(currentVersion: string, newVersion: string) {
+		return this._dialog
+			.open(ConfirmDialogComponent, {
+				width: '500px',
+				height: '306px',
+				backdropClass: 'backdrop-modal--wrapper',
+				data: {
+					label: 'Agreement number change',
+					message: `Editing sent agreement settings will result in the current agreement number ${currentVersion} change to ${newVersion}. Are you sure you want to proceed?`,
+					confirmButtonText: 'Proceed',
+				},
+			})
+			.afterClosed()
+			.pipe(map((result) => !!result));
 	}
 
 	private mapSigners(signers: AgreementDetailsSignerDto[]) {
