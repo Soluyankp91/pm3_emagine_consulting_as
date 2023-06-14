@@ -43,9 +43,14 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                     <mat-label>Employment type</mat-label>
-                                    <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentTypeId" [disableOptionCentering]="true">
+                                    <mat-select
+                                        [disabled]="((activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) &&
+                                            (consultant.get('employmentTypeId').value === employmentTypesEnum.FeeOnly || consultant.get('employmentTypeId').value === employmentTypesEnum.Recruitment))
+                                            || readOnlyMode"
+                                        required formControlName="employmentTypeId" [disableOptionCentering]="true">
                                         <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
-                                            <mat-option [value]="item.id" [ngClass]="{'hidden-option': item.id === employmentTypesEnum.EConsultant || item.id === employmentTypesEnum.VMSOrReferred}">
+                                            <mat-option [value]="item.id"
+                                                [fxHide]="((activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (item.id === employmentTypesEnum.FeeOnly || item.id === employmentTypesEnum.Recruitment)) || (item.id === employmentTypesEnum.EConsultant || item.id === employmentTypesEnum.VMSOrReferred)">
                                                 {{ item.name }}
                                             </mat-option>
                                         </ng-container>
@@ -86,7 +91,7 @@
                                             <app-validator [control]="consultant.get('consultantName')"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select form-width-450" [fxHide]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-450" [fxHide]="consultant.value?.employmentTypeId !== 10 && consultant.value?.employmentTypeId !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
                                         <mat-label>Consultant Name only</mat-label>
                                         <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentTypeId === 10 || consultant.value?.employmentTypeId === 11" type="text" matInput formControlName="consultantNameOnly" placeholder="Consultant name only">
                                         <mat-error>
@@ -95,7 +100,9 @@
                                     </mat-form-field>
                                 </div>
                             </ng-container>
-                            <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
+                            <ng-container *ngIf="consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment && consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly">
+                                <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
+                            </ng-container>
                         </div>
                     </div>
                     <ng-container *ngIf="consultant.value?.employmentTypeId  && (consultant.value?.employmentTypeId !== employmentTypesEnum.FeeOnly && consultant.value?.employmentTypeId !== employmentTypesEnum.Recruitment)">

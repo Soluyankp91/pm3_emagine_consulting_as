@@ -1,70 +1,107 @@
 .mat-dialog-container {
-    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
-        0px 24px 38px 3px rgba(0, 0, 0, 0.14),
-        0px 9px 46px 8px rgba(0, 0, 0, 0.12);
-    background: #fff;
-    color: #384853;
-    padding: 0px !important;
-    border-radius: 0px !important;
+	box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+	background: #fff;
+	color: #384853;
+	padding: 0px !important;
+	border-radius: 0px !important;
 
-    .mat-dialog-content {
-        margin: 0px !important;
-        padding: 32px 40px !important;
-        max-height: none;
-        overflow: hidden !important;
-    }
+	.mat-dialog-content {
+		margin: 0px !important;
+		padding: 32px 40px !important;
+		max-height: none;
+		overflow: hidden !important;
+		font-weight: 600;
+	}
 
-    .mat-dialog-actions {
-        margin-bottom: 0 !important;
-        padding: 16px 40px;
-        min-height: 40px !important;
-        align-items: unset;
-    }
+	.mat-dialog-actions {
+		margin-bottom: 0 !important;
+		padding: 16px 40px;
+		min-height: 40px !important;
+		align-items: unset;
+	}
+
+	.base-dialog {
+		.mat-dialog-title {
+			font-size: 30px !important;
+			line-height: 36px !important;
+			font-weight: 800 !important;
+			padding: 32px 40px 0 40px !important;
+		}
+
+		.mat-dialog-content {
+			font-size: 14px;
+			max-height: 62vh;
+			overflow-y: auto !important;
+		}
+
+		.mat-dialog-actions {
+			gap: 16px;
+			margin-bottom: 0 !important;
+			justify-content: flex-end !important;
+
+			button {
+				font-size: 16px;
+				font-weight: 700;
+				padding: 8px 30px;
+				line-height: 14px;
+				border-radius: 5px;
+
+				&.cancel-button {
+					color: #fff;
+					background-color: #17a297;
+				}
+				&.proceed-button {
+					color: #fff;
+					background-color: #ff7a78;
+				}
+			}
+		}
+	}
 }
 
 .hubspot-sync-modal {
-    position: absolute !important;
-    bottom: 0;
-    right: 0;
-    .mat-dialog-container {
-        border-radius: unset !important;
+	position: absolute !important;
+	bottom: 0;
+	right: 0;
+	.mat-dialog-container {
+		border-radius: unset !important;
 
-        .mat-dialog-content {
-            margin: 0px !important;
-            padding: 30px !important;
-            overflow: hidden !important;
-        }
+		.mat-dialog-content {
+			margin: 0px !important;
+			padding: 30px !important;
+			overflow: hidden !important;
+		}
 
-        .mat-dialog-actions {
-            margin-bottom: 0 !important;
-            padding: 8px;
-            border-top: 1px solid #E7E3E8;
-        }
-    }
+		.mat-dialog-actions {
+			margin-bottom: 0 !important;
+			padding: 8px;
+			border-top: 1px solid #e7e3e8;
+		}
+	}
 }
 
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
 	&.file-preview-backdrop {
-		background: #4A4E60;
+		background: #4a4e60;
 		opacity: 0.3 !important;
 	}
 }
 
 .signers-preview--modal {
-    position: absolute !important;
-    bottom: 0;
-    right: 0;
-    .mat-dialog-container {
-        border-radius: unset !important;
+	position: absolute !important;
+	bottom: 0;
+	right: 0;
+	.mat-dialog-container {
+		border-radius: unset !important;
 
-        .mat-dialog-content {
-            margin: 0 !important;
-            padding: 0 0 60px !important;
-            overflow: hidden !important;
-        }
+		.mat-dialog-content {
+			margin: 0 !important;
+			padding: 0 0 60px !important;
+			overflow: hidden !important;
+		}
 
-        .mat-dialog-actions {
-            margin-bottom: 0 !important;
-        }
-    }
+		.mat-dialog-actions {
+			margin-bottom: 0 !important;
+		}
+	}
 }

@@ -83,7 +83,7 @@
                                         </mat-option>
                                     </ng-container>
                                     <ng-container *ngFor="let item of clientAddresses; trackBy: trackById">
-                                        <mat-option [value]="item.id">
+                                        <mat-option [value]="item.id" [fxHide]="item.isHidden">
                                             {{ item.address }}
                                         </mat-option>
                                     </ng-container>

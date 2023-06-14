@@ -19,8 +19,8 @@ export class EditorObserverService {
 		return this._makeRequestWithInterval(this.intervalSeconds, endpoint);
 	}
 
-	runAgreementCreateModeNotifier(clientPeriodId: string) {
-		const endpoint = `${this.baseUrl}/ClientPeriod/${clientPeriodId}/client-agreements/notify-creation`;
+	runAgreementCreateModeNotifier(periodId: string, type: 'ClientPeriod' | 'ConsultantPeriod') {
+		const endpoint = `${this.baseUrl}/${type}/${periodId}/client-agreements/notify-creation`;
 		return this._makeRequestWithInterval(this.intervalSeconds, endpoint);
 	}
 

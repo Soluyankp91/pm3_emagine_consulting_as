@@ -1,7 +1,10 @@
 import { Observable } from 'rxjs';
 import {
 	CompleteTemplateDocumentFileDraftDto,
+	EnvelopePreviewDto,
 	EnvelopeRelatedAgreementDto,
+	SendDocuSignEnvelopeCommand,
+	SendEmailEnvelopeCommand,
 	StringWrappedValueDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { IDocumentItem, IDocumentVersion } from '../entities';
@@ -27,4 +30,10 @@ export abstract class AgreementAbstractService {
 	abstract voidEnvelopeRelatedAgreement(id: number, reason: string): Observable<any>;
 	abstract unlockAgreement(id: number): Observable<boolean>;
 	abstract unlockAgreementByConfirmation(id: number, version: number): Observable<boolean>;
+	abstract envelopeRecipientsPreview(
+		agreementIds?: number[] | undefined,
+		singleEnvelope?: boolean | undefined
+	): Observable<EnvelopePreviewDto[]>;
+	abstract sendEmailEnvelope(templateID: number, body?: SendEmailEnvelopeCommand | undefined): Observable<void>;
+	abstract sendDocusignEnvelope(templateID: number, body?: SendDocuSignEnvelopeCommand | undefined): Observable<void>;
 }
