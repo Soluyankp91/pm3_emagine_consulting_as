@@ -333,7 +333,7 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 						this._creationTitleService.updateReceiveAgreementsFromOtherParty(toSend.receiveAgreementsFromOtherParty);
 					}),
 					switchMap(() => {
-						return this._apiServiceProxy.preview(this.currentAgreementId);
+						return this._apiServiceProxy.agreementGET(this.currentAgreementId);
 					}),
 					tap((agreement) => {
 						this.agreementFormGroup.attachments.reset();
@@ -541,7 +541,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									}
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
-										height: '240px',
 										backdropClass: 'backdrop-modal--wrapper',
 										data: {
 											label: 'No default template',
@@ -702,7 +701,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 									}
 									let dialogRef = this._dialog.open(NotificationDialogComponent, {
 										width: '500px',
-										height: '240px',
 										backdropClass: 'backdrop-modal--wrapper',
 										data: {
 											label: 'No default template',

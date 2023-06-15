@@ -23,11 +23,17 @@
 			<mat-form-field appearance="outline">
 				<mat-label>Subject</mat-label>
 				<input matInput [formControl]="emailSubjectControl" />
+				<mat-error>
+					<app-validator [control]="emailSubjectControl"></app-validator>
+				</mat-error>
 			</mat-form-field>
 		</div>
 		<mat-form-field appearance="outline" class="textarea-form-field">
 			<mat-label>Email message</mat-label>
 			<textarea matInput [formControl]="emailBodyControl" cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
+			<mat-error>
+				<app-validator [control]="emailBodyControl"></app-validator>
+			</mat-error>
 		</mat-form-field>
 	</div>
 </div>
@@ -35,6 +41,6 @@
 	<mat-divider class="divider"></mat-divider>
 	<div mat-dialog-actions class="actions">
 		<button mat-button [mat-dialog-close]="false" class="close-button">Cancel</button>
-		<button mat-raised-button [mat-dialog-close]="true" class="confirm-button">Confirm</button>
+		<button mat-raised-button [mat-dialog-close]="true" [disabled]="!isValid" class="confirm-button">Confirm</button>
 	</div>
 </div>

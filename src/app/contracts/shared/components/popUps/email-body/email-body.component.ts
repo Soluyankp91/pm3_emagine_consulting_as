@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AgreementServiceProxy, TemplateListItem } from 'src/shared/service-proxies/service-proxies';
@@ -24,6 +24,10 @@ const initialState: EmailBodyState = {
 export class EmailBodyComponent implements OnInit, OnDestroy {
 	private _state$: BehaviorSubject<EmailBodyState> = new BehaviorSubject<EmailBodyState>(initialState);
 
+	get isValid() {
+		return this.emailBodyControl.valid && this.emailSubjectControl.valid;
+	}
+
 	selectEntities$ = this._state$.pipe(
 		map((state) => state.entities),
 		distinctUntilChanged(compareFn)
@@ -40,8 +44,8 @@ export class EmailBodyComponent implements OnInit, OnDestroy {
 	);
 
 	templateControl = new FormControl(null);
-	emailSubjectControl = new FormControl(null);
-	emailBodyControl = new FormControl(null);
+	emailSubjectControl = new FormControl(null, [Validators.maxLength(100)]);
+	emailBodyControl = new FormControl(null, [Validators.maxLength(10000)]);
 
 	private _unsubscribe$ = new Subject();
 
