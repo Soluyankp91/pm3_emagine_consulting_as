@@ -15499,8 +15499,8 @@ export class LookupServiceProxy {
     /**
      * @return Success
      */
-    teamsAndDivisionsNodes(): Observable<TeamsAndDivisionsNodeDto[]> {
-        let url_ = this.baseUrl + "/api/Lookup/Teams-And-Divisions-Nodes";
+    teamsAndDivisionsTree(): Observable<TeamsAndDivisionsTree> {
+        let url_ = this.baseUrl + "/api/Lookup/Teams-And-Divisions-Tree";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -15512,20 +15512,20 @@ export class LookupServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTeamsAndDivisionsNodes(response_);
+            return this.processTeamsAndDivisionsTree(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTeamsAndDivisionsNodes(response_ as any);
+                    return this.processTeamsAndDivisionsTree(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<TeamsAndDivisionsNodeDto[]>;
+                    return _observableThrow(e) as any as Observable<TeamsAndDivisionsTree>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<TeamsAndDivisionsNodeDto[]>;
+                return _observableThrow(response_) as any as Observable<TeamsAndDivisionsTree>;
         }));
     }
 
-    protected processTeamsAndDivisionsNodes(response: HttpResponseBase): Observable<TeamsAndDivisionsNodeDto[]> {
+    protected processTeamsAndDivisionsTree(response: HttpResponseBase): Observable<TeamsAndDivisionsTree> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -15536,14 +15536,7 @@ export class LookupServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(TeamsAndDivisionsNodeDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = TeamsAndDivisionsTree.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -15551,7 +15544,7 @@ export class LookupServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TeamsAndDivisionsNodeDto[]>(null as any);
+        return _observableOf<TeamsAndDivisionsTree>(null as any);
     }
 
     /**
@@ -30532,6 +30525,19 @@ export interface IGanttRowItem {
     endDate?: moment.Moment | undefined;
 }
 
+export enum GlobalTenant {
+    Denmark = 1,
+    Sweden = 2,
+    Poland = 4,
+    Netherlands = 8,
+    Germany = 10,
+    Norway = 17,
+    UnitedKingdom = 20,
+    International = 25,
+    France = 27,
+    India = 29,
+}
+
 export class HistoryFilterNamesDto implements IHistoryFilterNamesDto {
     entityName?: string | undefined;
     propertyName?: string | undefined;
@@ -34897,13 +34903,21 @@ export enum SyncStateStatus {
     Synced = 3,
 }
 
-export class TeamsAndDivisionsNodeDto implements ITeamsAndDivisionsNodeDto {
-    id?: number;
-    parentId?: number | undefined;
-    name?: string | undefined;
-    tenantId?: number;
+export enum TeamsAndDivisionsLevel {
+    Tenant = 0,
+    Division = 1,
+    Team = 2,
+}
 
-    constructor(data?: ITeamsAndDivisionsNodeDto) {
+export class TeamsAndDivisionsNodeModel implements ITeamsAndDivisionsNodeModel {
+    id?: number;
+    tenant?: GlobalTenant;
+    parentId?: number;
+    level?: TeamsAndDivisionsLevel;
+    name?: string | undefined;
+    path?: string | undefined;
+
+    constructor(data?: ITeamsAndDivisionsNodeModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -34915,15 +34929,17 @@ export class TeamsAndDivisionsNodeDto implements ITeamsAndDivisionsNodeDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.tenant = _data["tenant"];
             this.parentId = _data["parentId"];
+            this.level = _data["level"];
             this.name = _data["name"];
-            this.tenantId = _data["tenantId"];
+            this.path = _data["path"];
         }
     }
 
-    static fromJS(data: any): TeamsAndDivisionsNodeDto {
+    static fromJS(data: any): TeamsAndDivisionsNodeModel {
         data = typeof data === 'object' ? data : {};
-        let result = new TeamsAndDivisionsNodeDto();
+        let result = new TeamsAndDivisionsNodeModel();
         result.init(data);
         return result;
     }
@@ -34931,18 +34947,102 @@ export class TeamsAndDivisionsNodeDto implements ITeamsAndDivisionsNodeDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["tenant"] = this.tenant;
         data["parentId"] = this.parentId;
+        data["level"] = this.level;
         data["name"] = this.name;
-        data["tenantId"] = this.tenantId;
+        data["path"] = this.path;
         return data;
     }
 }
 
-export interface ITeamsAndDivisionsNodeDto {
+export interface ITeamsAndDivisionsNodeModel {
     id?: number;
-    parentId?: number | undefined;
+    tenant?: GlobalTenant;
+    parentId?: number;
+    level?: TeamsAndDivisionsLevel;
     name?: string | undefined;
-    tenantId?: number;
+    path?: string | undefined;
+}
+
+export class TeamsAndDivisionsTree implements ITeamsAndDivisionsTree {
+    nodes?: { [key: string]: TeamsAndDivisionsNodeModel; } | undefined;
+    readonly tenantToChildIdsMap?: { [key: string]: number[]; } | undefined;
+    readonly parentNodeIdToChildIdsMap?: { [key: string]: number[]; } | undefined;
+
+    constructor(data?: ITeamsAndDivisionsTree) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (_data["nodes"]) {
+                this.nodes = {} as any;
+                for (let key in _data["nodes"]) {
+                    if (_data["nodes"].hasOwnProperty(key))
+                        (<any>this.nodes)![key] = _data["nodes"][key] ? TeamsAndDivisionsNodeModel.fromJS(_data["nodes"][key]) : new TeamsAndDivisionsNodeModel();
+                }
+            }
+            if (_data["tenantToChildIdsMap"]) {
+                (<any>this).tenantToChildIdsMap = {} as any;
+                for (let key in _data["tenantToChildIdsMap"]) {
+                    if (_data["tenantToChildIdsMap"].hasOwnProperty(key))
+                        (<any>(<any>this).tenantToChildIdsMap)![key] = _data["tenantToChildIdsMap"][key] !== undefined ? _data["tenantToChildIdsMap"][key] : [];
+                }
+            }
+            if (_data["parentNodeIdToChildIdsMap"]) {
+                (<any>this).parentNodeIdToChildIdsMap = {} as any;
+                for (let key in _data["parentNodeIdToChildIdsMap"]) {
+                    if (_data["parentNodeIdToChildIdsMap"].hasOwnProperty(key))
+                        (<any>(<any>this).parentNodeIdToChildIdsMap)![key] = _data["parentNodeIdToChildIdsMap"][key] !== undefined ? _data["parentNodeIdToChildIdsMap"][key] : [];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): TeamsAndDivisionsTree {
+        data = typeof data === 'object' ? data : {};
+        let result = new TeamsAndDivisionsTree();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.nodes) {
+            data["nodes"] = {};
+            for (let key in this.nodes) {
+                if (this.nodes.hasOwnProperty(key))
+                    (<any>data["nodes"])[key] = this.nodes[key] ? this.nodes[key].toJSON() : <any>undefined;
+            }
+        }
+        if (this.tenantToChildIdsMap) {
+            data["tenantToChildIdsMap"] = {};
+            for (let key in this.tenantToChildIdsMap) {
+                if (this.tenantToChildIdsMap.hasOwnProperty(key))
+                    (<any>data["tenantToChildIdsMap"])[key] = this.tenantToChildIdsMap[key];
+            }
+        }
+        if (this.parentNodeIdToChildIdsMap) {
+            data["parentNodeIdToChildIdsMap"] = {};
+            for (let key in this.parentNodeIdToChildIdsMap) {
+                if (this.parentNodeIdToChildIdsMap.hasOwnProperty(key))
+                    (<any>data["parentNodeIdToChildIdsMap"])[key] = this.parentNodeIdToChildIdsMap[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface ITeamsAndDivisionsTree {
+    nodes?: { [key: string]: TeamsAndDivisionsNodeModel; } | undefined;
+    tenantToChildIdsMap?: { [key: string]: number[]; } | undefined;
+    parentNodeIdToChildIdsMap?: { [key: string]: number[]; } | undefined;
 }
 
 export class TemplateListItem implements ITemplateListItem {
@@ -35842,6 +35942,7 @@ export class WorkflowDto implements IWorkflowDto {
     workflowSequenceIdCode?: string | undefined;
     workflowStatusId?: WorkflowStatus;
     isDeleted?: boolean;
+    terminationExists?: boolean;
     directClientId?: number | undefined;
     directClientName?: string | undefined;
     directClientCrmId?: number | undefined;
@@ -35866,6 +35967,7 @@ export class WorkflowDto implements IWorkflowDto {
             this.workflowSequenceIdCode = _data["workflowSequenceIdCode"];
             this.workflowStatusId = _data["workflowStatusId"];
             this.isDeleted = _data["isDeleted"];
+            this.terminationExists = _data["terminationExists"];
             this.directClientId = _data["directClientId"];
             this.directClientName = _data["directClientName"];
             this.directClientCrmId = _data["directClientCrmId"];
@@ -35898,6 +36000,7 @@ export class WorkflowDto implements IWorkflowDto {
         data["workflowSequenceIdCode"] = this.workflowSequenceIdCode;
         data["workflowStatusId"] = this.workflowStatusId;
         data["isDeleted"] = this.isDeleted;
+        data["terminationExists"] = this.terminationExists;
         data["directClientId"] = this.directClientId;
         data["directClientName"] = this.directClientName;
         data["directClientCrmId"] = this.directClientCrmId;
@@ -35923,6 +36026,7 @@ export interface IWorkflowDto {
     workflowSequenceIdCode?: string | undefined;
     workflowStatusId?: WorkflowStatus;
     isDeleted?: boolean;
+    terminationExists?: boolean;
     directClientId?: number | undefined;
     directClientName?: string | undefined;
     directClientCrmId?: number | undefined;

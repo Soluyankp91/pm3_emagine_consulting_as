@@ -127,13 +127,18 @@
                     <mat-icon svgIcon="add-icon-green"></mat-icon>
                     Extend Workflow
                 </button>
-                <button
-                    class="menu-item menu-item--cancel"
-                    mat-menu-item
-                    appPreventDoubleClick (throttledClick)="addTermination()">
-                    <mat-icon svgIcon="close-icon"></mat-icon>
-                    Terminate Workflow
-                </button>
+                <div class="u-w--100 u-h--100"
+                    [matTooltip]="terminationExists ? 'Termination already in progress' : ''"
+                    matTooltipClass="white-tooltip">
+                    <button
+                        class="menu-item menu-item--cancel"
+                        mat-menu-item
+                        [disabled]="terminationExists"
+                        appPreventDoubleClick (throttledClick)="addTermination()">
+                        <mat-icon svgIcon="close-icon"></mat-icon>
+                        Terminate Workflow
+                    </button>
+                </div>
                 <ng-container *ngIf="wfIsDeleted">
                     <button class="menu-item green-color" mat-menu-item (click)="confirmRestoreWorkflow(workflowId)">
                         <mat-icon svgIcon="restore-icon"></mat-icon>
