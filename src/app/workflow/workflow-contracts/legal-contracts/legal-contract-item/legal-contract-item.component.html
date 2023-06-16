@@ -207,13 +207,21 @@
 							Upload signed contract
 						</button>
 					</ng-container>
-					<ng-container *ngIf="contract.value.processingPath !== legalContractPath.ReceiveFromOtherParty">
+					<ng-container
+						*ngIf="
+							contract.value.hasCurrentVersion &&
+							contract.value.processingPath !== legalContractPath.ReceiveFromOtherParty
+						">
 						<button class="menu-item green-color" mat-menu-item (click)="downloadPdf(contract.value.agreementId)">
 							<mat-icon svgIcon="download-pdf"></mat-icon>
 							Download *.pdf
 						</button>
 					</ng-container>
-					<ng-container *ngIf="contract.value.processingPath !== legalContractPath.ReceiveFromOtherParty">
+					<ng-container
+						*ngIf="
+							contract.value.hasCurrentVersion &&
+							contract.value.processingPath !== legalContractPath.ReceiveFromOtherParty
+						">
 						<button class="menu-item green-color" mat-menu-item (click)="downloadDoc(contract.value.agreementId)">
 							<mat-icon svgIcon="download-doc"></mat-icon>
 							Download *.doc
