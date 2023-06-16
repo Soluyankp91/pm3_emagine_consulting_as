@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, LookupServiceProxy, TeamsAndDivisionsNodeDto, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, LookupServiceProxy, TeamsAndDivisionsTree, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class InternalLookupService {
@@ -50,7 +50,7 @@ export class InternalLookupService {
     envelopeProcessingPaths: { [key: string]: string };
     consultantShownOnClientInvoiceAs: { [key: string]: string };
     teamsAndDivisionsLevels: { [key: string]: string };
-    teamsAndDivisionsNodes: TeamsAndDivisionsNodeDto[];
+    teamsAndDivisionsTree: TeamsAndDivisionsTree;
     staticEnums: { [key: string]: any };
     constructor(private _enumService: EnumServiceProxy, private _lookupService: LookupServiceProxy) {
     }
@@ -101,7 +101,7 @@ export class InternalLookupService {
             purchaseOrderCapTypes: this.getPurchaseOrderCapTypes(),
             consultantShownOnClientInvoiceAs: this.getConsultantShownOnClientInvoiceAs(),
             teamsAndDivisionsLevels: this.getTeamsAndDivisionsLevels(),
-            teamsAndDivisionsNodes: this.getTeamsAndDivisionsNodes()
+            teamsAndDivisionsTree: this.getTeamsAndDivisionsTree()
         };
         return forkJoin(enumsApi).pipe(
             switchMap((result: any) => {
@@ -909,16 +909,16 @@ export class InternalLookupService {
         });
     }
 
-    getTeamsAndDivisionsNodes(): Observable<TeamsAndDivisionsNodeDto[]> {
-        return new Observable<TeamsAndDivisionsNodeDto[]>((observer) => {
-            if (this.teamsAndDivisionsNodes?.length) {
-                observer.next(this.teamsAndDivisionsNodes);
+    getTeamsAndDivisionsTree(): Observable<TeamsAndDivisionsTree> {
+        return new Observable<TeamsAndDivisionsTree>((observer) => {
+            if (this.teamsAndDivisionsTree !== null && this.teamsAndDivisionsTree !== undefined) {
+                observer.next(this.teamsAndDivisionsTree);
                 observer.complete();
             } else {
-                this._lookupService.teamsAndDivisionsNodes()
+                this._lookupService.teamsAndDivisionsTree()
                     .subscribe(response => {
-                        this.teamsAndDivisionsNodes = response;
-                        observer.next(this.teamsAndDivisionsNodes);
+                        this.teamsAndDivisionsTree = response;
+                        observer.next(this.teamsAndDivisionsTree);
                         observer.complete();
                     }, error => {
                         observer.error(error);

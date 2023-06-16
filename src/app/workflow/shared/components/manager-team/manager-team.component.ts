@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { TeamsAndDivisionsNodeDto } from 'src/shared/service-proxies/service-proxies';
+import { TeamsAndDivisionsNodeModel, TeamsAndDivisionsTree } from 'src/shared/service-proxies/service-proxies';
 import { InitialManagerTeam } from './manager-team.model';
 
 @Component({
@@ -10,7 +10,7 @@ import { InitialManagerTeam } from './manager-team.model';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ManagerTeamComponent implements OnInit {
-	private _managerTeamId: number;
+    private _managerTeamId: number;
 	managerTeam = InitialManagerTeam;
 	@Input()
 	set managerTeamId(value: number) {
@@ -21,11 +21,11 @@ export class ManagerTeamComponent implements OnInit {
 		return this._managerTeamId;
 	}
 
-	teamsAndDivisionsNodes: TeamsAndDivisionsNodeDto[];
+	teamsAndDivisionsTree: TeamsAndDivisionsTree;
 	constructor(private readonly _internalLookupService: InternalLookupService) {}
 
 	ngOnInit(): void {
-		this.teamsAndDivisionsNodes = this._internalLookupService.getEnumValue('teamsAndDivisionsNodes');
+		this.teamsAndDivisionsTree = this._internalLookupService.getEnumValue('teamsAndDivisionsTree');
 	}
 
 	private _findTeamAndDivision(id: number) {
@@ -37,14 +37,14 @@ export class ManagerTeamComponent implements OnInit {
 			};
 			return;
 		}
-		const node = this.teamsAndDivisionsNodes.find((x) => x.id === id);
-		let secondLvlNode: TeamsAndDivisionsNodeDto;
-		let thirdLvlNode: TeamsAndDivisionsNodeDto;
+		const node = this.teamsAndDivisionsTree.nodes[id];
+		let secondLvlNode: TeamsAndDivisionsNodeModel;
+		let thirdLvlNode: TeamsAndDivisionsNodeModel;
 		if (node.parentId === null) {
 			this.managerTeam.tenant = node.name;
 		} else {
 			secondLvlNode = this._findParentNode(node.parentId);
-			if (secondLvlNode?.parentId === null) {
+			if (secondLvlNode.parentId === null) {
 				this.managerTeam.tenant = node?.name;
 				this.managerTeam.division = secondLvlNode?.name;
 			} else {
@@ -57,6 +57,6 @@ export class ManagerTeamComponent implements OnInit {
 	}
 
 	private _findParentNode(parentId: number) {
-		return this.teamsAndDivisionsNodes?.find((x) => x.id === parentId);
+		return this.teamsAndDivisionsTree.nodes[parentId];
 	}
 }
