@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, LookupServiceProxy, TeamsAndDivisionsTree, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class InternalLookupService {
@@ -49,9 +49,10 @@ export class InternalLookupService {
     purchaseOrderCapTypes: { [key: string]: string };
     envelopeProcessingPaths: { [key: string]: string };
     consultantShownOnClientInvoiceAs: { [key: string]: string };
-
+    teamsAndDivisionsLevels: { [key: string]: string };
+    teamsAndDivisionsTree: TeamsAndDivisionsTree;
     staticEnums: { [key: string]: any };
-    constructor(private _enumService: EnumServiceProxy) {
+    constructor(private _enumService: EnumServiceProxy, private _lookupService: LookupServiceProxy) {
     }
 
 
@@ -99,6 +100,8 @@ export class InternalLookupService {
             periodUnitTypes: this.getPeriodUnitTypes(),
             purchaseOrderCapTypes: this.getPurchaseOrderCapTypes(),
             consultantShownOnClientInvoiceAs: this.getConsultantShownOnClientInvoiceAs(),
+            teamsAndDivisionsLevels: this.getTeamsAndDivisionsLevels(),
+            teamsAndDivisionsTree: this.getTeamsAndDivisionsTree()
         };
         return forkJoin(enumsApi).pipe(
             switchMap((result: any) => {
@@ -880,6 +883,42 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.consultantShownOnClientInvoiceAs = response;
                         observer.next(this.consultantShownOnClientInvoiceAs);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getTeamsAndDivisionsLevels(): Observable<{ [key: string]: string }> {
+        return new Observable<{ [key: string]: string }>((observer) => {
+            if (this.teamsAndDivisionsLevels !== undefined && this.teamsAndDivisionsLevels !== null) {
+                observer.next(this.teamsAndDivisionsLevels);
+                observer.complete();
+            } else {
+                this._enumService.teamsAndDivisionsLevels()
+                    .subscribe(response => {
+                        this.teamsAndDivisionsLevels = response;
+                        observer.next(this.teamsAndDivisionsLevels);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getTeamsAndDivisionsTree(): Observable<TeamsAndDivisionsTree> {
+        return new Observable<TeamsAndDivisionsTree>((observer) => {
+            if (this.teamsAndDivisionsTree !== null && this.teamsAndDivisionsTree !== undefined) {
+                observer.next(this.teamsAndDivisionsTree);
+                observer.complete();
+            } else {
+                this._lookupService.teamsAndDivisionsTree()
+                    .subscribe(response => {
+                        this.teamsAndDivisionsTree = response;
+                        observer.next(this.teamsAndDivisionsTree);
                         observer.complete();
                     }, error => {
                         observer.error(error);

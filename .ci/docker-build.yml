@@ -28,9 +28,9 @@ stages:
     - script: |
         docker pull $(containerRegistry)/$(imageRepository):builder || true
 
-        docker build --target builder --cache-from $(containerRegistry)/$(imageRepository):builder -t $(containerRegistry)/$(imageRepository):builder -f $(Build.SourcesDirectory)/Dockerfile $(Build.SourcesDirectory)
+        docker build --target builder --cache-from $(containerRegistry)/$(imageRepository):builder -t $(containerRegistry)/$(imageRepository):builder -f $(Build.SourcesDirectory)/Dockerfile $(Build.SourcesDirectory) || exit 1
 
-        docker build  --cache-from $(containerRegistry)/$(imageRepository):builder -t $(containerRegistry)/$(imageRepository):latest -t $(containerRegistry)/$(imageRepository):$(tag) -f $(Build.SourcesDirectory)/Dockerfile $(Build.SourcesDirectory)
+        docker build  --cache-from $(containerRegistry)/$(imageRepository):builder -t $(containerRegistry)/$(imageRepository):latest -t $(containerRegistry)/$(imageRepository):$(tag) -f $(Build.SourcesDirectory)/Dockerfile $(Build.SourcesDirectory) || exit 1
          
         docker push $(containerRegistry)/$(imageRepository):latest
         docker push $(containerRegistry)/$(imageRepository):$(tag)

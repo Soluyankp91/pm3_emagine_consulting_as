@@ -2,7 +2,7 @@ import { Component, OnInit, Injector, Input, Output, EventEmitter, ViewChild, On
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { EmployeeRole, EmployeeServiceProxy, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { EmployeeServiceProxy, Permission, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -67,7 +67,7 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit, 
     getCurrentRole() {
         this._employeeService.current()
             .subscribe(result => {
-                this.isAllowedToEdit = result.employeeRole === EmployeeRole.ContractManager;
+                this.isAllowedToEdit = result.permissions.includes(Permission.ContractManager);
             });
     }
 

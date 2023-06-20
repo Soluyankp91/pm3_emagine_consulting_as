@@ -231,15 +231,29 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         if (filterChanged) {
             this.pageNumber = 1;
         }
-        this.clientListSubscription = this._clientService.list3(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
-            .pipe(finalize(() => {
-                this.isDataLoading = false;
-            }))
-            .subscribe(result => {
-                this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
-                this.totalCount = result.totalCount;
-                this.saveGridOptions();
-            });
+        this.clientListSubscription = this._clientService
+			.list3(
+				searchFilter,
+				selectedCountryIds,
+				ownerIds,
+				isActiveFlag,
+				undefined, // teams and division
+				!this.includeDeleted,
+				this.onlyWrongfullyDeletedInHubspot,
+				this.pageNumber,
+				this.deafultPageSize,
+				this.sorting
+			)
+			.pipe(
+				finalize(() => {
+					this.isDataLoading = false;
+				})
+			)
+			.subscribe((result) => {
+				this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
+				this.totalCount = result.totalCount;
+				this.saveGridOptions();
+			});
     }
 
     pageChanged(event?: any): void {

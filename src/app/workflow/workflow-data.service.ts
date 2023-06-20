@@ -54,6 +54,7 @@ export class WorkflowDataService {
     resetStepState = new EventEmitter<{isCompleted: boolean, editEnabledForcefuly: boolean, fetchData: boolean}>();
     updatePurchaseOrders = new EventEmitter();
     onDirectClientAddressSelected = new EventEmitter();
+    clientCapChanged = new EventEmitter();
     isContractModuleEnabled: boolean;
 
     constructor(

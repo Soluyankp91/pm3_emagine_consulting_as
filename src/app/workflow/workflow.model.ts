@@ -100,7 +100,8 @@ export enum EmploymentTypes {
     EConsultant = 8,
     CivilLawConsultant = 9,
     FeeOnly = 10,
-    Recruitment = 11
+    Recruitment = 11,
+    Offshore = 12
 }
 
 export const StepTypes = [

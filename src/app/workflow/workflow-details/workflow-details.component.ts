@@ -101,7 +101,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     ePeriodAbbreviation = EPeriodAbbreviation;
     ePeriodName = EPeriodName;
     eStepPermissions = EPermissions;
-
+    terminationExists: boolean;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -225,9 +225,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 					this.hideMainSpinner();
 				})
 			)
-			.subscribe((result) => {
+			.subscribe(() => {
 				this._workflowDataService.workflowSideSectionAdded.emit(true);
 				this._workflowDataService.workflowOverviewUpdated.emit(true);
+                // NB: open most recent period, as termination is added there
+                this._router.navigateByUrl(`/app/workflow/${this.workflowId}/${this.clientPeriods[0].id}`);
 			});
 	}
 
@@ -500,6 +502,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 				this.workflowConsultants = result.consultantNamesWithRequestUrls!;
 				this.workflowId = result.workflowId!;
                 this.workflowSequenceIdCode = result.workflowSequenceIdCode;
+                this.terminationExists = result.terminationExists;
 				this.workflowConsultantsList = result.consultantNamesWithRequestUrls
 					?.map((x) => {
 						let result = '• ';

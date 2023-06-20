@@ -252,6 +252,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		if (consultant?.consultantRate?.isFixedRate) {
 			consultantRate = ERateType.Fixed;
 		}
+        let copyCapFromClient = consultant.timeReportingCaps.some(cap => cap.isReadOnlyCopyFromClientPeriodToConsultant);
 		const form = this._fb.group({
 			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId),
 			consultantId: new UntypedFormControl(consultant?.consultantId),
@@ -262,6 +263,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			noEndDate: new UntypedFormControl(consultant?.noEndDate),
 			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId),
 			consultantTimeReportingCapId: new UntypedFormControl(consultant?.consultantTimeReportingCapId),
+            copiedTimeReportingCapId: new UntypedFormControl(this.contractClientForm?.clientTimeReportingCapId.value),
+            copyCapFromClient: new UntypedFormControl(copyCapFromClient ?? false),
 			consultantPaymentType: new UntypedFormControl(consultantRate),
 			consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
 			consultantRateUnitTypeId: new UntypedFormControl(consultant?.consultantRate?.rateUnitTypeId ?? null),
@@ -738,6 +741,8 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 			purchaseOrder: new UntypedFormControl(null),
             invoiceRecipientAddressId: new UntypedFormControl(projectLine?.invoiceRecipientAddressId),
             invoiceRecipientAddress: new UntypedFormControl(projectLine?.invoiceRecipientAddress),
+            purchaseOrderCapClientCalculatedAmount: new UntypedFormControl(projectLine?.purchaseOrderCapClientCalculatedAmount),
+            purchaseOrderCapConsultantCalculatedAmount: new UntypedFormControl(projectLine?.purchaseOrderCapConsultantCalculatedAmount),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).push(form);
 		if (this.directClientId) {
@@ -855,10 +860,13 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 
 	addConsultantCap(consultantIndex: number, cap?: TimeReportingCapDto) {
 		const form = this._fb.group({
-			id: new UntypedFormControl(cap?.id?.value ?? null),
+			id: new UntypedFormControl(cap?.id ?? null),
 			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
 			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
 			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+            clientCalculatedAmount: new UntypedFormControl(cap?.clientCalculatedAmount),
+            consultantCalculatedAmount: new UntypedFormControl(cap?.consultantCalculatedAmount),
+            isCopyFromClientPeriodToConsultant: new UntypedFormControl(cap?.isReadOnlyCopyFromClientPeriodToConsultant),
 		});
 		(this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(
 			form
