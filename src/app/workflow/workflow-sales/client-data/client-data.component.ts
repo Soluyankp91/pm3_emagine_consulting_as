@@ -486,6 +486,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	capSelectionChange(event: MatSelectChange) {
 		if (event.value === ETimeReportingCaps.NoCap || event.value === ETimeReportingCaps.IndividualCap) {
 			this.timeReportingCaps.controls = [];
+            this._workflowDataService.clientCapChanged.emit();
 		}
 	}
 

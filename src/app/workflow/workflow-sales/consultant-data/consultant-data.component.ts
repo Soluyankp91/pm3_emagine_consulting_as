@@ -106,6 +106,11 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         this._workflowDataService.onDirectClientAddressSelected.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
 			this._preselectDirectClientAddress();
 		});
+        this._workflowDataService.clientCapChanged.pipe(takeUntil(this._unsubscribe)).subscribe(() => {
+			this.consultants.controls.forEach((_, index) => {
+                this.clearTimeReportingCaps(index);
+            })
+		});
 	}
 
 	ngOnInit(): void {
@@ -1004,8 +1009,12 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     capSelectionChange(event: MatSelectChange, consultantIndex: number) {
         if (event.value === ETimeReportingCaps.NoCap) {
-            (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls = [];
+            this.clearTimeReportingCaps(consultantIndex);
         }
+    }
+
+    clearTimeReportingCaps(consultantIndex: number) {
+        (this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).controls = [];
     }
 
     submitForm() {
