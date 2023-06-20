@@ -37,7 +37,6 @@ import {
     WorkflowDocumentCommandDto,
     WorkflowDocumentServiceProxy,
     TimeReportingCapDto,
-    TimeReportingCapId,
     PurchaseOrderDto,
     PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
@@ -959,7 +958,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		if (this.clientDataComponent.contractClientForm.timeReportingCaps?.value.length) {
 			for (let cap of this.clientDataComponent.contractClientForm.timeReportingCaps?.value) {
 				let capInput = new TimeReportingCapDto(cap);
-				capInput.id = new TimeReportingCapId(cap.id);
 				input.clientData.timeReportingCaps.push(capInput);
 			}
 		}
@@ -1143,9 +1141,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		consultantData.timeReportingCaps = new Array<TimeReportingCapDto>();
 		if (consultantInput.timeReportingCaps?.length) {
 			for (let cap of consultantInput.timeReportingCaps) {
-				let capInput = new TimeReportingCapDto(cap);
-				capInput.id = new TimeReportingCapId(cap.id);
-				consultantData.timeReportingCaps.push(capInput);
+                if (!cap.isCopyFromClientPeriodToConsultant) {
+                    let capInput = new TimeReportingCapDto(cap);
+                    consultantData.timeReportingCaps.push(capInput);
+                }
 			}
 		}
 		consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
