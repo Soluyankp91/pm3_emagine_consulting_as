@@ -17,16 +17,12 @@ import {
 	SendDocuSignEnvelopeCommand,
 	FileParameter,
 	AgreementStatusHistoryDto,
-    ClientPeriodAgreementsDto,
-    ConsultantPeriodAgreementsDto,
-    WorkflowPeriodAgreementDto,
+	ClientPeriodAgreementsDto,
+	ConsultantPeriodAgreementsDto,
+	WorkflowPeriodAgreementDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { LegalContractService } from './legal-contract.service';
-import {
-	ClientLegalContractsForm,
-    IAgreementState,
-    InitialAgreementState,
-} from './legal-contracts.model';
+import { ClientLegalContractsForm, IAgreementState, InitialAgreementState } from './legal-contracts.model';
 import { SendEnvelopeDialogComponent } from './send-envelope-dialog/send-envelope-dialog.component';
 import { SignersPreviewDialogComponent } from './signers-preview-dialog/signers-preview-dialog.component';
 import { EDocuSignMenuOption, EEmailMenuOption } from './signers-preview-dialog/signers-preview-dialog.model';
@@ -48,7 +44,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	@Input() isEmagineToEmagine: boolean = false;
 	@Input() readOnlyMode: boolean;
 	clientLegalContractsForm: ClientLegalContractsForm;
-    agreementPendingCreation$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
+	agreementPendingCreation$ = new BehaviorSubject<IAgreementState>(InitialAgreementState);
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -90,6 +86,7 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 			hasSignedDocumentFile: new UntypedFormControl(legalContract?.hasSignedDocumentFile ?? null),
 			inEditByEmployeeDtos: new UntypedFormControl(legalContract?.inEditByEmployeeDtos ?? null),
 			statusHistory: new UntypedFormControl(statusHistory ?? []),
+			hasCurrentVersion: new UntypedFormControl(legalContract?.hasCurrentVersion ?? false),
 		});
 		this.clientLegalContractsForm.legalContracts.push(form);
 	}
@@ -177,18 +174,20 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _getConsultantAgreements() {
-		this._consultantPeriodService.consultantAgreements(this.consultantPeriodId).subscribe((result: ConsultantPeriodAgreementsDto) => {
-			this._resetForm();
-            if (this.isEmagineToEmagine) {
-                result.emagineToEmagineAgreements.forEach((item) => {
-                    this._getAgreementStatusAndAddLegalContract(item);
-                });
-            } else {
-                result.consultantAgreements.forEach((item) => {
-                    this._getAgreementStatusAndAddLegalContract(item);
-                });
-            }
-		});
+		this._consultantPeriodService
+			.consultantAgreements(this.consultantPeriodId)
+			.subscribe((result: ConsultantPeriodAgreementsDto) => {
+				this._resetForm();
+				if (this.isEmagineToEmagine) {
+					result.emagineToEmagineAgreements.forEach((item) => {
+						this._getAgreementStatusAndAddLegalContract(item);
+					});
+				} else {
+					result.consultantAgreements.forEach((item) => {
+						this._getAgreementStatusAndAddLegalContract(item);
+					});
+				}
+			});
 	}
 
 	private _getAgreementStatusAndAddLegalContract(item: WorkflowPeriodAgreementDto) {
@@ -340,22 +339,25 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	}
 
 	private _sub() {
-        this._agreementSignalRService.triggerAgreementState$
+		this._agreementSignalRService.triggerAgreementState$
 			.pipe(
 				filter((value: IUpdateData) => {
-					return value.eventName === EAgreementEvents.PeriodAgreementCreationPendingState && (value.args?.periodId === (this.isClientContracts ? this.clientPeriodId : this.consultantPeriodId));
+					return (
+						value.eventName === EAgreementEvents.PeriodAgreementCreationPendingState &&
+						value.args?.periodId === (this.isClientContracts ? this.clientPeriodId : this.consultantPeriodId)
+					);
 				}),
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((value: IUpdateData) => {
-                if (value.args?.employees?.length) {
-                    this.agreementPendingCreation$.next({
-                        isCreating: true,
-                        employees: value.args?.employees
-                    });
-                } else {
-                    this.agreementPendingCreation$.next(InitialAgreementState);
-                }
+				if (value.args?.employees?.length) {
+					this.agreementPendingCreation$.next({
+						isCreating: true,
+						employees: value.args?.employees,
+					});
+				} else {
+					this.agreementPendingCreation$.next(InitialAgreementState);
+				}
 			});
 	}
 
@@ -365,7 +367,9 @@ export class LegalContractsComponent extends AppComponentBase implements OnInit,
 	get downloadEnvelopeAvailable() {
 		return (
 			this.legalContracts.value.some((x) => x.selected) &&
-			this.legalContracts.value.filter((x) => x.selected).every((item) => item.agreementStatus !== EnvelopeStatus.WaitingForOthers)
+			this.legalContracts.value
+				.filter((x) => x.selected)
+				.every((item) => item.agreementStatus !== EnvelopeStatus.WaitingForOthers)
 		);
 	}
 	get sendAgreementAvailable() {

@@ -651,7 +651,7 @@ export class EditorCoreService {
 			const fieldResult = doc.getText(field.resultInterval);
 			const key = fieldCode.split(' ')[1];
 			const value = EditorCoreService.cleanupMergeFieldValue(fieldResult);
-
+			
 			if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
 				oldFields.push(key);
 			}

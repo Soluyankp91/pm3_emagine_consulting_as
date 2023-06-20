@@ -26,7 +26,7 @@
 		flex-grow: 1;
 		overflow: auto;
 		height: 450px;
-        max-width: calc(100vw - 44px - 50px);
+		max-width: calc(100vw - 44px - 50px);
 	}
 	.no-items-table-container {
 		display: flex;
@@ -38,15 +38,16 @@
 	}
 	.mat-table {
 		background-color: #faf9fb;
+		height: fit-content;
 	}
 	.row-hover {
 		cursor: pointer;
 		&:hover {
-			background-color: #EAF4F5;
+			background-color: #eaf4f5;
 		}
 	}
 	.highlight {
-		background-color: #EAF4F5;
+		background-color: #eaf4f5;
 	}
 	.bottom-panel {
 		width: 100%;
@@ -135,7 +136,8 @@
 		button.mat-icon-button {
 			padding-left: 16px;
 		}
-		button.mat-icon-button, button.mat-icon-button mat-icon.mat-icon {
+		button.mat-icon-button,
+		button.mat-icon-button mat-icon.mat-icon {
 			width: 40px !important;
 			height: 40px !important;
 		}
@@ -144,7 +146,7 @@
 		width: 8px;
 		height: 13px;
 		display: flex;
-        color: $primary-1;
+		color: $primary-1;
 	}
 	.close-filters {
 		display: flex;
