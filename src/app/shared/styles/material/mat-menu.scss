@@ -44,6 +44,12 @@
             color: $dark-red-color !important;
         }
     }
+    &--terminate {
+        color: #EF817C !important;
+        mat-icon {
+            color: #EF817C !important;
+        }
+    }
     &[disabled] {
         color: $light-grey-color !important;
         mat-icon {

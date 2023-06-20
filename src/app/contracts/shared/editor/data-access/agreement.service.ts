@@ -164,11 +164,8 @@ export class AgreementService implements AgreementAbstractService {
 						return this._handleMergeFieldErrors(error?.error.code, error.error.data).pipe(
 							switchMap((confirmed) => {
 								if (confirmed) {
-									const data = new SendDocuSignEnvelopeCommand({
-										...body,
-										skipMergeFieldsValidation: true,
-									});
-									return this._sendEnvelopeCommand(url, data, templateID);
+									body.skipMergeFieldsValidation = true;
+									return this._sendEnvelopeCommand(url, body, templateID);
 								} else {
 									return throwError(error);
 								}

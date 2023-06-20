@@ -336,12 +336,12 @@
                                     </mat-form-field>
                                 </div>
 
-                                <ng-container *ngIf="clientDataForm.clientTimeReportingCapId?.value !== eTimeReportingCaps.NoCap; else noConsultantInvoicing">
-                                    <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
+                                <h3 class="workflow-gray--header u-mb--10 u-mt--20">Cap on Time Reporting</h3>
+                                <ng-container *ngIf="clientDataForm.clientTimeReportingCapId?.value === eTimeReportingCaps.IndividualCap; else copiedCapFromClient">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                             <mat-label>Cap type</mat-label>
-                                            <mat-select [disabled]="readOnlyMode || clientDataForm.clientTimeReportingCapId?.value !== eTimeReportingCaps.IndividualCap" required formControlName="consultantTimeReportingCapId"
+                                            <mat-select [disabled]="readOnlyMode" required formControlName="consultantTimeReportingCapId"
                                                 (selectionChange)="capSelectionChange($event, consultantIndex)"
                                                 [disableOptionCentering]="true">
                                                 <ng-container *ngFor="let item of consultantTimeReportingCap; trackBy: trackById">
@@ -356,7 +356,6 @@
                                         </mat-form-field>
                                     </div>
                                 </ng-container>
-                                <!-- TODO: show this if we want to show client copy -->
                                 <ng-template #copiedCapFromClient>
                                     <ng-container *ngIf="consultant.value.copyCapFromClient; else noConsultantInvoicing">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-230">

@@ -105,8 +105,8 @@
                                 <h2 class="workflow-section--header">Invoicing</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value !== clientTimeReportingCaps.NoCap; else noConsultantInvoicing">
-                                    <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
+                                <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
+                                <ng-container *ngIf="contractClientForm.clientTimeReportingCapId?.value === clientTimeReportingCaps.IndividualCap; else copiedCapFromClient">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                             <mat-label>Shared cap on time reporting</mat-label>
