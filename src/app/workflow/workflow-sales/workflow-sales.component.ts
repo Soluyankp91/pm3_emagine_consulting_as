@@ -46,7 +46,6 @@ import {
     WorkflowDocumentCommandDto,
     WorkflowDocumentServiceProxy,
     TimeReportingCapDto,
-    TimeReportingCapId,
     ContractSupplierSignerDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { DocumentsComponent } from '../shared/components/wf-documents/wf-documents.component';
@@ -59,7 +58,7 @@ import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
 import { FindClientAddress, PackAddressIntoNewDto } from './workflow-sales.helpers';
-import { ClientRateTypes, EClientSelectionType, EProjectTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
+import { ClientRateTypes, EClientSelectionType, EProjectTypes, ETimeReportingCaps, SalesTerminateConsultantForm } from './workflow-sales.model';
 
 @Component({
 	selector: 'app-workflow-sales',
@@ -362,6 +361,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					if (this.editEnabledForcefuly) {
 						this.toggleEditMode();
 					}
+                    this.getSalesStepData();
 				});
 		} else {
 			this._clientPeriodService
@@ -1081,7 +1081,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		if (this.clientDataComponent.salesClientDataForm.timeReportingCaps?.value.length) {
 			for (let cap of this.clientDataComponent.salesClientDataForm.timeReportingCaps?.value) {
 				let capInput = new TimeReportingCapDto(cap);
-				capInput.id = new TimeReportingCapId(cap.id);
 				input.salesClientData.timeReportingCaps.push(capInput);
 			}
 		}
@@ -1163,9 +1162,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			consultantInput.timeReportingCaps = new Array<TimeReportingCapDto>();
 			if (consultant.timeReportingCaps?.length) {
 				for (let cap of consultant.timeReportingCaps) {
-					let capInput = new TimeReportingCapDto(cap);
-					capInput.id = new TimeReportingCapId(cap.id);
-					consultantInput.timeReportingCaps.push(capInput);
+                    if (!cap.isCopyFromClientPeriodToConsultant) {
+                        let capInput = new TimeReportingCapDto(cap);
+                        consultantInput.timeReportingCaps.push(capInput);
+                    }
 				}
 			}
 			consultantInput.onsiteClientSameAsDirectClient = consultant.onsiteClientSameAsDirectClient;

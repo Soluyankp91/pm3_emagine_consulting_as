@@ -469,10 +469,12 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	addTimeReportingCap(cap?: TimeReportingCapDto) {
 		const form = this._fb.group({
-			id: new UntypedFormControl(cap?.id?.value ?? null),
+			id: new UntypedFormControl(cap?.id ?? null),
 			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
 			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
 			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+            clientCalculatedAmount: new UntypedFormControl(cap?.clientCalculatedAmount),
+            consultantCalculatedAmount: new UntypedFormControl(cap?.consultantCalculatedAmount),
 		});
 		this.salesClientDataForm.timeReportingCaps.push(form);
 	}

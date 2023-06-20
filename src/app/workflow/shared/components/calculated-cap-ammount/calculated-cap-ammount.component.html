@@ -1,0 +1,18 @@
+<div class="calculated-cap-container grey-color-87 text-bold">
+    <ng-container *ngIf="isClient && clientCalculatedAmount !== null">
+        <span>
+            Client rate: {{clientRate + ' ' + clientCurrency}}
+        </span>
+        <span>
+            Calculated amount: {{clientCalculatedAmount + ' ' + clientCurrency}}
+        </span>
+    </ng-container>
+    <ng-container *ngIf="isConsultant && consultantCalculatedAmount !== null">
+        <span>
+            Consultant rate: {{consultantRate + ' ' + consultantCurrency}}
+        </span>
+        <span>
+            Calculated amount: {{consultantCalculatedAmount + ' ' + consultantCurrency}}
+        </span>
+    </ng-container>
+</div>

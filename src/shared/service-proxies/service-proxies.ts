@@ -1618,6 +1618,58 @@ export class AdminServiceProxy {
         }
         return _observableOf<string[]>(null as any);
     }
+
+    /**
+     * @param batchSize (optional) 
+     * @return Success
+     */
+    updateCapsCalculatedAmounts(batchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/update-caps-calculated-amounts?";
+        if (batchSize === null)
+            throw new Error("The parameter 'batchSize' cannot be null.");
+        else if (batchSize !== undefined)
+            url_ += "batchSize=" + encodeURIComponent("" + batchSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateCapsCalculatedAmounts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateCapsCalculatedAmounts(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateCapsCalculatedAmounts(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -20833,6 +20885,66 @@ export class WorkflowIntegrationServiceProxy {
         }
         return _observableOf<None>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    getNavisionExportDataForWorkflowAndClient(projectLineId: number, legacyClientId: number, clientTenantId: number): Observable<NavisionExportDataForWorkflowAndClientDto> {
+        let url_ = this.baseUrl + "/api/WorkflowIntegration/GetNavisionExportDataForWorkflowAndClient/{projectLineId}/{legacyClientId}/{clientTenantId}";
+        if (projectLineId === undefined || projectLineId === null)
+            throw new Error("The parameter 'projectLineId' must be defined.");
+        url_ = url_.replace("{projectLineId}", encodeURIComponent("" + projectLineId));
+        if (legacyClientId === undefined || legacyClientId === null)
+            throw new Error("The parameter 'legacyClientId' must be defined.");
+        url_ = url_.replace("{legacyClientId}", encodeURIComponent("" + legacyClientId));
+        if (clientTenantId === undefined || clientTenantId === null)
+            throw new Error("The parameter 'clientTenantId' must be defined.");
+        url_ = url_.replace("{clientTenantId}", encodeURIComponent("" + clientTenantId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetNavisionExportDataForWorkflowAndClient(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetNavisionExportDataForWorkflowAndClient(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<NavisionExportDataForWorkflowAndClientDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<NavisionExportDataForWorkflowAndClientDto>;
+        }));
+    }
+
+    protected processGetNavisionExportDataForWorkflowAndClient(response: HttpResponseBase): Observable<NavisionExportDataForWorkflowAndClientDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NavisionExportDataForWorkflowAndClientDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<NavisionExportDataForWorkflowAndClientDto>(null as any);
+    }
 }
 
 export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
@@ -31712,6 +31824,78 @@ export interface IMainOverviewStatusDto {
     canBeSetAutomatically?: boolean;
 }
 
+export class NavisionExportDataForWorkflowAndClientDto implements INavisionExportDataForWorkflowAndClientDto {
+    consultantShownOnClientInvoiceAs?: ConsultantShownOnClientInvoiceAs;
+    consultantId?: number | undefined;
+    workflowId?: string | undefined;
+    salesAccountManager?: Pm3EmployeeDto;
+    deliveryAccountManager?: Pm3EmployeeDto;
+    projectTypeId?: number | undefined;
+    salesType?: EnumEntityTypeDto;
+    deliveryType?: EnumEntityTypeDto;
+    margin?: EnumEntityTypeDto;
+    workplace?: WorkplaceDto;
+
+    constructor(data?: INavisionExportDataForWorkflowAndClientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantShownOnClientInvoiceAs = _data["consultantShownOnClientInvoiceAs"];
+            this.consultantId = _data["consultantId"];
+            this.workflowId = _data["workflowId"];
+            this.salesAccountManager = _data["salesAccountManager"] ? Pm3EmployeeDto.fromJS(_data["salesAccountManager"]) : <any>undefined;
+            this.deliveryAccountManager = _data["deliveryAccountManager"] ? Pm3EmployeeDto.fromJS(_data["deliveryAccountManager"]) : <any>undefined;
+            this.projectTypeId = _data["projectTypeId"];
+            this.salesType = _data["salesType"] ? EnumEntityTypeDto.fromJS(_data["salesType"]) : <any>undefined;
+            this.deliveryType = _data["deliveryType"] ? EnumEntityTypeDto.fromJS(_data["deliveryType"]) : <any>undefined;
+            this.margin = _data["margin"] ? EnumEntityTypeDto.fromJS(_data["margin"]) : <any>undefined;
+            this.workplace = _data["workplace"] ? WorkplaceDto.fromJS(_data["workplace"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): NavisionExportDataForWorkflowAndClientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NavisionExportDataForWorkflowAndClientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantShownOnClientInvoiceAs"] = this.consultantShownOnClientInvoiceAs;
+        data["consultantId"] = this.consultantId;
+        data["workflowId"] = this.workflowId;
+        data["salesAccountManager"] = this.salesAccountManager ? this.salesAccountManager.toJSON() : <any>undefined;
+        data["deliveryAccountManager"] = this.deliveryAccountManager ? this.deliveryAccountManager.toJSON() : <any>undefined;
+        data["projectTypeId"] = this.projectTypeId;
+        data["salesType"] = this.salesType ? this.salesType.toJSON() : <any>undefined;
+        data["deliveryType"] = this.deliveryType ? this.deliveryType.toJSON() : <any>undefined;
+        data["margin"] = this.margin ? this.margin.toJSON() : <any>undefined;
+        data["workplace"] = this.workplace ? this.workplace.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface INavisionExportDataForWorkflowAndClientDto {
+    consultantShownOnClientInvoiceAs?: ConsultantShownOnClientInvoiceAs;
+    consultantId?: number | undefined;
+    workflowId?: string | undefined;
+    salesAccountManager?: Pm3EmployeeDto;
+    deliveryAccountManager?: Pm3EmployeeDto;
+    projectTypeId?: number | undefined;
+    salesType?: EnumEntityTypeDto;
+    deliveryType?: EnumEntityTypeDto;
+    margin?: EnumEntityTypeDto;
+    workplace?: WorkplaceDto;
+}
+
 export class NewContractRequiredConsultantPeriodDto implements INewContractRequiredConsultantPeriodDto {
     consultantId?: number;
     consultantNewLegalContractRequired?: boolean;
@@ -32189,6 +32373,8 @@ export class Pm3EmployeeDto implements IPm3EmployeeDto {
     primaryPhoneNumber?: string | undefined;
     emailAddress?: string | undefined;
     lowerCaseInitials?: string | undefined;
+    tenantId?: number;
+    teamsAndDivisionsNodeId?: number | undefined;
 
     constructor(data?: IPm3EmployeeDto) {
         if (data) {
@@ -32207,6 +32393,8 @@ export class Pm3EmployeeDto implements IPm3EmployeeDto {
             this.primaryPhoneNumber = _data["primaryPhoneNumber"];
             this.emailAddress = _data["emailAddress"];
             this.lowerCaseInitials = _data["lowerCaseInitials"];
+            this.tenantId = _data["tenantId"];
+            this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
         }
     }
 
@@ -32225,6 +32413,8 @@ export class Pm3EmployeeDto implements IPm3EmployeeDto {
         data["primaryPhoneNumber"] = this.primaryPhoneNumber;
         data["emailAddress"] = this.emailAddress;
         data["lowerCaseInitials"] = this.lowerCaseInitials;
+        data["tenantId"] = this.tenantId;
+        data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
         return data;
     }
 }
@@ -32236,6 +32426,8 @@ export interface IPm3EmployeeDto {
     primaryPhoneNumber?: string | undefined;
     emailAddress?: string | undefined;
     lowerCaseInitials?: string | undefined;
+    tenantId?: number;
+    teamsAndDivisionsNodeId?: number | undefined;
 }
 
 export class ProfessionalRoleDto implements IProfessionalRoleDto {
@@ -32304,6 +32496,8 @@ export class ProjectLineDto implements IProjectLineDto {
     consultantInsuranceOptionId?: number | undefined;
     isLineForFees?: boolean | undefined;
     purchaseOrderId?: number | undefined;
+    readonly purchaseOrderCapClientCalculatedAmount?: number | undefined;
+    readonly purchaseOrderCapConsultantCalculatedAmount?: number | undefined;
     markedForLegacyDeletion?: boolean | undefined;
     wasSynced?: boolean | undefined;
 
@@ -32343,6 +32537,8 @@ export class ProjectLineDto implements IProjectLineDto {
             this.consultantInsuranceOptionId = _data["consultantInsuranceOptionId"];
             this.isLineForFees = _data["isLineForFees"];
             this.purchaseOrderId = _data["purchaseOrderId"];
+            (<any>this).purchaseOrderCapClientCalculatedAmount = _data["purchaseOrderCapClientCalculatedAmount"];
+            (<any>this).purchaseOrderCapConsultantCalculatedAmount = _data["purchaseOrderCapConsultantCalculatedAmount"];
             this.markedForLegacyDeletion = _data["markedForLegacyDeletion"];
             this.wasSynced = _data["wasSynced"];
         }
@@ -32382,6 +32578,8 @@ export class ProjectLineDto implements IProjectLineDto {
         data["consultantInsuranceOptionId"] = this.consultantInsuranceOptionId;
         data["isLineForFees"] = this.isLineForFees;
         data["purchaseOrderId"] = this.purchaseOrderId;
+        data["purchaseOrderCapClientCalculatedAmount"] = this.purchaseOrderCapClientCalculatedAmount;
+        data["purchaseOrderCapConsultantCalculatedAmount"] = this.purchaseOrderCapConsultantCalculatedAmount;
         data["markedForLegacyDeletion"] = this.markedForLegacyDeletion;
         data["wasSynced"] = this.wasSynced;
         return data;
@@ -32414,6 +32612,8 @@ export interface IProjectLineDto {
     consultantInsuranceOptionId?: number | undefined;
     isLineForFees?: boolean | undefined;
     purchaseOrderId?: number | undefined;
+    purchaseOrderCapClientCalculatedAmount?: number | undefined;
+    purchaseOrderCapConsultantCalculatedAmount?: number | undefined;
     markedForLegacyDeletion?: boolean | undefined;
     wasSynced?: boolean | undefined;
 }
@@ -35270,10 +35470,13 @@ export interface ITestConnectionDto {
 }
 
 export class TimeReportingCapDto implements ITimeReportingCapDto {
-    id?: TimeReportingCapId;
+    id?: number | undefined;
     timeReportingCapMaxValue?: number;
     valueUnitId?: number;
     periodUnitId?: number;
+    readonly clientCalculatedAmount?: number | undefined;
+    readonly consultantCalculatedAmount?: number | undefined;
+    isReadOnlyCopyFromClientPeriodToConsultant?: boolean;
 
     constructor(data?: ITimeReportingCapDto) {
         if (data) {
@@ -35286,10 +35489,13 @@ export class TimeReportingCapDto implements ITimeReportingCapDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"] ? TimeReportingCapId.fromJS(_data["id"]) : <any>undefined;
+            this.id = _data["id"];
             this.timeReportingCapMaxValue = _data["timeReportingCapMaxValue"];
             this.valueUnitId = _data["valueUnitId"];
             this.periodUnitId = _data["periodUnitId"];
+            (<any>this).clientCalculatedAmount = _data["clientCalculatedAmount"];
+            (<any>this).consultantCalculatedAmount = _data["consultantCalculatedAmount"];
+            this.isReadOnlyCopyFromClientPeriodToConsultant = _data["isReadOnlyCopyFromClientPeriodToConsultant"];
         }
     }
 
@@ -35302,55 +35508,25 @@ export class TimeReportingCapDto implements ITimeReportingCapDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["id"] = this.id;
         data["timeReportingCapMaxValue"] = this.timeReportingCapMaxValue;
         data["valueUnitId"] = this.valueUnitId;
         data["periodUnitId"] = this.periodUnitId;
+        data["clientCalculatedAmount"] = this.clientCalculatedAmount;
+        data["consultantCalculatedAmount"] = this.consultantCalculatedAmount;
+        data["isReadOnlyCopyFromClientPeriodToConsultant"] = this.isReadOnlyCopyFromClientPeriodToConsultant;
         return data;
     }
 }
 
 export interface ITimeReportingCapDto {
-    id?: TimeReportingCapId;
+    id?: number | undefined;
     timeReportingCapMaxValue?: number;
     valueUnitId?: number;
     periodUnitId?: number;
-}
-
-export class TimeReportingCapId implements ITimeReportingCapId {
-    readonly value?: number;
-
-    constructor(data?: ITimeReportingCapId) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).value = _data["value"];
-        }
-    }
-
-    static fromJS(data: any): TimeReportingCapId {
-        data = typeof data === 'object' ? data : {};
-        let result = new TimeReportingCapId();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        return data;
-    }
-}
-
-export interface ITimeReportingCapId {
-    value?: number;
+    clientCalculatedAmount?: number | undefined;
+    consultantCalculatedAmount?: number | undefined;
+    isReadOnlyCopyFromClientPeriodToConsultant?: boolean;
 }
 
 export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAttachmentFileInfoInputDto {

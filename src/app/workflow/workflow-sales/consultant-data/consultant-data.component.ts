@@ -277,6 +277,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
 			consultantDto.sourcingRequestId = consultant?.requestId;
 		}
+        let copyCapFromClient = consultant.timeReportingCaps.some(cap => cap.isReadOnlyCopyFromClientPeriodToConsultant);
 		const form = this._fb.group({
 			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId ?? null),
 			consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
@@ -312,6 +313,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			expectedWorkloadHours: new UntypedFormControl(consultant?.expectedWorkloadHours ?? null),
 			expectedWorkloadUnitId: new UntypedFormControl(consultant?.expectedWorkloadUnitId ?? null),
 			consultantTimeReportingCapId: new UntypedFormControl(consultant?.consultantTimeReportingCapId ?? ETimeReportingCaps.NoCap), // default value = no cap - id:4
+            copiedTimeReportingCapId: new UntypedFormControl(this.clientDataForm?.clientTimeReportingCapId.value),
+            copyCapFromClient: new UntypedFormControl(copyCapFromClient ?? false),
 			pdcPaymentEntityId: new UntypedFormControl(consultant?.pdcPaymentEntityId ?? null),
 			consultantRateTypeId: new UntypedFormControl(consultantRate),
 			consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
@@ -984,10 +987,13 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 
     addConsultantCap(consultantIndex: number, cap?: TimeReportingCapDto) {
 		const form = this._fb.group({
-            id: new UntypedFormControl(cap?.id?.value ?? null),
+            id: new UntypedFormControl(cap?.id ?? null),
 			timeReportingCapMaxValue: new UntypedFormControl(cap?.timeReportingCapMaxValue ?? null),
 			valueUnitId: new UntypedFormControl(cap?.valueUnitId ?? null),
 			periodUnitId: new UntypedFormControl(cap?.periodUnitId ?? null),
+            clientCalculatedAmount: new UntypedFormControl(cap?.clientCalculatedAmount),
+            consultantCalculatedAmount: new UntypedFormControl(cap?.consultantCalculatedAmount),
+            isCopyFromClientPeriodToConsultant: new UntypedFormControl(cap?.isReadOnlyCopyFromClientPeriodToConsultant ?? false)
 		});
 		(this.consultants.at(consultantIndex).get('timeReportingCaps') as UntypedFormArray).push(form);
 	}

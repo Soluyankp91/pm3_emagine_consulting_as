@@ -43,6 +43,7 @@ import { WorkflowCreateResolver } from './workflow.resolver';
 import { LegalContractItemComponent } from './workflow-contracts/legal-contracts/legal-contract-item/legal-contract-item.component';
 import { WorkflowHttpService } from './shared/services/workflow-http.service';
 import { ManagerTeamComponent } from './shared/components/manager-team/manager-team.component';
+import { CalculatedCapAmmountComponent } from './shared/components/calculated-cap-ammount/calculated-cap-ammount.component';
 
 @NgModule({
 	declarations: [
@@ -80,6 +81,7 @@ import { ManagerTeamComponent } from './shared/components/manager-team/manager-t
 		LatestChangesComponent,
 		LegalContractItemComponent,
 		ManagerTeamComponent,
+  CalculatedCapAmmountComponent,
 	],
 	imports: [CommonModule, FormsModule, ReactiveFormsModule, WorkflowRoutingModule, AppCommonModule, NgxGanttModule],
 	exports: [],
