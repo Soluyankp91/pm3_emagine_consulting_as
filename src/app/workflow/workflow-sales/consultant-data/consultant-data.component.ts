@@ -282,7 +282,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
 			consultantDto.sourcingRequestId = consultant?.requestId;
 		}
-        let copyCapFromClient = consultant.timeReportingCaps.some(cap => cap.isReadOnlyCopyFromClientPeriodToConsultant);
+        let copyCapFromClient = consultant?.timeReportingCaps.some(cap => cap.isReadOnlyCopyFromClientPeriodToConsultant) ?? false;
 		const form = this._fb.group({
 			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId ?? null),
 			consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
