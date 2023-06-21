@@ -28,7 +28,7 @@
 	<ng-container matColumnDef="previousValue">
 		<mat-header-cell *matHeaderCellDef class="header-cell">Previous value</mat-header-cell>
 		<mat-cell *matCellDef="let row">
-			<div class="table-cell" [customTooltip]="previousValue">
+			<div *ngIf="row.previousValue; else missingData" class="table-cell" [customTooltip]="previousValue">
 				{{ row.previousValue | emptyStringHandle }}
 			</div>
 			<ng-template #previousValue>
@@ -43,7 +43,7 @@
 	<ng-container matColumnDef="currentValue">
 		<mat-header-cell *matHeaderCellDef class="header-cell">Current value</mat-header-cell>
 		<mat-cell *matCellDef="let row">
-			<div class="table-cell" [customTooltip]="currentValue">
+			<div *ngIf="row.currentValue; else missingData" class="table-cell" [customTooltip]="currentValue">
 				{{ row.currentValue | emptyStringHandle }}
 			</div>
 			<ng-template #currentValue>
@@ -65,6 +65,10 @@
 
 	<div mat-dialog-actions class="actions">
 		<button mat-button [mat-dialog-close]="false" class="cancel-button">Close</button>
-		<button mat-raised-button [mat-dialog-close]="true" class="proceed-button">Proceed</button>
+		<button mat-raised-button [mat-dialog-close]="true" class="proceed-button">Proceed anyway</button>
 	</div>
 </div>
+
+<ng-template #missingData>
+	<div class="table-cell red-color">Missing value</div>
+</ng-template>
