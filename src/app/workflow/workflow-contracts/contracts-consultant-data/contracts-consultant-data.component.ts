@@ -440,7 +440,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 		consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (consultantRate.rateSpecifiedAs?.id === 1) {
 			consultantRate.prodataToProdataRate = +(
-				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value *
+				(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantPDCRate')!.value *
 					rate.proDataToProDataRate!) /
 				100
 			).toFixed(2);
