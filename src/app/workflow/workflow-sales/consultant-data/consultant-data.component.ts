@@ -669,7 +669,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (consultantRate.rateSpecifiedAs?.id === 1) {
 			consultantRate.prodataToProdataRate = +(
-				(this.consultants.at(consultantIndex)!.get('prodataToProdataRate')!.value * rate.proDataToProDataRate!) /
+				(this.consultants.at(consultantIndex)!.get('consultantPDCRate')!.value * rate.proDataToProDataRate!) /
 				100
 			).toFixed(2);
 			consultantRate.prodataToProdataRateCurrencyId = this.consultants
