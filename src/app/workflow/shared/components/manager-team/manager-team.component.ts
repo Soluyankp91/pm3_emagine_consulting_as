@@ -45,8 +45,8 @@ export class ManagerTeamComponent implements OnInit {
 		} else {
 			secondLvlNode = this._findParentNode(node.parentId);
 			if (secondLvlNode.parentId === null) {
-				this.managerTeam.tenant = node?.name;
-				this.managerTeam.division = secondLvlNode?.name;
+				this.managerTeam.tenant = secondLvlNode?.name;
+				this.managerTeam.division = node?.name;
 			} else {
 				thirdLvlNode = this._findParentNode(secondLvlNode?.parentId);
 				this.managerTeam.tenant = thirdLvlNode?.name;

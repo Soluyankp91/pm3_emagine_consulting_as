@@ -75,12 +75,12 @@
                                 </mat-select>
                             </mat-form-field>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 30%">
-                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="clientRateValue">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1, 'disabled-input': rate.value.rateSpecifiedAs?.id === 3}" fxFlex="1 0 30%">
+                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" [disabled]="rate.value.rateSpecifiedAs?.id === 3" formControlName="clientRateValue">
                                     <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
-                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="rate.value.rateSpecifiedAs?.id === 3">
                                         <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
@@ -88,12 +88,12 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 30%">
-                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="proDataRate">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1, 'disabled-input': rate.value.rateSpecifiedAs?.id === 3}" fxFlex="1 0 30%">
+                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" [disabled]="rate.value.rateSpecifiedAs?.id === 3" formControlName="proDataRate">
                                     <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
-                                    <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="rate.value.rateSpecifiedAs?.id === 3">
                                         <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
@@ -101,12 +101,12 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 30%">
-                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="consultantRate">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1, 'disabled-input': rate.value.rateSpecifiedAs?.id === 3}" fxFlex="1 0 30%">
+                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="consultantRate" [disabled]="rate.value.rateSpecifiedAs?.id === 3">
                                     <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
-                                    <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="rate.value.rateSpecifiedAs?.id === 3">
                                         <mat-option *ngFor="let item of currencies; trackBy: trackById" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
