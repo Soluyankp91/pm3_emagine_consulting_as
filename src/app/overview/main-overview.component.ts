@@ -153,9 +153,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.Overview);
         this._getEnums();
-		this.getMainOverviewStatuses();
+		this.getMainOverviewStatusesAndCurrentUser();
 		this.getOverviewViewTypes();
-		this.getCurrentUser();
 	}
 
 	ngOnDestroy(): void {
@@ -498,7 +497,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         });
     }
 
-	getMainOverviewStatuses() {
+	getMainOverviewStatusesAndCurrentUser() {
 		this._mainOverviewService.statuses().subscribe((result) => {
 			this.userSelectedStatuses = result.filter((x) => x.canBeSetByUser);
 			this.filteredMainOverviewStatuses = result.map((x) => {
@@ -512,6 +511,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 					color: this.detectProcessColor(x.id!),
 				});
 			});
+            this.getCurrentUser();
 		});
 	}
 
