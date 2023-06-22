@@ -60,6 +60,7 @@ export class SignersPreviewDialogComponent extends AppComponentBase implements O
 			height: '555px',
 			backdropClass: 'backdrop-modal--wrapper',
 			panelClass: 'app-email-body',
+			autoFocus: false,
 		});
 		dialogRef.afterClosed().subscribe((proceed) => {
 			if (!proceed) {

@@ -26,9 +26,9 @@ import { NotificationDialogComponent } from '../../components/popUps/notificatio
 import { OutdatedMergeFieldsComponent } from '../../components/popUps/outdated-merge-fields/outdated-merge-fields.component';
 
 export enum OnSendMergeFieldsErrors {
-	OutDatedMergeFields = 'contracts.agreement.outdated.merge.fields',
-	EmptyMergeFields = 'contracts.agreement.empty.merge.fields',
+	EmptyOrOutdatedMergeFields = 'contracts.agreement.outdated.or.null.merge.fields',
 }
+
 export enum OnSaveMergeFieldsErrors {
 	UnknownMergeFields = 'contracts.documents.unknown.merge.fields',
 }
@@ -115,35 +115,13 @@ export class AgreementService implements AgreementAbstractService {
 			.afterClosed();
 	}
 
-	private _showEmptyMergeFieldsPopup(errorData: EmptyMergeFieldsErroData) {
-		return this._dialog
-			.open(EmptyAndUnknownMfComponent, {
-				data: {
-					header: 'Empty merge fields were detected',
-					description: `The values of the following merge fields have changed since last document save. Delete them or proceed anyway.`,
-					listDescription: 'The list of affected merge fields:',
-					confirmButton: true,
-					confirmButtonText: 'Proceed',
-					mergeFields: errorData,
-				},
-				width: '800',
-				height: '450px',
-				backdropClass: 'backdrop-modal--wrapper',
-				panelClass: 'app-empty-and-unknown-mf',
-			})
-			.afterClosed();
-	}
-
 	private _handleMergeFieldErrors(
 		errorCode: OnSendMergeFieldsErrors,
 		errorData: OutDatedMergeFieldsErrorData | EmptyMergeFieldsErroData
 	) {
 		switch (errorCode) {
-			case OnSendMergeFieldsErrors.OutDatedMergeFields:
+			case OnSendMergeFieldsErrors.EmptyOrOutdatedMergeFields:
 				return this._showOutdatedMergeFieldsPopup(<OutDatedMergeFieldsErrorData>errorData);
-
-			case OnSendMergeFieldsErrors.EmptyMergeFields:
-				return this._showEmptyMergeFieldsPopup(<EmptyMergeFieldsErroData>errorData);
 		}
 	}
 

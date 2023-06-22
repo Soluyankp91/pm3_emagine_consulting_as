@@ -765,3 +765,11 @@ input[type=number] {
         }
     }
 }
+
+.disabled-input {
+    pointer-events: none !important;
+    .mat-form-field-flex {
+        background-color: $sand-25-color !important;
+        pointer-events: none !important;
+    }
+}

@@ -282,7 +282,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
 			consultantDto.sourcingRequestId = consultant?.requestId;
 		}
-        let copyCapFromClient = consultant.timeReportingCaps.some(cap => cap.isReadOnlyCopyFromClientPeriodToConsultant);
+        let copyCapFromClient = consultant?.timeReportingCaps.some(cap => cap.isReadOnlyCopyFromClientPeriodToConsultant) ?? false;
 		const form = this._fb.group({
 			employmentTypeId: new UntypedFormControl(consultant?.employmentTypeId ?? null),
 			consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
@@ -669,7 +669,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
 		if (consultantRate.rateSpecifiedAs?.id === 1) {
 			consultantRate.prodataToProdataRate = +(
-				(this.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate!) /
+				(this.consultants.at(consultantIndex)!.get('consultantPDCRate')!.value * rate.proDataToProDataRate!) /
 				100
 			).toFixed(2);
 			consultantRate.prodataToProdataRateCurrencyId = this.consultants
