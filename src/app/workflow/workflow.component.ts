@@ -357,7 +357,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			confirmationMessageTitle: `Restore workflow`,
-			confirmationMessage: `Are you sure you want to restore workflow?`,
+			confirmationMessage: `Are you sure you want to restore this workflow?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Yes',
 			isNegative: false,
