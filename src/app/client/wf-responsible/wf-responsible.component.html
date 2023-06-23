@@ -19,13 +19,8 @@
                 <input #contractResponsibleInput type="text" matInput
                     [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something..">
-                    <div matSuffix>
-                        <ng-container *ngIf="contractStepResponsible.value?.id">
-                            <button (click)="contractStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
-                            <span matSuffix class="shevron"></span>
-                        </ng-container>
-                    </div>
                 <mat-autocomplete (optionSelected)="setResponsiblePerson()"
+                    (closed)="onAutocompleteClosed(contractStepResponsible, 'id')"
                     #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
@@ -59,15 +54,10 @@
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
                     [formControl]="financeStepResponsible" appPreventDoubleClick
                     (throttledClick)="$event.stopPropagation()" placeholder="Type something..">
-                    <div matSuffix>
-                        <ng-container *ngIf="financeStepResponsible.value?.id">
-                            <button (click)="financeStepResponsible.setValue(''); setResponsiblePerson()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
-                            <span matSuffix class="shevron"></span>
-                        </ng-container>
-                    </div>
                 <mat-autocomplete (optionSelected)="setResponsiblePerson()"
+                    (closed)="onAutocompleteClosed(financeStepResponsible, 'id')"
                     #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
-                    <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
+                    <ng-container *ngFor="let manager of filteredFinanceManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                 <ng-container *ngIf=" manager.id !== undefined">
