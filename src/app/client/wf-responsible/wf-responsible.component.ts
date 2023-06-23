@@ -119,7 +119,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 						idsToExclude: [],
 					};
 					if (current?.id) {
-						toSend.name = current.id ? current.name : current;
+						toSend.name = current.id ? '' : current;
 					}
 					return this._lookupService.employees(toSend.name);
 				})
@@ -137,7 +137,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-				startWith(this.contractStepResponsible?.value?.name || ''),
+				startWith(''),
 				pairwise(),
 				switchMap(([previous, current]) => {
 					if (previous?.id && !current?.id) {
@@ -150,7 +150,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 						idsToExclude: [],
 					};
 					if (current?.id) {
-						toSend.name = current.id ? current.name : current;
+						toSend.name = current.id ? '' : current;
 					}
 					return this._lookupService.employees(toSend.name);
 				})
