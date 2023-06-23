@@ -198,8 +198,6 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 		const clientPeriodID = this._route.snapshot.queryParams.clientPeriodId;
 		const consultantPeriodID = this._route.snapshot.queryParams.consultantPeriodId;
 		this._registerAgreementChangeNotifier(paramId, clientPeriodID, consultantPeriodID);
-;
-
 		const consultantPeriodId = this._route.snapshot.queryParams.consultantPeriodId;
 
 		if (paramId) {
@@ -726,10 +724,12 @@ export class SettingsComponent extends AppComponentBase implements OnInit, OnDes
 			? of(null)
 			: templateId
 			? this._editorObserverService.runAgreementEditModeNotifier(templateId)
-			: clientPeriodID
-			? this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID, 'ClientPeriod')
-			: this._editorObserverService.runAgreementCreateModeNotifier(consultantPeriodID, 'ConsultantPeriod')
-		).pipe(takeUntil(this._unSubscribe$)).subscribe();
+			: consultantPeriodID
+			? this._editorObserverService.runAgreementCreateModeNotifier(consultantPeriodID, 'ConsultantPeriod')
+			: this._editorObserverService.runAgreementCreateModeNotifier(clientPeriodID, 'ClientPeriod')
+		)
+			.pipe(takeUntil(this._unSubscribe$))
+			.subscribe();
 	}
 
 	private _createAttachments(files: FileUpload[]) {
