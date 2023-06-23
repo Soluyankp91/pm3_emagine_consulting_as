@@ -137,7 +137,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
-				startWith(''),
+				startWith(this.contractStepResponsible?.value?.name || ''),
 				pairwise(),
 				switchMap(([previous, current]) => {
 					if (previous?.id && !current?.id) {
