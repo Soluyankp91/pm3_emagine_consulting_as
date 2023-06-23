@@ -1,5 +1,10 @@
-<ng-container *ngIf="managerTeamId !== null && managerTeamId !== undefined">
-    <span class="header">Team: </span>
-    <span class="value">{{managerTeam?.tenant}} {{managerTeam?.division ? '/ ' + managerTeam?.division : ''}} {{managerTeam?.team ? '/ ' + managerTeam?.team : ''}}</span>
+<ng-container *ngIf="(managerTeamId !== null && managerTeamId !== undefined) || (tenantId !== null && tenantId !== undefined)">
+    <span class="medium-grey-color text-bold">{{managerTeam?.label}}: </span>
+    <ng-container *ngIf="managerTeamId !== null && managerTeamId !== undefined; else tenantName">
+        <span class="grey-color-87 text-bold-800">{{managerTeam?.tenant}} {{managerTeam?.division ? '/ ' + managerTeam?.division : ''}} {{managerTeam?.team ? '/ ' + managerTeam?.team : ''}}</span>
+    </ng-container>
+    <ng-template #tenantName>
+        <span class="grey-color-87 text-bold-800">{{eTenantNames[tenantId]}}</span>
+    </ng-template>
 </ng-container>
 

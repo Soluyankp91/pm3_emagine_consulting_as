@@ -467,7 +467,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 					if (value?.id) {
 						toSend.name = value.id ? value.name : value;
 					}
-					return this._lookupService.employees(value);
+					return this._lookupService.employees(toSend.name);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {

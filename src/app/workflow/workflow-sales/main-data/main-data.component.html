@@ -582,7 +582,9 @@
                                     <app-validator [control]="salesMainDataForm.salesAccountManagerIdValue"></app-validator>
                                 </mat-error>
                             </mat-form-field>
-                            <manager-team [ngClass]="{'u-mb--8': salesMainDataForm.salesAccountManagerIdValue.value?.teamsAndDivisionsNodeId !== null}" [managerTeamId]="salesMainDataForm.salesAccountManagerIdValue.value?.teamsAndDivisionsNodeId"></manager-team>
+                            <manager-team class="u-mb--8"
+                                [managerTeamId]="salesMainDataForm.salesAccountManagerIdValue.value?.teamsAndDivisionsNodeId"
+                                [tenantId]="salesMainDataForm.salesAccountManagerIdValue.value?.tenantId"></manager-team>
                         </div>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
