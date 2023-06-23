@@ -120,7 +120,7 @@
         <div class="client-list--table u-w--100">
             <mat-table #table [dataSource]="clientDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%"> ID </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> ID </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
                         {{row.id}}
                     </mat-cell>
