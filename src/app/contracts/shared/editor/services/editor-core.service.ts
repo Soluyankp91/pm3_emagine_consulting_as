@@ -325,6 +325,7 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.UpdateAllFields);
 		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldResults);
 		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldCodes);
+		mergeTab.removeItem(MailMergeTabItemId.CreateFieldMenu);
 
 		mergeTab.insertItem(
 			new RibbonButtonItem(ICustomCommand.ShowAllFieldCodes, 'Show All Field Codes', showAllFieldCodesBtnOpts)
