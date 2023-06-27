@@ -136,7 +136,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		this._workflowDataService.workflowTopSectionUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
 			this._getTopLevelMenu(value);
 		});
-		this.individualConsultantActionsAvailable = environment.dev;
+		this.individualConsultantActionsAvailable = environment.isIndividualConsultantActionsEnabled;
 	}
 
 	ngAfterViewInit(): void {
