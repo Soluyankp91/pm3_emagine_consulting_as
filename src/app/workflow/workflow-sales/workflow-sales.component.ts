@@ -212,7 +212,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
 			});
 
-		this.individualConsultantActionsAvailable = environment.dev;
+            this.individualConsultantActionsAvailable = environment.isIndividualConsultantActionsEnabled;
 	}
 
 	validateSalesForm() {

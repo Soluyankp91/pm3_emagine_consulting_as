@@ -116,7 +116,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			this.workflowId = params.get('id')!;
             this._getClientPeriods();
             this.componentInitalized = true;
-            this.individualConsultantActionsAvailable = environment.dev;
+            this.individualConsultantActionsAvailable = environment.isIndividualConsultantActionsEnabled;
             this._getOverviewData();
 		});
 

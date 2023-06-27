@@ -13,4 +13,5 @@ export const environment = {
     msalAuthorityUrl: 'https://login.microsoftonline.com/b4cc3fac-1ad5-41ed-a4f7-294ef841ab86/',
     msalInterceptorConfigUrl: 'api://461b033f-4039-4716-a579-8fc88186f8ff/access_as_user',
     isSignalRLoggingEnabled: true,
+    isIndividualConsultantActionsEnabled: false
 };
