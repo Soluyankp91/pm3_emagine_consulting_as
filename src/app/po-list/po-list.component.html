@@ -1,0 +1,288 @@
+<div class="container">
+    <!-- <ng-container *ngIf="matChips.length">
+        <mat-chip-list class="mat-chip-list">
+            <mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName">
+                <mat-icon svgIcon="close-button-icon" class="close-button-icon" (click)="closeFilter(chip.formControl)"> </mat-icon>
+                <span class="chip-label">{{ chip.label }}</span>
+            </mat-chip>
+            <ng-container *ngIf="matChips.length">
+                <span class="close-filters" (click)="closeAllFilters()">
+                    <mat-icon svgIcon="close-button-icon-grey" class="close-button-icon"></mat-icon>
+                    <p class="reset-all-filters-label">Reset all Filters</p>
+                </span>
+            </ng-container>
+        </mat-chip-list>
+    </ng-container> -->
+	<div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !dataSource.data.length }">
+		<mat-table
+			matSort
+			[dataSource]="dataSource"
+			[matSortActive]="sortActive"
+			[matSortDirection]="sotrDirection"
+			[ngClass]="{ 'hidden-table': !dataSource.data.length }"
+			(matSortChange)="sortChange($event)">
+            <ng-container matColumnDef="select" [sticky]="true">
+                <mat-header-cell *matHeaderCellDef class="select-column">
+                    <mat-checkbox
+                        [checked]="selectionModel.hasValue() && isAllSelected()"
+                        [indeterminate]="selectionModel.hasValue() && !isAllSelected()"
+                        (change)="toggleAllRows()"
+                        class="select-padding-8">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="select-column">
+                    <mat-checkbox
+                        [checked]="selectionModel.isSelected(row)"
+                        (click)="$event.stopPropagation()"
+                        (change)="selectionModel.toggle(row)"
+                        class="select-padding-8"></mat-checkbox>
+                </mat-cell>
+            </ng-container>
+			<ng-container matColumnDef="status" [sticky]="true">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poStatus-column">
+                </mat-header-cell>
+				<mat-cell class="table-cell poStatus-column" *matCellDef="let row">
+					{{row.status}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="note" [sticky]="true">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poNote-column">
+                    Note
+                </mat-header-cell>
+				<mat-cell class="table-cell poNote-column" *matCellDef="let row">
+					{{row.note}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="PONumber" [sticky]="true">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poNumber-column">
+                    PO number
+                </mat-header-cell>
+				<mat-cell class="table-cell poNumber-column" *matCellDef="let row">
+					{{row.PONumber}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="client" [sticky]="true">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poClient-column">
+                    Client
+                </mat-header-cell>
+				<mat-cell class="table-cell poClient-column" *matCellDef="let row">
+					{{row.client}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="lastUpdate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poLastUpdated-column">
+                    Last update
+                </mat-header-cell>
+				<mat-cell class="table-cell poLastUpdated-column" *matCellDef="let row">
+					{{row.lastUpdate | momentFormat}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="wfPeriodId">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poWFPeriod-column">
+                    WF period ID
+                </mat-header-cell>
+				<mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row">
+					{{row.wfPeriodId}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="clientContact">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poClientContact-column">
+                    Client contact
+                </mat-header-cell>
+				<mat-cell class="table-cell poClientContact-column" *matCellDef="let row">
+					{{row.clientContact}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="consultant">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poConsultant-column">
+                    Consultant
+                </mat-header-cell>
+				<mat-cell class="table-cell poConsultant-column" *matCellDef="let row">
+					{{row.consultant}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="salesType">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poSalesType-column">
+                    Sales type
+                </mat-header-cell>
+				<mat-cell class="table-cell poSalesType-column" *matCellDef="let row">
+					{{row.salesType}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="deliveryType">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poDeliveryType-column">
+                    Delivery type
+                </mat-header-cell>
+				<mat-cell class="table-cell poDeliveryType-column" *matCellDef="let row">
+					{{row.deliveryType}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="capType">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poCapType-column">
+                    Cap on
+                </mat-header-cell>
+				<mat-cell class="table-cell poCapType-column" *matCellDef="let row">
+					{{row.capType}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="amount">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poAmount-column">
+                    Amount
+                </mat-header-cell>
+				<mat-cell class="table-cell poAmount-column" *matCellDef="let row">
+					{{row.amount}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="units">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poUnitType-column">
+                    Units
+                </mat-header-cell>
+				<mat-cell class="table-cell poUnitType-column" *matCellDef="let row">
+					{{row.units}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="clientRate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poClientRate-column">
+                    Client rate
+                </mat-header-cell>
+				<mat-cell class="table-cell poClientRate-column" *matCellDef="let row">
+					{{row.clientRate}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="totalAmount">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poTotalAmount-column">
+                    Total amount
+                </mat-header-cell>
+				<mat-cell class="table-cell poTotalAmount-column" *matCellDef="let row">
+					{{row.totalAmount}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="amountLeft">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poAmountLeft-column">
+                    Amount teft
+                </mat-header-cell>
+				<mat-cell class="table-cell poAmountLeft-column" *matCellDef="let row">
+					{{row.amountLeft}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="estimatedUnitsLeft">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poEstimatedUnitsLeft-column">
+                    Estimated units left
+                </mat-header-cell>
+				<mat-cell class="table-cell poEstimatedUnitsLeft-column" *matCellDef="let row">
+					{{row.estimatedUnitsLeft}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="startDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poStartDate-column">
+                    PO start date
+                </mat-header-cell>
+				<mat-cell class="table-cell poStartDate-column" *matCellDef="let row">
+					{{row.startDate | momentFormat}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="endDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poEndDate-column">
+                    PO end date
+                </mat-header-cell>
+				<mat-cell class="table-cell poEndDate-column" *matCellDef="let row">
+					{{row.endDate | momentFormat}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="contractManager">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poCM-column">
+                    CM
+                </mat-header-cell>
+				<mat-cell class="table-cell poCM-column" *matCellDef="let row">
+					{{row.contractManager}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="accountManager">
+                <mat-header-cell *matHeaderCellDef mat-sort-header
+                    class="table-header-cell poAM-column">
+                    AM
+                </mat-header-cell>
+				<mat-cell class="table-cell poAM-column" *matCellDef="let row">
+					{{row.accountManager}}
+				</mat-cell>
+			</ng-container>
+            <ng-container matColumnDef="actions" [stickyEnd]="true">
+                <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
+                <mat-cell class="table-cell" *matCellDef="let actionRow" class="actions-column">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" class="three-dots-actions-btn">
+                        <mat-icon svgIcon="3-dots"></mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" class="custom">
+                        <button mat-menu-item (click)="someAction(actionRow)">
+                            <mat-icon [svgIcon]="'actionIcon'" class="small-icon"></mat-icon>
+                            <span> Do something</span>
+                        </button>
+                    </mat-menu>
+                </mat-cell>
+            </ng-container>
+
+			<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+			<mat-row
+				*matRowDef="let row; columns: displayedColumns"
+				[ngClass]="{ highlight: selectedRowId === row.id }"
+				class="row-hover"></mat-row>
+		</mat-table>
+		<ng-container *ngIf="!dataSource.data.length">
+			<div class="no-items">
+				<mat-icon svgIcon="empty-table-icon" class="empty-table-icon"> </mat-icon>
+				<div class="no-items-text">
+					Sorry, no PO's found for the selected filters. Change the search criteria or
+					<span class="highlighted-reset-filters" (click)="resetAllFilters()"
+						>Reset all filters</span
+					>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+</div>
+<div class="bottom-panel">
+	<div class="fixed-container">
+		<div class="bottom-actions">
+			<ng-container *ngIf="!selectionModel.isEmpty()">
+				<div class="selected-items-info">{{ selectionModel.selected.length }} selected</div>
+				<ng-container *ngFor="let bottomAction of selectedItemsActions; trackBy: trackByAction">
+					<div
+						class="bottom-action-item"
+						(click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
+						<mat-icon [svgIcon]="bottomAction.actionIcon" class="small-icon"></mat-icon>
+						<span class="bottom-panel-label">{{ bottomAction.label }}</span>
+					</div>
+				</ng-container>
+			</ng-container>
+		</div>
+		<mat-paginator
+			class="paginator"
+			[showFirstLastButtons]="true"
+			[length]="totalCount"
+			[pageSizeOptions]="pageSizeOptions"
+			[pageSize]="pageSize"
+			[pageIndex]="pageIndex"
+			(page)="pageChange($event)">
+		</mat-paginator>
+	</div>
+</div>
