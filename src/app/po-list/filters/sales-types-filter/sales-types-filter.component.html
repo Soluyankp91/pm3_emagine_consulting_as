@@ -1,0 +1,9 @@
+<emg-multi-select
+	*ngIf="salesTypes$ | async as salesTypes"
+	[options]="salesTypes"
+	[displayedProperty]="'name'"
+	[formControl]="filterFormControl">
+	<ng-template #triggerButton>
+		<div class="table-header-cell">{{ labelMap[tableFilter] }}</div>
+	</ng-template>
+</emg-multi-select>

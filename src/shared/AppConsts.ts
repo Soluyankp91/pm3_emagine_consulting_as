@@ -14,7 +14,8 @@ export class AppConsts {
 
     static readonly grid = {
         defaultPageSize: 20,
-        dashboardPageSize: 7
+        dashboardPageSize: 7,
+        pageSizeOptions: [5, 10, 20, 50, 100]
     };
     static momentFormatType = 'DD.MM.YYYY';
     static PM3_TITLE = 'PM3';
