@@ -74,6 +74,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
+	@Input() consultantPeriodId: string | undefined;
 	@Input() consultant: ConsultantResultDto;
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
 	@Input() isCompleted: boolean;
@@ -1310,7 +1311,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.ExtendConsultantPeriod:
 				this.showMainSpinner();
 				this._consultantPeriodSerivce
-					.reopen2(this.periodId!)
+					.reopen2(this.consultantPeriodId!)
 					.pipe(
 						finalize(() => {
 							this.hideMainSpinner();

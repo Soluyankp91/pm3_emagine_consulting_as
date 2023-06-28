@@ -50,6 +50,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 
 	workflowId: string;
 	periodId: string | undefined;
+	consultantPeriodId: string | undefined;
 	topToolbarVisible: boolean;
 	sideMenuItems: WorkflowProcessWithAnchorsDto[] = [];
 	workflowProcessTypes = WorkflowProcessType;
@@ -151,6 +152,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 		this.sectionIndex = index;
 		this.selectedSideSection = item;
 		this.consultant = item.consultant!;
+        this.consultantPeriodId = item.consultantPeriodId ?? null;
 		this._workflowDataService.updateWorkflowProgressStatus({ currentlyActiveSideSection: item.typeId! });
 		if (!this.isStatusUpdate) {
 			const firstitemInSection = this.sideMenuItems.find((x) => x.name === item.name)?.steps![0];

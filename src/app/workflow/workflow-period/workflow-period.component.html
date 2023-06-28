@@ -112,7 +112,7 @@
                 <ng-container [ngSwitch]="selectedStepEnum">
                     <ng-container *ngSwitchCase="workflowSteps.Sales">
                         <app-workflow-sales #workflowSales [workflowId]="workflowId" [periodId]="periodId"
-                            [isWFDeleted]="isWFDeleted"
+                            [consultantPeriodId]="consultantPeriodId" [isWFDeleted]="isWFDeleted"
                             [activeSideSection]="selectedSideSection" [consultant]="consultant"
                             [isCompleted]="selectedStep.status === workflowStatuses.Completed"
                             [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
