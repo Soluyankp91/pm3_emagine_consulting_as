@@ -1,7 +1,6 @@
 import { pluck, take } from 'rxjs/operators';
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import {
 	ITemplatesService,
@@ -9,6 +8,7 @@ import {
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
 import { AgreementService } from 'src/app/contracts/agreements/listAndPreviews/services/agreement.service';
+import { IFilter } from '../../../mat-grid.interfaces';
 
 @Component({
 	selector: 'app-agreement-filter',

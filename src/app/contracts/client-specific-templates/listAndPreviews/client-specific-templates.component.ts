@@ -12,14 +12,14 @@ import {
 	CLIENT_TEMPLATE_BOTTOM_ACTIONS,
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
-} from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
+} from '../../../shared/components/grid-table/client-templates/entities/client-template.constants';
 import { ClientMappedTemplatesListDto, MappedTableCells, ClientFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, fromEvent, Observable, ReplaySubject, Subject, Subscription, forkJoin } from 'rxjs';
 import { takeUntil, map, startWith, pairwise } from 'rxjs/operators';
 import { ClientTemplatesService } from './service/client-templates.service';
 import { ContractsService } from '../../shared/services/contracts.service';
-import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
+import { ITableConfig } from '../../../shared/components/grid-table/mat-grid.interfaces';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
