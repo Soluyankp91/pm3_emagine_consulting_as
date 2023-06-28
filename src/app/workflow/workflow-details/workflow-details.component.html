@@ -23,12 +23,12 @@
                     WF ID: {{workflowSequenceIdCode}}
                 </span>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
-                    <span class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                    <span class="workflow-header--request cursor-pointer" matTooltip="View Request in Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                         • Request ID: {{workflowConsultants[0].requestId}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
-                    <span class="workflow-header--title__clientId cursor-pointer" matTooltip="Consultant name" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
+                    <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Consultant in Sourcing" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
                         • {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
                     </span>
                 </ng-container>
@@ -124,10 +124,10 @@
                 <ng-template #readOnlyWorkflowStatusTemplate>
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
-                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap" class="medium-grey-color text-bold workflow-header--title__wf u-mr--10">
+                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap" class="medium-grey-color text-bold workflow-header--title__wf u-mr--8">
                     WF ID: {{workflowSequenceIdCode}}
                 </span>
-                <span class="workflow-toolbar--client u-mr--10">
+                <span class="workflow-toolbar--client u-mr--8">
                     • <span class="dark-grey-color text-bold-800 u-mr--5">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</span>
                     <ng-container *ngIf="workflowDirectClientId">
                         <span class="dark-grey-color text-bold">| Client ID:</span>
@@ -144,7 +144,7 @@
                 </span>
                 <span class="workflow-toolbar--client">
                     <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
-                        <span class="workflow-header--request cursor-pointer" matTooltip="View Request in Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                        <span class="workflow-header--request cursor-pointer u-mr--8" matTooltip="View Request in Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                             • Request ID: {{workflowConsultants[0].requestId}}
                         </span>
                     </ng-container>
