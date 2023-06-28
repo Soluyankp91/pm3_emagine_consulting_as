@@ -70,8 +70,6 @@
                     </ng-container>
                     <ng-template #syncInput>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                            {{validationTriggered}}
-                            {{!statusAfterSync}}
                             <ng-container *ngIf="!statusAfterSync && validationTriggered">
                                 <div class="mat-form-field-invalid"></div>
                             </ng-container>
