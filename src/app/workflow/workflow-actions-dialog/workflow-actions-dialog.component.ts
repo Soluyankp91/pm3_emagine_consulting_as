@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } 
 import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
-import { Subject } from 'rxjs';
+import { merge, Subject } from 'rxjs';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AreaRoleNodeDto, AvailableConsultantDto, BranchRoleNodeDto, ChangeClientPeriodDto, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, LookupServiceProxy, NewContractRequiredConsultantPeriodDto, RoleNodeDto } from 'src/shared/service-proxies/service-proxies';
@@ -66,11 +66,11 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             this.extendWorkflowForm = new ExtendWorkflowForm();
             this.projectCategoryForm = new ProjectCategoryForm();
             this.consultants = data.consultantData;
-            this.extendWorkflowForm?.startDate?.valueChanges.pipe(
+            merge(this.startDate?.valueChanges, this.extendWorkflowForm?.startDate?.valueChanges).pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(500)
-            ).subscribe(() => {
-                let startDate = this.extendWorkflowForm?.startDate?.value as moment.Moment;
+            ).subscribe((value) => {
+                let startDate = value as moment.Moment;
                 this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
             });
             if (this.data.isMigrationNeeded) {

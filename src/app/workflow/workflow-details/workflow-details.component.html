@@ -1,7 +1,7 @@
 <div class="workflow" fxLayout="column" fxLayoutAlign="start start" id="topOfTheWorkflow" #scroller>
     <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100">
         <div fxFlex="1 0 40%" fxLayout="column">
-            <h2 class="workflow-header--title">
+            <h2 class="workflow-header--title u-mb--5">
                 <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
                         #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" [matMenuTriggerData]="{selectedStatus: workflowStatusId}" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
@@ -20,26 +20,26 @@
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
                 <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap">
-                    Workflow ID: {{workflowSequenceIdCode}}
+                    WF ID: {{workflowSequenceIdCode}}
                 </span>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
                     <span class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
-                        / Request ID: {{workflowConsultants[0].requestId}}
+                        • Request ID: {{workflowConsultants[0].requestId}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
                     <span matTooltip="Consultant name" matTooltipClass="white-tooltip">
-                        / {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
+                        • {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
                     <span [matTooltip]="workflowConsultantsList ?? ''" matTooltipClass="white-tooltip pre-wrap--tooltip">
-                        / {{workflowConsultants.length + ' Consultants'}}
+                        • {{workflowConsultants.length + ' Consultants'}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length === 0">
                     <span>
-                        / No consultants
+                        • No consultants
                     </span>
                 </ng-container>
             </h2>
@@ -101,91 +101,51 @@
         </ng-container>
         <div fxFlex="10%" fxLayoutAlign="end center">
             <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
-            <mat-menu #workflowMenu>
-                <ng-container *ngIf="wfIsDeleted">
-                    <button class="menu-item green-color" mat-menu-item (click)="confirmRestoreWorkflow(workflowId)">
-                        <mat-icon svgIcon="restore-icon"></mat-icon>
-                        <span>Restore workflow</span>
-                    </button>
-                </ng-container>
-                <ng-container *ngIf="!wfIsDeleted">
-                    <ng-container *ngIf="individualConsultantActionsAvailable">
-                        <button
-                            class="menu-item green-color"
-                            mat-menu-item
-                            [disabled]="false"
-                            appPreventDoubleClick (throttledClick)="addConsultant()">
-                            <mat-icon svgIcon="add-icon-green"></mat-icon>
-                            Add consultant
-                        </button>
-                    </ng-container>
-                    <button
-                        class="menu-item green-color"
-                        mat-menu-item
-                        [disabled]="false"
-                        appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
-                        <mat-icon svgIcon="change-icon-green"></mat-icon>
-                        Change Workflow Data
-                    </button>
-                    <button
-                        class="menu-item green-color"
-                        mat-menu-item
-                        appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
-                        <mat-icon svgIcon="extend-icon-green"></mat-icon>
-                        Extend Workflow
-                    </button>
-                    <div class="u-w--100 u-h--100" [matTooltip]="terminationExists ? 'Termination already in progress' : ''"
-                        matTooltipClass="white-tooltip">
-                        <button class="menu-item menu-item--terminate" mat-menu-item appPreventDoubleClick
-                            [disabled]="terminationExists"
-                            (throttledClick)="addTermination()">
-                            <mat-icon svgIcon="terminate-icon"></mat-icon>
-                            Terminate Workflow
-                        </button>
-                    </div>
-                    <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(workflowId)">
-                        <mat-icon svgIcon="close-icon"></mat-icon>
-                        <span>Delete workflow</span>
-                    </button>
-                </ng-container>
-            </mat-menu>
         </div>
     </div>
 
     <ng-container *ngIf="topToolbarVisible">
         <div fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
-            <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
-                <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
-                    #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
-                <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
-                    <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
-                        <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
-                        <span>Pending workflow</span>
-                    </button>
-                    <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
-                        <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
-                        <span>Pending - data missing</span>
-                    </button>
-                </mat-menu>
-            </ng-container>
-            <ng-template #readOnlyWorkflowStatusTemplate>
-                <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
-            </ng-template>
-            <span class="workflow-toolbar--client">
-                <span class="text-bold-800 u-mr--10">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</span>
-                <ng-container *ngIf="workflowDirectClientId">
-                    Client ID:
-                    <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowEndClientId ? workflowEndClientId : workflowDirectClientId, clientCrmId: endClientCrmId ? endClientCrmId : directClientCrmId}">
-                        {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}}
-                    </span>
+            <div fxFlex="1 0 40%">
+                <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+                    <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
+                        #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
+                    <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
+                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
+                            <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
+                            <span>Pending workflow</span>
+                        </button>
+                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
+                            <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
+                            <span>Pending - data missing</span>
+                        </button>
+                    </mat-menu>
                 </ng-container>
-                <ng-container *ngIf="workflowEndClientId && workflowDirectClientId">
-                    | via
-                    <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowDirectClientId, clientCrmId: directClientCrmId}">
-                        {{workflowDirectClientId}}
-                    </span>
-                </ng-container>
-            </span>
+                <ng-template #readOnlyWorkflowStatusTemplate>
+                    <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
+                </ng-template>
+                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap">
+                    WF ID: {{workflowSequenceIdCode}}
+                </span>
+                <span class="workflow-toolbar--client">
+                    • <span class="text-bold-800 u-mr--10">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</span>
+                    <ng-container *ngIf="workflowDirectClientId">
+                        Client ID:
+                        <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowEndClientId ? workflowEndClientId : workflowDirectClientId, clientCrmId: endClientCrmId ? endClientCrmId : directClientCrmId}">
+                            {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}}
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="workflowEndClientId && workflowDirectClientId">
+                        | via
+                        <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowDirectClientId, clientCrmId: directClientCrmId}">
+                            {{workflowDirectClientId}}
+                        </span>
+                    </ng-container>
+                </span>
+            </div>
+            <div fxFlex="10%" fxLayoutAlign="end center">
+                <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
+            </div>
         </div>
     </ng-container>
 
@@ -284,3 +244,52 @@
         </ng-container>
     </div>
 </div>
+
+<mat-menu #workflowMenu>
+    <ng-container *ngIf="wfIsDeleted">
+        <button class="menu-item green-color" mat-menu-item (click)="confirmRestoreWorkflow(workflowId)">
+            <mat-icon svgIcon="restore-icon"></mat-icon>
+            <span>Restore workflow</span>
+        </button>
+    </ng-container>
+    <ng-container *ngIf="!wfIsDeleted">
+        <ng-container *ngIf="individualConsultantActionsAvailable">
+            <button
+                class="menu-item green-color"
+                mat-menu-item
+                [disabled]="false"
+                appPreventDoubleClick (throttledClick)="addConsultant()">
+                <mat-icon svgIcon="add-icon-green"></mat-icon>
+                Add consultant
+            </button>
+        </ng-container>
+        <button
+            class="menu-item green-color"
+            mat-menu-item
+            [disabled]="false"
+            appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
+            <mat-icon svgIcon="change-icon-green"></mat-icon>
+            Change Workflow Data
+        </button>
+        <button
+            class="menu-item green-color"
+            mat-menu-item
+            appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
+            <mat-icon svgIcon="extend-icon-green"></mat-icon>
+            Extend Workflow
+        </button>
+        <div class="u-w--100 u-h--100" [matTooltip]="terminationExists ? 'Termination already in progress' : ''"
+            matTooltipClass="white-tooltip">
+            <button class="menu-item menu-item--terminate" mat-menu-item appPreventDoubleClick
+                [disabled]="terminationExists"
+                (throttledClick)="addTermination()">
+                <mat-icon svgIcon="terminate-icon"></mat-icon>
+                Terminate Workflow
+            </button>
+        </div>
+        <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(workflowId)">
+            <mat-icon svgIcon="close-icon"></mat-icon>
+            <span>Delete workflow</span>
+        </button>
+    </ng-container>
+</mat-menu>
