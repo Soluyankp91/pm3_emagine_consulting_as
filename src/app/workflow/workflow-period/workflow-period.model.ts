@@ -335,6 +335,13 @@ export const FinanceSections: SubItemDto[] = [
     }
 ];
 
+export const ConsultantFinanceSections: SubItemDto[] = [
+    {
+        name: 'Consultants',
+        anchor: 'financeConsultants'
+    }
+];
+
 
 export const SalesTerminationSections: SubItemDto[] = [
     {

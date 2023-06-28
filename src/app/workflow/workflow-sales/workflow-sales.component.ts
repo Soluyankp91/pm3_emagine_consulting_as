@@ -229,14 +229,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.StartClientPeriod:
 			case WorkflowProcessType.ChangeClientPeriod:
 			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
 				return (
 					this.clientDataComponent?.salesClientDataForm.valid &&
 					this.mainDataComponent?.salesMainDataForm.valid &&
 					this.consutlantDataComponent?.consultantsForm.valid
 				);
+            case WorkflowProcessType.StartConsultantPeriod:
+			case WorkflowProcessType.ChangeConsultantPeriod:
+			case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.mainDataComponent?.salesMainDataForm.valid &&
+                this.consutlantDataComponent?.consultantsForm.valid;
 			case WorkflowProcessType.TerminateWorkflow:
 			case WorkflowProcessType.TerminateConsultant:
 				return this.salesTerminateConsultantForm.valid;
