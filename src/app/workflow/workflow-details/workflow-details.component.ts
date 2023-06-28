@@ -439,7 +439,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
                 this.showNotify(NotifySeverity.Success, 'Workflow has been deleted');
-                this._getTopLevelMenu()
+                this._getTopLevelMenu();
+                this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
             });
 	}
 
@@ -468,7 +469,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
                 this.showNotify(NotifySeverity.Success, 'Workflow has been restored');
-                this._getTopLevelMenu()
+                this._getTopLevelMenu();
+                this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
             });
 	}
 

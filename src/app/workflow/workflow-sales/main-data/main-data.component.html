@@ -32,7 +32,7 @@
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                     <h1 class="workflow-section--header-main">Main data</h1>
-                    <ng-container *ngIf="readOnlyMode">
+                    <ng-container *ngIf="readOnlyMode && !isWFDeleted">
                         <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" [canReopen]="permissionsForCurrentUser!['Reopen']" [showReturnToSales]="true" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></toggle-edit-mode>
                     </ng-container>
                 </div>

@@ -1,7 +1,7 @@
 <div class="workflow-sales">
     <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
         <app-main-data #mainDataComponent [periodId]="periodId" [readOnlyMode]="readOnlyMode" [editEnabledForcefuly]="editEnabledForcefuly"
-            [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
+            [isCompleted]="isCompleted" [isWFDeleted]="isWFDeleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
             [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></app-main-data>
         <app-client-data [hidden]="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod)" #clientDataComponent [periodId]="periodId" [readOnlyMode]="readOnlyMode" [mainDataForm]="mainDataComponent?.salesMainDataForm" [isContractModuleEnabled]="isContractModuleEnabled" [clientSpecialRateList]="clientSpecialRateList" [clientSpecialFeeList]="clientSpecialFeeList" (clientPeriodDatesChanged)="clientPeriodDatesChanged()" (onDirectClientSelected)="directClientSelected($event)">
         </app-client-data>
@@ -17,7 +17,7 @@
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="salesTerminationData">
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                     <h1 class="workflow-section--header-main">Termination data</h1>
-                    <ng-container *ngIf="readOnlyMode">
+                    <ng-container *ngIf="readOnlyMode && !isWFDeleted">
                         <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" [canReopen]="permissionsForCurrentUser!['Reopen']" [showReturnToSales]="true" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></toggle-edit-mode>
                     </ng-container>
                 </div>

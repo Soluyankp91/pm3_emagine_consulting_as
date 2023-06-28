@@ -68,6 +68,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 	clientPeriods: ClientPeriodDto[];
 	typeId: number;
 	topNavChanged = false;
+    isWFDeleted: boolean;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -303,6 +304,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 			.clientPeriods(this.workflowId, this.periodId, true)
 			.subscribe((result) => {
 				this.clientPeriods = result?.clientPeriods;
+                this.isWFDeleted = result.isDeleted;
 				this.sideMenuItems = result?.clientPeriods![0]?.workflowProcesses!.map((side) => {
                     return new WorkflowProcessWithAnchorsDto({
                         typeId: side.typeId!,

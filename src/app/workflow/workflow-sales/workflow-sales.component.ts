@@ -78,6 +78,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
 	@Input() isCompleted: boolean;
 	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
+    @Input() isWFDeleted: boolean;
 
 	editEnabledForcefuly = false;
 	workflowSideSections = WorkflowProcessType;
