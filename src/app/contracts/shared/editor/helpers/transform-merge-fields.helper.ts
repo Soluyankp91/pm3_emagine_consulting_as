@@ -1,4 +1,5 @@
-import { MailMergeTabCommandId, RichEdit } from 'devexpress-richedit';
+import { RichEdit } from 'devexpress-richedit';
+import { asyncScheduler } from 'rxjs';
 
 export namespace TransformMergeFiels {
 	type Paragraph = {
@@ -77,7 +78,14 @@ export namespace TransformMergeFiels {
 			}
 		}
 
-		rich.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+        rich.document.subDocuments.forEach((subDocument) => {
+            asyncScheduler.schedule(() => {
+                subDocument.fields.updateAllFields(() => {}, {
+                    updateTocFields: false,
+                    doInAllSubDocuments: false,
+                });
+            }, 0);
+        });
 
 		rich.history.endTransaction();
 		rich.endUpdate();

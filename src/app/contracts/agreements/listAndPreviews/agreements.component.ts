@@ -44,8 +44,8 @@ import {
 	INVALID_REMINDER_MESSAGE,
 	SEND_REMINDER_CONFIRMATION_MESSAGE,
 	SEND_REMINDER_SUCCESS_MESSAGE,
-} from '../../shared/components/grid-table/agreements/entities/agreements.constants';
-import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
+} from '../../../shared/components/grid-table/agreements/entities/agreements.constants';
+import { ITableConfig } from '../../../shared/components/grid-table/mat-grid.interfaces';
 import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
 import { AgreementFiltersEnum, MappedAgreementTableItem, MappedTableCells } from '../../shared/entities/contracts.interfaces';
 import { ContractsService } from '../../shared/services/contracts.service';

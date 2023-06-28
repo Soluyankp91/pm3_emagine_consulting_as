@@ -1,7 +1,7 @@
 import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { take, filter } from 'rxjs/operators';
 import {
 	CommandId,
@@ -180,7 +180,7 @@ export class EditorCoreService {
 	insertComments(comments: Array<AgreementCommentDto>) {
 		this._commentService.applyComments(comments as any);
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.document.fields.updateAllFields();
+			this._updateAllMergeFields();
 		});
 	}
 
@@ -205,7 +205,7 @@ export class EditorCoreService {
 
 	toggleFields(showResult: boolean = true) {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+            this._updateAllMergeFields();
 			if (showResult) {
 				this.showAllFieldResults();
 			} else {
@@ -230,7 +230,7 @@ export class EditorCoreService {
 
 	showAllFieldResults() {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
 			this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldResults);
 		});
 	}
@@ -667,6 +667,19 @@ export class EditorCoreService {
 		this._skipTrackChanges = false;
 		this.hasUnsavedChanges$.next(false);
 	}
+
+	private _updateAllMergeFields(): void {
+        this.editor.document.subDocuments.forEach((subDocument) => {
+            asyncScheduler.schedule(() => {
+                this._runTaskAsyncAndSkipTrackChanges(() => {
+                    subDocument.fields.updateAllFields(() => {}, {
+                        updateTocFields: false,
+                        doInAllSubDocuments: false,
+                    });
+                });
+            }, 0);
+        });
+    }
 
 	static mergeFieldValueIsEmpty(value: string): boolean {
 		const pattern = /^<<.*>>$/;

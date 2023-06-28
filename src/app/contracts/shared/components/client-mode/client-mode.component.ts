@@ -1,6 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { MODE_FILTER_OPTIONS } from 'src/app/shared/components/grid-table/client-templates/entities/client-template.constants';
 import { AgreementTemplateParentChildLinkState } from 'src/shared/service-proxies/service-proxies';
-import { MODE_FILTER_OPTIONS } from '../grid-table/client-templates/entities/client-template.constants';
 
 @Component({
 	selector: 'emg-client-template-mode',

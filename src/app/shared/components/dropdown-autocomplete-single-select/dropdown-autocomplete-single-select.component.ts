@@ -12,12 +12,14 @@ import {
 	ChangeDetectorRef,
 } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
-import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
+
 import { Item } from './entities/interfaces';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged, debounceTime } from 'rxjs/operators';
-import { RequiredValidator } from '../../validators/customRequireValidator';
+
 import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { SingleAutoErrorStateMatcher } from 'src/app/contracts/shared/matchers/customMatcher';
+import { RequiredValidator } from 'src/app/contracts/shared/validators/customRequireValidator';
 
 @Component({
 	selector: 'emg-dropdown-autocomplete-single-select',

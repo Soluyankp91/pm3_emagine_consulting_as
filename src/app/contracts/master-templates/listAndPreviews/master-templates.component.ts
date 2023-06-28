@@ -1,4 +1,4 @@
-import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
+import { ITableConfig } from '../../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
 import {
 	Component,
@@ -20,7 +20,7 @@ import {
 	DISPLAYED_COLUMNS,
 	MASTER_TEMPLATE_ACTIONS,
 	MASTER_TEMPLATE_HEADER_CELLS,
-} from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
+} from '../../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
