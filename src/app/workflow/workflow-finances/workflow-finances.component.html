@@ -79,7 +79,7 @@
                 <div class="workflow-finances--block">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="financeConsultants">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                            <span class="workflow-section--number">2</span>
+                            <span class="workflow-section--number">{{activeSideSection.typeId === workflowSideSections.StartConsultantPeriod ? '1' : '2'}}</span>
                             <h2 class="workflow-section--header">Consultants</h2>
                         </div>
                         <div class="workflow-section--content">

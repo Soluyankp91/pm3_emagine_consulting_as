@@ -3,7 +3,12 @@
         *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startPeriodTemplate">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100"
             id="salesMainDataAnchor">
-            <h1 class="workflow-section--header-main">Main data</h1>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                <h1 class="workflow-section--header-main">Main data</h1>
+                <ng-container *ngIf="readOnlyMode && !isWFDeleted">
+                    <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" [canReopen]="permissionsForCurrentUser!['Reopen']" [showReturnToSales]="true" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></toggle-edit-mode>
+                </ng-container>
+            </div>
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
                 <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding  form-width-564"
                     [ngClass]="{'disabled-input': readOnlyMode}">
@@ -32,7 +37,7 @@
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                 <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
                     <h1 class="workflow-section--header-main">Main data</h1>
-                    <ng-container *ngIf="readOnlyMode">
+                    <ng-container *ngIf="readOnlyMode && !isWFDeleted">
                         <toggle-edit-mode [canToggleEditMode]="canToggleEditMode" [canReopen]="permissionsForCurrentUser!['Reopen']" [showReturnToSales]="true" (editModeToggled)="toggleEditMode()" (onReturnToSales)="returnToSales()"></toggle-edit-mode>
                     </ng-container>
                 </div>

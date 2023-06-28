@@ -40,6 +40,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	@Input() canToggleEditMode: boolean;
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
 	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
+    @Input() isWFDeleted: boolean;
 	@Output() editModeToggled = new EventEmitter<any>();
 	@Output() onReturnToSales = new EventEmitter<any>();
 

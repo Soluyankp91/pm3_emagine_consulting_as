@@ -74,10 +74,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
+	@Input() consultantPeriodId: string | undefined;
 	@Input() consultant: ConsultantResultDto;
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
 	@Input() isCompleted: boolean;
 	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
+    @Input() isWFDeleted: boolean;
 
 	editEnabledForcefuly = false;
 	workflowSideSections = WorkflowProcessType;
@@ -228,14 +230,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.StartClientPeriod:
 			case WorkflowProcessType.ChangeClientPeriod:
 			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
 				return (
 					this.clientDataComponent?.salesClientDataForm.valid &&
 					this.mainDataComponent?.salesMainDataForm.valid &&
 					this.consutlantDataComponent?.consultantsForm.valid
 				);
+            case WorkflowProcessType.StartConsultantPeriod:
+			case WorkflowProcessType.ChangeConsultantPeriod:
+			case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.mainDataComponent?.salesMainDataForm.valid &&
+                this.consutlantDataComponent?.consultantsForm.valid;
 			case WorkflowProcessType.TerminateWorkflow:
 			case WorkflowProcessType.TerminateConsultant:
 				return this.salesTerminateConsultantForm.valid;
@@ -1307,7 +1311,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.ExtendConsultantPeriod:
 				this.showMainSpinner();
 				this._consultantPeriodSerivce
-					.reopen2(this.periodId!)
+					.reopen2(this.consultantPeriodId!)
 					.pipe(
 						finalize(() => {
 							this.hideMainSpinner();

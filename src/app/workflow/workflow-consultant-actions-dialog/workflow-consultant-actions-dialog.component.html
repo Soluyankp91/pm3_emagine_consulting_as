@@ -48,6 +48,7 @@
                         <mat-label>End date</mat-label>
                         <input autocomplete="off" matInput
                                 [matDatepicker]="endDatePicker"
+                                [min]="minEndDate"
                                 name="clientExtensionEndDate" [formControl]="endDate"
                                 (focus)="endDatePicker.open()"
                                 appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>

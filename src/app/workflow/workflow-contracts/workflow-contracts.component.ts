@@ -192,11 +192,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
 	validateContractForm() {
 		this.mainDataComponent?.submitForm();
-		this.clientDataComponent?.submitForm();
 		this.consultantDataComponent?.submitForm();
 		this.submitTerminationConsultantForm();
 		this.mainDataComponent?.contractsMainForm.markAllAsTouched();
-		this.clientDataComponent?.contractClientForm.markAllAsTouched();
 		this.syncDataComponent?.contractsSyncDataForm.markAllAsTouched();
 		this.consultantDataComponent?.contractsConsultantsDataForm.markAllAsTouched();
 		this.contractsTerminationConsultantForm.markAllAsTouched();
@@ -205,12 +203,25 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 			case WorkflowProcessType.StartClientPeriod:
 			case WorkflowProcessType.ChangeClientPeriod:
 			case WorkflowProcessType.ExtendClientPeriod:
-			case WorkflowProcessType.StartConsultantPeriod:
-			case WorkflowProcessType.ChangeConsultantPeriod:
-			case WorkflowProcessType.ExtendConsultantPeriod:
+                this.clientDataComponent?.submitForm();
+		        this.clientDataComponent?.contractClientForm.markAllAsTouched();
 				return (
 					this.mainDataComponent?.contractsMainForm.valid &&
 					this.clientDataComponent?.contractClientForm.valid &&
+					this.syncDataComponent?.contractsSyncDataForm.valid &&
+					this.consultantDataComponent?.contractsConsultantsDataForm.valid &&
+					(this.syncDataComponent?.statusAfterSync ||
+						(this.syncDataComponent?.contractsSyncDataForm.showManualOption?.value &&
+							this.syncDataComponent?.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value) ||
+						(!this.syncDataComponent?.contractsSyncDataForm.value.isNewSyncNeeded &&
+							this.syncDataComponent?.contractsSyncDataForm.value.lastSyncedDate !== null &&
+							this.syncDataComponent?.contractsSyncDataForm.value.lastSyncedDate !== undefined))
+				);
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return (
+					this.mainDataComponent?.contractsMainForm.valid &&
 					this.syncDataComponent?.contractsSyncDataForm.valid &&
 					this.consultantDataComponent?.contractsConsultantsDataForm.valid &&
 					(this.syncDataComponent?.statusAfterSync ||

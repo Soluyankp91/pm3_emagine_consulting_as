@@ -42,23 +42,16 @@ export class ManagerTeamComponent implements OnInit {
 		}
 		const node = this.teamsAndDivisionsTree.nodes[id];
 		let secondLvlNode: TeamsAndDivisionsNodeModel;
-		let thirdLvlNode: TeamsAndDivisionsNodeModel;
 		if (node.parentId === null) {
-			this.managerTeam.tenant = node.name;
-            this.managerTeam.label = 'Tenant';
+			this.managerTeam.tenant = ETenantNames[node.tenant];
+			this.managerTeam.division = node.name;
+            this.managerTeam.label = 'Division';
 		} else {
 			secondLvlNode = this._findParentNode(node.parentId);
-			if (secondLvlNode.parentId === null) {
-				this.managerTeam.tenant = secondLvlNode?.name;
-				this.managerTeam.division = node?.name;
-                this.managerTeam.label = 'Division';
-			} else {
-				thirdLvlNode = this._findParentNode(secondLvlNode?.parentId);
-				this.managerTeam.tenant = thirdLvlNode?.name;
-				this.managerTeam.division = secondLvlNode?.name;
-				this.managerTeam.team = node?.name;
-                this.managerTeam.label = 'Team';
-			}
+            this.managerTeam.tenant = ETenantNames[secondLvlNode?.tenant];
+            this.managerTeam.division = secondLvlNode?.name;
+            this.managerTeam.team = node?.name;
+            this.managerTeam.label = 'Team';
 		}
 	}
 
