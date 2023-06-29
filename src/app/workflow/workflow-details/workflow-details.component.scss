@@ -59,7 +59,10 @@
             }
         }
         &--request {
-            color: $light-grey-color;
+            color: $medium-grey-color;
+            &:hover {
+                color: $green-color;
+            }
         }
     }
 
