@@ -108,20 +108,19 @@ export class CommentService {
 	}
 
 	deleteHighlight(entityID: number) {
+        const predicate = (rb: RunBase) => rb[TEXT_HIGHLIGHT_FIELD] && rb[TEXT_HIGHLIGHT_FIELD] === entityID;
+        let textRuns = this._editorTextRuns.filter(predicate);
+        textRuns.forEach((textRun) => {
+            let interval = intervalFactory(textRun.startOffset, textRun.getLength());
+            this._applyHighlightStyle(interval, TEXT_HIGHLIGHT_INITIAL_COLOR);
+            Reflect.deleteProperty(textRun, TEXT_HIGHLIGHT_FIELD);
+        });
 		this.setState((state) => ({
 			interval: null,
 			selected: [],
 			comments: state.comments.filter((c) => c.id !== entityID),
 			highlights: state.highlights.filter((hl) => hl.id !== entityID),
 		}));
-		const predicate = (rb: RunBase) => rb[TEXT_HIGHLIGHT_FIELD] && rb[TEXT_HIGHLIGHT_FIELD] === entityID;
-		let textRuns = this._editorTextRuns.filter(predicate);
-		if (!textRuns.length) return;
-		textRuns.forEach((textRun) => {
-			let interval = intervalFactory(textRun.startOffset, textRun.getLength());
-			this._applyHighlightStyle(interval, TEXT_HIGHLIGHT_INITIAL_COLOR);
-			Reflect.deleteProperty(textRun, TEXT_HIGHLIGHT_FIELD);
-		});
 	}
 
 	applyCommentChanges(commentID: number, text: string) {
