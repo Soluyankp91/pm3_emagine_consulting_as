@@ -1,11 +1,11 @@
 @import "/src/app/shared/styles/config/_mixins";
-
 .full-height {
     height: 100%;
 }
 
 html {
     box-sizing: border-box;
+    @include scrollbar;
 }
 
 *,

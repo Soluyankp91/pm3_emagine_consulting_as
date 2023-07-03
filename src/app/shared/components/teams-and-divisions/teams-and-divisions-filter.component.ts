@@ -10,6 +10,7 @@ import { camelCase, cloneDeep, isEmpty } from 'lodash';
 // import { FiltersEventTypes } from '@features/common/search-filters/shared/entities/search-filters.constants';
 import { IDivisionsAndTeamsFilterState, IDivisionsAndTeamsTreeNode, ITenant, TENANTS_OPTIONS_LOOKUP, TENANT_ID_LOOKUP } from './teams-and-divisions.entities';
 import { LookupServiceProxy, TeamsAndDivisionsTree } from 'src/shared/service-proxies/service-proxies';
+import { AppConsts } from 'src/shared/AppConsts';
 
 @Component({
 	selector: 'teams-and-divisions-filter',
@@ -171,12 +172,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 			this.valueControl.setValue([], { emitEvent: false });
 			return;
 		}
-
-		const parentIds = Object.keys(divisionsAndTeams.parentNodeIdToChildIdsMap).map((id) => +id);
-		const divisionsAndTeamsTree = this._mapDivisionsAndTeamsNodesToTreeView(parentIds);
-        console.log({divisionsAndTeamsTree})
-
-		this.divisionsAndTeamsWithTenantsTree = this._bindDivisionsToTenants(divisionsAndTeamsTree);
+        this.divisionsAndTeamsWithTenantsTree = this._bindDivisionsToTenants();
 		this.divisionsAndTeamsWithTenantsTree.forEach((node) => this._selectNodesWithSelectedChildren(node));
 
 		this.valueControl.setValue(this.divisionsAndTeamsWithTenantsTree, { emitEvent: false });
@@ -193,6 +189,9 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 	}
 
 	private _mapDivisionsAndTeamsNodesToTreeView(nodeIds: number[]): IDivisionsAndTeamsTreeNode[] {
+        if (nodeIds === null || nodeIds === undefined) {
+            return [];
+        }
 		return nodeIds.reduce((acc: IDivisionsAndTeamsTreeNode[], nodeId: number) => {
 			if (this._handledDivisionsAndTeamsNodes.has(nodeId)) {
 				return acc;
@@ -215,21 +214,17 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 		}, []);
 	}
 
-	private _bindDivisionsToTenants(divisionsAndTeamsTree: IDivisionsAndTeamsTreeNode[]): IDivisionsAndTeamsTreeNode[] {
+
+	private _bindDivisionsToTenants(): IDivisionsAndTeamsTreeNode[] {
 		const { tenantToChildIdsMap } = this._divisionsAndTeamsResponse$.getValue();
-		const tenantNamesWithDivisions = Object.entries(tenantToChildIdsMap);
-
-		return tenantNamesWithDivisions.map((tenantWithDivisions: [string, number[]]) => {
-			const [tenantKey, divisionIds] = tenantWithDivisions;
-			const tenantDivisions = divisionsAndTeamsTree.filter((divisionNode) => divisionIds.includes(divisionNode.id));
-			const tenantId = TENANT_ID_LOOKUP[camelCase(tenantKey)];
-
-			const tenantName = TENANTS_OPTIONS_LOOKUP.find((tenant: ITenant) => tenant.id === tenantId).name;
-
+        return AppConsts.TENANT_LIST.map((tenantName: string) => {
+			const tenantDivisions = tenantToChildIdsMap[tenantName];
+            const tenantDivisionsAndTeams = this._mapDivisionsAndTeamsNodesToTreeView(tenantDivisions)
+			const tenantId = TENANT_ID_LOOKUP[camelCase(tenantName)];
 			return {
 				id: tenantId,
 				name: tenantName,
-				children: tenantDivisions,
+				children: tenantDivisionsAndTeams,
 				isTenant: true,
 				selected: this._divisionsAndTeamsFilterState?.tenantIds.includes(`'${tenantId}'`),
 			};

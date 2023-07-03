@@ -42,4 +42,16 @@ export class AppConsts {
 		[29, 'in'],
 		[20, 'gb'],
 	]);
+    static readonly TENANT_LIST = [
+        'Denmark',
+        'Sweden',
+        'Poland',
+        'Netherlands',
+        'Germany',
+        'Norway',
+        'International',
+        'France',
+        'India',
+        'UnitedKingdom',
+    ]
 }
