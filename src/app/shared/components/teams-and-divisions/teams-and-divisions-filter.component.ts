@@ -140,7 +140,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 			tenantIds: selectedEmptyTenantsIds,
 			divisionIds: selectedDivisionsIds,
 		};
-	}en
+	}
 
 	private _selectNodesWithSelectedChildren = (node: IDivisionsAndTeamsTreeNode): void => {
 		if (isEmpty(node.children)) {
