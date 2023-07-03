@@ -10,8 +10,8 @@ import { AppConsts } from 'src/shared/AppConsts';
 			<span
 				[id]="testingId"
 				[matTooltip]="tooltip"
-				class="h-6 w-6 bg-cover rounded-full border border-solid border-emagineBg-gray fi
-                    fi-{{ countryCode | lowercase }}"
+				class="h-6 w-6 bg-cover border-rounded-50 border-solid border-emagineBg-gray fi
+                    fi-{{ countryCode | lowercase }} fis"
 			>
 			</span>
 		</ng-template>

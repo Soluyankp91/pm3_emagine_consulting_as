@@ -37,6 +37,7 @@ import {
 	getStatusIcon,
 	getWorkflowStatus,
 	ISelectableIdNameDto,
+	IWorkflowGridPayload,
 	MapSortingValues,
 	MultiSortList,
 	SelectableEmployeeDto,
@@ -387,16 +388,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	getWorkflowList(filterChanged?: boolean) {
-		let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
-		let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
-		let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
-		let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
-		let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
-		let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
-		let ownerIds = this.selectedAccountManagers.map((x) => +x.id);
-		let selectedPendingStepType = this.pendingStepType === 0 ? undefined : this.pendingStepType;
-		let selectedUpcomingStepType = this.upcomingStepType === 0 ? undefined : this.upcomingStepType;
-
+		// let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
+		// let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
+		// let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
+		// let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
+		// let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
+		// let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
+		// let ownerIds = this.selectedAccountManagers.map((x) => +x.id);
+		// let selectedPendingStepType = this.pendingStepType === 0 ? undefined : this.pendingStepType;
+		// let selectedUpcomingStepType = this.upcomingStepType === 0 ? undefined : this.upcomingStepType;
 		if (this.workflowListSubscription) {
 			this.workflowListSubscription.unsubscribe();
 		}
@@ -405,29 +405,32 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.pageNumber = 1;
 		}
 
+        const payload = this._packGridPayload();
+
 		this.workflowListSubscription = this._workflowService
 			.workflow(
-				invoicingEntity,
-				paymentEntity,
-				salesType,
-				deliveryTypes,
-				workflowStatus,
-				ownerIds,
-                undefined, // teams and division
-				this.selectedSyncStateStatuses?.map((x) => x.id),
-				this.showOnlyWorkflowsWithNewSales,
-				this.showOnlyWorkflowsWithExtensions,
-				this.showPendingSteps,
-				selectedPendingStepType !== null ? selectedPendingStepType : undefined,
-				this.showUpcomingSteps,
-				selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
-				this.includeTerminated,
-				this.includeDeleted,
-				this.showPONumberMissing,
-				searchFilter,
-				this.pageNumber,
-				this.deafultPageSize,
-				this.sorting
+				payload.invoicingEntity,
+                payload.paymentEntity,
+                payload.salesType,
+                payload.deliveryType,
+                payload.workflowStatus,
+                payload.responsibleEmployees,
+                payload.employeesTeamsAndDivisionsNodes,
+                payload.employeesTenants,
+                payload.syncStateStatuses,
+                payload.showNewSales,
+                payload.showExtensions,
+                payload.showPendingSteps,
+                payload.showPendingStepType,
+                payload.showUpcomingSteps,
+                payload.showUpcomingStepType,
+                payload.showCompleted,
+                payload.showDeleted,
+                payload.showWorkflowsWithProjectLinesMarkedAsPoMissing,
+                payload.search,
+                payload.pageNumber,
+                payload.pageSize,
+                payload.sort
 			)
 			.pipe(
 				finalize(() => {
@@ -628,4 +631,40 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.workflowStatuses = this.getStaticEnumValue('workflowStatuses');
 		this.syncStateStatuses = this.toArray(this.getStaticEnumValue('syncStateStatuses'));
 	}
+
+    private _packGridPayload(): IWorkflowGridPayload {
+        let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
+		let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
+		let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
+		let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
+		let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
+		let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
+		let ownerIds = this.selectedAccountManagers.map((x) => +x.id);
+		let selectedPendingStepType = this.pendingStepType === 0 ? undefined : this.pendingStepType;
+		let selectedUpcomingStepType = this.upcomingStepType === 0 ? undefined : this.upcomingStepType;
+        return {
+            invoicingEntity: invoicingEntity,
+            paymentEntity: paymentEntity,
+            salesType: salesType,
+            deliveryType: deliveryTypes,
+            workflowStatus: workflowStatus,
+            responsibleEmployees: ownerIds,
+            employeesTeamsAndDivisionsNodes: [],
+            employeesTenants: [],
+            syncStateStatuses: this.selectedSyncStateStatuses?.map((x) => x.id),
+            showNewSales: this.showOnlyWorkflowsWithNewSales,
+            showExtensions: this.showOnlyWorkflowsWithExtensions,
+            showPendingSteps: this.showPendingSteps,
+            showPendingStepType: selectedPendingStepType !== null ? selectedPendingStepType : undefined,
+            showUpcomingSteps: this.showUpcomingSteps,
+            showUpcomingStepType: selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
+            showCompleted: this.includeTerminated,
+            showDeleted: this.includeDeleted,
+            showWorkflowsWithProjectLinesMarkedAsPoMissing: this.showPONumberMissing,
+            search: searchFilter,
+            pageNumber: this.pageNumber,
+            pageSize: this.deafultPageSize,
+            sort: this.sorting,
+        } as IWorkflowGridPayload;
+    }
 }

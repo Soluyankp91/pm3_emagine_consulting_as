@@ -1,7 +1,7 @@
 export interface IDivisionsAndTeamsFilterState {
 	teamsIds: number[];
 	divisionIds: number[];
-	tenantIds: string[];
+	tenantIds: number[];
 }
 
 export interface IDivisionsAndTeamsTreeNode {

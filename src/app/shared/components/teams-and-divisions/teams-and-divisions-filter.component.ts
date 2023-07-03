@@ -1,14 +1,24 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	EventEmitter,
+	Input,
+	OnDestroy,
+	OnInit,
+	Output,
+	inject,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { debounceTime, takeUntil, take, tap, filter, finalize } from 'rxjs/operators';
-import { camelCase, cloneDeep, isEmpty } from 'lodash';
-// import { IRequestHubSearchFilters } from '@features/common/search-filters/shared/entities/search-filters.entities';
-// import { ITenant, TENANTS_OPTIONS_LOOKUP, TENANT_ID_LOOKUP } from '@core/lookups/mocked-lookups/tenants';
-// import { SEARCH_FILTER_SERVICE_TOKEN } from '@features/common/search-filters/shared/services/search-filters-service-factory';
-// import { RequestHubSearchFiltersService } from '@features/common/search-filters/shared/services/request-hub-search-filters.service';
-// import { FiltersEventTypes } from '@features/common/search-filters/shared/entities/search-filters.constants';
-import { IDivisionsAndTeamsFilterState, IDivisionsAndTeamsTreeNode, ITenant, TENANTS_OPTIONS_LOOKUP, TENANT_ID_LOOKUP } from './teams-and-divisions.entities';
+import { debounceTime, takeUntil, take, filter, finalize } from 'rxjs/operators';
+import { camelCase, isEmpty } from 'lodash';
+import {
+	IDivisionsAndTeamsFilterState,
+	IDivisionsAndTeamsTreeNode,
+	ITenant,
+	TENANTS_OPTIONS_LOOKUP,
+	TENANT_ID_LOOKUP,
+} from './teams-and-divisions.entities';
 import { LookupServiceProxy, TeamsAndDivisionsTree } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
 
@@ -18,22 +28,20 @@ import { AppConsts } from 'src/shared/AppConsts';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
-	@HostBinding('class') class = 'relative';
-
 	@Input() selectedCount: number;
+	@Input() initialSelection: IDivisionsAndTeamsFilterState;
+	@Output() filterChanged = new EventEmitter<IDivisionsAndTeamsFilterState>();
 
-	private _divisionsAndTeamsResponse$ = new BehaviorSubject<TeamsAndDivisionsTree>(null);
 	selectedDivisionsAndTeamsCount$: Observable<number>;
 
 	divisionsAndTeamsWithTenantsTree: IDivisionsAndTeamsTreeNode[];
 
 	valueControl = new FormControl<IDivisionsAndTeamsTreeNode[] | null>(null);
 
+	private _divisionsAndTeamsResponse$ = new BehaviorSubject<TeamsAndDivisionsTree>(null);
 	private _divisionsAndTeamsFilterState: IDivisionsAndTeamsFilterState;
 	private _handledDivisionsAndTeamsNodes = new Set<number>();
-
 	private _divisionsAndTeamsServiceProxy = inject(LookupServiceProxy);
-	// private _searchFilterService = inject<RequestHubSearchFiltersService>(SEARCH_FILTER_SERVICE_TOKEN);
 
 	isOpened$ = new BehaviorSubject(false);
 	isLoading$ = new BehaviorSubject(false);
@@ -41,7 +49,6 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 	private readonly _unsubscribe$ = new Subject<void>();
 
 	ngOnInit(): void {
-		this._subscribeToFilterEvents();
 		this._subscribeToValueControl();
 		this._subscribeToDivisionsAndTeamsResponse();
 
@@ -73,44 +80,15 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 		this.valueControl.valueChanges
 			.pipe(debounceTime(100), takeUntil(this._unsubscribe$))
 			.subscribe((divisionsAndTeams: IDivisionsAndTeamsTreeNode[]) => {
-                console.log(divisionsAndTeams);
-				// const currentState = cloneDeep(this._searchFilterService.filtersState);
 				const newFilterState = this._receiveSelectedNodesFromTree(divisionsAndTeams);
-                console.log(newFilterState);
-
-				// const updatedState = { ...currentState, divisionsAndTeams: newFilterState };
-
-				// this._searchFilterService.setFiltersState(updatedState);
+				this.filterChanged.emit(newFilterState);
 			});
 	}
 
-	private _subscribeToFilterEvents(): void {
-		// this._searchFilterService.emittedFiltersEvent$
-		// 	.pipe(
-		// 		tap((eventType: FiltersEventTypes) => {
-		// 			if (eventType === FiltersEventTypes.Clear) {
-		// 				this.reset();
-		// 			}
-		// 			if (eventType === FiltersEventTypes.Prefill) {
-		// 				this._prefill();
-		// 			}
-		// 		}),
-		// 		takeUntil(this._unsubscribe$),
-		// 	)
-		// 	.subscribe();
-	}
-
 	private _prefill(): void {
-		const { divisionsAndTeams } = {
-            divisionsAndTeams: {
-                teamsIds: [],
-                divisionIds: [],
-                tenantIds: []
-            }
-        };
 		const teamsAndDivisionResponse = this._divisionsAndTeamsResponse$.getValue();
 
-		this._divisionsAndTeamsFilterState = divisionsAndTeams;
+		this._divisionsAndTeamsFilterState = this.initialSelection;
 
 		if (!isEmpty(teamsAndDivisionResponse)) {
 			this._fillTreeViewControl(teamsAndDivisionResponse);
@@ -123,7 +101,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 	private _receiveSelectedNodesFromTree(divisionsAndTeams: IDivisionsAndTeamsTreeNode[]): IDivisionsAndTeamsFilterState {
 		const selectedEmptyTenantsIds = (divisionsAndTeams || [])
 			.filter((tenant: IDivisionsAndTeamsTreeNode) => isEmpty(tenant.children) && tenant.selected)
-			.map((tenant: IDivisionsAndTeamsTreeNode) => `'${tenant.id}'`);
+			.map((tenant: IDivisionsAndTeamsTreeNode) => tenant.id);
 
 		const divisions = (divisionsAndTeams || []).flatMap((tenant: IDivisionsAndTeamsTreeNode) => tenant.children);
 		const teams = divisions.flatMap((division: IDivisionsAndTeamsTreeNode) => division.children).filter(Boolean);
@@ -162,7 +140,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 			.teamsAndDivisionsTree()
 			.pipe(
 				takeUntil(this._unsubscribe$),
-				finalize(() => this.isLoading$.next(false)),
+				finalize(() => this.isLoading$.next(false))
 			)
 			.subscribe((res: TeamsAndDivisionsTree) => this._divisionsAndTeamsResponse$.next(res));
 	}
@@ -172,7 +150,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 			this.valueControl.setValue([], { emitEvent: false });
 			return;
 		}
-        this.divisionsAndTeamsWithTenantsTree = this._bindDivisionsToTenants();
+		this.divisionsAndTeamsWithTenantsTree = this._bindDivisionsToTenants();
 		this.divisionsAndTeamsWithTenantsTree.forEach((node) => this._selectNodesWithSelectedChildren(node));
 
 		this.valueControl.setValue(this.divisionsAndTeamsWithTenantsTree, { emitEvent: false });
@@ -189,9 +167,9 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 	}
 
 	private _mapDivisionsAndTeamsNodesToTreeView(nodeIds: number[]): IDivisionsAndTeamsTreeNode[] {
-        if (nodeIds === null || nodeIds === undefined) {
-            return [];
-        }
+		if (nodeIds === null || nodeIds === undefined) {
+			return [];
+		}
 		return nodeIds.reduce((acc: IDivisionsAndTeamsTreeNode[], nodeId: number) => {
 			if (this._handledDivisionsAndTeamsNodes.has(nodeId)) {
 				return acc;
@@ -200,10 +178,11 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 			this._handledDivisionsAndTeamsNodes.add(nodeId);
 
 			const { parentNodeIdToChildIdsMap, nodes } = this._divisionsAndTeamsResponse$.getValue();
-
+			const selectedTeamsIds = this._divisionsAndTeamsFilterState?.teamsIds || [];
+			const selectedDivisionsIds = this._divisionsAndTeamsFilterState?.divisionIds || [];
 			acc.push({
 				...nodes[nodeId],
-				selected: this._divisionsAndTeamsFilterState?.teamsIds.includes(nodeId),
+				selected: selectedTeamsIds.includes(nodeId) || selectedDivisionsIds.includes(nodeId),
 				children:
 					nodeId in parentNodeIdToChildIdsMap
 						? this._mapDivisionsAndTeamsNodesToTreeView(parentNodeIdToChildIdsMap[nodeId])
@@ -214,19 +193,19 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 		}, []);
 	}
 
-
 	private _bindDivisionsToTenants(): IDivisionsAndTeamsTreeNode[] {
 		const { tenantToChildIdsMap } = this._divisionsAndTeamsResponse$.getValue();
-        return AppConsts.TENANT_LIST.map((tenantName: string) => {
+		return AppConsts.TENANT_LIST.map((tenantName: string) => {
 			const tenantDivisions = tenantToChildIdsMap[tenantName];
-            const tenantDivisionsAndTeams = this._mapDivisionsAndTeamsNodesToTreeView(tenantDivisions)
+			const tenantDivisionsAndTeams = this._mapDivisionsAndTeamsNodesToTreeView(tenantDivisions);
 			const tenantId = TENANT_ID_LOOKUP[camelCase(tenantName)];
+			const tenant = TENANTS_OPTIONS_LOOKUP.find((t: ITenant) => t.id === tenantId);
 			return {
 				id: tenantId,
-				name: tenantName,
+				name: tenant.name,
 				children: tenantDivisionsAndTeams,
 				isTenant: true,
-				selected: this._divisionsAndTeamsFilterState?.tenantIds.includes(`'${tenantId}'`),
+				selected: this._divisionsAndTeamsFilterState?.tenantIds.includes(tenantId),
 			};
 		}, []);
 	}

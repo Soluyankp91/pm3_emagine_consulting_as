@@ -90,7 +90,9 @@
                 </div>
                 <div class="flex flex-row items-center gap-x-4 ml-1" [matTooltip]="'disabledDivisionsAndTeamsTooltip'" [matTooltipDisabled]="selectedCountries.length === 0">
 					<teams-and-divisions-filter
-						[selectedCount]="0"
+						[selectedCount]="selectedTeamsAndDivisionsCount"
+                        [initialSelection]="teamsAndDivisionsFilterState"
+                        (filterChanged)="teamsAndDivisionsChanged($event)"
 						class="mr-3"
 						[ngClass]="{ 'pointer-events-none opacity-50': false }">
 					</teams-and-divisions-filter>
