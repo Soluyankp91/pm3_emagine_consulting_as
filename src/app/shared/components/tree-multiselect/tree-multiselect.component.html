@@ -1,0 +1,47 @@
+<div class="h-100 w-80 overflow-y-auto bg-white p-[15px] absolute rounded-[2px] border border-gray-50">
+	<ng-container *ngIf="!isLoading; else loading">
+		<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+			<mat-tree-node
+				*matTreeNodeDef="let node"
+				matTreeNodeToggle
+				class="pl-6"
+				[ngClass]="{ 'pl-7': isEmptyNonLeafNode(node), 'ml-3': isEmptyNonLeafNode(node) }">
+				<mat-checkbox [checked]="node.selected" (change)="toggleSingleNodeSelection(node)" color="primary"></mat-checkbox>
+				<span class="cursor-pointer" (click)="toggleSingleNodeSelection(node)">
+					<ng-container
+						*ngIf="treeNodeTemplate"
+						[ngTemplateOutlet]="treeNodeTemplate"
+						[ngTemplateOutletContext]="{ $implicit: node }"></ng-container>
+				</span>
+			</mat-tree-node>
+			<mat-nested-tree-node *matTreeNodeDef="let node; when: hasChildren">
+				<div class="mat-tree-node u-mt--5 ml-3">
+					<button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                        {{treeControl.isExpanded(node) ? '-' : '+'}}
+						<!-- <fa-icon [icon]="treeControl.isExpanded(node) ? ['far', 'chevron-down'] : ['far', 'chevron-right']">
+						</fa-icon> -->
+					</button>
+					<mat-checkbox
+						color="primary"
+						[checked]="node.selected"
+						[indeterminate]="hasSelectedChild(node)"
+						(change)="toggleNodesGroup(node)"></mat-checkbox>
+					<span matTreeNodeToggle class="cursor-pointer">
+						<ng-container
+							*ngIf="treeNodeTemplate"
+							[ngTemplateOutlet]="treeNodeTemplate"
+							[ngTemplateOutletContext]="{ $implicit: node }"></ng-container>
+					</span>
+				</div>
+				<div [class.hidden]="!treeControl.isExpanded(node)" class="pl-7" role="group">
+					<ng-container matTreeNodeOutlet></ng-container>
+				</div>
+			</mat-nested-tree-node>
+		</mat-tree>
+	</ng-container>
+	<ng-template #loading>
+		<div class="flex items-center justify-center h-full">
+			<mat-progress-spinner class="mx-auto" [diameter]="50" [mode]="'indeterminate'"></mat-progress-spinner>
+		</div>
+	</ng-template>
+</div>

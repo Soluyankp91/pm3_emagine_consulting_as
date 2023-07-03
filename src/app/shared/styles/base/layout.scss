@@ -337,3 +337,12 @@ html {
 .rotate-180 {
     transform: rotate(180deg);
 }
+
+.hidden {
+    display: none !important;
+}
+
+
+.overflow-y-auto {
+    overflow-y: auto !important;
+}

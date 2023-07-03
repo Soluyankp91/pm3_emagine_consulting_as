@@ -88,6 +88,13 @@
                         </div>
                     </mat-menu>
                 </div>
+                <div class="flex flex-row items-center gap-x-4 ml-1" [matTooltip]="'disabledDivisionsAndTeamsTooltip'" [matTooltipDisabled]="selectedCountries.length === 0">
+					<teams-and-divisions-filter
+						[selectedCount]="0"
+						class="mr-3"
+						[ngClass]="{ 'pointer-events-none opacity-50': false }">
+					</teams-and-divisions-filter>
+				</div>
                 <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--10" [ngClass]="{'selected-status': isActiveClients}" appPreventDoubleClick (throttledClick)="isActiveClients = !isActiveClients; getClientsGrid(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     Active clients

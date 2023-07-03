@@ -1,0 +1,44 @@
+<ng-container *ngIf="{ isLoading: isLoading$ | async } as viewModel">
+	<div id="request-hub__filter__dropdown__teams-and-divisions">
+		<div class="min-h-8 h-8 w-8 flex items-center justify-center" matTooltip="Divisions & Teams">
+			<button
+				type="button"
+				mat-icon-button
+				cdkOverlayOrigin
+				#trigger="cdkOverlayOrigin"
+				class="rounded-full min-h-8 h-8 w-8 bg-sand hover:bg-purple-300"
+				appPreventDoubleClick
+				(throttledClick)="isOpened$.next(true)">
+				<ng-container *ngIf="selectedCount === 0">
+					<img class="bg-cover" src="assets/common/images/teams-and-divisions.svg" />
+				</ng-container>
+				<ng-container *ngIf="selectedCount > 0">
+					<div class="rounded-full bg-primary min-h-8 w-8 h-8 flex items-center justify-center">
+						<span class="text-white text-sm leading-none"> {{ selectedCount }}</span>
+					</div>
+				</ng-container>
+			</button>
+		</div>
+		<ng-template
+			cdkConnectedOverlay
+			[cdkConnectedOverlayOrigin]="trigger"
+			[cdkConnectedOverlayOpen]="isOpened$ | async"
+			cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+			[cdkConnectedOverlayHasBackdrop]="true"
+			(detach)="isOpened$.next(false)"
+			(backdropClick)="isOpened$.next(false)">
+			<emg-tree-multiselect [formControl]="valueControl" [isLoading]="viewModel.isLoading">
+				<ng-template #treeNode let-node>
+					<div class="flex">
+						<ng-container *ngIf="node.isTenant">
+							<tenant-flag-cell [tenantId]="node.id"></tenant-flag-cell>
+						</ng-container>
+						<span class="font-medium u-mt--2" [class.ml-2]="node.isTenant" [class.u-mt--1]="node.isTenant">{{
+							node.name
+						}}</span>
+					</div>
+				</ng-template>
+			</emg-tree-multiselect>
+		</ng-template>
+	</div>
+</ng-container>
