@@ -188,15 +188,16 @@ export class EditorCoreService {
 		const position = this.editor.selection.active;
 		let activeSubDocument = this.editor.selection.activeSubDocument;
 		if (insertBreak) {
-			activeSubDocument.insertText(position, ' ');
+		   activeSubDocument.insertText(position, ' ');
 		}
-
+	
 		const _field = activeSubDocument.fields.createMergeField(position, field);
 		const text = activeSubDocument.getText(_field.codeInterval);
-
+	
 		const replaced = text.replace(/["]+/g, '');
 		activeSubDocument.deleteText(_field.codeInterval);
 		activeSubDocument.insertText(_field.codeInterval.start, replaced);
+		_field.update(field => field.isShowCode = true);
 	}
 
 	getSyncedCommentState() {
