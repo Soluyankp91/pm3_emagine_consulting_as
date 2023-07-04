@@ -19,6 +19,10 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { finalize } from 'rxjs/operators';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { Overlay } from '@angular/cdk/overlay';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-documents',
@@ -44,7 +48,9 @@ export class DocumentsComponent extends AppComponentBase {
 		private _fileService: FileServiceProxy,
 		private _employeeService: EmployeeServiceProxy,
 		private _localHttpService: LocalHttpService,
-		private _httpClient: HttpClient
+		private _httpClient: HttpClient,
+        private _overlay: Overlay,
+        private _dialog: MatDialog
 	) {
 		super(injector);
 		this.documentForm = new DocumentForm();
@@ -95,6 +101,22 @@ export class DocumentsComponent extends AppComponentBase {
 			this.addDocument(wrappedDocument);
 		}
 	}
+
+    confirmDeleteDocument(fileId: string, file: FileUploaderFile, index: number) {
+        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Delete document`,
+			confirmationMessage: `The document <span class="text-bold-800">${file.name}</span> will be permanently deleted from the system.\nAre you sure you wish to proceed?`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Delete',
+			isNegative: true,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this.deleteDocument(fileId, file, index);
+		});
+    }
 
 	deleteDocument(fileId: string, file: FileUploaderFile, index: number) {
 		if (fileId) {

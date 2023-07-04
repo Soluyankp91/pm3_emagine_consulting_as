@@ -1,9 +1,9 @@
 import { Component, Injector } from '@angular/core';
 import { OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { AppComponentBase } from 'src/shared/app-component-base';
-import { merge, Subject } from 'rxjs';
-import { takeUntil, debounceTime, startWith, switchMap, finalize } from 'rxjs/operators';
+import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, startWith, switchMap, finalize, pairwise, map } from 'rxjs/operators';
 import {
 	ClientsServiceProxy,
 	EmployeeDto,
@@ -28,6 +28,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 	contractStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
 	financeStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
 	filteredAccountManagers: EmployeeDto[] = [];
+	filteredFinanceManagers: EmployeeDto[] = [];
 	stepEmployeesDataSource: MatTableDataSource<IWorkflowAssignees> = new MatTableDataSource<IWorkflowAssignees>();
 	displayedColumns = ['tenantFlag', 'tenant', 'contractStep', 'financeStep'];
 	private _unsubscribe = new Subject();
@@ -39,36 +40,10 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 		private _tenantConfifService: TenantConfigServiceProxy
 	) {
 		super(injector);
-		merge(this.financeStepResponsible.valueChanges, this.contractStepResponsible.valueChanges)
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				startWith(''),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
-                        showAll: true,
-                        idsToExclude: []
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.name : value;
-					}
-					return this._lookupService.employees(toSend.name);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredAccountManagers = list;
-				} else {
-					this.filteredAccountManagers = [
-						new EmployeeDto({ name: 'No managers found', externalId: '', id: undefined }),
-					];
-				}
-			});
 	}
 
 	ngOnInit(): void {
+		this._sub$();
 		this.activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.clientId = +params.get('id')!;
 			this._getResponsiblePersons();
@@ -87,8 +62,8 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 			.getWFResponsible(this.clientId)
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe((result) => {
-				this.financeStepResponsible.setValue(result.financeStepResponsibleEmployee, { emitEvent: false });
-				this.contractStepResponsible.setValue(result.contractStepResponsibleEmployee, { emitEvent: false });
+				this.financeStepResponsible.setValue(result.financeStepResponsibleEmployee);
+				this.contractStepResponsible.setValue(result.contractStepResponsibleEmployee);
 			});
 	}
 
@@ -100,7 +75,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 		this._clientService
 			.postWFResponsible(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe();
+			.subscribe(() => this.showNotify(NotifySeverity.Success, 'Responsible persons were updated'));
 	}
 
 	private _getWorkflowEmployeeAssignments() {
@@ -123,6 +98,71 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 					};
 				});
 				this.stepEmployeesDataSource = new MatTableDataSource<IWorkflowAssignees>(formattedData);
+			});
+	}
+
+	private _sub$() {
+		this.contractStepResponsible.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(this.contractStepResponsible?.value?.name || ''),
+				pairwise(),
+				switchMap(([previous, current]) => {
+					if (previous?.id && !current?.id) {
+						this.setResponsiblePerson();
+					}
+					let toSend = {
+						name: current,
+						maxRecordsCount: 1000,
+						showAll: true,
+						idsToExclude: [],
+					};
+					if (current?.id) {
+						toSend.name = current.id ? '' : current;
+					}
+					return this._lookupService.employees(toSend.name);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredAccountManagers = list;
+				} else {
+					this.filteredAccountManagers = [
+						new EmployeeDto({ name: 'No managers found', externalId: '', id: undefined }),
+					];
+				}
+			});
+		this.financeStepResponsible.valueChanges
+			.pipe(
+				takeUntil(this._unsubscribe),
+				debounceTime(300),
+				startWith(this.financeStepResponsible?.value?.name || ''),
+				pairwise(),
+				switchMap(([previous, current]) => {
+					if (previous?.id && !current?.id) {
+						this.setResponsiblePerson();
+					}
+					let toSend = {
+						name: current,
+						maxRecordsCount: 1000,
+						showAll: true,
+						idsToExclude: [],
+					};
+					if (current?.id) {
+						toSend.name = current.id ? '' : current;
+					}
+					return this._lookupService.employees(toSend.name);
+				})
+			)
+			.subscribe((list: EmployeeDto[]) => {
+				if (list.length) {
+					this.filteredFinanceManagers = list;
+				} else {
+					this.filteredFinanceManagers = [
+						new EmployeeDto({ name: 'No managers found', externalId: '', id: undefined }),
+					];
+				}
 			});
 	}
 }

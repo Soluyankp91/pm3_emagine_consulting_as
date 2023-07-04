@@ -236,8 +236,8 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 				searchFilter,
 				selectedCountryIds,
 				ownerIds,
-				isActiveFlag,
 				undefined, // teams and division
+				isActiveFlag,
 				!this.includeDeleted,
 				this.onlyWrongfullyDeletedInHubspot,
 				this.pageNumber,

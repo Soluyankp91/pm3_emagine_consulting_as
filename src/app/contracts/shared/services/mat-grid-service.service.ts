@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IColumn, IHeaderCell } from '../components/grid-table/mat-grid.interfaces';
-
+import { IColumn, IHeaderCell } from 'src/app/shared/components/grid-table/mat-grid.interfaces';
 @Injectable()
 export class GridHelpService {
 	constructor() {}

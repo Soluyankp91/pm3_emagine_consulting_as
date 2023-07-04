@@ -116,7 +116,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 			this.workflowId = params.get('id')!;
             this._getClientPeriods();
             this.componentInitalized = true;
-            this.individualConsultantActionsAvailable = environment.dev;
+            this.individualConsultantActionsAvailable = environment.isIndividualConsultantActionsEnabled;
             this._getOverviewData();
 		});
 
@@ -449,7 +449,23 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 		});
 	}
 
-	removeDocument(item: IWFOverviewDocuments) {
+    confirmDeleteDocument(item: IWFOverviewDocuments) {
+        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+		MediumDialogConfig.scrollStrategy = scrollStrategy;
+		MediumDialogConfig.data = {
+			confirmationMessageTitle: `Delete document`,
+			confirmationMessage: `The document <span class="text-bold-800">${item.name}</span> will be permanently deleted from the system.\nAre you sure you wish to proceed?`,
+			rejectButtonText: 'Cancel',
+			confirmButtonText: 'Delete',
+			isNegative: true,
+		};
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+			this.deleteDocument(item);
+		});
+    }
+
+	deleteDocument(item: IWFOverviewDocuments) {
         this.showMainSpinner();
         this._workflowDocumentsService.workflowDocumentDELETE(item.id!)
             .pipe(finalize(() => this.hideMainSpinner()))

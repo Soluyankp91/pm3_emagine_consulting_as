@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy, Injector } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { STATUTES } from 'src/app/contracts/shared/components/grid-table/agreements/entities/agreements.constants';
+import { STATUTES } from 'src/app/shared/components/grid-table/agreements/entities/agreements.constants';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { AgreementService } from '../../services/agreement.service';
 import { map, debounceTime, skip, tap, startWith, switchMap, takeUntil } from 'rxjs/operators';

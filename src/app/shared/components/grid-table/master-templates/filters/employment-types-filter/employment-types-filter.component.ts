@@ -1,7 +1,6 @@
 import { take, pluck } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import {
 	ITemplatesService,
@@ -9,11 +8,12 @@ import {
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
+import { IFilter } from '../../../mat-grid.interfaces';
 
 @Component({
 	selector: 'app-employment-types-filter',
 	templateUrl: './employment-types-filter.component.html',
-	styleUrls: ['/employment-types-filter.component.scss'],
+	styleUrls: ['./employment-types-filter.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })

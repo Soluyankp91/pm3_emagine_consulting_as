@@ -39,6 +39,9 @@
                     color: $green-color;
                 }
             }
+            &__wf {
+                @include fontOpenSans(12px, 700);
+            }
             span:not(.workflow-header--title__clientId) {
                 margin-right: 5px;
             }
@@ -56,7 +59,10 @@
             }
         }
         &--request {
-            color: $light-grey-color;
+            color: $medium-grey-color;
+            &:hover {
+                color: $green-color;
+            }
         }
     }
 

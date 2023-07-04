@@ -29582,8 +29582,8 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
+    tenantId?: number | undefined;
     permissions?: Permission[] | undefined;
-    tenantId?: number;
 
     constructor(data?: ICurrentEmployeeDto) {
         if (data) {
@@ -29600,12 +29600,12 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
             this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
+            this.tenantId = _data["tenantId"];
             if (Array.isArray(_data["permissions"])) {
                 this.permissions = [] as any;
                 for (let item of _data["permissions"])
                     this.permissions!.push(item);
             }
-            this.tenantId = _data["tenantId"];
         }
     }
 
@@ -29622,12 +29622,12 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
         data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
+        data["tenantId"] = this.tenantId;
         if (Array.isArray(this.permissions)) {
             data["permissions"] = [];
             for (let item of this.permissions)
                 data["permissions"].push(item);
         }
-        data["tenantId"] = this.tenantId;
         return data;
     }
 }
@@ -29637,8 +29637,8 @@ export interface ICurrentEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
+    tenantId?: number | undefined;
     permissions?: Permission[] | undefined;
-    tenantId?: number;
 }
 
 export class DocuSignEnvelopeSummary implements IDocuSignEnvelopeSummary {
@@ -29813,6 +29813,7 @@ export class EmployeeDto implements IEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
+    tenantId?: number | undefined;
 
     constructor(data?: IEmployeeDto) {
         if (data) {
@@ -29829,6 +29830,7 @@ export class EmployeeDto implements IEmployeeDto {
             this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
+            this.tenantId = _data["tenantId"];
         }
     }
 
@@ -29845,6 +29847,7 @@ export class EmployeeDto implements IEmployeeDto {
         data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
+        data["tenantId"] = this.tenantId;
         return data;
     }
 }
@@ -29854,6 +29857,7 @@ export interface IEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
+    tenantId?: number | undefined;
 }
 
 export class EmployeeNotificationDto implements IEmployeeNotificationDto {
@@ -29909,6 +29913,7 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
+    tenantId?: number | undefined;
     email?: string | undefined;
 
     constructor(data?: IEmployeeSearchEmployeeDto) {
@@ -29926,6 +29931,7 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
             this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
+            this.tenantId = _data["tenantId"];
             this.email = _data["email"];
         }
     }
@@ -29943,6 +29949,7 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
         data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
+        data["tenantId"] = this.tenantId;
         data["email"] = this.email;
         return data;
     }
@@ -29953,6 +29960,7 @@ export interface IEmployeeSearchEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
+    tenantId?: number | undefined;
     email?: string | undefined;
 }
 
@@ -30695,6 +30703,7 @@ export interface IHistoryFilterNamesDto {
 }
 
 export class HistoryPropertiesDto implements IHistoryPropertiesDto {
+    historyEntityId?: number;
     actionName?: string | undefined;
     entityName?: string | undefined;
     entityKey?: { [key: string]: string; } | undefined;
@@ -30729,6 +30738,7 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
     init(_data?: any) {
         if (_data) {
+            this.historyEntityId = _data["historyEntityId"];
             this.actionName = _data["actionName"];
             this.entityName = _data["entityName"];
             if (_data["entityKey"]) {
@@ -30769,6 +30779,7 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["historyEntityId"] = this.historyEntityId;
         data["actionName"] = this.actionName;
         data["entityName"] = this.entityName;
         if (this.entityKey) {
@@ -30802,6 +30813,7 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 }
 
 export interface IHistoryPropertiesDto {
+    historyEntityId?: number;
     actionName?: string | undefined;
     entityName?: string | undefined;
     entityKey?: { [key: string]: string; } | undefined;

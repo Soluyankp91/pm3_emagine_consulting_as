@@ -1,7 +1,6 @@
 import { take, pluck, map, withLatestFrom } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 import {
@@ -13,6 +12,7 @@ import { Observable } from 'rxjs';
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 import { AgreementService } from 'src/app/contracts/agreements/listAndPreviews/services/agreement.service';
 import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
+import { IFilter } from '../../../mat-grid.interfaces';
 
 export type ExtendedLegalEntity = LegalEntityDto & { prefix: string };
 @Component({

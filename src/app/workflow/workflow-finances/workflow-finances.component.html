@@ -79,13 +79,13 @@
                 <div class="workflow-finances--block">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="financeConsultants">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                            <span class="workflow-section--number">2</span>
+                            <span class="workflow-section--number">{{activeSideSection.typeId === workflowSideSections.StartConsultantPeriod ? '1' : '2'}}</span>
                             <h2 class="workflow-section--header">Consultants</h2>
                         </div>
                         <div class="workflow-section--content">
                             <ng-container *ngFor="let consultant of financesConsultantsForm.consultants.controls; trackBy: trackByItem; let i = index; last as last" [formGroupName]="i">
                                 <div class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
-                                    <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
+                                    <app-consultant-information [consultantData]="consultant?.value?.consultant" [size]="50"></app-consultant-information>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('checkInvoicingSettingsOnConsultant')?.value">
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-checkbox [disabled]="readOnlyMode" color="accent" required formControlName="checkInvoicingSettingsOnConsultant"

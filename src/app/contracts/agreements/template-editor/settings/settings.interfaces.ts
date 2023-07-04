@@ -1,5 +1,5 @@
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { IDropdownItem } from 'src/app/contracts/shared/components/emagine-menu-multi-select/emagine-menu-multi-select.interfaces';
+import { IDropdownItem } from 'src/app/shared/components/emagine-menu-multi-select/emagine-menu-multi-select.interfaces';
 import { SignerDropdowns } from 'src/app/contracts/shared/components/signers-table/signers-table.component';
 import {
 	AgreementSimpleListItemDto,
