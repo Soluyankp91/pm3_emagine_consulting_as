@@ -59,7 +59,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	saleTypes: EnumEntityTypeDto[] = [];
 	deliveryTypes: EnumEntityTypeDto[] = [];
-	margins: EnumEntityTypeDto[] = [];
 	isAdvancedFilters = false;
 	advancedFiltersCounter = 0;
     overviewFilterColors = OverviewFilterColors;
@@ -71,7 +70,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	paymentEntityControl = new UntypedFormControl();
 	salesTypeControl = new UntypedFormControl();
 	deliveryTypesControl = new UntypedFormControl();
-	marginsControl = new UntypedFormControl();
 	overviewViewTypeControl = new UntypedFormControl(1);
 
 	managerStatus = ManagerStatus;
@@ -139,7 +137,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.paymentEntityControl.valueChanges,
 			this.salesTypeControl.valueChanges,
 			this.deliveryTypesControl.valueChanges,
-			this.marginsControl.valueChanges,
 			this.overviewViewTypeControl.valueChanges,
 			this.workflowFilter.valueChanges
 		)
@@ -172,7 +169,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.paymentEntityControl.value?.length,
 			this.salesTypeControl.value?.length,
 			this.deliveryTypesControl.value?.length,
-			this.marginsControl.value?.length
 		).filter((item) => item !== null && item !== undefined);
 		this.advancedFiltersCounter = filtersArr.length > 0 ? filtersArr.reduce((prev, curr) => prev + curr) : 0;
 	}
@@ -294,7 +290,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		let paymentEntity = this.paymentEntityControl.value ?? undefined;
 		let salesType = this.salesTypeControl.value ?? undefined;
 		let deliveryType = this.deliveryTypesControl.value ?? undefined;
-		let margins = this.marginsControl.value ?? undefined;
+		let margins = undefined; // FIXME: remove once BE changed
 		let mainOverviewStatuses = this.filteredMainOverviewStatuses.filter((x) => x.selected).map((x) => x.id);
 		if (date) {
 			this.cutOffDate = date;
@@ -480,7 +476,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     private _getEnums() {
         this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
         this.saleTypes = this.getStaticEnumValue('saleTypes');
-        this.margins = this.getStaticEnumValue('margins');
         this.legalEntities = this._mapLegalEntitiesIntoSelectable(this.getStaticEnumValue('legalEntities'));
     }
 
@@ -606,7 +601,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.paymentEntityControl.setValue(null, { emitEvent: false });
 		this.salesTypeControl.setValue(null, { emitEvent: false });
 		this.deliveryTypesControl.setValue(null, { emitEvent: false });
-		this.marginsControl.setValue(null, { emitEvent: false });
 		this.selectedWFStatuses = [];
 		this.filteredMainOverviewStatuses.forEach((x) => {
 			x.selected = false;
@@ -629,8 +623,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			salesType: this.salesTypeControl.value ? this.salesTypeControl.value : undefined,
 			deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
 			searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
-			margins: this.marginsControl.value ?? undefined,
-			// mainOverviewStatus: this.filteredMainOverviewStatuses.filter((x) => x.selected),
+			margins: undefined, // FIXME: remove once BE changed
             wfStatuses: this.selectedWFStatuses,
 			cutOffDate: this.cutOffDate,
 			overviewViewTypeControl: this.overviewViewTypeControl.value,
@@ -655,7 +648,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.paymentEntityControl.setValue(filters?.paymentEntity, { emitEvent: false });
 			this.invoicingEntityControl.setValue(filters?.invoicingEntity, { emitEvent: false });
 			this.workflowFilter.setValue(filters?.searchFilter, { emitEvent: false });
-			this.marginsControl.setValue(filters?.margins, { emitEvent: false });
             this.selectedWFStatuses = filters.wfStatuses?.length ? filters.wfStatuses : [];
 			if (this.selectedWFStatuses.length) {
 				this.filteredMainOverviewStatuses.forEach((x) => {
