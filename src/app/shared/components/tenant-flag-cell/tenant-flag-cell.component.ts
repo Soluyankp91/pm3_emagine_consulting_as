@@ -10,12 +10,13 @@ import { AppConsts } from 'src/shared/AppConsts';
 			<span
 				[id]="testingId"
 				[matTooltip]="tooltip"
+                matTooltipClass="white-tooltip"
 				class="h-6 w-6 bg-cover border-rounded-50 border-solid border-emagineBg-gray fi
                     fi-{{ countryCode | lowercase }} fis"
 			>
 			</span>
 		</ng-template>
-		<ng-template #defaultView> <span class="h-6 w-6 bg-cover fi fi-eu cover rounded-full"> </span></ng-template>
+		<ng-template #defaultView> <span class="h-6 w-6 bg-cover fi fi-eu fis border-rounded-50"> </span></ng-template>
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

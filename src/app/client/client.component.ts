@@ -16,6 +16,7 @@ import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autoc
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
+import { DivisionsAndTeamsFilterComponent } from '../shared/components/teams-and-divisions/teams-and-divisions-filter.component';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -29,6 +30,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     @ViewChild('managersTrigger', { read: MatAutocompleteTrigger }) managersTrigger: MatAutocompleteTrigger;
     @ViewChild('countriesTrigger', { read: MatAutocompleteTrigger }) countriesTrigger: MatAutocompleteTrigger;
     @ViewChild('countryAutocomplete') countryAutocomplete: MatAutocomplete;
+    @ViewChild('treeFilter') treeFilter: DivisionsAndTeamsFilterComponent;
 
     isManagersLoading: boolean;
     isCountriesLoading: boolean;
@@ -78,9 +80,6 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     clientListSubscription: Subscription;
     teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState;
-    // ownerTenantsIds: number[];
-    // ownerDivisionsIds: number[];
-    // ownerTeamsIds: number[];
     selectedTeamsAndDivisionsCount: number;
     private _unsubscribe = new Subject();
     constructor(
@@ -368,6 +367,13 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.includeDeleted = false;
         this.selectedCountries = [];
         this.countryList.map(x => x.selected = false);
+        this.teamsAndDivisionsFilterState = {
+            tenantIds: [],
+            divisionIds: [],
+            teamsIds: [],
+        };
+        this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
+        this.treeFilter.reset();
         localStorage.removeItem(ClientGridOptionsKey);
         this.getCurrentUser();
     }

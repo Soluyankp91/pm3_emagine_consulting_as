@@ -46,6 +46,8 @@ import {
 	WorkflowSourcingCreate,
 	WorkflowStatusMenuList,
 } from './workflow.model';
+import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
+import { DivisionsAndTeamsFilterComponent } from '../shared/components/teams-and-divisions/teams-and-divisions-filter.component';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.7';
 @Component({
@@ -58,6 +60,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	@ViewChild('menuDeleteTrigger', { static: false }) menuDeleteTrigger: MatMenuTrigger;
 	@ViewChild('menuWorkflowStatusesTrigger', { static: false }) menuWorkflowStatusesTrigger: MatMenuTrigger;
 	@ViewChild('clientsPaginator') paginator: MatPaginator;
+    @ViewChild('treeFilter') treeFilter: DivisionsAndTeamsFilterComponent;
 	isLoading: boolean;
 
 	workflowFilter = new UntypedFormControl(null);
@@ -141,7 +144,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
 	syncStateStatuses: ISelectableIdNameDto[] = [];
 	selectedSyncStateStatuses: ISelectableIdNameDto[] = [];
-
+    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState;
+    selectedTeamsAndDivisionsCount: number;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -229,6 +233,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			includeTerminated: this.includeTerminated,
 			includeDeleted: this.includeDeleted,
 			searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
+            ownerTenantsIds: this.teamsAndDivisionsFilterState.tenantIds,
+            ownerDivisionsIds: this.teamsAndDivisionsFilterState.divisionIds,
+            ownerTeamsIds: this.teamsAndDivisionsFilterState.teamsIds,
 		};
 
 		localStorage.setItem(WorkflowGridOptionsKey, JSON.stringify(filters));
@@ -262,6 +269,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 			this.includeTerminated = filters.includeTerminated;
 			this.includeDeleted = filters.includeDeleted;
 			this.workflowFilter.setValue(filters.searchFilter, { emitEvent: false });
+            this.teamsAndDivisionsFilterState = {
+                tenantIds: filters.ownerTenantsIds,
+                divisionIds: filters.ownerDivisionsIds,
+                teamsIds: filters.ownerTeamsIds,
+            };
+            this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
 		}
 		this.updateAdvancedFiltersCounter();
 		this.getWorkflowList();
@@ -388,15 +401,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	}
 
 	getWorkflowList(filterChanged?: boolean) {
-		// let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
-		// let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
-		// let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
-		// let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
-		// let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
-		// let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
-		// let ownerIds = this.selectedAccountManagers.map((x) => +x.id);
-		// let selectedPendingStepType = this.pendingStepType === 0 ? undefined : this.pendingStepType;
-		// let selectedUpcomingStepType = this.upcomingStepType === 0 ? undefined : this.upcomingStepType;
 		if (this.workflowListSubscription) {
 			this.workflowListSubscription.unsubscribe();
 		}
@@ -404,9 +408,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		if (filterChanged) {
 			this.pageNumber = 1;
 		}
-
         const payload = this._packGridPayload();
-
 		this.workflowListSubscription = this._workflowService
 			.workflow(
 				payload.invoicingEntity,
@@ -604,6 +606,13 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.includeDeleted = false;
 		this.selectedSyncStateStatuses = [];
 		this.syncStateStatuses.forEach((x) => (x.selected = false));
+        this.teamsAndDivisionsFilterState = {
+            tenantIds: [],
+            divisionIds: [],
+            teamsIds: [],
+        };
+        this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
+        this.treeFilter.reset();
 		localStorage.removeItem(WorkflowGridOptionsKey);
 		this.getCurrentUser();
 	}
@@ -623,6 +632,13 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		event.stopPropagation();
 		this.syncStatusFilterControl(item);
 	}
+
+
+    teamsAndDivisionsChanged(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+        this.teamsAndDivisionsFilterState = teamsAndDivisionFilter
+        this._teamsAndDivisionCounter(teamsAndDivisionFilter);
+        this.getWorkflowList(true);
+    }
 
 	private _getEnums() {
 		this.legalEntities = this.getStaticEnumValue('legalEntities');
@@ -666,5 +682,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             pageSize: this.deafultPageSize,
             sort: this.sorting,
         } as IWorkflowGridPayload;
+    }
+
+    private _teamsAndDivisionCounter(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+        const {teamsIds, tenantIds, divisionIds} = teamsAndDivisionFilter;
+        this.selectedTeamsAndDivisionsCount = teamsIds.length + tenantIds.length + divisionIds.length;
     }
 }

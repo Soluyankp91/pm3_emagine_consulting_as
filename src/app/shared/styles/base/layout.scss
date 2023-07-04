@@ -334,6 +334,10 @@ html {
     background-color: $white-color;
 }
 
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
 .rotate-180 {
     transform: rotate(180deg);
 }
@@ -345,4 +349,19 @@ html {
 
 .overflow-y-auto {
     overflow-y: auto !important;
+}
+
+.bg-green {
+    background-color: #50AF9B !important;
+}
+
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+.border-rounded-2px {
+    border-radius: 2px;
+}
+.border-gray-50 {
+    border: 1px solid #e6e6e5;
 }
