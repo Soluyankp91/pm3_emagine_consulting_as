@@ -79,7 +79,11 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     clientListSubscription: Subscription;
-    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState;
+    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState = {
+        tenantIds: [],
+        teamsIds: [],
+        divisionIds: []
+    };
     selectedTeamsAndDivisionsCount: number;
     private _unsubscribe = new Subject();
     constructor(
@@ -296,9 +300,9 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             this.selectedCountries = filters.selectedCountries?.length ? filters.selectedCountries : [];
             this.clientFilter.setValue(filters.searchFilter, {emitEvent: false});
             this.teamsAndDivisionsFilterState = {
-                tenantIds: filters.ownerTenantsIds,
-                divisionIds: filters.ownerDivisionsIds,
-                teamsIds: filters.ownerTeamsIds,
+                tenantIds: filters.ownerTenantsIds ?? [],
+                divisionIds: filters.ownerDivisionsIds ?? [],
+                teamsIds: filters.ownerTeamsIds ?? [],
             };
             this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
         }

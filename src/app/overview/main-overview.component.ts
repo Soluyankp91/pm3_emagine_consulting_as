@@ -125,7 +125,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	workflowChartSubscription: Subscription;
 	consultantChartSubscription: Subscription;
-    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState;
+    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState = {
+        tenantIds: [],
+        teamsIds: [],
+        divisionIds: []
+    };
     selectedTeamsAndDivisionsCount: number;
 	private _unsubscribe = new Subject();
 
@@ -683,9 +687,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.overviewViewTypeControl.setValue(filters?.overviewViewTypeControl, { emitEvent: false });
 			this.viewType.setValue(filters?.viewType, { emitEvent: false });
             this.teamsAndDivisionsFilterState = {
-                tenantIds: filters.ownerTenantsIds,
-                divisionIds: filters.ownerDivisionsIds,
-                teamsIds: filters.ownerTeamsIds,
+                tenantIds: filters.ownerTenantsIds ?? [],
+                divisionIds: filters.ownerDivisionsIds ?? [],
+                teamsIds: filters.ownerTeamsIds ?? [],
             };
             this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
 		}
