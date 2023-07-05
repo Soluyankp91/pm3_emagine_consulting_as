@@ -54,6 +54,9 @@ import { EnvelopePathComponent } from 'src/app/contracts/shared/components/envel
 import { AgreementModeComponent } from 'src/app/contracts/shared/components/agreement-mode/agreement-mode.component';
 import { AgreementStatusComponent } from 'src/app/contracts/shared/components/agreement-status/agreement-status.component';
 import { CustomTooltipDirective } from 'src/app/contracts/shared/directives/customTooltip/custom-tooltip.directive';
+import { EmgTreeMultiselectComponent } from '../components/tree-multiselect/tree-multiselect.component';
+import { TenantFlagCellComponent } from '../components/tenant-flag-cell/tenant-flag-cell.component';
+import { DivisionsAndTeamsFilterComponent } from '../components/teams-and-divisions/teams-and-divisions-filter.component';
 
 @NgModule({
 	declarations: [
@@ -103,6 +106,9 @@ import { CustomTooltipDirective } from 'src/app/contracts/shared/directives/cust
 		AgreementModeComponent,
 		AgreementStatusComponent,
 		CustomTooltipDirective,
+        EmgTreeMultiselectComponent,
+        TenantFlagCellComponent,
+        DivisionsAndTeamsFilterComponent
 	],
 	imports: [
 		CommonModule,
@@ -166,7 +172,10 @@ import { CustomTooltipDirective } from 'src/app/contracts/shared/directives/cust
 		EnvelopePathComponent,
 		AgreementModeComponent,
 		AgreementStatusComponent,
-		CustomTooltipDirective
+		CustomTooltipDirective,
+        EmgTreeMultiselectComponent,
+        TenantFlagCellComponent,
+        DivisionsAndTeamsFilterComponent
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })

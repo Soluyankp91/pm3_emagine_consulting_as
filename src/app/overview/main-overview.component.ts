@@ -23,6 +23,8 @@ import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
+import { DivisionsAndTeamsFilterComponent } from '../shared/components/teams-and-divisions/teams-and-divisions-filter.component';
+import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.4';
 
@@ -35,6 +37,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 	@ViewChild('ganttWorkflows', { static: false }) ganttWorkflows: NgxGanttComponent;
 	@ViewChild('ganttConsultants', { static: false }) ganttConsultants: NgxGanttComponent;
 	@ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    @ViewChild('treeFilter') treeFilter: DivisionsAndTeamsFilterComponent;
 	isLoading: boolean;
 	isCountriesLoading: boolean;
 
@@ -122,7 +125,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
 	workflowChartSubscription: Subscription;
 	consultantChartSubscription: Subscription;
-
+    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState = {
+        tenantIds: [],
+        teamsIds: [],
+        divisionIds: []
+    };
+    selectedTeamsAndDivisionsCount: number;
 	private _unsubscribe = new Subject();
 
 	constructor(
@@ -296,6 +304,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		let deliveryType = this.deliveryTypesControl.value ?? undefined;
 		let margins = this.marginsControl.value ?? undefined;
 		let mainOverviewStatuses = this.filteredMainOverviewStatuses.filter((x) => x.selected).map((x) => x.id);
+        const {tenantIds, teamsIds, divisionIds} = this.teamsAndDivisionsFilterState;
+        const employeesTeamsAndDivisionsNodes = divisionIds?.concat(teamsIds)
 		if (date) {
 			this.cutOffDate = date;
 		}
@@ -314,7 +324,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 				this.workflowChartSubscription = this._mainOverviewService
 					.workflows(
 						mainOverviewStatuses,
-                        undefined, // teams and division
+                        employeesTeamsAndDivisionsNodes,
+                        tenantIds,
 						ownerIds,
 						invoicingEntity,
 						paymentEntity,
@@ -401,7 +412,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 				this.consultantChartSubscription = this._mainOverviewService
 					.consultants(
 						mainOverviewStatuses,
-                        undefined, // teams and division
+                        employeesTeamsAndDivisionsNodes,
+                        tenantIds,
 						ownerIds,
 						invoicingEntity,
 						paymentEntity,
@@ -611,6 +623,13 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		this.filteredMainOverviewStatuses.forEach((x) => {
 			x.selected = false;
 		});
+        this.teamsAndDivisionsFilterState = {
+            tenantIds: [],
+            divisionIds: [],
+            teamsIds: [],
+        };
+        this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
+        this.treeFilter.reset();
 		localStorage.removeItem(MainOverviewGridOptionsKey);
 		this.getCurrentUser();
 	}
@@ -630,11 +649,13 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
 			searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
 			margins: this.marginsControl.value ?? undefined,
-			// mainOverviewStatus: this.filteredMainOverviewStatuses.filter((x) => x.selected),
             wfStatuses: this.selectedWFStatuses,
 			cutOffDate: this.cutOffDate,
 			overviewViewTypeControl: this.overviewViewTypeControl.value,
 			viewType: this.viewType.value,
+            ownerTenantsIds: this.teamsAndDivisionsFilterState.tenantIds,
+            ownerDivisionsIds: this.teamsAndDivisionsFilterState.divisionIds,
+            ownerTeamsIds: this.teamsAndDivisionsFilterState.teamsIds,
 		};
 
 		localStorage.setItem(MainOverviewGridOptionsKey, JSON.stringify(filters));
@@ -665,6 +686,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 			this.cutOffDate = filters?.cutOffDate;
 			this.overviewViewTypeControl.setValue(filters?.overviewViewTypeControl, { emitEvent: false });
 			this.viewType.setValue(filters?.viewType, { emitEvent: false });
+            this.teamsAndDivisionsFilterState = {
+                tenantIds: filters.ownerTenantsIds ?? [],
+                divisionIds: filters.ownerDivisionsIds ?? [],
+                teamsIds: filters.ownerTeamsIds ?? [],
+            };
+            this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
 		}
 		this.updateAdvancedFiltersCounter();
 		this.changeViewType();
@@ -697,4 +724,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 		item.selected = !item.selected;
 		this.changeViewType(true);
 	}
+
+    teamsAndDivisionsChanged(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+        this.teamsAndDivisionsFilterState = teamsAndDivisionFilter
+        this._teamsAndDivisionCounter(teamsAndDivisionFilter);
+        this.changeViewType(true);
+    }
+
+    private _teamsAndDivisionCounter(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+        const {teamsIds, tenantIds, divisionIds} = teamsAndDivisionFilter;
+        this.selectedTeamsAndDivisionsCount = teamsIds.length + tenantIds.length + divisionIds.length;
+    }
 }

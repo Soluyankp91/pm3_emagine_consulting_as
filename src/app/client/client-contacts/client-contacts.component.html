@@ -124,5 +124,10 @@
                 RESULTS NOT FOUND
             </div>
         </div>
+        <div class="pagination-container u-w--100">
+            <mat-paginator #contactsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)" [pageIndex]="pageNumber">
+            </mat-paginator>
+        </div>
     </div>
 </div>
