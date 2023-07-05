@@ -136,7 +136,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		this._workflowDataService.workflowTopSectionUpdated.pipe(takeUntil(this._unsubscribe)).subscribe((value: boolean) => {
 			this._getTopLevelMenu(value);
 		});
-		this.individualConsultantActionsAvailable = environment.dev;
+		this.individualConsultantActionsAvailable = environment.isIndividualConsultantActionsEnabled;
 	}
 
 	ngAfterViewInit(): void {
@@ -439,7 +439,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
                 this.showNotify(NotifySeverity.Success, 'Workflow has been deleted');
-                this._getTopLevelMenu()
+                this._getTopLevelMenu();
+                this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
             });
 	}
 
@@ -449,7 +450,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			confirmationMessageTitle: `Restore workflow`,
-			confirmationMessage: `Are you sure you want to restore workflow?`,
+			confirmationMessage: `Are you sure you want to restore this workflow?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Yes',
 			isNegative: false,
@@ -468,7 +469,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe(() => {
                 this.showNotify(NotifySeverity.Success, 'Workflow has been restored');
-                this._getTopLevelMenu()
+                this._getTopLevelMenu();
+                this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true });
             });
 	}
 

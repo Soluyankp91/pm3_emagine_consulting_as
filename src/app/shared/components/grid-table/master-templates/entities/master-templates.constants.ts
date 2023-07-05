@@ -1,5 +1,5 @@
-import { EHeaderCells, IHeaderCell } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { Actions } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { EHeaderCells, IHeaderCell } from '../../mat-grid.interfaces';
 
 export const DISPLAYED_COLUMNS: string[] = [
 	'language',

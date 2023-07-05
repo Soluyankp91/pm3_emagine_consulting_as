@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BasePreview } from 'src/app/contracts/shared/base/base-preview';
-import { PREVIEW_LABEL_MAP } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
+import { PREVIEW_LABEL_MAP } from 'src/app/shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { AgreementTemplate } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { PREVIEW_SERVICE_PROVIDER, PREVIEW_SERVICE_TOKEN } from 'src/app/contracts/shared/services/preview-factory';
 

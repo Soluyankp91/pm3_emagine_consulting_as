@@ -70,6 +70,9 @@
                     </ng-container>
                     <ng-template #syncInput>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                            <ng-container *ngIf="!statusAfterSync && validationTriggered">
+                                <div class="mat-form-field-invalid"></div>
+                            </ng-container>
                             <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
                                 (throttledClick)="processSyncToLegacySystem()">
                                 Sync to legacy system

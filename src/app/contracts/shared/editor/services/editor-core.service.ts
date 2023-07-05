@@ -1,7 +1,7 @@
 import { EventEmitter, Inject, Injectable, NgZone } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { take, filter } from 'rxjs/operators';
 import {
 	CommandId,
@@ -180,7 +180,7 @@ export class EditorCoreService {
 	insertComments(comments: Array<AgreementCommentDto>) {
 		this._commentService.applyComments(comments as any);
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.document.fields.updateAllFields();
+			this._updateAllMergeFields();
 		});
 	}
 
@@ -188,15 +188,16 @@ export class EditorCoreService {
 		const position = this.editor.selection.active;
 		let activeSubDocument = this.editor.selection.activeSubDocument;
 		if (insertBreak) {
-			activeSubDocument.insertText(position, ' ');
+		   activeSubDocument.insertText(position, ' ');
 		}
-
+	
 		const _field = activeSubDocument.fields.createMergeField(position, field);
 		const text = activeSubDocument.getText(_field.codeInterval);
-
+	
 		const replaced = text.replace(/["]+/g, '');
 		activeSubDocument.deleteText(_field.codeInterval);
 		activeSubDocument.insertText(_field.codeInterval.start, replaced);
+		_field.update(field => field.isShowCode = true);
 	}
 
 	getSyncedCommentState() {
@@ -205,7 +206,7 @@ export class EditorCoreService {
 
 	toggleFields(showResult: boolean = true) {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+            this._updateAllMergeFields();
 			if (showResult) {
 				this.showAllFieldResults();
 			} else {
@@ -230,7 +231,7 @@ export class EditorCoreService {
 
 	showAllFieldResults() {
 		this._runTaskAsyncAndSkipTrackChanges(() => {
-			this.editor.executeCommand(MailMergeTabCommandId.UpdateAllFields);
+			this.editor.executeCommand(MailMergeTabCommandId.ShowAllFieldResults);
 			this._handleMergeFieldStateChange(MailMergeTabCommandId.ShowAllFieldResults);
 		});
 	}
@@ -325,6 +326,7 @@ export class EditorCoreService {
 		mergeTab.removeItem(MailMergeTabItemId.UpdateAllFields);
 		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldResults);
 		mergeTab.removeItem(MailMergeTabItemId.ShowAllFieldCodes);
+		mergeTab.removeItem(MailMergeTabItemId.CreateFieldMenu);
 
 		mergeTab.insertItem(
 			new RibbonButtonItem(ICustomCommand.ShowAllFieldCodes, 'Show All Field Codes', showAllFieldCodesBtnOpts)
@@ -666,6 +668,19 @@ export class EditorCoreService {
 		this._skipTrackChanges = false;
 		this.hasUnsavedChanges$.next(false);
 	}
+
+	private _updateAllMergeFields(): void {
+        this.editor.document.subDocuments.forEach((subDocument) => {
+            asyncScheduler.schedule(() => {
+                this._runTaskAsyncAndSkipTrackChanges(() => {
+                    subDocument.fields.updateAllFields(() => {}, {
+                        updateTocFields: false,
+                        doInAllSubDocuments: false,
+                    });
+                });
+            }, 0);
+        });
+    }
 
 	static mergeFieldValueIsEmpty(value: string): boolean {
 		const pattern = /^<<.*>>$/;

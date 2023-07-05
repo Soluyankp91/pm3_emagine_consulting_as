@@ -33,7 +33,7 @@ import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model'
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
-import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
+import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { BaseEnumDto, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 import { MASTER_CREATION } from 'src/app/contracts/shared/entities/contracts.constants';

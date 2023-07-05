@@ -1,7 +1,6 @@
 import { take, pluck } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import {
 	ITemplatesService,
@@ -9,6 +8,7 @@ import {
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
 import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
+import { IFilter } from '../../../mat-grid.interfaces';
 
 @Component({
 	selector: 'app-sales-types-filter',

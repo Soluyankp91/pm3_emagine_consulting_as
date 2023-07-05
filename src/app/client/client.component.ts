@@ -6,7 +6,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { takeUntil, debounceTime, finalize, map, filter } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeServiceProxy, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
+import { IClientGridPayload, SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -15,6 +15,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
+import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
+import { DivisionsAndTeamsFilterComponent } from '../shared/components/teams-and-divisions/teams-and-divisions-filter.component';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -28,6 +30,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     @ViewChild('managersTrigger', { read: MatAutocompleteTrigger }) managersTrigger: MatAutocompleteTrigger;
     @ViewChild('countriesTrigger', { read: MatAutocompleteTrigger }) countriesTrigger: MatAutocompleteTrigger;
     @ViewChild('countryAutocomplete') countryAutocomplete: MatAutocomplete;
+    @ViewChild('treeFilter') treeFilter: DivisionsAndTeamsFilterComponent;
 
     isManagersLoading: boolean;
     isCountriesLoading: boolean;
@@ -76,7 +79,12 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     clientListSubscription: Subscription;
-
+    teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState = {
+        tenantIds: [],
+        teamsIds: [],
+        divisionIds: []
+    };
+    selectedTeamsAndDivisionsCount: number;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -215,34 +223,27 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     getClientsGrid(filterChanged?: boolean) {
-        let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
-        let ownerIds = this.selectedAccountManagers?.map(x => +x.id);
-        let selectedCountryIds = this.selectedCountries?.map(x => +x.id);
-        let isActiveFlag;
-        if ((this.isActiveClients && this.nonActiveClient) || (!this.isActiveClients && !this.nonActiveClient)) {
-            isActiveFlag = undefined;
-        } else {
-            isActiveFlag = this.isActiveClients;
-        }
         if (this.clientListSubscription) {
             this.clientListSubscription.unsubscribe();
         }
         if (filterChanged) {
             this.pageNumber = 1;
         }
+        const payload = this._packGridPayload();
         this.clientListSubscription = this._clientService
 			.list3(
-				searchFilter,
-				selectedCountryIds,
-				ownerIds,
-				isActiveFlag,
-				undefined, // teams and division
-				!this.includeDeleted,
-				this.onlyWrongfullyDeletedInHubspot,
-				this.pageNumber,
-				this.deafultPageSize,
-				this.sorting
+				payload.search,
+                payload.countryFilter,
+                payload.ownerFilter,
+                payload.ownerNodes,
+                payload.ownerTenants,
+                payload.isActive,
+                payload.excludeDeleted,
+                payload.onlyWrongfullyDeletedInHubspot,
+                payload.pageNumber,
+                payload.pageSize,
+                payload.sort
 			)
 			.pipe(
 				finalize(() => {
@@ -277,7 +278,10 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             onlyWrongfullyDeletedInHubspot: this.onlyWrongfullyDeletedInHubspot,
             owners: this.selectedAccountManagers,
             selectedCountries: this.selectedCountries,
-            searchFilter: this.clientFilter.value ? this.clientFilter.value : ''
+            searchFilter: this.clientFilter.value ? this.clientFilter.value : '',
+            ownerTenantsIds: this.teamsAndDivisionsFilterState.tenantIds,
+            ownerDivisionsIds: this.teamsAndDivisionsFilterState.divisionIds,
+            ownerTeamsIds: this.teamsAndDivisionsFilterState.teamsIds,
         };
 
         localStorage.setItem(ClientGridOptionsKey, JSON.stringify(filters));
@@ -295,6 +299,12 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             this.selectedAccountManagers = filters.owners?.length ? filters.owners : [];
             this.selectedCountries = filters.selectedCountries?.length ? filters.selectedCountries : [];
             this.clientFilter.setValue(filters.searchFilter, {emitEvent: false});
+            this.teamsAndDivisionsFilterState = {
+                tenantIds: filters.ownerTenantsIds ?? [],
+                divisionIds: filters.ownerDivisionsIds ?? [],
+                teamsIds: filters.ownerTeamsIds ?? [],
+            };
+            this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
         }
         this.getClientsGrid();
     }
@@ -361,6 +371,13 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.includeDeleted = false;
         this.selectedCountries = [];
         this.countryList.map(x => x.selected = false);
+        this.teamsAndDivisionsFilterState = {
+            tenantIds: [],
+            divisionIds: [],
+            teamsIds: [],
+        };
+        this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
+        this.treeFilter.reset();
         localStorage.removeItem(ClientGridOptionsKey);
         this.getCurrentUser();
     }
@@ -391,5 +408,41 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    teamsAndDivisionsChanged(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+        this.teamsAndDivisionsFilterState = teamsAndDivisionFilter
+        this._teamsAndDivisionCounter(teamsAndDivisionFilter);
+        this.getClientsGrid(true);
+    }
+
+    private _packGridPayload(): IClientGridPayload {
+        let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
+        let ownerIds = this.selectedAccountManagers?.map(x => +x.id);
+        let selectedCountryIds = this.selectedCountries?.map(x => +x.id);
+        let isActiveFlag;
+        if ((this.isActiveClients && this.nonActiveClient) || (!this.isActiveClients && !this.nonActiveClient)) {
+            isActiveFlag = undefined;
+        } else {
+            isActiveFlag = this.isActiveClients;
+        }
+        return {
+            search: searchFilter,
+            countryFilter: selectedCountryIds,
+            ownerFilter: ownerIds,
+            ownerNodes: this.teamsAndDivisionsFilterState.divisionIds?.concat(this.teamsAndDivisionsFilterState.teamsIds),
+            ownerTenants: this.teamsAndDivisionsFilterState.tenantIds,
+            isActive: isActiveFlag,
+            excludeDeleted: !this.includeDeleted,
+            onlyWrongfullyDeletedInHubspot: this.onlyWrongfullyDeletedInHubspot,
+            pageNumber: this.pageNumber,
+            pageSize: this.deafultPageSize,
+            sort: this.sorting
+        } as IClientGridPayload;
+    }
+
+    private _teamsAndDivisionCounter(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+        const {teamsIds, tenantIds, divisionIds} = teamsAndDivisionFilter;
+        this.selectedTeamsAndDivisionsCount = teamsIds.length + tenantIds.length + divisionIds.length;
     }
 }

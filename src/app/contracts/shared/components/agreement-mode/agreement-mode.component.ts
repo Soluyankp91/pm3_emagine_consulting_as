@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { MODE_FILTER_OPTIONS } from 'src/app/shared/components/grid-table/agreements/entities/agreements.constants';
 import { AgreementValidityState } from 'src/shared/service-proxies/service-proxies';
-import { MODE_FILTER_OPTIONS } from '../grid-table/agreements/entities/agreements.constants';
 
 @Component({
 	selector: 'emg-agreement-mode',

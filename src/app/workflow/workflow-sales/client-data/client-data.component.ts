@@ -673,11 +673,11 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 							this.salesClientDataForm.directClientIdValue?.value?.clientId,
 							this.salesClientDataForm.endClientIdValue?.value?.clientId,
 						].filter(Boolean),
-						name: value,
+						name: value ?? '',
 						maxRecordsCount: 1000,
 					};
 					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
+						toSend.name = value.id ? value.firstName : value ?? '';
 					}
 					if (toSend.clientIds?.length) {
 						return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);

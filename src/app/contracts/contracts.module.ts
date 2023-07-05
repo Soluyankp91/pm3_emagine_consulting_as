@@ -6,8 +6,6 @@ import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
 import { AgreementsComponent } from './agreements/listAndPreviews/agreements.component';
 import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
-import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
-import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
 	AgreementAttachmentServiceProxy,
 	AgreementServiceProxy,
@@ -16,19 +14,7 @@ import {
 	FileServiceProxy,
 	MergeFieldsServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
-import { EmployeesFilterComponent } from './shared/components/grid-table/master-templates/filters/employees-filter/employees-filter.component';
-import { AgreementTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-types-filter/agreement-types-filter.component';
-import { DeliveryTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/delivery-types-filter/delivery-types-filter.component';
-import { EmploymentTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/employment-types-filter/employment-types-filter.component';
-import { LegalEntitiesFilterComponent } from './shared/components/grid-table/master-templates/filters/legal-entities-filter/legal-entities-filter.component';
-import { RecipientTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/recipient-types-filter/recipient-types-filter.component';
-import { SalesTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/sales-types-filter/sales-types-filter.component';
 import { AutoNameComponent } from './shared/components/auto-name/auto-name.component';
-import { MatMenuSingleSelectComponent } from './shared/components/emagine-menu-single-select/emagine-menu-single-select.component';
-import { MultiSelectComponent } from './shared/components/emagine-menu-multi-select/emagine-menu-multi-select.component';
-import { CustomTooltipDirective } from './shared/directives/customTooltip/custom-tooltip.directive';
-import { DropdownAutocompleteMultiselectComponent } from './shared/components/dropdown-autocomplete-multiselect/dropdown-autocomplete-multiselect.component';
-import { DropdownAutocompleteSingleSelectComponent } from './shared/components/dropdown-autocomplete-single-select/dropdown-autocomplete-single-select.component';
 import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -44,7 +30,6 @@ import { FileUploaderComponent } from './shared/components/file-uploader/file-up
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
-import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled.component';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
@@ -57,19 +42,8 @@ import { LogsComponent } from './master-templates/listAndPreviews/components/pre
 import { LinkedClientTemplatesComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedClientTemplates/linked-client-templates.component';
 import { CustomTooltipComponent } from './shared/directives/customTooltip/custom-tooltip.component';
 import { LinkedAgreementsComponent } from './master-templates/listAndPreviews/components/preview/previewTabs/linkedAgreements/linked-agreements.component';
-import { AgreementStatusComponent } from './shared/components/agreement-status/agreement-status.component';
-import { ApprovalComponent } from './shared/components/approval/approval.component';
-import { EnabledComponent } from './shared/components/enabled/enabled.component';
-import { ApprovalFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/approval-filter/approval-filter.component';
-import { ClientModeFilterComponent } from './shared/components/grid-table/client-templates/entities/filters/mode-filter/mode-filter.component';
 import { SettingsComponent } from './agreements/template-editor/settings/settings.component';
-import { SalesManagersFilterComponent } from './shared/components/grid-table/agreements/filters/sales-managers-filter/sales-managers-filter.component';
-import { ContractManagerFilterComponent } from './shared/components/grid-table/agreements/filters/contact-manager-filter/contract-manager-filter.component';
-import { AgreementModeComponent } from './shared/components/agreement-mode/agreement-mode.component';
-import { ClientTemplateModeComponent } from './shared/components/client-mode/client-mode.component';
 import { AgreementService } from './agreements/listAndPreviews/services/agreement.service';
-import { StatusesFilterComponent } from './shared/components/grid-table/agreements/filters/statuses-filter/statuses-filter.component';
-import { AgreementModeFilterComponent } from './shared/components/grid-table/agreements/filters/mode-filter/mode-filter.component';
 import { SignersTableComponent } from './shared/components/signers-table/signers-table.component';
 import { ClientTemplatePreviewComponent } from './client-specific-templates/listAndPreviews/preview/client-template-preview.component';
 import { AgreementPreviewComponent } from './agreements/listAndPreviews/components/agreement-preview/agreement-preview.component';
@@ -84,8 +58,6 @@ import { StrInitialsPipe } from './shared/pipes/str-initials.pipe';
 import { ExtraHttpsService } from './shared/services/extra-https.service';
 import { DefaultTemplateComponent } from './shared/components/popUps/default-template/default-template.component';
 import { WorkflowInfoDisplayPanelComponent } from './shared/components/workflow-info-display-panel/workflow-info-display-panel.component';
-import { EnvelopePathFilterComponent } from './shared/components/grid-table/agreements/filters/envelope-path-filter/envelope-path-filter.component';
-import { EnvelopePathComponent } from './shared/components/envelope-path/envelope-path.component';
 import { ActionDialogComponent } from './shared/components/popUps/action-dialog/action-dialog.component';
 import { DefaultFileUploaderComponent } from './shared/components/default-file-uploader/default-file-uploader.component';
 import { AgreementLogsComponent } from './shared/components/agreement-logs/agreement-logs.component';
@@ -100,31 +72,16 @@ import { EmailBodyComponent } from './shared/components/popUps/email-body/email-
 		ClientSpecificTemplatesComponent,
 		MasterTemplatesComponent,
 		AgreementsComponent,
-		MatGridComponent,
-		EmployeesFilterComponent,
-		AgreementLanguagesFilterComponent,
-		AgreementTypesFilterComponent,
-		DeliveryTypesFilterComponent,
-		EmploymentTypesFilterComponent,
-		LegalEntitiesFilterComponent,
-		RecipientTypesFilterComponent,
-		SalesTypesFilterComponent,
 		MasterTemplateFilterHeaderComponent,
 		CreateMasterTemplateComponent,
 		SettingsTabComponent,
 		AutoNameComponent,
-		MatMenuSingleSelectComponent,
-		MultiSelectComponent,
-		CustomTooltipDirective,
-		DropdownAutocompleteMultiselectComponent,
 		NewFileUploaderDirective,
 		CreationComponent,
-		DropdownAutocompleteSingleSelectComponent,
 		ConfirmDialogComponent,
 		FileUploaderComponent,
 		FileSelectorComponent,
 		TenantsComponent,
-		IsEnabledComponent,
 		TruncateTextCustomPipe,
 		PreviewTabsComponent,
 		SummaryComponent,
@@ -133,21 +90,9 @@ import { EmailBodyComponent } from './shared/components/popUps/email-body/email-
 		AttachmentsComponent,
 		LogsComponent,
 		LinkedClientTemplatesComponent,
-		ClientModeFilterComponent,
-		ClientModeFilterComponent,
 		CustomTooltipComponent,
 		LinkedAgreementsComponent,
-		AgreementStatusComponent,
-		ApprovalComponent,
-		EnabledComponent,
-		ApprovalFilterComponent,
-		AgreementModeFilterComponent,
 		SettingsComponent,
-		SalesManagersFilterComponent,
-		ContractManagerFilterComponent,
-		AgreementModeComponent,
-		StatusesFilterComponent,
-		ClientTemplateModeComponent,
 		SignersTableComponent,
 		ClientTemplatePreviewComponent,
 		AgreementPreviewComponent,
@@ -157,8 +102,6 @@ import { EmailBodyComponent } from './shared/components/popUps/email-body/email-
 		StrInitialsPipe,
 		DefaultTemplateComponent,
 		WorkflowInfoDisplayPanelComponent,
-		EnvelopePathFilterComponent,
-		EnvelopePathComponent,
 		ActionDialogComponent,
 		DefaultFileUploaderComponent,
 		AgreementLogsComponent,

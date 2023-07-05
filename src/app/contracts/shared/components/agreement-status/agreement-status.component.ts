@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { STATUTES } from 'src/app/shared/components/grid-table/agreements/entities/agreements.constants';
 import { EnvelopeStatus } from 'src/shared/service-proxies/service-proxies';
-import { STATUTES } from '../grid-table/agreements/entities/agreements.constants';
 
 @Component({
 	selector: 'emg-agreement-status',

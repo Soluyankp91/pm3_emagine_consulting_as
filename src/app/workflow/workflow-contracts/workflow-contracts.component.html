@@ -87,6 +87,7 @@
                 [contractClientForm]="clientDataComponent?.contractClientForm"></app-contracts-consultant-data>
 
             <app-contracts-sync-data #syncDataComponent [readOnlyMode]="readOnlyMode" [activeSideSection]="activeSideSection" [periodId]="periodId"
+                [validationTriggered]="validationTriggered"
                 [contractClientForm]="clientDataComponent?.contractClientForm" (onSyncToLegacySystem)="processSyncToLegacySystem()"></app-contracts-sync-data>
 
         </ng-container>

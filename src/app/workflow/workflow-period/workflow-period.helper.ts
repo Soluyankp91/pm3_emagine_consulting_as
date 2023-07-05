@@ -1,6 +1,6 @@
 import { StepDto, StepType, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 import { EmploymentTypes } from "../workflow.model";
-import { StepWithAnchorsDto, IConsultantAnchor, StepAnchorDto, SubItemDto, SalesMainDataSections, SalesClientDataSections, SalesTerminationSections, SalesPlaceholderConsultantAnchors, SalesConsultantDataSections, ContractMainDataSections, ContractClientDataSections, ContractSyncSections, ContractPlaceholderConsultantAnchors, ContractConsultantDataSections, ContractTerminationSections, FinanceSections } from "./workflow-period.model";
+import { StepWithAnchorsDto, IConsultantAnchor, StepAnchorDto, SubItemDto, SalesMainDataSections, SalesClientDataSections, SalesTerminationSections, SalesPlaceholderConsultantAnchors, SalesConsultantDataSections, ContractMainDataSections, ContractClientDataSections, ContractSyncSections, ContractPlaceholderConsultantAnchors, ContractConsultantDataSections, ContractTerminationSections, FinanceSections, ConsultantFinanceSections } from "./workflow-period.model";
 
 export function GenerateStepAnchors(
     step: StepDto | StepWithAnchorsDto,
@@ -146,15 +146,34 @@ export function GenerateStepAnchors(
             }
             return new Array<StepAnchorDto>(...ContractAnchors);
         case StepType.Finance:
-            let FinanceAnchors: StepAnchorDto[] = [
-                {
-                    name: 'Finance Data',
-                    anchor: 'financeDataAnchor',
-                    subItems: new Array<SubItemDto>(...FinanceSections),
-                    anchorsOpened: false,
-                },
-            ];
-            return FinanceAnchors;
+            let FinanceAnchors: StepAnchorDto[] = [];
+            switch (processTypeId) {
+                case WorkflowProcessType.StartClientPeriod:
+                case WorkflowProcessType.ChangeClientPeriod:
+                case WorkflowProcessType.ExtendClientPeriod:
+                    FinanceAnchors = [
+                        {
+                            name: 'Finance Data',
+                            anchor: 'financeDataAnchor',
+                            subItems: new Array<SubItemDto>(...FinanceSections),
+                            anchorsOpened: false,
+                        },
+                    ];
+                    break;
+                case WorkflowProcessType.StartConsultantPeriod:
+                case WorkflowProcessType.ChangeConsultantPeriod:
+                case WorkflowProcessType.ExtendConsultantPeriod:
+                    FinanceAnchors = [
+                        {
+                            name: 'Finance Data',
+                            anchor: 'financeDataAnchor',
+                            subItems: new Array<SubItemDto>(...ConsultantFinanceSections),
+                            anchorsOpened: false,
+                        },
+                    ];
+                    break;
+            }
+            return new Array<StepAnchorDto>(...FinanceAnchors);
         case StepType.Sourcing:
             return [];
     }

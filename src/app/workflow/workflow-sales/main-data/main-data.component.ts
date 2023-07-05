@@ -40,6 +40,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 	@Input() canToggleEditMode: boolean;
 	@Input() activeSideSection: WorkflowProcessWithAnchorsDto;
 	@Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
+    @Input() isWFDeleted: boolean;
 	@Output() editModeToggled = new EventEmitter<any>();
 	@Output() onReturnToSales = new EventEmitter<any>();
 
@@ -467,7 +468,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
 					if (value?.id) {
 						toSend.name = value.id ? value.name : value;
 					}
-					return this._lookupService.employees(value);
+					return this._lookupService.employees(toSend.name);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {

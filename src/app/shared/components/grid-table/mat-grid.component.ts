@@ -29,8 +29,8 @@ import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.
 import { SelectionModel } from '@angular/cdk/collections';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
-import { Actions } from '../../entities/contracts.interfaces';
-import { FILTER_LABEL_MAP } from '../../entities/contracts.constants';
+import { Actions } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { FILTER_LABEL_MAP } from 'src/app/contracts/shared/entities/contracts.constants';
 
 @Component({
 	selector: 'emg-mat-grid',

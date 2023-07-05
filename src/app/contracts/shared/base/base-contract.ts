@@ -5,7 +5,7 @@ import { switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 import {
 	DEFAULT_SIZE_OPTION,
 	INITIAL_PAGE_INDEX,
-} from '../components/grid-table/master-templates/entities/master-templates.constants';
+} from '../../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { isEqual } from 'lodash';
 import { PageDto, SortDto, TemplatePayload } from '../entities/contracts.interfaces';
 import { MapTenantCountryCode, MapTenantNameFromId } from 'src/shared/helpers/tenantHelper';

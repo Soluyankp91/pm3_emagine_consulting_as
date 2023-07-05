@@ -10,6 +10,7 @@ import { TenantEnum } from './consultant-information.model';
 export class ConsultantInformationComponent extends AppComponentBase {
     @Input() consultantData: any;
     @Input() onlyAdditionalInfo: boolean;
+    @Input() size: number = 35;
     tenantEnum = TenantEnum;
     constructor(
         injector: Injector

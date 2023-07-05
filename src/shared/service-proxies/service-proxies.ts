@@ -7987,7 +7987,8 @@ export class ClientsServiceProxy {
      * @param search (optional) 
      * @param countryFilter (optional) 
      * @param ownerFilter (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param ownerNodes (optional) 
+     * @param ownerTenants (optional) 
      * @param isActive (optional) 
      * @param excludeDeleted (optional) 
      * @param onlyWrongfullyDeletedInHubspot (optional) 
@@ -7996,7 +7997,7 @@ export class ClientsServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
+    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, ownerNodes?: number[] | undefined, ownerTenants?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients/list?";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
@@ -8010,10 +8011,14 @@ export class ClientsServiceProxy {
             throw new Error("The parameter 'ownerFilter' cannot be null.");
         else if (ownerFilter !== undefined)
             ownerFilter && ownerFilter.forEach(item => { url_ += "ownerFilter=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "teamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (ownerNodes === null)
+            throw new Error("The parameter 'ownerNodes' cannot be null.");
+        else if (ownerNodes !== undefined)
+            ownerNodes && ownerNodes.forEach(item => { url_ += "ownerNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (ownerTenants === null)
+            throw new Error("The parameter 'ownerTenants' cannot be null.");
+        else if (ownerTenants !== undefined)
+            ownerTenants && ownerTenants.forEach(item => { url_ += "ownerTenants=" + encodeURIComponent("" + item) + "&"; });
         if (isActive === null)
             throw new Error("The parameter 'isActive' cannot be null.");
         else if (isActive !== undefined)
@@ -16165,7 +16170,8 @@ export class MainOverviewServiceProxy {
 
     /**
      * @param mainOverviewStatusesForSales (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param accountManagersTeamsAndDivisionsNodes (optional) 
+     * @param accountManagersTenants (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -16180,16 +16186,20 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
+    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagersTeamsAndDivisionsNodes?: number[] | undefined, accountManagersTenants?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/workflows?";
         if (mainOverviewStatusesForSales === null)
             throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
         else if (mainOverviewStatusesForSales !== undefined)
             mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'accountManagersTeamsAndDivisionsNodes' cannot be null.");
+        else if (accountManagersTeamsAndDivisionsNodes !== undefined)
+            accountManagersTeamsAndDivisionsNodes && accountManagersTeamsAndDivisionsNodes.forEach(item => { url_ += "AccountManagersTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTenants === null)
+            throw new Error("The parameter 'accountManagersTenants' cannot be null.");
+        else if (accountManagersTenants !== undefined)
+            accountManagersTenants && accountManagersTenants.forEach(item => { url_ += "AccountManagersTenants=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -16286,7 +16296,8 @@ export class MainOverviewServiceProxy {
 
     /**
      * @param mainOverviewStatusesForSales (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param accountManagersTeamsAndDivisionsNodes (optional) 
+     * @param accountManagersTenants (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -16301,16 +16312,20 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
+    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagersTeamsAndDivisionsNodes?: number[] | undefined, accountManagersTenants?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/consultants?";
         if (mainOverviewStatusesForSales === null)
             throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
         else if (mainOverviewStatusesForSales !== undefined)
             mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'accountManagersTeamsAndDivisionsNodes' cannot be null.");
+        else if (accountManagersTeamsAndDivisionsNodes !== undefined)
+            accountManagersTeamsAndDivisionsNodes && accountManagersTeamsAndDivisionsNodes.forEach(item => { url_ += "AccountManagersTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTenants === null)
+            throw new Error("The parameter 'accountManagersTenants' cannot be null.");
+        else if (accountManagersTenants !== undefined)
+            accountManagersTenants && accountManagersTenants.forEach(item => { url_ += "AccountManagersTenants=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -17167,15 +17182,15 @@ export class SourcingIntegrationServiceProxy {
     }
 
     /**
-     * @param param (optional) 
+     * @param requestId (optional) 
      * @return Success
      */
-    test(param?: number | undefined): Observable<TestConnectionDto> {
-        let url_ = this.baseUrl + "/api/SourcingIntegration/test?";
-        if (param === null)
-            throw new Error("The parameter 'param' cannot be null.");
-        else if (param !== undefined)
-            url_ += "param=" + encodeURIComponent("" + param) + "&";
+    requestconsultantsWorkflows(requestId?: number | undefined): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/SourcingIntegration/requestconsultants-workflows?";
+        if (requestId === null)
+            throw new Error("The parameter 'requestId' cannot be null.");
+        else if (requestId !== undefined)
+            url_ += "requestId=" + encodeURIComponent("" + requestId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -17187,20 +17202,20 @@ export class SourcingIntegrationServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTest(response_);
+            return this.processRequestconsultantsWorkflows(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTest(response_ as any);
+                    return this.processRequestconsultantsWorkflows(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<TestConnectionDto>;
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<TestConnectionDto>;
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
         }));
     }
 
-    protected processTest(response: HttpResponseBase): Observable<TestConnectionDto> {
+    protected processRequestconsultantsWorkflows(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -17211,7 +17226,16 @@ export class SourcingIntegrationServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TestConnectionDto.fromJS(resultData200);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -17219,7 +17243,7 @@ export class SourcingIntegrationServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TestConnectionDto>(null as any);
+        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 }
 
@@ -17959,7 +17983,8 @@ export class WorkflowServiceProxy {
      * @param deliveryType (optional) 
      * @param workflowStatus (optional) 
      * @param responsibleEmployees (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param employeesTeamsAndDivisionsNodes (optional) 
+     * @param employeesTenants (optional) 
      * @param syncStateStatuses (optional) 
      * @param showNewSales (optional) 
      * @param showExtensions (optional) 
@@ -17976,7 +18001,7 @@ export class WorkflowServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
@@ -18002,10 +18027,14 @@ export class WorkflowServiceProxy {
             throw new Error("The parameter 'responsibleEmployees' cannot be null.");
         else if (responsibleEmployees !== undefined)
             responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (employeesTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'employeesTeamsAndDivisionsNodes' cannot be null.");
+        else if (employeesTeamsAndDivisionsNodes !== undefined)
+            employeesTeamsAndDivisionsNodes && employeesTeamsAndDivisionsNodes.forEach(item => { url_ += "EmployeesTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (employeesTenants === null)
+            throw new Error("The parameter 'employeesTenants' cannot be null.");
+        else if (employeesTenants !== undefined)
+            employeesTenants && employeesTenants.forEach(item => { url_ += "EmployeesTenants=" + encodeURIComponent("" + item) + "&"; });
         if (syncStateStatuses === null)
             throw new Error("The parameter 'syncStateStatuses' cannot be null.");
         else if (syncStateStatuses !== undefined)
@@ -30695,6 +30724,7 @@ export interface IHistoryFilterNamesDto {
 }
 
 export class HistoryPropertiesDto implements IHistoryPropertiesDto {
+    historyEntityId?: number;
     actionName?: string | undefined;
     entityName?: string | undefined;
     entityKey?: { [key: string]: string; } | undefined;
@@ -30729,6 +30759,7 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
     init(_data?: any) {
         if (_data) {
+            this.historyEntityId = _data["historyEntityId"];
             this.actionName = _data["actionName"];
             this.entityName = _data["entityName"];
             if (_data["entityKey"]) {
@@ -30769,6 +30800,7 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["historyEntityId"] = this.historyEntityId;
         data["actionName"] = this.actionName;
         data["entityName"] = this.entityName;
         if (this.entityKey) {
@@ -30802,6 +30834,7 @@ export class HistoryPropertiesDto implements IHistoryPropertiesDto {
 }
 
 export interface IHistoryPropertiesDto {
+    historyEntityId?: number;
     actionName?: string | undefined;
     entityName?: string | undefined;
     entityKey?: { [key: string]: string; } | undefined;
@@ -35427,46 +35460,6 @@ export enum TerminationTime {
     AccordingToContract = 1,
     BeforeEndOfContract = 2,
     ContractDidNotStart = 3,
-}
-
-export class TestConnectionDto implements ITestConnectionDto {
-    testParam?: number;
-    works?: boolean;
-
-    constructor(data?: ITestConnectionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.testParam = _data["testParam"];
-            this.works = _data["works"];
-        }
-    }
-
-    static fromJS(data: any): TestConnectionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TestConnectionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["testParam"] = this.testParam;
-        data["works"] = this.works;
-        return data;
-    }
-}
-
-export interface ITestConnectionDto {
-    testParam?: number;
-    works?: boolean;
 }
 
 export class TimeReportingCapDto implements ITimeReportingCapDto {

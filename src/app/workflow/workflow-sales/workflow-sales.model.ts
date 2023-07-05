@@ -5,22 +5,22 @@ import { CustomValidators } from "src/shared/utils/custom-validators";
 export class WorkflowSalesMainForm extends UntypedFormGroup {
     constructor() {
         super({
-            salesTypeId: new UntypedFormControl(null, Validators.required),
-            deliveryTypeId: new UntypedFormControl(null, Validators.required),
-            projectTypeId: new UntypedFormControl(null, Validators.required),
-            marginId: new UntypedFormControl(null, Validators.required),
+            salesTypeId: new UntypedFormControl(null),
+            deliveryTypeId: new UntypedFormControl(null),
+            projectTypeId: new UntypedFormControl(null),
+            marginId: new UntypedFormControl(null),
             projectCategoryId: new UntypedFormControl(null),
             primaryCategoryArea: new UntypedFormControl(null),
             primaryCategoryType: new UntypedFormControl(null),
             primaryCategoryRole: new UntypedFormControl(null),
-            projectDescription: new UntypedFormControl(null, Validators.required),
-            projectName: new UntypedFormControl(null, [Validators.required, Validators.maxLength(100)]),
+            projectDescription: new UntypedFormControl(null),
+            projectName: new UntypedFormControl(null, Validators.maxLength(100)),
             discountId: new UntypedFormControl(null),
 
             commissions: new UntypedFormArray([]),
             commissionedUsers: new UntypedFormArray([]),
 
-            salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
+            salesAccountManagerIdValue: new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id'])),
             commissionAccountManagerIdValue: new UntypedFormControl(null),
             primarySourcer: new UntypedFormControl(null),
             contractExpirationNotification: new UntypedFormControl(null),

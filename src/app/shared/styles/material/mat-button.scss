@@ -130,7 +130,9 @@
 }
 
 .workflow-icon--actions {
-    background: rgba($color: $green-color, $alpha: .2);
+    &:hover {
+        background: rgba($color: $green-color, $alpha: .2);
+    }
     mat-icon {
         color: $green-color;
         display: inline-flex;
@@ -532,6 +534,15 @@
                 width: 20px;
                 height: 20px;
             }
+        }
+    }
+}
+
+.tree-chevron.mat-icon-button {
+    .mat-button-wrapper {
+        @include flexCentered();
+        mat-icon {
+            @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
         }
     }
 }
