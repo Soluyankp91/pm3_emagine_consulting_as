@@ -128,17 +128,6 @@
                     </ng-container>
                 </mat-select>
             </mat-form-field>
-
-            <mat-form-field appearance="outline" class="filter-select" fxFlex="20%">
-                <mat-label> Margins</mat-label>
-                <mat-select [formControl]="marginsControl" [disableOptionCentering]="true" [multiple]="true">
-                    <ng-container *ngFor="let item of margins">
-                        <mat-option [value]="item.id">
-                            {{ item.name }}
-                        </mat-option>
-                    </ng-container>
-                </mat-select>
-            </mat-form-field>
         </div>
     </ng-container>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
