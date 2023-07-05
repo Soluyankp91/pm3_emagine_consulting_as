@@ -23,7 +23,7 @@ import {
 	PeriodConsultantSpecialRateDto,
 	ProjectLineDto,
     PurchaseOrderCapType,
-    PurchaseOrderDto,
+    PurchaseOrderQueryDto,
     PurchaseOrderServiceProxy,
     TimeReportingCapDto,
 } from 'src/shared/service-proxies/service-proxies';
@@ -48,7 +48,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	@Input() contractClientForm: WorkflowContractsClientDataForm;
 	@Input() clientSpecialRateList: ClientSpecialRateDto[];
 	@Input() clientSpecialFeeList: ClientSpecialFeeDto[];
-	purchaseOrders: PurchaseOrderDto[] = [];
+	purchaseOrders: PurchaseOrderQueryDto[] = [];
 	contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
 	clientTimeReportingCaps = ClientTimeReportingCaps;
 	employmentTypes: EnumEntityTypeDto[];
@@ -646,7 +646,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				? null
 				: this.contractClientForm.invoicingReferencePerson?.value,
 			purchaseOrderId: null,
-			purchaseOrder: new PurchaseOrderDto(),
+			purchaseOrder: new PurchaseOrderQueryDto(),
 		};
 		if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
 			projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as UntypedFormArray).at(

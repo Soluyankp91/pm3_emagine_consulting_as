@@ -10,6 +10,8 @@ import { TitleService } from 'src/shared/common/services/title.service';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { FormControl } from '@angular/forms';
 import { SelectableEmployeeDto } from '../workflow/workflow.model';
+import { PurchaseOrderServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { finalize } from 'rxjs/operators';
 
 const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0'
 @Component({
@@ -24,7 +26,8 @@ export class PoListComponent implements OnInit {
 	selectedRowId: number;
 	selectionModel = new SelectionModel<Actions>(this.allowMultiSelect, this.initialSelection);
 	displayedColumns = DISPLAYED_COLUMNS;
-	dataSource = new MatTableDataSource<any>(DUMMY_DATA);
+	// dataSource = new MatTableDataSource<any>(DUMMY_DATA);
+	dataSource = new MatTableDataSource<any>();
 	sortActive: string;
 	sotrDirection: SortDirection;
 	totalCount: number;
@@ -38,10 +41,11 @@ export class PoListComponent implements OnInit {
     selectedAccountManagers: SelectableEmployeeDto[];
     includeCompleted: boolean;
 	trackByAction: TrackByFunction<any>;
-	constructor(private readonly _titleService: TitleService,) {}
+	constructor(private readonly _titleService: TitleService, private readonly _purchaseOrderService: PurchaseOrderServiceProxy) {}
 
 	ngOnInit(): void {
         this._titleService.setTitle(ERouteTitleType.POList);
+        this.getGridOptions();
     }
 
     saveGridOptions() {
@@ -76,7 +80,11 @@ export class PoListComponent implements OnInit {
 	}
 
     getPurchaseOrdersList() {
-
+        this._purchaseOrderService.getPurchaseOrdersList([], [], [], [], [], [], true, '', 1, 20, '')
+            .pipe(finalize(() => console.log('fin')))
+            .subscribe(result => {
+                console.log(result);
+            });
     }
 
 	resetAllFilters() {}

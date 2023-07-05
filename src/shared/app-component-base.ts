@@ -6,7 +6,7 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
-import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, PurchaseOrderDto } from "./service-proxies/service-proxies";
+import { AgreementSimpleListItemDto, API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto, PurchaseOrderQueryDto } from "./service-proxies/service-proxies";
 import { EProfileImageLinkTypes } from "./AppEnums";
 import { InternalLookupService } from "src/app/shared/common/internal-lookup.service";
 import { MomentFormatPipe } from "./common/pipes/moment-format.pipe";
@@ -211,7 +211,7 @@ export abstract class AppComponentBase {
         }
     }
 
-    displayPOFn(option: PurchaseOrderDto) {
+    displayPOFn(option: PurchaseOrderQueryDto) {
 		return option?.number;
 	}
 

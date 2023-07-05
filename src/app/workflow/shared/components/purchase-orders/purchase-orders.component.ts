@@ -8,7 +8,7 @@ import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
 	EnumEntityTypeDto,
 	PurchaseOrderCapType,
-	PurchaseOrderDto,
+	PurchaseOrderQueryDto,
 	PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { AddOrEditPoDialogComponent } from './add-or-edit-po-dialog/add-or-edit-po-dialog.component';
@@ -30,7 +30,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	eValueUnitType = EValueUnitTypes;
 	ePoCapType = PurchaseOrderCapType;
 	purchaseOrderCapTypes: { [key: string]: string };
-	purchaseOrdersList: PurchaseOrderDto[];
+	purchaseOrdersList: PurchaseOrderQueryDto[];
 	ePurchaseOrderMode = EPurchaseOrderMode;
 	eCurrencies: { [key: number]: string };
 
@@ -49,7 +49,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		this._getEnums();
 	}
 
-	createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderDto, orderIndex?: number) {
+	createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderQueryDto, orderIndex?: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -61,7 +61,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		};
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderDto) => {
+		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderQueryDto) => {
 			if (!!purchaseOrder) {
 				this._updatePurchaseOrder(newPurchaseOrder, orderIndex);
 			} else {
@@ -95,14 +95,14 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		this.purchaseOrders.removeAt(orderIndex);
 	}
 
-	updatePOs(purchaseOrder: PurchaseOrderDto) {
+	updatePOs(purchaseOrder: PurchaseOrderQueryDto) {
 		const POtoUpdate = this.purchaseOrders.controls.find((x) => x.value.id === purchaseOrder.id);
 		if (POtoUpdate) {
 			POtoUpdate.patchValue(purchaseOrder);
 		}
 	}
 
-	private _filterResponse(list: PurchaseOrderDto[], purchaseOrderIds: number[]) {
+	private _filterResponse(list: PurchaseOrderQueryDto[], purchaseOrderIds: number[]) {
 		switch (this.mode) {
 			case EPurchaseOrderMode.WFOverview:
 				list.filter((item) => item.purchaseOrderCurrentContextData?.existsInThisWorkflow).forEach((order) => {
@@ -119,7 +119,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		}
 	}
 
-	private _updatePurchaseOrder(purchaseOrder: PurchaseOrderDto, orderIndex: number) {
+	private _updatePurchaseOrder(purchaseOrder: PurchaseOrderQueryDto, orderIndex: number) {
 		const formRow = this.purchaseOrders.at(orderIndex);
 		formRow.get('id').setValue(purchaseOrder?.id, { emitEvent: false });
 		formRow.get('number').setValue(purchaseOrder?.number, { emitEvent: false });
@@ -149,7 +149,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		capForInvoicingForm.get('amountUsed').setValue(purchaseOrder?.capForInvoicing?.amountUsed, { emitEvent: false });
 	}
 
-	private _addPurchaseOrder(purchaseOrder: PurchaseOrderDto) {
+	private _addPurchaseOrder(purchaseOrder: PurchaseOrderQueryDto) {
 		const form = this._fb.group({
 			id: new UntypedFormControl(purchaseOrder?.id ?? null),
 			number: new UntypedFormControl(purchaseOrder?.number),

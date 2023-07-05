@@ -9,7 +9,8 @@ import {
 	EnumEntityTypeDto,
 	PurchaseOrderCapDto,
 	PurchaseOrderCapType,
-	PurchaseOrderDto,
+	PurchaseOrderCommandDto,
+	PurchaseOrderQueryDto,
 	PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { EPOSource, POSources, PurchaseOrderForm } from './add-or-edit-po-dialog.model';
@@ -21,7 +22,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 	styleUrls: ['./add-or-edit-po-dialog.component.scss'],
 })
 export class AddOrEditPoDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
-	@Output() onConfirmed: EventEmitter<PurchaseOrderDto> = new EventEmitter<PurchaseOrderDto>();
+	@Output() onConfirmed: EventEmitter<PurchaseOrderQueryDto> = new EventEmitter<PurchaseOrderQueryDto>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 	purchaseOrderForm: PurchaseOrderForm;
 	purchaseOrderCapTypes: { [key: string]: string };
@@ -31,17 +32,17 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	poSources = POSources;
 	ePOSource = EPOSource;
 	ePOCaps = PurchaseOrderCapType;
-	purchaseOrders: PurchaseOrderDto[];
-	availablePurchaseOrders: PurchaseOrderDto[] = [];
-	filteredPurchaseOrders: Observable<PurchaseOrderDto[]>;
-	existingPo: PurchaseOrderDto;
+	purchaseOrders: PurchaseOrderQueryDto[];
+	availablePurchaseOrders: PurchaseOrderQueryDto[] = [];
+	filteredPurchaseOrders: Observable<PurchaseOrderQueryDto[]>;
+	existingPo: PurchaseOrderQueryDto;
 	eValueUnitType = EValueUnitTypes;
 	private _unsubsribe = new Subject();
 	constructor(
 		injector: Injector,
 		@Inject(MAT_DIALOG_DATA)
 		public data: {
-			purchaseOrder: PurchaseOrderDto;
+			purchaseOrder: PurchaseOrderQueryDto;
 			isEdit: boolean;
 			clientPeriodId: string;
 			directClientId?: number;
@@ -53,7 +54,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	) {
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
-		this.existingPo = new PurchaseOrderDto(this.data?.purchaseOrder);
+		this.existingPo = new PurchaseOrderQueryDto(this.data?.purchaseOrder);
 	}
 
 	ngOnInit(): void {
@@ -83,11 +84,11 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	confirm() {
 		this.showMainSpinner();
 		const form = this.purchaseOrderForm.value;
-		let input = new PurchaseOrderDto(form);
+		let input = new PurchaseOrderCommandDto(form);
 		if (input.numberMissingButRequired) {
 			input.number = undefined;
 		}
-		input.workflowsIdsReferencingThisPo = [];
+		// input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
 		if (form.id !== null) {
 			if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
@@ -98,7 +99,8 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				return;
 			} else {
 				this._purchaseOrderService
-					.purchaseOrderPUT(this.data?.clientPeriodId, input)
+					// .purchaseOrderPUT(this.data?.clientPeriodId, input)
+					.purchaseOrderPUT(input)
 					.pipe(finalize(() => this.hideMainSpinner()))
 					.subscribe((result) => {
 						this._workflowDataService.updatePurchaseOrders.emit(result);
@@ -182,7 +184,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this._purchaseOrderService
 			.getPurchaseOrdersAvailableForClientPeriod(this.data?.clientPeriodId, this.data?.directClientId ?? undefined)
 			.pipe(
-				map((pos: PurchaseOrderDto[]) => {
+				map((pos: PurchaseOrderQueryDto[]) => {
 					return (
 						pos.map((po) => {
 							if (po.numberMissingButRequired) {
@@ -211,7 +213,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	private _clearData() {
-		this.existingPo = new PurchaseOrderDto();
+		this.existingPo = new PurchaseOrderQueryDto();
 		this.purchaseOrderForm.id.setValue(null);
 		this.purchaseOrderForm.number.setValue(null);
 		this.purchaseOrderForm.existingPo.setValue(null);
@@ -222,7 +224,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		this.purchaseOrderForm.capForInvoicing.currencyId.setValue(null);
 	}
 
-	private _filterPOsAutocomplete(filter: string): PurchaseOrderDto[] {
+	private _filterPOsAutocomplete(filter: string): PurchaseOrderQueryDto[] {
 		const filterValue = filter.toLowerCase().trim();
 		const result = this.availablePurchaseOrders.filter((x) => x.number.toLowerCase().includes(filterValue));
 		if (filter === '') {
