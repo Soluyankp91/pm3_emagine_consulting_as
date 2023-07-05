@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
@@ -9,6 +9,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientAddressDto, ClientAddressesServiceProxy, ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientContactForm } from './client-contacts.model';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
     selector: 'app-client-contacts',
@@ -16,10 +17,11 @@ import { ClientContactForm } from './client-contacts.model';
     styleUrls: ['./client-contacts.component.scss']
 })
 export class ClientContactsComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('contactsPaginator', {static: false}) paginator: MatPaginator;
     clientId: number;
     isDataLoading = false;
     selectedCountries: string[] = [];
-    pageNumber = 1;
+    pageNumber = 0;
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
@@ -39,6 +41,7 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
     clientAddresses: ClientAddressDto[];
     clientContactForm: ClientContactForm;
     clientContactsDataSource: MatTableDataSource<ContactDto> = new MatTableDataSource<ContactDto>();
+    clientContacts: ContactDto[];
 
     private _unsubscribe = new Subject();
     constructor(
@@ -74,14 +77,15 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
                 this.isDataLoading = false;
             }))
             .subscribe(result => {
-                this.fillContactForm(result);
+                this.clientContacts = result;
+                this.fillContactForm();
             });
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex + 1;
+        this.pageNumber = event.pageIndex;
         this.deafultPageSize = event.pageSize;
-        this.getClientContacts();
+        this.fillContactForm();
     }
 
     sortChanged(event?: any): void {
@@ -104,12 +108,15 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
             })
     }
 
-    fillContactForm(result: ContactDto[]) {
-        result.forEach(row => {
+    fillContactForm() {
+        let nextPageData: ContactDto[] = [];
+        nextPageData = this.clientContacts.slice((this.paginator.pageSize * this.paginator.pageIndex),(this.paginator.pageSize * (this.paginator.pageIndex + 1)));
+        this.addresses.controls = [];
+        nextPageData.forEach(row => {
             this.addClientAddress(row.clientAddress);
         });
-        this.clientContactsDataSource = new MatTableDataSource<ContactDto>(result);
-        this.totalCount = result.length;
+        this.clientContactsDataSource.data = nextPageData;
+        this.totalCount = this.clientContacts.length;
     }
 
     addClientAddress(address: ClientAddressDto) {
