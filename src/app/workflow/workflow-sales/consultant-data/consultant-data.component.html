@@ -253,7 +253,7 @@
                                             </mat-checkbox>
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150" [ngClass]="{'disabled-input': readOnlyMode}" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
                                                 <mat-label>Percentage onsite</mat-label>
-                                                <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsOnsiteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
+                                                <input [disabled]="readOnlyMode" [required]="consultant.value?.consultantIsOnsiteWorkplace && (consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace)" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
                                                 <mat-icon matSuffix svgIcon="percentage-icon"></mat-icon>
                                                 <mat-error>
                                                     <app-validator [control]="consultant.get('consultantWorkplacePercentageOnSite')"></app-validator>
