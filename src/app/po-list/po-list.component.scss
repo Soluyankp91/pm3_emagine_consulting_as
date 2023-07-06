@@ -292,27 +292,31 @@
   .example-element-detail {
     overflow: hidden;
     display: flex;
+    flex-direction: column;
+    div {
+        min-height: 48px;
+    }
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
   }
 
-//   .example-element-diagram {
-//     min-width: 80px;
-//     border: 2px solid black;
-//     padding: 8px;
-//     font-weight: lighter;
-//     margin: 8px 0;
-//     height: 104px;
-//   }
+.expandedRightSticky-column {
+    @include table-cell-width(50px);
+    box-shadow:
+            -4px 0px 0px rgba(231, 227, 232, 0.5),
+            -6px 0px 0px rgba(225, 220, 225, 0.3),
+            -8px 0px 0px rgba(217, 217, 217, 0);
+}
 
-  .example-element-symbol {
-    font-weight: bold;
-    font-size: 40px;
-    line-height: normal;
-  }
+.expandedLeftSticky-column {
+    padding-left: 1px !important;
+    @include table-cell-width(444px);
+    box-shadow:
+        4px 0px 0px rgba(231, 227, 232, 0.5),
+        6px 0px 0px rgba(225, 220, 225, 0.3),
+        8px 0px 0px rgba(217, 217, 217, 0);
 
-  .example-element-description {
-    padding: 16px;
-  }
-
-  .example-element-description-attribution {
-    opacity: 0.5;
-  }
+}
