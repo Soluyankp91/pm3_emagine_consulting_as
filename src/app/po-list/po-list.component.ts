@@ -12,12 +12,20 @@ import { FormControl } from '@angular/forms';
 import { SelectableEmployeeDto } from '../workflow/workflow.model';
 import { PurchaseOrderServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0'
 @Component({
 	selector: 'app-po-list',
 	templateUrl: './po-list.component.html',
 	styleUrls: ['./po-list.component.scss'],
+    animations: [
+        trigger('detailExpand', [
+          state('collapsed', style({height: '0px', minHeight: '0'})),
+          state('expanded', style({height: '*'})),
+          transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+      ],
 })
 export class PoListComponent implements OnInit {
 	initialSelection = [];
@@ -26,8 +34,8 @@ export class PoListComponent implements OnInit {
 	selectedRowId: number;
 	selectionModel = new SelectionModel<Actions>(this.allowMultiSelect, this.initialSelection);
 	displayedColumns = DISPLAYED_COLUMNS;
-	// dataSource = new MatTableDataSource<any>(DUMMY_DATA);
-	dataSource = new MatTableDataSource<any>();
+	dataSource = new MatTableDataSource<any>(DUMMY_DATA);
+	// dataSource = new MatTableDataSource<any>();
 	sortActive: string;
 	sotrDirection: SortDirection;
 	totalCount: number;
@@ -40,6 +48,7 @@ export class PoListComponent implements OnInit {
     searchFilter = new FormControl('');
     selectedAccountManagers: SelectableEmployeeDto[];
     includeCompleted: boolean;
+    expandedElement: any;
 	trackByAction: TrackByFunction<any>;
 	constructor(private readonly _titleService: TitleService, private readonly _purchaseOrderService: PurchaseOrderServiceProxy) {}
 

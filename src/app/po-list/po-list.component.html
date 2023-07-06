@@ -15,6 +15,7 @@
     </ng-container> -->
 	<div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !dataSource.data.length }">
 		<mat-table
+            multiTemplateDataRows
 			matSort
 			[dataSource]="dataSource"
 			[matSortActive]="sortActive"
@@ -43,6 +44,10 @@
                     class="table-header-cell poStatus-column">
                 </mat-header-cell>
 				<mat-cell class="table-cell poStatus-column" *matCellDef="let row">
+                    <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === row ? null : row); $event.stopPropagation()">
+                        <mat-icon *ngIf="expandedElement !== row">keyboard_arrow_down</mat-icon>
+                        <mat-icon *ngIf="expandedElement === row">keyboard_arrow_up</mat-icon>
+                      </button>
 					{{row.status}}
 				</mat-cell>
 			</ng-container>
@@ -226,6 +231,26 @@
 					{{row.accountManager}}
 				</mat-cell>
 			</ng-container>
+            <ng-container matColumnDef="expandedDetail">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+
+				<mat-cell class="table-cell" *matCellDef="let element" [attr.collspan]="displayedColumns.length">
+					<div class="example-element-detail"
+                        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="example-element-diagram">
+                        <div class="example-element-position"> {{element.note}} </div>
+                        <div class="example-element-symbol"> {{element.note}} </div>
+                        <div class="example-element-name"> {{element.note}} </div>
+                        <div class="example-element-weight"> {{element.note}} </div>
+                        </div>
+                        <div class="example-element-description">
+                        {{element.note}}
+                        <span class="example-element-description-attribution"> -- Wikipedia </span>
+                        </div>
+                    </div>
+				</mat-cell>
+			</ng-container>
+
             <ng-container matColumnDef="actions" [stickyEnd]="true">
                 <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
                 <mat-cell class="table-cell" *matCellDef="let actionRow" class="actions-column">
@@ -244,8 +269,11 @@
 			<mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
 			<mat-row
 				*matRowDef="let row; columns: displayedColumns"
+                [class.example-expanded-row]="expandedElement === row"
+                (click)="expandedElement = expandedElement === row ? null : row"
 				[ngClass]="{ highlight: selectedRowId === row.id }"
 				class="row-hover"></mat-row>
+            <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></mat-row>
 		</mat-table>
 		<ng-container *ngIf="!dataSource.data.length">
 			<div class="no-items">
