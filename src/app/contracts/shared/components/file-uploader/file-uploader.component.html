@@ -3,11 +3,15 @@
 		<h4 class="loaded-files-label">{{ label }}</h4>
 	</ng-container>
 	<ng-container *ngFor="let preselectedFile of preselectedFilesModified; trackBy: trackByAgreementTemplateAttachmentId">
-		<div class="file-container">
+		<div
+			class="file-container"
+			[ngClass]="{
+				obsolete: test(preselectedFile.isObsolete)
+			}">
 			<div class="file-item-left">
-                <ng-container *ngIf="preselectedFile.icon">
-                    <mat-icon [svgIcon]="preselectedFile.icon"></mat-icon>
-                </ng-container>
+				<ng-container *ngIf="preselectedFile.icon">
+					<mat-icon [svgIcon]="preselectedFile.icon"></mat-icon>
+				</ng-container>
 				<div class="file-label" [customTooltip]="file.name">{{ preselectedFile.name }}</div>
 			</div>
 			<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
@@ -15,9 +19,7 @@
 			</button>
 			<mat-menu #menu="matMenu">
 				<button mat-menu-item (click)="downloadAttachment(preselectedFile)">Download</button>
-				<ng-container *ngIf="!preselectedFile.isUsedByDescendants">
-					<button mat-menu-item type="button" (click)="onPreselectedFileDelete(preselectedFile)">Delete</button>
-				</ng-container>
+				<button mat-menu-item type="button" (click)="onPreselectedFileDelete(preselectedFile)">Delete</button>
 			</mat-menu>
 		</div>
 	</ng-container>

@@ -143,6 +143,7 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 			name: file.name,
 			icon: this._getIconName(file.name),
 		}));
+		console.log(this.preselectedFilesModified);
 		this.onChange([...this.preselectedFiles, ...this._files]);
 	}
 
@@ -210,5 +211,10 @@ export class FileUploaderComponent extends AppComponentBase implements OnInit, O
 		this._uploadedFiles$.next([]);
 
 		forkJoin(observableArr).subscribe();
+	}
+
+	test(val: any) {
+		console.log(val);
+		return val;
 	}
 }

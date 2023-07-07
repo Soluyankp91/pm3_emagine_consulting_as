@@ -1114,8 +1114,8 @@ export class AdminServiceProxy {
      * @param batchSize (optional) 
      * @return Success
      */
-    migrateInvoicingReferenceNumbersToPOs(batchSize?: number | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Admin/temp/migrate-InvoicingReferenceNumbers-to-POs?";
+    fillIsCompletedFlagOnExistingRecords(batchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/temp/PurchaseOrders/fill-IsCompleted-flag-on-existing-records?";
         if (batchSize === null)
             throw new Error("The parameter 'batchSize' cannot be null.");
         else if (batchSize !== undefined)
@@ -1130,11 +1130,11 @@ export class AdminServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMigrateInvoicingReferenceNumbersToPOs(response_);
+            return this.processFillIsCompletedFlagOnExistingRecords(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processMigrateInvoicingReferenceNumbersToPOs(response_ as any);
+                    return this.processFillIsCompletedFlagOnExistingRecords(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1143,7 +1143,59 @@ export class AdminServiceProxy {
         }));
     }
 
-    protected processMigrateInvoicingReferenceNumbersToPOs(response: HttpResponseBase): Observable<void> {
+    protected processFillIsCompletedFlagOnExistingRecords(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param batchSize (optional) 
+     * @return Success
+     */
+    updateStatuses(batchSize?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/PurchaseOrders/update-statuses?";
+        if (batchSize === null)
+            throw new Error("The parameter 'batchSize' cannot be null.");
+        else if (batchSize !== undefined)
+            url_ += "batchSize=" + encodeURIComponent("" + batchSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateStatuses(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -7987,7 +8039,8 @@ export class ClientsServiceProxy {
      * @param search (optional) 
      * @param countryFilter (optional) 
      * @param ownerFilter (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param ownerNodes (optional) 
+     * @param ownerTenants (optional) 
      * @param isActive (optional) 
      * @param excludeDeleted (optional) 
      * @param onlyWrongfullyDeletedInHubspot (optional) 
@@ -7996,7 +8049,7 @@ export class ClientsServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
+    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, ownerNodes?: number[] | undefined, ownerTenants?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients/list?";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
@@ -8010,10 +8063,14 @@ export class ClientsServiceProxy {
             throw new Error("The parameter 'ownerFilter' cannot be null.");
         else if (ownerFilter !== undefined)
             ownerFilter && ownerFilter.forEach(item => { url_ += "ownerFilter=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "teamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (ownerNodes === null)
+            throw new Error("The parameter 'ownerNodes' cannot be null.");
+        else if (ownerNodes !== undefined)
+            ownerNodes && ownerNodes.forEach(item => { url_ += "ownerNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (ownerTenants === null)
+            throw new Error("The parameter 'ownerTenants' cannot be null.");
+        else if (ownerTenants !== undefined)
+            ownerTenants && ownerTenants.forEach(item => { url_ += "ownerTenants=" + encodeURIComponent("" + item) + "&"; });
         if (isActive === null)
             throw new Error("The parameter 'isActive' cannot be null.");
         else if (isActive !== undefined)
@@ -12240,66 +12297,6 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
-    purchaseOrderCapType(): Observable<{ [key: string]: string; }> {
-        let url_ = this.baseUrl + "/api/Enum/purchase-order-cap-type";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPurchaseOrderCapType(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processPurchaseOrderCapType(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
-        }));
-    }
-
-    protected processPurchaseOrderCapType(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200) {
-                result200 = {} as any;
-                for (let key in resultData200) {
-                    if (resultData200.hasOwnProperty(key))
-                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
-                }
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<{ [key: string]: string; }>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
     workflowStatuses(): Observable<WorkflowStatusDto[]> {
         let url_ = this.baseUrl + "/api/Enum/workflow-statuses";
         url_ = url_.replace(/[?&]$/, "");
@@ -13925,6 +13922,246 @@ export class EnumServiceProxy {
     }
 
     protected processTeamsAndDivisionsLevels(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    purchaseOrderCapType(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/purchase-order-cap-type";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderCapType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderCapType(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processPurchaseOrderCapType(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    purchaseOrderStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/purchase-order-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processPurchaseOrderStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    purchaseOrderChasingStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/purchase-order-chasing-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderChasingStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderChasingStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processPurchaseOrderChasingStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    purchaseOrderNoteStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/purchase-order-note-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPurchaseOrderNoteStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPurchaseOrderNoteStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processPurchaseOrderNoteStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -16165,7 +16402,8 @@ export class MainOverviewServiceProxy {
 
     /**
      * @param mainOverviewStatusesForSales (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param accountManagersTeamsAndDivisionsNodes (optional) 
+     * @param accountManagersTenants (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -16180,16 +16418,20 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
+    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagersTeamsAndDivisionsNodes?: number[] | undefined, accountManagersTenants?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/workflows?";
         if (mainOverviewStatusesForSales === null)
             throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
         else if (mainOverviewStatusesForSales !== undefined)
             mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'accountManagersTeamsAndDivisionsNodes' cannot be null.");
+        else if (accountManagersTeamsAndDivisionsNodes !== undefined)
+            accountManagersTeamsAndDivisionsNodes && accountManagersTeamsAndDivisionsNodes.forEach(item => { url_ += "AccountManagersTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTenants === null)
+            throw new Error("The parameter 'accountManagersTenants' cannot be null.");
+        else if (accountManagersTenants !== undefined)
+            accountManagersTenants && accountManagersTenants.forEach(item => { url_ += "AccountManagersTenants=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -16286,7 +16528,8 @@ export class MainOverviewServiceProxy {
 
     /**
      * @param mainOverviewStatusesForSales (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param accountManagersTeamsAndDivisionsNodes (optional) 
+     * @param accountManagersTenants (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -16301,16 +16544,20 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
+    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagersTeamsAndDivisionsNodes?: number[] | undefined, accountManagersTenants?: number[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/consultants?";
         if (mainOverviewStatusesForSales === null)
             throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
         else if (mainOverviewStatusesForSales !== undefined)
             mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'accountManagersTeamsAndDivisionsNodes' cannot be null.");
+        else if (accountManagersTeamsAndDivisionsNodes !== undefined)
+            accountManagersTeamsAndDivisionsNodes && accountManagersTeamsAndDivisionsNodes.forEach(item => { url_ += "AccountManagersTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (accountManagersTenants === null)
+            throw new Error("The parameter 'accountManagersTenants' cannot be null.");
+        else if (accountManagersTenants !== undefined)
+            accountManagersTenants && accountManagersTenants.forEach(item => { url_ += "AccountManagersTenants=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -16914,7 +17161,7 @@ export class PurchaseOrderServiceProxy {
     /**
      * @return Success
      */
-    getPurchaseOrdersForWorkflowOverview(workflowId: string): Observable<PurchaseOrderDto[]> {
+    getPurchaseOrdersForWorkflowOverview(workflowId: string): Observable<PurchaseOrderQueryDto[]> {
         let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersForWorkflowOverview/{workflowId}";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -16936,14 +17183,14 @@ export class PurchaseOrderServiceProxy {
                 try {
                     return this.processGetPurchaseOrdersForWorkflowOverview(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PurchaseOrderDto[]>;
+                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PurchaseOrderDto[]>;
+                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDto[]>;
         }));
     }
 
-    protected processGetPurchaseOrdersForWorkflowOverview(response: HttpResponseBase): Observable<PurchaseOrderDto[]> {
+    protected processGetPurchaseOrdersForWorkflowOverview(response: HttpResponseBase): Observable<PurchaseOrderQueryDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -16957,7 +17204,7 @@ export class PurchaseOrderServiceProxy {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(PurchaseOrderDto.fromJS(item));
+                    result200!.push(PurchaseOrderQueryDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -16969,13 +17216,275 @@ export class PurchaseOrderServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PurchaseOrderDto[]>(null as any);
+        return _observableOf<PurchaseOrderQueryDto[]>(null as any);
+    }
+
+    /**
+     * @param invoicingEntities (optional) 
+     * @param responsibleEmployees (optional) 
+     * @param employeesTeamsAndDivisionsNodes (optional) 
+     * @param employeesTenants (optional) 
+     * @param chasingStatuses (optional) 
+     * @param statuses (optional) 
+     * @param showCompleted (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
+     * @return Success
+     */
+    getPurchaseOrdersList(invoicingEntities?: number[] | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, chasingStatuses?: PurchaseOrderChasingStatus[] | undefined, statuses?: PurchaseOrderStatus[] | undefined, showCompleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<PurchaseOrderQueryDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersList?";
+        if (invoicingEntities === null)
+            throw new Error("The parameter 'invoicingEntities' cannot be null.");
+        else if (invoicingEntities !== undefined)
+            invoicingEntities && invoicingEntities.forEach(item => { url_ += "InvoicingEntities=" + encodeURIComponent("" + item) + "&"; });
+        if (responsibleEmployees === null)
+            throw new Error("The parameter 'responsibleEmployees' cannot be null.");
+        else if (responsibleEmployees !== undefined)
+            responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
+        if (employeesTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'employeesTeamsAndDivisionsNodes' cannot be null.");
+        else if (employeesTeamsAndDivisionsNodes !== undefined)
+            employeesTeamsAndDivisionsNodes && employeesTeamsAndDivisionsNodes.forEach(item => { url_ += "EmployeesTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (employeesTenants === null)
+            throw new Error("The parameter 'employeesTenants' cannot be null.");
+        else if (employeesTenants !== undefined)
+            employeesTenants && employeesTenants.forEach(item => { url_ += "EmployeesTenants=" + encodeURIComponent("" + item) + "&"; });
+        if (chasingStatuses === null)
+            throw new Error("The parameter 'chasingStatuses' cannot be null.");
+        else if (chasingStatuses !== undefined)
+            chasingStatuses && chasingStatuses.forEach(item => { url_ += "ChasingStatuses=" + encodeURIComponent("" + item) + "&"; });
+        if (statuses === null)
+            throw new Error("The parameter 'statuses' cannot be null.");
+        else if (statuses !== undefined)
+            statuses && statuses.forEach(item => { url_ += "Statuses=" + encodeURIComponent("" + item) + "&"; });
+        if (showCompleted === null)
+            throw new Error("The parameter 'showCompleted' cannot be null.");
+        else if (showCompleted !== undefined)
+            url_ += "ShowCompleted=" + encodeURIComponent("" + showCompleted) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPurchaseOrdersList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPurchaseOrdersList(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDtoPaginatedList>;
+        }));
+    }
+
+    protected processGetPurchaseOrdersList(response: HttpResponseBase): Observable<PurchaseOrderQueryDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderQueryDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PurchaseOrderQueryDtoPaginatedList>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    setPurchaseOrdersEmagineResponsibles(body?: PurchaseOrderSetEmagineResponsiblesCommand | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/setPurchaseOrdersEmagineResponsibles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetPurchaseOrdersEmagineResponsibles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetPurchaseOrdersEmagineResponsibles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSetPurchaseOrdersEmagineResponsibles(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    setPurchaseOrdersClientContactResponsible(body?: PurchaseOrdersSetClientContactResponsibleCommand | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/setPurchaseOrdersClientContactResponsible";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetPurchaseOrdersClientContactResponsible(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetPurchaseOrdersClientContactResponsible(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSetPurchaseOrdersClientContactResponsible(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    setPurchaseOrdersIsCompleted(body?: PurchaseOrdersSetIsCompletedCommand | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/setPurchaseOrdersIsCompleted";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetPurchaseOrdersIsCompleted(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetPurchaseOrdersIsCompleted(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSetPurchaseOrdersIsCompleted(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
     }
 
     /**
      * @return Success
      */
-    getPurchaseOrdersAvailableForClientPeriod(clientPeriodId: string, directClientId: number): Observable<PurchaseOrderDto[]> {
+    getPurchaseOrdersAvailableForClientPeriod(clientPeriodId: string, directClientId: number): Observable<PurchaseOrderQueryDto[]> {
         let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersAvailableForClientPeriod/{clientPeriodId}/{directClientId}";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -17000,14 +17509,14 @@ export class PurchaseOrderServiceProxy {
                 try {
                     return this.processGetPurchaseOrdersAvailableForClientPeriod(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PurchaseOrderDto[]>;
+                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PurchaseOrderDto[]>;
+                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDto[]>;
         }));
     }
 
-    protected processGetPurchaseOrdersAvailableForClientPeriod(response: HttpResponseBase): Observable<PurchaseOrderDto[]> {
+    protected processGetPurchaseOrdersAvailableForClientPeriod(response: HttpResponseBase): Observable<PurchaseOrderQueryDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -17021,7 +17530,7 @@ export class PurchaseOrderServiceProxy {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(PurchaseOrderDto.fromJS(item));
+                    result200!.push(PurchaseOrderQueryDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -17033,14 +17542,14 @@ export class PurchaseOrderServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PurchaseOrderDto[]>(null as any);
+        return _observableOf<PurchaseOrderQueryDto[]>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    purchaseOrderPOST(currentClientPeriodId: string, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
+    purchaseOrderPOST(currentClientPeriodId: string, body?: PurchaseOrderCommandDto | undefined): Observable<PurchaseOrderQueryDto> {
         let url_ = this.baseUrl + "/api/PurchaseOrder/{currentClientPeriodId}";
         if (currentClientPeriodId === undefined || currentClientPeriodId === null)
             throw new Error("The parameter 'currentClientPeriodId' must be defined.");
@@ -17066,14 +17575,14 @@ export class PurchaseOrderServiceProxy {
                 try {
                     return this.processPurchaseOrderPOST(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PurchaseOrderDto>;
+                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PurchaseOrderDto>;
+                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDto>;
         }));
     }
 
-    protected processPurchaseOrderPOST(response: HttpResponseBase): Observable<PurchaseOrderDto> {
+    protected processPurchaseOrderPOST(response: HttpResponseBase): Observable<PurchaseOrderQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -17084,7 +17593,7 @@ export class PurchaseOrderServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PurchaseOrderDto.fromJS(resultData200);
+            result200 = PurchaseOrderQueryDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -17092,18 +17601,15 @@ export class PurchaseOrderServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PurchaseOrderDto>(null as any);
+        return _observableOf<PurchaseOrderQueryDto>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    purchaseOrderPUT(currentClientPeriodId: string, body?: PurchaseOrderDto | undefined): Observable<PurchaseOrderDto> {
-        let url_ = this.baseUrl + "/api/PurchaseOrder/{currentClientPeriodId}";
-        if (currentClientPeriodId === undefined || currentClientPeriodId === null)
-            throw new Error("The parameter 'currentClientPeriodId' must be defined.");
-        url_ = url_.replace("{currentClientPeriodId}", encodeURIComponent("" + currentClientPeriodId));
+    purchaseOrderPUT(body?: PurchaseOrderCommandDto | undefined): Observable<PurchaseOrderQueryDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -17125,14 +17631,14 @@ export class PurchaseOrderServiceProxy {
                 try {
                     return this.processPurchaseOrderPUT(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PurchaseOrderDto>;
+                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PurchaseOrderDto>;
+                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDto>;
         }));
     }
 
-    protected processPurchaseOrderPUT(response: HttpResponseBase): Observable<PurchaseOrderDto> {
+    protected processPurchaseOrderPUT(response: HttpResponseBase): Observable<PurchaseOrderQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -17143,7 +17649,7 @@ export class PurchaseOrderServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PurchaseOrderDto.fromJS(resultData200);
+            result200 = PurchaseOrderQueryDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -17151,7 +17657,7 @@ export class PurchaseOrderServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PurchaseOrderDto>(null as any);
+        return _observableOf<PurchaseOrderQueryDto>(null as any);
     }
 }
 
@@ -17167,15 +17673,15 @@ export class SourcingIntegrationServiceProxy {
     }
 
     /**
-     * @param param (optional) 
+     * @param requestId (optional) 
      * @return Success
      */
-    test(param?: number | undefined): Observable<TestConnectionDto> {
-        let url_ = this.baseUrl + "/api/SourcingIntegration/test?";
-        if (param === null)
-            throw new Error("The parameter 'param' cannot be null.");
-        else if (param !== undefined)
-            url_ += "param=" + encodeURIComponent("" + param) + "&";
+    requestconsultantsWorkflows(requestId?: number | undefined): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/SourcingIntegration/requestconsultants-workflows?";
+        if (requestId === null)
+            throw new Error("The parameter 'requestId' cannot be null.");
+        else if (requestId !== undefined)
+            url_ += "requestId=" + encodeURIComponent("" + requestId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -17187,20 +17693,20 @@ export class SourcingIntegrationServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTest(response_);
+            return this.processRequestconsultantsWorkflows(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTest(response_ as any);
+                    return this.processRequestconsultantsWorkflows(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<TestConnectionDto>;
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<TestConnectionDto>;
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
         }));
     }
 
-    protected processTest(response: HttpResponseBase): Observable<TestConnectionDto> {
+    protected processRequestconsultantsWorkflows(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -17211,7 +17717,16 @@ export class SourcingIntegrationServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TestConnectionDto.fromJS(resultData200);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -17219,7 +17734,7 @@ export class SourcingIntegrationServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TestConnectionDto>(null as any);
+        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 }
 
@@ -17959,7 +18474,8 @@ export class WorkflowServiceProxy {
      * @param deliveryType (optional) 
      * @param workflowStatus (optional) 
      * @param responsibleEmployees (optional) 
-     * @param teamsAndDivisionsNodes (optional) 
+     * @param employeesTeamsAndDivisionsNodes (optional) 
+     * @param employeesTenants (optional) 
      * @param syncStateStatuses (optional) 
      * @param showNewSales (optional) 
      * @param showExtensions (optional) 
@@ -17976,7 +18492,7 @@ export class WorkflowServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, teamsAndDivisionsNodes?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
@@ -18002,10 +18518,14 @@ export class WorkflowServiceProxy {
             throw new Error("The parameter 'responsibleEmployees' cannot be null.");
         else if (responsibleEmployees !== undefined)
             responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
-        if (teamsAndDivisionsNodes === null)
-            throw new Error("The parameter 'teamsAndDivisionsNodes' cannot be null.");
-        else if (teamsAndDivisionsNodes !== undefined)
-            teamsAndDivisionsNodes && teamsAndDivisionsNodes.forEach(item => { url_ += "TeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (employeesTeamsAndDivisionsNodes === null)
+            throw new Error("The parameter 'employeesTeamsAndDivisionsNodes' cannot be null.");
+        else if (employeesTeamsAndDivisionsNodes !== undefined)
+            employeesTeamsAndDivisionsNodes && employeesTeamsAndDivisionsNodes.forEach(item => { url_ += "EmployeesTeamsAndDivisionsNodes=" + encodeURIComponent("" + item) + "&"; });
+        if (employeesTenants === null)
+            throw new Error("The parameter 'employeesTenants' cannot be null.");
+        else if (employeesTenants !== undefined)
+            employeesTenants && employeesTenants.forEach(item => { url_ += "EmployeesTenants=" + encodeURIComponent("" + item) + "&"; });
         if (syncStateStatuses === null)
             throw new Error("The parameter 'syncStateStatuses' cannot be null.");
         else if (syncStateStatuses !== undefined)
@@ -23955,6 +24475,50 @@ export enum AgreementValidityState {
     NotStarted = 3,
 }
 
+export class AmountWithUnitOrCurrencyDto implements IAmountWithUnitOrCurrencyDto {
+    amount?: number;
+    unit?: ValueUnitEnum;
+    currency?: string | undefined;
+
+    constructor(data?: IAmountWithUnitOrCurrencyDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amount = _data["amount"];
+            this.unit = _data["unit"];
+            this.currency = _data["currency"];
+        }
+    }
+
+    static fromJS(data: any): AmountWithUnitOrCurrencyDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AmountWithUnitOrCurrencyDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount;
+        data["unit"] = this.unit;
+        data["currency"] = this.currency;
+        return data;
+    }
+}
+
+export interface IAmountWithUnitOrCurrencyDto {
+    amount?: number;
+    unit?: ValueUnitEnum;
+    currency?: string | undefined;
+}
+
 export class AreaRoleNodeDto implements IAreaRoleNodeDto {
     id?: number;
     name?: string | undefined;
@@ -29582,8 +30146,8 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
-    tenantId?: number | undefined;
     permissions?: Permission[] | undefined;
+    tenantId?: number;
 
     constructor(data?: ICurrentEmployeeDto) {
         if (data) {
@@ -29600,12 +30164,12 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
             this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
-            this.tenantId = _data["tenantId"];
             if (Array.isArray(_data["permissions"])) {
                 this.permissions = [] as any;
                 for (let item of _data["permissions"])
                     this.permissions!.push(item);
             }
+            this.tenantId = _data["tenantId"];
         }
     }
 
@@ -29622,12 +30186,12 @@ export class CurrentEmployeeDto implements ICurrentEmployeeDto {
         data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
-        data["tenantId"] = this.tenantId;
         if (Array.isArray(this.permissions)) {
             data["permissions"] = [];
             for (let item of this.permissions)
                 data["permissions"].push(item);
         }
+        data["tenantId"] = this.tenantId;
         return data;
     }
 }
@@ -29637,8 +30201,8 @@ export interface ICurrentEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
-    tenantId?: number | undefined;
     permissions?: Permission[] | undefined;
+    tenantId?: number;
 }
 
 export class DocuSignEnvelopeSummary implements IDocuSignEnvelopeSummary {
@@ -29813,7 +30377,6 @@ export class EmployeeDto implements IEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
-    tenantId?: number | undefined;
 
     constructor(data?: IEmployeeDto) {
         if (data) {
@@ -29830,7 +30393,6 @@ export class EmployeeDto implements IEmployeeDto {
             this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
-            this.tenantId = _data["tenantId"];
         }
     }
 
@@ -29847,7 +30409,6 @@ export class EmployeeDto implements IEmployeeDto {
         data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
-        data["tenantId"] = this.tenantId;
         return data;
     }
 }
@@ -29857,7 +30418,6 @@ export interface IEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
-    tenantId?: number | undefined;
 }
 
 export class EmployeeNotificationDto implements IEmployeeNotificationDto {
@@ -29913,7 +30473,6 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
-    tenantId?: number | undefined;
     email?: string | undefined;
 
     constructor(data?: IEmployeeSearchEmployeeDto) {
@@ -29931,7 +30490,6 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
             this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.teamsAndDivisionsNodeId = _data["teamsAndDivisionsNodeId"];
-            this.tenantId = _data["tenantId"];
             this.email = _data["email"];
         }
     }
@@ -29949,7 +30507,6 @@ export class EmployeeSearchEmployeeDto implements IEmployeeSearchEmployeeDto {
         data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["teamsAndDivisionsNodeId"] = this.teamsAndDivisionsNodeId;
-        data["tenantId"] = this.tenantId;
         data["email"] = this.email;
         return data;
     }
@@ -29960,7 +30517,6 @@ export interface IEmployeeSearchEmployeeDto {
     externalId?: string;
     name?: string | undefined;
     teamsAndDivisionsNodeId?: number | undefined;
-    tenantId?: number | undefined;
     email?: string | undefined;
 }
 
@@ -32720,6 +33276,7 @@ export class PurchaseOrderCapDto implements IPurchaseOrderCapDto {
     maxAmount?: number | undefined;
     currencyId?: number | undefined;
     amountUsed?: number | undefined;
+    amountLeft?: number | undefined;
 
     constructor(data?: IPurchaseOrderCapDto) {
         if (data) {
@@ -32737,6 +33294,7 @@ export class PurchaseOrderCapDto implements IPurchaseOrderCapDto {
             this.maxAmount = _data["maxAmount"];
             this.currencyId = _data["currencyId"];
             this.amountUsed = _data["amountUsed"];
+            this.amountLeft = _data["amountLeft"];
         }
     }
 
@@ -32754,6 +33312,7 @@ export class PurchaseOrderCapDto implements IPurchaseOrderCapDto {
         data["maxAmount"] = this.maxAmount;
         data["currencyId"] = this.currencyId;
         data["amountUsed"] = this.amountUsed;
+        data["amountLeft"] = this.amountLeft;
         return data;
     }
 }
@@ -32764,6 +33323,7 @@ export interface IPurchaseOrderCapDto {
     maxAmount?: number | undefined;
     currencyId?: number | undefined;
     amountUsed?: number | undefined;
+    amountLeft?: number | undefined;
 }
 
 export enum PurchaseOrderCapType {
@@ -32772,10 +33332,244 @@ export enum PurchaseOrderCapType {
     NoCap = 3,
 }
 
+export enum PurchaseOrderChasingStatus {
+    ActionRequired = 1,
+    CmNotified = 2,
+    AmNotified = 3,
+    ClientAndAmNotified = 4,
+    ClientNotified = 5,
+    PendingOnClientSide = 6,
+    Received = 10,
+}
+
+export class PurchaseOrderChasingStatusHistoryDto implements IPurchaseOrderChasingStatusHistoryDto {
+    historyEntityId?: number;
+    chasingStatusString?: string | undefined;
+    occurredAtUtc?: moment.Moment | undefined;
+    employee?: EmployeeDto;
+
+    constructor(data?: IPurchaseOrderChasingStatusHistoryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.historyEntityId = _data["historyEntityId"];
+            this.chasingStatusString = _data["chasingStatusString"];
+            this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
+            this.employee = _data["employee"] ? EmployeeDto.fromJS(_data["employee"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderChasingStatusHistoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderChasingStatusHistoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["historyEntityId"] = this.historyEntityId;
+        data["chasingStatusString"] = this.chasingStatusString;
+        data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
+        data["employee"] = this.employee ? this.employee.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderChasingStatusHistoryDto {
+    historyEntityId?: number;
+    chasingStatusString?: string | undefined;
+    occurredAtUtc?: moment.Moment | undefined;
+    employee?: EmployeeDto;
+}
+
+export class PurchaseOrderClientPeriodDto implements IPurchaseOrderClientPeriodDto {
+    clientPeriodId?: string;
+    salesType?: number;
+    deliveryType?: number;
+    workflowId?: string;
+    displayId?: string | undefined;
+    consultants?: string[] | undefined;
+    clientRate?: ClientRateDto;
+    purchaseOrderCapClientCalculatedAmount?: AmountWithUnitOrCurrencyDto;
+    estimatedUnitsLeft?: AmountWithUnitOrCurrencyDto;
+
+    constructor(data?: IPurchaseOrderClientPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.clientPeriodId = _data["clientPeriodId"];
+            this.salesType = _data["salesType"];
+            this.deliveryType = _data["deliveryType"];
+            this.workflowId = _data["workflowId"];
+            this.displayId = _data["displayId"];
+            if (Array.isArray(_data["consultants"])) {
+                this.consultants = [] as any;
+                for (let item of _data["consultants"])
+                    this.consultants!.push(item);
+            }
+            this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
+            this.purchaseOrderCapClientCalculatedAmount = _data["purchaseOrderCapClientCalculatedAmount"] ? AmountWithUnitOrCurrencyDto.fromJS(_data["purchaseOrderCapClientCalculatedAmount"]) : <any>undefined;
+            this.estimatedUnitsLeft = _data["estimatedUnitsLeft"] ? AmountWithUnitOrCurrencyDto.fromJS(_data["estimatedUnitsLeft"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderClientPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderClientPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["clientPeriodId"] = this.clientPeriodId;
+        data["salesType"] = this.salesType;
+        data["deliveryType"] = this.deliveryType;
+        data["workflowId"] = this.workflowId;
+        data["displayId"] = this.displayId;
+        if (Array.isArray(this.consultants)) {
+            data["consultants"] = [];
+            for (let item of this.consultants)
+                data["consultants"].push(item);
+        }
+        data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
+        data["purchaseOrderCapClientCalculatedAmount"] = this.purchaseOrderCapClientCalculatedAmount ? this.purchaseOrderCapClientCalculatedAmount.toJSON() : <any>undefined;
+        data["estimatedUnitsLeft"] = this.estimatedUnitsLeft ? this.estimatedUnitsLeft.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderClientPeriodDto {
+    clientPeriodId?: string;
+    salesType?: number;
+    deliveryType?: number;
+    workflowId?: string;
+    displayId?: string | undefined;
+    consultants?: string[] | undefined;
+    clientRate?: ClientRateDto;
+    purchaseOrderCapClientCalculatedAmount?: AmountWithUnitOrCurrencyDto;
+    estimatedUnitsLeft?: AmountWithUnitOrCurrencyDto;
+}
+
+export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
+    id?: number | undefined;
+    number?: string | undefined;
+    numberMissingButRequired?: boolean | undefined;
+    receiveDate?: moment.Moment | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+    chasingStatus?: PurchaseOrderChasingStatus;
+    status?: PurchaseOrderStatus;
+    isCompleted?: boolean | undefined;
+    capForInvoicing?: PurchaseOrderCapDto;
+    notes?: string | undefined;
+    isUnread?: boolean;
+    notifyCM?: boolean;
+    salesResponsibleId?: number | undefined;
+    contractResponsibleId?: number | undefined;
+    clientContactResponsibleId?: number | undefined;
+    purchaseOrderDocumentCommandDto?: PurchaseOrderDocumentCommandDto;
+
+    constructor(data?: IPurchaseOrderCommandDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.number = _data["number"];
+            this.numberMissingButRequired = _data["numberMissingButRequired"];
+            this.receiveDate = _data["receiveDate"] ? moment(_data["receiveDate"].toString()) : <any>undefined;
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.chasingStatus = _data["chasingStatus"];
+            this.status = _data["status"];
+            this.isCompleted = _data["isCompleted"];
+            this.capForInvoicing = _data["capForInvoicing"] ? PurchaseOrderCapDto.fromJS(_data["capForInvoicing"]) : <any>undefined;
+            this.notes = _data["notes"];
+            this.isUnread = _data["isUnread"];
+            this.notifyCM = _data["notifyCM"];
+            this.salesResponsibleId = _data["salesResponsibleId"];
+            this.contractResponsibleId = _data["contractResponsibleId"];
+            this.clientContactResponsibleId = _data["clientContactResponsibleId"];
+            this.purchaseOrderDocumentCommandDto = _data["purchaseOrderDocumentCommandDto"] ? PurchaseOrderDocumentCommandDto.fromJS(_data["purchaseOrderDocumentCommandDto"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderCommandDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderCommandDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["number"] = this.number;
+        data["numberMissingButRequired"] = this.numberMissingButRequired;
+        data["receiveDate"] = this.receiveDate ? this.receiveDate.format('YYYY-MM-DD') : <any>undefined;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["chasingStatus"] = this.chasingStatus;
+        data["status"] = this.status;
+        data["isCompleted"] = this.isCompleted;
+        data["capForInvoicing"] = this.capForInvoicing ? this.capForInvoicing.toJSON() : <any>undefined;
+        data["notes"] = this.notes;
+        data["isUnread"] = this.isUnread;
+        data["notifyCM"] = this.notifyCM;
+        data["salesResponsibleId"] = this.salesResponsibleId;
+        data["contractResponsibleId"] = this.contractResponsibleId;
+        data["clientContactResponsibleId"] = this.clientContactResponsibleId;
+        data["purchaseOrderDocumentCommandDto"] = this.purchaseOrderDocumentCommandDto ? this.purchaseOrderDocumentCommandDto.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderCommandDto {
+    id?: number | undefined;
+    number?: string | undefined;
+    numberMissingButRequired?: boolean | undefined;
+    receiveDate?: moment.Moment | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+    chasingStatus?: PurchaseOrderChasingStatus;
+    status?: PurchaseOrderStatus;
+    isCompleted?: boolean | undefined;
+    capForInvoicing?: PurchaseOrderCapDto;
+    notes?: string | undefined;
+    isUnread?: boolean;
+    notifyCM?: boolean;
+    salesResponsibleId?: number | undefined;
+    contractResponsibleId?: number | undefined;
+    clientContactResponsibleId?: number | undefined;
+    purchaseOrderDocumentCommandDto?: PurchaseOrderDocumentCommandDto;
+}
+
 export class PurchaseOrderCurrentContextDto implements IPurchaseOrderCurrentContextDto {
     isUserAllowedToEdit?: boolean;
-    existsInThisWorkflow?: boolean;
-    existsInAnotherWorkflow?: boolean;
+    existsInThisWorkflow?: boolean | undefined;
+    existsInAnotherWorkflow?: boolean | undefined;
 
     constructor(data?: IPurchaseOrderCurrentContextDto) {
         if (data) {
@@ -32812,24 +33606,140 @@ export class PurchaseOrderCurrentContextDto implements IPurchaseOrderCurrentCont
 
 export interface IPurchaseOrderCurrentContextDto {
     isUserAllowedToEdit?: boolean;
-    existsInThisWorkflow?: boolean;
-    existsInAnotherWorkflow?: boolean;
+    existsInThisWorkflow?: boolean | undefined;
+    existsInAnotherWorkflow?: boolean | undefined;
 }
 
-export class PurchaseOrderDto implements IPurchaseOrderDto {
+export class PurchaseOrderDocumentCommandDto implements IPurchaseOrderDocumentCommandDto {
+    purchaseOrderDocumentId?: number | undefined;
+    temporaryFileId?: string | undefined;
+    name?: string | undefined;
+
+    constructor(data?: IPurchaseOrderDocumentCommandDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.purchaseOrderDocumentId = _data["purchaseOrderDocumentId"];
+            this.temporaryFileId = _data["temporaryFileId"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderDocumentCommandDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderDocumentCommandDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["purchaseOrderDocumentId"] = this.purchaseOrderDocumentId;
+        data["temporaryFileId"] = this.temporaryFileId;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderDocumentCommandDto {
+    purchaseOrderDocumentId?: number | undefined;
+    temporaryFileId?: string | undefined;
+    name?: string | undefined;
+}
+
+export class PurchaseOrderDocumentQueryDto implements IPurchaseOrderDocumentQueryDto {
+    id?: number;
+    name?: string | undefined;
+    createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
+
+    constructor(data?: IPurchaseOrderDocumentQueryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdDateUtc = _data["createdDateUtc"] ? moment(_data["createdDateUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderDocumentQueryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderDocumentQueryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdDateUtc"] = this.createdDateUtc ? this.createdDateUtc.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderDocumentQueryDto {
+    id?: number;
+    name?: string | undefined;
+    createdBy?: EmployeeDto;
+    createdDateUtc?: moment.Moment;
+}
+
+export enum PurchaseOrderNoteStatus {
+    UnreadNote = 1,
+    NoNoteAdded = 2,
+    ReadNote = 3,
+}
+
+export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
     id?: number | undefined;
     number?: string | undefined;
     numberMissingButRequired?: boolean | undefined;
     receiveDate?: moment.Moment | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+    chasingStatus?: PurchaseOrderChasingStatus;
+    status?: PurchaseOrderStatus;
+    isCompleted?: boolean | undefined;
     capForInvoicing?: PurchaseOrderCapDto;
+    notes?: string | undefined;
+    isUnread?: boolean;
+    notifyCM?: boolean;
+    directClientIdReferencingThisPo?: number | undefined;
+    directClientNameReferencingThisPo?: string | undefined;
+    chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
+    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+    workflowsIdsReferencingThisPo?: string[] | undefined;
+    clientPeriodsReferencingThisPo?: PurchaseOrderClientPeriodDto[] | undefined;
+    isLinkedToAnyProjectLine?: boolean | undefined;
+    salesResponsible?: EmployeeDto;
+    contractResponsible?: EmployeeDto;
+    clientContactResponsible?: ContactDto;
+    noteStatus?: PurchaseOrderNoteStatus;
     createdBy?: EmployeeDto;
     createdOnUtc?: moment.Moment | undefined;
     modifiedBy?: EmployeeDto;
     modifiedOnUtc?: moment.Moment | undefined;
-    workflowsIdsReferencingThisPo?: string[] | undefined;
-    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+    purchaseOrderDocumentQueryDto?: PurchaseOrderDocumentQueryDto;
 
-    constructor(data?: IPurchaseOrderDto) {
+    constructor(data?: IPurchaseOrderQueryDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -32844,23 +33754,49 @@ export class PurchaseOrderDto implements IPurchaseOrderDto {
             this.number = _data["number"];
             this.numberMissingButRequired = _data["numberMissingButRequired"];
             this.receiveDate = _data["receiveDate"] ? moment(_data["receiveDate"].toString()) : <any>undefined;
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.chasingStatus = _data["chasingStatus"];
+            this.status = _data["status"];
+            this.isCompleted = _data["isCompleted"];
             this.capForInvoicing = _data["capForInvoicing"] ? PurchaseOrderCapDto.fromJS(_data["capForInvoicing"]) : <any>undefined;
-            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
-            this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
-            this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
-            this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
+            this.notes = _data["notes"];
+            this.isUnread = _data["isUnread"];
+            this.notifyCM = _data["notifyCM"];
+            this.directClientIdReferencingThisPo = _data["directClientIdReferencingThisPo"];
+            this.directClientNameReferencingThisPo = _data["directClientNameReferencingThisPo"];
+            if (Array.isArray(_data["chasingStatusHistory"])) {
+                this.chasingStatusHistory = [] as any;
+                for (let item of _data["chasingStatusHistory"])
+                    this.chasingStatusHistory!.push(PurchaseOrderChasingStatusHistoryDto.fromJS(item));
+            }
+            this.purchaseOrderCurrentContextData = _data["purchaseOrderCurrentContextData"] ? PurchaseOrderCurrentContextDto.fromJS(_data["purchaseOrderCurrentContextData"]) : <any>undefined;
             if (Array.isArray(_data["workflowsIdsReferencingThisPo"])) {
                 this.workflowsIdsReferencingThisPo = [] as any;
                 for (let item of _data["workflowsIdsReferencingThisPo"])
                     this.workflowsIdsReferencingThisPo!.push(item);
             }
-            this.purchaseOrderCurrentContextData = _data["purchaseOrderCurrentContextData"] ? PurchaseOrderCurrentContextDto.fromJS(_data["purchaseOrderCurrentContextData"]) : <any>undefined;
+            if (Array.isArray(_data["clientPeriodsReferencingThisPo"])) {
+                this.clientPeriodsReferencingThisPo = [] as any;
+                for (let item of _data["clientPeriodsReferencingThisPo"])
+                    this.clientPeriodsReferencingThisPo!.push(PurchaseOrderClientPeriodDto.fromJS(item));
+            }
+            this.isLinkedToAnyProjectLine = _data["isLinkedToAnyProjectLine"];
+            this.salesResponsible = _data["salesResponsible"] ? EmployeeDto.fromJS(_data["salesResponsible"]) : <any>undefined;
+            this.contractResponsible = _data["contractResponsible"] ? EmployeeDto.fromJS(_data["contractResponsible"]) : <any>undefined;
+            this.clientContactResponsible = _data["clientContactResponsible"] ? ContactDto.fromJS(_data["clientContactResponsible"]) : <any>undefined;
+            this.noteStatus = _data["noteStatus"];
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
+            this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
+            this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
+            this.purchaseOrderDocumentQueryDto = _data["purchaseOrderDocumentQueryDto"] ? PurchaseOrderDocumentQueryDto.fromJS(_data["purchaseOrderDocumentQueryDto"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): PurchaseOrderDto {
+    static fromJS(data: any): PurchaseOrderQueryDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PurchaseOrderDto();
+        let result = new PurchaseOrderQueryDto();
         result.init(data);
         return result;
     }
@@ -32871,33 +33807,203 @@ export class PurchaseOrderDto implements IPurchaseOrderDto {
         data["number"] = this.number;
         data["numberMissingButRequired"] = this.numberMissingButRequired;
         data["receiveDate"] = this.receiveDate ? this.receiveDate.format('YYYY-MM-DD') : <any>undefined;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["chasingStatus"] = this.chasingStatus;
+        data["status"] = this.status;
+        data["isCompleted"] = this.isCompleted;
         data["capForInvoicing"] = this.capForInvoicing ? this.capForInvoicing.toJSON() : <any>undefined;
-        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
-        data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
-        data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
+        data["notes"] = this.notes;
+        data["isUnread"] = this.isUnread;
+        data["notifyCM"] = this.notifyCM;
+        data["directClientIdReferencingThisPo"] = this.directClientIdReferencingThisPo;
+        data["directClientNameReferencingThisPo"] = this.directClientNameReferencingThisPo;
+        if (Array.isArray(this.chasingStatusHistory)) {
+            data["chasingStatusHistory"] = [];
+            for (let item of this.chasingStatusHistory)
+                data["chasingStatusHistory"].push(item.toJSON());
+        }
+        data["purchaseOrderCurrentContextData"] = this.purchaseOrderCurrentContextData ? this.purchaseOrderCurrentContextData.toJSON() : <any>undefined;
         if (Array.isArray(this.workflowsIdsReferencingThisPo)) {
             data["workflowsIdsReferencingThisPo"] = [];
             for (let item of this.workflowsIdsReferencingThisPo)
                 data["workflowsIdsReferencingThisPo"].push(item);
         }
-        data["purchaseOrderCurrentContextData"] = this.purchaseOrderCurrentContextData ? this.purchaseOrderCurrentContextData.toJSON() : <any>undefined;
+        if (Array.isArray(this.clientPeriodsReferencingThisPo)) {
+            data["clientPeriodsReferencingThisPo"] = [];
+            for (let item of this.clientPeriodsReferencingThisPo)
+                data["clientPeriodsReferencingThisPo"].push(item.toJSON());
+        }
+        data["isLinkedToAnyProjectLine"] = this.isLinkedToAnyProjectLine;
+        data["salesResponsible"] = this.salesResponsible ? this.salesResponsible.toJSON() : <any>undefined;
+        data["contractResponsible"] = this.contractResponsible ? this.contractResponsible.toJSON() : <any>undefined;
+        data["clientContactResponsible"] = this.clientContactResponsible ? this.clientContactResponsible.toJSON() : <any>undefined;
+        data["noteStatus"] = this.noteStatus;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
+        data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
+        data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
+        data["purchaseOrderDocumentQueryDto"] = this.purchaseOrderDocumentQueryDto ? this.purchaseOrderDocumentQueryDto.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IPurchaseOrderDto {
+export interface IPurchaseOrderQueryDto {
     id?: number | undefined;
     number?: string | undefined;
     numberMissingButRequired?: boolean | undefined;
     receiveDate?: moment.Moment | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+    chasingStatus?: PurchaseOrderChasingStatus;
+    status?: PurchaseOrderStatus;
+    isCompleted?: boolean | undefined;
     capForInvoicing?: PurchaseOrderCapDto;
+    notes?: string | undefined;
+    isUnread?: boolean;
+    notifyCM?: boolean;
+    directClientIdReferencingThisPo?: number | undefined;
+    directClientNameReferencingThisPo?: string | undefined;
+    chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
+    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+    workflowsIdsReferencingThisPo?: string[] | undefined;
+    clientPeriodsReferencingThisPo?: PurchaseOrderClientPeriodDto[] | undefined;
+    isLinkedToAnyProjectLine?: boolean | undefined;
+    salesResponsible?: EmployeeDto;
+    contractResponsible?: EmployeeDto;
+    clientContactResponsible?: ContactDto;
+    noteStatus?: PurchaseOrderNoteStatus;
     createdBy?: EmployeeDto;
     createdOnUtc?: moment.Moment | undefined;
     modifiedBy?: EmployeeDto;
     modifiedOnUtc?: moment.Moment | undefined;
-    workflowsIdsReferencingThisPo?: string[] | undefined;
-    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+    purchaseOrderDocumentQueryDto?: PurchaseOrderDocumentQueryDto;
+}
+
+export class PurchaseOrderQueryDtoPaginatedList implements IPurchaseOrderQueryDtoPaginatedList {
+    items?: PurchaseOrderQueryDto[] | undefined;
+    pageIndex?: number;
+    readonly totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
+
+    constructor(data?: IPurchaseOrderQueryDtoPaginatedList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(PurchaseOrderQueryDto.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            (<any>this).totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.pageSize = _data["pageSize"];
+            (<any>this).hasPreviousPage = _data["hasPreviousPage"];
+            (<any>this).hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderQueryDtoPaginatedList {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderQueryDtoPaginatedList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["pageSize"] = this.pageSize;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderQueryDtoPaginatedList {
+    items?: PurchaseOrderQueryDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class PurchaseOrderSetEmagineResponsiblesCommand implements IPurchaseOrderSetEmagineResponsiblesCommand {
+    purchaseOrdersIds?: number[] | undefined;
+    salesResponsibleId?: number | undefined;
+    contractResponsibleId?: number | undefined;
+
+    constructor(data?: IPurchaseOrderSetEmagineResponsiblesCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["purchaseOrdersIds"])) {
+                this.purchaseOrdersIds = [] as any;
+                for (let item of _data["purchaseOrdersIds"])
+                    this.purchaseOrdersIds!.push(item);
+            }
+            this.salesResponsibleId = _data["salesResponsibleId"];
+            this.contractResponsibleId = _data["contractResponsibleId"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderSetEmagineResponsiblesCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderSetEmagineResponsiblesCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.purchaseOrdersIds)) {
+            data["purchaseOrdersIds"] = [];
+            for (let item of this.purchaseOrdersIds)
+                data["purchaseOrdersIds"].push(item);
+        }
+        data["salesResponsibleId"] = this.salesResponsibleId;
+        data["contractResponsibleId"] = this.contractResponsibleId;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderSetEmagineResponsiblesCommand {
+    purchaseOrdersIds?: number[] | undefined;
+    salesResponsibleId?: number | undefined;
+    contractResponsibleId?: number | undefined;
+}
+
+export enum PurchaseOrderStatus {
+    Missing = 1,
+    RunningOut = 2,
+    Active = 3,
 }
 
 export class PurchaseOrderSyncDto implements IPurchaseOrderSyncDto {
@@ -32978,6 +34084,102 @@ export interface IPurchaseOrderSyncDto {
     capUnit?: number | undefined;
     maxAmount?: number | undefined;
     capCurrency?: string | undefined;
+}
+
+export class PurchaseOrdersSetClientContactResponsibleCommand implements IPurchaseOrdersSetClientContactResponsibleCommand {
+    purchaseOrdersIds?: number[] | undefined;
+    clientContactResponsibleId?: number | undefined;
+
+    constructor(data?: IPurchaseOrdersSetClientContactResponsibleCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["purchaseOrdersIds"])) {
+                this.purchaseOrdersIds = [] as any;
+                for (let item of _data["purchaseOrdersIds"])
+                    this.purchaseOrdersIds!.push(item);
+            }
+            this.clientContactResponsibleId = _data["clientContactResponsibleId"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrdersSetClientContactResponsibleCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrdersSetClientContactResponsibleCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.purchaseOrdersIds)) {
+            data["purchaseOrdersIds"] = [];
+            for (let item of this.purchaseOrdersIds)
+                data["purchaseOrdersIds"].push(item);
+        }
+        data["clientContactResponsibleId"] = this.clientContactResponsibleId;
+        return data;
+    }
+}
+
+export interface IPurchaseOrdersSetClientContactResponsibleCommand {
+    purchaseOrdersIds?: number[] | undefined;
+    clientContactResponsibleId?: number | undefined;
+}
+
+export class PurchaseOrdersSetIsCompletedCommand implements IPurchaseOrdersSetIsCompletedCommand {
+    purchaseOrdersIds?: number[] | undefined;
+    isCompleted?: boolean;
+
+    constructor(data?: IPurchaseOrdersSetIsCompletedCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["purchaseOrdersIds"])) {
+                this.purchaseOrdersIds = [] as any;
+                for (let item of _data["purchaseOrdersIds"])
+                    this.purchaseOrdersIds!.push(item);
+            }
+            this.isCompleted = _data["isCompleted"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrdersSetIsCompletedCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrdersSetIsCompletedCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.purchaseOrdersIds)) {
+            data["purchaseOrdersIds"] = [];
+            for (let item of this.purchaseOrdersIds)
+                data["purchaseOrdersIds"].push(item);
+        }
+        data["isCompleted"] = this.isCompleted;
+        return data;
+    }
+}
+
+export interface IPurchaseOrdersSetIsCompletedCommand {
+    purchaseOrdersIds?: number[] | undefined;
+    isCompleted?: boolean;
 }
 
 export class RecipientPreviewDto implements IRecipientPreviewDto {
@@ -35116,7 +36318,6 @@ export enum SyncStateStatus {
 }
 
 export enum TeamsAndDivisionsLevel {
-    Tenant = 0,
     Division = 1,
     Team = 2,
 }
@@ -35439,46 +36640,6 @@ export enum TerminationTime {
     AccordingToContract = 1,
     BeforeEndOfContract = 2,
     ContractDidNotStart = 3,
-}
-
-export class TestConnectionDto implements ITestConnectionDto {
-    testParam?: number;
-    works?: boolean;
-
-    constructor(data?: ITestConnectionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.testParam = _data["testParam"];
-            this.works = _data["works"];
-        }
-    }
-
-    static fromJS(data: any): TestConnectionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TestConnectionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["testParam"] = this.testParam;
-        data["works"] = this.works;
-        return data;
-    }
-}
-
-export interface ITestConnectionDto {
-    testParam?: number;
-    works?: boolean;
 }
 
 export class TimeReportingCapDto implements ITimeReportingCapDto {
@@ -35979,6 +37140,12 @@ export interface IUpdateProjectLineFromLegacyCommand {
     projectLineId?: number;
     referenceNumber?: string | undefined;
     optionalInvoiceText?: string | undefined;
+}
+
+export enum ValueUnitEnum {
+    Hours = 1,
+    Days = 2,
+    Months = 4,
 }
 
 export class WorkflowAlreadyExistsDto implements IWorkflowAlreadyExistsDto {

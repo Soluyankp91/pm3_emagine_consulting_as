@@ -5,13 +5,14 @@ export type FileUpload = object & {
 	agreementAttachmentId?: number;
 	agreementTemplateAttachmentId?: number;
 	agreementAuxiliaryAttachmentId?: number;
+	isObsolete?: boolean;
+	isUsedByDescendants?: boolean;
 	name?: string;
 	type?: string;
 };
 export type FileUploadItem = FileUpload & {
 	icon?: string;
 	selected?: boolean;
-	isUsedByDescendants?: boolean;
 };
 export type MappedAgreementTemplateDetailsAttachmentDto = AgreementTemplateDetailsAttachmentDto & { icon: string };
 export type AttachmentPreview = {
