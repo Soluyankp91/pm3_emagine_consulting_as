@@ -82,6 +82,14 @@ export const WIDGETS: IWidget[] = [
 		logoWidthHeight: '65%',
 		url: 'https://hrnest.io/Account/LogOn',
 	},
+    {
+		id: EWidgetsIds.BIReports,
+		name: 'BI Reports',
+		backgroundColor: '#ffffff',
+		logoUrl: 'bi-reports-icon.svg',
+		logoWidthHeight: '65%',
+		url: 'https://pm3-prod.prodataconsult.com/app/bi-reports',
+	},
 	{
 		id: EWidgetsIds.Website,
 		name: 'Website',
