@@ -3,19 +3,37 @@
 		<h4 class="loaded-files-label">{{ label }}</h4>
 	</ng-container>
 	<ng-container *ngFor="let preselectedFile of preselectedFilesModified; trackBy: trackByAgreementTemplateAttachmentId">
-		<div
-			class="file-container"
-			[ngClass]="{
-				obsolete: test(preselectedFile.isObsolete)
-			}">
+		<div class="file-container">
 			<div class="file-item-left">
-				<ng-container *ngIf="preselectedFile.icon">
+				<ng-container *ngIf="preselectedFile.icon && !preselectedFile.isObsolete; else obsolete">
 					<mat-icon [svgIcon]="preselectedFile.icon"></mat-icon>
 				</ng-container>
-				<div class="file-label" [customTooltip]="file.name">{{ preselectedFile.name }}</div>
+				<ng-template #obsolete>
+					<mat-icon svgIcon="deleted-attachment"></mat-icon>
+				</ng-template>
+				<div class="labels-container pad-left-15">
+					<div
+						class="file-label"
+						[customTooltip]="file.name"
+						[ngClass]="{
+							obsolete: preselectedFile.isObsolete
+						}">
+						{{ preselectedFile.name }}
+					</div>
+					<ng-container *ngIf="preselectedFile.isObsolete && preselectedFile.isUsedByDescendants">
+						<div class="deleted-attachment-label">
+							Attachment has been partially deleted as it’s still in use by descendants
+						</div>
+					</ng-container>
+					<ng-container *ngIf="preselectedFile.isObsolete && !preselectedFile.isUsedByDescendants">
+						<div class="deleted-attachment-label">
+							Attachment can be fully deleted as it’s not being used by descendants anymore
+						</div>
+					</ng-container>
+				</div>
 			</div>
 			<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
-				<mat-icon>more_horiz</mat-icon>
+				<mat-icon svgIcon="action-three-dots"></mat-icon>
 			</button>
 			<mat-menu #menu="matMenu">
 				<button mat-menu-item (click)="downloadAttachment(preselectedFile)">Download</button>
@@ -28,10 +46,10 @@
 			<div class="file-container">
 				<div class="file-item-left">
 					<mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
-					<div class="file-label" [customTooltip]="file.name">{{ file.name }}</div>
+					<div class="file-label pad-left-15" [customTooltip]="file.name">{{ file.name }}</div>
 				</div>
 				<button mat-icon-button type="button" [matMenuTriggerFor]="menu">
-					<mat-icon>more_horiz</mat-icon>
+					<mat-icon svgIcon="action-three-dots"></mat-icon>
 				</button>
 				<mat-menu #menu="matMenu">
 					<button mat-menu-item type="button" (click)="onUploadedFileDelete(file)">Delete</button>

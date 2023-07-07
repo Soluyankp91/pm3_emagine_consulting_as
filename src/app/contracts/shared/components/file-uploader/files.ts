@@ -9,6 +9,7 @@ export type FileUpload = object & {
 	isUsedByDescendants?: boolean;
 	name?: string;
 	type?: string;
+	isSelected?: boolean;
 };
 export type FileUploadItem = FileUpload & {
 	icon?: string;
