@@ -37,7 +37,9 @@
 			</button>
 			<mat-menu #menu="matMenu">
 				<button mat-menu-item (click)="downloadAttachment(preselectedFile)">Download</button>
-				<button mat-menu-item type="button" (click)="onPreselectedFileDelete(preselectedFile)">Delete</button>
+				<ng-container *ngIf="!(preselectedFile.isObsolete && preselectedFile.isUsedByDescendants)">
+					<button mat-menu-item type="button" (click)="onPreselectedFileDelete(preselectedFile)">Delete</button>
+				</ng-container>
 			</mat-menu>
 		</div>
 	</ng-container>
