@@ -40,6 +40,13 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 				return this._modifyFileUpload(file);
 			});
 
+			this.inheritedFilesModified.forEach((file) => {
+				if (file.selected) {
+					const originalFile = this._getOriginalFileById(file[this.idProp] as number);
+					this.selectedInheritedFiles.push(originalFile);
+				}
+			});
+
 			if (this.preselectAll) {
 				this.inheritedFilesModified.forEach((file) => {
 					file.selected = true;
@@ -108,7 +115,7 @@ export class FileSelectorComponent implements OnChanges, ControlValueAccessor {
 				...file,
 				name: file.name,
 				icon: this._getIconName(file.name),
-				selected: false,
+				selected: !this.preselectAll ? file.isSelected : false,
 			}
 		) as FileUploadItem;
 	}
