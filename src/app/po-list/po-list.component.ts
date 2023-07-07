@@ -35,7 +35,6 @@ export class PoListComponent implements OnInit {
 	selectionModel = new SelectionModel<Actions>(this.allowMultiSelect, this.initialSelection);
 	displayedColumns = DISPLAYED_COLUMNS;
 	dataSource = new MatTableDataSource<any>(DUMMY_DATA);
-	// dataSource = new MatTableDataSource<any>();
 	sortActive: string;
 	sotrDirection: SortDirection;
 	totalCount: number;

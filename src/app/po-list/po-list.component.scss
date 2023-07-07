@@ -9,6 +9,10 @@
 	flex-direction: column;
 	flex-grow: 1;
 	background-color: #faf9fb;
+    .poList-wrapper {
+        display: flex;
+        height: calc(100vh - 56px);
+    }
 	.container {
 		display: flex;
 		flex-direction: column;

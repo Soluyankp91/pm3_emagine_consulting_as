@@ -1607,7 +1607,7 @@ export const DUMMY_DATA = [
         id: 1,
         status: EPOStatus.AttentionRequired,
         note: 'Some note for PO number, some note.',
-        PONumber: 'PL-123456',
+        PONumber: 'LAST-123456',
         client: 'JN Data',
         lastUpdate: moment(),
         wfPeriodId: '16932/01',
