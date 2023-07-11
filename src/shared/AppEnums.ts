@@ -14,4 +14,5 @@ export enum ERouteTitleType {
     ContractClientTemplates = 8,
     ContractMasterTemplates = 9,
     Notifications = 10,
+    POList = 11
 }

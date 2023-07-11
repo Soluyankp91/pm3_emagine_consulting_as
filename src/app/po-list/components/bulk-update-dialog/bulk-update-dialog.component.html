@@ -1,0 +1,128 @@
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <h1>
+            {{ data.dialogTitle }}
+        </h1>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
+                svgIcon="dialog-close-icon"></mat-icon></button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--24">
+        {{ data.dialogText }}
+    </div>
+    <mat-divider class="u-w--100 u-mb--24"></mat-divider>
+    <ng-container [ngSwitch]="data.EBulkUpdateDiallogTypes">
+        <ng-container *ngSwitchCase="EBulkUpdateDiallogTypes.UpdateClientResponsible">
+            <h3 class="text-bold dark-grey-color">Client contact responsible</h3>
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420"
+                    appearance="outline" [ngClass]="{'isPanelOpen': contactAuto.isOpen}">
+                    <input type="text" #trigger matInput [matAutocomplete]="contactAuto"
+                        [formControl]="clientContactFilter" appPreventDoubleClick (click)="$event.stopPropagation()"
+                        placeholder="Assignee">
+                    <span matSuffix class="shevron"></span>
+                    <mat-autocomplete #contactAuto="matAutocomplete" [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                    (closed)="onAutocompleteClosed(clientContactFilter, 'id')">
+                        <ng-container *ngFor="let option of filteredClientContacts$ | async; trackBy: trackById">
+                            <mat-option [value]="option">
+                                <div class="multilineDropdown-option--row text-bold dark-grey-color flex-items-center"
+                                    [matTooltip]="option.firstName + ' ' + option.lastName"
+                                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <span>{{ option.firstName + ' ' + option.lastName }}</span>
+                                </div>
+                            </mat-option>
+                        </ng-container>
+                        <ng-container *ngIf="(filteredClientContacts$ | async)?.length === 0">
+                            <mat-option (click)="$event.stopPropagation()" class="no-data">
+                                <span>
+                                    No contacts found
+                                </span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                    <mat-error>
+                        <app-validator [control]="clientContactFilter"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="EBulkUpdateDiallogTypes.UpdateEmagineResponsible">
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100">
+                <h3 class="text-bold dark-grey-color">Contract Manager Responsible</h3>
+                <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420"
+                    appearance="outline" [ngClass]="{'isPanelOpen': contractAuto.isOpen}">
+                    <input type="text" #trigger matInput [matAutocomplete]="contractAuto"
+                        [formControl]="contractManagerFilter" appPreventDoubleClick (click)="$event.stopPropagation()"
+                        placeholder="Assignee">
+                    <span matSuffix class="shevron"></span>
+                    <mat-autocomplete #contractAuto="matAutocomplete" [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                    (closed)="onAutocompleteClosed(contractManagerFilter, 'id')">
+                        <ng-container *ngFor="let option of filteredContractManagers; trackBy: trackById">
+                            <mat-option [value]="option">
+                                <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name"
+                                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10"
+                                        [ngSrc]="employeePhotoUrl + option.externalId! + '.jpg'" width="24" height="24"
+                                        src (error)="setDefaultImage($event.target)">
+                                    <span class="text-bold dark-grey-color">{{ option.name }}</span>
+                                </div>
+                            </mat-option>
+                        </ng-container>
+                        <ng-container *ngIf="filteredContractManagers?.length === 0">
+                            <mat-option (click)="$event.stopPropagation()" class="no-data">
+                                <span class="text-bold dark-grey-color">
+                                    No managers found
+                                </span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                    <mat-error>
+                        <app-validator [control]="contractManagerFilter"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+
+                <h3 class="text-bold dark-grey-color">Account Manager Responsible</h3>
+                <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420"
+                    appearance="outline" [ngClass]="{'isPanelOpen': auto.isOpen}">
+                    <input type="text" #trigger matInput [matAutocomplete]="auto" [formControl]="salesManagerFilter"
+                        appPreventDoubleClick (click)="$event.stopPropagation()" placeholder="Assignee">
+                    <span matSuffix class="shevron"></span>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                    (closed)="onAutocompleteClosed(salesManagerFilter, 'id')">
+                        <ng-container *ngFor="let option of filteredAccountManagers; trackBy: trackById">
+                            <mat-option [value]="option">
+                                <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name"
+                                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10"
+                                        [ngSrc]="employeePhotoUrl + option.externalId! + '.jpg'" width="24" height="24"
+                                        src (error)="setDefaultImage($event.target)">
+                                    <span class="text-bold dark-grey-color">{{ option.name }}</span>
+                                </div>
+                            </mat-option>
+                        </ng-container>
+                        <ng-container *ngIf="filteredAccountManagers?.length === 0">
+                            <mat-option (click)="$event.stopPropagation()" class="no-data">
+                                <span class="text-bold dark-grey-color">
+                                    No managers found
+                                </span>
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+                    <mat-error>
+                        <app-validator [control]="salesManagerFilter"></app-validator>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="start" class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+        {{ data.rejectButtonText }}
+    </button>
+    <button mat-flat-button class="dialog-btn"
+        [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" appPreventDoubleClick
+        (throttledClick)="confirm()"
+        [disabled]="data.EBulkUpdateDiallogTypes === EBulkUpdateDiallogTypes.UpdateEmagineResponsible ? salesManagerFilter.invalid && contractManagerFilter.invalid : clientContactFilter.invalid">
+        {{ data.confirmButtonText }}
+    </button>
+</mat-dialog-actions>

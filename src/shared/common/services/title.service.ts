@@ -5,7 +5,7 @@ import { ERouteTitleType } from 'src/shared/AppEnums';
 
 @Injectable()
 export class TitleService {
-    constructor(private _titleService: Title) {}
+	constructor(private _titleService: Title) {}
 	setTitle(routeType: ERouteTitleType, clientName?: string, workflowId?: string) {
 		let title = AppConsts.PM3_TITLE;
 		switch (routeType) {
@@ -36,9 +36,12 @@ export class TitleService {
 			case ERouteTitleType.ContractMasterTemplates:
 				title = `${AppConsts.PM3_TITLE} • Contracts • Master templates`;
 				break;
-            case ERouteTitleType.Notifications:
-                title = `${AppConsts.PM3_TITLE} • Notifications`;
-                break;
+			case ERouteTitleType.Notifications:
+				title = `${AppConsts.PM3_TITLE} • Notifications`;
+				break;
+			case ERouteTitleType.POList:
+				title = `${AppConsts.PM3_TITLE} • Purchase Orders`;
+				break;
 		}
 		this._titleService.setTitle(title);
 	}

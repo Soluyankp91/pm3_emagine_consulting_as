@@ -4,6 +4,7 @@
 			<mat-tree-node
 				*matTreeNodeDef="let node"
 				matTreeNodeToggle
+                class="-ml-3"
 				[ngClass]="{ 'u-pl--40': isEmptyNonLeafNode(node), '-mt-3px': isEmptyNonLeafNode(node), 'pl-6': !isEmptyNonLeafNode(node) }">
 				<mat-checkbox [checked]="node.selected" (change)="toggleSingleNodeSelection(node)" color="primary" class="u-mr--8"></mat-checkbox>
 				<span class="cursor-pointer" (click)="toggleSingleNodeSelection(node)">

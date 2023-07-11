@@ -35,6 +35,11 @@
     font-weight: $font-weight;
 }
 
+@mixin table-cell-width($width) {
+	min-width: $width;
+	max-width: $width;
+}
+
 @mixin scrollbar {
 	::-webkit-scrollbar {
 		width: 7px;

@@ -37,7 +37,7 @@ import {
     WorkflowDocumentCommandDto,
     WorkflowDocumentServiceProxy,
     TimeReportingCapDto,
-    PurchaseOrderDto,
+    PurchaseOrderQueryDto,
     PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import {} from 'src/shared/service-proxies/service-proxies';
@@ -105,7 +105,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 	consultantInsuranceOptions: { [key: string]: string };
 	projectCategories: EnumEntityTypeDto[] = [];
 	filteredConsultants: ConsultantResultDto[] = [];
-	purchaseOrders: PurchaseOrderDto[] = [];
+	purchaseOrders: PurchaseOrderQueryDto[] = [];
 
 	contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
 	clientSpecialRateList: ClientSpecialRateDto[];
@@ -146,7 +146,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
 		this._workflowDataService.updatePurchaseOrders
 			.pipe(takeUntil(this._unsubscribe))
-			.subscribe((result: PurchaseOrderDto) =>
+			.subscribe((result: PurchaseOrderQueryDto) =>
 				this.clientDataComponent.poComponent.updatePOs(result)
 			);
 	}

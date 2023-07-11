@@ -175,7 +175,6 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     }
 
     addConsutlantToExtendForm(consultant: AvailableConsultantDto, preselectConsultant: boolean, index: number) {
-        console.log('ss');
         const form = this._fb.group({
 			consulantName: new UntypedFormControl(consultant.consultantName),
 			consultantId: new UntypedFormControl(consultant.consultantId),

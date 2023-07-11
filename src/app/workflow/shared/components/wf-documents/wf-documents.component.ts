@@ -12,6 +12,7 @@ import {
 	WorkflowProcessType,
 	StepType,
 	WorkflowDocumentQueryDto,
+    PurchaseOrderDocumentQueryDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { WFDocument } from './wf-documents.model';
 import * as moment from 'moment';
@@ -36,6 +37,7 @@ export class DocumentsComponent extends AppComponentBase {
 	@Input() clientPeriodId: string | undefined;
 	@Input() workflowTerminationId: string | undefined;
     @Input() readOnlyMode: boolean;
+    @Input() singleDocument: boolean = false;
 	isDocumentsLoading = true;
 	documentsNoData = true;
 	documentForm: DocumentForm;
@@ -78,6 +80,7 @@ export class DocumentsComponent extends AppComponentBase {
 					this.clientPeriodId,
 					this.workflowTerminationId,
 					undefined,
+                    undefined,
 					result.value!,
 					fileToUpload
 				);
@@ -100,6 +103,22 @@ export class DocumentsComponent extends AppComponentBase {
 			);
 			this.addDocument(wrappedDocument);
 		}
+	}
+
+    addExistingPOFile(file: PurchaseOrderDocumentQueryDto) {
+        const wrappedDocument = WFDocument.wrap(
+            file.name!,
+            file.createdDateUtc!,
+            file.createdBy!,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            file.id,
+            undefined
+        )
+        this.addDocument(wrappedDocument);
 	}
 
     confirmDeleteDocument(fileId: string, file: FileUploaderFile, index: number) {
@@ -140,6 +159,7 @@ export class DocumentsComponent extends AppComponentBase {
 			icon: new UntypedFormControl(document.icon),
 			name: new UntypedFormControl(document?.name),
 			temporaryFileId: new UntypedFormControl(document.temporaryFileId),
+			purchaseOrderDocumentId: new UntypedFormControl(document.purchaseOrderDocumentId),
 			workflowDocumentId: new UntypedFormControl(document.workflowDocumentId),
 			createdDateUtc: new UntypedFormControl(document.createdDateUtc),
 			createdBy: new UntypedFormControl(document.createdBy),
