@@ -43,7 +43,7 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { BulkUpdateDialogComponent } from './components/bulk-update-dialog/bulk-update-dialog.component';
-import { EBulkUpdateDiallogTypes } from './components/bulk-update-dialog/bulk-update.dialog.model';
+import { EBulkUpdateDiallogTypes, IBulkUpdateDialogData } from './components/bulk-update-dialog/bulk-update.dialog.model';
 import { AddOrEditPoDialogComponent } from '../workflow/shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
 import { EPOChasingStatusText } from '../shared/components/po-chasing-status/po-chasing-status.model';
 import { SelectableCountry } from '../overview/main-overview.model';
@@ -142,7 +142,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			this.searchFilter.valueChanges,
 			this.invoicingEntityControl.valueChanges
 		)
-			.pipe(takeUntil(this._unSubscribe$), debounceTime(700))
+			.pipe(debounceTime(700), takeUntil(this._unSubscribe$))
 			.subscribe(() => {
 				this._checkIfDirty();
 				this.getPurchaseOrdersList();
@@ -154,8 +154,6 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this._getEnums();
 		this.getGridOptions();
 	}
-
-	onSortChange($event: Sort) {}
 
 	saveGridOptions() {
 		let filters = {
@@ -370,7 +368,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
-			dialogType: EBulkUpdateDiallogTypes.UpdateClientResponsible,
+			EBulkUpdateDiallogTypes: EBulkUpdateDiallogTypes.UpdateClientResponsible,
 			dialogTitle: `Assign Client responsible`,
 			dialogText: `You have selected ${this.selectionModel.selected.length} Purchase Orders. To whom would you like to assign them?`,
 			rejectButtonText: 'Cancel',
@@ -378,7 +376,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			clientIds: this.selectionModel.selected.map((x) => x.directClientIdReferencingThisPo),
 			purchaseOrderIds: this.selectionModel.selected.map((x) => x.id),
 			isNegative: false,
-		};
+		} as IBulkUpdateDialogData;
 		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, MediumDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((event: PurchaseOrdersSetClientContactResponsibleCommand) => {
@@ -399,14 +397,14 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
-			dialogType: EBulkUpdateDiallogTypes.UpdateEmagineResponsible,
+			EBulkUpdateDiallogTypes: EBulkUpdateDiallogTypes.UpdateEmagineResponsible,
 			dialogTitle: `Assign emagine responsible`,
 			dialogText: `You have selected ${this.selectionModel.selected.length} Purchase Orders. To whom would you like to assign them?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Assign',
 			purchaseOrderIds: this.selectionModel.selected.map((x) => x.id),
 			isNegative: false,
-		};
+		} as IBulkUpdateDialogData;
 		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, MediumDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((event: PurchaseOrderSetEmagineResponsiblesCommand) => {

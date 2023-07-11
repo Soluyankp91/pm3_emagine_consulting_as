@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
-import { EBulkUpdateDiallogTypes } from './bulk-update.dialog.model';
+import { EBulkUpdateDiallogTypes, IBulkUpdateDialogData } from './bulk-update.dialog.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, of } from 'rxjs';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -22,11 +22,11 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 	styleUrls: ['./bulk-update-dialog.component.scss'],
 })
 export class BulkUpdateDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
-	@Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
-	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
+	@Output() onConfirmed = new EventEmitter<PurchaseOrdersSetClientContactResponsibleCommand | PurchaseOrderSetEmagineResponsiblesCommand>();
+	@Output() onRejected = new EventEmitter<any>();
 
 	employees$: Observable<EmployeeDto[]>;
-	dialogTypes = EBulkUpdateDiallogTypes;
+	EBulkUpdateDiallogTypes = EBulkUpdateDiallogTypes;
 	contractManagerFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
 	salesManagerFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
 	filteredAccountManagers$: Observable<EmployeeDto[]>;
@@ -37,32 +37,15 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 	constructor(
 		injector: Injector,
 		@Inject(MAT_DIALOG_DATA)
-		public data: {
-			dialogType: EBulkUpdateDiallogTypes;
-			dialogTitle: string;
-			dialogText: string;
-			clientIds?: number[] | undefined;
-			purchaseOrderIds?: number[];
-			rejectButtonText: string;
-			confirmButtonText: string;
-			isNegative: boolean;
-		},
-		private dialogRef: MatDialogRef<BulkUpdateDialogComponent>,
+		public data: IBulkUpdateDialogData,
+		private _dialogRef: MatDialogRef<BulkUpdateDialogComponent>,
 		private readonly _lookupService: LookupServiceProxy,
 		private _store: Store
 	) {
 		super(injector);
 	}
 	ngOnInit(): void {
-		switch (this.data.dialogType) {
-			case EBulkUpdateDiallogTypes.UpdateClientResponsible:
-				this._subClientResponsible$();
-				break;
-			case EBulkUpdateDiallogTypes.UpdateEmagineResponsible:
-				this.employees$ = this._store.select(getEmployees);
-				this._subEmagineResponsible$();
-				break;
-		}
+		this._initDialogBasedOnType();
 	}
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -75,7 +58,7 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 	}
 
 	confirm(): void {
-		switch (this.data.dialogType) {
+		switch (this.data.EBulkUpdateDiallogTypes) {
 			case EBulkUpdateDiallogTypes.UpdateEmagineResponsible:
 				let outputEmagineData = new PurchaseOrderSetEmagineResponsiblesCommand();
 				outputEmagineData.purchaseOrdersIds = this.data.purchaseOrderIds;
@@ -103,19 +86,18 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 	}
 
 	private closeInternal(): void {
-		this.dialogRef.close();
+		this._dialogRef.close();
 	}
 
-	private _subClientResponsible$() {
+	private _initFilteredClientContacts$() {
 		this.filteredClientContacts$ = this.clientContactFilter.valueChanges.pipe(
-			takeUntil(this._unsubscribe),
-			debounceTime(300),
+			debounceTime(500),
 			switchMap((value: any) => {
 				const clientIds = this.data.clientIds.filter(Boolean);
 				let toSend = {
 					clientIds: clientIds,
 					name: value,
-					maxRecordsCount: 1000,
+					maxRecordsCount: 100,
 				};
 				if (value?.id) {
 					toSend.name = value.id ? value.firstName : value;
@@ -125,19 +107,20 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 				} else {
 					return of([new ContactResultDto()]);
 				}
-			})
+			}),
+			takeUntil(this._unsubscribe)
 		);
 	}
 
 	private _subEmagineResponsible$() {
 		this.contractManagerFilter.valueChanges
 			.pipe(
-				takeUntil(this._unsubscribe),
 				debounceTime(500),
 				startWith(''),
 				map((value) => {
 					return this._filterEmployees(value ?? '');
-				})
+				}),
+				takeUntil(this._unsubscribe)
 			)
 			.subscribe((result) => {
 				this.filteredContractManagers$ = result;
@@ -145,12 +128,12 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 
 		this.salesManagerFilter.valueChanges
 			.pipe(
-				takeUntil(this._unsubscribe),
 				debounceTime(500),
 				startWith(''),
 				map((value) => {
 					return this._filterEmployees(value ?? '');
-				})
+				}),
+				takeUntil(this._unsubscribe)
 			)
 			.subscribe((result) => {
 				this.filteredAccountManagers$ = result;
@@ -166,6 +149,18 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 			return this.employees$.pipe(map((employees) => employees.slice(0, 100)));
 		} else {
 			return result;
+		}
+	}
+
+	private _initDialogBasedOnType() {
+		switch (this.data.EBulkUpdateDiallogTypes) {
+			case EBulkUpdateDiallogTypes.UpdateClientResponsible:
+				this._initFilteredClientContacts$();
+				break;
+			case EBulkUpdateDiallogTypes.UpdateEmagineResponsible:
+				this.employees$ = this._store.select(getEmployees);
+				this._subEmagineResponsible$();
+				break;
 		}
 	}
 }

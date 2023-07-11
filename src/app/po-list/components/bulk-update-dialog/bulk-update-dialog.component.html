@@ -10,8 +10,8 @@
         {{ data.dialogText }}
     </div>
     <mat-divider class="u-w--100 u-mb--24"></mat-divider>
-    <ng-container [ngSwitch]="data.dialogType">
-        <ng-container *ngSwitchCase="dialogTypes.UpdateClientResponsible">
+    <ng-container [ngSwitch]="data.EBulkUpdateDiallogTypes">
+        <ng-container *ngSwitchCase="EBulkUpdateDiallogTypes.UpdateClientResponsible">
             <h3 class="text-bold dark-grey-color">Client contact responsible</h3>
             <div fxLayout="column" fxLayoutAlign="start start">
                 <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420"
@@ -45,7 +45,7 @@
                 </mat-form-field>
             </div>
         </ng-container>
-        <ng-container *ngSwitchCase="dialogTypes.UpdateEmagineResponsible">
+        <ng-container *ngSwitchCase="EBulkUpdateDiallogTypes.UpdateEmagineResponsible">
             <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100">
                 <h3 class="text-bold dark-grey-color">Contract Manager Responsible</h3>
                 <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420"
@@ -122,7 +122,7 @@
     <button mat-flat-button class="dialog-btn"
         [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" appPreventDoubleClick
         (throttledClick)="confirm()"
-        [disabled]="data.dialogType === dialogTypes.UpdateEmagineResponsible ? salesManagerFilter.invalid && contractManagerFilter.invalid : clientContactFilter.invalid">
+        [disabled]="data.EBulkUpdateDiallogTypes === EBulkUpdateDiallogTypes.UpdateEmagineResponsible ? salesManagerFilter.invalid && contractManagerFilter.invalid : clientContactFilter.invalid">
         {{ data.confirmButtonText }}
     </button>
 </mat-dialog-actions>
