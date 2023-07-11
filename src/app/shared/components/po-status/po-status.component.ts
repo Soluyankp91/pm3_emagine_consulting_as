@@ -19,7 +19,7 @@ import { EPOStatusIcon, EPOStatusTooltip } from './po-status.model';
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PoStatusIconComponent {
+export class PoStatusComponent {
     @Input() statusId: number;
     @Input() disableTooltip: boolean = false;
     ePOStatusIcon = EPOStatusIcon;

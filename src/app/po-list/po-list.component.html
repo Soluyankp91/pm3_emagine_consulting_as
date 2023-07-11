@@ -112,7 +112,7 @@
                     <mat-header-cell *matHeaderCellDef class="expand-column">
                     </mat-header-cell>
                     <mat-cell *matCellDef="let row" class="expand-column">
-                        <ng-container *ngIf="row.clientPeriodsReferencingThisPo?.length > 1">
+                        <ng-container *ngIf="row.clientPeriods?.length > 1">
                             <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === row ? null : row); $event.stopPropagation()">
                                 <mat-icon *ngIf="expandedElement !== row">keyboard_arrow_down</mat-icon>
                                 <mat-icon *ngIf="expandedElement === row">keyboard_arrow_up</mat-icon>
@@ -230,8 +230,8 @@
                         class="table-header-cell poWFPeriod-column">
                         WF period ID
                     </mat-header-cell>
-                    <mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row" (click)="openConnectedWF(row.clientPeriodsReferencingThisPo[0])">
-                        {{row.clientPeriodsReferencingThisPo[0]?.displayId ?? '-'}}
+                    <mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row" (click)="openConnectedWF(row.clientPeriods[0])">
+                        {{row.clientPeriods[0]?.displayId ?? '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientContact">
@@ -251,8 +251,8 @@
                         Consultant
                     </mat-header-cell>
                     <mat-cell class="table-cell poConsultant-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.consultants | displayList" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.consultants | displayList }}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.consultants | displayList" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.consultants | displayList }}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -262,8 +262,8 @@
                         Sales type
                     </mat-header-cell>
                     <mat-cell class="table-cell poSalesType-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.salesType ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.salesType ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -273,8 +273,8 @@
                         Delivery type
                     </mat-header-cell>
                     <mat-cell class="table-cell poDeliveryType-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.deliveryType ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.deliveryType ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -317,8 +317,8 @@
                         Client rate
                     </mat-header-cell>
                     <mat-cell class="table-cell poClientRate-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.clientRate ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.clientRate ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.clientRate ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.clientRate ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -328,8 +328,8 @@
                         Total amount
                     </mat-header-cell>
                     <mat-cell class="table-cell poTotalAmount-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -350,8 +350,8 @@
                         Estimated units left
                     </mat-header-cell>
                     <mat-cell class="table-cell poEstimatedUnitsLeft-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.estimatedUnitsLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.estimatedUnitsLeft ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -413,7 +413,7 @@
                 </ng-container>
                 <ng-container matColumnDef="expandedLeftSticky" [sticky]="true">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell class="table-cell expandedLeftSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriodsReferencingThisPo?.length - 1) : 0">
+                    <mat-cell class="table-cell expandedLeftSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriods?.length - 1) : 0">
                         <div class="example-element-detail"
                             [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
                         </div>
@@ -424,7 +424,7 @@
                     <mat-cell class="table-cell" *matCellDef="let row">
                         <div class="example-element-detail"
                             [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
-                            <ng-container *ngFor="let element of row.clientPeriodsReferencingThisPo.slice(1, row.clientPeriodsReferencingThisPo.length)">
+                            <ng-container *ngFor="let element of row.clientPeriods.slice(1, row.clientPeriods.length)">
                                 <div fxLayout="row" class="example-element-detail-row">
                                     <div class="poLastUpdated-column"></div>
                                     <div class="poWFPeriod-column" (click)="openConnectedWF(element)">
@@ -498,7 +498,7 @@
                 </ng-container>
                 <ng-container matColumnDef="expandedRightSticky" [stickyEnd]="true">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell class="table-cell expandedRightSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriodsReferencingThisPo?.length - 1) : 0">
+                    <mat-cell class="table-cell expandedRightSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriods?.length - 1) : 0">
                         <div class="example-element-detail"
                             [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
                         </div>

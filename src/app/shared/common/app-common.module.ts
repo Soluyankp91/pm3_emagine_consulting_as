@@ -61,7 +61,7 @@ import { PoContractManagerFilterComponent } from '../components/po-table/fitlers
 import { PoNoteFilterComponent } from '../components/po-table/fitlers/po-note-filter/po-note-filter.component';
 import { PoSalesManagersFilterComponent } from '../components/po-table/fitlers/sales-managers-filter/sales-managers-filter.component';
 import { PoCapFilterComponent } from '../components/po-table/fitlers/po-cap-filter/po-cap-filter.component';
-import { PoStatusIconComponent } from '../components/po-status/po-status.component';
+import { PoStatusComponent } from '../components/po-status/po-status.component';
 import { PoNoteStatusIconComponent } from '../components/po-note-status/po-note-status.component';
 import { PoChasingStatusIconComponent } from '../components/po-chasing-status/po-chasing-status.component';
 
@@ -120,7 +120,7 @@ import { PoChasingStatusIconComponent } from '../components/po-chasing-status/po
         PoNoteFilterComponent,
         PoSalesManagersFilterComponent,
         PoCapFilterComponent,
-        PoStatusIconComponent,
+        PoStatusComponent,
         PoNoteStatusIconComponent,
         PoChasingStatusIconComponent,
 	],
@@ -194,7 +194,7 @@ import { PoChasingStatusIconComponent } from '../components/po-chasing-status/po
         PoNoteFilterComponent,
         PoSalesManagersFilterComponent,
         PoCapFilterComponent,
-        PoStatusIconComponent,
+        PoStatusComponent,
         PoNoteStatusIconComponent,
         PoChasingStatusIconComponent,
 	],

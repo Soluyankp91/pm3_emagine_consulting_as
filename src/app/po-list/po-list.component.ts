@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Injector, OnInit, TrackByFunction, ViewChild } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, TrackByFunction, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort, SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -48,8 +48,9 @@ import { AddOrEditPoDialogComponent } from '../workflow/shared/components/purcha
 import { EPOChasingStatusText } from '../shared/components/po-chasing-status/po-chasing-status.model';
 import { SelectableCountry } from '../overview/main-overview.model';
 import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
+import { cloneDeep } from 'lodash';
 
-const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0';
+const PO_GRID_OPTIONS_KEY  = 'PurchaseOrdersGridFILTERS.1.0.0';
 @Component({
 	selector: 'app-po-list',
 	templateUrl: './po-list.component.html',
@@ -62,12 +63,10 @@ const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0';
 		]),
 	],
 })
-export class PoListComponent extends AppComponentBase implements OnInit {
+export class PoListComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@ViewChild('treeFilter') treeFilter: DivisionsAndTeamsFilterComponent;
-	initialSelection = [];
-	allowMultiSelect = true;
 	selectedItemsActions: Actions[] = PO_BOTTOM_ACTIONS;
-	selectionModel = new SelectionModel<IPOGridData>(this.allowMultiSelect, this.initialSelection);
+	selectionModel = new SelectionModel<IPOGridData>(true, []);
 	displayedColumns = DISPLAYED_COLUMNS;
 	dataSource = new MatTableDataSource<IPOGridData>();
 	sortActive: string;
@@ -115,9 +114,6 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	legalEntities: SelectableCountry[];
     rateUnitTypes: EnumEntityTypeDto[];
 
-	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
-	currentRowId: number | null;
-
 	teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState = {
 		tenantIds: [],
 		teamsIds: [],
@@ -136,26 +132,21 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		private readonly _dialog: MatDialog
 	) {
 		super(injector);
-		merge(
-			this.chasingStatusesFilter.valueChanges,
-			this.statusesFilter.valueChanges,
-			this.searchFilter.valueChanges,
-			this.invoicingEntityControl.valueChanges
-		)
-			.pipe(debounceTime(700), takeUntil(this._unSubscribe$))
-			.subscribe(() => {
-				this._checkIfDirty();
-				this.getPurchaseOrdersList();
-			});
 	}
 
 	ngOnInit(): void {
 		this._titleService.setTitle(ERouteTitleType.POList);
 		this._getEnums();
 		this.getGridOptions();
+        this._initPurchaseOrdersListObserver();
 	}
 
-	saveGridOptions() {
+    ngOnDestroy(): void {
+        this._unSubscribe$.next();
+        this._unSubscribe$.complete();
+    }
+
+	saveGridOptions(): void {
 		let filters = {
 			pageNumber: this.pageNumber,
 			defaultPageSize: this.defaultPageSize,
@@ -171,11 +162,11 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			ownerTeamsIds: this.teamsAndDivisionsFilterState.teamsIds,
 		};
 		this._checkIfDirty();
-		localStorage.setItem(POGridOptionsKey, JSON.stringify(filters));
+		localStorage.setItem(PO_GRID_OPTIONS_KEY , JSON.stringify(filters));
 	}
 
-	getGridOptions() {
-		let filters = JSON.parse(localStorage.getItem(POGridOptionsKey)!);
+	getGridOptions(): void {
+		let filters = JSON.parse(localStorage.getItem(PO_GRID_OPTIONS_KEY )!);
 		if (filters) {
 			this.pageNumber = filters.pageNumber;
 			this.defaultPageSize = filters.defaultPageSize;
@@ -196,7 +187,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this.getPurchaseOrdersList();
 	}
 
-	getPurchaseOrdersList() {
+	getPurchaseOrdersList(): void {
 		this.showMainSpinner();
 		const payload = this._packPayload();
 		this.isLoading$.next(true);
@@ -232,7 +223,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			});
 	}
 
-	resetAllFilters() {
+	resetAllFilters(): void {
 		this.teamsAndDivisionsFilterState = {
 			tenantIds: [],
 			divisionIds: [],
@@ -246,54 +237,56 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this.invoicingEntityControl.reset([], { emitEvent: false });
 		this.chasingStatusesFilter.reset([], { emitEvent: false });
 		this.statusesFilter.reset([], { emitEvent: false });
-		localStorage.removeItem(POGridOptionsKey);
+		localStorage.removeItem(PO_GRID_OPTIONS_KEY);
 		this.getPurchaseOrdersList();
 	}
 
-	isAllSelected() {
+	isAllSelected(): boolean {
 		const numSelected = this.selectionModel.selected.length;
 		const numRows = this.dataSource.data.length;
 		return numSelected === numRows;
 	}
-	toggleAllRows() {
+
+	toggleAllRows(): void {
 		this.isAllSelected()
 			? this.selectionModel.clear()
 			: this.dataSource.data.forEach((row) => this.selectionModel.select(row));
 	}
 
-	sortChange(event: Sort) {
+	sortChange(event: Sort): void {
 		this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
 		this.getPurchaseOrdersList();
 	}
 
-	pageChange(event: PageEvent) {
+	pageChange(event: PageEvent): void {
 		this.pageNumber = event.pageIndex + 1;
 		this.defaultPageSize = event.pageSize;
 		this.getPurchaseOrdersList();
 	}
 
-	editPo(actionRow: IPOGridData) {
+	editPo(actionRow: IPOGridData): void {
 		const scrollStrategy = this._overlay.scrollStrategies.block();
-		BigDialogConfig.scrollStrategy = scrollStrategy;
-		BigDialogConfig.height = '700px';
-		BigDialogConfig.data = {
+        const dialogConfig = cloneDeep(BigDialogConfig);
+		dialogConfig.scrollStrategy = scrollStrategy;
+		dialogConfig.height = '700px';
+		dialogConfig.data = {
 			purchaseOrder: actionRow.originalPOData,
 			isEdit: true,
-			clientPeriodId: actionRow.clientPeriodsReferencingThisPo[0]?.clientPeriodId,
+			clientPeriodId: actionRow.clientPeriods[0]?.clientPeriodId,
 			directClientId: actionRow.directClientIdReferencingThisPo,
 			addedPoIds: [actionRow.id],
 		};
-		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, BigDialogConfig);
+		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, dialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+		dialogRef.componentInstance.confirmed.pipe(takeUntil(this._unSubscribe$)).subscribe(() => {
 			this.getPurchaseOrdersList();
 		});
 	}
 
-	chooseSelectionAction(actionType: EPoBotttomActionsType) {
+	chooseSelectionAction(actionType: EPoBotttomActionsType): void {
 		switch (actionType) {
 			case EPoBotttomActionsType.AssignEmaginePOResponsible:
-				this._openBulkUpdateEnmagineResponsibleDialog();
+				this._openBulkUpdateEmagineResponsibleDialog();
 				break;
 			case EPoBotttomActionsType.AssignClientPOResponsible:
 				this._openBulkUpdateClientResponsibleDialog();
@@ -304,7 +297,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		}
 	}
 
-	filterChanged(event: any, filterType: string) {
+	filterChanged(event: any, filterType: string): void {
 		switch (filterType) {
 			case FILTER_LABEL_MAP.status:
 				this.gridFilters.chasingStatuses = event.map((x) => x.id);
@@ -346,28 +339,29 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this.getPurchaseOrdersList();
 	}
 
-	openConnectedWF(connectedPeriod: IPOClientPeriodGridData) {
+	openConnectedWF(connectedPeriod: IPOClientPeriodGridData): void {
 		const url = this._router.serializeUrl(
 			this._router.createUrlTree([`/app/workflow/${connectedPeriod.workflowId}/${connectedPeriod.clientPeriodId}`])
 		);
 		window.open(url, '_blank');
 	}
 
-	teamsAndDivisionsChanged(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+	teamsAndDivisionsChanged(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState): void {
 		this.teamsAndDivisionsFilterState = teamsAndDivisionFilter;
 		this._teamsAndDivisionCounter(teamsAndDivisionFilter);
 		this.getPurchaseOrdersList();
 	}
 
-	managersChanged(event: SelectableEmployeeDto[]) {
+	managersChanged(event: SelectableEmployeeDto[]): void {
 		this.selectedAccountManagers = event;
 		this.getPurchaseOrdersList();
 	}
 
-	private _openBulkUpdateClientResponsibleDialog() {
+	private _openBulkUpdateClientResponsibleDialog(): void {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
+        const dialogConfig = cloneDeep(MediumDialogConfig);
+		dialogConfig.scrollStrategy = scrollStrategy;
+		dialogConfig.data = {
 			EBulkUpdateDiallogTypes: EBulkUpdateDiallogTypes.UpdateClientResponsible,
 			dialogTitle: `Assign Client responsible`,
 			dialogText: `You have selected ${this.selectionModel.selected.length} Purchase Orders. To whom would you like to assign them?`,
@@ -377,14 +371,14 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			purchaseOrderIds: this.selectionModel.selected.map((x) => x.id),
 			isNegative: false,
 		} as IBulkUpdateDialogData;
-		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, dialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((event: PurchaseOrdersSetClientContactResponsibleCommand) => {
+		dialogRef.componentInstance.confirmed.pipe(takeUntil(this._unSubscribe$)).subscribe((event: PurchaseOrdersSetClientContactResponsibleCommand) => {
 			this._bulkUpdateClientResponsible(event);
 		});
 	}
 
-	private _bulkUpdateClientResponsible(data: PurchaseOrdersSetClientContactResponsibleCommand) {
+	private _bulkUpdateClientResponsible(data: PurchaseOrdersSetClientContactResponsibleCommand): void {
 		this.showMainSpinner();
 		let input = new PurchaseOrdersSetClientContactResponsibleCommand(data);
 		this._purchaseOrderService
@@ -393,10 +387,11 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			.subscribe(() => this.getPurchaseOrdersList());
 	}
 
-	private _openBulkUpdateEnmagineResponsibleDialog() {
+	private _openBulkUpdateEmagineResponsibleDialog(): void {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
+        const dialogConfig = cloneDeep(MediumDialogConfig);
+		dialogConfig.scrollStrategy = scrollStrategy;
+		dialogConfig.data = {
 			EBulkUpdateDiallogTypes: EBulkUpdateDiallogTypes.UpdateEmagineResponsible,
 			dialogTitle: `Assign emagine responsible`,
 			dialogText: `You have selected ${this.selectionModel.selected.length} Purchase Orders. To whom would you like to assign them?`,
@@ -405,14 +400,14 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			purchaseOrderIds: this.selectionModel.selected.map((x) => x.id),
 			isNegative: false,
 		} as IBulkUpdateDialogData;
-		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, dialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((event: PurchaseOrderSetEmagineResponsiblesCommand) => {
+		dialogRef.componentInstance.confirmed.pipe(takeUntil(this._unSubscribe$)).subscribe((event: PurchaseOrderSetEmagineResponsiblesCommand) => {
 			this._bulkUpdateEnmagineResponsible(event);
 		});
 	}
 
-	private _bulkUpdateEnmagineResponsible(data: PurchaseOrderSetEmagineResponsiblesCommand) {
+	private _bulkUpdateEnmagineResponsible(data: PurchaseOrderSetEmagineResponsiblesCommand): void {
 		this.showMainSpinner();
 		let input = new PurchaseOrderSetEmagineResponsiblesCommand(data);
 		this._purchaseOrderService
@@ -421,24 +416,25 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			.subscribe(() => this.getPurchaseOrdersList());
 	}
 
-	private _confirmMarkAsCompleted() {
+	private _confirmMarkAsCompleted(): void {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
+        const dialogConfig = cloneDeep(MediumDialogConfig);
+		dialogConfig.scrollStrategy = scrollStrategy;
+		dialogConfig.data = {
 			confirmationMessageTitle: `Mark as completed`,
 			confirmationMessage: `You have selected ${this.selectionModel.selected.length} Purchase Orders. Are you sure you want to proceed with marking them as completed`,
 			rejectButtonText: 'Cancel',
-			confirmButtonText: 'Complete',
+			confirmButtonText: 'Proceed',
 			isNegative: true,
 		};
-		const dialogRef = this._dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(ConfirmationDialogComponent, dialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe(() => {
+		dialogRef.componentInstance.onConfirmed.pipe(takeUntil(this._unSubscribe$)).subscribe(() => {
 			this._markAsCompleted();
 		});
 	}
 
-	private _markAsCompleted() {
+	private _markAsCompleted(): void {
 		this.showMainSpinner();
 		let input = new PurchaseOrdersSetIsCompletedCommand();
 		input.isCompleted = true;
@@ -449,7 +445,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			.subscribe(() => this.getPurchaseOrdersList());
 	}
 
-	private _packPayload() {
+	private _packPayload(): IPoListPayload {
 		const { tenantIds, teamsIds, divisionIds } = this.teamsAndDivisionsFilterState;
 		return {
 			invoicingEntities: this.invoicingEntityControl.value?.map((x) => x.id) ?? [],
@@ -474,35 +470,8 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		return items.map((item) => {
 			return {
 				originalPOData: item,
-				id: item.id,
-				number: item.number,
-				numberMissingButRequired: item.numberMissingButRequired,
-				receiveDate: item.receiveDate,
-				startDate: item.startDate,
-				endDate: item.endDate,
-				chasingStatus: item.chasingStatus,
-				status: item.status,
-				isCompleted: item.isCompleted,
-				capForInvoicing: item.capForInvoicing,
-				notes: item.notes,
-				isUnread: item.isUnread,
-				notifyCM: item.notifyCM,
-				directClientIdReferencingThisPo: item.directClientIdReferencingThisPo,
-				directClientNameReferencingThisPo: item.directClientNameReferencingThisPo,
-				chasingStatusHistory: item.chasingStatusHistory,
-				purchaseOrderCurrentContextData: item.purchaseOrderCurrentContextData,
-				workflowsIdsReferencingThisPo: item.workflowsIdsReferencingThisPo,
-				clientPeriodsReferencingThisPo: this._mapClientPeriodsData(item.clientPeriodsReferencingThisPo),
-				isLinkedToAnyProjectLine: item.isLinkedToAnyProjectLine,
-				salesResponsible: item.salesResponsible,
-				contractResponsible: item.contractResponsible,
-				clientContactResponsible: item.clientContactResponsible,
-				noteStatus: item.noteStatus,
-				createdBy: item.createdBy,
-				createdOnUtc: item.createdOnUtc,
-				modifiedBy: item.modifiedBy,
-				modifiedOnUtc: item.modifiedOnUtc,
-				purchaseOrderDocumentQueryDto: item.purchaseOrderDocumentQueryDto,
+                clientPeriods: this._mapClientPeriodsData(item.clientPeriodsReferencingThisPo),
+				...item
 			} as IPOGridData;
 		});
 	}
@@ -526,12 +495,12 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		});
 	}
 
-	private _teamsAndDivisionCounter(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState) {
+	private _teamsAndDivisionCounter(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState): void {
 		const { teamsIds, tenantIds, divisionIds } = teamsAndDivisionFilter;
 		this.selectedTeamsAndDivisionsCount = teamsIds.length + tenantIds.length + divisionIds.length;
 	}
 
-	private _getEnums() {
+	private _getEnums(): void {
 		this.deliveryTypes = this.getStaticEnumValue('deliveryTypes');
 		this.saleTypes = this.getStaticEnumValue('saleTypes');
 		this.currencies = this.getStaticEnumValue('currencies');
@@ -542,7 +511,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
         this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
 	}
 
-	private _mapLegalEntitiesIntoSelectable(entities: LegalEntityDto[]) {
+	private _mapLegalEntitiesIntoSelectable(entities: LegalEntityDto[]): SelectableCountry[] {
 		return entities.map((x) => {
 			return new SelectableCountry({
 				id: x.id!,
@@ -555,7 +524,21 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		});
 	}
 
-	private _checkIfDirty() {
+    private _initPurchaseOrdersListObserver(): void {
+        merge(
+			this.chasingStatusesFilter.valueChanges,
+			this.statusesFilter.valueChanges,
+			this.searchFilter.valueChanges,
+			this.invoicingEntityControl.valueChanges
+		)
+			.pipe(debounceTime(700), takeUntil(this._unSubscribe$))
+			.subscribe(() => {
+				this._checkIfDirty();
+				this.getPurchaseOrdersList();
+			});
+    }
+
+	private _checkIfDirty(): void {
 		if (
 			this.invoicingEntityControl.value?.length ||
 			this.chasingStatusesFilter.value?.length ||

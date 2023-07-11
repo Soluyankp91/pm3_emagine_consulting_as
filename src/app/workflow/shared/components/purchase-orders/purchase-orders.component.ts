@@ -62,7 +62,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		};
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, BigDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderQueryDto) => {
+		dialogRef.componentInstance.confirmed.subscribe((newPurchaseOrder: PurchaseOrderQueryDto) => {
 			if (!!purchaseOrder) {
 				this._updatePurchaseOrder(newPurchaseOrder, orderIndex);
 			} else {

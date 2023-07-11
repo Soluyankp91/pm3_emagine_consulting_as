@@ -63,7 +63,7 @@ export interface IPOGridData {
     chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
     purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
     workflowsIdsReferencingThisPo?: string[] | undefined;
-    clientPeriodsReferencingThisPo?: IPOClientPeriodGridData[] | undefined;
+    clientPeriods?: IPOClientPeriodGridData[] | undefined;
     isLinkedToAnyProjectLine?: boolean | undefined;
     salesResponsible?: EmployeeDto;
     contractResponsible?: EmployeeDto;

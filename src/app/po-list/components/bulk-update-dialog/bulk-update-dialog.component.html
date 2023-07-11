@@ -56,7 +56,7 @@
                     <span matSuffix class="shevron"></span>
                     <mat-autocomplete #contractAuto="matAutocomplete" [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
                     (closed)="onAutocompleteClosed(contractManagerFilter, 'id')">
-                        <ng-container *ngFor="let option of filteredContractManagers$ | async; trackBy: trackById">
+                        <ng-container *ngFor="let option of filteredContractManagers; trackBy: trackById">
                             <mat-option [value]="option">
                                 <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name"
                                     matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -67,7 +67,7 @@
                                 </div>
                             </mat-option>
                         </ng-container>
-                        <ng-container *ngIf="(filteredContractManagers$ | async)?.length === 0">
+                        <ng-container *ngIf="filteredContractManagers?.length === 0">
                             <mat-option (click)="$event.stopPropagation()" class="no-data">
                                 <span class="text-bold dark-grey-color">
                                     No managers found
@@ -88,7 +88,7 @@
                     <span matSuffix class="shevron"></span>
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
                     (closed)="onAutocompleteClosed(salesManagerFilter, 'id')">
-                        <ng-container *ngFor="let option of filteredAccountManagers$ | async; trackBy: trackById">
+                        <ng-container *ngFor="let option of filteredAccountManagers; trackBy: trackById">
                             <mat-option [value]="option">
                                 <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name"
                                     matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -99,7 +99,7 @@
                                 </div>
                             </mat-option>
                         </ng-container>
-                        <ng-container *ngIf="(filteredAccountManagers$ | async)?.length === 0">
+                        <ng-container *ngIf="filteredAccountManagers?.length === 0">
                             <mat-option (click)="$event.stopPropagation()" class="no-data">
                                 <span class="text-bold dark-grey-color">
                                     No managers found

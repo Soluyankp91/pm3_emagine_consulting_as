@@ -29,8 +29,8 @@ import { PO_CHASING_STATUSES } from 'src/app/po-list/po-list.constants';
 })
 export class AddOrEditPoDialogComponent extends AppComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('poDocuments', {static: false}) poDocuments: DocumentsComponent;
-	@Output() onConfirmed: EventEmitter<PurchaseOrderQueryDto> = new EventEmitter<PurchaseOrderQueryDto>();
-	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
+	@Output() confirmed: EventEmitter<PurchaseOrderQueryDto> = new EventEmitter<PurchaseOrderQueryDto>();
+	@Output() rejected: EventEmitter<any> = new EventEmitter<any>();
 	purchaseOrderForm: PurchaseOrderForm;
 	purchaseOrderCapTypes: { [key: string]: string };
 	currencies: EnumEntityTypeDto[];
@@ -98,7 +98,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	reject() {
-		this.onRejected.emit();
+		this.rejected.emit();
 		this._closeInternal();
 	}
 
@@ -139,7 +139,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
                 } else {
                     this.existingPo.purchaseOrderDocumentQueryDto = undefined;
                 }
-				this.onConfirmed.emit(this.existingPo);
+				this.confirmed.emit(this.existingPo);
 				this._closeInternal();
 				this.hideMainSpinner();
 				return;
@@ -149,7 +149,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 					.pipe(finalize(() => this.hideMainSpinner()))
 					.subscribe((result) => {
 						this._workflowDataService.updatePurchaseOrders.emit(result);
-						this.onConfirmed.emit(result);
+						this.confirmed.emit(result);
 						this._closeInternal();
 					});
 			}
@@ -158,7 +158,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				.purchaseOrderPOST(this.data?.clientPeriodId, input)
 				.pipe(finalize(() => this.hideMainSpinner()))
 				.subscribe((result) => {
-					this.onConfirmed.emit(result);
+					this.confirmed.emit(result);
 					this._closeInternal();
 				});
 		}

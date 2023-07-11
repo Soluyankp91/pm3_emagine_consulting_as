@@ -23,17 +23,17 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BulkUpdateDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
-	@Output() onConfirmed = new EventEmitter<
+	@Output() confirmed = new EventEmitter<
 		PurchaseOrdersSetClientContactResponsibleCommand | PurchaseOrderSetEmagineResponsiblesCommand
 	>();
-	@Output() onRejected = new EventEmitter<any>();
+	@Output() rejected = new EventEmitter<void>();
 
-	employees$: Observable<EmployeeDto[]>;
+	employees: EmployeeDto[] = [];
 	EBulkUpdateDiallogTypes = EBulkUpdateDiallogTypes;
 	contractManagerFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
 	salesManagerFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
-	filteredAccountManagers$: Observable<EmployeeDto[]>;
-	filteredContractManagers$: Observable<EmployeeDto[]>;
+	filteredAccountManagers: EmployeeDto[];
+	filteredContractManagers: EmployeeDto[];
 	clientContactFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
 	filteredClientContacts$: Observable<ContactResultDto[]>;
 	private _unsubscribe = new Subject();
@@ -56,7 +56,7 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 	}
 
 	close(): void {
-		this.onRejected.emit();
+		this.rejected.emit();
 		this.closeInternal();
 	}
 
@@ -79,12 +79,12 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 	}
 
 	confirmAndClose(outputData: PurchaseOrdersSetClientContactResponsibleCommand | PurchaseOrderSetEmagineResponsiblesCommand) {
-		this.onConfirmed.emit(outputData);
+		this.confirmed.emit(outputData);
 		this.closeInternal();
 	}
 
 	reject(): void {
-		this.onRejected.emit();
+		this.rejected.emit();
 		this.closeInternal();
 	}
 
@@ -115,7 +115,7 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 		);
 	}
 
-	private _subEmagineResponsible$() {
+	private _initFilteredContractManagers(): void {
 		this.contractManagerFilter.valueChanges
 			.pipe(
 				debounceTime(500),
@@ -126,7 +126,7 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((result) => {
-				this.filteredContractManagers$ = result;
+				this.filteredContractManagers = result;
 			});
 
 		this.salesManagerFilter.valueChanges
@@ -139,17 +139,15 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 				takeUntil(this._unsubscribe)
 			)
 			.subscribe((result) => {
-				this.filteredAccountManagers$ = result;
+				this.filteredAccountManagers = result;
 			});
 	}
 
-	private _filterEmployees(value: string): Observable<EmployeeDto[]> {
+	private _filterEmployees(value: string): EmployeeDto[] {
 		const filterValue = value.toLowerCase();
-		const result = this.employees$.pipe(
-			map((response) => response.filter((option) => option.name.toLowerCase().includes(filterValue)).slice(0, 100))
-		);
+		const result = this.employees.filter((option) => option.name.toLowerCase().includes(filterValue)).slice(0, 100);
 		if (value === '') {
-			return this.employees$.pipe(map((employees) => employees.slice(0, 100)));
+			return this.employees.slice(0, 100);
 		} else {
 			return result;
 		}
@@ -161,8 +159,10 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 				this._initFilteredClientContacts$();
 				break;
 			case EBulkUpdateDiallogTypes.UpdateEmagineResponsible:
-				this.employees$ = this._store.select(getEmployees);
-				this._subEmagineResponsible$();
+				this._store.select(getEmployees).subscribe(result => {
+                    this.employees = result;
+                });
+				this._initFilteredContractManagers();
 				break;
 		}
 	}
