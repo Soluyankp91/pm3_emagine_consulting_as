@@ -73,13 +73,13 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
         }
 		this._getEnums();
 		this.filteredPurchaseOrders = this.purchaseOrderForm.existingPo.valueChanges.pipe(
-			takeUntil(this._unsubscribe),
 			startWith(''),
 			map((value) => {
 				if (typeof value === 'string') {
 					return this._filterPOsAutocomplete(value);
 				}
-			})
+			}),
+            takeUntil(this._unsubscribe),
 		);
         if (this.data.directClientId) {
             this._subClientResponsible$();
@@ -293,14 +293,13 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 
     private _subClientResponsible$() {
 		this.filteredClientContacts$ = this.purchaseOrderForm.clientContactResponsible.valueChanges.pipe(
-			takeUntil(this._unsubscribe),
-			debounceTime(300),
+			debounceTime(500),
 			switchMap((value: any) => {
 				const clientIds = [this.data.directClientId];
 				let toSend = {
 					clientIds: clientIds,
 					name: value,
-					maxRecordsCount: 1000,
+					maxRecordsCount: 100,
 				};
 				if (value?.id) {
 					toSend.name = value.id ? value.firstName : value;
@@ -310,7 +309,8 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				} else {
 					return of([]);
 				}
-			})
+			}),
+            takeUntil(this._unsubscribe),
 		);
 	}
 }

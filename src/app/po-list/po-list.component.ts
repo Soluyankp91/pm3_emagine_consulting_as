@@ -76,6 +76,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 	defaultPageSize = AppConsts.grid.defaultPageSize;
 	pageNumber = 1;
 	sorting = '';
+    // FIXME: will be added to FromGroup in 2nd iteration
 	invoicingEntityControl = new FormControl([]);
 	searchFilter = new FormControl('');
 	chasingStatusesFilter = new FormControl([]);
