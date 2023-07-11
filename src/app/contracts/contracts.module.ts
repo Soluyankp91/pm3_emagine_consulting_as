@@ -105,10 +105,10 @@ import { EmailBodyComponent } from './shared/components/popUps/email-body/email-
 		ActionDialogComponent,
 		DefaultFileUploaderComponent,
 		AgreementLogsComponent,
-  OutdatedMergeFieldsComponent,
-  EmptyAndUnknownMfComponent,
-  ArchiveComponent,
-  EmailBodyComponent,
+		OutdatedMergeFieldsComponent,
+		EmptyAndUnknownMfComponent,
+		ArchiveComponent,
+		EmailBodyComponent,
 	],
 	imports: [
 		CommonModule,
@@ -363,6 +363,15 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'archive-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/archive-icon.svg')
+		);
+
+		iconRegistry.addSvgIcon(
+			'action-three-dots',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/action-three-dots.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'deleted-attachment',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/deleted-attachment.svg')
 		);
 	}
 }

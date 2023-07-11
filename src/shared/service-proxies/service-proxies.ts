@@ -16735,6 +16735,67 @@ export class MergeFieldsServiceProxy {
     /**
      * @return Success
      */
+    agreementTemplateAll(agreementTemplateId: number): Observable<MergeField[]> {
+        let url_ = this.baseUrl + "/api/MergeFields/new/agreementTemplate/{agreementTemplateId}";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplateAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplateAll(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MergeField[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MergeField[]>;
+        }));
+    }
+
+    protected processAgreementTemplateAll(response: HttpResponseBase): Observable<MergeField[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MergeField.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MergeField[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     agreement(agreementId: number): Observable<{ [key: string]: string; }> {
         let url_ = this.baseUrl + "/api/MergeFields/agreement/{agreementId}";
         if (agreementId === undefined || agreementId === null)
@@ -16793,6 +16854,67 @@ export class MergeFieldsServiceProxy {
             }));
         }
         return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    agreementAll(agreementId: number): Observable<MergeField[]> {
+        let url_ = this.baseUrl + "/api/MergeFields/new/agreement/{agreementId}";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementAll(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MergeField[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MergeField[]>;
+        }));
+    }
+
+    protected processAgreementAll(response: HttpResponseBase): Observable<MergeField[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MergeField.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MergeField[]>(null as any);
     }
 
     /**
@@ -23139,6 +23261,7 @@ export class AgreementTemplateDetailsAttachmentDto implements IAgreementTemplate
     agreementTemplateAttachmentId?: number;
     name?: string | undefined;
     isUsedByDescendants?: boolean | undefined;
+    isObsolete?: boolean;
 
     constructor(data?: IAgreementTemplateDetailsAttachmentDto) {
         if (data) {
@@ -23154,6 +23277,7 @@ export class AgreementTemplateDetailsAttachmentDto implements IAgreementTemplate
             this.agreementTemplateAttachmentId = _data["agreementTemplateAttachmentId"];
             this.name = _data["name"];
             this.isUsedByDescendants = _data["isUsedByDescendants"];
+            this.isObsolete = _data["isObsolete"];
         }
     }
 
@@ -23169,6 +23293,7 @@ export class AgreementTemplateDetailsAttachmentDto implements IAgreementTemplate
         data["agreementTemplateAttachmentId"] = this.agreementTemplateAttachmentId;
         data["name"] = this.name;
         data["isUsedByDescendants"] = this.isUsedByDescendants;
+        data["isObsolete"] = this.isObsolete;
         return data;
     }
 }
@@ -23177,6 +23302,7 @@ export interface IAgreementTemplateDetailsAttachmentDto {
     agreementTemplateAttachmentId?: number;
     name?: string | undefined;
     isUsedByDescendants?: boolean | undefined;
+    isObsolete?: boolean;
 }
 
 export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto {
@@ -23366,6 +23492,7 @@ export interface IAgreementTemplateDetailsDto {
 export class AgreementTemplateDetailsPreviewAttachmentDto implements IAgreementTemplateDetailsPreviewAttachmentDto {
     agreementTemplateAttachmentId?: number;
     name?: string | undefined;
+    isObsolete?: boolean;
 
     constructor(data?: IAgreementTemplateDetailsPreviewAttachmentDto) {
         if (data) {
@@ -23380,6 +23507,7 @@ export class AgreementTemplateDetailsPreviewAttachmentDto implements IAgreementT
         if (_data) {
             this.agreementTemplateAttachmentId = _data["agreementTemplateAttachmentId"];
             this.name = _data["name"];
+            this.isObsolete = _data["isObsolete"];
         }
     }
 
@@ -23394,6 +23522,7 @@ export class AgreementTemplateDetailsPreviewAttachmentDto implements IAgreementT
         data = typeof data === 'object' ? data : {};
         data["agreementTemplateAttachmentId"] = this.agreementTemplateAttachmentId;
         data["name"] = this.name;
+        data["isObsolete"] = this.isObsolete;
         return data;
     }
 }
@@ -23401,6 +23530,7 @@ export class AgreementTemplateDetailsPreviewAttachmentDto implements IAgreementT
 export interface IAgreementTemplateDetailsPreviewAttachmentDto {
     agreementTemplateAttachmentId?: number;
     name?: string | undefined;
+    isObsolete?: boolean;
 }
 
 export class AgreementTemplateDetailsPreviewDto implements IAgreementTemplateDetailsPreviewDto {
@@ -31857,6 +31987,67 @@ export interface IMainOverviewStatusDto {
     canBeSetAutomatically?: boolean;
 }
 
+export class MergeField implements IMergeField {
+    fullCode?: string | undefined;
+    value?: string | undefined;
+    hasSource?: boolean;
+    scopes?: MergeFieldScope;
+    isObsolete?: boolean;
+
+    constructor(data?: IMergeField) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullCode = _data["fullCode"];
+            this.value = _data["value"];
+            this.hasSource = _data["hasSource"];
+            this.scopes = _data["scopes"];
+            this.isObsolete = _data["isObsolete"];
+        }
+    }
+
+    static fromJS(data: any): MergeField {
+        data = typeof data === 'object' ? data : {};
+        let result = new MergeField();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullCode"] = this.fullCode;
+        data["value"] = this.value;
+        data["hasSource"] = this.hasSource;
+        data["scopes"] = this.scopes;
+        data["isObsolete"] = this.isObsolete;
+        return data;
+    }
+}
+
+export interface IMergeField {
+    fullCode?: string | undefined;
+    value?: string | undefined;
+    hasSource?: boolean;
+    scopes?: MergeFieldScope;
+    isObsolete?: boolean;
+}
+
+export enum MergeFieldScope {
+    None = 0,
+    Workflow = 1,
+    ClientAsRecipient = 2,
+    ConsultantAsRecipient = 4,
+    SupplierAsRecipient = 8,
+    LegalEntityAsRecipient = 16,
+}
+
 export class NavisionExportDataForWorkflowAndClientDto implements INavisionExportDataForWorkflowAndClientDto {
     consultantShownOnClientInvoiceAs?: ConsultantShownOnClientInvoiceAs;
     consultantId?: number | undefined;
@@ -32099,6 +32290,7 @@ export class ParentAgreementTemplateDetailsAttachmentDto implements IParentAgree
     agreementTemplateAttachmentId?: number;
     name?: string | undefined;
     isUsedByDescendants?: boolean | undefined;
+    isObsolete?: boolean;
     isSelected?: boolean;
 
     constructor(data?: IParentAgreementTemplateDetailsAttachmentDto) {
@@ -32115,6 +32307,7 @@ export class ParentAgreementTemplateDetailsAttachmentDto implements IParentAgree
             this.agreementTemplateAttachmentId = _data["agreementTemplateAttachmentId"];
             this.name = _data["name"];
             this.isUsedByDescendants = _data["isUsedByDescendants"];
+            this.isObsolete = _data["isObsolete"];
             this.isSelected = _data["isSelected"];
         }
     }
@@ -32131,6 +32324,7 @@ export class ParentAgreementTemplateDetailsAttachmentDto implements IParentAgree
         data["agreementTemplateAttachmentId"] = this.agreementTemplateAttachmentId;
         data["name"] = this.name;
         data["isUsedByDescendants"] = this.isUsedByDescendants;
+        data["isObsolete"] = this.isObsolete;
         data["isSelected"] = this.isSelected;
         return data;
     }
@@ -32140,6 +32334,7 @@ export interface IParentAgreementTemplateDetailsAttachmentDto {
     agreementTemplateAttachmentId?: number;
     name?: string | undefined;
     isUsedByDescendants?: boolean | undefined;
+    isObsolete?: boolean;
     isSelected?: boolean;
 }
 
