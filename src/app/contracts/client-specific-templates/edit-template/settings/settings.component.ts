@@ -221,6 +221,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 					tap((template) => {
 						this.clientTemplateFormGroup.attachments.reset();
 						this.preselectedFiles = template.attachments as FileUpload[];
+						this.attachmentsFromParent = template.attachmentsFromParent;
 					}),
 					tap((template) => {
 						this.clientTemplateFormGroup.updateInitialFormValue({
@@ -401,7 +402,7 @@ export class CreationComponent extends AppComponentBase implements OnInit, OnDes
 
 	private _setDuplicateObs() {
 		let onlyNoDraftTemplates = (items: SimpleAgreementTemplatesListItemDto[]) =>
-			items.map((item) => item.hasDraftVersion ? Object.assign({disabled: true}, item) : item);
+			items.map((item) => (item.hasDraftVersion ? Object.assign({ disabled: true }, item) : item));
 
 		this.duplicateOrInherit$ = this.creationModeControlReplay$.pipe(
 			takeUntil(this._unSubscribe$),

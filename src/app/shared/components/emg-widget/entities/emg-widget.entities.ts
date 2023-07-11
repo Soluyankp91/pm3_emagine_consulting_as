@@ -20,12 +20,13 @@ export enum EWidgetsIds {
 	Talenttech = 8,
 	Freshservice = 9,
 	HRnest = 10,
-	Website = 11,
-	Intranet = 12,
-	MarginCalculator = 13,
-	Consultant = 14,
-	Supplier = 15,
-	Client = 16,
+    BIReports = 11,
+	Website = 12,
+	Intranet = 13,
+	MarginCalculator = 14,
+	Consultant = 15,
+	Supplier = 16,
+	Client = 17,
 }
 
 export class MarginCalculatorForm extends FormGroup {

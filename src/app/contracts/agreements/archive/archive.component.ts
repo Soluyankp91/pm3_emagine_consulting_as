@@ -29,7 +29,7 @@ export class ArchiveComponent extends AppComponentBase implements OnInit {
 
 	auxiliaryAttachmentsControl = new FormControl();
 
-	get auxiliaryAttachments() {
+	get auxiliaryAttachmentsList() {
 		return this.auxiliaryAttachmentsControl.value as AgreementAuxiliaryAttachmentDto[];
 	}
 
@@ -67,7 +67,7 @@ export class ArchiveComponent extends AppComponentBase implements OnInit {
 	}
 
 	saveAuxiliaryAttachment() {
-		const toSend = this.auxiliaryAttachments.map(
+		const toSend = this.auxiliaryAttachmentsList.map(
 			(auxiliaryAttachment) => new AgreementAuxiliaryAttachmentDto(auxiliaryAttachment)
 		);
 		this.showMainSpinner();
