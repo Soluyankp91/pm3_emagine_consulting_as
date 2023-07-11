@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
 import { EBulkUpdateDiallogTypes, IBulkUpdateDialogData } from './bulk-update.dialog.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, of } from 'rxjs';
@@ -20,9 +20,12 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 	selector: 'app-bulk-update-dialog',
 	templateUrl: './bulk-update-dialog.component.html',
 	styleUrls: ['./bulk-update-dialog.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BulkUpdateDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
-	@Output() onConfirmed = new EventEmitter<PurchaseOrdersSetClientContactResponsibleCommand | PurchaseOrderSetEmagineResponsiblesCommand>();
+	@Output() onConfirmed = new EventEmitter<
+		PurchaseOrdersSetClientContactResponsibleCommand | PurchaseOrderSetEmagineResponsiblesCommand
+	>();
 	@Output() onRejected = new EventEmitter<any>();
 
 	employees$: Observable<EmployeeDto[]>;
