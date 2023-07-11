@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
 import { finalize, map, startWith, takeUntil } from 'rxjs/operators';
@@ -10,18 +10,22 @@ import {
 	PurchaseOrderCapDto,
 	PurchaseOrderCapType,
 	PurchaseOrderCommandDto,
+	PurchaseOrderDocumentCommandDto,
+	PurchaseOrderDocumentQueryDto,
 	PurchaseOrderQueryDto,
 	PurchaseOrderServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { EPOSource, POSources, PurchaseOrderForm } from './add-or-edit-po-dialog.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DocumentsComponent } from '../../wf-documents/wf-documents.component';
 
 @Component({
 	selector: 'app-add-or-edit-po-dialog',
 	templateUrl: './add-or-edit-po-dialog.component.html',
 	styleUrls: ['./add-or-edit-po-dialog.component.scss'],
 })
-export class AddOrEditPoDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
+export class AddOrEditPoDialogComponent extends AppComponentBase implements OnInit, AfterViewInit, OnDestroy {
+    @ViewChild('poDocuments', {static: false}) poDocuments: DocumentsComponent;
 	@Output() onConfirmed: EventEmitter<PurchaseOrderQueryDto> = new EventEmitter<PurchaseOrderQueryDto>();
 	@Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 	purchaseOrderForm: PurchaseOrderForm;
@@ -58,7 +62,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	}
 
 	ngOnInit(): void {
-		this._getPurchaseOrders();
+        if (!this.data.isEdit) {
+            this._getPurchaseOrders();
+        }
 		this._getEnums();
 		this.filteredPurchaseOrders = this.purchaseOrderForm.existingPo.valueChanges.pipe(
 			takeUntil(this._unsubsribe),
@@ -70,6 +76,12 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			})
 		);
 	}
+
+    ngAfterViewInit(): void {
+        if (this.existingPo.purchaseOrderDocumentQueryDto) {
+            this.poDocuments.addExistingPOFile(this.existingPo.purchaseOrderDocumentQueryDto);
+        }
+    }
 
 	ngOnDestroy(): void {
 		this._unsubsribe.next();
@@ -88,18 +100,37 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		if (input.numberMissingButRequired) {
 			input.number = undefined;
 		}
-		// input.workflowsIdsReferencingThisPo = [];
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
+        input.purchaseOrderDocumentCommandDto = new PurchaseOrderDocumentCommandDto();
+        if (this.poDocuments?.documents.value?.length) {
+            for (let document of this.poDocuments?.documents.value) {
+                let documentInput = new PurchaseOrderDocumentCommandDto();
+                documentInput.name = document.name;
+                documentInput.purchaseOrderDocumentId = document.purchaseOrderDocumentId;
+                documentInput.temporaryFileId = document.temporaryFileId;
+                input.purchaseOrderDocumentCommandDto = documentInput;
+            }
+        }
 		if (form.id !== null) {
 			if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
 				// NB: don't call BE if user is not allowed to edit, just add to a list
+                this.existingPo.purchaseOrderDocumentQueryDto = new PurchaseOrderDocumentQueryDto();
+                if (this.poDocuments?.documents.value?.length) {
+                    for (let document of this.poDocuments?.documents.value) {
+                        let documentInput = new PurchaseOrderDocumentQueryDto();
+                        documentInput.id = document.workflowDocumentId;
+                        documentInput.createdBy = document.createdBy;
+                        documentInput.createdDateUtc = document.createdDateUtc;
+                        documentInput.name = document.name;
+                        this.existingPo.purchaseOrderDocumentQueryDto = documentInput;
+                    }
+                }
 				this.onConfirmed.emit(this.existingPo);
 				this._closeInternal();
 				this.hideMainSpinner();
 				return;
 			} else {
 				this._purchaseOrderService
-					// .purchaseOrderPUT(this.data?.clientPeriodId, input)
 					.purchaseOrderPUT(input)
 					.pipe(finalize(() => this.hideMainSpinner()))
 					.subscribe((result) => {

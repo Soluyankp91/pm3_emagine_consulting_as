@@ -3,6 +3,7 @@ import { EmployeeDto, StepType, WorkflowProcessType } from "src/shared/service-p
 
 export class WFDocument {
 	workflowDocumentId: number | undefined;
+	purchaseOrderDocumentId: number | undefined;
 	temporaryFileId: string | undefined;
 	clientPeriodId: string | undefined;
 	workflowTerminationId: string | undefined;
@@ -15,6 +16,7 @@ export class WFDocument {
     uploaderFile?: FileUploaderFile;
 	constructor(
 		workflowDocumentId: number | undefined,
+		purchaseOrderDocumentId: number | undefined,
 		temporaryFileId: string | undefined,
 		clientPeriodId: string | undefined,
 		workflowTerminationId: string | undefined,
@@ -27,6 +29,7 @@ export class WFDocument {
         uploaderFile?: FileUploaderFile
 	) {
 		this.workflowDocumentId = workflowDocumentId;
+        this.purchaseOrderDocumentId = purchaseOrderDocumentId;
 		this.temporaryFileId = temporaryFileId;
 		this.clientPeriodId = clientPeriodId;
 		this.workflowTerminationId = workflowTerminationId;
@@ -46,11 +49,13 @@ export class WFDocument {
         clientPeriodId?: string,
         workflowTerminationId?: string,
 		workflowDocumentId?: number,
+        purchaseOrderDocumentId?: number,
 		temporaryFileId?: string,
         uploaderFile?: FileUploaderFile
 	) {
 		return new WFDocument(
 			workflowDocumentId ?? undefined,
+            purchaseOrderDocumentId ?? undefined,
 			temporaryFileId ?? undefined,
             clientPeriodId ?? undefined,
             workflowTerminationId ?? undefined,

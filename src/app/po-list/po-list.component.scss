@@ -8,18 +8,25 @@
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
-	background-color: #faf9fb;
-    .poList-wrapper {
+	background-color: #fff;
+    .page-container {
+        height: 100vh;
         display: flex;
-        height: calc(100vh - 56px);
+        flex-direction: column;
     }
 	.container {
+        height: calc(100vh - 50px - 150px);
 		display: flex;
 		flex-direction: column;
 		flex-grow: 1;
-
+        background-color: #faf9fb;
 		padding-left: 50px;
 	}
+    .top-filters-container {
+        // background-color: #fff;
+        height: 150px;
+        padding: 32px 50px;
+    }
 	.mat-chip-list-wrapper {
 		justify-content: flex-end;
 		align-items: center;
@@ -32,6 +39,7 @@
 		overflow: auto;
 		height: 250px;
 		max-width: calc(100vw - 44px - 50px);
+        // padding-left: 50px;
 	}
 	.no-items-table-container {
 		display: flex;
@@ -75,6 +83,7 @@
 			z-index: 2;
 			width: 100%;
 			padding-left: 43px;
+            height: 48px;
 		}
 
 		.selected-items-info {
@@ -204,11 +213,11 @@
 }
 
 .poNote-column {
-    @include table-cell-width(50px);
+    @include table-cell-width(60px);
 }
 
 .poNumber-column {
-    @include table-cell-width(130px);
+    @include table-cell-width(150px);
 }
 
 .poClient-column {
@@ -225,6 +234,12 @@
 
 .poWFPeriod-column {
     @include table-cell-width(96px);
+    &.table-cell {
+        cursor: pointer;
+        &:hover {
+            color: #17a297;
+        }
+    }
 }
 
 .poClientContact-column {
@@ -297,13 +312,18 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    &-row {
+        div {
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            // text-overflow: ellipsis;
+            // overflow: hidden;
+            // white-space: nowrap;
+        }
+    }
     div {
         min-height: 48px;
-    }
-    span {
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
   }
 
@@ -317,10 +337,21 @@
 
 .expandedLeftSticky-column {
     padding-left: 1px !important;
-    @include table-cell-width(444px);
+    @include table-cell-width(514px);
     box-shadow:
         4px 0px 0px rgba(231, 227, 232, 0.5),
         6px 0px 0px rgba(225, 220, 225, 0.3),
         8px 0px 0px rgba(217, 217, 217, 0);
 
+}
+
+.mat-column-expandedDetail {
+    padding-left: 0 !important;
+}
+
+.status-log-grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-row-gap: 4px;
+    grid-column-gap: 12px;
 }

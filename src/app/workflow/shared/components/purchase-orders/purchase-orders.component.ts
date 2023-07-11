@@ -4,7 +4,7 @@ import { UntypedFormGroup, UntypedFormControl, UntypedFormArray, UntypedFormBuil
 import { MatDialog } from '@angular/material/dialog';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { MediumDialogConfig } from 'src/shared/dialog.configs';
+import { BigDialogConfig, MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
 	EnumEntityTypeDto,
 	PurchaseOrderCapType,
@@ -51,15 +51,16 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 
 	createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderQueryDto, orderIndex?: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
+		BigDialogConfig.scrollStrategy = scrollStrategy;
+        BigDialogConfig.height = '700px';
+		BigDialogConfig.data = {
 			purchaseOrder: purchaseOrder,
 			isEdit: !!purchaseOrder,
 			clientPeriodId: this.periodId,
 			directClientId: this.directClientId,
 			addedPoIds: this.purchaseOrders.value.map((x) => x.id),
 		};
-		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, MediumDialogConfig);
+		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, BigDialogConfig);
 
 		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderQueryDto) => {
 			if (!!purchaseOrder) {

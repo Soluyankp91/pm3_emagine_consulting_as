@@ -3,14 +3,22 @@ import { CommonModule } from '@angular/common';
 import { PoListComponent } from './po-list.component';
 import { AppCommonModule } from '../shared/common/app-common.module';
 import { PurchaseOrdersRoutingModule } from './po-list-routing.module';
-import { PoTableComponent } from './po-table/po-table.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
+import { PoStatusIconComponent } from './components/po-status/po-status.component';
+import { PoNoteStatusIconComponent } from './components/po-note-status/po-note-status.component';
+import { PoChasingStatusIconComponent } from './components/po-chasing-status/po-chasing-status.component';
+import { BulkUpdateDialogComponent } from './components/bulk-update-dialog/bulk-update-dialog.component';
 
 
 
 @NgModule({
   declarations: [
     PoListComponent,
-    PoTableComponent
+    PoStatusIconComponent,
+    PoNoteStatusIconComponent,
+    PoChasingStatusIconComponent,
+    BulkUpdateDialogComponent
   ],
   imports: [
     CommonModule,
@@ -18,4 +26,48 @@ import { PoTableComponent } from './po-table/po-table.component';
     PurchaseOrdersRoutingModule
   ]
 })
-export class PoListModule { }
+export class PoListModule {
+    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+        iconRegistry.addSvgIcon(
+            'assign-client-responsible',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/assign-client-responsible.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'assign-emagine-responsible',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/assign-emagine-responsible.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'mark-as-completed',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/mark-as-completed.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'po-missing-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/po-missing-icon.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'po-active-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/po-active-icon.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'po-running-out-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/po-running-out-icon.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'po-note-unread-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/po-note-unread-icon.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'po-no-note-added-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/po-no-note-added-icon.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'po-read-note-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/po-read-note-icon.svg')
+        );
+        iconRegistry.addSvgIcon(
+            'edit-po',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/edit-po.svg')
+        );
+    }
+
+}

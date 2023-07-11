@@ -1,19 +1,35 @@
-<div class="poList-wrapper">
+<div class="page-container">
+    <div class="top-filters-container">
+        <h2 class="page-main-header u-mb--20">Purchase Orders</h2>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
+                <div class="flex-row flex-items-center u-mr--10" [matTooltip]="'Filtering on Divisions & Teams disables the user filter'" [matTooltipDisabled]="selectedTeamsAndDivisionsCount === 0" matTooltipClass="white-tooltip">
+                    <manager-multiselect
+                        [initialOptions]="selectedAccountManagers"
+                        (selectionChanged)="managersChanged($event)"
+                        [ngClass]="{ 'pointer-events-none opacity-50': selectedTeamsAndDivisionsCount > 0 }">
+                    </manager-multiselect>
+                </div>
+                <div class="flex-row flex-items-center ml-1 u-mr--10" [matTooltip]="'Filtering on users disables the Divisions & Teams filter'" [matTooltipDisabled]="selectedAccountManagers.length === 0" matTooltipClass="white-tooltip">
+                    <teams-and-divisions-filter
+                        #treeFilter
+                        [selectedCount]="selectedTeamsAndDivisionsCount"
+                        [initialSelection]="teamsAndDivisionsFilterState"
+                        (filterChanged)="teamsAndDivisionsChanged($event)"
+                        class="mr-3"
+                        [ngClass]="{ 'pointer-events-none opacity-50': selectedAccountManagers.length > 0 }">
+                    </teams-and-divisions-filter>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100" fxFlex="25%">
+                <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                    <input autocomplete="off" matInput [formControl]="searchFilter" placeholder="Search" type="text">
+                    <mat-icon class="search-icon u-ml--10" matPrefix>search</mat-icon>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
     <div class="container">
-        <!-- <ng-container *ngIf="matChips.length">
-            <mat-chip-list class="mat-chip-list">
-                <mat-chip *ngFor="let chip of matChips; trackBy: trackByFormControlName">
-                    <mat-icon svgIcon="close-button-icon" class="close-button-icon" (click)="closeFilter(chip.formControl)"> </mat-icon>
-                    <span class="chip-label">{{ chip.label }}</span>
-                </mat-chip>
-                <ng-container *ngIf="matChips.length">
-                    <span class="close-filters" (click)="closeAllFilters()">
-                        <mat-icon svgIcon="close-button-icon-grey" class="close-button-icon"></mat-icon>
-                        <p class="reset-all-filters-label">Reset all Filters</p>
-                    </span>
-                </ng-container>
-            </mat-chip-list>
-        </ng-container> -->
         <div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !dataSource.data.length }">
             <mat-table
                 multiTemplateDataRows
@@ -23,12 +39,25 @@
                 [matSortDirection]="sotrDirection"
                 [ngClass]="{ 'hidden-table': !dataSource.data.length }"
                 (matSortChange)="sortChange($event)">
+                <ng-container matColumnDef="expand" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef class="expand-column">
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="expand-column">
+                        <ng-container *ngIf="row.clientPeriodsReferencingThisPo?.length > 1">
+                            <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === row ? null : row); $event.stopPropagation()">
+                                <mat-icon *ngIf="expandedElement !== row">keyboard_arrow_down</mat-icon>
+                                <mat-icon *ngIf="expandedElement === row">keyboard_arrow_up</mat-icon>
+                            </button>
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="select" [sticky]="true">
                     <mat-header-cell *matHeaderCellDef class="select-column">
                         <mat-checkbox
                             [checked]="selectionModel.hasValue() && isAllSelected()"
                             [indeterminate]="selectionModel.hasValue() && !isAllSelected()"
                             (change)="toggleAllRows()"
+                            color="primary"
                             class="select-padding-8">
                         </mat-checkbox>
                     </mat-header-cell>
@@ -36,32 +65,60 @@
                         <mat-checkbox
                             [checked]="selectionModel.isSelected(row)"
                             (click)="$event.stopPropagation()"
+                            color="primary"
                             (change)="selectionModel.toggle(row)"
-                            class="select-padding-8"></mat-checkbox>
+                            class="select-padding-8 h-25px"></mat-checkbox>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status" [sticky]="true">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poStatus-column">
                     </mat-header-cell>
-                    <mat-cell class="table-cell poStatus-column" *matCellDef="let row">
-                        {{row.status}}
+                    <mat-cell class="poStatus-column" *matCellDef="let row">
+                        <po-chasing-status class="u-ml--5" [statusId]="row.chasingStatus" emgCustomTooltip
+                            [contentTemplate]="statusTooltip"></po-chasing-status>
+                        <ng-template #statusTooltip>
+                            <ng-container *ngIf="row.chasingStatusHistory?.length; else noStatusHistoryTemplate">
+                                <div class="status-log-grid">
+                                    <ng-container *ngFor="let item of row.chasingStatusHistory; trackBy: trackByItem">
+                                        <div class="flex-row">
+                                            <po-chasing-status [statusId]="item.historyEntityId"></po-chasing-status>
+                                            <span class="dark-grey-color text-bold">
+                                                {{ item.chasingStatusString }}
+                                            </span>
+                                        </div>
+                                        <div class="flex-row">
+                                            <span class="dark-grey-color text-bold u-mr--5">
+                                                {{ item.occurredAtUtc | momentFormat : 'DD.MM.YYYY' }}
+                                            </span>
+                                            <span class="dark-grey-color text-600">
+                                                {{ item.occurredAtUtc | momentFormat : 'HH:mm:ss' }}
+                                            </span>
+                                        </div>
+                                        <span class="medium-grey-color text-nowrap text-600">
+                                            {{ item.employee !== null && item.employee !== undefined ? item.employee?.name : '-' }}
+                                        </span>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <ng-template #noStatusHistoryTemplate>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <po-chasing-status [statusId]="row.chasingStatus"></po-chasing-status>
+                                    <span class="dark-grey-color text-bold">
+                                        {{ ePurchaseOrderChasingStatus[row.chasingStatus] }}
+                                    </span>
+                                </div>
+                            </ng-template>
+                        </ng-template>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="note" [sticky]="true">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
-                        class="table-header-cell poNote-column">
-                        Note
+                        class="poNote-column">
+                        <po-note-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.note)"></po-note-filter>
                     </mat-header-cell>
                     <mat-cell class="table-cell poNote-column" *matCellDef="let row">
-                        <!-- {{row.note}} -->
-                        <ng-container *ngIf="row.connectedPeriods?.length > 0">
-                            <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === row ? null : row); $event.stopPropagation()">
-                                <mat-icon *ngIf="expandedElement !== row">keyboard_arrow_down</mat-icon>
-                                <mat-icon *ngIf="expandedElement === row">keyboard_arrow_up</mat-icon>
-                            </button>
-                        </ng-container>
-
+                        <po-note-status-icon class="h-16px w-16px" [statusId]="row.noteStatus" [note]="row.notes"></po-note-status-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="PONumber" [sticky]="true">
@@ -70,7 +127,10 @@
                         PO number
                     </mat-header-cell>
                     <mat-cell class="table-cell poNumber-column" *matCellDef="let row">
-                        {{row.PONumber}}
+                        <po-status-icon class="h-16px w-16px u-mr--5" [statusId]="row.status"></po-status-icon>
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.numberMissingButRequired ? 'Missing, but required' : row.number" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.numberMissingButRequired ? 'Missing, but required' : row.number}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="client" [sticky]="true">
@@ -79,7 +139,9 @@
                         Client
                     </mat-header-cell>
                     <mat-cell class="table-cell poClient-column" *matCellDef="let row">
-                        {{row.client}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.directClientNameReferencingThisPo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.directClientNameReferencingThisPo ?? '-'}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="lastUpdate">
@@ -88,7 +150,7 @@
                         Last update
                     </mat-header-cell>
                     <mat-cell class="table-cell poLastUpdated-column" *matCellDef="let row">
-                        {{row.lastUpdate | momentFormat}}
+                        {{row.modifiedOnUtc | momentFormat}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="wfPeriodId">
@@ -96,8 +158,8 @@
                         class="table-header-cell poWFPeriod-column">
                         WF period ID
                     </mat-header-cell>
-                    <mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row">
-                        {{row.wfPeriodId}}
+                    <mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row" (click)="openConnectedWF(row.clientPeriodsReferencingThisPo[0])">
+                        {{row.clientPeriodsReferencingThisPo[0]?.displayId ?? '-'}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientContact">
@@ -106,7 +168,9 @@
                         Client contact
                     </mat-header-cell>
                     <mat-cell class="table-cell poClientContact-column" *matCellDef="let row">
-                        {{row.clientContact}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientContactResponsible?.id ? row.clientContactResponsible?.firstName + ' ' + row.clientContactResponsible?.lastName : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientContactResponsible?.id ? row.clientContactResponsible?.firstName + ' ' + row.clientContactResponsible?.lastName : '-'}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="consultant">
@@ -115,7 +179,9 @@
                         Consultant
                     </mat-header-cell>
                     <mat-cell class="table-cell poConsultant-column" *matCellDef="let row">
-                        {{row.consultant}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.consultants | displayList" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.consultants | displayList }}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="salesType">
@@ -124,7 +190,9 @@
                         Sales type
                     </mat-header-cell>
                     <mat-cell class="table-cell poSalesType-column" *matCellDef="let row">
-                        {{row.salesType}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.salesType}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="deliveryType">
@@ -133,7 +201,9 @@
                         Delivery type
                     </mat-header-cell>
                     <mat-cell class="table-cell poDeliveryType-column" *matCellDef="let row">
-                        {{row.deliveryType}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.deliveryType}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="capType">
@@ -142,7 +212,9 @@
                         Cap on
                     </mat-header-cell>
                     <mat-cell class="table-cell poCapType-column" *matCellDef="let row">
-                        {{row.capType}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="purchaseOrderCapTypes[row.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{purchaseOrderCapTypes[row.capForInvoicing?.type]}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
@@ -151,7 +223,9 @@
                         Amount
                     </mat-header-cell>
                     <mat-cell class="table-cell poAmount-column" *matCellDef="let row">
-                        {{row.amount}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.capForInvoicing?.maxAmount}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="units">
@@ -160,7 +234,9 @@
                         Units
                     </mat-header-cell>
                     <mat-cell class="table-cell poUnitType-column" *matCellDef="let row">
-                        {{row.units}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.valueUnitTypeId" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.capForInvoicing?.valueUnitTypeId}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientRate">
@@ -169,7 +245,9 @@
                         Client rate
                     </mat-header-cell>
                     <mat-cell class="table-cell poClientRate-column" *matCellDef="let row">
-                        {{row.clientRate}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.clientRate" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.clientRate}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalAmount">
@@ -178,7 +256,9 @@
                         Total amount
                     </mat-header-cell>
                     <mat-cell class="table-cell poTotalAmount-column" *matCellDef="let row">
-                        {{row.totalAmount}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.capForInvoicing?.maxAmount}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amountLeft">
@@ -187,7 +267,9 @@
                         Amount teft
                     </mat-header-cell>
                     <mat-cell class="table-cell poAmountLeft-column" *matCellDef="let row">
-                        {{row.amountLeft}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.amountLeft" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.amountLeft}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="estimatedUnitsLeft">
@@ -196,7 +278,9 @@
                         Estimated units left
                     </mat-header-cell>
                     <mat-cell class="table-cell poEstimatedUnitsLeft-column" *matCellDef="let row">
-                        {{row.estimatedUnitsLeft}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDate">
@@ -205,7 +289,9 @@
                         PO start date
                     </mat-header-cell>
                     <mat-cell class="table-cell poStartDate-column" *matCellDef="let row">
-                        {{row.startDate | momentFormat}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.startDate | momentFormat}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="endDate">
@@ -214,16 +300,23 @@
                         PO end date
                     </mat-header-cell>
                     <mat-cell class="table-cell poEndDate-column" *matCellDef="let row">
-                        {{row.endDate | momentFormat}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.endDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.endDate | momentFormat}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="contractManager">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poCM-column">
-                        CM
+                        <po-contract-manager-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.contractManager)"></po-contract-manager-filter>
                     </mat-header-cell>
                     <mat-cell class="table-cell poCM-column" *matCellDef="let row">
-                        {{row.contractManager}}
+                        <ng-container *ngIf="row?.contractResponsible?.id; else noData">
+                            <img class="image-settings--dropdown" [matTooltip]="row?.contractResponsible?.name ?? '-'"
+                                    matTooltipClass="white-tooltip"
+                                    [ngSrc]="employeePhotoUrl + row.contractResponsible?.externalId! + '.jpg'" width="24" height="24" src
+                                    (error)="setDefaultImage($event.target)" />
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="accountManager">
@@ -232,12 +325,17 @@
                         AM
                     </mat-header-cell>
                     <mat-cell class="table-cell poAM-column" *matCellDef="let row">
-                        {{row.accountManager}}
+                        <ng-container *ngIf="row?.salesResponsible?.id; else noData">
+                            <img class="image-settings--dropdown" [matTooltip]="row?.salesResponsible?.name ?? '-'"
+                                    matTooltipClass="white-tooltip"
+                                    [ngSrc]="employeePhotoUrl + row.salesResponsible?.externalId! + '.jpg'" width="24" height="24" src
+                                    (error)="setDefaultImage($event.target)" />
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="expandedLeftSticky" [sticky]="true">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell class="table-cell expandedLeftSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * row.connectedPeriods?.length : 0">
+                    <mat-cell class="table-cell expandedLeftSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriodsReferencingThisPo?.length - 1) : 0">
                         <div class="example-element-detail"
                             [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
                         </div>
@@ -245,28 +343,76 @@
                 </ng-container>
                 <ng-container matColumnDef="expandedDetail">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell class="table-cell" *matCellDef="let row"  style="padding-left: 1px !important" >
+                    <mat-cell class="table-cell" *matCellDef="let row">
                         <div class="example-element-detail"
                             [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
-                            <ng-container *ngFor="let element of row.connectedPeriods">
-                                <div fxLayout="row">
-                                    <span class="poLastUpdated-column"></span>
-                                    <span class="poWFPeriod-column">{{row.wfPeriodId}}</span>
-                                    <span class="poClientContact-column">{{row.clientContact}}</span>
-                                    <span class="poConsultant-column">{{row.consultant}}</span>
-                                    <span class="poSalesType-column">{{row.salesType}}</span>
-                                    <span class="poDeliveryType-column">{{row.deliveryType}}</span>
-                                    <span class="poCapType-column">{{row.capType}}</span>
-                                    <span class="poAmount-column">{{row.amount}}</span>
-                                    <span class="poUnitType-column">{{row.units}}</span>
-                                    <span class="poClientRate-column">{{row.clientRate}}</span>
-                                    <span class="poTotalAmount-column">{{row.totalAmount}}</span>
-                                    <span class="poAmountLeft-column">{{row.amountLeft}}</span>
-                                    <span class="poEstimatedUnitsLeft-column"> {{row.estimatedUnitsLeft}}</span>
-                                    <span class="poStartDate-column"></span>
-                                    <span class="poEndDate-column"></span>
-                                    <span class="poCM-column"></span>
-                                    <span class="poAM-column"></span>
+                            <ng-container *ngFor="let element of row.clientPeriodsReferencingThisPo.slice(1, row.clientPeriodsReferencingThisPo.length)">
+                                <div fxLayout="row" class="example-element-detail-row">
+                                    <div class="poLastUpdated-column"></div>
+                                    <div class="poWFPeriod-column" (click)="openConnectedWF(element)">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element?.displayId" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element?.displayId}}
+                                        </span>
+                                    </div>
+                                    <div class="poClientContact-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element?.clientContact" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element?.clientContact}}
+                                        </span>
+                                    </div>
+                                    <div class="poConsultant-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.consultants | displayList" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.consultants | displayList}}
+                                        </span>
+                                    </div>
+                                    <div class="poSalesType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.salesType}}
+                                        </span>
+                                    </div>
+                                    <div class="poDeliveryType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.deliveryType}}
+                                        </span>
+                                    </div>
+                                    <div class="poCapType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="purchaseOrderCapTypes[row.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{purchaseOrderCapTypes[row.capForInvoicing?.type]}}
+                                        </span>
+                                    </div>
+                                    <div class="poAmount-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.maxAmount}}
+                                        </span>
+                                    </div>
+                                    <div class="poUnitType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.valueUnitTypeId" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.valueUnitTypeId}}
+                                        </span>
+                                    </div>
+                                    <div class="poClientRate-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.clientRate" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.clientRate}}
+                                        </span>
+                                    </div>
+                                    <div class="poTotalAmount-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.maxAmount ?? '-'}}
+                                        </span>
+                                    </div>
+                                    <div class="poAmountLeft-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.amountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.amountLeft ?? '-'}}
+                                        </span>
+                                    </div>
+                                    <div class="poEstimatedUnitsLeft-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.estimatedUnitsLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.estimatedUnitsLeft ?? '-'}}
+                                        </span>
+                                    </div>
+                                    <div class="poStartDate-column"></div>
+                                    <div class="poEndDate-column"></div>
+                                    <div class="poCM-column"></div>
+                                    <div class="poAM-column"></div>
                                 </div>
                             </ng-container>
                         </div>
@@ -274,7 +420,7 @@
                 </ng-container>
                 <ng-container matColumnDef="expandedRightSticky" [stickyEnd]="true">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell class="table-cell expandedRightSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * row.connectedPeriods?.length : 0">
+                    <mat-cell class="table-cell expandedRightSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriodsReferencingThisPo?.length - 1) : 0">
                         <div class="example-element-detail"
                             [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
                         </div>
@@ -287,9 +433,9 @@
                             <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
                         <mat-menu #menu="matMenu" class="custom">
-                            <button mat-menu-item (click)="someAction(actionRow)">
-                                <mat-icon [svgIcon]="'actionIcon'" class="small-icon"></mat-icon>
-                                <span> Do something</span>
+                            <button mat-menu-item (click)="editPo(actionRow)">
+                                <mat-icon svgIcon="edit-po" class="small-icon"></mat-icon>
+                                <span>Edit</span>
                             </button>
                         </mat-menu>
                     </mat-cell>
@@ -302,7 +448,7 @@
 
                     [ngClass]="{ highlight: selectedRowId === row.id }"
                     class="row-hover"></mat-row>
-                <mat-row *matRowDef="let row; columns: ['expandedLeftSticky', 'expandedDetail', 'expandedRightSticky']" class="example-detail-row row-hover"></mat-row>
+                <mat-row *matRowDef="let row; columns: ['expandedLeftSticky', 'expandedDetail', 'expandedRightSticky']" class="example-detail-row"></mat-row>
             </mat-table>
             <ng-container *ngIf="!dataSource.data.length">
                 <div class="no-items">
@@ -344,3 +490,5 @@
         </div>
     </div>
 </div>
+
+<ng-template #noData>-</ng-template>

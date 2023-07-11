@@ -190,6 +190,11 @@ export class AppModule {
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/menu/notification-menu.svg')
 		);
 
+        iconRegistry.addSvgIcon(
+			'po-list-menu',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/menu/po-list-menu.svg')
+		);
+
 		// COUNTRY FLAGS ICON REGISTRY
 
 		iconRegistry.addSvgIcon(

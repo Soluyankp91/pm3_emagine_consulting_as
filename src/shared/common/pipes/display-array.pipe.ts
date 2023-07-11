@@ -5,9 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 	pure: false,
 })
 export class DisplayListPipe implements PipeTransform {
-	transform(input: Array<any>, prop: string): string {
+	transform(input: Array<any>, prop?: string): string {
 		if (input?.length) {
-			return input.map((x) => x[prop]).join(', ');
+            if (prop) {
+                return input.map((x) => x[prop]).join(', ');
+            } else {
+                return input.join(', ');
+            }
 		} else {
 			return '-';
 		}

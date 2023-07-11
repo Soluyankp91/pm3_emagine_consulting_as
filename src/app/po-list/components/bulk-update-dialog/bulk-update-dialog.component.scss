@@ -1,0 +1,30 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.confirmation-dialog {
+    &--content {
+        padding: 30px;
+    }
+    &--actions{
+        justify-content: space-between;
+        border-top: 1px solid $sand-color;
+    }
+    &--header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 0 24px !important;
+        h1 {
+            @include fontOpenSans(21px, 800);
+            color: #4A4E60;
+            line-height: 120% !important;
+        }
+    }
+
+    h3 {
+        @include fontOpenSans(14px, 700);
+        line-height: 160% !important;
+        color: #4A4E60;
+        margin-bottom: 8px;
+    }
+}

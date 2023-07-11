@@ -1,11 +1,13 @@
+<!-- <mat-dialog-title> -->
+<div mat-dialog-title class="confirmation-dialog--header">
+    <h1>
+        {{data?.isEdit ? 'Edit Purchase Order' : 'Add Purchase Order'}}
+    </h1>
+    <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
+            svgIcon="dialog-close-icon"></mat-icon></button>
+</div>
+<!-- </mat-dialog-title> -->
 <mat-dialog-content class="confirmation-dialog">
-    <div mat-dialog-title class="confirmation-dialog--header">
-        <h1>
-            {{data?.isEdit ? 'Edit Purchase Order' : 'Add Purchase Order'}}
-        </h1>
-        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
-                svgIcon="dialog-close-icon"></mat-icon></button>
-    </div>
     <form [formGroup]="purchaseOrderForm">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
@@ -65,7 +67,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <mat-divider [fxHide]="purchaseOrderForm.poSource.value === ePOSource.NewPO" class="fullDialogDivider dark-grey-color u-mt--15 u-mb--15"></mat-divider>
+                <mat-divider [ngClass]="{'u-mt--15': !data?.isEdit}" [fxHide]="purchaseOrderForm.poSource.value === ePOSource.NewPO" class="u-w--100 dark-grey-color u-mb--15"></mat-divider>
                 <div fxLayout="row" fxLayoutAlign="start start">
                     <mat-form-field
                         appearance="outline" class="formFieldNoMarginPadding form-width-235 u-mr--12"
@@ -77,11 +79,11 @@
                             <app-validator [control]="purchaseOrderForm.number"></app-validator>
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-165"
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150 u-mr--12"
                         [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
                         <mat-label>PO receive date</mat-label>
                         <input autocomplete="off" matInput [matDatepicker]="receiveDatePicker"
-                            [disabled]="purchaseOrderForm.numberMissingButRequired.value" name="clientExtensionEndDate"
+                            [disabled]="purchaseOrderForm.numberMissingButRequired.value" name="poReceiveDate"
                             formControlName="receiveDate" (focus)="receiveDatePicker.open()" appPreventDoubleClick
                             (throttledClick)="receiveDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
@@ -90,12 +92,44 @@
                             <app-validator [control]="purchaseOrderForm.receiveDate"></app-validator>
                         </mat-error>
                     </mat-form-field>
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150 u-mr--12"
+                        [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
+                        <mat-label>PO start date</mat-label>
+                        <input autocomplete="off" matInput [matDatepicker]="startDatePicker"
+                            [disabled]="purchaseOrderForm.numberMissingButRequired.value" name="poStartDate"
+                            formControlName="startDate" (focus)="startDatePicker.open()" appPreventDoubleClick
+                            (throttledClick)="startDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #startDatePicker></mat-datepicker>
+                        <mat-error>
+                            <app-validator [control]="purchaseOrderForm.startDate"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-150"
+                        [ngClass]="{'disabled-input': purchaseOrderForm.numberMissingButRequired.value}">
+                        <mat-label>PO end date</mat-label>
+                        <input autocomplete="off" matInput [matDatepicker]="endDatePicker"
+                            [disabled]="purchaseOrderForm.numberMissingButRequired.value" name="poEndDate"
+                            formControlName="endDate" (focus)="endDatePicker.open()" appPreventDoubleClick
+                            (throttledClick)="endDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                        <mat-error>
+                            <app-validator [control]="purchaseOrderForm.receiveDate"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
                 </div>
-                <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="noEndDate"
-                    class="black-checkbox u-mt--10"
-                    (change)="disableInputs(purchaseOrderForm.numberMissingButRequired.value)">
-                    PO number missing, but required
-                </mat-checkbox>
+                <div fxLayout="row" fxLayoutAlign="start start">
+                    <mat-checkbox color="accent" formControlName="numberMissingButRequired" name="numberMissingButRequired"
+                        class="black-checkbox u-mt--10 u-mr--12"
+                        (change)="disableInputs(purchaseOrderForm.numberMissingButRequired.value)">
+                        PO number missing, but required
+                    </mat-checkbox>
+                    <mat-checkbox color="accent" formControlName="isCompleted" name="isCompleted"
+                        class="black-checkbox u-mt--10">
+                        Mark as completed
+                    </mat-checkbox>
+                </div>
                 <ng-container formGroupName="capForInvoicing">
                     <h3 class="sub-header u-mb--5 u-mt--20">Shared Cap for Invoicing</h3>
                     <div fxLayout="row" fxLayoutAlign="start start">
@@ -156,6 +190,19 @@
                         </mat-form-field>
                     </div>
                 </ng-container>
+                <h3 class="sub-header u-mb--5 u-mt--20">Client contact responsible</h3>
+
+                <mat-divider class="u-w--100 dark-grey-color u-mt--15 u-mb--15"></mat-divider>
+                <mat-form-field appearance="outline"
+                    class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-720">
+                    <mat-label>Notes</mat-label>
+                    <textarea required matInput autocomplete="new-password"
+                        name="notes" formControlName="notes"
+                        [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="8" [cdkAutosizeMaxRows]="10">
+                    </textarea>
+                </mat-form-field>
+
+                <app-documents class="u-w--100" #poDocuments [singleDocument]="true"></app-documents>
             </ng-container>
         </div>
     </form>

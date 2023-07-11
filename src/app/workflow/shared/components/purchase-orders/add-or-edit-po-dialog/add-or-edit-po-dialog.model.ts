@@ -10,7 +10,12 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 			number: new UntypedFormControl(purchaseOrder?.number ?? ''),
 			existingPo: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id'])),
 			receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate ?? null),
+            startDate: new UntypedFormControl(purchaseOrder?.startDate ?? null),
+            endDate: new UntypedFormControl(purchaseOrder?.endDate ?? null),
+            isCompleted: new UntypedFormControl(purchaseOrder?.isCompleted ?? false),
 			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired ?? false),
+            notes: new UntypedFormControl(purchaseOrder?.notes ?? ''),
+            clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible ?? null),
 			capForInvoicing: new CapForInvoicingForm(purchaseOrder?.capForInvoicing),
 		});
 	}
@@ -29,6 +34,21 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 	}
 	get receiveDate() {
 		return this.get('receiveDate');
+	}
+    get startDate() {
+		return this.get('startDate');
+	}
+    get endDate() {
+		return this.get('endDate');
+	}
+    get isCompleted() {
+		return this.get('isCompleted');
+	}
+    get notes() {
+		return this.get('notes');
+	}
+    get clientContactResponsible() {
+		return this.get('clientContactResponsible');
 	}
 	get numberMissingButRequired() {
 		return this.get('numberMissingButRequired');
