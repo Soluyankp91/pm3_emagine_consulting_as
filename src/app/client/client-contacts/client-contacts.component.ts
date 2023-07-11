@@ -18,7 +18,6 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 export class ClientContactsComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('contactsPaginator', {static: false}) paginator: MatPaginator;
-
     clientId: number;
     isDataLoading = false;
     selectedCountries: string[] = [];

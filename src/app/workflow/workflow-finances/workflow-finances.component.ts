@@ -341,8 +341,8 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 	addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
 		const form = this._fb.group({
 			id: new UntypedFormControl(consultant?.consultantId),
-			checkInvoicingSettingsOnConsultant: new UntypedFormControl(consultant.checkInvoicingSettingsOnConsultant),
-			creditorCreatedInNavision: new UntypedFormControl(consultant.creditorCreatedInNavision),
+			checkInvoicingSettingsOnConsultant: new UntypedFormControl(consultant?.checkInvoicingSettingsOnConsultant),
+			creditorCreatedInNavision: new UntypedFormControl(consultant?.creditorCreatedInNavision),
 			consultant: new UntypedFormControl(consultant?.consultant),
 		});
 		this.financesConsultantsForm.consultants.push(form);

@@ -1,11 +1,11 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { NotificationComponent } from './notification.component';
+import { BiReportsComponent } from './bi-reports.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: NotificationComponent
+        component: BiReportsComponent,
     },
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class NotificationRoutingModule {}
+export class BiReportsRoutingModule {}
