@@ -5,9 +5,6 @@ import { AppCommonModule } from '../shared/common/app-common.module';
 import { PurchaseOrdersRoutingModule } from './po-list-routing.module';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
-import { PoStatusIconComponent } from './components/po-status/po-status.component';
-import { PoNoteStatusIconComponent } from './components/po-note-status/po-note-status.component';
-import { PoChasingStatusIconComponent } from './components/po-chasing-status/po-chasing-status.component';
 import { BulkUpdateDialogComponent } from './components/bulk-update-dialog/bulk-update-dialog.component';
 
 
@@ -15,9 +12,6 @@ import { BulkUpdateDialogComponent } from './components/bulk-update-dialog/bulk-
 @NgModule({
   declarations: [
     PoListComponent,
-    PoStatusIconComponent,
-    PoNoteStatusIconComponent,
-    PoChasingStatusIconComponent,
     BulkUpdateDialogComponent
   ],
   imports: [
@@ -68,6 +62,14 @@ export class PoListModule {
             'edit-po',
             sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/edit-po.svg')
         );
+        iconRegistry.addSvgIcon(
+			'empty-table-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
+		);
+        iconRegistry.addSvgIcon(
+			'filter-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/filter-icon.svg')
+		);
     }
 
 }

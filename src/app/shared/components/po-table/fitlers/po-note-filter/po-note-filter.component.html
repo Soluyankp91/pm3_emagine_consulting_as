@@ -1,8 +1,11 @@
 <emg-multi-select [options]="options"  [displayedProperty]="'name'" [formControl]="filterFormControl">
 	<ng-template #triggerButton>
-		<div class="table-header-cell">{{ labelMap[tableFilter] }}</div>
+		<div class="table-header-cell">
+            <mat-icon class="filter-icon" svgIcon="filter-icon"></mat-icon>
+            {{ labelMap[tableFilter] }}
+        </div>
 	</ng-template>
 	<ng-template #optionPrefix let-option="$implicit">
-		<!-- <emg-agreement-mode class="icon" [agreementValidityState]="option.id" [iconWidth]="16" [iconHeight]="16"></emg-agreement-mode> -->
+		<po-note-status-icon class="h-16px w-16px" [statusId]="option.id"></po-note-status-icon>
 	</ng-template>
 </emg-multi-select>

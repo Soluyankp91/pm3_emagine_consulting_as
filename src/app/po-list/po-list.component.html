@@ -3,6 +3,40 @@
         <h2 class="page-main-header u-mb--20">Purchase Orders</h2>
         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
+                <div class="flex-row flex-items-center u-mr--10">
+                    <button mat-icon-button [matTooltip]="invoicingEntityControl.value?.length ? (invoicingEntityControl.value | displayList: 'name'): 'Select invoicing entity'"
+                    matTooltipClass="white-tooltip"
+                    class="legal-entity--filter"
+                    appPreventDoubleClick (throttledClick)="select.open()">
+                        <ng-container *ngIf="invoicingEntityControl.value?.length !== 0; else iconCountry">
+                            <ng-container *ngIf="invoicingEntityControl.value.length === 1; else multipleLegalEntities">
+                                <span class="country-flag--big fi fi-{{invoicingEntityControl.value[0]?.code | lowercase }} fis border-rounded-50"></span>
+                            </ng-container>
+                            <ng-template #multipleLegalEntities>
+                                <div class="border-rounded-50 w-30px h-30px flex-items-center flex-justify-center bg-green">
+                                    <span class="white-color text-600"> {{invoicingEntityControl.value?.length}}</span>
+                                </div>
+                            </ng-template>
+                        </ng-container>
+                        <ng-template #iconCountry>
+                            <mat-icon class="country-flag--big" svgIcon="Country-filter-flag">
+                            </mat-icon>
+                        </ng-template>
+                        <mat-select #select [compareWith]="compareWithFn" [disableOptionCentering]="true" [multiple]="true"
+                            [formControl]="invoicingEntityControl" class="absolute-mat-select">
+                            <ng-container *ngFor="let item of legalEntities">
+                                <mat-option [value]="item">
+                                    <div class="u-w--100">
+                                        <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
+                                        <span class="tenant-name">{{item.tenantName}}</span>
+                                        {{' (' + item.name + ')' }}
+                                    </div>
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </button>
+
+                </div>
                 <div class="flex-row flex-items-center u-mr--10" [matTooltip]="'Filtering on Divisions & Teams disables the user filter'" [matTooltipDisabled]="selectedTeamsAndDivisionsCount === 0" matTooltipClass="white-tooltip">
                     <manager-multiselect
                         [initialOptions]="selectedAccountManagers"
@@ -44,6 +78,14 @@
                         </ng-container>
                     </mat-select>
                 </mat-form-field>
+                <ng-container *ngIf="isDirty$ | async">
+                    <mat-divider class="divider-height" [vertical]="true"></mat-divider>
+                    <button mat-button appPreventDoubleClick (throttledClick)="resetAllFilters()">
+                        <span class="clear-all-button" >
+                            Clear all
+                        </span>
+                    </button>
+                </ng-container>
             </div>
             <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100" fxFlex="25%">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
@@ -106,9 +148,9 @@
                                 <div class="status-log-grid">
                                     <ng-container *ngFor="let item of row.chasingStatusHistory; trackBy: trackByItem">
                                         <div class="flex-row">
-                                            <po-chasing-status [statusId]="item.historyEntityId"></po-chasing-status>
+                                            <po-chasing-status [statusId]="item.chasingStatusId"></po-chasing-status>
                                             <span class="dark-grey-color text-bold">
-                                                {{ item.chasingStatusString }}
+                                                {{ item.chasingStatusName }}
                                             </span>
                                         </div>
                                         <div class="flex-row">
@@ -137,48 +179,51 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="note" [sticky]="true">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
-                        class="poNote-column">
-                        <po-note-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.note)"></po-note-filter>
+                    <mat-header-cell *matHeaderCellDef class="poNote-column">
+                        Note
+                        <!-- TODO: for the 2-nd iteration -->
+                        <!-- <po-note-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.note)"></po-note-filter> -->
                     </mat-header-cell>
                     <mat-cell class="table-cell poNote-column" *matCellDef="let row">
                         <po-note-status-icon class="h-16px w-16px" [statusId]="row.noteStatus" [note]="row.notes"></po-note-status-icon>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="PONumber" [sticky]="true">
+                <ng-container matColumnDef="Number" [sticky]="true">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poNumber-column">
                         PO number
                     </mat-header-cell>
                     <mat-cell class="table-cell poNumber-column" *matCellDef="let row">
                         <po-status-icon class="h-16px w-16px u-mr--5" [statusId]="row.status"></po-status-icon>
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.numberMissingButRequired ? 'Missing, but required' : row.number" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <span class="text-truncate-ellipsis text-bold" [ngClass]="{'medium-grey-color': row.numberMissingButRequired}" [matTooltip]="row.numberMissingButRequired ? 'Missing, but required' : row.number" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.numberMissingButRequired ? 'Missing, but required' : row.number}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="client" [sticky]="true">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poClient-column">
                         Client
                     </mat-header-cell>
                     <mat-cell class="table-cell poClient-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.directClientNameReferencingThisPo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.directClientNameReferencingThisPo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.directClientNameReferencingThisPo ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="lastUpdate">
+                <ng-container matColumnDef="ModifiedOnUtc">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poLastUpdated-column">
                         Last update
                     </mat-header-cell>
                     <mat-cell class="table-cell poLastUpdated-column" *matCellDef="let row">
-                        {{row.modifiedOnUtc | momentFormat}}
+                        <ng-container *ngIf="row.modifiedOnUtc !== null && row.modifiedOnUtc !== undefined; else noData">
+                            {{row.modifiedOnUtc | momentFormat}}
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="wfPeriodId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poWFPeriod-column">
                         WF period ID
                     </mat-header-cell>
@@ -187,7 +232,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientContact">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poClientContact-column">
                         Client contact
                     </mat-header-cell>
@@ -198,7 +243,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="consultant">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poConsultant-column">
                         Consultant
                     </mat-header-cell>
@@ -209,130 +254,136 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="salesType">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poSalesType-column">
                         Sales type
                     </mat-header-cell>
                     <mat-cell class="table-cell poSalesType-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.salesType}}
+                            {{row.clientPeriodsReferencingThisPo[0]?.salesType ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="deliveryType">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poDeliveryType-column">
                         Delivery type
                     </mat-header-cell>
                     <mat-cell class="table-cell poDeliveryType-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.deliveryType}}
+                            {{row.clientPeriodsReferencingThisPo[0]?.deliveryType ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="capType">
+                <ng-container matColumnDef="CapForInvoicing_Type">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poCapType-column">
                         Cap on
                     </mat-header-cell>
                     <mat-cell class="table-cell poCapType-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="purchaseOrderCapTypes[row.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{purchaseOrderCapTypes[row.capForInvoicing?.type]}}
+                            {{purchaseOrderCapTypes[row.capForInvoicing?.type] ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poAmount-column">
                         Amount
                     </mat-header-cell>
                     <mat-cell class="table-cell poAmount-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.capForInvoicing?.maxAmount}}
+                            {{row.capForInvoicing?.maxAmount ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="units">
+                <ng-container matColumnDef="CapForInvoicing_ValueUnitTypeId">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poUnitType-column">
                         Units
                     </mat-header-cell>
                     <mat-cell class="table-cell poUnitType-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.valueUnitTypeId" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.capForInvoicing?.valueUnitTypeId}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="eValueUnitType[row.capForInvoicing?.valueUnitTypeId] ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{eValueUnitType[row.capForInvoicing?.valueUnitTypeId] ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientRate">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poClientRate-column">
                         Client rate
                     </mat-header-cell>
                     <mat-cell class="table-cell poClientRate-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.clientRate" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.clientRate}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.clientRate ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.clientRate ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="totalAmount">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poTotalAmount-column">
                         Total amount
                     </mat-header-cell>
                     <mat-cell class="table-cell poTotalAmount-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.capForInvoicing?.maxAmount}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="amountLeft">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poAmountLeft-column">
                         Amount left
                     </mat-header-cell>
                     <mat-cell class="table-cell poAmountLeft-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.amountLeft" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.amountLeft}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.amountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.amountLeft ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="estimatedUnitsLeft">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                    <mat-header-cell *matHeaderCellDef
                         class="table-header-cell poEstimatedUnitsLeft-column">
                         Estimated units left
                     </mat-header-cell>
                     <mat-cell class="table-cell poEstimatedUnitsLeft-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriodsReferencingThisPo[0]?.estimatedUnitsLeft ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="startDate">
+                <ng-container matColumnDef="StartDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poStartDate-column">
                         PO start date
                     </mat-header-cell>
                     <mat-cell class="table-cell poStartDate-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.startDate | momentFormat}}
+                            <ng-container *ngIf="row.startDate !== null && row.startDate !== undefined; else noData">
+                                {{row.startDate | momentFormat}}
+                            </ng-container>
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="endDate">
+                <ng-container matColumnDef="EndDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poEndDate-column">
                         PO end date
                     </mat-header-cell>
                     <mat-cell class="table-cell poEndDate-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.endDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.endDate | momentFormat}}
+                            <ng-container *ngIf="row.endDate !== null && row.endDate !== undefined; else noData">
+                                {{row.endDate | momentFormat}}
+                            </ng-container>
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="contractManager">
+                <ng-container matColumnDef="ContractResponsible">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poCM-column">
-                        <po-contract-manager-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.contractManager)"></po-contract-manager-filter>
+                        CM
+                        <!-- TODO: for the 2-nd iteration -->
+                        <!-- <po-contract-manager-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.contractManager)"></po-contract-manager-filter> -->
                     </mat-header-cell>
                     <mat-cell class="table-cell poCM-column" *matCellDef="let row">
                         <ng-container *ngIf="row?.contractResponsible?.id; else noData">
@@ -343,7 +394,7 @@
                         </ng-container>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="accountManager">
+                <ng-container matColumnDef="SalesResponsible">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poAM-column">
                         AM
@@ -456,9 +507,9 @@
                         <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" class="three-dots-actions-btn">
                             <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
-                        <mat-menu #menu="matMenu" class="custom">
-                            <button mat-menu-item (click)="editPo(actionRow)">
-                                <mat-icon svgIcon="edit-po" class="small-icon"></mat-icon>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="editPo(actionRow)" class="menu-item green-color">
+                                <mat-icon svgIcon="edit-po"></mat-icon>
                                 <span>Edit</span>
                             </button>
                         </mat-menu>
@@ -469,12 +520,10 @@
                 <mat-row
                     *matRowDef="let row; columns: displayedColumns"
                     [class.example-expanded-row]="expandedElement === row"
-
-                    [ngClass]="{ highlight: selectedRowId === row.id }"
                     class="row-hover"></mat-row>
                 <mat-row *matRowDef="let row; columns: ['expandedLeftSticky', 'expandedDetail', 'expandedRightSticky']" class="example-detail-row"></mat-row>
             </mat-table>
-            <ng-container *ngIf="!dataSource.data.length">
+            <ng-container *ngIf="!dataSource.data.length && !(isLoading$ | async)">
                 <div class="no-items">
                     <mat-icon svgIcon="empty-table-icon" class="empty-table-icon"> </mat-icon>
                     <div class="no-items-text">

@@ -190,34 +190,37 @@
                         </mat-form-field>
                     </div>
                 </ng-container>
-                <h3 class="sub-header u-mb--5 u-mt--20">Client contact responsible</h3>
-                <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420" appearance="outline"
-                    [ngClass]="{'isPanelOpen': contactAuto.isOpen}">
-                    <input type="text" #trigger matInput [matAutocomplete]="contactAuto" formControlName="clientContactResponsible" appPreventDoubleClick
-                        (click)="$event.stopPropagation()" placeholder="Assignee">
-                    <span matSuffix class="shevron"></span>
-                    <mat-autocomplete #contactAuto="matAutocomplete" [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
-                    (closed)="onAutocompleteClosed(purchaseOrderForm.clientContactResponsible, 'id')">
-                        <ng-container *ngFor="let option of filteredClientContacts$ | async; trackBy: trackById">
-                            <mat-option [value]="option">
-                                <div class="multilineDropdown-option--row text-bold dark-grey-color flex-items-center" [matTooltip]="option.firstName + ' ' + option.lastName"
-                                    matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    <span>{{ option.firstName + ' ' + option.lastName }}</span>
-                                </div>
-                            </mat-option>
-                        </ng-container>
-                        <ng-container *ngIf="(filteredClientContacts$ | async)?.length === 0">
-                            <mat-option (click)="$event.stopPropagation()" class="no-data">
-                                <span>
-                                    No contacts found
-                                </span>
-                            </mat-option>
-                        </ng-container>
-                    </mat-autocomplete>
-                    <mat-error>
-                        <app-validator [control]="purchaseOrderForm.clientContactResponsible"></app-validator>
-                    </mat-error>
-                </mat-form-field>
+                <ng-container *ngIf="data.directClientId">
+                    <h3 class="sub-header u-mb--5 u-mt--20">Client contact responsible</h3>
+                    <mat-form-field class="workflow-list--filter-manager-dropdown autocompleteWithShevron form-width-420" appearance="outline"
+                        [ngClass]="{'isPanelOpen': contactAuto.isOpen}">
+                        <input type="text" #trigger matInput [matAutocomplete]="contactAuto" formControlName="clientContactResponsible" appPreventDoubleClick
+                            (click)="$event.stopPropagation()" placeholder="Assignee">
+                        <span matSuffix class="shevron"></span>
+                        <mat-autocomplete #contactAuto="matAutocomplete" [displayWith]="displayFullNameFn" (optionSelected)="focusToggleMethod('auto')" (opened)="focusToggleMethod('hidden')"
+                        (closed)="onAutocompleteClosed(purchaseOrderForm.clientContactResponsible, 'id')">
+                            <ng-container *ngFor="let option of filteredClientContacts$ | async; trackBy: trackById">
+                                <mat-option [value]="option">
+                                    <div class="multilineDropdown-option--row text-bold dark-grey-color flex-items-center" [matTooltip]="option.firstName + ' ' + option.lastName"
+                                        matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span>{{ option.firstName + ' ' + option.lastName }}</span>
+                                    </div>
+                                </mat-option>
+                            </ng-container>
+                            <ng-container *ngIf="(filteredClientContacts$ | async)?.length === 0">
+                                <mat-option (click)="$event.stopPropagation()" class="no-data">
+                                    <span>
+                                        No contacts found
+                                    </span>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                        <mat-error>
+                            <app-validator [control]="purchaseOrderForm.clientContactResponsible"></app-validator>
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
                 <mat-divider class="u-w--100 dark-grey-color u-mt--15 u-mb--15"></mat-divider>
                 <mat-form-field appearance="outline"
                     class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-720">
@@ -230,7 +233,7 @@
 
                 <app-documents class="u-w--100" #poDocuments [singleDocument]="true"></app-documents>
                 <ng-container *ngIf="purchaseOrderForm.numberMissingButRequired.value">
-                    <div fxLayout="row" fxLayoutAlign="start start">
+                    <div fxLayout="row" fxLayoutAlign="start center">
                         <mat-form-field appearance="outline" class="filter-select form-width-200 u-mr--16">
                             <mat-label> Chasing status</mat-label>
                             <mat-select formControlName="chasingStatus" [disableOptionCentering]="true">
@@ -241,12 +244,12 @@
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
-                        <mat-checkbox color="accent" formControlName="notifyAM" name="notifyAM"
+                        <mat-checkbox color="accent" formControlName="notifyCM" name="notifyCM"
                             class="black-checkbox u-mr--16">
-                            Notify AM
+                            Notify CM
                         </mat-checkbox>
                         <mat-checkbox color="accent" formControlName="isUnread" name="isUnread"
-                            class="black-checkbox u-mt--10">
+                            class="black-checkbox">
                             Mark note as unread
                         </mat-checkbox>
                     </div>

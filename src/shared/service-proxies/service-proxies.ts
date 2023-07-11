@@ -17343,11 +17343,15 @@ export class PurchaseOrderServiceProxy {
 
     /**
      * @param invoicingEntities (optional) 
+     * @param clientsIds (optional) 
      * @param responsibleEmployees (optional) 
      * @param employeesTeamsAndDivisionsNodes (optional) 
      * @param employeesTenants (optional) 
      * @param chasingStatuses (optional) 
      * @param statuses (optional) 
+     * @param noteStatuses (optional) 
+     * @param capTypes (optional) 
+     * @param capUnits (optional) 
      * @param showCompleted (optional) 
      * @param search (optional) 
      * @param pageNumber (optional) 
@@ -17355,12 +17359,16 @@ export class PurchaseOrderServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    getPurchaseOrdersList(invoicingEntities?: number[] | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, chasingStatuses?: PurchaseOrderChasingStatus[] | undefined, statuses?: PurchaseOrderStatus[] | undefined, showCompleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<PurchaseOrderQueryDtoPaginatedList> {
+    getPurchaseOrdersList(invoicingEntities?: number[] | undefined, clientsIds?: number[] | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, chasingStatuses?: PurchaseOrderChasingStatus[] | undefined, statuses?: PurchaseOrderStatus[] | undefined, noteStatuses?: PurchaseOrderNoteStatus[] | undefined, capTypes?: PurchaseOrderCapType[] | undefined, capUnits?: ValueUnitEnum[] | undefined, showCompleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<PurchaseOrderQueryDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersList?";
         if (invoicingEntities === null)
             throw new Error("The parameter 'invoicingEntities' cannot be null.");
         else if (invoicingEntities !== undefined)
             invoicingEntities && invoicingEntities.forEach(item => { url_ += "InvoicingEntities=" + encodeURIComponent("" + item) + "&"; });
+        if (clientsIds === null)
+            throw new Error("The parameter 'clientsIds' cannot be null.");
+        else if (clientsIds !== undefined)
+            clientsIds && clientsIds.forEach(item => { url_ += "ClientsIds=" + encodeURIComponent("" + item) + "&"; });
         if (responsibleEmployees === null)
             throw new Error("The parameter 'responsibleEmployees' cannot be null.");
         else if (responsibleEmployees !== undefined)
@@ -17381,6 +17389,18 @@ export class PurchaseOrderServiceProxy {
             throw new Error("The parameter 'statuses' cannot be null.");
         else if (statuses !== undefined)
             statuses && statuses.forEach(item => { url_ += "Statuses=" + encodeURIComponent("" + item) + "&"; });
+        if (noteStatuses === null)
+            throw new Error("The parameter 'noteStatuses' cannot be null.");
+        else if (noteStatuses !== undefined)
+            noteStatuses && noteStatuses.forEach(item => { url_ += "NoteStatuses=" + encodeURIComponent("" + item) + "&"; });
+        if (capTypes === null)
+            throw new Error("The parameter 'capTypes' cannot be null.");
+        else if (capTypes !== undefined)
+            capTypes && capTypes.forEach(item => { url_ += "CapTypes=" + encodeURIComponent("" + item) + "&"; });
+        if (capUnits === null)
+            throw new Error("The parameter 'capUnits' cannot be null.");
+        else if (capUnits !== undefined)
+            capUnits && capUnits.forEach(item => { url_ += "CapUnits=" + encodeURIComponent("" + item) + "&"; });
         if (showCompleted === null)
             throw new Error("The parameter 'showCompleted' cannot be null.");
         else if (showCompleted !== undefined)
@@ -18157,230 +18177,6 @@ export class TestHubSpotServiceProxy {
             }));
         }
         return _observableOf<HubSpotClientDto>(null as any);
-    }
-}
-
-@Injectable()
-export class TestNotificationServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @param email (optional) 
-     * @return Success
-     * @deprecated
-     */
-    sendActionRequired(email?: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/TestNotification/send-action-required?";
-        if (email === null)
-            throw new Error("The parameter 'email' cannot be null.");
-        else if (email !== undefined)
-            url_ += "email=" + encodeURIComponent("" + email) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSendActionRequired(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSendActionRequired(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processSendActionRequired(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param email (optional) 
-     * @return Success
-     * @deprecated
-     */
-    sendContractExpiration(email?: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/TestNotification/send-contract-expiration?";
-        if (email === null)
-            throw new Error("The parameter 'email' cannot be null.");
-        else if (email !== undefined)
-            url_ += "email=" + encodeURIComponent("" + email) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSendContractExpiration(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSendContractExpiration(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processSendContractExpiration(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param email (optional) 
-     * @return Success
-     * @deprecated
-     */
-    sendConsultantExtension(email?: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/TestNotification/send-consultant-extension?";
-        if (email === null)
-            throw new Error("The parameter 'email' cannot be null.");
-        else if (email !== undefined)
-            url_ += "email=" + encodeURIComponent("" + email) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSendConsultantExtension(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSendConsultantExtension(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processSendConsultantExtension(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param email (optional) 
-     * @return Success
-     * @deprecated
-     */
-    sendWorkflowStepResponsibleChanged(email?: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/TestNotification/send-Workflow-Step-Responsible-Changed?";
-        if (email === null)
-            throw new Error("The parameter 'email' cannot be null.");
-        else if (email !== undefined)
-            url_ += "email=" + encodeURIComponent("" + email) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSendWorkflowStepResponsibleChanged(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSendWorkflowStepResponsibleChanged(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processSendWorkflowStepResponsibleChanged(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
     }
 }
 
@@ -24674,12 +24470,51 @@ export enum AgreementValidityState {
     NotStarted = 3,
 }
 
-export class AmountWithUnitOrCurrencyDto implements IAmountWithUnitOrCurrencyDto {
+export class AmountWithCurrencyDto implements IAmountWithCurrencyDto {
     amount?: number;
-    unit?: ValueUnitEnum;
     currency?: string | undefined;
 
-    constructor(data?: IAmountWithUnitOrCurrencyDto) {
+    constructor(data?: IAmountWithCurrencyDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amount = _data["amount"];
+            this.currency = _data["currency"];
+        }
+    }
+
+    static fromJS(data: any): AmountWithCurrencyDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AmountWithCurrencyDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount;
+        data["currency"] = this.currency;
+        return data;
+    }
+}
+
+export interface IAmountWithCurrencyDto {
+    amount?: number;
+    currency?: string | undefined;
+}
+
+export class AmountWithUnitDto implements IAmountWithUnitDto {
+    amount?: number;
+    unit?: ValueUnitEnum;
+
+    constructor(data?: IAmountWithUnitDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -24692,13 +24527,12 @@ export class AmountWithUnitOrCurrencyDto implements IAmountWithUnitOrCurrencyDto
         if (_data) {
             this.amount = _data["amount"];
             this.unit = _data["unit"];
-            this.currency = _data["currency"];
         }
     }
 
-    static fromJS(data: any): AmountWithUnitOrCurrencyDto {
+    static fromJS(data: any): AmountWithUnitDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AmountWithUnitOrCurrencyDto();
+        let result = new AmountWithUnitDto();
         result.init(data);
         return result;
     }
@@ -24707,15 +24541,13 @@ export class AmountWithUnitOrCurrencyDto implements IAmountWithUnitOrCurrencyDto
         data = typeof data === 'object' ? data : {};
         data["amount"] = this.amount;
         data["unit"] = this.unit;
-        data["currency"] = this.currency;
         return data;
     }
 }
 
-export interface IAmountWithUnitOrCurrencyDto {
+export interface IAmountWithUnitDto {
     amount?: number;
     unit?: ValueUnitEnum;
-    currency?: string | undefined;
 }
 
 export class AreaRoleNodeDto implements IAreaRoleNodeDto {
@@ -33616,7 +33448,8 @@ export enum PurchaseOrderChasingStatus {
 
 export class PurchaseOrderChasingStatusHistoryDto implements IPurchaseOrderChasingStatusHistoryDto {
     historyEntityId?: number;
-    chasingStatusString?: string | undefined;
+    chasingStatusId?: number | undefined;
+    chasingStatusName?: string | undefined;
     occurredAtUtc?: moment.Moment | undefined;
     employee?: EmployeeDto;
 
@@ -33632,7 +33465,8 @@ export class PurchaseOrderChasingStatusHistoryDto implements IPurchaseOrderChasi
     init(_data?: any) {
         if (_data) {
             this.historyEntityId = _data["historyEntityId"];
-            this.chasingStatusString = _data["chasingStatusString"];
+            this.chasingStatusId = _data["chasingStatusId"];
+            this.chasingStatusName = _data["chasingStatusName"];
             this.occurredAtUtc = _data["occurredAtUtc"] ? moment(_data["occurredAtUtc"].toString()) : <any>undefined;
             this.employee = _data["employee"] ? EmployeeDto.fromJS(_data["employee"]) : <any>undefined;
         }
@@ -33648,7 +33482,8 @@ export class PurchaseOrderChasingStatusHistoryDto implements IPurchaseOrderChasi
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["historyEntityId"] = this.historyEntityId;
-        data["chasingStatusString"] = this.chasingStatusString;
+        data["chasingStatusId"] = this.chasingStatusId;
+        data["chasingStatusName"] = this.chasingStatusName;
         data["occurredAtUtc"] = this.occurredAtUtc ? this.occurredAtUtc.toISOString() : <any>undefined;
         data["employee"] = this.employee ? this.employee.toJSON() : <any>undefined;
         return data;
@@ -33657,7 +33492,8 @@ export class PurchaseOrderChasingStatusHistoryDto implements IPurchaseOrderChasi
 
 export interface IPurchaseOrderChasingStatusHistoryDto {
     historyEntityId?: number;
-    chasingStatusString?: string | undefined;
+    chasingStatusId?: number | undefined;
+    chasingStatusName?: string | undefined;
     occurredAtUtc?: moment.Moment | undefined;
     employee?: EmployeeDto;
 }
@@ -33670,8 +33506,9 @@ export class PurchaseOrderClientPeriodDto implements IPurchaseOrderClientPeriodD
     displayId?: string | undefined;
     consultants?: string[] | undefined;
     clientRate?: ClientRateDto;
-    purchaseOrderCapClientCalculatedAmount?: AmountWithUnitOrCurrencyDto;
-    estimatedUnitsLeft?: AmountWithUnitOrCurrencyDto;
+    purchaseOrderCapClientCalculatedMaxAmount?: AmountWithCurrencyDto;
+    purchaseOrderCapClientCalculatedAmountLeft?: AmountWithCurrencyDto;
+    estimatedUnitsLeft?: AmountWithUnitDto;
 
     constructor(data?: IPurchaseOrderClientPeriodDto) {
         if (data) {
@@ -33695,8 +33532,9 @@ export class PurchaseOrderClientPeriodDto implements IPurchaseOrderClientPeriodD
                     this.consultants!.push(item);
             }
             this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
-            this.purchaseOrderCapClientCalculatedAmount = _data["purchaseOrderCapClientCalculatedAmount"] ? AmountWithUnitOrCurrencyDto.fromJS(_data["purchaseOrderCapClientCalculatedAmount"]) : <any>undefined;
-            this.estimatedUnitsLeft = _data["estimatedUnitsLeft"] ? AmountWithUnitOrCurrencyDto.fromJS(_data["estimatedUnitsLeft"]) : <any>undefined;
+            this.purchaseOrderCapClientCalculatedMaxAmount = _data["purchaseOrderCapClientCalculatedMaxAmount"] ? AmountWithCurrencyDto.fromJS(_data["purchaseOrderCapClientCalculatedMaxAmount"]) : <any>undefined;
+            this.purchaseOrderCapClientCalculatedAmountLeft = _data["purchaseOrderCapClientCalculatedAmountLeft"] ? AmountWithCurrencyDto.fromJS(_data["purchaseOrderCapClientCalculatedAmountLeft"]) : <any>undefined;
+            this.estimatedUnitsLeft = _data["estimatedUnitsLeft"] ? AmountWithUnitDto.fromJS(_data["estimatedUnitsLeft"]) : <any>undefined;
         }
     }
 
@@ -33720,7 +33558,8 @@ export class PurchaseOrderClientPeriodDto implements IPurchaseOrderClientPeriodD
                 data["consultants"].push(item);
         }
         data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
-        data["purchaseOrderCapClientCalculatedAmount"] = this.purchaseOrderCapClientCalculatedAmount ? this.purchaseOrderCapClientCalculatedAmount.toJSON() : <any>undefined;
+        data["purchaseOrderCapClientCalculatedMaxAmount"] = this.purchaseOrderCapClientCalculatedMaxAmount ? this.purchaseOrderCapClientCalculatedMaxAmount.toJSON() : <any>undefined;
+        data["purchaseOrderCapClientCalculatedAmountLeft"] = this.purchaseOrderCapClientCalculatedAmountLeft ? this.purchaseOrderCapClientCalculatedAmountLeft.toJSON() : <any>undefined;
         data["estimatedUnitsLeft"] = this.estimatedUnitsLeft ? this.estimatedUnitsLeft.toJSON() : <any>undefined;
         return data;
     }
@@ -33734,8 +33573,9 @@ export interface IPurchaseOrderClientPeriodDto {
     displayId?: string | undefined;
     consultants?: string[] | undefined;
     clientRate?: ClientRateDto;
-    purchaseOrderCapClientCalculatedAmount?: AmountWithUnitOrCurrencyDto;
-    estimatedUnitsLeft?: AmountWithUnitOrCurrencyDto;
+    purchaseOrderCapClientCalculatedMaxAmount?: AmountWithCurrencyDto;
+    purchaseOrderCapClientCalculatedAmountLeft?: AmountWithCurrencyDto;
+    estimatedUnitsLeft?: AmountWithUnitDto;
 }
 
 export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
@@ -33746,7 +33586,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
     startDate?: moment.Moment | undefined;
     endDate?: moment.Moment | undefined;
     chasingStatus?: PurchaseOrderChasingStatus;
-    status?: PurchaseOrderStatus;
     isCompleted?: boolean | undefined;
     capForInvoicing?: PurchaseOrderCapDto;
     notes?: string | undefined;
@@ -33775,7 +33614,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.chasingStatus = _data["chasingStatus"];
-            this.status = _data["status"];
             this.isCompleted = _data["isCompleted"];
             this.capForInvoicing = _data["capForInvoicing"] ? PurchaseOrderCapDto.fromJS(_data["capForInvoicing"]) : <any>undefined;
             this.notes = _data["notes"];
@@ -33804,7 +33642,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["chasingStatus"] = this.chasingStatus;
-        data["status"] = this.status;
         data["isCompleted"] = this.isCompleted;
         data["capForInvoicing"] = this.capForInvoicing ? this.capForInvoicing.toJSON() : <any>undefined;
         data["notes"] = this.notes;
@@ -33826,7 +33663,6 @@ export interface IPurchaseOrderCommandDto {
     startDate?: moment.Moment | undefined;
     endDate?: moment.Moment | undefined;
     chasingStatus?: PurchaseOrderChasingStatus;
-    status?: PurchaseOrderStatus;
     isCompleted?: boolean | undefined;
     capForInvoicing?: PurchaseOrderCapDto;
     notes?: string | undefined;
@@ -33988,12 +33824,12 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
     startDate?: moment.Moment | undefined;
     endDate?: moment.Moment | undefined;
     chasingStatus?: PurchaseOrderChasingStatus;
-    status?: PurchaseOrderStatus;
     isCompleted?: boolean | undefined;
     capForInvoicing?: PurchaseOrderCapDto;
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
+    status?: PurchaseOrderStatus;
     directClientIdReferencingThisPo?: number | undefined;
     directClientNameReferencingThisPo?: string | undefined;
     chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
@@ -34029,12 +33865,12 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.chasingStatus = _data["chasingStatus"];
-            this.status = _data["status"];
             this.isCompleted = _data["isCompleted"];
             this.capForInvoicing = _data["capForInvoicing"] ? PurchaseOrderCapDto.fromJS(_data["capForInvoicing"]) : <any>undefined;
             this.notes = _data["notes"];
             this.isUnread = _data["isUnread"];
             this.notifyCM = _data["notifyCM"];
+            this.status = _data["status"];
             this.directClientIdReferencingThisPo = _data["directClientIdReferencingThisPo"];
             this.directClientNameReferencingThisPo = _data["directClientNameReferencingThisPo"];
             if (Array.isArray(_data["chasingStatusHistory"])) {
@@ -34082,12 +33918,12 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["chasingStatus"] = this.chasingStatus;
-        data["status"] = this.status;
         data["isCompleted"] = this.isCompleted;
         data["capForInvoicing"] = this.capForInvoicing ? this.capForInvoicing.toJSON() : <any>undefined;
         data["notes"] = this.notes;
         data["isUnread"] = this.isUnread;
         data["notifyCM"] = this.notifyCM;
+        data["status"] = this.status;
         data["directClientIdReferencingThisPo"] = this.directClientIdReferencingThisPo;
         data["directClientNameReferencingThisPo"] = this.directClientNameReferencingThisPo;
         if (Array.isArray(this.chasingStatusHistory)) {
@@ -34128,12 +33964,12 @@ export interface IPurchaseOrderQueryDto {
     startDate?: moment.Moment | undefined;
     endDate?: moment.Moment | undefined;
     chasingStatus?: PurchaseOrderChasingStatus;
-    status?: PurchaseOrderStatus;
     isCompleted?: boolean | undefined;
     capForInvoicing?: PurchaseOrderCapDto;
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
+    status?: PurchaseOrderStatus;
     directClientIdReferencingThisPo?: number | undefined;
     directClientNameReferencingThisPo?: string | undefined;
     chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;

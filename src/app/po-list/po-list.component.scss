@@ -1,5 +1,6 @@
 @import 'mixins';
 @import 'variables';
+@import "/src/app/shared/styles/config/_colors";
 
 :host {
     @include scrollbar;
@@ -196,11 +197,7 @@
 		color: $secondary-1;
 	}
 }
-.custom {
-	.small-icon {
-		@include small-icon;
-	}
-}
+
 .select-padding-8 {
 	padding-left: 8px;
 }
@@ -255,15 +252,15 @@
 }
 
 .poSalesType-column {
-    @include table-cell-width(115px);
+    @include table-cell-width(150px);
 }
 
 .poDeliveryType-column {
-    @include table-cell-width(115px);
+    @include table-cell-width(150px);
 }
 
 .poCapType-column {
-    @include table-cell-width(78px);
+    @include table-cell-width(100px);
 }
 
 .poAmount-column {
@@ -275,7 +272,7 @@
 }
 
 .poClientRate-column {
-    @include table-cell-width(106px);
+    @include table-cell-width(150px);
 }
 
 .poTotalAmount-column {
@@ -321,9 +318,6 @@
             display: flex;
             align-items: center;
             padding-left: 16px;
-            // text-overflow: ellipsis;
-            // overflow: hidden;
-            // white-space: nowrap;
         }
     }
     div {
@@ -358,4 +352,33 @@
     grid-template-columns: auto auto auto;
     grid-row-gap: 4px;
     grid-column-gap: 12px;
+}
+
+.legal-entity--filter {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    mat-icon {
+        width: 30px !important;
+        height: 30px !important;
+    }
+    .absolute-mat-select {
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+}
+.country-flag {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    &--big {
+        width: 30px;
+        line-height: 30px;
+        height: 30px;
+    }
 }

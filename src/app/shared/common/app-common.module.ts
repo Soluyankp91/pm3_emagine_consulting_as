@@ -61,6 +61,9 @@ import { PoContractManagerFilterComponent } from '../components/po-table/fitlers
 import { PoNoteFilterComponent } from '../components/po-table/fitlers/po-note-filter/po-note-filter.component';
 import { PoSalesManagersFilterComponent } from '../components/po-table/fitlers/sales-managers-filter/sales-managers-filter.component';
 import { PoCapFilterComponent } from '../components/po-table/fitlers/po-cap-filter/po-cap-filter.component';
+import { PoStatusIconComponent } from '../components/po-status/po-status.component';
+import { PoNoteStatusIconComponent } from '../components/po-note-status/po-note-status.component';
+import { PoChasingStatusIconComponent } from '../components/po-chasing-status/po-chasing-status.component';
 
 @NgModule({
 	declarations: [
@@ -116,7 +119,10 @@ import { PoCapFilterComponent } from '../components/po-table/fitlers/po-cap-filt
         PoContractManagerFilterComponent,
         PoNoteFilterComponent,
         PoSalesManagersFilterComponent,
-        PoCapFilterComponent
+        PoCapFilterComponent,
+        PoStatusIconComponent,
+        PoNoteStatusIconComponent,
+        PoChasingStatusIconComponent,
 	],
 	imports: [
 		CommonModule,
@@ -187,7 +193,10 @@ import { PoCapFilterComponent } from '../components/po-table/fitlers/po-cap-filt
         PoContractManagerFilterComponent,
         PoNoteFilterComponent,
         PoSalesManagersFilterComponent,
-        PoCapFilterComponent
+        PoCapFilterComponent,
+        PoStatusIconComponent,
+        PoNoteStatusIconComponent,
+        PoChasingStatusIconComponent,
 	],
 	providers: [ErrorDialogService, InternalLookupService, provideImgixLoader(`${environment.sharedAssets}`)],
 })

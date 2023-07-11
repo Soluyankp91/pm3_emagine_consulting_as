@@ -1,4 +1,4 @@
-import { AmountWithUnitOrCurrencyDto, ContactDto, EmployeeDto, PurchaseOrderCapDto, PurchaseOrderChasingStatus, PurchaseOrderChasingStatusHistoryDto, PurchaseOrderClientPeriodDto, PurchaseOrderCurrentContextDto, PurchaseOrderDocumentQueryDto, PurchaseOrderNoteStatus, PurchaseOrderQueryDto, PurchaseOrderStatus } from "src/shared/service-proxies/service-proxies";
+import { ContactDto, EmployeeDto, PurchaseOrderCapDto, PurchaseOrderCapType, PurchaseOrderChasingStatus, PurchaseOrderChasingStatusHistoryDto, PurchaseOrderClientPeriodDto, PurchaseOrderCurrentContextDto, PurchaseOrderDocumentQueryDto, PurchaseOrderNoteStatus, PurchaseOrderQueryDto, PurchaseOrderStatus, ValueUnitEnum } from "src/shared/service-proxies/service-proxies";
 
 export enum EPoBotttomActionsType {
     AssignEmaginePOResponsible = 1,
@@ -13,11 +13,15 @@ export interface Actions {
 
 export interface IPoListPayload {
 	invoicingEntities?: number[] | undefined;
+	clientsIds?: number[] | undefined;
 	responsibleEmployees?: number[] | undefined;
 	employeesTeamsAndDivisionsNodes?: number[] | undefined;
 	employeesTenants?: number[] | undefined;
 	chasingStatuses?: PurchaseOrderChasingStatus[] | undefined;
 	statuses?: PurchaseOrderStatus[] | undefined;
+	noteStatuses?: PurchaseOrderNoteStatus[] | undefined;
+	capTypes?: PurchaseOrderCapType[] | undefined;
+	capUnits?: ValueUnitEnum[] | undefined;
 	showCompleted?: boolean | undefined;
 	search?: string | undefined;
 	pageNumber?: number | undefined;

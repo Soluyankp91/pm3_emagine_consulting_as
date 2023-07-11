@@ -7,14 +7,32 @@ import { AppConsts } from 'src/shared/AppConsts';
 import { DISPLAYED_COLUMNS, FILTER_LABEL_MAP, PO_BOTTOM_ACTIONS, PO_CHASING_STATUSES, PO_STATUSES } from './po-list.constants';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { ERouteTitleType } from 'src/shared/AppEnums';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { SelectableEmployeeDto } from '../workflow/workflow.model';
-import { EnumEntityTypeDto, PurchaseOrderCapType, PurchaseOrderChasingStatus, PurchaseOrderClientPeriodDto, PurchaseOrderQueryDto, PurchaseOrderQueryDtoPaginatedList, PurchaseOrderServiceProxy, PurchaseOrderSetEmagineResponsiblesCommand, PurchaseOrdersSetClientContactResponsibleCommand, PurchaseOrdersSetIsCompletedCommand, ValueUnitEnum } from 'src/shared/service-proxies/service-proxies';
+import {
+	EnumEntityTypeDto,
+	LegalEntityDto,
+	PurchaseOrderCapType,
+	PurchaseOrderClientPeriodDto,
+	PurchaseOrderQueryDto,
+	PurchaseOrderQueryDtoPaginatedList,
+	PurchaseOrderServiceProxy,
+	PurchaseOrderSetEmagineResponsiblesCommand,
+	PurchaseOrdersSetClientContactResponsibleCommand,
+	PurchaseOrdersSetIsCompletedCommand,
+	ValueUnitEnum,
+} from 'src/shared/service-proxies/service-proxies';
 import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Actions, EPoBotttomActionsType, IGridFilters, IPOClientPeriodGridData, IPOGridData, IPoListPayload } from './po-list.model';
-import { GridHelpService } from '../contracts/shared/services/mat-grid-service.service';
-import { ReplaySubject, Subject } from 'rxjs';
+import {
+	Actions,
+	EPoBotttomActionsType,
+	IGridFilters,
+	IPOClientPeriodGridData,
+	IPOGridData,
+	IPoListPayload,
+} from './po-list.model';
+import { BehaviorSubject, ReplaySubject, Subject, merge } from 'rxjs';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { Router } from '@angular/router';
 import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
@@ -27,9 +45,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { BulkUpdateDialogComponent } from './components/bulk-update-dialog/bulk-update-dialog.component';
 import { EBulkUpdateDiallogTypes } from './components/bulk-update-dialog/bulk-update.dialog.model';
 import { AddOrEditPoDialogComponent } from '../workflow/shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
-import { EPOChasingStatusText } from './components/po-chasing-status/po-chasing-status.model';
+import { EPOChasingStatusText } from '../shared/components/po-chasing-status/po-chasing-status.model';
+import { SelectableCountry } from '../overview/main-overview.model';
+import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 
-const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0'
+const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0';
 @Component({
 	selector: 'app-po-list',
 	templateUrl: './po-list.component.html',
@@ -41,14 +61,12 @@ const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0'
 			transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
 		]),
 	],
-	providers: [GridHelpService],
 })
 export class PoListComponent extends AppComponentBase implements OnInit {
 	@ViewChild('treeFilter') treeFilter: DivisionsAndTeamsFilterComponent;
 	initialSelection = [];
 	allowMultiSelect = true;
 	selectedItemsActions: Actions[] = PO_BOTTOM_ACTIONS;
-	selectedRowId: number;
 	selectionModel = new SelectionModel<IPOGridData>(this.allowMultiSelect, this.initialSelection);
 	displayedColumns = DISPLAYED_COLUMNS;
 	dataSource = new MatTableDataSource<IPOGridData>();
@@ -59,17 +77,16 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	defaultPageSize = AppConsts.grid.defaultPageSize;
 	pageNumber = 1;
 	sorting = '';
-	invoicingEntityControl = new FormControl();
-	paymentEntityControl = new FormControl();
+	invoicingEntityControl = new FormControl([]);
 	searchFilter = new FormControl('');
-    chasingStatusesFilter = new FormControl([]);
-    statusesFilter = new FormControl([]);
-    chasingStatuses = PO_CHASING_STATUSES;
-    ePOChasingStatusText = EPOChasingStatusText;
-    poStatuses = PO_STATUSES;
+	chasingStatusesFilter = new FormControl([]);
+	statusesFilter = new FormControl([]);
+	chasingStatuses = PO_CHASING_STATUSES;
+	ePOChasingStatusText = EPOChasingStatusText;
+	poStatuses = PO_STATUSES;
 	selectedAccountManagers: SelectableEmployeeDto[] = [];
 	includeCompleted: boolean;
-	expandedElement: any;
+	expandedElement: IPOGridData;
 	ePurchaseOrderCapType = PurchaseOrderCapType;
 	FILTER_LABEL_MAP = FILTER_LABEL_MAP;
 	trackByAction: TrackByFunction<any>;
@@ -95,6 +112,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	saleTypes: EnumEntityTypeDto[];
 	deliveryTypes: EnumEntityTypeDto[];
 	purchaseOrderCapTypes: { [key: string]: string };
+	legalEntities: SelectableCountry[];
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 	currentRowId: number | null;
@@ -105,6 +123,8 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		divisionIds: [],
 	};
 	selectedTeamsAndDivisionsCount: number = 0;
+	isLoading$ = new BehaviorSubject(false);
+	isDirty$ = new BehaviorSubject(false);
 	private _unSubscribe$ = new Subject();
 	constructor(
 		injector: Injector,
@@ -115,9 +135,17 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		private readonly _dialog: MatDialog
 	) {
 		super(injector);
-        this.searchFilter.valueChanges.pipe(takeUntil(this._unSubscribe$), debounceTime(500)).subscribe(() => {
-            this.getPurchaseOrdersList();
-        })
+		merge(
+			this.chasingStatusesFilter.valueChanges,
+			this.statusesFilter.valueChanges,
+			this.searchFilter.valueChanges,
+			this.invoicingEntityControl.valueChanges
+		)
+			.pipe(takeUntil(this._unSubscribe$), debounceTime(700))
+			.subscribe(() => {
+				this._checkIfDirty();
+				this.getPurchaseOrdersList();
+			});
 	}
 
 	ngOnInit(): void {
@@ -128,10 +156,6 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 
 	onSortChange($event: Sort) {}
 
-	onFormControlChange($event: any) {}
-
-	resetAllTopFilters() {}
-
 	saveGridOptions() {
 		let filters = {
 			pageNumber: this.pageNumber,
@@ -139,15 +163,15 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			sorting: this.sorting,
 			owners: this.selectedAccountManagers,
 			invoicingEntity: this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined,
-			paymentEntity: this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined,
-
+			chasingStatuses: this.chasingStatusesFilter.value ?? [],
+			statuses: this.statusesFilter.value ?? [],
 			includeCompleted: this.includeCompleted,
 			searchFilter: this.searchFilter.value ? this.searchFilter.value : '',
 			ownerTenantsIds: this.teamsAndDivisionsFilterState.tenantIds,
 			ownerDivisionsIds: this.teamsAndDivisionsFilterState.divisionIds,
 			ownerTeamsIds: this.teamsAndDivisionsFilterState.teamsIds,
 		};
-
+		this._checkIfDirty();
 		localStorage.setItem(POGridOptionsKey, JSON.stringify(filters));
 	}
 
@@ -158,7 +182,9 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			this.defaultPageSize = filters.defaultPageSize;
 			this.sorting = filters.sorting;
 			this.selectedAccountManagers = filters.owners?.length ? filters.owners : [];
-			this.invoicingEntityControl.setValue(filters.invoicingEntity, { emitEvent: false });
+			this.invoicingEntityControl.setValue(filters.invoicingEntity ?? [], { emitEvent: false });
+			this.chasingStatusesFilter.setValue(filters.chasingStatuses ?? [], { emitEvent: false });
+			this.statusesFilter.setValue(filters.statuses ?? [], { emitEvent: false });
 			this.includeCompleted = filters.includeCompleted;
 			this.teamsAndDivisionsFilterState = {
 				tenantIds: filters.ownerTenantsIds ?? [],
@@ -172,28 +198,38 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	}
 
 	getPurchaseOrdersList() {
-        this.showMainSpinner();
+		this.showMainSpinner();
 		const payload = this._packPayload();
+		this.isLoading$.next(true);
 		this._purchaseOrderService
 			.getPurchaseOrdersList(
 				payload.invoicingEntities,
+                payload.clientsIds,
 				payload.responsibleEmployees,
 				payload.employeesTeamsAndDivisionsNodes,
 				payload.employeesTenants,
 				payload.chasingStatuses,
 				payload.statuses,
+                payload.noteStatuses,
+                payload.capTypes,
+                payload.capUnits,
 				payload.showCompleted,
 				payload.search,
 				payload.pageNumber,
 				payload.pageSize,
 				payload.sort
 			)
-			.pipe(finalize(() => this.hideMainSpinner()))
+			.pipe(
+				finalize(() => {
+					this.hideMainSpinner();
+					this.isLoading$.next(false);
+				})
+			)
 			.subscribe((result: PurchaseOrderQueryDtoPaginatedList) => {
-				console.log(result.items);
 				this.dataSource = new MatTableDataSource<IPOGridData>(this._mapTableData(result.items));
 				this.totalCount = result.totalCount;
-                this.selectionModel.clear();
+				this.selectionModel.clear();
+				this.saveGridOptions();
 			});
 	}
 
@@ -205,6 +241,14 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		};
 		this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
 		this.treeFilter.reset();
+		this.includeCompleted = false;
+		this.selectedAccountManagers = [];
+		this.searchFilter.reset('', { emitEvent: false });
+		this.invoicingEntityControl.reset([], { emitEvent: false });
+		this.chasingStatusesFilter.reset([], { emitEvent: false });
+		this.statusesFilter.reset([], { emitEvent: false });
+		localStorage.removeItem(POGridOptionsKey);
+		this.getPurchaseOrdersList();
 	}
 
 	isAllSelected() {
@@ -218,18 +262,21 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 			: this.dataSource.data.forEach((row) => this.selectionModel.select(row));
 	}
 
-	sortChange(event: Sort) {}
+	sortChange(event: Sort) {
+		this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
+		this.getPurchaseOrdersList();
+	}
 
 	pageChange(event: PageEvent) {
-        this.pageNumber = event.pageIndex + 1;
+		this.pageNumber = event.pageIndex + 1;
 		this.defaultPageSize = event.pageSize;
 		this.getPurchaseOrdersList();
-    }
+	}
 
 	editPo(actionRow: IPOGridData) {
-        const scrollStrategy = this._overlay.scrollStrategies.block();
+		const scrollStrategy = this._overlay.scrollStrategies.block();
 		BigDialogConfig.scrollStrategy = scrollStrategy;
-        BigDialogConfig.height = '700px';
+		BigDialogConfig.height = '700px';
 		BigDialogConfig.data = {
 			purchaseOrder: actionRow.originalPOData,
 			isEdit: true,
@@ -239,10 +286,10 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		};
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, BigDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe((newPurchaseOrder: PurchaseOrderQueryDto) => {
+		dialogRef.componentInstance.onConfirmed.subscribe(() => {
 			this.getPurchaseOrdersList();
 		});
-    }
+	}
 
 	chooseSelectionAction(actionType: EPoBotttomActionsType) {
 		switch (actionType) {
@@ -318,17 +365,17 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this.getPurchaseOrdersList();
 	}
 
-    private _openBulkUpdateClientResponsibleDialog() {
-        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+	private _openBulkUpdateClientResponsibleDialog() {
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
-            dialogType: EBulkUpdateDiallogTypes.UpdateClientResponsible,
+			dialogType: EBulkUpdateDiallogTypes.UpdateClientResponsible,
 			dialogTitle: `Assign Client responsible`,
 			dialogText: `You have selected ${this.selectionModel.selected.length} Purchase Orders. To whom would you like to assign them?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Assign',
-            clientIds: this.selectionModel.selected.map(x => x.directClientIdReferencingThisPo),
-            purchaseOrderIds: this.selectionModel.selected.map(x => x.id),
+			clientIds: this.selectionModel.selected.map((x) => x.directClientIdReferencingThisPo),
+			purchaseOrderIds: this.selectionModel.selected.map((x) => x.id),
 			isNegative: false,
 		};
 		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, MediumDialogConfig);
@@ -336,26 +383,27 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		dialogRef.componentInstance.onConfirmed.subscribe((event: PurchaseOrdersSetClientContactResponsibleCommand) => {
 			this._bulkUpdateClientResponsible(event);
 		});
-    }
+	}
 
-    private _bulkUpdateClientResponsible(data: PurchaseOrdersSetClientContactResponsibleCommand) {
-        this.showMainSpinner();
-        let input = new PurchaseOrdersSetClientContactResponsibleCommand(data);
-        this._purchaseOrderService.setPurchaseOrdersClientContactResponsible(input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.getPurchaseOrdersList());
-    }
+	private _bulkUpdateClientResponsible(data: PurchaseOrdersSetClientContactResponsibleCommand) {
+		this.showMainSpinner();
+		let input = new PurchaseOrdersSetClientContactResponsibleCommand(data);
+		this._purchaseOrderService
+			.setPurchaseOrdersClientContactResponsible(input)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => this.getPurchaseOrdersList());
+	}
 
-    private _openBulkUpdateEnmagineResponsibleDialog() {
-        const scrollStrategy = this._overlay.scrollStrategies.reposition();
+	private _openBulkUpdateEnmagineResponsibleDialog() {
+		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
-            dialogType: EBulkUpdateDiallogTypes.UpdateEmagineResponsible,
+			dialogType: EBulkUpdateDiallogTypes.UpdateEmagineResponsible,
 			dialogTitle: `Assign emagine responsible`,
 			dialogText: `You have selected ${this.selectionModel.selected.length} Purchase Orders. To whom would you like to assign them?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Assign',
-            purchaseOrderIds: this.selectionModel.selected.map(x => x.id),
+			purchaseOrderIds: this.selectionModel.selected.map((x) => x.id),
 			isNegative: false,
 		};
 		const dialogRef = this._dialog.open(BulkUpdateDialogComponent, MediumDialogConfig);
@@ -363,15 +411,16 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		dialogRef.componentInstance.onConfirmed.subscribe((event: PurchaseOrderSetEmagineResponsiblesCommand) => {
 			this._bulkUpdateEnmagineResponsible(event);
 		});
-    }
+	}
 
-    private _bulkUpdateEnmagineResponsible(data: PurchaseOrderSetEmagineResponsiblesCommand) {
-        this.showMainSpinner();
-        let input = new PurchaseOrderSetEmagineResponsiblesCommand(data);
-        this._purchaseOrderService.setPurchaseOrdersEmagineResponsibles(input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.getPurchaseOrdersList());
-    }
+	private _bulkUpdateEnmagineResponsible(data: PurchaseOrderSetEmagineResponsiblesCommand) {
+		this.showMainSpinner();
+		let input = new PurchaseOrderSetEmagineResponsiblesCommand(data);
+		this._purchaseOrderService
+			.setPurchaseOrdersEmagineResponsibles(input)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => this.getPurchaseOrdersList());
+	}
 
 	private _confirmMarkAsCompleted() {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
@@ -391,25 +440,30 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	}
 
 	private _markAsCompleted() {
-        this.showMainSpinner();
-        let input = new PurchaseOrdersSetIsCompletedCommand();
-        input.isCompleted = true;
-        input.purchaseOrdersIds = this.selectionModel.selected.map(x => x.id);
-        this._purchaseOrderService.setPurchaseOrdersIsCompleted(input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.getPurchaseOrdersList());
-    }
+		this.showMainSpinner();
+		let input = new PurchaseOrdersSetIsCompletedCommand();
+		input.isCompleted = true;
+		input.purchaseOrdersIds = this.selectionModel.selected.map((x) => x.id);
+		this._purchaseOrderService
+			.setPurchaseOrdersIsCompleted(input)
+			.pipe(finalize(() => this.hideMainSpinner()))
+			.subscribe(() => this.getPurchaseOrdersList());
+	}
 
 	private _packPayload() {
-        const {tenantIds, teamsIds, divisionIds} = this.teamsAndDivisionsFilterState;
+		const { tenantIds, teamsIds, divisionIds } = this.teamsAndDivisionsFilterState;
 		return {
-			invoicingEntities: [],
-			responsibleEmployees: this.selectedAccountManagers?.map(x => x.id),
+			invoicingEntities: this.invoicingEntityControl.value?.map((x) => x.id) ?? [],
+            clientsIds: [],
+			responsibleEmployees: this.selectedAccountManagers?.map((x) => x.id) ?? [],
 			employeesTeamsAndDivisionsNodes: teamsIds?.concat(divisionIds) ?? [],
 			employeesTenants: tenantIds ?? [],
-			chasingStatuses: this.gridFilters.chasingStatuses,
-			statuses: [],
-			showCompleted: true,
+			chasingStatuses: this.chasingStatusesFilter.value?.map(x => x.id) ?? [],
+			statuses: this.statusesFilter.value?.map(x => x.id) ?? [],
+            noteStatuses: [],
+            capTypes: [],
+            capUnits: [],
+			showCompleted: this.includeCompleted,
 			search: this.searchFilter.value ?? '',
 			pageNumber: this.pageNumber,
 			pageSize: this.defaultPageSize,
@@ -420,7 +474,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	private _mapTableData(items: PurchaseOrderQueryDto[]): IPOGridData[] {
 		return items.map((item) => {
 			return {
-                originalPOData: item,
+				originalPOData: item,
 				id: item.id,
 				number: item.number,
 				numberMissingButRequired: item.numberMissingButRequired,
@@ -457,7 +511,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	private _mapClientPeriodsData(items: PurchaseOrderClientPeriodDto[]): IPOClientPeriodGridData[] {
 		return items.map((item) => {
 			return {
-                originalClientPeriodData: item,
+				originalClientPeriodData: item,
 				clientPeriodId: item.clientPeriodId,
 				salesType: this.findItemById(this.saleTypes, item.salesType)?.name,
 				deliveryType: this.findItemById(this.deliveryTypes, item.deliveryType)?.name,
@@ -467,16 +521,8 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 				clientRate: `${item.clientRate?.normalRate} ${this.eCurrencies[item.clientRate?.currencyId]} ${
 					item.clientRate?.isTimeBasedRate ? '/' + ValueUnitEnum[item.clientRate?.rateUnitTypeId] : ''
 				}`,
-				purchaseOrderCapClientCalculatedAmount: `${item.purchaseOrderCapClientCalculatedAmount?.amount} ${
-					item.purchaseOrderCapClientCalculatedAmount?.currency
-						? item.purchaseOrderCapClientCalculatedAmount?.currency
-						: ValueUnitEnum[item.purchaseOrderCapClientCalculatedAmount?.unit]
-				}`,
-				estimatedUnitsLeft: `${item.estimatedUnitsLeft?.amount} ${
-					item.estimatedUnitsLeft?.currency
-						? item.estimatedUnitsLeft?.currency
-						: ValueUnitEnum[item.estimatedUnitsLeft?.unit]
-				}`,
+				purchaseOrderCapClientCalculatedAmount: `${item.purchaseOrderCapClientCalculatedMaxAmount?.amount}`,
+				estimatedUnitsLeft: `${ (item.estimatedUnitsLeft !== null && item.estimatedUnitsLeft !== undefined) ? item.estimatedUnitsLeft?.amount + ' ' + ValueUnitEnum[item.estimatedUnitsLeft?.unit] : '-' }`,
 			} as IPOClientPeriodGridData;
 		});
 	}
@@ -493,5 +539,34 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this.eCurrencies = this.arrayToEnum(this.currencies);
 		this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
 		this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
+		this.legalEntities = this._mapLegalEntitiesIntoSelectable(this.getStaticEnumValue('legalEntities'));
+	}
+
+	private _mapLegalEntitiesIntoSelectable(entities: LegalEntityDto[]) {
+		return entities.map((x) => {
+			return new SelectableCountry({
+				id: x.id!,
+				name: x.name!,
+				tenantName: x.tenantName!,
+				code: MapTenantCountryCode(x.tenantName!)!,
+				selected: false,
+				flag: x.tenantName!,
+			});
+		});
+	}
+
+	private _checkIfDirty() {
+		if (
+			this.invoicingEntityControl.value?.length ||
+			this.chasingStatusesFilter.value?.length ||
+			this.statusesFilter.value?.length ||
+			this.searchFilter.value?.length ||
+			this.includeCompleted ||
+			this.selectedTeamsAndDivisionsCount > 0
+		) {
+			this.isDirty$.next(true);
+		} else {
+			this.isDirty$.next(false);
+		}
 	}
 }

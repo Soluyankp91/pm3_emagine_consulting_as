@@ -554,3 +554,11 @@ mat-table.white-table {
         }
     }
 }
+
+
+.table-header-cell:hover {
+    mat-icon.filter-icon svg path {
+        color: $green-color;
+        stroke: $green-color;
+    }
+}
