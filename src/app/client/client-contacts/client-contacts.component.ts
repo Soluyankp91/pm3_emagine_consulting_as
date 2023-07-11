@@ -42,7 +42,6 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
     clientContactForm: ClientContactForm;
     clientContactsDataSource: MatTableDataSource<ContactDto> = new MatTableDataSource<ContactDto>();
     clientContacts: ContactDto[];
-
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,

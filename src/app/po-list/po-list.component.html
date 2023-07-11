@@ -1,0 +1,570 @@
+<div class="page-container">
+    <div class="top-filters-container">
+        <h2 class="page-main-header u-mb--20">Purchase Orders</h2>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
+                <div class="flex-row flex-items-center u-mr--10">
+                    <button mat-icon-button [matTooltip]="invoicingEntityControl.value?.length ? (invoicingEntityControl.value | displayList: 'name'): 'Select invoicing entity'"
+                    matTooltipClass="white-tooltip"
+                    class="legal-entity--filter"
+                    appPreventDoubleClick (throttledClick)="select.open()">
+                        <ng-container *ngIf="invoicingEntityControl.value?.length !== 0; else iconCountry">
+                            <ng-container *ngIf="invoicingEntityControl.value.length === 1; else multipleLegalEntities">
+                                <span class="country-flag--big fi fi-{{invoicingEntityControl.value[0]?.code | lowercase }} fis border-rounded-50"></span>
+                            </ng-container>
+                            <ng-template #multipleLegalEntities>
+                                <div class="border-rounded-50 w-30px h-30px flex-items-center flex-justify-center bg-green">
+                                    <span class="white-color text-600"> {{invoicingEntityControl.value?.length}}</span>
+                                </div>
+                            </ng-template>
+                        </ng-container>
+                        <ng-template #iconCountry>
+                            <mat-icon class="country-flag--big" svgIcon="Country-filter-flag">
+                            </mat-icon>
+                        </ng-template>
+                        <mat-select #select [compareWith]="compareWithFn" [disableOptionCentering]="true" [multiple]="true"
+                            [formControl]="invoicingEntityControl" class="absolute-mat-select">
+                            <ng-container *ngFor="let item of legalEntities">
+                                <mat-option [value]="item">
+                                    <div class="u-w--100">
+                                        <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
+                                        <span class="tenant-name">{{item.tenantName}}</span>
+                                        {{' (' + item.name + ')' }}
+                                    </div>
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </button>
+
+                </div>
+                <div class="flex-row flex-items-center u-mr--10" [matTooltip]="'Filtering on Divisions & Teams disables the user filter'" [matTooltipDisabled]="selectedTeamsAndDivisionsCount === 0" matTooltipClass="white-tooltip">
+                    <manager-multiselect
+                        [initialOptions]="selectedAccountManagers"
+                        (selectionChanged)="managersChanged($event)"
+                        [ngClass]="{ 'pointer-events-none opacity-50': selectedTeamsAndDivisionsCount > 0 }">
+                    </manager-multiselect>
+                </div>
+                <div class="flex-row flex-items-center ml-1 u-mr--10" [matTooltip]="'Filtering on users disables the Divisions & Teams filter'" [matTooltipDisabled]="selectedAccountManagers.length === 0" matTooltipClass="white-tooltip">
+                    <teams-and-divisions-filter
+                        #treeFilter
+                        [selectedCount]="selectedTeamsAndDivisionsCount"
+                        [initialSelection]="teamsAndDivisionsFilterState"
+                        (filterChanged)="teamsAndDivisionsChanged($event)"
+                        class="mr-3"
+                        [ngClass]="{ 'pointer-events-none opacity-50': selectedAccountManagers.length > 0 }">
+                    </teams-and-divisions-filter>
+                </div>
+                <mat-form-field appearance="outline" class="filter-select form-width-200 u-mr--10">
+                    <mat-label> Chasing status</mat-label>
+                    <mat-select [formControl]="chasingStatusesFilter" [disableOptionCentering]="true" [multiple]="true">
+                        <ng-container *ngFor="let item of chasingStatuses">
+                            <mat-option [value]="item.id">
+                                <div class="flex-items-center">
+                                    <po-chasing-status class="u-mr--8" [statusId]="item.id"></po-chasing-status>
+                                    {{ item.name }}
+                                </div>
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="filter-select form-width-200 u-mr--10">
+                    <mat-label> PO Status</mat-label>
+                    <mat-select [formControl]="statusesFilter" [disableOptionCentering]="true" [multiple]="true">
+                        <ng-container *ngFor="let item of poStatuses">
+                            <mat-option [value]="item.id">
+                                <po-status-icon class="u-mr--8" [statusId]="item.id" [disableTooltip]="true"></po-status-icon>
+                                {{ item.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <ng-container *ngIf="isDirty$ | async">
+                    <mat-divider class="divider-height" [vertical]="true"></mat-divider>
+                    <button mat-button appPreventDoubleClick (throttledClick)="resetAllFilters()">
+                        <span class="clear-all-button" >
+                            Clear all
+                        </span>
+                    </button>
+                </ng-container>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100" fxFlex="25%">
+                <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                    <input autocomplete="off" matInput [formControl]="searchFilter" placeholder="Search" type="text">
+                    <mat-icon class="search-icon u-ml--10" matPrefix>search</mat-icon>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--10 u-pr--50 u-mb--10">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getPurchaseOrdersList()" [(ngModel)]="includeCompleted">Show completed</mat-slide-toggle>
+        </div>
+        <div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !dataSource.data.length }">
+            <mat-table
+                multiTemplateDataRows
+                matSort
+                [dataSource]="dataSource"
+                [matSortActive]="sortActive"
+                [matSortDirection]="sotrDirection"
+                [ngClass]="{ 'hidden-table': !dataSource.data.length }"
+                (matSortChange)="sortChange($event)">
+                <ng-container matColumnDef="expand" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef class="expand-column">
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="expand-column">
+                        <ng-container *ngIf="row.clientPeriods?.length > 1">
+                            <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === row ? null : row); $event.stopPropagation()">
+                                <mat-icon *ngIf="expandedElement !== row">keyboard_arrow_down</mat-icon>
+                                <mat-icon *ngIf="expandedElement === row">keyboard_arrow_up</mat-icon>
+                            </button>
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="select" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef class="select-column">
+                        <mat-checkbox
+                            [checked]="selectionModel.hasValue() && isAllSelected()"
+                            [indeterminate]="selectionModel.hasValue() && !isAllSelected()"
+                            (change)="toggleAllRows()"
+                            color="primary"
+                            class="select-padding-8">
+                        </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="select-column">
+                        <mat-checkbox
+                            [checked]="selectionModel.isSelected(row)"
+                            (click)="$event.stopPropagation()"
+                            color="primary"
+                            (change)="selectionModel.toggle(row)"
+                            class="select-padding-8 h-25px"></mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poStatus-column">
+                    </mat-header-cell>
+                    <mat-cell class="poStatus-column" *matCellDef="let row">
+                        <po-chasing-status class="u-ml--5" [statusId]="row.chasingStatus" emgCustomTooltip
+                            [contentTemplate]="statusTooltip"></po-chasing-status>
+                        <ng-template #statusTooltip>
+                            <ng-container *ngIf="row.chasingStatusHistory?.length; else noStatusHistoryTemplate">
+                                <div class="status-log-grid">
+                                    <ng-container *ngFor="let item of row.chasingStatusHistory; trackBy: trackByItem">
+                                        <div class="flex-row flex-items-center">
+                                            <po-chasing-status class="u-mr--5" [statusId]="item.chasingStatusId"></po-chasing-status>
+                                            <span class="dark-grey-color text-bold">
+                                                {{ item.chasingStatusName }}
+                                            </span>
+                                        </div>
+                                        <div class="flex-row">
+                                            <span class="dark-grey-color text-bold u-mr--5">
+                                                {{ item.occurredAtUtc | momentFormat : 'DD.MM.YYYY' }}
+                                            </span>
+                                            <span class="dark-grey-color text-600">
+                                                {{ item.occurredAtUtc | momentFormat : 'HH:mm:ss' }}
+                                            </span>
+                                        </div>
+                                        <span class="medium-grey-color text-nowrap text-600">
+                                            {{ item.employee !== null && item.employee !== undefined ? item.employee?.name : '-' }}
+                                        </span>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <ng-template #noStatusHistoryTemplate>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <po-chasing-status [statusId]="row.chasingStatus"></po-chasing-status>
+                                    <span class="dark-grey-color text-bold">
+                                        {{ ePOChasingStatusText[row.chasingStatus] }}
+                                    </span>
+                                </div>
+                            </ng-template>
+                        </ng-template>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="note" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef class="poNote-column">
+                        Note
+                        <!-- TODO: for the 2-nd iteration -->
+                        <!-- <po-note-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.note)"></po-note-filter> -->
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poNote-column" *matCellDef="let row">
+                        <po-note-status-icon class="h-16px w-16px" [statusId]="row.noteStatus" [note]="row.notes"></po-note-status-icon>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Number" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poNumber-column">
+                        PO number
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poNumber-column" *matCellDef="let row">
+                        <po-status-icon class="h-16px w-16px u-mr--5" [statusId]="row.status"></po-status-icon>
+                        <span class="text-truncate-ellipsis text-bold" [ngClass]="{'medium-grey-color': row.numberMissingButRequired}" [matTooltip]="row.numberMissingButRequired ? 'Missing, but required' : row.number" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.numberMissingButRequired ? 'Missing, but required' : row.number}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="client" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poClient-column">
+                        Client
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poClient-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.directClientNameReferencingThisPo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.directClientNameReferencingThisPo ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ModifiedOnUtc">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poLastUpdated-column">
+                        Last update
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poLastUpdated-column" *matCellDef="let row">
+                        <ng-container *ngIf="row.modifiedOnUtc !== null && row.modifiedOnUtc !== undefined; else noData">
+                            {{row.modifiedOnUtc | momentFormat}}
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="wfPeriodId">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poWFPeriod-column">
+                        WF period ID
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row" (click)="openConnectedWF(row.clientPeriods[0])">
+                        {{row.clientPeriods[0]?.displayId ?? '-'}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientContact">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poClientContact-column">
+                        Client contact
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poClientContact-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientContactResponsible?.id ? row.clientContactResponsible?.firstName + ' ' + row.clientContactResponsible?.lastName : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientContactResponsible?.id ? row.clientContactResponsible?.firstName + ' ' + row.clientContactResponsible?.lastName : '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="consultant">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poConsultant-column">
+                        Consultant
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poConsultant-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.consultants | displayList" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.consultants | displayList }}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="salesType">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poSalesType-column">
+                        Sales type
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poSalesType-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.salesType ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="deliveryType">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poDeliveryType-column">
+                        Delivery type
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poDeliveryType-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.deliveryType ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CapForInvoicing_Type">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poCapType-column">
+                        Cap on
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poCapType-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="purchaseOrderCapTypes[row.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{purchaseOrderCapTypes[row.capForInvoicing?.type] ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poAmount-column">
+                        Amount
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poAmount-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.capForInvoicing?.maxAmount ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="CapForInvoicing_ValueUnitTypeId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poUnitType-column">
+                        Units
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poUnitType-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="eValueUnitType[row.capForInvoicing?.valueUnitTypeId] ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{eValueUnitType[row.capForInvoicing?.valueUnitTypeId] ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientRate">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poClientRate-column">
+                        Client rate
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poClientRate-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.clientRate ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.clientRate ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalAmount">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poTotalAmount-column">
+                        Total amount
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poTotalAmount-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.purchaseOrderCapClientCalculatedAmount ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="amountLeft">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poAmountLeft-column">
+                        Amount left
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poAmountLeft-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.amountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.amountLeft ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="estimatedUnitsLeft">
+                    <mat-header-cell *matHeaderCellDef
+                        class="table-header-cell poEstimatedUnitsLeft-column">
+                        Estimated units left
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poEstimatedUnitsLeft-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.estimatedUnitsLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.estimatedUnitsLeft ?? '-'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="StartDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poStartDate-column">
+                        PO start date
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poStartDate-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <ng-container *ngIf="row.startDate !== null && row.startDate !== undefined; else noData">
+                                {{row.startDate | momentFormat}}
+                            </ng-container>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="EndDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poEndDate-column">
+                        PO end date
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poEndDate-column" *matCellDef="let row">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.endDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <ng-container *ngIf="row.endDate !== null && row.endDate !== undefined; else noData">
+                                {{row.endDate | momentFormat}}
+                            </ng-container>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ContractResponsible">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poCM-column">
+                        CM
+                        <!-- TODO: for the 2-nd iteration -->
+                        <!-- <po-contract-manager-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.contractManager)"></po-contract-manager-filter> -->
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poCM-column" *matCellDef="let row">
+                        <ng-container *ngIf="row?.contractResponsible?.id; else noData">
+                            <img class="image-settings--dropdown" [matTooltip]="row?.contractResponsible?.name ?? '-'"
+                                    matTooltipClass="white-tooltip"
+                                    [ngSrc]="employeePhotoUrl + row.contractResponsible?.externalId! + '.jpg'" width="24" height="24" src
+                                    (error)="setDefaultImage($event.target)" />
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SalesResponsible">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                        class="table-header-cell poAM-column">
+                        AM
+                    </mat-header-cell>
+                    <mat-cell class="table-cell poAM-column" *matCellDef="let row">
+                        <ng-container *ngIf="row?.salesResponsible?.id; else noData">
+                            <img class="image-settings--dropdown" [matTooltip]="row?.salesResponsible?.name ?? '-'"
+                                    matTooltipClass="white-tooltip"
+                                    [ngSrc]="employeePhotoUrl + row.salesResponsible?.externalId! + '.jpg'" width="24" height="24" src
+                                    (error)="setDefaultImage($event.target)" />
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="expandedLeftSticky" [sticky]="true">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell class="table-cell expandedLeftSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriods?.length - 1) : 0">
+                        <div class="example-element-detail"
+                            [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="expandedDetail">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell class="table-cell" *matCellDef="let row">
+                        <div class="example-element-detail"
+                            [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+                            <ng-container *ngFor="let element of row.clientPeriods.slice(1, row.clientPeriods.length)">
+                                <div fxLayout="row" class="example-element-detail-row">
+                                    <div class="poLastUpdated-column"></div>
+                                    <div class="poWFPeriod-column" (click)="openConnectedWF(element)">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element?.displayId" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element?.displayId}}
+                                        </span>
+                                    </div>
+                                    <div class="poClientContact-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element?.clientContact" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element?.clientContact}}
+                                        </span>
+                                    </div>
+                                    <div class="poConsultant-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.consultants | displayList" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.consultants | displayList}}
+                                        </span>
+                                    </div>
+                                    <div class="poSalesType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.salesType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.salesType}}
+                                        </span>
+                                    </div>
+                                    <div class="poDeliveryType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.deliveryType" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.deliveryType}}
+                                        </span>
+                                    </div>
+                                    <div class="poCapType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="purchaseOrderCapTypes[row.capForInvoicing?.type]" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{purchaseOrderCapTypes[row.capForInvoicing?.type]}}
+                                        </span>
+                                    </div>
+                                    <div class="poAmount-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.maxAmount}}
+                                        </span>
+                                    </div>
+                                    <div class="poUnitType-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.valueUnitTypeId" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.valueUnitTypeId}}
+                                        </span>
+                                    </div>
+                                    <div class="poClientRate-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.clientRate" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.clientRate}}
+                                        </span>
+                                    </div>
+                                    <div class="poTotalAmount-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.maxAmount ?? '-'}}
+                                        </span>
+                                    </div>
+                                    <div class="poAmountLeft-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.amountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{row.capForInvoicing?.amountLeft ?? '-'}}
+                                        </span>
+                                    </div>
+                                    <div class="poEstimatedUnitsLeft-column">
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.estimatedUnitsLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.estimatedUnitsLeft ?? '-'}}
+                                        </span>
+                                    </div>
+                                    <div class="poStartDate-column"></div>
+                                    <div class="poEndDate-column"></div>
+                                    <div class="poCM-column"></div>
+                                    <div class="poAM-column"></div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="expandedRightSticky" [stickyEnd]="true">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell class="table-cell expandedRightSticky-column" *matCellDef="let row" [style.height.px]="row == expandedElement ? 48 * (row.clientPeriods?.length - 1) : 0">
+                        <div class="example-element-detail"
+                            [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions" [stickyEnd]="true">
+                    <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
+                    <mat-cell class="table-cell" *matCellDef="let actionRow" class="actions-column">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()" class="three-dots-actions-btn">
+                            <mat-icon svgIcon="3-dots"></mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="editPo(actionRow)" class="menu-item green-color">
+                                <mat-icon svgIcon="edit-po"></mat-icon>
+                                <span>Edit</span>
+                            </button>
+                        </mat-menu>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                <mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                    [class.example-expanded-row]="expandedElement === row"
+                    class="row-hover"></mat-row>
+                <mat-row *matRowDef="let row; columns: ['expandedLeftSticky', 'expandedDetail', 'expandedRightSticky']" class="example-detail-row"></mat-row>
+            </mat-table>
+            <ng-container *ngIf="!dataSource.data.length && !(isLoading$ | async)">
+                <div class="no-items">
+                    <mat-icon svgIcon="empty-table-icon" class="empty-table-icon"> </mat-icon>
+                    <div class="no-items-text">
+                        Sorry, no PO's found for the selected filters. Change the search criteria or
+                        <span class="highlighted-reset-filters" (click)="resetAllFilters()"
+                            >Reset all filters</span
+                        >
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="bottom-panel">
+        <div class="fixed-container">
+            <div class="bottom-actions">
+                <ng-container *ngIf="!selectionModel.isEmpty()">
+                    <div class="selected-items-info">{{ selectionModel.selected.length }} selected</div>
+                    <ng-container *ngFor="let bottomAction of selectedItemsActions; trackBy: trackByAction">
+                        <div
+                            class="bottom-action-item"
+                            (click)="chooseSelectionAction(bottomAction.actionType); $event.stopPropagation()">
+                            <mat-icon [svgIcon]="bottomAction.actionIcon" class="small-icon"></mat-icon>
+                            <span class="bottom-panel-label">{{ bottomAction.label }}</span>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <mat-paginator
+                class="paginator"
+                [showFirstLastButtons]="true"
+                [length]="totalCount"
+                [pageSizeOptions]="pageSizeOptions"
+                [pageSize]="defaultPageSize"
+                [pageIndex]="pageNumber - 1"
+                (page)="pageChange($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
+
+<ng-template #noData>-</ng-template>

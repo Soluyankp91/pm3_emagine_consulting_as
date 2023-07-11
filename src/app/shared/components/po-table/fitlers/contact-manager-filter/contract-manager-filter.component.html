@@ -1,0 +1,28 @@
+
+<ng-container *ngIf="contractManagers$ | async as contractManagers">
+	<emg-dropdown-autocomplete-multiselect
+		[options]="contractManagers"
+		[formControl]="filterFormControl"
+		[idProperty]="'id'"
+		[label]="labelMap[tableFilter]"
+		[optionsLoading]="isOptionsLoading$"
+		(emitText)="emitText($event)">
+        <ng-template #triggerButton>
+            <div class="table-header-cell">{{labelMap[tableFilter]}}</div>
+        </ng-template>
+		<ng-template #optionTemplate let-option="option">
+			<div class="custom-option mg-left-8">
+				<img
+					class="small-profile-picture-avatar"
+					[ngSrc]="employeePhotoUrl + option.externalId + '.jpg'"
+					width="22"
+					height="22"
+					src
+					(error)="setDefaultImage($event.target)" />
+				<div>
+					{{ option.name }}
+				</div>
+			</div>
+		</ng-template>
+    </emg-dropdown-autocomplete-multiselect>
+</ng-container>

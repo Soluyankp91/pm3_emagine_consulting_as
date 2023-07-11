@@ -3,7 +3,23 @@
         <h2 class="page-main-header u-mb--20">Client list</h2>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <manager-multiselect [initialOptions]="selectedAccountManagers" (selectionChanged)="managersChanged($event)" class="u-mr--10"></manager-multiselect>
+                <div class="flex-row flex-items-center u-mr--10" [matTooltip]="'Filtering on Divisions & Teams disables the user filter'" [matTooltipDisabled]="selectedTeamsAndDivisionsCount === 0" matTooltipClass="white-tooltip">
+                    <manager-multiselect
+                        [initialOptions]="selectedAccountManagers"
+                        (selectionChanged)="managersChanged($event)"
+                        [ngClass]="{ 'pointer-events-none opacity-50': selectedTeamsAndDivisionsCount > 0 }">
+                    </manager-multiselect>
+                </div>
+                <div class="flex-row flex-items-center ml-1 u-mr--10" [matTooltip]="'Filtering on users disables the Divisions & Teams filter'" [matTooltipDisabled]="selectedAccountManagers.length === 0" matTooltipClass="white-tooltip">
+					<teams-and-divisions-filter
+                        #treeFilter
+						[selectedCount]="selectedTeamsAndDivisionsCount"
+                        [initialSelection]="teamsAndDivisionsFilterState"
+                        (filterChanged)="teamsAndDivisionsChanged($event)"
+						class="mr-3"
+						[ngClass]="{ 'pointer-events-none opacity-50': selectedAccountManagers.length > 0 }">
+					</teams-and-divisions-filter>
+				</div>
                 <div class="client-list--filter-country cursor-pointer u-mr--10"
                     [matMenuTriggerFor]="countryMenu"
                     (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.focus();"

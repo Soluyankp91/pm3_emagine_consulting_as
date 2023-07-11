@@ -22,7 +22,8 @@ $sizes: (
     420: 420px,
     450: 450px,
     559: 559px,
-    564: 564px
+    564: 564px,
+    720: 720px,
 );
 
 @each $name, $value in $sizes {

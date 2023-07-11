@@ -1,17 +1,26 @@
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { PurchaseOrderCapDto, PurchaseOrderDto } from 'src/shared/service-proxies/service-proxies';
+import { PurchaseOrderCapDto, PurchaseOrderQueryDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 
 export class PurchaseOrderForm extends UntypedFormGroup {
-	constructor(purchaseOrder?: PurchaseOrderDto) {
+	constructor(purchaseOrder?: PurchaseOrderQueryDto) {
 		super({
 			id: new UntypedFormControl(purchaseOrder?.id ?? null),
 			poSource: new UntypedFormControl(null),
 			number: new UntypedFormControl(purchaseOrder?.number ?? ''),
 			existingPo: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id'])),
 			receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate ?? null),
+            startDate: new UntypedFormControl(purchaseOrder?.startDate ?? null),
+            endDate: new UntypedFormControl(purchaseOrder?.endDate ?? null),
+            isCompleted: new UntypedFormControl(purchaseOrder?.isCompleted ?? false),
 			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired ?? false),
+            notes: new UntypedFormControl(purchaseOrder?.notes ?? ''),
+            clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible ?? null, CustomValidators.autocompleteValidator(['id'])),
 			capForInvoicing: new CapForInvoicingForm(purchaseOrder?.capForInvoicing),
+            notifyCM: new UntypedFormControl(purchaseOrder?.notifyCM ?? false),
+            isUnread: new UntypedFormControl(purchaseOrder?.isUnread ?? false),
+            chasingStatus: new UntypedFormControl(purchaseOrder?.chasingStatus ?? null)
+
 		});
 	}
 
@@ -30,12 +39,36 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 	get receiveDate() {
 		return this.get('receiveDate');
 	}
+    get startDate() {
+		return this.get('startDate');
+	}
+    get endDate() {
+		return this.get('endDate');
+	}
+    get isCompleted() {
+		return this.get('isCompleted');
+	}
+    get notes() {
+		return this.get('notes');
+	}
+    get clientContactResponsible() {
+		return this.get('clientContactResponsible');
+	}
 	get numberMissingButRequired() {
 		return this.get('numberMissingButRequired');
 	}
 	get capForInvoicing() {
 		return this.get('capForInvoicing') as CapForInvoicingForm;
 	}
+    get notifyCM() {
+        return this.get('notifyCM');
+    }
+    get isUnread() {
+        return this.get('isUnread');
+    }
+    get chasingStatus() {
+        return this.get('chasingStatus');
+    }
 }
 
 export class CapForInvoicingForm extends UntypedFormGroup {

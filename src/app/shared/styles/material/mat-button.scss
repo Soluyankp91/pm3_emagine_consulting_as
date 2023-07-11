@@ -537,3 +537,12 @@
         }
     }
 }
+
+.tree-chevron.mat-icon-button {
+    .mat-button-wrapper {
+        @include flexCentered();
+        mat-icon {
+            @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
+        }
+    }
+}

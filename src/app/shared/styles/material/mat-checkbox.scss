@@ -69,3 +69,12 @@
     display: flex;
     align-items: center;
 }
+
+.mat-pseudo-checkbox-checked {
+    background: $green-color;
+}
+
+// TMP FIX
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background: $green-color;
+}

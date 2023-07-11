@@ -40,7 +40,11 @@ import { InitialDataResolver } from './app.resolver';
 						loadChildren: () => import('../app/contracts/contracts.module').then((m) => m.ContractsModule),
 						canActivate: [ContractsProductionGuard],
 					},
-                    {
+					{
+						path: 'purchase-orders',
+						loadChildren: () => import('../app/po-list/po-list.module').then((m) => m.PoListModule),
+					},
+					{
 						path: 'bi-reports',
 						loadChildren: () => import('../app/bi-reports/bi-reports.module').then((m) => m.BiReportsModule),
 					},

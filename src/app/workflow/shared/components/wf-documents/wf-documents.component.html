@@ -77,12 +77,14 @@
             </ng-template>
         </form>
         <ng-container *ngIf="!readOnlyMode">
-            <div fxLayout="row" fxLayoutAlign="center center" class="u-mt--16">
-                <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true"
-                    [buttonText]="'Add document'"
-                    [acceptOnlyOneFile]="true" [isFileUploading]="isFileUploading" class="u-w--100"
-                    #fileUploader></app-file-uploader>
-            </div>
+            <ng-container *ngIf="!(singleDocument && documentForm?.documents?.controls?.length)">
+                <div fxLayout="row" fxLayoutAlign="center center" class="u-mt--16">
+                    <app-file-uploader (filesAdded)="tempFileAdded($event)" [withoutDisplay]="true"
+                        [buttonText]="'Add document'"
+                        [acceptOnlyOneFile]="true" [isFileUploading]="isFileUploading" class="u-w--100"
+                        #fileUploader></app-file-uploader>
+                </div>
+            </ng-container>
         </ng-container>
     </div>
 </div>

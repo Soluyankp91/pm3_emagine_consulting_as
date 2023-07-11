@@ -2,15 +2,24 @@
 @import "/src/app/shared/styles/config/_mixins";
 
 .confirmation-dialog {
+    padding-top: 0 !important;
     &--actions{
         justify-content: space-between;
         border-top: 1px solid $sand-color;
+        position: sticky;
+        bottom: 0;
+        z-index: 99;
+        background-color: #fff;
     }
     &--header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 0 0 24px !important;
+        padding: 32px 40px 0 !important;
+        position: sticky;
+        top: 0;
+        z-index: 99;
+        background-color: #fff;
         h1 {
             @include fontOpenSans(26px, 800);
             color: #4A4E60;

@@ -34,3 +34,30 @@
     font-size: $font-size;
     font-weight: $font-weight;
 }
+
+@mixin table-cell-width($width) {
+	min-width: $width;
+	max-width: $width;
+}
+
+@mixin scrollbar {
+	::-webkit-scrollbar {
+		width: 7px;
+		height: 10px;
+	}
+
+	::-webkit-scrollbar-track {
+		background-color: transparent;
+		border-radius: 50px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #E6E6E5;
+		border-radius: 50px;
+
+		&:hover {
+			border: 0;
+			background: #b6b4b2;
+		}
+	}
+}

@@ -1,5 +1,5 @@
 import { SortDirection } from "@angular/material/sort";
-import { WorkflowStatus } from "src/shared/service-proxies/service-proxies";
+import { StepType, SyncStateStatus, WorkflowStatus } from "src/shared/service-proxies/service-proxies";
 
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
@@ -225,4 +225,29 @@ export class WorkflowSourcingCreate {
 export enum ERateType {
     TimeBased = 1,
     Fixed = 2
+}
+
+export interface IWorkflowGridPayload {
+	invoicingEntity?: number | undefined;
+	paymentEntity?: number | undefined;
+	salesType?: number | undefined;
+	deliveryType?: number | undefined;
+	workflowStatus?: WorkflowStatus | undefined;
+	responsibleEmployees?: number[] | undefined;
+	employeesTeamsAndDivisionsNodes?: number[] | undefined;
+	employeesTenants?: number[] | undefined;
+	syncStateStatuses?: SyncStateStatus[] | undefined;
+	showNewSales?: boolean | undefined;
+	showExtensions?: boolean | undefined;
+	showPendingSteps?: boolean | undefined;
+	showPendingStepType?: StepType | undefined;
+	showUpcomingSteps?: boolean | undefined;
+	showUpcomingStepType?: StepType | undefined;
+	showCompleted?: boolean | undefined;
+	showDeleted?: boolean | undefined;
+	showWorkflowsWithProjectLinesMarkedAsPoMissing?: boolean | undefined;
+	search?: string | undefined;
+	pageNumber?: number | undefined;
+	pageSize?: number | undefined;
+	sort?: string | undefined;
 }
