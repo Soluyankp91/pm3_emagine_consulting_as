@@ -260,7 +260,7 @@
 }
 
 .poCapType-column {
-    @include table-cell-width(100px);
+    @include table-cell-width(120px);
 }
 
 .poAmount-column {
@@ -268,7 +268,7 @@
 }
 
 .poUnitType-column {
-    @include table-cell-width(56px);
+    @include table-cell-width(76px);
 }
 
 .poClientRate-column {
@@ -381,4 +381,15 @@
         line-height: 30px;
         height: 30px;
     }
+}
+
+.clear-all-button {
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 140% !important;
+    color: #B6B4B2;
+}
+
+.divider-height {
+    height: 30px;
 }

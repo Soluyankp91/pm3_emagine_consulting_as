@@ -113,6 +113,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	deliveryTypes: EnumEntityTypeDto[];
 	purchaseOrderCapTypes: { [key: string]: string };
 	legalEntities: SelectableCountry[];
+    rateUnitTypes: EnumEntityTypeDto[];
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 	currentRowId: number | null;
@@ -519,9 +520,9 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 				displayId: item.displayId,
 				consultants: item.consultants,
 				clientRate: `${item.clientRate?.normalRate} ${this.eCurrencies[item.clientRate?.currencyId]} ${
-					item.clientRate?.isTimeBasedRate ? '/' + ValueUnitEnum[item.clientRate?.rateUnitTypeId] : ''
+					item.clientRate?.isTimeBasedRate ? '/' + this.findItemById(this.rateUnitTypes, item.clientRate?.rateUnitTypeId)?.name : ''
 				}`,
-				purchaseOrderCapClientCalculatedAmount: `${item.purchaseOrderCapClientCalculatedMaxAmount?.amount}`,
+				purchaseOrderCapClientCalculatedAmount: `${item.purchaseOrderCapClientCalculatedMaxAmount?.amount !== null && item.purchaseOrderCapClientCalculatedMaxAmount?.amount !== undefined ? item.purchaseOrderCapClientCalculatedMaxAmount?.amount : '-'}`,
 				estimatedUnitsLeft: `${ (item.estimatedUnitsLeft !== null && item.estimatedUnitsLeft !== undefined) ? item.estimatedUnitsLeft?.amount + ' ' + ValueUnitEnum[item.estimatedUnitsLeft?.unit] : '-' }`,
 			} as IPOClientPeriodGridData;
 		});
@@ -540,6 +541,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 		this.valueUnitTypes = this.getStaticEnumValue('valueUnitTypes');
 		this.purchaseOrderCapTypes = this.getStaticEnumValue('purchaseOrderCapTypes');
 		this.legalEntities = this._mapLegalEntitiesIntoSelectable(this.getStaticEnumValue('legalEntities'));
+        this.rateUnitTypes = this.getStaticEnumValue('rateUnitTypes');
 	}
 
 	private _mapLegalEntitiesIntoSelectable(entities: LegalEntityDto[]) {

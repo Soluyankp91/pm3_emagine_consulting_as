@@ -96,6 +96,9 @@
         </div>
     </div>
     <div class="container">
+        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--10 u-pr--50 u-mb--10">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getPurchaseOrdersList()" [(ngModel)]="includeCompleted">Show completed</mat-slide-toggle>
+        </div>
         <div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !dataSource.data.length }">
             <mat-table
                 multiTemplateDataRows
@@ -147,8 +150,8 @@
                             <ng-container *ngIf="row.chasingStatusHistory?.length; else noStatusHistoryTemplate">
                                 <div class="status-log-grid">
                                     <ng-container *ngFor="let item of row.chasingStatusHistory; trackBy: trackByItem">
-                                        <div class="flex-row">
-                                            <po-chasing-status [statusId]="item.chasingStatusId"></po-chasing-status>
+                                        <div class="flex-row flex-items-center">
+                                            <po-chasing-status class="u-mr--5" [statusId]="item.chasingStatusId"></po-chasing-status>
                                             <span class="dark-grey-color text-bold">
                                                 {{ item.chasingStatusName }}
                                             </span>
