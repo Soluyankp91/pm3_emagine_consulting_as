@@ -8,8 +8,9 @@ import { EPOStatusIcon, EPOStatusTooltip } from './po-status.model';
 		<ng-template #iconView>
 			<mat-icon
 				[matTooltip]="ePOStatusTooltip[statusId]"
+                [matTooltipDisabled]="disableTooltip"
                 matTooltipClass="white-tooltip"
-				class="h-16px w-16px"
+				class="h-16px w-16px u-mg--0"
                 [svgIcon]="ePOStatusIcon[statusId]"
 			>
 			</mat-icon>
@@ -20,6 +21,7 @@ import { EPOStatusIcon, EPOStatusTooltip } from './po-status.model';
 })
 export class PoStatusIconComponent {
     @Input() statusId: number;
+    @Input() disableTooltip: boolean = false;
     ePOStatusIcon = EPOStatusIcon;
     ePOStatusTooltip = EPOStatusTooltip;
 	constructor() {}

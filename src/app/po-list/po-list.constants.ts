@@ -1,6 +1,4 @@
-import * as moment from "moment";
-import { DeliveryTypes, SalesTypes } from "../workflow/workflow-contracts/workflow-contracts.model";
-import { PurchaseOrderCapType } from "src/shared/service-proxies/service-proxies";
+import { PurchaseOrderChasingStatus, PurchaseOrderStatus } from "src/shared/service-proxies/service-proxies";
 import { Actions, EPoBotttomActionsType } from "./po-list.model";
 
 export const DISPLAYED_COLUMNS: string[] = [
@@ -91,6 +89,57 @@ export const NOTE_FILTER_OPTIONS = [
 export const CAP_FILTER_OPTIONS = [
     {
         id: 1,
-        name: 'ss',
-    }
+        name: 'Cap on value',
+    },
+    {
+        id: 2,
+        name: 'Cap on units',
+    },
+];
+
+
+export const PO_STATUSES = [
+    {
+        id: PurchaseOrderStatus.Missing,
+        name: 'Missing',
+    },
+    {
+        id: PurchaseOrderStatus.Active,
+        name: 'Active',
+    },
+    {
+        id: PurchaseOrderStatus.RunningOut,
+        name: 'Running out',
+    },
+];
+
+export const PO_CHASING_STATUSES = [
+    {
+        id: PurchaseOrderChasingStatus.ActionRequired,
+        name: 'Action required',
+    },
+    {
+        id: PurchaseOrderChasingStatus.CmNotified,
+        name: 'CM notified',
+    },
+    {
+        id: PurchaseOrderChasingStatus.AmNotified,
+        name: 'AM notified',
+    },
+    {
+        id: PurchaseOrderChasingStatus.ClientAndAmNotified,
+        name: 'Client & AM notified',
+    },
+    {
+        id: PurchaseOrderChasingStatus.ClientNotified,
+        name: 'Client notified',
+    },
+    {
+        id: PurchaseOrderChasingStatus.PendingOnClientSide,
+        name: 'Pending on Client side',
+    },
+    {
+        id: PurchaseOrderChasingStatus.Received,
+        name: 'Received',
+    },
 ];

@@ -15,8 +15,12 @@ export class PurchaseOrderForm extends UntypedFormGroup {
             isCompleted: new UntypedFormControl(purchaseOrder?.isCompleted ?? false),
 			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired ?? false),
             notes: new UntypedFormControl(purchaseOrder?.notes ?? ''),
-            clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible ?? null),
+            clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible ?? null, CustomValidators.autocompleteValidator(['id'])),
 			capForInvoicing: new CapForInvoicingForm(purchaseOrder?.capForInvoicing),
+            notifyCM: new UntypedFormControl(purchaseOrder?.notifyCM ?? false),
+            isUnread: new UntypedFormControl(purchaseOrder?.isUnread ?? false),
+            chasingStatus: new UntypedFormControl(purchaseOrder?.chasingStatus ?? null)
+
 		});
 	}
 
@@ -56,6 +60,15 @@ export class PurchaseOrderForm extends UntypedFormGroup {
 	get capForInvoicing() {
 		return this.get('capForInvoicing') as CapForInvoicingForm;
 	}
+    get notifyCM() {
+        return this.get('notifyCM');
+    }
+    get isUnread() {
+        return this.get('isUnread');
+    }
+    get chasingStatus() {
+        return this.get('chasingStatus');
+    }
 }
 
 export class CapForInvoicingForm extends UntypedFormGroup {

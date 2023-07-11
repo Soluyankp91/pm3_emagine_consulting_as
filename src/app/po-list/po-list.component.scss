@@ -208,6 +208,10 @@
 .table-cell {
     @include table-cell(600);
 }
+.expand-column {
+    @include table-cell-width(40px);
+    padding-left: 0 !important;
+}
 .poStatus-column {
     @include table-cell-width(15px);
 }

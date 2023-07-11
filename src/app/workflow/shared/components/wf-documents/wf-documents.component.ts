@@ -159,6 +159,7 @@ export class DocumentsComponent extends AppComponentBase {
 			icon: new UntypedFormControl(document.icon),
 			name: new UntypedFormControl(document?.name),
 			temporaryFileId: new UntypedFormControl(document.temporaryFileId),
+			purchaseOrderDocumentId: new UntypedFormControl(document.purchaseOrderDocumentId),
 			workflowDocumentId: new UntypedFormControl(document.workflowDocumentId),
 			createdDateUtc: new UntypedFormControl(document.createdDateUtc),
 			createdBy: new UntypedFormControl(document.createdBy),

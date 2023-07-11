@@ -4,15 +4,15 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort, SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { DISPLAYED_COLUMNS, FILTER_LABEL_MAP, PO_BOTTOM_ACTIONS } from './po-list.constants';
+import { DISPLAYED_COLUMNS, FILTER_LABEL_MAP, PO_BOTTOM_ACTIONS, PO_CHASING_STATUSES, PO_STATUSES } from './po-list.constants';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { ERouteTitleType } from 'src/shared/AppEnums';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SelectableEmployeeDto } from '../workflow/workflow.model';
 import { EnumEntityTypeDto, PurchaseOrderCapType, PurchaseOrderChasingStatus, PurchaseOrderClientPeriodDto, PurchaseOrderQueryDto, PurchaseOrderQueryDtoPaginatedList, PurchaseOrderServiceProxy, PurchaseOrderSetEmagineResponsiblesCommand, PurchaseOrdersSetClientContactResponsibleCommand, PurchaseOrdersSetIsCompletedCommand, ValueUnitEnum } from 'src/shared/service-proxies/service-proxies';
-import { debounceTime, finalize, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Actions, EPOChasingStatusText, EPoBotttomActionsType, IGridFilters, IPOClientPeriodGridData, IPOGridData, IPoListPayload } from './po-list.model';
+import { Actions, EPoBotttomActionsType, IGridFilters, IPOClientPeriodGridData, IPOGridData, IPoListPayload } from './po-list.model';
 import { GridHelpService } from '../contracts/shared/services/mat-grid-service.service';
 import { ReplaySubject, Subject } from 'rxjs';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -27,6 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BulkUpdateDialogComponent } from './components/bulk-update-dialog/bulk-update-dialog.component';
 import { EBulkUpdateDiallogTypes } from './components/bulk-update-dialog/bulk-update.dialog.model';
 import { AddOrEditPoDialogComponent } from '../workflow/shared/components/purchase-orders/add-or-edit-po-dialog/add-or-edit-po-dialog.component';
+import { EPOChasingStatusText } from './components/po-chasing-status/po-chasing-status.model';
 
 const POGridOptionsKey = 'PurchaseOrdersGridFILTERS.1.0.0'
 @Component({
@@ -61,10 +62,14 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 	invoicingEntityControl = new FormControl();
 	paymentEntityControl = new FormControl();
 	searchFilter = new FormControl('');
+    chasingStatusesFilter = new FormControl([]);
+    statusesFilter = new FormControl([]);
+    chasingStatuses = PO_CHASING_STATUSES;
+    ePOChasingStatusText = EPOChasingStatusText;
+    poStatuses = PO_STATUSES;
 	selectedAccountManagers: SelectableEmployeeDto[] = [];
 	includeCompleted: boolean;
 	expandedElement: any;
-	ePurchaseOrderChasingStatus = EPOChasingStatusText;
 	ePurchaseOrderCapType = PurchaseOrderCapType;
 	FILTER_LABEL_MAP = FILTER_LABEL_MAP;
 	trackByAction: TrackByFunction<any>;
@@ -93,6 +98,7 @@ export class PoListComponent extends AppComponentBase implements OnInit {
 
 	currentRowId$: ReplaySubject<number | null> = new ReplaySubject(1);
 	currentRowId: number | null;
+
 	teamsAndDivisionsFilterState: IDivisionsAndTeamsFilterState = {
 		tenantIds: [],
 		teamsIds: [],
@@ -395,16 +401,17 @@ export class PoListComponent extends AppComponentBase implements OnInit {
     }
 
 	private _packPayload() {
+        const {tenantIds, teamsIds, divisionIds} = this.teamsAndDivisionsFilterState;
 		return {
 			invoicingEntities: [],
-			responsibleEmployees: [],
-			employeesTeamsAndDivisionsNodes: [],
-			employeesTenants: [],
+			responsibleEmployees: this.selectedAccountManagers?.map(x => x.id),
+			employeesTeamsAndDivisionsNodes: teamsIds?.concat(divisionIds) ?? [],
+			employeesTenants: tenantIds ?? [],
 			chasingStatuses: this.gridFilters.chasingStatuses,
 			statuses: [],
 			showCompleted: true,
 			search: this.searchFilter.value ?? '',
-			pageNumber: this.pageNumber - 1,
+			pageNumber: this.pageNumber,
 			pageSize: this.defaultPageSize,
 			sort: this.sorting ?? '',
 		} as IPoListPayload;

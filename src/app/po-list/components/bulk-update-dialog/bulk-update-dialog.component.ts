@@ -14,6 +14,7 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { Store } from '@ngrx/store';
 import { getEmployees } from 'src/app/store/selectors';
+import { CustomValidators } from 'src/shared/utils/custom-validators';
 
 @Component({
 	selector: 'app-bulk-update-dialog',
@@ -26,11 +27,11 @@ export class BulkUpdateDialogComponent extends AppComponentBase implements OnIni
 
 	employees$: Observable<EmployeeDto[]>;
 	dialogTypes = EBulkUpdateDiallogTypes;
-	contractManagerFilter = new UntypedFormControl('');
-	salesManagerFilter = new UntypedFormControl('');
+	contractManagerFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
+	salesManagerFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
 	filteredAccountManagers$: Observable<EmployeeDto[]>;
 	filteredContractManagers$: Observable<EmployeeDto[]>;
-	clientContactFilter = new UntypedFormControl('');
+	clientContactFilter = new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']));
 	filteredClientContacts$: Observable<ContactResultDto[]>;
 	private _unsubscribe = new Subject();
 	constructor(

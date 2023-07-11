@@ -9,3 +9,14 @@ export enum EPOChasingStatusColor {
     '#A855F7' = PurchaseOrderChasingStatus.PendingOnClientSide,
     '#17A297' = PurchaseOrderChasingStatus.Received,
 }
+
+export enum EPOChasingStatusText {
+    "Action required" = PurchaseOrderChasingStatus.ActionRequired,
+    "CM notified" = PurchaseOrderChasingStatus.CmNotified,
+    "AM notified" = PurchaseOrderChasingStatus.AmNotified,
+    "Client & AM notified" = PurchaseOrderChasingStatus.ClientAndAmNotified,
+    "Client notified" = PurchaseOrderChasingStatus.ClientNotified,
+    "Pending on Client side" = PurchaseOrderChasingStatus.PendingOnClientSide,
+    "Received" = PurchaseOrderChasingStatus.Received,
+}
+

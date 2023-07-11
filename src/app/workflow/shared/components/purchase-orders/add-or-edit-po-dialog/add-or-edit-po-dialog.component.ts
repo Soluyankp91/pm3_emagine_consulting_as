@@ -1,12 +1,14 @@
 import { AfterViewInit, Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable, Subject } from 'rxjs';
-import { finalize, map, startWith, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { debounceTime, finalize, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { EValueUnitTypes } from 'src/app/workflow/workflow-sales/workflow-sales.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
+    ContactResultDto,
 	EnumEntityTypeDto,
+	LookupServiceProxy,
 	PurchaseOrderCapDto,
 	PurchaseOrderCapType,
 	PurchaseOrderCommandDto,
@@ -18,6 +20,7 @@ import {
 import { EPOSource, POSources, PurchaseOrderForm } from './add-or-edit-po-dialog.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DocumentsComponent } from '../../wf-documents/wf-documents.component';
+import { PO_CHASING_STATUSES } from 'src/app/po-list/po-list.constants';
 
 @Component({
 	selector: 'app-add-or-edit-po-dialog',
@@ -41,7 +44,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	filteredPurchaseOrders: Observable<PurchaseOrderQueryDto[]>;
 	existingPo: PurchaseOrderQueryDto;
 	eValueUnitType = EValueUnitTypes;
-	private _unsubsribe = new Subject();
+    chasingStatuses = PO_CHASING_STATUSES;
+    filteredClientContacts$: Observable<ContactResultDto[]>;
+	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
 		@Inject(MAT_DIALOG_DATA)
@@ -54,7 +59,8 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		},
 		private _dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy,
-		private readonly _workflowDataService: WorkflowDataService
+		private readonly _workflowDataService: WorkflowDataService,
+        private readonly _lookupService: LookupServiceProxy
 	) {
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
@@ -67,7 +73,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
         }
 		this._getEnums();
 		this.filteredPurchaseOrders = this.purchaseOrderForm.existingPo.valueChanges.pipe(
-			takeUntil(this._unsubsribe),
+			takeUntil(this._unsubscribe),
 			startWith(''),
 			map((value) => {
 				if (typeof value === 'string') {
@@ -75,6 +81,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 				}
 			})
 		);
+        if (this.data.directClientId) {
+            this._subClientResponsible$();
+        }
 	}
 
     ngAfterViewInit(): void {
@@ -84,8 +93,8 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
     }
 
 	ngOnDestroy(): void {
-		this._unsubsribe.next();
-		this._unsubsribe.complete();
+		this._unsubscribe.next();
+		this._unsubscribe.complete();
 	}
 
 	reject() {
@@ -100,6 +109,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		if (input.numberMissingButRequired) {
 			input.number = undefined;
 		}
+        input.clientContactResponsibleId = this.purchaseOrderForm.clientContactResponsible.value?.id ?? undefined;
 		input.capForInvoicing = new PurchaseOrderCapDto(form.capForInvoicing);
         input.purchaseOrderDocumentCommandDto = new PurchaseOrderDocumentCommandDto();
         if (this.poDocuments?.documents.value?.length) {
@@ -110,6 +120,8 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
                 documentInput.temporaryFileId = document.temporaryFileId;
                 input.purchaseOrderDocumentCommandDto = documentInput;
             }
+        } else {
+            input.purchaseOrderDocumentCommandDto = undefined;
         }
 		if (form.id !== null) {
 			if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
@@ -118,12 +130,14 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
                 if (this.poDocuments?.documents.value?.length) {
                     for (let document of this.poDocuments?.documents.value) {
                         let documentInput = new PurchaseOrderDocumentQueryDto();
-                        documentInput.id = document.workflowDocumentId;
+                        documentInput.id = document.purchaseOrderDocumentId;
                         documentInput.createdBy = document.createdBy;
                         documentInput.createdDateUtc = document.createdDateUtc;
                         documentInput.name = document.name;
                         this.existingPo.purchaseOrderDocumentQueryDto = documentInput;
                     }
+                } else {
+                    this.existingPo.purchaseOrderDocumentQueryDto = undefined;
                 }
 				this.onConfirmed.emit(this.existingPo);
 				this._closeInternal();
@@ -154,11 +168,19 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		if (value) {
 			this.purchaseOrderForm.number.setValue(null, { emitEvent: false });
 			this.purchaseOrderForm.receiveDate.setValue(null, { emitEvent: false });
+			this.purchaseOrderForm.startDate.setValue(null, { emitEvent: false });
+			this.purchaseOrderForm.endDate.setValue(null, { emitEvent: false });
 			this.purchaseOrderForm.number.disable();
 			this.purchaseOrderForm.receiveDate.disable();
+			this.purchaseOrderForm.startDate.disable();
+			this.purchaseOrderForm.endDate.disable();
+            this.purchaseOrderForm.isCompleted.disable();
 		} else {
 			this.purchaseOrderForm.number.enable();
 			this.purchaseOrderForm.receiveDate.enable();
+            this.purchaseOrderForm.startDate.enable();
+			this.purchaseOrderForm.endDate.enable();
+            this.purchaseOrderForm.isCompleted.enable();
 		}
 	}
 
@@ -201,6 +223,10 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	private _disableAllEditableInputs() {
 		this.purchaseOrderForm.number.disable({ emitEvent: false });
 		this.purchaseOrderForm.receiveDate.disable({ emitEvent: false });
+		this.purchaseOrderForm.startDate.disable({ emitEvent: false });
+		this.purchaseOrderForm.endDate.disable({ emitEvent: false });
+		this.purchaseOrderForm.isCompleted.disable({ emitEvent: false });
+        this.purchaseOrderForm.notes.disable({ emitEvent: false });
 		this.purchaseOrderForm.capForInvoicing.type.disable({ emitEvent: false });
 		this.purchaseOrderForm.capForInvoicing.maxAmount.disable({ emitEvent: false });
 		this.purchaseOrderForm.capForInvoicing.valueUnitTypeId.disable({ emitEvent: false });
@@ -263,5 +289,28 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		} else {
 			return result;
 		}
+	}
+
+    private _subClientResponsible$() {
+		this.filteredClientContacts$ = this.purchaseOrderForm.clientContactResponsible.valueChanges.pipe(
+			takeUntil(this._unsubscribe),
+			debounceTime(300),
+			switchMap((value: any) => {
+				const clientIds = [this.data.directClientId];
+				let toSend = {
+					clientIds: clientIds,
+					name: value,
+					maxRecordsCount: 1000,
+				};
+				if (value?.id) {
+					toSend.name = value.id ? value.firstName : value;
+				}
+				if (toSend.clientIds?.length) {
+					return this._lookupService.contacts(toSend.clientIds, toSend.name, toSend.maxRecordsCount);
+				} else {
+					return of([]);
+				}
+			})
+		);
 	}
 }

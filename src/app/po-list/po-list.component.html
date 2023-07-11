@@ -20,6 +20,30 @@
                         [ngClass]="{ 'pointer-events-none opacity-50': selectedAccountManagers.length > 0 }">
                     </teams-and-divisions-filter>
                 </div>
+                <mat-form-field appearance="outline" class="filter-select form-width-200 u-mr--10">
+                    <mat-label> Chasing status</mat-label>
+                    <mat-select [formControl]="chasingStatusesFilter" [disableOptionCentering]="true" [multiple]="true">
+                        <ng-container *ngFor="let item of chasingStatuses">
+                            <mat-option [value]="item.id">
+                                <div class="flex-items-center">
+                                    <po-chasing-status class="u-mr--8" [statusId]="item.id"></po-chasing-status>
+                                    {{ item.name }}
+                                </div>
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="filter-select form-width-200 u-mr--10">
+                    <mat-label> PO Status</mat-label>
+                    <mat-select [formControl]="statusesFilter" [disableOptionCentering]="true" [multiple]="true">
+                        <ng-container *ngFor="let item of poStatuses">
+                            <mat-option [value]="item.id">
+                                <po-status-icon class="u-mr--8" [statusId]="item.id" [disableTooltip]="true"></po-status-icon>
+                                {{ item.name }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100" fxFlex="25%">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
@@ -105,7 +129,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start center">
                                     <po-chasing-status [statusId]="row.chasingStatus"></po-chasing-status>
                                     <span class="dark-grey-color text-bold">
-                                        {{ ePurchaseOrderChasingStatus[row.chasingStatus] }}
+                                        {{ ePOChasingStatusText[row.chasingStatus] }}
                                     </span>
                                 </div>
                             </ng-template>
@@ -264,7 +288,7 @@
                 <ng-container matColumnDef="amountLeft">
                     <mat-header-cell *matHeaderCellDef mat-sort-header
                         class="table-header-cell poAmountLeft-column">
-                        Amount teft
+                        Amount left
                     </mat-header-cell>
                     <mat-cell class="table-cell poAmountLeft-column" *matCellDef="let row">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.amountLeft" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -484,7 +508,7 @@
                 [length]="totalCount"
                 [pageSizeOptions]="pageSizeOptions"
                 [pageSize]="defaultPageSize"
-                [pageIndex]="pageNumber"
+                [pageIndex]="pageNumber - 1"
                 (page)="pageChange($event)">
             </mat-paginator>
         </div>
