@@ -52,7 +52,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderQueryDto, orderIndex?: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		BigDialogConfig.scrollStrategy = scrollStrategy;
-        BigDialogConfig.height = '700px';
+        BigDialogConfig.maxHeight = '700px';
 		BigDialogConfig.data = {
 			purchaseOrder: purchaseOrder,
 			isEdit: !!purchaseOrder,
@@ -126,11 +126,18 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		formRow.get('number').setValue(purchaseOrder?.number, { emitEvent: false });
 		formRow.get('numberMissingButRequired').setValue(purchaseOrder?.numberMissingButRequired, { emitEvent: false });
 		formRow.get('receiveDate').setValue(purchaseOrder?.receiveDate, { emitEvent: false });
+		formRow.get('startDate').setValue(purchaseOrder?.startDate, { emitEvent: false });
+		formRow.get('endDate').setValue(purchaseOrder?.endDate, { emitEvent: false });
+		formRow.get('clientContactResponsible').setValue(purchaseOrder?.clientContactResponsible, { emitEvent: false });
+		formRow.get('notes').setValue(purchaseOrder?.notes, { emitEvent: false });
 		formRow.get('createdBy').setValue(purchaseOrder?.createdBy, { emitEvent: false });
 		formRow.get('createdOnUtc').setValue(purchaseOrder?.createdOnUtc, { emitEvent: false });
 		formRow.get('modifiedBy').setValue(purchaseOrder?.modifiedBy, { emitEvent: false });
 		formRow.get('modifiedOnUtc').setValue(purchaseOrder?.modifiedOnUtc, { emitEvent: false });
 		formRow.get('workflowsIdsReferencingThisPo').setValue(purchaseOrder?.workflowsIdsReferencingThisPo, { emitEvent: false });
+		formRow.get('notifyCM').setValue(purchaseOrder?.notifyCM, { emitEvent: false });
+		formRow.get('isUnread').setValue(purchaseOrder?.isUnread, { emitEvent: false });
+		formRow.get('chasingStatus').setValue(purchaseOrder?.chasingStatus, { emitEvent: false });
 		formRow
 			.get('existsInAnotherWorkflow')
 			.setValue(purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow, { emitEvent: false });
@@ -140,6 +147,9 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
         formRow
 			.get('purchaseOrderCurrentContextData')
 			.setValue(purchaseOrder?.purchaseOrderCurrentContextData, { emitEvent: false });
+        formRow
+			.get('purchaseOrderDocumentQueryDto')
+			.setValue(purchaseOrder?.purchaseOrderDocumentQueryDto, { emitEvent: false });
 		const capForInvoicingForm = formRow.get('capForInvoicing') as UntypedFormGroup;
 		capForInvoicingForm.get('type').setValue(purchaseOrder?.capForInvoicing?.type, { emitEvent: false });
 		capForInvoicingForm
@@ -156,6 +166,10 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			number: new UntypedFormControl(purchaseOrder?.number),
 			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired),
 			receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate),
+			startDate: new UntypedFormControl(purchaseOrder?.startDate),
+			endDate: new UntypedFormControl(purchaseOrder?.endDate),
+			contractResponsible: new UntypedFormControl(purchaseOrder?.contractResponsible),
+			notes: new UntypedFormControl(purchaseOrder?.notes),
 			capForInvoicing: new UntypedFormGroup({
 				type: new UntypedFormControl(purchaseOrder?.capForInvoicing?.type),
 				valueUnitTypeId: new UntypedFormControl(purchaseOrder?.capForInvoicing?.valueUnitTypeId),
@@ -173,6 +187,10 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 				purchaseOrder?.purchaseOrderCurrentContextData?.existsInAnotherWorkflow
 			),
 			purchaseOrderCurrentContextData: new UntypedFormControl(purchaseOrder?.purchaseOrderCurrentContextData),
+			purchaseOrderDocumentQueryDto: new UntypedFormControl(purchaseOrder?.purchaseOrderDocumentQueryDto),
+            notifyCM: new UntypedFormControl(purchaseOrder?.notifyCM ?? false),
+            isUnread: new UntypedFormControl(purchaseOrder?.isUnread ?? false),
+            chasingStatus: new UntypedFormControl(purchaseOrder?.chasingStatus ?? null)
 		});
 		this.purchaseOrders.push(form);
 	}

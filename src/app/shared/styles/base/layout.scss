@@ -1,4 +1,6 @@
 @import "/src/app/shared/styles/config/_mixins";
+@import "/src/app/shared/styles/config/_colors";
+
 .full-height {
     height: 100%;
 }
@@ -364,4 +366,10 @@ html {
 }
 .border-gray-50 {
     border: 1px solid #e6e6e5;
+}
+
+.hover-color-green {
+    &:hover {
+        color: $green-color;
+    }
 }
