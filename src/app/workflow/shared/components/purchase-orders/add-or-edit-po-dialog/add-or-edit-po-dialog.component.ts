@@ -46,6 +46,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 	eValueUnitType = EValueUnitTypes;
     chasingStatuses = PO_CHASING_STATUSES;
     filteredClientContacts$: Observable<ContactResultDto[]>;
+    minEndDate: Date;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -81,6 +82,13 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			}),
             takeUntil(this._unsubscribe),
 		);
+        this.purchaseOrderForm?.startDate?.valueChanges.pipe(
+            debounceTime(500),
+            takeUntil(this._unsubscribe),
+        ).subscribe((value) => {
+            let startDate = value as moment.Moment;
+            this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
+        });
         if (this.data.directClientId) {
             this._subClientResponsible$();
         }

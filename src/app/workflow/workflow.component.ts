@@ -16,7 +16,6 @@ import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import {
-	EmployeeServiceProxy,
 	EnumEntityTypeDto,
 	LegalEntityDto,
 	StartNewWorkflowInputDto,
@@ -149,7 +148,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         teamsIds: [],
         divisionIds: []
     };
-    selectedTeamsAndDivisionsCount: number;
+    selectedTeamsAndDivisionsCount = 0;
 	private _unsubscribe = new Subject();
 	constructor(
 		injector: Injector,
@@ -157,7 +156,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		private _workflowService: WorkflowServiceProxy,
 		private overlay: Overlay,
 		private dialog: MatDialog,
-		private _employeeService: EmployeeServiceProxy,
 		private _activatedRoute: ActivatedRoute,
 		private _workflowDataService: WorkflowDataService,
 		private _titleService: TitleService,
@@ -191,7 +189,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	ngOnInit(): void {
 		this._titleService.setTitle(ERouteTitleType.WfList);
 		this._getEnums();
-		this.getCurrentUser();
+		this.getWorkflowList();
 	}
 
 	managersChanged(event: SelectableEmployeeDto[]) {
@@ -296,6 +294,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 		this.matMenuTrigger.menuData = { item: item };
 		this.matMenuTrigger.openMenu();
 	}
+
 	openInNewTab(workflowId: string) {
 		const url = this.router.serializeUrl(this.router.createUrlTree([`/app/workflow/${workflowId}`]));
 		window.open(url, '_blank');
@@ -570,27 +569,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	filtersTrackBy(index: number, item: { id: number; name: string }) {
 		return item.id;
 	}
-	getCurrentUser() {
-		this.selectedAccountManagers = [];
-
-		this._employeeService
-			.current()
-			.pipe(
-				finalize(() => {
-					this.getGridOptions();
-				})
-			)
-			.subscribe((result) => {
-				this.selectedAccountManagers.push(
-					new SelectableEmployeeDto({
-						id: result.id!,
-						name: result.name!,
-						externalId: result.externalId!,
-						selected: true,
-					})
-				);
-			});
-	}
 
 	clearAllFilters() {
 		this.workflowFilter.setValue(null, { emitEvent: false });
@@ -618,7 +596,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
         this.treeFilter.reset();
 		localStorage.removeItem(WorkflowGridOptionsKey);
-		this.getCurrentUser();
+		this.getWorkflowList(true);
 	}
 
 	syncStatusFilterControl(item: ISelectableIdNameDto) {

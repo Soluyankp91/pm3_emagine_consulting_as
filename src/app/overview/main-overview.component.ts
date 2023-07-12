@@ -128,7 +128,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         teamsIds: [],
         divisionIds: []
     };
-    selectedTeamsAndDivisionsCount: number;
+    selectedTeamsAndDivisionsCount = 0;
 	private _unsubscribe = new Subject();
 
 	constructor(

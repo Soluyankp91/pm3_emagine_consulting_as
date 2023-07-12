@@ -85,7 +85,7 @@
                 </mat-menu>
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <mat-divider [vertical]="true" class="divider-height"></mat-divider>
-                    <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()" class="reset-button">
+                    <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()" class="reset-button" matTooltip="Reset to my items" matTooltipClass="white-tooltip">
                         <span class="clear-all-button">
                             Reset
                         </span>

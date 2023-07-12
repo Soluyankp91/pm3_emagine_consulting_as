@@ -616,5 +616,9 @@ export class AppModule {
 			'bi-report-icon',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/menu/bi-report-menu.svg')
 		);
+        iconRegistry.addSvgIcon(
+			'info-icon-purple',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/info-icon-purple.svg')
+		);
 	}
 }

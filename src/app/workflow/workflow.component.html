@@ -82,9 +82,9 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="divider-height" [vertical]="true"></mat-divider>
-                    <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
+                    <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()" matTooltip="Clear all filters" matTooltipClass="white-tooltip">
                         <span class="clear-all-button" >
-                            Reset
+                            Clear
                         </span>
                     </button>
                 </div>

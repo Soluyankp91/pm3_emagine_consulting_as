@@ -23,23 +23,27 @@
                     WF ID: {{workflowSequenceIdCode}}
                 </span>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
                     <span class="workflow-header--request cursor-pointer" matTooltip="View Request in Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
-                        • Request ID: {{workflowConsultants[0].requestId}}
+                        Request ID: {{workflowConsultants[0].requestId}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
                     <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Consultant in Sourcing" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
-                        • {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
+                        {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
                     <span [matTooltip]="workflowConsultantsList ?? ''" matTooltipClass="white-tooltip pre-wrap--tooltip">
-                        • {{workflowConsultants.length + ' Consultants'}}
+                        {{workflowConsultants.length + ' Consultants'}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length === 0">
-                    <span>
-                        • No consultants
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
+                    <span class="medium-grey-color text-bold">
+                        No consultants
                     </span>
                 </ng-container>
             </h2>
@@ -124,46 +128,45 @@
                 <ng-template #readOnlyWorkflowStatusTemplate>
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
-                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap" class="medium-grey-color text-bold workflow-header--title__wf u-mr--8">
+                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip text-nowrap" class="medium-grey-color text-bold workflow-header--title__wf">
                     WF ID: {{workflowSequenceIdCode}}
                 </span>
-                <span class="workflow-toolbar--client u-mr--8">
-                    • <span class="dark-grey-color text-bold-800 u-mr--5">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</span>
-                    <ng-container *ngIf="workflowDirectClientId">
-                        <span class="dark-grey-color text-bold">| Client ID:</span>
-                        <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowEndClientId ? workflowEndClientId : workflowDirectClientId, clientCrmId: endClientCrmId ? endClientCrmId : directClientCrmId}">
-                            {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}}
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="workflowEndClientId && workflowDirectClientId">
-                        <span class="dark-grey-color text-bold">| via</span>
-                        <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowDirectClientId, clientCrmId: directClientCrmId}">
-                            {{workflowDirectClientId}}
-                        </span>
-                    </ng-container>
-                </span>
-                <span class="workflow-toolbar--client">
-                    <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
-                        <span class="workflow-header--request cursor-pointer u-mr--8" matTooltip="View Request in Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
-                            • Request ID: {{workflowConsultants[0].requestId}}
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
-                        <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Consultant in Sourcing" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
-                            • {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
-                        <span [matTooltip]="workflowConsultantsList ?? ''" matTooltipClass="white-tooltip pre-wrap--tooltip" class="dark-grey-color text-bold">
-                            • {{workflowConsultants.length + ' Consultants'}}
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="workflowConsultants.length === 0">
-                        <span>
-                            • No consultants
-                        </span>
-                    </ng-container>
-                </span>
+                <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
+                <span class="dark-grey-color text-bold-800">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</span>
+                <ng-container *ngIf="workflowDirectClientId">
+                    <span class="dark-grey-color text-bold">| Client ID:</span>
+                    <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowEndClientId ? workflowEndClientId : workflowDirectClientId, clientCrmId: endClientCrmId ? endClientCrmId : directClientCrmId}">
+                        {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowEndClientId && workflowDirectClientId">
+                    <span class="dark-grey-color text-bold">| via</span>
+                    <span class="workflow-header--title__clientId cursor-pointer" [matMenuTriggerFor]="clientLink" [matMenuTriggerData]="{clientId: workflowDirectClientId, clientCrmId: directClientCrmId}">
+                        {{workflowDirectClientId}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length && workflowConsultants[0].requestId">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
+                    <span class="workflow-header--request cursor-pointer" matTooltip="View Request in Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                        Request ID: {{workflowConsultants[0].requestId}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
+                    <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Consultant in Sourcing" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
+                        {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
+                    <span [matTooltip]="workflowConsultantsList ?? ''" matTooltipClass="white-tooltip pre-wrap--tooltip" class="dark-grey-color text-bold">
+                        {{workflowConsultants.length + ' Consultants'}}
+                    </span>
+                </ng-container>
+                <ng-container *ngIf="workflowConsultants.length === 0">
+                    <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
+                    <span class="medium-grey-color text-bold">No consultants</span>
+                </ng-container>
             </div>
             <div fxFlex="10%" fxLayoutAlign="end center">
                 <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
@@ -179,7 +182,7 @@
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <mat-icon class="u-mr--10" svgIcon="overview-icon"></mat-icon>
                         <div fxLayout="column" fxLayoutAlign="center start">
-                            <span class="tab-header">Overview</span>
+                            <span class="tab-header">WF Summary</span>
                         </div>
                     </div>
                 </a>
