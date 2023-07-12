@@ -30,6 +30,7 @@ import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 
 import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import {
+	BaseEnumDto,
 	BaseMappedAgreementTemplatesListItemDto,
 	MappedTableCells,
 	MasterFiltersEnum,
@@ -40,6 +41,7 @@ import { DOCUMENT } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { ERouteTitleType } from 'src/shared/AppEnums';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -111,6 +113,14 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		this._masterTemplatesService.updateTableFilters($event);
 	}
 
+	showOnlyDisabledTemplates(event: MatSlideToggleChange) {
+		const isEnabled: BaseEnumDto[] = event.checked ? [{ id: false, name: 'enabled' }] : [];
+		this._masterTemplatesService.tableFilters$.next({
+			...this._masterTemplatesService.tableFilters$.value,
+			isEnabled,
+		});
+	}
+
 	onPageChange($event: PageEvent) {
 		this._masterTemplatesService.updatePage($event);
 	}
@@ -180,13 +190,13 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				name: item.name,
 				agreementType: maps.agreementType[item.agreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId],
-                language: maps.language[item.language as AgreementLanguage],
+				language: maps.language[item.language as AgreementLanguage],
 				countryCode: GetCountryCodeByLanguage(maps.language[item.language]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
 				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-                createdBy: item.createdBy,
+				createdBy: item.createdBy,
 				createdDateUtc: item.createdDateUtc,
 				lastUpdatedBy: item.lastUpdatedBy,
 				lastUpdateDateUtc: item.lastUpdateDateUtc,

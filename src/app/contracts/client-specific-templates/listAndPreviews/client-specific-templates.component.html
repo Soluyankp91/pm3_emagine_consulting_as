@@ -1,5 +1,14 @@
 <div class="page-container">
 	<app-template-filter-header> </app-template-filter-header>
+	<div class="additional-filter-row">
+		<mat-slide-toggle
+			color="primary"
+			labelPosition="before"
+			class="green-slide-toggle"
+			(change)="showOnlyDisabledTemplates($event)"
+			>Show disabled templates only</mat-slide-toggle
+		>
+	</div>
 	<div class="table-and-preview-container">
 		<ng-container *ngIf="table$ | async as table">
 			<emg-mat-grid
@@ -165,14 +174,12 @@
 							[iconHeight]="16"
 							[tooltip]="cell.linkStateAccepted ? approvalTooltip : null"></emg-approval>
 						<ng-template #approvalTooltip>
-                            <div class="date-rows-container">
-                                <div class="last-updated-label no-wrap">Approved</div>
-                                <div class="last-updated-info">{{ cell.linkStateAcceptedDateUtc | momentFormat }}</div>
-                                <div class="last-updated-info no-wrap">
-                                    by {{ cell.linkStateAcceptedBy.name }}
-                                </div>
-                            </div>
-                        </ng-template>
+							<div class="date-rows-container">
+								<div class="last-updated-label no-wrap">Approved</div>
+								<div class="last-updated-info">{{ cell.linkStateAcceptedDateUtc | momentFormat }}</div>
+								<div class="last-updated-info no-wrap">by {{ cell.linkStateAcceptedBy.name }}</div>
+							</div>
+						</ng-template>
 					</div>
 				</ng-template>
 
