@@ -126,12 +126,8 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		class: 'last-updated-by-employee-column',
 	},
 	{
-		type: EHeaderCells.FILTER,
+		type: EHeaderCells.DEFAULT,
 		title: 'Status',
-		filter: {
-			formControlName: 'isEnabled',
-			component: () => import('../filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
-		},
 		class: 'status-column',
 	},
 ];

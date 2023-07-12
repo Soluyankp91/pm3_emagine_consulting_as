@@ -13,7 +13,12 @@ import {
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../../shared/components/grid-table/client-templates/entities/client-template.constants';
-import { ClientMappedTemplatesListDto, MappedTableCells, ClientFiltersEnum } from '../../shared/entities/contracts.interfaces';
+import {
+	ClientMappedTemplatesListDto,
+	MappedTableCells,
+	ClientFiltersEnum,
+	BaseEnumDto,
+} from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, fromEvent, Observable, ReplaySubject, Subject, Subscription, forkJoin } from 'rxjs';
 import { takeUntil, map, startWith, pairwise } from 'rxjs/operators';
@@ -31,6 +36,7 @@ import { ERouteTitleType } from 'src/shared/AppEnums';
 import { TitleService } from 'src/shared/common/services/title.service';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from '../../shared/components/popUps/notification-dialog/notification-dialog.component';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
 	selector: 'app-client-specific-templates',
@@ -95,6 +101,14 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 
 	onFormControlChange($event: ClientFiltersEnum) {
 		this._clientTemplatesService.updateTableFilters($event);
+	}
+
+	showOnlyDisabledTemplates(event: MatSlideToggleChange) {
+		const isEnabled: BaseEnumDto[] = event.checked ? [{ id: false, name: 'enabled' }] : [];
+		this._clientTemplatesService.tableFilters$.next({
+			...this._clientTemplatesService.tableFilters$.value,
+			isEnabled,
+		});
 	}
 
 	onPageChange($event: PageEvent) {
@@ -193,7 +207,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
 				language: maps.language[item.language as AgreementLanguage],
-                countryCode: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				countryCode: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
@@ -203,8 +217,8 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 				lastUpdatedBy: item.lastUpdatedBy,
 				lastUpdateDateUtc: item.lastUpdateDateUtc,
 				linkState: item.linkState,
-                linkStateAcceptedBy: item.linkStateAcceptedBy,
-                linkStateAcceptedDateUtc: item.linkStateAcceptedDateUtc,
+				linkStateAcceptedBy: item.linkStateAcceptedBy,
+				linkStateAcceptedDateUtc: item.linkStateAcceptedDateUtc,
 				linkStateAccepted: item.linkStateAccepted,
 				isEnabled: item.isEnabled,
 				actionList: this.actions,

@@ -30,27 +30,27 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		},
 		class: 'language-column',
 		sticky: true,
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'ID',
 		class: 'id-column',
 		sticky: true,
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Template Name',
 		class: 'template-name-column',
 		sticky: true,
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.DEFAULT,
 		title: 'Client',
 		class: 'client-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -62,7 +62,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'agreementType-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -74,7 +74,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 				),
 		},
 		class: 'recipientTypeId-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -124,7 +124,7 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		type: EHeaderCells.DEFAULT,
 		title: 'Last updated',
 		class: 'last-updated-column',
-        sort: true,
+		sort: true,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -160,13 +160,8 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 		class: 'linkStateAccepted-column',
 	},
 	{
-		type: EHeaderCells.FILTER,
+		type: EHeaderCells.DEFAULT,
 		title: 'Status',
-		filter: {
-			formControlName: 'isEnabled',
-			component: () =>
-				import('../../master-templates/filters/enabled-filter/is-enabled.component').then((it) => it.IsEnabledComponent),
-		},
 		class: 'status-column',
 	},
 ];
