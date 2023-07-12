@@ -230,7 +230,7 @@
                         class="table-header-cell poWFPeriod-column">
                         WF period ID
                     </mat-header-cell>
-                    <mat-cell class="table-cell poWFPeriod-column" *matCellDef="let row" (click)="openConnectedWF(row.clientPeriods[0])">
+                    <mat-cell class="table-cell poWFPeriod-column hover-color-green cursor-pointer" *matCellDef="let row" (click)="openConnectedWF(row.clientPeriods[0])">
                         {{row.clientPeriods[0]?.displayId ?? '-'}}
                     </mat-cell>
                 </ng-container>
@@ -339,8 +339,8 @@
                         Amount left
                     </mat-header-cell>
                     <mat-cell class="table-cell poAmountLeft-column" *matCellDef="let row">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.amountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.amountLeft ?? '-'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientPeriods[0]?.purchaseOrderCapClientCalculatedAmountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.clientPeriods[0]?.purchaseOrderCapClientCalculatedAmountLeft ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -428,7 +428,7 @@
                                 <div fxLayout="row" class="example-element-detail-row">
                                     <div class="poLastUpdated-column"></div>
                                     <div class="poWFPeriod-column" (click)="openConnectedWF(element)">
-                                        <span class="text-truncate-ellipsis" [matTooltip]="element?.displayId" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        <span class="text-truncate-ellipsis hover-color-green cursor-pointer" [matTooltip]="element?.displayId" matTooltipClass="white-tooltip" appShowIfTruncated>
                                             {{element?.displayId}}
                                         </span>
                                     </div>
@@ -463,8 +463,8 @@
                                         </span>
                                     </div>
                                     <div class="poUnitType-column">
-                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.valueUnitTypeId" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{row.capForInvoicing?.valueUnitTypeId}}
+                                        <span class="text-truncate-ellipsis" [matTooltip]="eValueUnitType[row.capForInvoicing?.valueUnitTypeId] ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{eValueUnitType[row.capForInvoicing?.valueUnitTypeId] ?? '-'}}
                                         </span>
                                     </div>
                                     <div class="poClientRate-column">
@@ -473,13 +473,13 @@
                                         </span>
                                     </div>
                                     <div class="poTotalAmount-column">
-                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.maxAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{row.capForInvoicing?.maxAmount ?? '-'}}
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element.purchaseOrderCapClientCalculatedAmount ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element.purchaseOrderCapClientCalculatedAmount ?? '-'}}
                                         </span>
                                     </div>
                                     <div class="poAmountLeft-column">
-                                        <span class="text-truncate-ellipsis" [matTooltip]="row.capForInvoicing?.amountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{row.capForInvoicing?.amountLeft ?? '-'}}
+                                        <span class="text-truncate-ellipsis" [matTooltip]="element?.purchaseOrderCapClientCalculatedAmountLeft ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{element?.purchaseOrderCapClientCalculatedAmountLeft ?? '-'}}
                                         </span>
                                     </div>
                                     <div class="poEstimatedUnitsLeft-column">

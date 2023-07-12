@@ -52,7 +52,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 	createOrEditPurchaseOrder(purchaseOrder?: PurchaseOrderQueryDto, orderIndex?: number) {
 		const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		BigDialogConfig.scrollStrategy = scrollStrategy;
-        BigDialogConfig.height = '700px';
+        BigDialogConfig.maxHeight = '700px';
 		BigDialogConfig.data = {
 			purchaseOrder: purchaseOrder,
 			isEdit: !!purchaseOrder,

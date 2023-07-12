@@ -209,7 +209,7 @@
                             </ng-container>
                             <ng-container *ngIf="(filteredClientContacts$ | async)?.length === 0">
                                 <mat-option (click)="$event.stopPropagation()" class="no-data">
-                                    <span>
+                                    <span class="text-bold dark-grey-color">
                                         No contacts found
                                     </span>
                                 </mat-option>
@@ -225,7 +225,7 @@
                 <mat-form-field appearance="outline"
                     class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-720">
                     <mat-label>Notes</mat-label>
-                    <textarea required matInput autocomplete="new-password"
+                    <textarea matInput autocomplete="new-password"
                         name="notes" formControlName="notes"
                         [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="8" [cdkAutosizeMaxRows]="10">
                     </textarea>
