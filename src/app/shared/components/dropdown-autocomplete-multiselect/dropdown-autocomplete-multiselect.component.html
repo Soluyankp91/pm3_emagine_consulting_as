@@ -40,7 +40,7 @@
 				<ng-container *ngIf="!(optionsLoading | async); else loading">
 					<ng-container *ngIf="!isSearchNull; else notFound">
 						<ng-container *ngFor="let option of availableOptions; trackBy: trackById.bind(this)">
-							<mat-option>
+							<mat-option *ngIf="!option.checked">
 								<mat-checkbox (click)="$event.stopPropagation()" (change)="selectCheckBox(option)">
 									<ng-container
 										*ngIf="optionTemplate; else noOptionTemplate"
