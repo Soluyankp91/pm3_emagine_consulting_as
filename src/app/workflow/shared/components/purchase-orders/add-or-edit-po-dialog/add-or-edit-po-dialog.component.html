@@ -110,6 +110,7 @@
                         <mat-label>PO end date</mat-label>
                         <input autocomplete="off" matInput [matDatepicker]="endDatePicker"
                             [disabled]="purchaseOrderForm.numberMissingButRequired.value" name="poEndDate"
+                            [min]="minEndDate"
                             formControlName="endDate" (focus)="endDatePicker.open()" appPreventDoubleClick
                             (throttledClick)="endDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
