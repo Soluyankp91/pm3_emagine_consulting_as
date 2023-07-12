@@ -137,6 +137,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 		formRow.get('workflowsIdsReferencingThisPo').setValue(purchaseOrder?.workflowsIdsReferencingThisPo, { emitEvent: false });
 		formRow.get('notifyCM').setValue(purchaseOrder?.notifyCM, { emitEvent: false });
 		formRow.get('isUnread').setValue(purchaseOrder?.isUnread, { emitEvent: false });
+		formRow.get('isCompleted').setValue(purchaseOrder?.isCompleted, { emitEvent: false });
 		formRow.get('chasingStatus').setValue(purchaseOrder?.chasingStatus, { emitEvent: false });
 		formRow
 			.get('existsInAnotherWorkflow')
@@ -190,6 +191,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			purchaseOrderDocumentQueryDto: new UntypedFormControl(purchaseOrder?.purchaseOrderDocumentQueryDto),
             notifyCM: new UntypedFormControl(purchaseOrder?.notifyCM ?? false),
             isUnread: new UntypedFormControl(purchaseOrder?.isUnread ?? false),
+            isCompleted: new UntypedFormControl(purchaseOrder?.isCompleted ?? false),
             chasingStatus: new UntypedFormControl(purchaseOrder?.chasingStatus ?? null)
 		});
 		this.purchaseOrders.push(form);
