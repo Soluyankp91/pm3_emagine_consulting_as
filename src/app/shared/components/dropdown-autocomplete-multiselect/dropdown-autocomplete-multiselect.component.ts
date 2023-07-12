@@ -106,16 +106,19 @@ export class DropdownAutocompleteMultiselectComponent implements OnInit, OnDestr
 	}
 
 	selectCheckBox(option: IDropdownItem) {
+		option['checked'] = true;
 		this.selectedOptions.add(option);
-		this.availableOptions.delete(option);
 		this._cdr.detectChanges();
 	}
 
 	unSelectCheckBox(option: IDropdownItem) {
-		if (this.initialOptions.has(option)) {
-			this.availableOptions.add(option);
-		}
+		option['checked'] = false;
 		this.selectedOptions.delete(option);
+		if (!this.availableOptions.has(option)) {
+			const availableOptions = Array.from(this.availableOptions);
+			this.availableOptions.clear();
+			this.availableOptions = new Set([option, ...availableOptions]);
+		}
 		this._cdr.detectChanges();
 	}
 
