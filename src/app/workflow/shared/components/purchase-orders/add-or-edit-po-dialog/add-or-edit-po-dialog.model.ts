@@ -1,5 +1,5 @@
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { PurchaseOrderCapDto, PurchaseOrderQueryDto } from 'src/shared/service-proxies/service-proxies';
+import { ContactResultDto, PurchaseOrderCapDto, PurchaseOrderQueryDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 
 export class PurchaseOrderForm extends UntypedFormGroup {
@@ -15,7 +15,7 @@ export class PurchaseOrderForm extends UntypedFormGroup {
             isCompleted: new UntypedFormControl(purchaseOrder?.isCompleted ?? false),
 			numberMissingButRequired: new UntypedFormControl(purchaseOrder?.numberMissingButRequired ?? false),
             notes: new UntypedFormControl(purchaseOrder?.notes ?? ''),
-            clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible ?? null, CustomValidators.autocompleteValidator(['id'])),
+            clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible?.id ? new ContactResultDto(purchaseOrder?.clientContactResponsible) : null, CustomValidators.autocompleteValidator(['id'])),
 			capForInvoicing: new CapForInvoicingForm(purchaseOrder?.capForInvoicing),
             notifyCM: new UntypedFormControl(purchaseOrder?.notifyCM ?? false),
             isUnread: new UntypedFormControl(purchaseOrder?.isUnread ?? false),
