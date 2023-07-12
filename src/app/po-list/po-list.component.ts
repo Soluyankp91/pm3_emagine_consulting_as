@@ -10,6 +10,7 @@ import { ERouteTitleType } from 'src/shared/AppEnums';
 import { FormControl } from '@angular/forms';
 import { SelectableEmployeeDto } from '../workflow/workflow.model';
 import {
+    AmountWithCurrencyDto,
 	EnumEntityTypeDto,
 	LegalEntityDto,
 	PurchaseOrderCapType,
@@ -269,7 +270,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		const scrollStrategy = this._overlay.scrollStrategies.block();
         const dialogConfig = cloneDeep(BigDialogConfig);
 		dialogConfig.scrollStrategy = scrollStrategy;
-		dialogConfig.height = '700px';
+		dialogConfig.maxHeight = '700px';
 		dialogConfig.data = {
 			purchaseOrder: actionRow.originalPOData,
 			isEdit: true,
@@ -490,11 +491,20 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 				clientRate: `${item.clientRate?.normalRate} ${this.eCurrencies[item.clientRate?.currencyId]} ${
 					item.clientRate?.isTimeBasedRate ? '/' + this.findItemById(this.rateUnitTypes, item.clientRate?.rateUnitTypeId)?.name : ''
 				}`,
-				purchaseOrderCapClientCalculatedAmount: `${item.purchaseOrderCapClientCalculatedMaxAmount?.amount !== null && item.purchaseOrderCapClientCalculatedMaxAmount?.amount !== undefined ? item.purchaseOrderCapClientCalculatedMaxAmount?.amount : '-'}`,
+				purchaseOrderCapClientCalculatedAmount: this._formatPOCapClientCalculatedAmount(item.purchaseOrderCapClientCalculatedMaxAmount),
+                purchaseOrderCapClientCalculatedAmountLeft: this._formatPOCapClientCalculatedAmount(item.purchaseOrderCapClientCalculatedAmountLeft),
 				estimatedUnitsLeft: `${ (item.estimatedUnitsLeft !== null && item.estimatedUnitsLeft !== undefined) ? item.estimatedUnitsLeft?.amount + ' ' + ValueUnitEnum[item.estimatedUnitsLeft?.unit] : '-' }`,
 			} as IPOClientPeriodGridData;
 		});
 	}
+
+    private _formatPOCapClientCalculatedAmount(value: AmountWithCurrencyDto): string {
+        if (value === null || value === undefined) {
+            return '-';
+        } else {
+            return `${value.amount} ${value.currency}`;
+        }
+    }
 
 	private _teamsAndDivisionCounter(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState): void {
 		const { teamsIds, tenantIds, divisionIds } = teamsAndDivisionFilter;
