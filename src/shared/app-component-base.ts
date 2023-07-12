@@ -125,9 +125,15 @@ export abstract class AppComponentBase {
 	deepLinkToSourcing(consultantId: number) {
         window.open(`${environment.sourcingUrl}/overview/consultants?consultant=${consultantId}`, '_blank');
 	}
+
 	openSupplierProfile(supplierId: number) {
         window.open(`${environment.sourcingUrl}/suppliers?supplier=${supplierId}`, '_blank');
 	}
+
+    openCategoryCheatSheet() {
+        window.open(`${environment.sourcingUrl}/entity-editor/wizard-roles`, '_blank');
+    }
+
 	getTenantCodeFromId(tenantId: number) {
 		const tenant = TenantList.find((x) => x.id === tenantId);
 		return tenant?.code;

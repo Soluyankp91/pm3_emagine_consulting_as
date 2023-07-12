@@ -546,3 +546,21 @@
         }
     }
 }
+
+.category-cheatsheet--btn {
+    &.mat-flat-button {
+        color: #7373DC;
+        background-color: transparent !important;
+        font-weight: 700;
+        padding: 0 !important;
+        .mat-button-wrapper {
+            @include flexCentered();
+            height: 24px;
+            line-height: 24px;
+            mat-icon {
+                @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
+                margin-right: 8px;
+            }
+        }
+    }
+}

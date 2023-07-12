@@ -3,9 +3,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil, debounceTime, finalize, map, filter } from 'rxjs/operators';
+import { takeUntil, debounceTime, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientListItemDto, ClientsServiceProxy, EmployeeServiceProxy, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientListItemDto, ClientsServiceProxy, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { IClientGridPayload, SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -84,7 +84,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         teamsIds: [],
         divisionIds: []
     };
-    selectedTeamsAndDivisionsCount: number;
+    selectedTeamsAndDivisionsCount = 0;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -93,7 +93,6 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
-        private _employeeService: EmployeeServiceProxy,
         private _titleService: TitleService,
     ) {
         super(injector);
@@ -116,27 +115,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                 }
             })
         );
-        this.getCurrentUser();
-    }
-
-    getCurrentUser() {
-        this.isDataLoading = true;
-        this.selectedAccountManagers = [];
-        this._employeeService.current()
-            .pipe(finalize(()=> {
-                this.isDataLoading = false;
-                this.getGridOptions();
-            }))
-            .subscribe(result => {
-                this.selectedAccountManagers.push(
-                    new SelectableEmployeeDto({
-                        id: result.id!,
-                        name: result.name!,
-                        externalId: result.externalId!,
-                        selected: true
-                    })
-                );
-            });
+        this.getClientsGrid();
     }
 
     managersChanged(event: SelectableEmployeeDto[]) {
@@ -379,7 +358,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
         this.treeFilter.reset();
         localStorage.removeItem(ClientGridOptionsKey);
-        this.getCurrentUser();
+        this.getClientsGrid(true);
     }
 
     openManagersMenu(event: any) {

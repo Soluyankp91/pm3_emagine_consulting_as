@@ -13,16 +13,7 @@
         top: 0;
         z-index: 999;
         padding: 0 50px;
-        &--title {
-            color: $dark-grey-color;
-            @include fontOpenSans(12px, 700);
-            line-height: 14px;
-        }
-        &--client {
-            color: $dark-grey-color;
-            @include fontOpenSans(12px, 700);
-            line-height: 14px;
-        }
+        @include fontOpenSans(12px, 700);
     }
     &-header {
         padding: 32px 50px;
@@ -41,9 +32,6 @@
             }
             &__wf {
                 @include fontOpenSans(12px, 700);
-            }
-            span:not(.workflow-header--title__clientId) {
-                margin-right: 5px;
             }
         }
         &--status {
@@ -263,4 +251,9 @@
     position: -webkit-sticky;
     border-bottom: 0;
     background-color: $white-color;
+}
+
+.header-dot-separator {
+    color: $medium-grey-color;
+    padding: 0 5px;
 }
