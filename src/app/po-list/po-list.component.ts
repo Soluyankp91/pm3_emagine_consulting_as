@@ -11,6 +11,7 @@ import { FormControl } from '@angular/forms';
 import { SelectableEmployeeDto } from '../workflow/workflow.model';
 import {
     AmountWithCurrencyDto,
+	ClientRateDto,
 	EnumEntityTypeDto,
 	LegalEntityDto,
 	PurchaseOrderCapType,
@@ -488,9 +489,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 				workflowId: item.workflowId,
 				displayId: item.displayId,
 				consultants: item.consultants,
-				clientRate: `${item.clientRate?.normalRate} ${this.eCurrencies[item.clientRate?.currencyId]} ${
-					item.clientRate?.isTimeBasedRate ? '/' + this.findItemById(this.rateUnitTypes, item.clientRate?.rateUnitTypeId)?.name : ''
-				}`,
+				clientRate: this._formatClientRate(item.clientRate),
 				purchaseOrderCapClientCalculatedAmount: this._formatPOCapClientCalculatedAmount(item.purchaseOrderCapClientCalculatedMaxAmount),
                 purchaseOrderCapClientCalculatedAmountLeft: this._formatPOCapClientCalculatedAmount(item.purchaseOrderCapClientCalculatedAmountLeft),
 				estimatedUnitsLeft: `${ (item.estimatedUnitsLeft !== null && item.estimatedUnitsLeft !== undefined) ? item.estimatedUnitsLeft?.amount + ' ' + ValueUnitEnum[item.estimatedUnitsLeft?.unit] : '-' }`,
@@ -503,6 +502,14 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
             return '-';
         } else {
             return `${value.amount} ${value.currency}`;
+        }
+    }
+
+    private _formatClientRate(clientRate: ClientRateDto): string {
+        if (clientRate === null || clientRate === undefined) {
+            return '-';
+        } else {
+            return `${clientRate?.normalRate} ${this.eCurrencies[clientRate?.currencyId]} ${clientRate?.isTimeBasedRate ? '/' + this.findItemById(this.rateUnitTypes, clientRate?.rateUnitTypeId)?.name : ''}`
         }
     }
 
