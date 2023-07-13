@@ -55,7 +55,7 @@
                                 </button>
                                 <ng-container *ngIf="!readOnlyMode">
                                     <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
-                                        (throttledClick)="confirmDeleteDocument(document.value.temporaryFileId, document.value.uploaderFile, i)">
+                                        (throttledClick)="confirmDeleteDocument(document.value.temporaryFileId, document.value.uploaderFile, document.value.name, i)">
                                         <mat-icon svgIcon="close-icon"></mat-icon>
                                         Delete document
                                     </button>
