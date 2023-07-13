@@ -33591,8 +33591,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
-    salesResponsibleId?: number | undefined;
-    contractResponsibleId?: number | undefined;
     clientContactResponsibleId?: number | undefined;
     purchaseOrderDocumentCommandDto?: PurchaseOrderDocumentCommandDto;
 
@@ -33619,8 +33617,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
             this.notes = _data["notes"];
             this.isUnread = _data["isUnread"];
             this.notifyCM = _data["notifyCM"];
-            this.salesResponsibleId = _data["salesResponsibleId"];
-            this.contractResponsibleId = _data["contractResponsibleId"];
             this.clientContactResponsibleId = _data["clientContactResponsibleId"];
             this.purchaseOrderDocumentCommandDto = _data["purchaseOrderDocumentCommandDto"] ? PurchaseOrderDocumentCommandDto.fromJS(_data["purchaseOrderDocumentCommandDto"]) : <any>undefined;
         }
@@ -33647,8 +33643,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
         data["notes"] = this.notes;
         data["isUnread"] = this.isUnread;
         data["notifyCM"] = this.notifyCM;
-        data["salesResponsibleId"] = this.salesResponsibleId;
-        data["contractResponsibleId"] = this.contractResponsibleId;
         data["clientContactResponsibleId"] = this.clientContactResponsibleId;
         data["purchaseOrderDocumentCommandDto"] = this.purchaseOrderDocumentCommandDto ? this.purchaseOrderDocumentCommandDto.toJSON() : <any>undefined;
         return data;
@@ -33668,8 +33662,6 @@ export interface IPurchaseOrderCommandDto {
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
-    salesResponsibleId?: number | undefined;
-    contractResponsibleId?: number | undefined;
     clientContactResponsibleId?: number | undefined;
     purchaseOrderDocumentCommandDto?: PurchaseOrderDocumentCommandDto;
 }

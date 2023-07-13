@@ -169,7 +169,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			receiveDate: new UntypedFormControl(purchaseOrder?.receiveDate),
 			startDate: new UntypedFormControl(purchaseOrder?.startDate),
 			endDate: new UntypedFormControl(purchaseOrder?.endDate),
-			contractResponsible: new UntypedFormControl(purchaseOrder?.contractResponsible),
+			clientContactResponsible: new UntypedFormControl(purchaseOrder?.clientContactResponsible),
 			notes: new UntypedFormControl(purchaseOrder?.notes),
 			capForInvoicing: new UntypedFormGroup({
 				type: new UntypedFormControl(purchaseOrder?.capForInvoicing?.type),
