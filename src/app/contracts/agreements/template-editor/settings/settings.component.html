@@ -180,6 +180,9 @@
 														<ng-container *ngIf="!cell.addressCountryCode && cell.city">
 															· {{ cell.city }}
 														</ng-container>
+														<ng-container *ngIf="cell.companyName">
+															, {{ cell.companyName }}
+														</ng-container>
 													</div>
 												</div>
 											</ng-template>
@@ -196,6 +199,9 @@
 														</ng-container>
 														<ng-container *ngIf="!cell.addressCountryCode && cell.city">
 															· {{ cell.city }}
+														</ng-container>
+														<ng-container *ngIf="cell.companyName">
+															, {{ cell.companyName }}
 														</ng-container>
 													</div>
 												</div>
