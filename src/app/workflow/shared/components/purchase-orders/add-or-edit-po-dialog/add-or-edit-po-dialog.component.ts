@@ -66,6 +66,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		super(injector);
 		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
 		this.existingPo = new PurchaseOrderQueryDto(this.data?.purchaseOrder);
+        this._setMinEndDate(this.data?.purchaseOrder?.startDate);
 	}
 
 	ngOnInit(): void {
@@ -86,8 +87,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
             debounceTime(500),
             takeUntil(this._unsubscribe),
         ).subscribe((value) => {
-            let startDate = value as moment.Moment;
-            this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
+            this._setMinEndDate(value)
         });
         if (this.data.directClientId) {
             this._subClientResponsible$();
@@ -198,6 +198,9 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 		if (!this.existingPo.purchaseOrderCurrentContextData.isUserAllowedToEdit) {
 			this._disableAllEditableInputs();
 		}
+        if (this.existingPo.purchaseOrderDocumentQueryDto) {
+            this.poDocuments.addExistingPOFile(this.existingPo.purchaseOrderDocumentQueryDto);
+        }
 	}
 
 	poSourceChange(poSource: number) {
@@ -302,6 +305,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
     private _subClientResponsible$() {
 		this.filteredClientContacts$ = this.purchaseOrderForm.clientContactResponsible.valueChanges.pipe(
 			debounceTime(500),
+            startWith(''),
 			switchMap((value: any) => {
 				const clientIds = [this.data.directClientId];
 				let toSend = {
@@ -321,4 +325,12 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
             takeUntil(this._unsubscribe),
 		);
 	}
+
+    private _setMinEndDate(value: any) {
+        if (!value) {
+            return;
+        }
+        let startDate = value as moment.Moment;
+        this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
+    }
 }

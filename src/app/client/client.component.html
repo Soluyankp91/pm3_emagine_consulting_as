@@ -87,13 +87,6 @@
                         </div>
                     </mat-menu>
                 </div>
-                <div class="flex-row flex-items-center u-mr--10" [matTooltip]="'Filtering on Divisions & Teams disables the user filter'" [matTooltipDisabled]="selectedTeamsAndDivisionsCount === 0" matTooltipClass="white-tooltip">
-                    <manager-multiselect
-                        [initialOptions]="selectedAccountManagers"
-                        (selectionChanged)="managersChanged($event)"
-                        [ngClass]="{ 'pointer-events-none opacity-50': selectedTeamsAndDivisionsCount > 0 }">
-                    </manager-multiselect>
-                </div>
                 <div class="flex-row flex-items-center ml-1 u-mr--10" [matTooltip]="'Filtering on users disables the Divisions & Teams filter'" [matTooltipDisabled]="selectedAccountManagers.length === 0" matTooltipClass="white-tooltip">
 					<teams-and-divisions-filter
                         #treeFilter
@@ -104,6 +97,13 @@
 						[ngClass]="{ 'pointer-events-none opacity-50': selectedAccountManagers.length > 0 }">
 					</teams-and-divisions-filter>
 				</div>
+                <div class="flex-row flex-items-center u-mr--10" [matTooltip]="'Filtering on Divisions & Teams disables the user filter'" [matTooltipDisabled]="selectedTeamsAndDivisionsCount === 0" matTooltipClass="white-tooltip">
+                    <manager-multiselect
+                        [initialOptions]="selectedAccountManagers"
+                        (selectionChanged)="managersChanged($event)"
+                        [ngClass]="{ 'pointer-events-none opacity-50': selectedTeamsAndDivisionsCount > 0 }">
+                    </manager-multiselect>
+                </div>
                 <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--10" [ngClass]="{'selected-status': isActiveClients}" appPreventDoubleClick (throttledClick)="isActiveClients = !isActiveClients; getClientsGrid(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     Active clients
