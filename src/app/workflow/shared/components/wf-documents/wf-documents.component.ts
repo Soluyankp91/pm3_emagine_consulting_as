@@ -121,12 +121,12 @@ export class DocumentsComponent extends AppComponentBase {
         this.addDocument(wrappedDocument);
 	}
 
-    confirmDeleteDocument(fileId: string, file: FileUploaderFile, index: number) {
+    confirmDeleteDocument(fileId: string, file: FileUploaderFile, fileName: string, index: number) {
         const scrollStrategy = this._overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
 			confirmationMessageTitle: `Delete document`,
-			confirmationMessage: `The document <span class="text-bold-800">${file.name}</span> will be permanently deleted from the system.\nAre you sure you wish to proceed?`,
+			confirmationMessage: `The document <span class="text-bold-800">${fileName}</span> will be permanently deleted from the system.\nAre you sure you wish to proceed?`,
 			rejectButtonText: 'Cancel',
 			confirmButtonText: 'Delete',
 			isNegative: true,
