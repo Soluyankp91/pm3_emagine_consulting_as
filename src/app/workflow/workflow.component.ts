@@ -596,6 +596,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
         this.selectedAccountManagers = [];
         this.treeFilter.reset();
+        this.updateAdvancedFiltersCounter();
 		localStorage.removeItem(WorkflowGridOptionsKey);
 		this.getWorkflowList(true);
 	}
