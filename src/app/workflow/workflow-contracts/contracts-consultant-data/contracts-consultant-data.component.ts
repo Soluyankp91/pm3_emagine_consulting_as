@@ -116,6 +116,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	}
 
 	getInitialFrameAgreements(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+        if (consultant.consultantFrameAgreementId) {
+            return;
+        }
 		this.getFrameAgreements(consultant, true).subscribe((result) => {
 			this.filteredFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedFrameAgreementList[consultantIndex] !== null) {
@@ -132,6 +135,9 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 	}
 
     getInitialEmagineFrameAgreements(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
+        if (consultant.emagineToEmagineFrameAgreementId) {
+            return;
+        }
 		this.getEmagineFrameAgreements(consultant, true).subscribe((result) => {
 			this.filteredEmagineFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedEmagineFrameAgreementList[consultantIndex] !== null) {
@@ -140,7 +146,7 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 					?.get('emagineFrameAgreementId')
 					.setValue(this.selectedEmagineFrameAgreementList[consultantIndex]);
 			} else if (result.totalCount === 1) {
-				this._checkAndPreselectFrameAgreement(consultantIndex);
+				this._checkAndPreselectFrameAgreement(consultantIndex, true);
 			} else if (result?.totalCount === 0) {
 				this.consultants?.at(consultantIndex)?.get('emagineFrameAgreementId').setValue('');
 			}
@@ -321,10 +327,10 @@ export class ContractsConsultantDataComponent extends AppComponentBase implement
 				consultant.employmentTypeId !== EmploymentTypes.Recruitment
 			) {
 				this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
-				this.getInitialFrameAgreements(consultant, consultantIndex);
+                this.getInitialFrameAgreements(consultant, consultantIndex);
                 if (consultant.pdcPaymentEntityId !== this.contractClientForm.pdcInvoicingEntityId.value) {
                     this.manageEmagineFrameAgreementAutocomplete(consultant, consultantIndex);
-				    this.getInitialEmagineFrameAgreements(consultant, consultantIndex);
+                    this.getInitialEmagineFrameAgreements(consultant, consultantIndex);
                 }
 			}
 		}
