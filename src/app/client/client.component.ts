@@ -355,6 +355,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             divisionIds: [],
             teamsIds: [],
         };
+        this.selectedAccountManagers = [];
         this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
         this.treeFilter.reset();
         localStorage.removeItem(ClientGridOptionsKey);
