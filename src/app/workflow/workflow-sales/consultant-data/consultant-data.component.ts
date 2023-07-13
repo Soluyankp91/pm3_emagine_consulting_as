@@ -99,7 +99,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         private _lookupService: LookupServiceProxy,
         private _internalLookupService: InternalLookupService,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private _frameAgreementService: FrameAgreementServiceProxy
+        private _frameAgreementService: FrameAgreementServiceProxy,
         ) {
 		super(injector);
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
@@ -153,13 +153,16 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 	}
 
     getInitialFrameAgreements(consultant: ConsultantSalesDataDto, consultantIndex: number) {
-		this.getFrameAgreements(consultant, true).subscribe((result) => {
+        if (consultant.consultantFrameAgreementId) {
+            return;
+        }
+		this.getFrameAgreements(consultant.consultant, true).subscribe((result) => {
 			this.filteredFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedFrameAgreementList[consultantIndex] !== null) {
 				this.consultants
 					?.at(consultantIndex)
 					?.get('frameAgreementId')
-					.setValue(this.selectedFrameAgreementList[consultantIndex]);
+					.setValue(this.selectedFrameAgreementList[consultantIndex], {emitEvent: false});
 			} else if (result.totalCount === 1) {
 				this._checkAndPreselectFrameAgreement(consultantIndex);
 			} else if (result?.totalCount === 0) {
@@ -179,9 +182,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				this.consultants
 					?.at(consultantIndex)
 					?.get('emagineFrameAgreementId')
-					.setValue(this.selectedEmagineFrameAgreementList[consultantIndex]);
+					.setValue(this.selectedEmagineFrameAgreementList[consultantIndex], {emitEvent: false});
 			} else if (result.totalCount === 1) {
-				this._checkAndPreselectFrameAgreement(consultantIndex);
+				this._checkAndPreselectFrameAgreement(consultantIndex, true);
 			} else if (result?.totalCount === 0) {
 				this.consultants?.at(consultantIndex)?.get('emagineFrameAgreementId').setValue('');
 			}
@@ -391,7 +394,19 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         this.filteredFrameAgreements.push([]);
         this.filteredEmagineFrameAgreements.push([]);
         if (consultant) {
-            this._initFrameAgreements(consultant?.consultant, consultant.employmentTypeId, consultantIndex);
+            if (
+                consultant.employmentTypeId !== EmploymentTypes.FeeOnly &&
+                consultant.employmentTypeId !== EmploymentTypes.Recruitment
+            ) {
+                this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
+                if (!consultant.consultantFrameAgreementId) {
+                    this.getInitialFrameAgreements(consultant, consultantIndex);
+                }
+                this.manageEmagineFrameAgreementAutocomplete(consultantIndex);
+                if (!consultant.emagineToEmagineFrameAgreementId) {
+                    this.getInitialEmagineFrameAgreements(consultantIndex);
+                }
+            }
         }
 		this.manageManagerAutocomplete(this.consultants.length - 1);
 		this.manageConsultantAutocomplete(this.consultants.length - 1);
@@ -509,7 +524,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					if (value?.agreementId) {
 						toSend.search = value.agreementId ? value.agreementName : value;
 					}
-					return this.getFrameAgreements(consultant, false, toSend.search);
+					return this.getFrameAgreements(consultant.consultant, false, toSend.search);
 				})
 			)
 			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
@@ -526,7 +541,6 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 								list.items.find((x) => x.agreementId === this.selectedFrameAgreementList[consultantIndex]),
 								{ emitEvent: false }
 							);
-						this.selectedFrameAgreementList[consultantIndex] = null;
 					}
 				} else {
 					this.filteredFrameAgreements[consultantIndex] = [
@@ -1118,15 +1132,11 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 		) {
             if (isEmagineFrameAgreement) {
                 if (this.filteredEmagineFrameAgreements[consultantIndex].length === 1) {
-                    this.consultants.controls.forEach((form) => {
-                        form.get('emagineFrameAgreementId').setValue(this.filteredEmagineFrameAgreements[consultantIndex][0], { emitEvent: false });
-                    });
+                    this.consultants.at(consultantIndex).get('emagineFrameAgreementId').setValue(this.filteredEmagineFrameAgreements[consultantIndex][0], { emitEvent: false });
                 }
             } else {
                 if (this.filteredFrameAgreements[consultantIndex].length === 1) {
-                    this.consultants.controls.forEach((form) => {
-                        form.get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0], { emitEvent: false });
-                    });
+                    this.consultants.at(consultantIndex).get('frameAgreementId').setValue(this.filteredFrameAgreements[consultantIndex][0], { emitEvent: false });
                 }
             }
 		}
@@ -1138,8 +1148,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
             employmentType !== EmploymentTypes.Recruitment
         ) {
             this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
-            this.getInitialFrameAgreements(consultant, consultantIndex);
             this.manageEmagineFrameAgreementAutocomplete(consultantIndex);
+            this.getInitialFrameAgreements(consultant, consultantIndex);
             this.getInitialEmagineFrameAgreements(consultantIndex);
         }
     }

@@ -1047,6 +1047,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 		}
 		this.syncDataComponent?.contractsSyncDataForm.patchValue(data, { emitEvent: false });
 		this.consultantDataComponent?.addConsultantDataToForm(data?.consultantData!, 0);
+        this.consultantDataComponent.selectedFrameAgreementList[0] = data?.consultantData!.consultantFrameAgreementId ?? null;
+        this.consultantDataComponent.selectedEmagineFrameAgreementList[0] = data?.consultantData!.emagineToEmagineFrameAgreementId ?? null;
 		this.syncDataComponent?.addConsultantLegalContract(data.consultantData!);
 		this.updateConsultantStepAnchors();
 	}
