@@ -154,6 +154,7 @@
                                             <mat-label>End date</mat-label>
                                             <input [disabled]="readOnlyMode" required autocomplete="off" matInput
                                                     [matDatepicker]="consultantProjectEndDatePicker"
+                                                    [min]="consultant.value.consultantProjectStartDate"
                                                     name="consultantProjectEndDate" formControlName="consultantProjectEndDate"
                                                     (focus)="consultantProjectEndDatePicker.open()"
                                                     appPreventDoubleClick (throttledClick)="consultantProjectEndDatePicker.open()" readonly>

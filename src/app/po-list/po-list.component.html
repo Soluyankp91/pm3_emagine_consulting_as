@@ -97,7 +97,7 @@
     </div>
     <div class="container">
         <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--10 u-pr--50 u-mb--10">
-            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getPurchaseOrdersList()" [(ngModel)]="includeCompleted">Show completed</mat-slide-toggle>
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="after" (change)="getPurchaseOrdersList()" [(ngModel)]="includeCompleted">Show completed</mat-slide-toggle>
         </div>
         <div class="mat-table-container" [ngClass]="{ 'no-items-table-container': !dataSource.data.length }">
             <mat-table
@@ -182,7 +182,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="note" [sticky]="true">
-                    <mat-header-cell *matHeaderCellDef class="poNote-column">
+                    <mat-header-cell *matHeaderCellDef class="table-header-cell poNote-column">
                         Note
                         <!-- TODO: for the 2-nd iteration -->
                         <!-- <po-note-filter (filterChanged)="filterChanged($event, FILTER_LABEL_MAP.note)"></po-note-filter> -->
@@ -528,9 +528,9 @@
             </mat-table>
             <ng-container *ngIf="!dataSource.data.length && !(isLoading$ | async)">
                 <div class="no-items">
-                    <mat-icon svgIcon="empty-table-icon" class="empty-table-icon"> </mat-icon>
+                    <mat-icon svgIcon="no-results-table" class="empty-table-icon"> </mat-icon>
                     <div class="no-items-text">
-                        Sorry, no PO's found for the selected filters. Change the search criteria or
+                        No PO's found for the selected filters. Change the search criteria or
                         <span class="highlighted-reset-filters" (click)="resetAllFilters()"
                             >Reset all filters</span
                         >

@@ -152,11 +152,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
         }
 	}
 
-    getInitialFrameAgreements(consultant: ConsultantSalesDataDto, consultantIndex: number) {
-        if (consultant.consultantFrameAgreementId) {
-            return;
-        }
-		this.getFrameAgreements(consultant.consultant, true).subscribe((result) => {
+    getInitialFrameAgreements(consultant: ConsultantResultDto, consultantIndex: number) {
+		this.getFrameAgreements(consultant, true).subscribe((result) => {
 			this.filteredFrameAgreements[consultantIndex] = result.items;
 			if (this.selectedFrameAgreementList[consultantIndex] !== null) {
 				this.consultants
@@ -398,9 +395,9 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
                 consultant.employmentTypeId !== EmploymentTypes.FeeOnly &&
                 consultant.employmentTypeId !== EmploymentTypes.Recruitment
             ) {
-                this.manageFrameAgreementAutocomplete(consultant, consultantIndex);
+                this.manageFrameAgreementAutocomplete(consultant.consultant, consultantIndex);
                 if (!consultant.consultantFrameAgreementId) {
-                    this.getInitialFrameAgreements(consultant, consultantIndex);
+                    this.getInitialFrameAgreements(consultant.consultant, consultantIndex);
                 }
                 this.manageEmagineFrameAgreementAutocomplete(consultantIndex);
                 if (!consultant.emagineToEmagineFrameAgreementId) {
@@ -446,13 +443,13 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
                 startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
+						name: value ?? '',
+						maxRecordsCount: 100,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.name : value;
 					}
-					return this._lookupService.employees(value);
+					return this._lookupService.employees(toSend.name);
 				})
 			)
 			.subscribe((list: EmployeeDto[]) => {
@@ -476,8 +473,8 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 				startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
+						name: value ?? '',
+						maxRecordsCount: 100,
 					};
 					if (value?.id) {
 						toSend.name = value.id ? value.clientName : value;
@@ -508,7 +505,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 			});
 	}
 
-    manageFrameAgreementAutocomplete(consultant: ConsultantSalesDataDto, consultantIndex: number) {
+    manageFrameAgreementAutocomplete(consultant: ConsultantResultDto, consultantIndex: number) {
 		let arrayControl = this.consultants.at(consultantIndex);
 		arrayControl!
 			.get('frameAgreementId')!
@@ -524,7 +521,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
 					if (value?.agreementId) {
 						toSend.search = value.agreementId ? value.agreementName : value;
 					}
-					return this.getFrameAgreements(consultant.consultant, false, toSend.search);
+					return this.getFrameAgreements(consultant, false, toSend.search);
 				})
 			)
 			.subscribe((list: AgreementSimpleListItemDtoPaginatedList) => {
@@ -1086,7 +1083,7 @@ export class ConsultantDataComponent extends AppComponentBase implements OnInit,
                 startWith(''),
 				switchMap((value: any) => {
 					let toSend = {
-						name: value,
+						name: value ?? '',
                         supplierId: this.consultants.at(consultantIndex).get('consultantName').value?.consultant?.supplierId,
 						maxRecordsCount: 1000,
 					};
