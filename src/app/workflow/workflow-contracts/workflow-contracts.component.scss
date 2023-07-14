@@ -143,6 +143,7 @@
 
 .project-line--expansion {
     &-additional {
+        border-top: 1px solid $sand-color;
         &__wrapper {
             font-weight: 600;
             font-size: 14px;
@@ -150,7 +151,6 @@
             grid-template-columns: auto auto;
             grid-row-gap: 12px;
             grid-column-gap: 12px;
-            border-top: 1px solid $sand-color;
         }
         &__header {
             color: $medium-grey-color;

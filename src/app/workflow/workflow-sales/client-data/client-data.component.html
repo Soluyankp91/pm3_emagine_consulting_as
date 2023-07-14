@@ -241,6 +241,7 @@
                         [ngClass]="{'disabled-input': readOnlyMode}">
                         <mat-label>End date</mat-label>
                         <input [disabled]="readOnlyMode" required autocomplete="off" matInput
+                            [min]="salesClientDataForm.startDate.value"
                             [matDatepicker]="clientContractEndDatePicker" name="clientContractEndDate"
                             formControlName="endDate" (focus)="clientContractEndDatePicker.open()"
                             appPreventDoubleClick (throttledClick)="clientContractEndDatePicker.open()" readonly>
