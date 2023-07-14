@@ -551,15 +551,15 @@
     &.mat-flat-button {
         color: #7373DC;
         background-color: transparent !important;
-        font-weight: 700;
         padding: 0 !important;
+        @include fontOpenSans(12px, 700);
         .mat-button-wrapper {
             @include flexCentered();
             height: 24px;
             line-height: 24px;
             mat-icon {
-                @include fontLineHeightAndSize(18px, 18px, 18px, 18px);
-                margin-right: 8px;
+                @include fontLineHeightAndSize(12px, 12px, 12px, 12px);
+                margin-right: 5px;
             }
         }
     }
