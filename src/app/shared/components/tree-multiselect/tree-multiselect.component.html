@@ -23,7 +23,7 @@
 						color="primary"
                         class="u-mr--8"
 						[checked]="node.selected"
-						[indeterminate]="hasSelectedChild(node)"
+						[indeterminate]="isIndeterminate(node)"
 						(change)="toggleNodesGroup(node)"></mat-checkbox>
 					<span matTreeNodeToggle class="cursor-pointer">
 						<ng-container

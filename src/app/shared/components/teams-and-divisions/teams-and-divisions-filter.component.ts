@@ -99,15 +99,26 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 	}
 
 	private _receiveSelectedNodesFromTree(divisionsAndTeams: IDivisionsAndTeamsTreeNode[]): IDivisionsAndTeamsFilterState {
-		const selectedEmptyTenantsIds = (divisionsAndTeams || [])
-			.filter((tenant: IDivisionsAndTeamsTreeNode) => isEmpty(tenant.children) && tenant.selected)
+        // NB: if at least 1 child is selected - send parent divison/tenant to B-E as selected option (can be changed in future, need to discuss)
+		const selectedTenantsIds = (divisionsAndTeams || [])
+			.filter(
+				(tenant: IDivisionsAndTeamsTreeNode) =>
+					tenant.selected ||
+					(!isEmpty(tenant.children) &&
+						tenant.children.some(
+							(division) =>
+								division.selected ||
+								(!isEmpty(division.children) && division.children.some((team) => team.selected))
+						))
+			)
 			.map((tenant: IDivisionsAndTeamsTreeNode) => tenant.id);
 
 		const divisions = (divisionsAndTeams || []).flatMap((tenant: IDivisionsAndTeamsTreeNode) => tenant.children);
-		const teams = divisions.flatMap((division: IDivisionsAndTeamsTreeNode) => division.children).filter(Boolean);
+
+        const teams = divisions.flatMap((division: IDivisionsAndTeamsTreeNode) => division.children).filter(Boolean);
 
 		const selectedDivisionsIds = divisions
-			.filter((division: IDivisionsAndTeamsTreeNode) => isEmpty(division.children) && division.selected)
+			.filter((division: IDivisionsAndTeamsTreeNode) => (isEmpty(division.children) && division.selected) || (!isEmpty(division.children) && division.children.some(node => node.selected)))
 			.map((team: IDivisionsAndTeamsTreeNode) => team.id);
 
 		const selectedTeamsIds = teams
@@ -116,7 +127,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 
 		return {
 			teamsIds: selectedTeamsIds,
-			tenantIds: selectedEmptyTenantsIds,
+			tenantIds: selectedTenantsIds,
 			divisionIds: selectedDivisionsIds,
 		};
 	}
@@ -130,7 +141,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 
 		const isAllChildrenSelected = node.children.every((child: IDivisionsAndTeamsTreeNode) => child.selected);
 
-		node.selected = isAllChildrenSelected;
+        node.selected = isAllChildrenSelected;
 	};
 
 	private _fetchDivisionsAndTeamsTree(): void {
@@ -195,6 +206,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 
 	private _bindDivisionsToTenants(): IDivisionsAndTeamsTreeNode[] {
 		const { tenantToChildIdsMap } = this._divisionsAndTeamsResponse$.getValue();
+
 		return AppConsts.TENANT_LIST.map((tenantName: string) => {
 			const tenantDivisions = tenantToChildIdsMap[tenantName];
 			const tenantDivisionsAndTeams = this._mapDivisionsAndTeamsNodesToTreeView(tenantDivisions);
@@ -204,7 +216,7 @@ export class DivisionsAndTeamsFilterComponent implements OnInit, OnDestroy {
 				id: tenantId,
 				name: tenant.name,
 				children: tenantDivisionsAndTeams,
-				isTenant: true,
+				isRoot: true,
 				selected: this._divisionsAndTeamsFilterState?.tenantIds.includes(tenantId),
 			};
 		}, []);

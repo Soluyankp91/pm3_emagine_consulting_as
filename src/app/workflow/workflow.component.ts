@@ -189,7 +189,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 	ngOnInit(): void {
 		this._titleService.setTitle(ERouteTitleType.WfList);
 		this._getEnums();
-		this.getWorkflowList();
+		this.getGridOptions();
 	}
 
 	managersChanged(event: SelectableEmployeeDto[]) {
@@ -276,6 +276,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 divisionIds: filters.ownerDivisionsIds ?? [],
                 teamsIds: filters.ownerTeamsIds ?? [],
             };
+            console.log('2');
             this._teamsAndDivisionCounter(this.teamsAndDivisionsFilterState);
 		}
 		this.updateAdvancedFiltersCounter();

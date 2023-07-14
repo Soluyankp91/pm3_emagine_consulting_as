@@ -9,6 +9,7 @@ export interface IDivisionsAndTeamsTreeNode {
 	selected?: boolean;
 	id?: number;
 	children?: IDivisionsAndTeamsTreeNode[];
+    isRoot?: boolean;
 }
 export enum TenantIdsValue {
     Denmark = 1,
