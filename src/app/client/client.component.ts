@@ -115,7 +115,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                 }
             })
         );
-        this.getClientsGrid();
+        this.getGridOptions();
     }
 
     managersChanged(event: SelectableEmployeeDto[]) {

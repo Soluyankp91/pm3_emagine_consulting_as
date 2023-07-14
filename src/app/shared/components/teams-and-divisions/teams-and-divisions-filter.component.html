@@ -30,12 +30,10 @@
 			<emg-tree-multiselect [formControl]="valueControl" [isLoading]="viewModel.isLoading">
 				<ng-template #treeNode let-node>
 					<div class="flex-items-center">
-						<ng-container *ngIf="node.isTenant">
+						<ng-container *ngIf="node.isRoot">
 							<tenant-flag-cell [tenantId]="node.id"></tenant-flag-cell>
 						</ng-container>
-						<span class="light-black-color text-500 u-mt--4" [class.ml-2]="node.isTenant" [class.u-mt--1]="node.isTenant">{{
-							node.name
-						}}</span>
+						<span class="light-black-color text-500 u-mt--4" [ngClass]="{'ml-2 mt-1': node.isRoot}">{{node.name}}</span>
 					</div>
 				</ng-template>
 			</emg-tree-multiselect>

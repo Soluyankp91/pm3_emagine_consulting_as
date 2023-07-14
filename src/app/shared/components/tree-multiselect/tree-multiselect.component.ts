@@ -16,7 +16,7 @@ import { isEmpty } from 'lodash';
 		},
 	],
 })
-export class EmgTreeMultiselectComponent<T extends { selected: boolean }> implements ControlValueAccessor {
+export class EmgTreeMultiselectComponent<T extends { selected: boolean; isRoot: boolean }> implements ControlValueAccessor {
 	@Attribute('childrenField') childrenField = 'children';
 	@ContentChild('treeNode') treeNodeTemplate: TemplateRef<any>;
 
@@ -70,7 +70,21 @@ export class EmgTreeMultiselectComponent<T extends { selected: boolean }> implem
 		this.onChange(this.dataSource.data);
 	}
 
-	hasSelectedChild = (node: T): boolean => {
+	isIndeterminate = (node: T): boolean =>
+		(this._hasSelectedChild(node) && !this.isRootAndAllChildrenSelected(node));
+
+	isRootAndAllChildrenSelected = (node: T): boolean => node.isRoot && this._isAllChildrenSelected(node);
+
+	private _isAllChildrenSelected = (node: T): boolean => {
+		const children = node[this.childrenField];
+		if (isEmpty(children)) {
+			return false;
+		}
+		const isAllChildrenSelected = children.every((child: T) => child.selected);
+		return isAllChildrenSelected || children.every(this._hasSelectedChild);
+	};
+
+	private _hasSelectedChild = (node: T): boolean => {
 		const children = node[this.childrenField];
 
 		if (isEmpty(children)) {
@@ -82,7 +96,7 @@ export class EmgTreeMultiselectComponent<T extends { selected: boolean }> implem
 
 		const childrenPartiallySelected = someChildSelected && selectedChildren.length !== children.length;
 
-		return childrenPartiallySelected || children.some(this.hasSelectedChild);
+		return childrenPartiallySelected || children.some(this._hasSelectedChild);
 	};
 
 	private _checkParentSelections(node: T): void {
@@ -95,7 +109,9 @@ export class EmgTreeMultiselectComponent<T extends { selected: boolean }> implem
 		const children = this.treeControl.getChildren(parent) as T[];
 		const selectedChildren = children.filter((child: T) => child.selected);
 
-		parent.selected = children.length === selectedChildren.length;
+		if (!parent.isRoot) {
+			parent.selected = children.length === selectedChildren.length;
+		}
 
 		this._checkParentSelections(parent);
 	}
