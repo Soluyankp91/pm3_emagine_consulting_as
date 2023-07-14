@@ -645,21 +645,23 @@ export class EditorCoreService {
 		const doc = this.editor.document;
 		const docFields = doc.fields;
 
-		const oldFields = [];
+		const oldFields = new Set<string>();
 
 		for (let i = 0; i < docFields.count; i++) {
 			const field = docFields.getByIndex(i);
 			const fieldCode = doc.getText(field.codeInterval);
-			const fieldResult = doc.getText(field.resultInterval);
-			const key = fieldCode.split(' ')[1];
-			const value = EditorCoreService.cleanupMergeFieldValue(fieldResult);
-			
-			if (String(fields[key]) !== value && !oldFields.find((i) => i === key)) {
-				oldFields.push(key);
+			if (fieldCode.startsWith('MERGEFIELD')) {
+				const fieldResult = doc.getText(field.resultInterval);
+				const key = fieldCode.split(' ')[1];
+				const value = EditorCoreService.cleanupMergeFieldValue(fieldResult);
+
+				if (String(fields[key]) !== value) {
+					oldFields.add(key);
+				}
 			}
 		}
 
-		return oldFields;
+		return Array.from(oldFields);
 	}
 
 	private _runTaskAsyncAndSkipTrackChanges(task: () => void): void {
