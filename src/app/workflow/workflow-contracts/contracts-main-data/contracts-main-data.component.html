@@ -50,7 +50,7 @@
                         formControlName="deliveryTypeId" required>
                         <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
                             <ng-container *ngIf="item.id === contractsMainForm.deliveryTypeId?.value">
-                                <mat-button-toggle [value]="item">
+                                <mat-button-toggle [value]="item.id">
                                     {{ item.name }}
                                 </mat-button-toggle>
                             </ng-container>

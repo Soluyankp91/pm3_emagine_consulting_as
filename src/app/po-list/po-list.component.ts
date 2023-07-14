@@ -190,8 +190,11 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		this.getPurchaseOrdersList();
 	}
 
-	getPurchaseOrdersList(): void {
+	getPurchaseOrdersList(filterChanged?: boolean): void {
 		this.showMainSpinner();
+        if (filterChanged) {
+            this.pageNumber = 1;
+        }
 		const payload = this._packPayload();
 		this.isLoading$.next(true);
 		this._purchaseOrderService
@@ -241,7 +244,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		this.chasingStatusesFilter.reset([], { emitEvent: false });
 		this.statusesFilter.reset([], { emitEvent: false });
 		localStorage.removeItem(PO_GRID_OPTIONS_KEY);
-		this.getPurchaseOrdersList();
+		this.getPurchaseOrdersList(true);
 	}
 
 	isAllSelected(): boolean {
@@ -352,12 +355,12 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 	teamsAndDivisionsChanged(teamsAndDivisionFilter: IDivisionsAndTeamsFilterState): void {
 		this.teamsAndDivisionsFilterState = teamsAndDivisionFilter;
 		this._teamsAndDivisionCounter(teamsAndDivisionFilter);
-		this.getPurchaseOrdersList();
+		this.getPurchaseOrdersList(true);
 	}
 
 	managersChanged(event: SelectableEmployeeDto[]): void {
 		this.selectedAccountManagers = event;
-		this.getPurchaseOrdersList();
+		this.getPurchaseOrdersList(true);
 	}
 
 	private _openBulkUpdateClientResponsibleDialog(): void {
@@ -552,7 +555,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 			.pipe(debounceTime(700), takeUntil(this._unSubscribe$))
 			.subscribe(() => {
 				this._checkIfDirty();
-				this.getPurchaseOrdersList();
+				this.getPurchaseOrdersList(true);
 			});
     }
 

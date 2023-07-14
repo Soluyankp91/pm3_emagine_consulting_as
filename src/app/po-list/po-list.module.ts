@@ -63,8 +63,8 @@ export class PoListModule {
             sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/edit-po.svg')
         );
         iconRegistry.addSvgIcon(
-			'empty-table-icon',
-			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/empty-table-icon.svg')
+			'no-results-table',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/po-list/no-results-table.svg')
 		);
         iconRegistry.addSvgIcon(
 			'filter-icon',

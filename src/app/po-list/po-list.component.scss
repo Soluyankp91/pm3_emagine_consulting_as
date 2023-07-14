@@ -131,8 +131,8 @@
 		align-items: center;
 	}
 	.empty-table-icon {
-		width: 24px;
-		height: 32px;
+		width: 80px;
+		height: 60px;
 	}
 	.no-items-text {
 		max-width: 333px;
@@ -152,14 +152,6 @@
             -4px 0px 0px rgba(231, 227, 232, 0.5),
             -6px 0px 0px rgba(225, 220, 225, 0.3),
             -8px 0px 0px rgba(217, 217, 217, 0);
-		button.mat-icon-button {
-			// padding-left: 16px;
-		}
-		// button.mat-icon-button,
-		// button.mat-icon-button mat-icon.mat-icon {
-		// 	width: 40px !important;
-		// 	height: 40px !important;
-		// }
 	}
 	.close-button-icon {
 		width: 8px;
@@ -210,7 +202,7 @@
     padding-left: 0 !important;
 }
 .poStatus-column {
-    @include table-cell-width(15px);
+    @include table-cell-width(20px);
 }
 
 .poNote-column {
@@ -335,7 +327,7 @@
 
 .expandedLeftSticky-column {
     padding-left: 1px !important;
-    @include table-cell-width(514px);
+    @include table-cell-width(519px);
     box-shadow:
         4px 0px 0px rgba(231, 227, 232, 0.5),
         6px 0px 0px rgba(225, 220, 225, 0.3),
