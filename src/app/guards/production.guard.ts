@@ -13,6 +13,6 @@ export class ContractsProductionGuard implements CanActivate {
 		route: ActivatedRouteSnapshot,
 		state: RouterStateSnapshot
 	): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-		return this._configurationService.contractsEnabled().pipe(catchError(() => of(false)));
+		return true; // this._configurationService.contractsEnabled().pipe(catchError(() => of(false)));
 	}
 }
