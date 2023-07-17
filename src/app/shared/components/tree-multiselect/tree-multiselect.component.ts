@@ -71,7 +71,7 @@ export class EmgTreeMultiselectComponent<T extends { selected: boolean; isRoot: 
 	}
 
 	isIndeterminate = (node: T): boolean =>
-		(this._hasSelectedChild(node) && !this.isRootAndAllChildrenSelected(node));
+        (this._hasSelectedChild(node) || this.isRootAndAllChildrenSelected(node)) && !node.selected;
 
 	isRootAndAllChildrenSelected = (node: T): boolean => node.isRoot && this._isAllChildrenSelected(node);
 
@@ -109,9 +109,7 @@ export class EmgTreeMultiselectComponent<T extends { selected: boolean; isRoot: 
 		const children = this.treeControl.getChildren(parent) as T[];
 		const selectedChildren = children.filter((child: T) => child.selected);
 
-		if (!parent.isRoot) {
-			parent.selected = children.length === selectedChildren.length;
-		}
+        parent.selected = children.length === selectedChildren.length;
 
 		this._checkParentSelections(parent);
 	}
