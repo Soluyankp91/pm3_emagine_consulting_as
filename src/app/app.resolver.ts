@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
-import { Observable, forkJoin, merge } from 'rxjs';
+import { Observable, merge } from 'rxjs';
 import { InternalLookupService } from './shared/common/internal-lookup.service';
 
 @Injectable({

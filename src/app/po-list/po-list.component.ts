@@ -23,7 +23,6 @@ import {
 	PurchaseOrdersSetIsCompletedCommand,
 	ValueUnitEnum,
     PurchaseOrderListItemDto,
-    EmployeeDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { debounceTime, finalize, map, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -35,7 +34,7 @@ import {
 	IPOGridData,
 	IPoListPayload,
 } from './po-list.model';
-import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
+import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
@@ -52,9 +51,6 @@ import { EPOChasingStatusText } from '../shared/components/po-chasing-status/po-
 import { SelectableCountry } from '../overview/main-overview.model';
 import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 import { cloneDeep } from 'lodash';
-import { act } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
-import { getEmployees } from '../store';
 
 const PO_GRID_OPTIONS_KEY  = 'PurchaseOrdersGridFILTERS.1.0.0';
 @Component({
@@ -129,7 +125,6 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 	selectedTeamsAndDivisionsCount: number = 0;
 	isLoading$ = new BehaviorSubject(false);
 	isDirty$ = new BehaviorSubject(false);
-	employees$: Observable<EmployeeDto[]>;
 	private _unSubscribe$ = new Subject();
 	constructor(
 		injector: Injector,
@@ -139,7 +134,6 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		private readonly _overlay: Overlay,
 		private readonly _dialog: MatDialog,
 		private readonly _route: ActivatedRoute,
-        private _store: Store
 	) {
 		super(injector);
 	}
@@ -583,7 +577,6 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 	}
 
     private _subscribeOnQueryParamsAndLoadTable() {
-        this.employees$ = this._store.select(getEmployees);
 		this._route.queryParams.pipe(takeUntil(this._unSubscribe$)).subscribe(({ responsibleEmployee, tenant }) => {
 			this._loadTable(responsibleEmployee, tenant)
 		});
