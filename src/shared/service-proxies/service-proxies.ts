@@ -17342,6 +17342,60 @@ export class PurchaseOrderServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    getPurchaseOrder(purchaseOrderId: number): Observable<PurchaseOrderQueryDto> {
+        let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrder/{purchaseOrderId}";
+        if (purchaseOrderId === undefined || purchaseOrderId === null)
+            throw new Error("The parameter 'purchaseOrderId' must be defined.");
+        url_ = url_.replace("{purchaseOrderId}", encodeURIComponent("" + purchaseOrderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPurchaseOrder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPurchaseOrder(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDto>;
+        }));
+    }
+
+    protected processGetPurchaseOrder(response: HttpResponseBase): Observable<PurchaseOrderQueryDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderQueryDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PurchaseOrderQueryDto>(null as any);
+    }
+
+    /**
      * @param invoicingEntities (optional) 
      * @param clientsIds (optional) 
      * @param responsibleEmployees (optional) 
@@ -17359,7 +17413,7 @@ export class PurchaseOrderServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    getPurchaseOrdersList(invoicingEntities?: number[] | undefined, clientsIds?: number[] | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, chasingStatuses?: PurchaseOrderChasingStatus[] | undefined, statuses?: PurchaseOrderStatus[] | undefined, noteStatuses?: PurchaseOrderNoteStatus[] | undefined, capTypes?: PurchaseOrderCapType[] | undefined, capUnits?: ValueUnitEnum[] | undefined, showCompleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<PurchaseOrderQueryDtoPaginatedList> {
+    getPurchaseOrdersList(invoicingEntities?: number[] | undefined, clientsIds?: number[] | undefined, responsibleEmployees?: number[] | undefined, employeesTeamsAndDivisionsNodes?: number[] | undefined, employeesTenants?: number[] | undefined, chasingStatuses?: PurchaseOrderChasingStatus[] | undefined, statuses?: PurchaseOrderStatus[] | undefined, noteStatuses?: PurchaseOrderNoteStatus[] | undefined, capTypes?: PurchaseOrderCapType[] | undefined, capUnits?: ValueUnitEnum[] | undefined, showCompleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<PurchaseOrderListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/PurchaseOrder/getPurchaseOrdersList?";
         if (invoicingEntities === null)
             throw new Error("The parameter 'invoicingEntities' cannot be null.");
@@ -17438,14 +17492,14 @@ export class PurchaseOrderServiceProxy {
                 try {
                     return this.processGetPurchaseOrdersList(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PurchaseOrderQueryDtoPaginatedList>;
+                    return _observableThrow(e) as any as Observable<PurchaseOrderListItemDtoPaginatedList>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PurchaseOrderQueryDtoPaginatedList>;
+                return _observableThrow(response_) as any as Observable<PurchaseOrderListItemDtoPaginatedList>;
         }));
     }
 
-    protected processGetPurchaseOrdersList(response: HttpResponseBase): Observable<PurchaseOrderQueryDtoPaginatedList> {
+    protected processGetPurchaseOrdersList(response: HttpResponseBase): Observable<PurchaseOrderListItemDtoPaginatedList> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -17456,7 +17510,7 @@ export class PurchaseOrderServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PurchaseOrderQueryDtoPaginatedList.fromJS(resultData200);
+            result200 = PurchaseOrderListItemDtoPaginatedList.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -17464,7 +17518,7 @@ export class PurchaseOrderServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PurchaseOrderQueryDtoPaginatedList>(null as any);
+        return _observableOf<PurchaseOrderListItemDtoPaginatedList>(null as any);
     }
 
     /**
@@ -27936,6 +27990,7 @@ export class ConsultantNameWithRequestUrl implements IConsultantNameWithRequestU
     consultantId?: number;
     consultantName?: string | undefined;
     companyName?: string | undefined;
+    supplierId?: number | undefined;
     requestId?: number | undefined;
     requestUrl?: string | undefined;
 
@@ -27953,6 +28008,7 @@ export class ConsultantNameWithRequestUrl implements IConsultantNameWithRequestU
             this.consultantId = _data["consultantId"];
             this.consultantName = _data["consultantName"];
             this.companyName = _data["companyName"];
+            this.supplierId = _data["supplierId"];
             this.requestId = _data["requestId"];
             this.requestUrl = _data["requestUrl"];
         }
@@ -27970,6 +28026,7 @@ export class ConsultantNameWithRequestUrl implements IConsultantNameWithRequestU
         data["consultantId"] = this.consultantId;
         data["consultantName"] = this.consultantName;
         data["companyName"] = this.companyName;
+        data["supplierId"] = this.supplierId;
         data["requestId"] = this.requestId;
         data["requestUrl"] = this.requestUrl;
         return data;
@@ -27980,6 +28037,7 @@ export interface IConsultantNameWithRequestUrl {
     consultantId?: number;
     consultantName?: string | undefined;
     companyName?: string | undefined;
+    supplierId?: number | undefined;
     requestId?: number | undefined;
     requestUrl?: string | undefined;
 }
@@ -33579,7 +33637,6 @@ export interface IPurchaseOrderClientPeriodDto {
 }
 
 export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
-    id?: number | undefined;
     number?: string | undefined;
     numberMissingButRequired?: boolean | undefined;
     receiveDate?: moment.Moment | undefined;
@@ -33591,6 +33648,7 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
+    id?: number | undefined;
     clientContactResponsibleId?: number | undefined;
     purchaseOrderDocumentCommandDto?: PurchaseOrderDocumentCommandDto;
 
@@ -33605,7 +33663,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
             this.number = _data["number"];
             this.numberMissingButRequired = _data["numberMissingButRequired"];
             this.receiveDate = _data["receiveDate"] ? moment(_data["receiveDate"].toString()) : <any>undefined;
@@ -33617,6 +33674,7 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
             this.notes = _data["notes"];
             this.isUnread = _data["isUnread"];
             this.notifyCM = _data["notifyCM"];
+            this.id = _data["id"];
             this.clientContactResponsibleId = _data["clientContactResponsibleId"];
             this.purchaseOrderDocumentCommandDto = _data["purchaseOrderDocumentCommandDto"] ? PurchaseOrderDocumentCommandDto.fromJS(_data["purchaseOrderDocumentCommandDto"]) : <any>undefined;
         }
@@ -33631,7 +33689,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["number"] = this.number;
         data["numberMissingButRequired"] = this.numberMissingButRequired;
         data["receiveDate"] = this.receiveDate ? this.receiveDate.format('YYYY-MM-DD') : <any>undefined;
@@ -33643,6 +33700,7 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
         data["notes"] = this.notes;
         data["isUnread"] = this.isUnread;
         data["notifyCM"] = this.notifyCM;
+        data["id"] = this.id;
         data["clientContactResponsibleId"] = this.clientContactResponsibleId;
         data["purchaseOrderDocumentCommandDto"] = this.purchaseOrderDocumentCommandDto ? this.purchaseOrderDocumentCommandDto.toJSON() : <any>undefined;
         return data;
@@ -33650,7 +33708,6 @@ export class PurchaseOrderCommandDto implements IPurchaseOrderCommandDto {
 }
 
 export interface IPurchaseOrderCommandDto {
-    id?: number | undefined;
     number?: string | undefined;
     numberMissingButRequired?: boolean | undefined;
     receiveDate?: moment.Moment | undefined;
@@ -33662,6 +33719,7 @@ export interface IPurchaseOrderCommandDto {
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
+    id?: number | undefined;
     clientContactResponsibleId?: number | undefined;
     purchaseOrderDocumentCommandDto?: PurchaseOrderDocumentCommandDto;
 }
@@ -33802,14 +33860,7 @@ export interface IPurchaseOrderDocumentQueryDto {
     createdDateUtc?: moment.Moment;
 }
 
-export enum PurchaseOrderNoteStatus {
-    UnreadNote = 1,
-    NoNoteAdded = 2,
-    ReadNote = 3,
-}
-
-export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
-    id?: number | undefined;
+export class PurchaseOrderListItemDto implements IPurchaseOrderListItemDto {
     number?: string | undefined;
     numberMissingButRequired?: boolean | undefined;
     receiveDate?: moment.Moment | undefined;
@@ -33821,25 +33872,26 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
+    id?: number;
     status?: PurchaseOrderStatus;
     directClientIdReferencingThisPo?: number | undefined;
-    directClientNameReferencingThisPo?: string | undefined;
-    chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
     purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
     workflowsIdsReferencingThisPo?: string[] | undefined;
-    clientPeriodsReferencingThisPo?: PurchaseOrderClientPeriodDto[] | undefined;
-    isLinkedToAnyProjectLine?: boolean | undefined;
-    salesResponsible?: EmployeeDto;
-    contractResponsible?: EmployeeDto;
     clientContactResponsible?: ContactDto;
-    noteStatus?: PurchaseOrderNoteStatus;
     createdBy?: EmployeeDto;
     createdOnUtc?: moment.Moment | undefined;
     modifiedBy?: EmployeeDto;
     modifiedOnUtc?: moment.Moment | undefined;
     purchaseOrderDocumentQueryDto?: PurchaseOrderDocumentQueryDto;
+    directClientNameReferencingThisPo?: string | undefined;
+    noteStatus?: PurchaseOrderNoteStatus;
+    salesResponsible?: EmployeeDto;
+    contractResponsible?: EmployeeDto;
+    chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
+    clientPeriodsReferencingThisPo?: PurchaseOrderClientPeriodDto[] | undefined;
+    isLinkedToAnyProjectLine?: boolean;
 
-    constructor(data?: IPurchaseOrderQueryDto) {
+    constructor(data?: IPurchaseOrderListItemDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -33850,7 +33902,6 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
             this.number = _data["number"];
             this.numberMissingButRequired = _data["numberMissingButRequired"];
             this.receiveDate = _data["receiveDate"] ? moment(_data["receiveDate"].toString()) : <any>undefined;
@@ -33862,19 +33913,29 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
             this.notes = _data["notes"];
             this.isUnread = _data["isUnread"];
             this.notifyCM = _data["notifyCM"];
+            this.id = _data["id"];
             this.status = _data["status"];
             this.directClientIdReferencingThisPo = _data["directClientIdReferencingThisPo"];
-            this.directClientNameReferencingThisPo = _data["directClientNameReferencingThisPo"];
-            if (Array.isArray(_data["chasingStatusHistory"])) {
-                this.chasingStatusHistory = [] as any;
-                for (let item of _data["chasingStatusHistory"])
-                    this.chasingStatusHistory!.push(PurchaseOrderChasingStatusHistoryDto.fromJS(item));
-            }
             this.purchaseOrderCurrentContextData = _data["purchaseOrderCurrentContextData"] ? PurchaseOrderCurrentContextDto.fromJS(_data["purchaseOrderCurrentContextData"]) : <any>undefined;
             if (Array.isArray(_data["workflowsIdsReferencingThisPo"])) {
                 this.workflowsIdsReferencingThisPo = [] as any;
                 for (let item of _data["workflowsIdsReferencingThisPo"])
                     this.workflowsIdsReferencingThisPo!.push(item);
+            }
+            this.clientContactResponsible = _data["clientContactResponsible"] ? ContactDto.fromJS(_data["clientContactResponsible"]) : <any>undefined;
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
+            this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
+            this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
+            this.purchaseOrderDocumentQueryDto = _data["purchaseOrderDocumentQueryDto"] ? PurchaseOrderDocumentQueryDto.fromJS(_data["purchaseOrderDocumentQueryDto"]) : <any>undefined;
+            this.directClientNameReferencingThisPo = _data["directClientNameReferencingThisPo"];
+            this.noteStatus = _data["noteStatus"];
+            this.salesResponsible = _data["salesResponsible"] ? EmployeeDto.fromJS(_data["salesResponsible"]) : <any>undefined;
+            this.contractResponsible = _data["contractResponsible"] ? EmployeeDto.fromJS(_data["contractResponsible"]) : <any>undefined;
+            if (Array.isArray(_data["chasingStatusHistory"])) {
+                this.chasingStatusHistory = [] as any;
+                for (let item of _data["chasingStatusHistory"])
+                    this.chasingStatusHistory!.push(PurchaseOrderChasingStatusHistoryDto.fromJS(item));
             }
             if (Array.isArray(_data["clientPeriodsReferencingThisPo"])) {
                 this.clientPeriodsReferencingThisPo = [] as any;
@@ -33882,28 +33943,18 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
                     this.clientPeriodsReferencingThisPo!.push(PurchaseOrderClientPeriodDto.fromJS(item));
             }
             this.isLinkedToAnyProjectLine = _data["isLinkedToAnyProjectLine"];
-            this.salesResponsible = _data["salesResponsible"] ? EmployeeDto.fromJS(_data["salesResponsible"]) : <any>undefined;
-            this.contractResponsible = _data["contractResponsible"] ? EmployeeDto.fromJS(_data["contractResponsible"]) : <any>undefined;
-            this.clientContactResponsible = _data["clientContactResponsible"] ? ContactDto.fromJS(_data["clientContactResponsible"]) : <any>undefined;
-            this.noteStatus = _data["noteStatus"];
-            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
-            this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
-            this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
-            this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
-            this.purchaseOrderDocumentQueryDto = _data["purchaseOrderDocumentQueryDto"] ? PurchaseOrderDocumentQueryDto.fromJS(_data["purchaseOrderDocumentQueryDto"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): PurchaseOrderQueryDto {
+    static fromJS(data: any): PurchaseOrderListItemDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PurchaseOrderQueryDto();
+        let result = new PurchaseOrderListItemDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["number"] = this.number;
         data["numberMissingButRequired"] = this.numberMissingButRequired;
         data["receiveDate"] = this.receiveDate ? this.receiveDate.format('YYYY-MM-DD') : <any>undefined;
@@ -33915,19 +33966,29 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
         data["notes"] = this.notes;
         data["isUnread"] = this.isUnread;
         data["notifyCM"] = this.notifyCM;
+        data["id"] = this.id;
         data["status"] = this.status;
         data["directClientIdReferencingThisPo"] = this.directClientIdReferencingThisPo;
-        data["directClientNameReferencingThisPo"] = this.directClientNameReferencingThisPo;
-        if (Array.isArray(this.chasingStatusHistory)) {
-            data["chasingStatusHistory"] = [];
-            for (let item of this.chasingStatusHistory)
-                data["chasingStatusHistory"].push(item.toJSON());
-        }
         data["purchaseOrderCurrentContextData"] = this.purchaseOrderCurrentContextData ? this.purchaseOrderCurrentContextData.toJSON() : <any>undefined;
         if (Array.isArray(this.workflowsIdsReferencingThisPo)) {
             data["workflowsIdsReferencingThisPo"] = [];
             for (let item of this.workflowsIdsReferencingThisPo)
                 data["workflowsIdsReferencingThisPo"].push(item);
+        }
+        data["clientContactResponsible"] = this.clientContactResponsible ? this.clientContactResponsible.toJSON() : <any>undefined;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
+        data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
+        data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
+        data["purchaseOrderDocumentQueryDto"] = this.purchaseOrderDocumentQueryDto ? this.purchaseOrderDocumentQueryDto.toJSON() : <any>undefined;
+        data["directClientNameReferencingThisPo"] = this.directClientNameReferencingThisPo;
+        data["noteStatus"] = this.noteStatus;
+        data["salesResponsible"] = this.salesResponsible ? this.salesResponsible.toJSON() : <any>undefined;
+        data["contractResponsible"] = this.contractResponsible ? this.contractResponsible.toJSON() : <any>undefined;
+        if (Array.isArray(this.chasingStatusHistory)) {
+            data["chasingStatusHistory"] = [];
+            for (let item of this.chasingStatusHistory)
+                data["chasingStatusHistory"].push(item.toJSON());
         }
         if (Array.isArray(this.clientPeriodsReferencingThisPo)) {
             data["clientPeriodsReferencingThisPo"] = [];
@@ -33935,21 +33996,11 @@ export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
                 data["clientPeriodsReferencingThisPo"].push(item.toJSON());
         }
         data["isLinkedToAnyProjectLine"] = this.isLinkedToAnyProjectLine;
-        data["salesResponsible"] = this.salesResponsible ? this.salesResponsible.toJSON() : <any>undefined;
-        data["contractResponsible"] = this.contractResponsible ? this.contractResponsible.toJSON() : <any>undefined;
-        data["clientContactResponsible"] = this.clientContactResponsible ? this.clientContactResponsible.toJSON() : <any>undefined;
-        data["noteStatus"] = this.noteStatus;
-        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
-        data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
-        data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
-        data["purchaseOrderDocumentQueryDto"] = this.purchaseOrderDocumentQueryDto ? this.purchaseOrderDocumentQueryDto.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IPurchaseOrderQueryDto {
-    id?: number | undefined;
+export interface IPurchaseOrderListItemDto {
     number?: string | undefined;
     numberMissingButRequired?: boolean | undefined;
     receiveDate?: moment.Moment | undefined;
@@ -33961,27 +34012,28 @@ export interface IPurchaseOrderQueryDto {
     notes?: string | undefined;
     isUnread?: boolean;
     notifyCM?: boolean;
+    id?: number;
     status?: PurchaseOrderStatus;
     directClientIdReferencingThisPo?: number | undefined;
-    directClientNameReferencingThisPo?: string | undefined;
-    chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
     purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
     workflowsIdsReferencingThisPo?: string[] | undefined;
-    clientPeriodsReferencingThisPo?: PurchaseOrderClientPeriodDto[] | undefined;
-    isLinkedToAnyProjectLine?: boolean | undefined;
-    salesResponsible?: EmployeeDto;
-    contractResponsible?: EmployeeDto;
     clientContactResponsible?: ContactDto;
-    noteStatus?: PurchaseOrderNoteStatus;
     createdBy?: EmployeeDto;
     createdOnUtc?: moment.Moment | undefined;
     modifiedBy?: EmployeeDto;
     modifiedOnUtc?: moment.Moment | undefined;
     purchaseOrderDocumentQueryDto?: PurchaseOrderDocumentQueryDto;
+    directClientNameReferencingThisPo?: string | undefined;
+    noteStatus?: PurchaseOrderNoteStatus;
+    salesResponsible?: EmployeeDto;
+    contractResponsible?: EmployeeDto;
+    chasingStatusHistory?: PurchaseOrderChasingStatusHistoryDto[] | undefined;
+    clientPeriodsReferencingThisPo?: PurchaseOrderClientPeriodDto[] | undefined;
+    isLinkedToAnyProjectLine?: boolean;
 }
 
-export class PurchaseOrderQueryDtoPaginatedList implements IPurchaseOrderQueryDtoPaginatedList {
-    items?: PurchaseOrderQueryDto[] | undefined;
+export class PurchaseOrderListItemDtoPaginatedList implements IPurchaseOrderListItemDtoPaginatedList {
+    items?: PurchaseOrderListItemDto[] | undefined;
     pageIndex?: number;
     readonly totalPages?: number;
     totalCount?: number;
@@ -33989,7 +34041,7 @@ export class PurchaseOrderQueryDtoPaginatedList implements IPurchaseOrderQueryDt
     readonly hasPreviousPage?: boolean;
     readonly hasNextPage?: boolean;
 
-    constructor(data?: IPurchaseOrderQueryDtoPaginatedList) {
+    constructor(data?: IPurchaseOrderListItemDtoPaginatedList) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -34003,7 +34055,7 @@ export class PurchaseOrderQueryDtoPaginatedList implements IPurchaseOrderQueryDt
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items!.push(PurchaseOrderQueryDto.fromJS(item));
+                    this.items!.push(PurchaseOrderListItemDto.fromJS(item));
             }
             this.pageIndex = _data["pageIndex"];
             (<any>this).totalPages = _data["totalPages"];
@@ -34014,9 +34066,9 @@ export class PurchaseOrderQueryDtoPaginatedList implements IPurchaseOrderQueryDt
         }
     }
 
-    static fromJS(data: any): PurchaseOrderQueryDtoPaginatedList {
+    static fromJS(data: any): PurchaseOrderListItemDtoPaginatedList {
         data = typeof data === 'object' ? data : {};
-        let result = new PurchaseOrderQueryDtoPaginatedList();
+        let result = new PurchaseOrderListItemDtoPaginatedList();
         result.init(data);
         return result;
     }
@@ -34038,14 +34090,148 @@ export class PurchaseOrderQueryDtoPaginatedList implements IPurchaseOrderQueryDt
     }
 }
 
-export interface IPurchaseOrderQueryDtoPaginatedList {
-    items?: PurchaseOrderQueryDto[] | undefined;
+export interface IPurchaseOrderListItemDtoPaginatedList {
+    items?: PurchaseOrderListItemDto[] | undefined;
     pageIndex?: number;
     totalPages?: number;
     totalCount?: number;
     pageSize?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
+}
+
+export enum PurchaseOrderNoteStatus {
+    UnreadNote = 1,
+    NoNoteAdded = 2,
+    ReadNote = 3,
+}
+
+export class PurchaseOrderQueryDto implements IPurchaseOrderQueryDto {
+    number?: string | undefined;
+    numberMissingButRequired?: boolean | undefined;
+    receiveDate?: moment.Moment | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+    chasingStatus?: PurchaseOrderChasingStatus;
+    isCompleted?: boolean | undefined;
+    capForInvoicing?: PurchaseOrderCapDto;
+    notes?: string | undefined;
+    isUnread?: boolean;
+    notifyCM?: boolean;
+    id?: number;
+    status?: PurchaseOrderStatus;
+    directClientIdReferencingThisPo?: number | undefined;
+    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+    workflowsIdsReferencingThisPo?: string[] | undefined;
+    clientContactResponsible?: ContactDto;
+    createdBy?: EmployeeDto;
+    createdOnUtc?: moment.Moment | undefined;
+    modifiedBy?: EmployeeDto;
+    modifiedOnUtc?: moment.Moment | undefined;
+    purchaseOrderDocumentQueryDto?: PurchaseOrderDocumentQueryDto;
+
+    constructor(data?: IPurchaseOrderQueryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.number = _data["number"];
+            this.numberMissingButRequired = _data["numberMissingButRequired"];
+            this.receiveDate = _data["receiveDate"] ? moment(_data["receiveDate"].toString()) : <any>undefined;
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.chasingStatus = _data["chasingStatus"];
+            this.isCompleted = _data["isCompleted"];
+            this.capForInvoicing = _data["capForInvoicing"] ? PurchaseOrderCapDto.fromJS(_data["capForInvoicing"]) : <any>undefined;
+            this.notes = _data["notes"];
+            this.isUnread = _data["isUnread"];
+            this.notifyCM = _data["notifyCM"];
+            this.id = _data["id"];
+            this.status = _data["status"];
+            this.directClientIdReferencingThisPo = _data["directClientIdReferencingThisPo"];
+            this.purchaseOrderCurrentContextData = _data["purchaseOrderCurrentContextData"] ? PurchaseOrderCurrentContextDto.fromJS(_data["purchaseOrderCurrentContextData"]) : <any>undefined;
+            if (Array.isArray(_data["workflowsIdsReferencingThisPo"])) {
+                this.workflowsIdsReferencingThisPo = [] as any;
+                for (let item of _data["workflowsIdsReferencingThisPo"])
+                    this.workflowsIdsReferencingThisPo!.push(item);
+            }
+            this.clientContactResponsible = _data["clientContactResponsible"] ? ContactDto.fromJS(_data["clientContactResponsible"]) : <any>undefined;
+            this.createdBy = _data["createdBy"] ? EmployeeDto.fromJS(_data["createdBy"]) : <any>undefined;
+            this.createdOnUtc = _data["createdOnUtc"] ? moment(_data["createdOnUtc"].toString()) : <any>undefined;
+            this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
+            this.modifiedOnUtc = _data["modifiedOnUtc"] ? moment(_data["modifiedOnUtc"].toString()) : <any>undefined;
+            this.purchaseOrderDocumentQueryDto = _data["purchaseOrderDocumentQueryDto"] ? PurchaseOrderDocumentQueryDto.fromJS(_data["purchaseOrderDocumentQueryDto"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderQueryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderQueryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["number"] = this.number;
+        data["numberMissingButRequired"] = this.numberMissingButRequired;
+        data["receiveDate"] = this.receiveDate ? this.receiveDate.format('YYYY-MM-DD') : <any>undefined;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["chasingStatus"] = this.chasingStatus;
+        data["isCompleted"] = this.isCompleted;
+        data["capForInvoicing"] = this.capForInvoicing ? this.capForInvoicing.toJSON() : <any>undefined;
+        data["notes"] = this.notes;
+        data["isUnread"] = this.isUnread;
+        data["notifyCM"] = this.notifyCM;
+        data["id"] = this.id;
+        data["status"] = this.status;
+        data["directClientIdReferencingThisPo"] = this.directClientIdReferencingThisPo;
+        data["purchaseOrderCurrentContextData"] = this.purchaseOrderCurrentContextData ? this.purchaseOrderCurrentContextData.toJSON() : <any>undefined;
+        if (Array.isArray(this.workflowsIdsReferencingThisPo)) {
+            data["workflowsIdsReferencingThisPo"] = [];
+            for (let item of this.workflowsIdsReferencingThisPo)
+                data["workflowsIdsReferencingThisPo"].push(item);
+        }
+        data["clientContactResponsible"] = this.clientContactResponsible ? this.clientContactResponsible.toJSON() : <any>undefined;
+        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
+        data["createdOnUtc"] = this.createdOnUtc ? this.createdOnUtc.toISOString() : <any>undefined;
+        data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
+        data["modifiedOnUtc"] = this.modifiedOnUtc ? this.modifiedOnUtc.toISOString() : <any>undefined;
+        data["purchaseOrderDocumentQueryDto"] = this.purchaseOrderDocumentQueryDto ? this.purchaseOrderDocumentQueryDto.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderQueryDto {
+    number?: string | undefined;
+    numberMissingButRequired?: boolean | undefined;
+    receiveDate?: moment.Moment | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+    chasingStatus?: PurchaseOrderChasingStatus;
+    isCompleted?: boolean | undefined;
+    capForInvoicing?: PurchaseOrderCapDto;
+    notes?: string | undefined;
+    isUnread?: boolean;
+    notifyCM?: boolean;
+    id?: number;
+    status?: PurchaseOrderStatus;
+    directClientIdReferencingThisPo?: number | undefined;
+    purchaseOrderCurrentContextData?: PurchaseOrderCurrentContextDto;
+    workflowsIdsReferencingThisPo?: string[] | undefined;
+    clientContactResponsible?: ContactDto;
+    createdBy?: EmployeeDto;
+    createdOnUtc?: moment.Moment | undefined;
+    modifiedBy?: EmployeeDto;
+    modifiedOnUtc?: moment.Moment | undefined;
+    purchaseOrderDocumentQueryDto?: PurchaseOrderDocumentQueryDto;
 }
 
 export class PurchaseOrderSetEmagineResponsiblesCommand implements IPurchaseOrderSetEmagineResponsiblesCommand {

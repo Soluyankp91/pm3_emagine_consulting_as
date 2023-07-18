@@ -1,4 +1,3 @@
-<!-- <mat-dialog-title> -->
 <div mat-dialog-title class="confirmation-dialog--header">
     <h1>
         {{data?.isEdit ? 'Edit Purchase Order' : 'Add Purchase Order'}}
@@ -6,7 +5,6 @@
     <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon
             svgIcon="dialog-close-icon"></mat-icon></button>
 </div>
-<!-- </mat-dialog-title> -->
 <mat-dialog-content class="confirmation-dialog">
     <form [formGroup]="purchaseOrderForm">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">

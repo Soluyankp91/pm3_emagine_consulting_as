@@ -59,6 +59,7 @@ export class PurchaseOrdersComponent extends AppComponentBase implements OnInit 
 			clientPeriodId: this.periodId,
 			directClientId: this.directClientId,
 			addedPoIds: this.purchaseOrders.value.map((x) => x.id),
+            purchaseOrderId: purchaseOrder.id,
 		};
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, BigDialogConfig);
 

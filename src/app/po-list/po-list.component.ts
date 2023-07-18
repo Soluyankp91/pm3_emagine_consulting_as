@@ -16,15 +16,15 @@ import {
 	LegalEntityDto,
 	PurchaseOrderCapType,
 	PurchaseOrderClientPeriodDto,
-	PurchaseOrderQueryDto,
-	PurchaseOrderQueryDtoPaginatedList,
+	PurchaseOrderListItemDtoPaginatedList,
 	PurchaseOrderServiceProxy,
 	PurchaseOrderSetEmagineResponsiblesCommand,
 	PurchaseOrdersSetClientContactResponsibleCommand,
 	PurchaseOrdersSetIsCompletedCommand,
 	ValueUnitEnum,
+    PurchaseOrderListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, map, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
 	Actions,
@@ -34,9 +34,9 @@ import {
 	IPOGridData,
 	IPoListPayload,
 } from './po-list.model';
-import { BehaviorSubject, ReplaySubject, Subject, merge } from 'rxjs';
+import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IDivisionsAndTeamsFilterState } from '../shared/components/teams-and-divisions/teams-and-divisions.entities';
 import { DivisionsAndTeamsFilterComponent } from '../shared/components/teams-and-divisions/teams-and-divisions-filter.component';
 import { EValueUnitTypes } from '../workflow/workflow-sales/workflow-sales.model';
@@ -132,7 +132,8 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy,
 		private readonly _router: Router,
 		private readonly _overlay: Overlay,
-		private readonly _dialog: MatDialog
+		private readonly _dialog: MatDialog,
+		private readonly _route: ActivatedRoute,
 	) {
 		super(injector);
 	}
@@ -140,7 +141,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 	ngOnInit(): void {
 		this._titleService.setTitle(ERouteTitleType.POList);
 		this._getEnums();
-		this.getGridOptions();
+        this._subscribeOnQueryParamsAndLoadTable();
         this._initPurchaseOrdersListObserver();
 	}
 
@@ -168,7 +169,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		localStorage.setItem(PO_GRID_OPTIONS_KEY , JSON.stringify(filters));
 	}
 
-	getGridOptions(): void {
+	getGridOptionsAndLoadTable(): void {
 		let filters = JSON.parse(localStorage.getItem(PO_GRID_OPTIONS_KEY )!);
 		if (filters) {
 			this.pageNumber = filters.pageNumber;
@@ -221,7 +222,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 					this.isLoading$.next(false);
 				})
 			)
-			.subscribe((result: PurchaseOrderQueryDtoPaginatedList) => {
+			.subscribe((result: PurchaseOrderListItemDtoPaginatedList) => {
 				this.dataSource = new MatTableDataSource<IPOGridData>(this._mapTableData(result.items));
 				this.totalCount = result.totalCount;
 				this.selectionModel.clear();
@@ -281,6 +282,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 			clientPeriodId: actionRow.clientPeriods[0]?.clientPeriodId,
 			directClientId: actionRow.directClientIdReferencingThisPo,
 			addedPoIds: [actionRow.id],
+            purchaseOrderId: actionRow.id,
 		};
 		const dialogRef = this._dialog.open(AddOrEditPoDialogComponent, dialogConfig);
 
@@ -472,7 +474,7 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 		} as IPoListPayload;
 	}
 
-	private _mapTableData(items: PurchaseOrderQueryDto[]): IPOGridData[] {
+	private _mapTableData(items: PurchaseOrderListItemDto[]): IPOGridData[] {
 		return items.map((item) => {
 			return {
 				originalPOData: item,
@@ -573,4 +575,37 @@ export class PoListComponent extends AppComponentBase implements OnInit, OnDestr
 			this.isDirty$.next(false);
 		}
 	}
+
+    private _subscribeOnQueryParamsAndLoadTable() {
+		this._route.queryParams.pipe(takeUntil(this._unSubscribe$)).subscribe(({ responsibleEmployee, tenant }) => {
+			this._loadTable(responsibleEmployee, tenant)
+		});
+	}
+
+    private _loadTable(responsibleEmployee, tenant) {
+        if (responsibleEmployee) {
+            const employees = this.internalLookupService.getEmployeesValue();
+            const employee = employees?.find(emp => emp.id === responsibleEmployee * 1)
+            if (employee) {
+                this.selectedAccountManagers = [new SelectableEmployeeDto({
+                    id: employee.id!,
+                    name: employee.name!,
+                    externalId: employee.externalId!,
+                    selected: true,
+                })]
+            }
+        }
+        if (tenant) {
+            const selectedTenant = this.legalEntities.find(ent => ent.id === tenant * 1);
+            if (selectedTenant) {
+                selectedTenant.selected = true;
+                this.invoicingEntityControl.setValue([selectedTenant], {emitEvent: false})
+            }
+        }
+        if (responsibleEmployee || tenant) {
+            this.getPurchaseOrdersList();
+        } else {
+            this.getGridOptionsAndLoadTable();
+        }
+    }
 }

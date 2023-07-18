@@ -31,7 +31,10 @@
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
                     <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
                     <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Consultant in Sourcing" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
-                        {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
+                        {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '')}}
+                    </span>
+                    <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Supplier in Sourcing" matTooltipClass="white-tooltip" (click)="openSupplierProfile(workflowConsultants[0].supplierId)">
+                        {{(workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
@@ -154,7 +157,10 @@
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
                     <span class="medium-grey-color u-mr--8 u-ml--8">•</span>
                     <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Consultant in Sourcing" matTooltipClass="white-tooltip" (click)="deepLinkToSourcing(workflowConsultants[0].consultantId)">
-                        {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') + (workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
+                        {{workflowConsultants[0].consultantName + (workflowConsultants[0].consultantId ? ' | '  + '#' + workflowConsultants[0].consultantId : '') }}
+                    </span>
+                    <span class="workflow-header--title__clientId cursor-pointer" matTooltip="View Supplier in Sourcing" matTooltipClass="white-tooltip" (click)="openSupplierProfile(workflowConsultants[0].supplierId)">
+                        {{(workflowConsultants[0].companyName ? ' | ' + workflowConsultants[0].companyName : '' )}}
                     </span>
                 </ng-container>
                 <ng-container *ngIf="workflowConsultants.length && workflowConsultants.length > 1">
