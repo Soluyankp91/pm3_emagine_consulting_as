@@ -57,6 +57,7 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
 			clientPeriodId: string;
 			directClientId?: number;
 			addedPoIds: number[];
+            purchaseOrderId: number;
 		},
 		private _dialogRef: MatDialogRef<AddOrEditPoDialogComponent>,
 		private readonly _purchaseOrderService: PurchaseOrderServiceProxy,
@@ -64,14 +65,13 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
         private readonly _lookupService: LookupServiceProxy
 	) {
 		super(injector);
-		this.purchaseOrderForm = new PurchaseOrderForm(this.data?.purchaseOrder);
-		this.existingPo = new PurchaseOrderQueryDto(this.data?.purchaseOrder);
-        this._setMinEndDate(this.data?.purchaseOrder?.startDate);
 	}
 
 	ngOnInit(): void {
         if (!this.data.isEdit) {
             this._getPurchaseOrders();
+        } else {
+            this._getPurchaseOrderById(this.data.purchaseOrderId);
         }
 		this._getEnums();
 		this.filteredPurchaseOrders = this.purchaseOrderForm.existingPo.valueChanges.pipe(
@@ -332,5 +332,16 @@ export class AddOrEditPoDialogComponent extends AppComponentBase implements OnIn
         }
         let startDate = value as moment.Moment;
         this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
+    }
+
+    private _getPurchaseOrderById(purchaseOrderId: number) {
+        this.showMainSpinner();
+        this._purchaseOrderService.getPurchaseOrder(purchaseOrderId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.purchaseOrderForm = new PurchaseOrderForm(result);
+                this.existingPo = new PurchaseOrderQueryDto(result);
+                this._setMinEndDate(result?.startDate);
+            })
     }
 }

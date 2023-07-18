@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, LookupServiceProxy, TeamsAndDivisionsTree, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto, LookupServiceProxy, TeamsAndDivisionsTree, WorkflowStatusDto } from 'src/shared/service-proxies/service-proxies';
 
-@Injectable()
+@Injectable({
+	providedIn: 'root',
+})
 export class InternalLookupService {
     deliveryTypes: EnumEntityTypeDto[] = [];
     currencies: EnumEntityTypeDto[] = [];
@@ -52,6 +54,7 @@ export class InternalLookupService {
     teamsAndDivisionsLevels: { [key: string]: string };
     teamsAndDivisionsTree: TeamsAndDivisionsTree;
     staticEnums: { [key: string]: any };
+    employees: EmployeeDto[] = [];
     constructor(private _enumService: EnumServiceProxy, private _lookupService: LookupServiceProxy) {
     }
 
@@ -925,5 +928,35 @@ export class InternalLookupService {
                     });
             }
         });
+    }
+
+    getEmployees() {
+        return new Observable<EmployeeDto[]>((observer) => {
+            if (this.employees.length) {
+                observer.next(this.employees);
+                observer.complete();
+            } else {
+                this._lookupService.employees('', true)
+                    .pipe(switchMap((value: EmployeeDto[]) => {
+                        this.employees = value;
+                        localStorage.setItem('staticEmployees', JSON.stringify(value));
+                        return of(value);
+                    }))
+                    .subscribe(response => {
+                        this.employees = response;
+                        observer.next(this.employees);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getEmployeesValue() {
+        if (!this.employees.length) {
+            this.employees = JSON.parse(localStorage.getItem('staticEmployees'));
+        }
+        return this.employees;
     }
 }

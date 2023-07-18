@@ -823,6 +823,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 				});
 			});
 		}
+        this._scrollToService.scrollTo({target: 'syncLegalContractAnchor'});
 		this.hideMainSpinner();
 	}
 
